@@ -38,3 +38,8 @@ are typical of embedded systems.
   - Platform changes. Designers of embedded systems have to deal with the possibility of the underlying hardware 
     and/or RTOS being changed. Also hardware platforms are constantly being upgraded or cost reduced. If the hardware 
     changes, the software must change with it.
+
+
+Documentation is located in the top/ directory and/or availabe at: http://www.integerfox.com/colony.core.
+
+Colony.Core is licensed with a BSD licensing agreement (see the top/ directory).
