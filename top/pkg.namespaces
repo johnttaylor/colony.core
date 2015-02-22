@@ -1,0 +1,13 @@
+Cpl
+Cpl::Container
+Cpl::Io
+Cpl::Io::Stdio
+Cpl::Itc
+Cpl::Log
+Cpl::Memory
+Cpl::System
+Cpl::System::Cpp11
+Cpl::System::Win32
+Cpl::Text
+Cpl::Timer
+Cpl::Type

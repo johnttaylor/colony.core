@@ -1,0 +1,19 @@
+[info]
+name = colony.core
+branch = main
+version = 0.0.0
+pubtime = 0
+pubtimelocal = 0
+desc = Colony is C++ class library targeted specifically for embedded development.  Colony.Core is the base system/interfaces for the Colony packages.
+owner = John Taylor
+email = John.T.Taylor@gmail.com
+url = www.integerfox.com/colony.core
+
+[immediate_deps]
+
+[weak_deps]
+catch\\1.0.53
+nqbp\\1.0.0
+
+[transitive_deps]
+
