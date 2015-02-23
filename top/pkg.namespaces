@@ -1,6 +1,9 @@
 Cpl
 Cpl::Container
 Cpl::Io
+Cpl::Io::File
+Cpl::Io::Socket
+Cpl::Io::Socket::Win32
 Cpl::Io::Stdio
 Cpl::Itc
 Cpl::Log
