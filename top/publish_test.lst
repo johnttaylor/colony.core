@@ -1,2 +1,2 @@
 # Run my Windows based AUT projects
--v --dir _0test --match a.exe --m2 a.bat
+-v --dir _0test --match a.exe --m2 a.py
