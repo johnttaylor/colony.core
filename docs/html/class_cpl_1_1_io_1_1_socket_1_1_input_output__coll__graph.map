@@ -1,0 +1,8 @@
+<map id="Cpl::Io::Socket::InputOutput" name="Cpl::Io::Socket::InputOutput">
+<area shape="rect" id="node2" href="$class_cpl_1_1_io_1_1_input_output.html" title="Cpl::Io::InputOutput" alt="" coords="24,233,159,260"/>
+<area shape="rect" id="node3" href="$class_cpl_1_1_io_1_1_input.html" title="Cpl::Io::Input" alt="" coords="5,157,100,184"/>
+<area shape="rect" id="node4" href="$class_cpl_1_1_io_1_1_close.html" title="Cpl::Io::Close" alt="" coords="76,81,176,108"/>
+<area shape="rect" id="node6" href="$class_cpl_1_1_io_1_1_output.html" title="Cpl::Io::Output" alt="" coords="125,157,231,184"/>
+<area shape="rect" id="node5" href="$class_cpl_1_1_container_1_1_item.html" title="Cpl::Container::Item" alt="" coords="57,5,195,32"/>
+<area shape="rect" id="node7" href="$union_cpl_1_1_io_1_1_descriptor.html" title="Cpl::Io::Descriptor" alt="" coords="183,233,309,260"/>
+</map>

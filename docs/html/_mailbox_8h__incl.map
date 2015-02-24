@@ -1,0 +1,8 @@
+<map id="Mailbox.h" name="Mailbox.h">
+<area shape="rect" id="node3" href="$_post_api_8h.html" title="Cpl/Itc/PostApi.h" alt="" coords="141,80,261,107"/>
+<area shape="rect" id="node6" href="$_signable_8h.html" title="Cpl/System/Signable.h" alt="" coords="211,155,365,181"/>
+<area shape="rect" id="node7" href="$_mutex_8h.html" title="Cpl/System/Mutex.h" alt="" coords="357,80,499,107"/>
+<area shape="rect" id="node9" href="$_s_list_8h.html" title="Cpl/Container/SList.h" alt="" coords="517,155,662,181"/>
+<area shape="rect" id="node4" href="$_message_8h.html" title="Cpl/Itc/Message.h" alt="" coords="59,155,186,181"/>
+<area shape="rect" id="node5" href="$_item_8h.html" title="Cpl/Container/Item.h" alt="" coords="218,229,358,256"/>
+</map>
