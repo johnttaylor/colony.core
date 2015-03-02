@@ -3,12 +3,12 @@
 [DATABASE_VERSION]
 "11.0" 
 [WORKSPACE_DETAILS]
-"hew" "C:\_workspaces\zoe\colony.core\tests\Bsp\_renesas\_rx\_YRDKR62N\_kpit-gnurx\_bare" "C:\_workspaces\zoe\colony.core\tests\Bsp\_renesas\_rx\_YRDKR62N\_kpit-gnurx\_bare\hew.hws" "RX" "KPIT GNURX [ELF]" 
+"hew" "C:\_workspaces\zoe\colony.core\tests\Bsp\_renesas\_rx\_YRDKR62N\_kpit-gnurx\bare" "C:\_workspaces\zoe\colony.core\tests\Bsp\_renesas\_rx\_YRDKR62N\_kpit-gnurx\bare\hew.hws" "RX" "KPIT GNURX [ELF]" 
 [SHARED_WORKSPACE_CONTROL_STATUS]
 "" "" "" 
 "" "" "" 
 [PROJECTS]
-"hew" "C:\_workspaces\zoe\colony.core\tests\Bsp\_renesas\_rx\_YRDKR62N\_kpit-gnurx\_bare\hew" "C:\_workspaces\zoe\colony.core\tests\Bsp\_renesas\_rx\_YRDKR62N\_kpit-gnurx\_bare\hew\hew.hwp" 0 
+"hew" "C:\_workspaces\zoe\colony.core\tests\Bsp\_renesas\_rx\_YRDKR62N\_kpit-gnurx\bare\hew" "C:\_workspaces\zoe\colony.core\tests\Bsp\_renesas\_rx\_YRDKR62N\_kpit-gnurx\bare\hew\hew.hwp" 0 
 [INFORMATION]
 "No workspace information available" 
 [SCRAP]
