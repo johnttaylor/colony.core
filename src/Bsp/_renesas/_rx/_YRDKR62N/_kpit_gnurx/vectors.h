@@ -25,16 +25,35 @@
         #define BSP_EXCEP_SUPERVISOR_INSTRUCTION    myIrqHandler
 
     
-    NOTE: The 'not-used' vector function can be supplied by the Application be 
-          enabling/using the following 'config' switche via the 'colony_config.h" 
-          header file.
+    NOTE: The 'not-used' and 'error-trap' vector functions can be supplied by 
+          the Application be enabling/using the following 'config' switche via 
+          the 'colony_config.h" header file.
 
             USE_BSP_VECTOR_NOT_USED_APP_SUPPLIED
+            USE_BSP_VECTOR_ERROR_TRAP_APP_SUPPLIED
 
 
     DO NOT include this file directly! Instead include the generic BSP
     interface - src/Bsp/Api.h - and then configure your project's 
     'colony_map.h' to include THIS file.
+
+
+    HOW TO COMPILE AND LINK 'vectors.cpp'
+    ------------------------------------
+    Because there are no references to the vector table if 'vectors.cpp' is
+    compiled and then put into a library - which then the application links
+    against -->the vector table will be MISSING. The link-against-library
+    is the behavior of the Colony.Core's default build engine: NQBP.  So
+    there are two ways around this:
+    
+        1) Use the 'firstobjs' mechanism in NQBP to force NQBP to link
+           the vectors.o file directly.
+        2) Cheat some how.  In the 'start.asm' file there is unreachable
+           code that references the fixed vector table.  Since the PowerOn_Reset()
+           function is explicity called out in the link process - it gets pick-up
+           even if doing the link-by-library things.  And by have it reference
+           the vector table - it make the link-by-library think work - at the
+           cost of one 'bsr.a' instruction.
 */
 
 
@@ -55,6 +74,8 @@ extern void PowerON_Reset(void) __attribute__ ((interrupt));
 /// Declare the 'not-used' vector
 extern void BSP_VECTOR_NOT_USED(void)  __attribute__ ((interrupt));
 
+/// Declare the 'error-trap' vector
+extern void BSP_VECTOR_ERROR_TRAP(void)  __attribute__ ((interrupt));
 
 // END C++
 #ifdef __cplusplus
@@ -68,16 +89,16 @@ extern void BSP_VECTOR_NOT_USED(void)  __attribute__ ((interrupt));
 */
 
 #ifndef BSP_VECTOR_EXCEP_SUPERVISOR_INSTRUCTION
-#define BSP_VECTOR_EXCEP_SUPERVISOR_INSTRUCTION         BSP_VECTOR_NOT_USED
+#define BSP_VECTOR_EXCEP_SUPERVISOR_INSTRUCTION         BSP_VECTOR_ERROR_TRAP
 #endif
 #ifndef BSP_VECTOR_EXCEP_UNDEFINED_INSTRUCTION
-#define BSP_VECTOR_EXCEP_UNDEFINED_INSTRUCTION          BSP_VECTOR_NOT_USED
+#define BSP_VECTOR_EXCEP_UNDEFINED_INSTRUCTION          BSP_VECTOR_ERROR_TRAP
 #endif
 #ifndef BSP_VECTOR_EXCEP_FLOATING_POINT
-#define BSP_VECTOR_EXCEP_FLOATING_POINT                 BSP_VECTOR_NOT_USED
+#define BSP_VECTOR_EXCEP_FLOATING_POINT                 BSP_VECTOR_ERROR_TRAP
 #endif
 #ifndef BSP_VECTOR_NON_MASKABLE_IRQ
-#define BSP_VECTOR_NON_MASKABLE_IRQ                     BSP_VECTOR_NOT_USED
+#define BSP_VECTOR_NON_MASKABLE_IRQ                     BSP_VECTOR_ERROR_TRAP
 #endif
 
 
@@ -85,11 +106,8 @@ extern void BSP_VECTOR_NOT_USED(void)  __attribute__ ((interrupt));
 /*
 ** RELOCATEABLE Vector/IRQ Functions
 */
-#ifndef BSP_VECTOR_BRK
-#define BSP_VECTOR_BRK                                  BSP_VECTOR_NOT_USED             
-#endif
 #ifndef BSP_VECTOR_BUSERR
-#define BSP_VECTOR_BUSERR                               BSP_VECTOR_NOT_USED
+#define BSP_VECTOR_BUSERR                               BSP_VECTOR_ERROR_TRAP
 #endif
 #ifndef BSP_VECTOR_FCU_FCUERR
 #define BSP_VECTOR_FCU_FCUERR                           BSP_VECTOR_NOT_USED

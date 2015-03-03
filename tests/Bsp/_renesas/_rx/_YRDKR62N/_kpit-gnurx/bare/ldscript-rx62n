@@ -1,11 +1,11 @@
 OUTPUT_ARCH(rx)
 SECTIONS
 {
-	.fvectors 0xFFFFFFA0 : AT (0xFFFFFFA0)
+	.fvectors 0xFFFFFF80 : AT (0xFFFFFF80)
 	{
 		KEEP(*(.fvectors))
 	}
-	.text 0xFFFC0000 : AT (0xFFFC0000)
+	.text 0xFFF80000 : AT (0xFFF80000)
 	{
 		*(.text)
 		*(.text.*)

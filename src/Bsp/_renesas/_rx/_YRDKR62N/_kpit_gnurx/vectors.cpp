@@ -16,22 +16,48 @@
 #ifndef USE_BSP_VECTOR_NOT_USED_APP_SUPPLIED
 void BSP_VECTOR_NOT_USED(void)
     {
-    // Do nothing
+    __asm("nop");  // Something you can set a break point at
     }
 #endif
 
+#ifndef USE_BSP_VECTOR_ERROR_TRAP_APP_SUPPLIED
+void BSP_VECTOR_ERROR_TRAP(void)
+    {
+    __asm("nop");  // Something you can set a break point at
+    }
+#endif
+
+typedef void (*fp) (void);
+
+// Start C++
+#ifdef __cplusplus
+extern "C" {    
+#endif
+extern const fp HardwareVectors[];
+extern const fp RelocatableVectors[];
+// End C++
+#ifdef __cplusplus
+}
+#endif
 
 ///////////////////////////////////////////
-typedef void (*fp) (void);
 
 #define FVECT_SECT    __attribute__ ((section (".fvectors")))
 
-const fp HardwareVectors[] FVECT_SECT  = {
 
-    (fp)0xFFFFFFFF,                             //;0xffffffA0  Reserved
-    (fp)0xFFFFFFFF,                             //;0xffffffA4  Reserved
-    (fp)0xFFFFFFFF,                             //;0xffffffA8  Reserved
-    (fp)0xFFFFFFFF,                             //;0xffffffAC  Reserved
+const fp HardwareVectors[] FVECT_SECT  = {
+    (fp)0,                                      //;0xffffff80  Reserved
+    (fp)0,                                      //;0xffffff84  Reserved
+    (fp)0,                                      //;0xffffff88  Reserved
+    (fp)0,                                      //;0xffffff8C  Reserved
+    (fp)0,                                      //;0xffffff90  Reserved
+    (fp)0,                                      //;0xffffff94  Reserved
+    (fp)0,                                      //;0xffffff98  Reserved
+    (fp)0,                                      //;0xffffff9C  Reserved
+    (fp)0,                                      //;0xffffffA0  Reserved
+    (fp)0,                                      //;0xffffffA4  Reserved
+    (fp)0,                                      //;0xffffffA8  Reserved
+    (fp)0,                                      //;0xffffffAC  Reserved
     (fp)0,                                      //;0xffffffB0  Reserved
     (fp)0,                                      //;0xffffffB4  Reserved
     (fp)0,                                      //;0xffffffB8  Reserved
@@ -57,12 +83,11 @@ const fp HardwareVectors[] FVECT_SECT  = {
 
 
 
-
 ///////////////////////////////////////////
 #define RVECT_SECT          __attribute__ ((section (".rvectors")))
 
 const fp RelocatableVectors[] RVECT_SECT  = {
-    (fp)BSP_VECTOR_BRK,                               //;0x0000  BRK
+    (fp)0,                                            //;0x0000  Reserved
     (fp)0,                                            //;0x0004  Reserved
     (fp)0,                                            //;0x0008  Reserved
     (fp)0,                                            //;0x000C  Reserved

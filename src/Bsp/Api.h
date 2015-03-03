@@ -55,6 +55,13 @@ void Bsp_Api_initialize( void );
     the stack and then disable ALL interrupts. This method should all
     be called in 'pairs' with the Bsp_Api_popIrqs() method.
 
+    NOTE: This method MAY push the CPU's entire Program Status Word (PSW) onto
+          the stack and the corresponding Bsp_Api_popIrq() will restore the
+          ENTIRE PSW word.  What does this mean - usually nothing but things
+          like the zero, carry, overflow flags, etc. are stored in the PSW and
+          we be reverted (when 'pop' is called) to the state of when the 'push' 
+          was done.
+
     \b Prototype:
         void Bsp_Api_pushAndDisableIrqs( void );
  */

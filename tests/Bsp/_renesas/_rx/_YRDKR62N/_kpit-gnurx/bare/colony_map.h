@@ -1,18 +1,18 @@
 #ifndef COLONY_MAP_H_
 #define COLONY_MAP_H_
 
+// Timer vectors
+#define BSP_VECTOR_CMTU0_CMI0    irqTimer1
+#define BSP_VECTOR_CMTU1_CMI3    irqTimer2
+
+extern void irqTimer1 (void) __attribute__ ((interrupt));
+extern void irqTimer2 (void) __attribute__ ((interrupt));
+
+
 // My BSP
 #include "Bsp/_renesas/_rx/_YRDKR62N/_kpit_gnurx/Api.h"
 
 
-//// Cpl::System mappings
-//#ifdef BUILD_VARIANT_WIN32
-//#include "Cpl/System/Win32/mappings_.h"
-//#endif
-//#ifdef BUILD_VARIANT_CPP11
-//#include "Cpl/System/Cpp11/mappings_.h"
-//#endif
-//
 //// strapi mapping
 //#include "Cpl/Text/_mappings/mingw/strapi.h"
 

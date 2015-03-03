@@ -9,11 +9,13 @@
 [OPEN_WORKSPACE_FILES]
 "C:\_workspaces\zoe\colony.core\src\Bsp\_renesas\_rx\_YRDKR62N\_kpit_gnurx\Api.cpp" 
 "C:\_workspaces\zoe\colony.core\src\Bsp\_renesas\_rx\_YRDKR62N\_kpit_gnurx\start.asm" 
+"C:\_workspaces\zoe\colony.core\src\Bsp\_renesas\_rx\_YRDKR62N\_kpit_gnurx\vectors.cpp" 
 "C:\_workspaces\zoe\colony.core\tests\Bsp\_renesas\_rx\_YRDKR62N\_kpit-gnurx\bare\main.cpp" 
 [WORKSPACE_FILE_STATES]
-"C:\_workspaces\zoe\colony.core\src\Bsp\_renesas\_rx\_YRDKR62N\_kpit_gnurx\Api.cpp" -8 -30 1108 391 1 3 
-"C:\_workspaces\zoe\colony.core\src\Bsp\_renesas\_rx\_YRDKR62N\_kpit_gnurx\start.asm" 75 75 988 249 0 1 
-"C:\_workspaces\zoe\colony.core\tests\Bsp\_renesas\_rx\_YRDKR62N\_kpit-gnurx\bare\main.cpp" 100 100 992 253 0 2 
+"C:\_workspaces\zoe\colony.core\src\Bsp\_renesas\_rx\_YRDKR62N\_kpit_gnurx\Api.cpp" -8 -30 1108 410 1 3 
+"C:\_workspaces\zoe\colony.core\src\Bsp\_renesas\_rx\_YRDKR62N\_kpit_gnurx\start.asm" 75 75 988 249 0 2 
+"C:\_workspaces\zoe\colony.core\src\Bsp\_renesas\_rx\_YRDKR62N\_kpit_gnurx\vectors.cpp" 50 50 805 253 0 5 
+"C:\_workspaces\zoe\colony.core\tests\Bsp\_renesas\_rx\_YRDKR62N\_kpit-gnurx\bare\main.cpp" 100 100 805 253 0 4 
 [LOADED_PROJECTS]
 "hew" 
 [END]
