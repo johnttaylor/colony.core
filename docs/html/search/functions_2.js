@@ -13,7 +13,7 @@ var searchData=
   ['compare',['compare',['../class_cpl_1_1_text_1_1_string.html#ac8c224b0d2e3debe84e835d4593b2c5b',1,'Cpl::Text::String']]],
   ['compareignorecase',['compareIgnoreCase',['../class_cpl_1_1_text_1_1_string.html#a7dc300e3e58cf7f72d6cd779a8c2e25f',1,'Cpl::Text::String']]],
   ['comparekey',['compareKey',['../class_cpl_1_1_container_1_1_key.html#a9650f8dc573080d06b32f60ba6b8c484',1,'Cpl::Container::Key::compareKey()'],['../class_cpl_1_1_container_1_1_key_plain_type.html#a7513c0b1bea95b9ba7b644e3d2be307f',1,'Cpl::Container::KeyPlainType::compareKey()'],['../class_cpl_1_1_container_1_1_key_literal_string.html#afefb5027d71887e3b2fded4fa92b6a48',1,'Cpl::Container::KeyLiteralString::compareKey()']]],
-  ['connector',['Connector',['../class_cpl_1_1_io_1_1_socket_1_1_win32_1_1_connector.html#a7a5726ea171a8d62e7f93af4f7106e17',1,'Cpl::Io::Socket::Win32::Connector']]],
+  ['connector',['Connector',['../class_cpl_1_1_io_1_1_socket_1_1_win32_1_1_connector.html#a7a5726ea171a8d62e7f93af4f7106e17',1,'Cpl::Io::Socket::Win32::Connector::Connector()'],['../class_cpl_1_1_io_1_1_socket_1_1_posix_1_1_connector.html#a7238a0107b8a03894b29fdaae9b3b007',1,'Cpl::Io::Socket::Posix::Connector::Connector()']]],
   ['console',['console',['../class_cpl_1_1_log_1_1_loggers.html#a871094069b73a3a91758ba075758d86a',1,'Cpl::Log::Loggers']]],
   ['copyfile',['copyFile',['../class_cpl_1_1_io_1_1_file_1_1_api.html#a462855ade1690d0520896c3d2fc60d9a',1,'Cpl::Io::File::Api']]],
   ['copyin',['copyIn',['../class_cpl_1_1_text_1_1_d_string.html#a9267f6fe790172f91e587dc5317fe4ab',1,'Cpl::Text::DString::copyIn()'],['../class_cpl_1_1_text_1_1_string.html#a3aabf3e6d3be0c3b46a791e673a429fc',1,'Cpl::Text::String::copyIn()']]],
