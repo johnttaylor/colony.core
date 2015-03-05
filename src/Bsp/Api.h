@@ -10,29 +10,38 @@
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
-/** @file 
+/** @file */
 
-
-    This file defines the generic Board Support Packge interfaces.  In addition
-    by including this file - the application gains access to the specific
-    BSP being used.
-
-*/
 #include "colony_map.h"  
 
+///
+namespace Bsp {
 
-/** This method will initialize the board/low level hardware such that BASIC
-    board operation is possible. Additional initialization of peripherals may
-    be required - see your specific BSP header file for details.
 
-    NOTE: Since this method is intended to be called by the Application - it
-          is 'run' AFTER main() has been entered.
+/** This class defines the common/generic interfaces that all Colony.* BSP
+    are required to support.  Note: Many of the common interfaces are defined
+    as C preprocessor macros - this provides the maximum flexibility in
+    implementation for a concrete BSP.  Only functions that 'should be' or
+    need to be true function calls are defined in this class.
  */
-void Bsp_Api_initialize( void );
+class Api
+{
+public:
+
+    /** This method will initialize the board/low level hardware such that BASIC
+        board operation is possible. Additional initialization of peripherals may
+        be required - see your specific BSP header file for details.
+
+        NOTE: Since this method is intended to be called by the Application - it
+              is 'run' AFTER main() has been entered.
+     */
+    void initialize( void );
+
+};
 
 
 
-//////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 /** This method will disable ALL interrupts, i.e maniuplate the global 
     enable/disable flag in the PSW.
 
@@ -79,4 +88,5 @@ void Bsp_Api_initialize( void );
 
 
 
+};      // end namespace
 #endif  // end header latch

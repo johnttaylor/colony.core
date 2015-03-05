@@ -9,6 +9,7 @@ var hierarchy =
     [ "Cpl::Memory::AlignedClass< T >", "namespace_cpl_1_1_memory.html#union_cpl_1_1_memory_1_1_aligned_class", null ],
     [ "Cpl::Memory::AlignedClass< Cpl::Io::Socket::InputOutput >", "namespace_cpl_1_1_memory.html#namespace_cpl_1_1_memory", null ],
     [ "Cpl::Io::File::Api", "class_cpl_1_1_io_1_1_file_1_1_api.html", null ],
+    [ "Bsp::Api", "class_bsp_1_1_api.html", null ],
     [ "Cpl::Log::Api", "class_cpl_1_1_log_1_1_api.html", [
       [ "Cpl::Log::Null", "class_cpl_1_1_log_1_1_null.html", null ]
     ] ],
