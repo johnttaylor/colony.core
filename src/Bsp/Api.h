@@ -35,7 +35,7 @@ public:
         NOTE: Since this method is intended to be called by the Application - it
               is 'run' AFTER main() has been entered.
      */
-    void initialize( void );
+    static void initialize( void );
 
 };
 
