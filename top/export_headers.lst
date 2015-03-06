@@ -1,3 +1,4 @@
 # Recursive export of all header files
 src/...*.h
+src/...README.txt
 

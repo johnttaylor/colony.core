@@ -1,5 +1,5 @@
 var namespaces =
 [
-    [ "Bsp", "namespace_bsp.html", null ],
+    [ "Bsp", "namespace_bsp.html", "namespace_bsp" ],
     [ "Cpl", "namespace_cpl.html", "namespace_cpl" ]
 ];

@@ -34,6 +34,7 @@ var hierarchy =
     ] ],
     [ "Cpl::Itc::CloseResponse", "class_cpl_1_1_itc_1_1_close_response.html", null ],
     [ "Cpl::Io::Socket::Connector", "class_cpl_1_1_io_1_1_socket_1_1_connector.html", [
+      [ "Cpl::Io::Socket::Posix::Connector", "class_cpl_1_1_io_1_1_socket_1_1_posix_1_1_connector.html", null ],
       [ "Cpl::Io::Socket::Win32::Connector", "class_cpl_1_1_io_1_1_socket_1_1_win32_1_1_connector.html", null ]
     ] ],
     [ "Cpl::Timer::CounterSource", "class_cpl_1_1_timer_1_1_counter_source.html", [
@@ -129,6 +130,7 @@ var hierarchy =
         [ "Cpl::System::Semaphore", "class_cpl_1_1_system_1_1_semaphore.html", null ],
         [ "Cpl::System::Thread", "class_cpl_1_1_system_1_1_thread.html", [
           [ "Cpl::System::Cpp11::Thread", "class_cpl_1_1_system_1_1_cpp11_1_1_thread.html", null ],
+          [ "Cpl::System::Posix::Thread", "class_cpl_1_1_system_1_1_posix_1_1_thread.html", null ],
           [ "Cpl::System::Win32::Thread", "class_cpl_1_1_system_1_1_win32_1_1_thread.html", null ]
         ] ]
       ] ],
@@ -140,6 +142,7 @@ var hierarchy =
       [ "Cpl::Text::String", "class_cpl_1_1_text_1_1_string.html", null ]
     ] ],
     [ "Listener_", null, [
+      [ "Cpl::Io::Socket::Posix::Listener", "class_cpl_1_1_io_1_1_socket_1_1_posix_1_1_listener.html", null ],
       [ "Cpl::Io::Socket::Win32::Listener", "class_cpl_1_1_io_1_1_socket_1_1_win32_1_1_listener.html", null ]
     ] ],
     [ "Cpl::Io::Socket::ListenerClientRequest", "class_cpl_1_1_io_1_1_socket_1_1_listener_client_request.html", [

@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['connector_2eh',['Connector.h',['../_win32_2_connector_8h.html',1,'']]],
-  ['listener_2eh',['Listener.h',['../_win32_2_listener_8h.html',1,'']]],
-  ['thread_2eh',['Thread.h',['../_win32_2_thread_8h.html',1,'']]],
   ['wait',['wait',['../class_cpl_1_1_system_1_1_semaphore.html#a6d4908d96acb352f125a4485689135b1',1,'Cpl::System::Semaphore::wait()'],['../class_cpl_1_1_system_1_1_thread.html#a23aed4e18f3995f41d758073581c30c7',1,'Cpl::System::Thread::wait()']]],
   ['waitinrealtime',['waitInRealTime',['../class_cpl_1_1_system_1_1_semaphore.html#a7f14bd8dfe6da7a8255932223faf73d2',1,'Cpl::System::Semaphore']]],
   ['waitnext',['waitNext',['../class_cpl_1_1_itc_1_1_mailbox.html#aa3112f9f6e498af1fab6530f890cb8a3',1,'Cpl::Itc::Mailbox']]],

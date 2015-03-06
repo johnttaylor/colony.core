@@ -1,5 +1,6 @@
 var namespace_cpl_1_1_io_1_1_socket =
 [
+    [ "Posix", "namespace_cpl_1_1_io_1_1_socket_1_1_posix.html", "namespace_cpl_1_1_io_1_1_socket_1_1_posix" ],
     [ "Win32", "namespace_cpl_1_1_io_1_1_socket_1_1_win32.html", "namespace_cpl_1_1_io_1_1_socket_1_1_win32" ],
     [ "Connector", "class_cpl_1_1_io_1_1_socket_1_1_connector.html", "class_cpl_1_1_io_1_1_socket_1_1_connector" ],
     [ "Factory", "class_cpl_1_1_io_1_1_socket_1_1_factory.html", "class_cpl_1_1_io_1_1_socket_1_1_factory" ],
