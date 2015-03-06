@@ -10,38 +10,40 @@
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
-/** @file */
+/** @file 
 
-#include "colony_map.h"  
-
-///
-namespace Bsp {
-
-
-/** This class defines the common/generic interfaces that all Colony.* BSP
+    This file defines the common/generic interfaces that all Colony.* BSP
     are required to support.  Note: Many of the common interfaces are defined
     as C preprocessor macros - this provides the maximum flexibility in
     implementation for a concrete BSP.  Only functions that 'should be' or
     need to be true function calls are defined in this class.
  */
-class Api
-{
-public:
 
-    /** This method will initialize the board/low level hardware such that BASIC
-        board operation is possible. Additional initialization of peripherals may
-        be required - see your specific BSP header file for details.
 
-        NOTE: Since this method is intended to be called by the Application - it
-              is 'run' AFTER main() has been entered.
-     */
-    static void initialize( void );
+#include "colony_map.h"  
 
-};
 
+// Start C++
+#ifdef __cplusplus
+extern "C" {    
+#endif
 
 
 /////////////////////////////////////////////////////////////////////////////
+//
+
+/** This method will initialize the board/low level hardware such that BASIC
+    board operation is possible. Additional initialization of peripherals may
+    be required - see your specific BSP header file for details.
+
+    NOTE: Since this method is intended to be called by the Application - it
+          is 'run' AFTER main() has been entered.
+ */
+void Bsp_Api_initialize( void );
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 /** This method will disable ALL interrupts, i.e maniuplate the global 
     enable/disable flag in the PSW.
 
@@ -88,5 +90,10 @@ public:
 
 
 
-};      // end namespace
+// End C++
+#ifdef __cplusplus
+}
+#endif
+
+
 #endif  // end header latch
