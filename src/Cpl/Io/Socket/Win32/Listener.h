@@ -26,15 +26,15 @@ namespace Cpl { namespace Io { namespace Socket { namespace Win32 {
 /** This value is number of retries that is performed when attempting
     to bind to the listening port.
  */
-#ifndef USE_CPL_IO_SOCKET_WIN32_BIND_RETRIES
-#define USE_CPL_IO_SOCKET_WIN32_BIND_RETRIES        5
+#ifndef OPTION_CPL_IO_SOCKET_WIN32_BIND_RETRIES
+#define OPTION_CPL_IO_SOCKET_WIN32_BIND_RETRIES        5
 #endif
 
 /** This value is time, in milliseconds between retries during the binding
     process.
  */
-#ifndef USE_CPL_IO_SOCKET_WIN32_BIND_RETRY_WAIT
-#define USE_CPL_IO_SOCKET_WIN32_BIND_RETRY_WAIT     (10*1000)
+#ifndef OPTION_CPL_IO_SOCKET_WIN32_BIND_RETRY_WAIT
+#define OPTION_CPL_IO_SOCKET_WIN32_BIND_RETRY_WAIT     (10*1000)
 #endif
 
 

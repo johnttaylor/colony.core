@@ -89,6 +89,61 @@ void Bsp_Api_initialize( void );
 #define Bsp_Api_popIrqs                     Bsp_Api_popIrqs_MAP
 
 
+/////////////////////////////////////////////////////////////////////////////
+//
+/** This method will turn on "Debug LED 1".  The concept is that every board 
+    hasone or more LEDs, IO Pins, etc. that can be used for debugging purposes.
+ 
+    \b Prototype:
+        void Bsp_Api_turnOn_debug1( void );
+ */
+#define Bsp_Api_turnOn_debug1               Bsp_Api_turnOn_debug1_MAP     
+
+
+/** This method will turn off "Debug LED 1".  The concept is that every board 
+    hasone or more LEDs, IO Pins, etc. that can be used for debugging purposes.
+ 
+    \b Prototype:
+        void Bsp_Api_turnOff_debug1( void );
+ */
+#define Bsp_Api_turnOff_debug1              Bsp_Api_turnOff_debug1_MAP
+
+/** This method will toggle "Debug LED 1".  The concept is that every board 
+    hasone or more LEDs, IO Pins, etc. that can be used for debugging purposes.
+ 
+    \b Prototype:
+        void Bsp_Api_toggle_debug1( void );
+ */
+#define Bsp_Api_toggle_debug1               Bsp_Api_toggle_debug1_MAP
+
+
+
+/** This method will turn on "Debug LED 2".  The concept is that every board 
+    hasone or more LEDs, IO Pins, etc. that can be used for debugging purposes.
+ 
+    \b Prototype:
+        void Bsp_Api_turnOn_debug2( void );
+ */
+#define Bsp_Api_turnOn_debug2               Bsp_Api_turnOn_debug2_MAP     
+
+
+/** This method will turn off "Debug LED 2".  The concept is that every board 
+    hasone or more LEDs, IO Pins, etc. that can be used for debugging purposes.
+ 
+    \b Prototype:
+        void Bsp_Api_turnOff_debug2( void );
+ */
+#define Bsp_Api_turnOff_debug2              Bsp_Api_turnOff_debug2_MAP
+
+/** This method will toggle "Debug LED 2".  The concept is that every board 
+    hasone or more LEDs, IO Pins, etc. that can be used for debugging purposes.
+ 
+    \b Prototype:
+        void Bsp_Api_toggle_debug2( void );
+ */
+#define Bsp_Api_toggle_debug2               Bsp_Api_toggle_debug2_MAP
+
+
 
 // End C++
 #ifdef __cplusplus

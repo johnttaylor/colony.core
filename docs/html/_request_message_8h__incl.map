@@ -1,8 +1,0 @@
-<map id="RequestMessage.h" name="RequestMessage.h">
-<area shape="rect" id="node2" href="$_service_message_8h.html" title="Cpl/Itc/ServiceMessage.h" alt="" coords="16,80,185,107"/>
-<area shape="rect" id="node6" href="$_s_a_p_8h.html" title="Cpl/Itc/SAP.h" alt="" coords="211,80,313,107"/>
-<area shape="rect" id="node3" href="$_message_8h.html" title="Cpl/Itc/Message.h" alt="" coords="60,229,187,256"/>
-<area shape="rect" id="node5" href="$_return_handler_8h.html" title="Cpl/Itc/ReturnHandler.h" alt="" coords="23,155,179,181"/>
-<area shape="rect" id="node4" href="$_item_8h.html" title="Cpl/Container/Item.h" alt="" coords="53,304,193,331"/>
-<area shape="rect" id="node7" href="$_post_api_8h.html" title="Cpl/Itc/PostApi.h" alt="" coords="203,155,323,181"/>
-</map>

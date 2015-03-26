@@ -1,9 +1,0 @@
-<map id="Cpl::Container::MapItem" name="Cpl::Container::MapItem">
-<area shape="rect" id="node5" href="$class_cpl_1_1_text_1_1_string_item.html" title="Cpl::Text::StringItem" alt="" coords="193,304,334,331"/>
-<area shape="rect" id="node2" href="$class_cpl_1_1_container_1_1_dict_item.html" title="Cpl::Container::DictItem" alt="" coords="183,155,343,181"/>
-<area shape="rect" id="node3" href="$class_cpl_1_1_container_1_1_extended_item.html" title="Cpl::Container::ExtendedItem" alt="" coords="167,80,359,107"/>
-<area shape="rect" id="node4" href="$class_cpl_1_1_container_1_1_item.html" title="Cpl::Container::Item" alt="" coords="195,5,332,32"/>
-<area shape="rect" id="node6" href="$class_cpl_1_1_text_1_1_d_f_string_item.html" title="Cpl::Text::DFStringItem" alt="" coords="5,379,164,405"/>
-<area shape="rect" id="node7" href="$class_cpl_1_1_text_1_1_d_string_item.html" title="Cpl::Text::DStringItem" alt="" coords="188,379,339,405"/>
-<area shape="rect" id="node8" href="$class_cpl_1_1_text_1_1_f_string_item.html" title="Cpl::Text::FStringItem\&lt; S \&gt;" alt="" coords="363,379,545,405"/>
-</map>

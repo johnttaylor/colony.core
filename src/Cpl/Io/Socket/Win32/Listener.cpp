@@ -60,7 +60,7 @@ void Listener::listen()
 
 		
 	// Set the "address" of the socket		
-    int retry = USE_CPL_IO_SOCKET_WIN32_BIND_RETRIES;
+    int retry = OPTION_CPL_IO_SOCKET_WIN32_BIND_RETRIES;
     while( retry )
         {
         memset(&local, 0, sizeof(local));
@@ -73,7 +73,7 @@ void Listener::listen()
             }
 
         m_logger.warning( "Cpl::Io::Socket::Win32::Listener:: Listening on Port=%d. Bind error - retrying...", m_socket ); 
-        Cpl::System::Api::sleep( USE_CPL_IO_SOCKET_WIN32_BIND_RETRY_WAIT );
+        Cpl::System::Api::sleep( OPTION_CPL_IO_SOCKET_WIN32_BIND_RETRY_WAIT );
         if ( --retry == 0 )
             {
             Cpl::System::FatalError::logf( "Cpl::Io::Socket::Win32::Listener: Bind error - exceed retry count -->giving up" );

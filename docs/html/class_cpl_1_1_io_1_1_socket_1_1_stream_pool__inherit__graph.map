@@ -1,7 +1,0 @@
-<map id="Cpl::Io::Socket::StreamPool&lt; N &gt;" name="Cpl::Io::Socket::StreamPool&lt; N &gt;">
-<area shape="rect" id="node2" href="$class_cpl_1_1_io_1_1_socket_1_1_factory.html" title="Cpl::Io::Socket::Factory" alt="" coords="5,283,165,310"/>
-<area shape="rect" id="node3" href="$class_cpl_1_1_memory_1_1_s_pool.html" title="Cpl::Memory::SPool\l\&lt; Cpl::Io::Socket::InputOutput, N \&gt;" alt="" coords="189,276,413,317"/>
-<area shape="rect" id="node4" href="$class_cpl_1_1_memory_1_1_allocator.html" title="Cpl::Memory::Allocator" alt="" coords="203,81,357,108"/>
-<area shape="rect" id="node6" href="$class_cpl_1_1_memory_1_1_s_pool.html" title="Cpl::Memory::SPool\l\&lt; T, N \&gt;" alt="" coords="301,157,440,199"/>
-<area shape="rect" id="node5" href="$class_cpl_1_1_container_1_1_item.html" title="Cpl::Container::Item" alt="" coords="211,5,349,32"/>
-</map>

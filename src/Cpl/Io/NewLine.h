@@ -17,8 +17,8 @@
 
 
 /// The standard newline is "\n", but allow the application to override/change it
-#ifndef USE_CPL_IO_NEW_LINE_STANDARD
-#define USE_CPL_IO_NEW_LINE_STANDARD           "\n"
+#ifndef OPTION_CPL_IO_NEW_LINE_STANDARD
+#define OPTION_CPL_IO_NEW_LINE_STANDARD           "\n"
 #endif
 
 /// The application must provide/map the native newline character
@@ -43,7 +43,7 @@ class NewLine
 public:
     /** This method returns the Colony standardized newline character(s)
      */             
-    static const char* standard(void)   { return USE_CPL_IO_NEW_LINE_STANDARD; }
+    static const char* standard(void)   { return OPTION_CPL_IO_NEW_LINE_STANDARD; }
 
 
 
