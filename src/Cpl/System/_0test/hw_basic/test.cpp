@@ -17,7 +17,6 @@
 #include "Cpl/System/Tls.h"
 
 
-
 #define SECT_     "_0test"
 
 /// 
@@ -59,9 +58,9 @@ public:
             {
             m_tlsKey.set( (void*) m_tlsCounter );
             toggleLED();
-            //Thread::wait();
-            //toggleLED();
-            //Thread::wait();
+            Thread::wait();
+            toggleLED();
+            Thread::wait();
             if ( m_tlsKey.get() != (void*) m_tlsCounter )
                 {
                 FatalError::logf( "(%s) Bad TLS value (%p) - should be (%p)", Thread::myName(), m_tlsKey.get(), m_tlsCounter );
@@ -100,7 +99,7 @@ public:
 
 public:
     MyRunnable2( Thread& ledThread, uint16_t onTime_ms, uint16_t offTime_ms )
-    :m_ledThread(m_ledThread),
+    :m_ledThread(ledThread),
      m_onTime_ms(onTime_ms),
      m_offTime_ms(offTime_ms)
         {
@@ -116,9 +115,9 @@ public:
         for(;;)
             {
             Api::sleep( m_onTime_ms );
-            //m_ledThread.signal();
+            m_ledThread.signal();
             Api::sleep( m_offTime_ms );
-            //m_ledThread.signal();
+            m_ledThread.signal();
 
 
             ElaspedTime::Precision_T ptime     = ElaspedTime::precision();
@@ -154,22 +153,23 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
+
 void runtests( void )
     {
     // Create my TLS key (can't be done statically)
-    //Tls* keyPtr = new Tls();
-    Tls key;
-
+    Tls* keyPtr = new Tls();
+    
+    
     // Create some threads....
-    MyRunnable  appleLed( key, 1 );
+    MyRunnable  appleLed( *keyPtr, 1 );
     Thread*     appledLedPtr = Thread::create( appleLed, "AppleLED" );
     MyRunnable2 appleTimer( *appledLedPtr, 1000, 1000 );
     Thread::create( appleTimer, "AppleTimer" );
 
-//    MyRunnable orangeLed( key, 2 );
-//    Thread* orangeLedPtr = Thread::create( orangeLed, "OrangeLED" );
-//    MyRunnable2 orangeTimer( *orangeLedPtr, 1500, 250 );
-//    Thread::create( orangeTimer, "OrangeTimer" );
+    MyRunnable orangeLed( *keyPtr, 2 );
+    Thread* orangeLedPtr = Thread::create( orangeLed, "OrangeLED" );
+    MyRunnable2 orangeTimer( *orangeLedPtr, 1500, 250 );
+    Thread::create( orangeTimer, "OrangeTimer" );
   
     
     // Start the schedular

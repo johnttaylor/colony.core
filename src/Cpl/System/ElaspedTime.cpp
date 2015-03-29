@@ -16,7 +16,7 @@
 using namespace Cpl::System;
 
 
-#define MAX_POSITVE_MSEC_   0x7FFFF
+#define MAX_POSITVE_MSEC_   0x7FFF
 
 
 ///////////////////////////////////////////////////////
