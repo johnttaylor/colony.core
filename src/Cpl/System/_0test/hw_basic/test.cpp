@@ -12,6 +12,7 @@
 #include "Bsp/Api.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Thread.h"
+#include "Cpl/System/Mutex.h"
 #include "Cpl/System/FatalError.h"
 #include "Cpl/System/ElaspedTime.h"
 #include "Cpl/System/Tls.h"
@@ -22,9 +23,26 @@
 /// 
 using namespace Cpl::System;
 
+Mutex myLock_;
+float testGlobal_;
+
+static bool modifyGlobal_( float op1, float op2, float expected )
+    {
+    Mutex::ScopeBlock guard(myLock_);
+
+    bool result = true;
+    testGlobal_ = ( op1 * 2.0 ) / (op2 + op1);
+    if ( testGlobal_ < (expected - 0.0001) || testGlobal_ > (expected + 0.0001) )
+        result = false;
+
+    return result;
+    }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace {
+
+
 
 class MyRunnable: public Runnable
 {
@@ -148,6 +166,42 @@ public:
 };
 
 
+class MyRunnable3: public Runnable
+{
+public:
+    ///
+    float m_op1;
+    ///
+    float m_op2;
+    ///
+    float m_expected;
+
+public:
+    ///
+    MyRunnable3( float op1, float op2 )
+    :m_op1(op1),
+     m_op2(op2),
+     m_expected( ( op1 * 2.0 ) / (op2 + op1) )
+        {
+        }
+
+
+public:
+    ///
+    void appRun()
+        {
+        for(;;)
+            {
+            if ( modifyGlobal_( m_op1, m_op2, m_expected ) == false )
+                {
+                FatalError::logf( "Mutex failed. Thread=%s", Thread::myName() );
+                }
+
+            Api::sleep(10);
+            }
+        }
+};
+
 };  // end namespace
 
 
@@ -171,7 +225,13 @@ void runtests( void )
     MyRunnable2 orangeTimer( *orangeLedPtr, 1500, 250 );
     Thread::create( orangeTimer, "OrangeTimer" );
   
-    
+    MyRunnable3 t1( 3.14159, 3 );
+    Thread::create( t1, "T1" );
+    MyRunnable3 t2( 2.71828, 7 );
+    Thread::create( t2, "T2" );
+    MyRunnable3 t3( 64.0, 128.0 );
+    Thread::create( t3, "T3" );
+     
     // Start the schedular
     Api::enableScheduling();
     }

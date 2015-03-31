@@ -20,6 +20,7 @@
  */
 
 
+#include "colony_config.h"
 #include "colony_map.h"  
 
 
@@ -40,6 +41,14 @@ extern "C" {
           is 'run' AFTER main() has been entered.
  */
 void Bsp_Api_initialize( void );
+
+
+/** This method inserts a single 'nop' instruction
+ 
+    \b Prototype:
+        void Bsp_Api_nop(void);
+ */
+#define Bsp_Api_nop                         Bsp_Api_nop_MAP
 
 
 /////////////////////////////////////////////////////////////////////////////
