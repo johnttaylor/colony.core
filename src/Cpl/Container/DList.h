@@ -28,11 +28,11 @@ class DList
 private:
     /** Points to the first item in the list.
      */
-    ITEM*  _headPtr;
+    ITEM*  m_headPtr;
 
     /** Points to the last item in the list.
      */
-    ITEM*  _tailPtr;
+    ITEM*  m_tailPtr;
 
 public:
     /** Public constructor initializes head and tail pointers.
@@ -198,7 +198,7 @@ private: ///@name Prevent the container from being copied
 
 template <class ITEM>
 DList<ITEM>::DList(void) throw()
-:_headPtr(0),_tailPtr(0)
+:m_headPtr(0),m_tailPtr(0)
     {
     }
 
@@ -233,7 +233,7 @@ inline void DList<ITEM>::clearTheList()
 template <class ITEM>
 inline ITEM* DList<ITEM>::get(void) throw()
     {
-    ITEM* firstPtr = _headPtr;
+    ITEM* firstPtr = m_headPtr;
     if ( firstPtr )
         {
         remove( *firstPtr );
@@ -250,10 +250,10 @@ inline ITEM* DList<ITEM>::getFirst(void) throw()
 template <class ITEM>
 inline ITEM* DList<ITEM>::getLast(void) throw()
     {
-    ITEM* lastPtr = _tailPtr;
+    ITEM* lastPtr = m_tailPtr;
     if ( lastPtr )
         {
-        remove( *_tailPtr );
+        remove( *m_tailPtr );
         }
     return lastPtr;
     }
@@ -263,15 +263,15 @@ inline void DList<ITEM>::putFirst(ITEM& item) throw()
     {
     if ( item.insert_(this))
         {
-        if( _headPtr )
+        if( m_headPtr )
             {
-            item.m_nextPtr_      = _headPtr;
-            _headPtr->m_prevPtr_ = &item;
-            _headPtr            = &item;
+            item.m_nextPtr_      = m_headPtr;
+            m_headPtr->m_prevPtr_ = &item;
+            m_headPtr            = &item;
             }
         else
             {
-            _headPtr       = _tailPtr = &item;
+            m_headPtr       = m_tailPtr = &item;
             item.m_nextPtr_ = 0;
             }
         item.m_prevPtr_ = 0;
@@ -283,18 +283,18 @@ inline void DList<ITEM>::put(ITEM& item) throw()
     {
     if ( item.insert_(this) )
         {
-        if(_headPtr)
+        if(m_headPtr)
             {
-            _tailPtr->m_nextPtr_ = &item;
-            item.m_prevPtr_      = _tailPtr;
+            m_tailPtr->m_nextPtr_ = &item;
+            item.m_prevPtr_      = m_tailPtr;
             }
         else
             {
-            _headPtr       = &item;
+            m_headPtr       = &item;
             item.m_prevPtr_ = 0;
             }
         item.m_nextPtr_ = 0;
-        _tailPtr       = &item;
+        m_tailPtr       = &item;
         }
     }
 
@@ -315,7 +315,7 @@ inline bool DList<ITEM>::remove(ITEM& item) throw()
             {
             if( !(prvPtr->m_nextPtr_=nxtPtr) )
                 {
-                _tailPtr = prvPtr;              // Case: Remove tail object
+                m_tailPtr = prvPtr;              // Case: Remove tail object
                 }                
             else
                 {
@@ -324,9 +324,9 @@ inline bool DList<ITEM>::remove(ITEM& item) throw()
             }
         else
             {
-            if( !(_headPtr=nxtPtr) )
+            if( !(m_headPtr=nxtPtr) )
                 {
-                _tailPtr = 0;             // Case: Remove last object
+                m_tailPtr = 0;             // Case: Remove last object
                 }
             else
                 {
@@ -352,7 +352,7 @@ inline void DList<ITEM>::insertAfter(ITEM& after,ITEM& item) throw()
         after.m_nextPtr_ = &item;                                              
         if ( !nxtPtr )                                                                    
             {                                                                          
-            _tailPtr = &item;                                                              
+            m_tailPtr = &item;                                                              
             }                                                                          
         else                                                                           
             {                                                                          
@@ -371,7 +371,7 @@ inline void DList<ITEM>::insertBefore(ITEM& before,ITEM& item) throw()
         before.m_prevPtr_ = &item;
         if ( !prvPtr )
             {
-            _headPtr = &item;
+            m_headPtr = &item;
             }
         else
             {
@@ -397,13 +397,13 @@ inline bool DList<ITEM>::find(const ITEM& item) const throw()
 template <class ITEM>
 inline ITEM* DList<ITEM>::first(void) const throw()
     {
-    return _headPtr;
+    return m_headPtr;
     }
 
 template <class ITEM>
 inline ITEM* DList<ITEM>::last(void) const throw()
     {
-    return _tailPtr;
+    return m_tailPtr;
     }
 
 template <class ITEM>

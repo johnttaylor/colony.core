@@ -6,6 +6,9 @@
 // External references
 extern void link_slist(void);
 extern void link_dlist(void);
+extern void link_map(void);
+extern void link_dictionary(void);
+extern void link_ringbuffer(void);
 
 
 int main( int argc, char* const argv[] )
@@ -19,6 +22,9 @@ int main( int argc, char* const argv[] )
     // remove these call(s).
     link_slist();
     link_dlist();
+    link_map();
+    link_dictionary();
+    link_ringbuffer();
 
 
     // Run the test(s)

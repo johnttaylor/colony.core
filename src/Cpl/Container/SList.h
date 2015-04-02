@@ -29,11 +29,11 @@ class SList
 private:
     /** Points to the first item in the list.
      */
-    ITEM*  _headPtr;
+    ITEM*  m_headPtr;
 
     /** Points to the last item in the list.
      */
-    ITEM*  _tailPtr;
+    ITEM*  m_tailPtr;
 
 public:
     /** Public constructor initializes head and tail pointers.
@@ -197,7 +197,7 @@ private: ///@name Prevent the container from being copied
 
 template <class ITEM>
 SList<ITEM>::SList(void) throw()
-:_headPtr(0),_tailPtr(0)
+:m_headPtr(0),m_tailPtr(0)
     {
     }
 
@@ -233,11 +233,11 @@ template <class ITEM>
 inline ITEM* SList<ITEM>::get(void) throw()
     {
     ITEM* nextPtr;
-    if( (nextPtr=_headPtr) )
+    if( (nextPtr=m_headPtr) )
         {
-        if ( !(_headPtr=(ITEM*)(nextPtr->m_nextPtr_)) )
+        if ( !(m_headPtr=(ITEM*)(nextPtr->m_nextPtr_)) )
             {
-            _tailPtr = 0;
+            m_tailPtr = 0;
             }
         }
     Item::remove_(nextPtr);
@@ -253,10 +253,10 @@ inline ITEM* SList<ITEM>::getFirst(void) throw()
 template <class ITEM>
 inline ITEM* SList<ITEM>::getLast(void) throw()
     {
-    ITEM* lastPtr = _tailPtr;
+    ITEM* lastPtr = m_tailPtr;
     if ( lastPtr )
         {
-        remove(*_tailPtr);
+        remove(*m_tailPtr);
         }
     return lastPtr;
     }
@@ -266,14 +266,14 @@ inline void SList<ITEM>::putFirst(ITEM& item) throw()
     {
     if ( item.insert_(this) )
         {
-        if( _headPtr )
+        if( m_headPtr )
             {
-            item.m_nextPtr_ = _headPtr;
-            _headPtr       = &item;
+            item.m_nextPtr_ = m_headPtr;
+            m_headPtr       = &item;
             }
         else
             {
-            _headPtr       = _tailPtr = &item;
+            m_headPtr       = m_tailPtr = &item;
             item.m_nextPtr_ = 0;
             }
         }
@@ -284,16 +284,16 @@ inline void SList<ITEM>::put(ITEM& item) throw()
     {
     if ( item.insert_(this) )
         {
-        if(_headPtr)
+        if(m_headPtr)
             {
-            _tailPtr->m_nextPtr_ = &item;
+            m_tailPtr->m_nextPtr_ = &item;
             }
         else
             {
-            _headPtr = &item;
+            m_headPtr = &item;
             }
         item.m_nextPtr_ = 0;
-        _tailPtr       = &item;
+        m_tailPtr       = &item;
         }
     }
 
@@ -318,14 +318,14 @@ inline bool SList<ITEM>::remove(ITEM& item) throw()
                     {
                     if(!(prvPtr->m_nextPtr_=nxtPtr->m_nextPtr_))
                         {
-                        _tailPtr = prvPtr;
+                        m_tailPtr = prvPtr;
                         }
                     }
                 else
                     {
-                    if(!(_headPtr=(ITEM*)nxtPtr->m_nextPtr_))
+                    if(!(m_headPtr=(ITEM*)nxtPtr->m_nextPtr_))
                         {
-                        _tailPtr = 0;
+                        m_tailPtr = 0;
                         }
                     }
                 Item::remove_(&item);
@@ -346,7 +346,7 @@ inline void SList<ITEM>::insertAfter(ITEM& after, ITEM& item) throw()
         item.m_nextPtr_ = after.m_nextPtr_;
         if( !item.m_nextPtr_ )
             {
-            _tailPtr = &item;
+            m_tailPtr = &item;
             }
         after.m_nextPtr_ = &item;
         }
@@ -369,7 +369,7 @@ inline void SList<ITEM>::insertBefore(ITEM& before, ITEM& item) throw()
                     prvPtr->m_nextPtr_ = &item;
                     }
                 else{
-                    _headPtr = &item;
+                    m_headPtr = &item;
                     }
                 break;
                 }
@@ -394,13 +394,13 @@ inline bool SList<ITEM>::find(const ITEM& item) const throw()
 template <class ITEM>
 inline ITEM* SList<ITEM>::first(void) const throw()
     {
-    return _headPtr;
+    return m_headPtr;
     }
 
 template <class ITEM>
 inline ITEM* SList<ITEM>::last(void) const throw()
     {
-    return _tailPtr;
+    return m_tailPtr;
     }
 
 template <class ITEM>
