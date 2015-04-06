@@ -73,10 +73,10 @@ public:
 
 public: 
     /// See Cpl::System::Signable
-    void signal(void) throw();
+    int signal(void) throw();
 
     /// See Cpl::System::Signable
-    void su_signal(void) throw();
+    int su_signal(void) throw();
 
 
 

@@ -27,14 +27,14 @@ Semaphore::~Semaphore()
     CloseHandle(m_sema);
     }
 
-void Semaphore::signal(void) throw()
+int Semaphore::signal(void) throw()
     {
-    ReleaseSemaphore(m_sema,1,0);
+    return ReleaseSemaphore(m_sema,1,0)? 0: -1;
     }
 
-void Semaphore::su_signal(void) throw()
+int Semaphore::su_signal(void) throw()
     {
-    ReleaseSemaphore(m_sema,1,0);
+    return ReleaseSemaphore(m_sema,1,0)? 0: -1;
     }
 
 bool Semaphore::tryWait(void) throw()

@@ -138,14 +138,14 @@ Thread::~Thread()
 
 
 //////////////////////////////
-void Thread::signal() throw()
+int Thread::signal() throw()
     {
-    m_syncSema.signal();
+    return m_syncSema.signal();
     }
 
-void Thread::su_signal() throw()
+int Thread::su_signal() throw()
     {
-    m_syncSema.su_signal();
+    return m_syncSema.su_signal();
     }
 
 const char* Thread::getName() throw() 

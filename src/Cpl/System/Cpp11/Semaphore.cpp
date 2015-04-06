@@ -30,7 +30,7 @@ Semaphore::~Semaphore()
     }
 
 
-void Semaphore::signal(void) throw()
+int Semaphore::signal(void) throw()
     {
     std::unique_lock<std::mutex> lock(m_sema.m_mutex);  
     if ( ++(m_sema.m_count) > MAX_COUNT_ )
@@ -38,12 +38,13 @@ void Semaphore::signal(void) throw()
         m_sema.m_count = MAX_COUNT_;
         }
     m_sema.m_cond.notify_one();  
+    return 0; // Alway return success!
     }
 
 
-void Semaphore::su_signal(void) throw()
+int Semaphore::su_signal(void) throw()
     {
-    signal();
+    return signal();
     }
 
 

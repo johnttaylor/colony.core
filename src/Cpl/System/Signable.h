@@ -31,14 +31,15 @@ public:
 public:
     /** This method is called by client to cause the server to become
         unblock and ready to run.  This method can ONLY be called from
-        a thread context.
+        a thread context. The method returns zero on success.
      */
-    virtual void signal(void) throw() =0;
+    virtual int signal(void) throw() =0;
 
     /** Same as signal(), EXCEPT this method can ONLY be called from
-        supervisor mode and/or ISR contexts.
+        supervisor mode and/or ISR contexts.  The method returns zero on 
+        success.
      */
-    virtual void su_signal(void) throw() = 0;
+    virtual int su_signal(void) throw() = 0;
 };
 
 

@@ -16,6 +16,7 @@
 #include "Cpl/System/FatalError.h"
 #include "Cpl/System/ElaspedTime.h"
 #include "Cpl/System/Tls.h"
+#include "Cpl/System/Trace.h"
 
 
 #define SECT_     "_0test"
@@ -74,6 +75,7 @@ public:
 
         for(;;)
             {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ( "Top of MyRunnable::appRun()" ) );
             m_tlsKey.set( (void*) m_tlsCounter );
             toggleLED();
             Thread::wait();
@@ -132,6 +134,8 @@ public:
 
         for(;;)
             {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ( "Top of MyRunnable2::appRun()" ) );
+
             Api::sleep( m_onTime_ms );
             m_ledThread.signal();
             Api::sleep( m_offTime_ms );
@@ -192,12 +196,14 @@ public:
         {
         for(;;)
             {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ( "Top of MyRunnable3::appRun()" ) );
+
             if ( modifyGlobal_( m_op1, m_op2, m_expected ) == false )
                 {
                 FatalError::logf( "Mutex failed. Thread=%s", Thread::myName() );
                 }
 
-            Api::sleep(10);
+            Api::sleep(30);
             }
         }
 };

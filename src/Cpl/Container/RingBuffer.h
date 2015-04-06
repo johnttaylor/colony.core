@@ -20,17 +20,13 @@ namespace  Cpl { namespace Container {
 
 
 /** This template class implements a Ring Buffer.  The size of the
-    ring buffer is only limited by available RAM and the data type
-    of 'CNTTYPE'.  The default for CNTTYPE is 16bit, i.e. max elements
-    is 64K.
+    ring buffer is limited by number of bits in platform's 'unsigned'
+    data type.
 
     Template Args:
         ITEM:=      Type of the data stored in the Ring Buffer
-        N:=         Maximum number of data elements that can be stored in the Ring Buffer
-        CNTTYPE:=   Type of the variable that tracks the current element count (it also
-                    limits the max number of data elements in the Ring Buffer).
  */
-template <class ITEM, int N, class CNTTYPE=uint16_t>
+template <class ITEM>
 class RingBuffer
 {
 private:
@@ -41,33 +37,26 @@ private:
     ITEM*    m_tailPtr;
 
     /// Current number of items in the buffer
-    CNTTYPE  m_count;
+    unsigned m_count;
 
-    /// Storage for the Elements
-    ITEM     m_elements[N];
+    /// Max number of elements
+    unsigned m_max;
+
+    /// End of the Memory element storage
+    ITEM*    m_endOfMemPtr;
+
+    /// Memory for the Elements
+    ITEM*    m_elements;
 
 
 public:
-    /** Public constructor initializes head and tail pointers.
+    /** Constructor.  The application is responsible for providing the memory 
+        for the Ring Buffer.  The argument ''maxElements' is the number of
+        items that will fit in the memory allocated by 'memoryForElements' - it
+        is NOT the number of bytes of 'memoryForElements'.  
      */
-    RingBuffer() throw();
+    RingBuffer( unsigned maxElements, ITEM memoryForElements[] ) throw();
 
-	/** This is a special constructor for when the Ring Buffer is 
-		statically declared (i.e. it is initialized as part of
-		C++ startup BEFORE main() is executed.  C/C++ guarantees
-		that all statically declared data will be initialized
-		to zero by default (see r.8.4 in C++ Programming Language, 
-		Second Edition).  Since the head & tail pointers are
-		initialized to zero - then the C/C++ default is OK.  Why
-		do I care about all this?  Because if you attempt to build
-		static list(s), then the order of when the list is 
-		constructed vs. when the static elements are added to the 
-		list is a problem!  To avoid this problem, a alternate 
-		constructor that does NOT initialize the head & tail pointers
-		is provided.  It assumes that the pointers are already set 
-		zero because the list is "static". Whew!
-	 */
-	 RingBuffer(const char* ignoreThisParameter_usedToCreateAUniqueConstructor) throw();
 
 
 public:
@@ -115,13 +104,13 @@ public:
     /** This method returns the current number of items in
         the Ring Buffer
      */
-    CNTTYPE getNumItems( void ) const throw();
+    unsigned getNumItems( void ) const throw();
     
 
     /** This method returns the maximum number of items that
         can be stored in the Ring buffer.
      */
-    CNTTYPE getMaxItems( void ) const throw();
+    unsigned getMaxItems( void ) const throw();
      	
 
 
@@ -147,27 +136,22 @@ private:
 /////////////////////////////////////////////////////////////////////////////
 
 
-template <class ITEM, int N, class CNTTYPE>
-RingBuffer<ITEM,N,CNTTYPE>::RingBuffer(void) throw()
-:m_headPtr(0),m_tailPtr(0),m_count(0)
-    {
-    }
-
-template <class ITEM, int N, class CNTTYPE>
-RingBuffer<ITEM,N,CNTTYPE>::RingBuffer(const char* notUsed) throw()
+template <class ITEM>
+RingBuffer<ITEM>::RingBuffer(unsigned maxElements, ITEM memoryForElements[] ) throw()
+:m_headPtr(0),m_tailPtr(0),m_count(0),m_max(maxElements),m_endOfMemPtr(memoryForElements+maxElements),m_elements(memoryForElements)
     {
     }
 
 
-template <class ITEM, int N, class CNTTYPE>
-inline void RingBuffer<ITEM,N,CNTTYPE>::clearTheBuffer() throw()
+template <class ITEM>
+inline void RingBuffer<ITEM>::clearTheBuffer() throw()
 	{
     m_count = 0;
 	}
 
 
-template <class ITEM, int N, class CNTTYPE>
-inline bool RingBuffer<ITEM,N,CNTTYPE>::add( ITEM& item) throw()
+template <class ITEM>
+inline bool RingBuffer<ITEM>::add( ITEM& item) throw()
     {
     if ( isFull() )
         {
@@ -180,7 +164,7 @@ inline bool RingBuffer<ITEM,N,CNTTYPE>::add( ITEM& item) throw()
         }
     else
         {
-        if ( ++m_tailPtr >= m_elements+N )
+        if ( ++m_tailPtr >= m_endOfMemPtr )
             {
             m_tailPtr = m_elements;
             }
@@ -191,8 +175,8 @@ inline bool RingBuffer<ITEM,N,CNTTYPE>::add( ITEM& item) throw()
     return true;
     }
 
-template <class ITEM, int N, class CNTTYPE>
-inline bool RingBuffer<ITEM,N,CNTTYPE>::remove( ITEM& dst ) throw()
+template <class ITEM>
+inline bool RingBuffer<ITEM>::remove( ITEM& dst ) throw()
     {
     if ( isEmpty() )
         {
@@ -201,7 +185,7 @@ inline bool RingBuffer<ITEM,N,CNTTYPE>::remove( ITEM& dst ) throw()
 
     m_count--;
     dst = *m_headPtr;
-    if ( ++m_headPtr >= m_elements+N )
+    if ( ++m_headPtr >= m_endOfMemPtr)
         {
         m_headPtr = m_elements;
         }
@@ -209,8 +193,8 @@ inline bool RingBuffer<ITEM,N,CNTTYPE>::remove( ITEM& dst ) throw()
 	}
 	
 
-template <class ITEM, int N, class CNTTYPE>
-inline ITEM* RingBuffer<ITEM,N,CNTTYPE>::peekHead( void ) const throw()
+template <class ITEM>
+inline ITEM* RingBuffer<ITEM>::peekHead( void ) const throw()
     {
     if ( isEmpty() )
         {
@@ -220,8 +204,8 @@ inline ITEM* RingBuffer<ITEM,N,CNTTYPE>::peekHead( void ) const throw()
     return m_headPtr;
     }
 
-template <class ITEM, int N, class CNTTYPE>
-inline ITEM* RingBuffer<ITEM,N,CNTTYPE>::peekTail( void ) const throw()
+template <class ITEM>
+inline ITEM* RingBuffer<ITEM>::peekTail( void ) const throw()
     {
     if ( isEmpty() )
         {
@@ -232,28 +216,28 @@ inline ITEM* RingBuffer<ITEM,N,CNTTYPE>::peekTail( void ) const throw()
     }
 
 
-template <class ITEM, int N, class CNTTYPE>                                                                                            
-inline bool RingBuffer<ITEM,N,CNTTYPE>::isEmpty( void ) const throw()
+template <class ITEM>                                                                                            
+inline bool RingBuffer<ITEM>::isEmpty( void ) const throw()
     {
     return m_count == 0;
     }
 
-template <class ITEM, int N, class CNTTYPE>                                                                                            
-inline bool RingBuffer<ITEM,N,CNTTYPE>::isFull( void ) const throw()
+template <class ITEM>                                                                                            
+inline bool RingBuffer<ITEM>::isFull( void ) const throw()
     {
-    return m_count == N;
+    return m_count == m_max;
     }
 
-template <class ITEM, int N, class CNTTYPE>
-inline CNTTYPE RingBuffer<ITEM,N,CNTTYPE>::getNumItems( void ) const throw()
+template <class ITEM>
+inline unsigned RingBuffer<ITEM>::getNumItems( void ) const throw()
     {
 	return m_count;
 	}
 	
-template <class ITEM, int N, class CNTTYPE>
-inline CNTTYPE RingBuffer<ITEM,N,CNTTYPE>::getMaxItems( void ) const throw()
+template <class ITEM>
+inline unsigned RingBuffer<ITEM>::getMaxItems( void ) const throw()
     {
-	return N;
+	return m_max;
 	}
 
 	

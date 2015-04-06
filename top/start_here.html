@@ -5342,7 +5342,7 @@ html .solidborders td {  border: 1px solid black; }</pre>
 <div modified="20141011172627069" title="$:/state/toc/Contents-Intro--966365951">
 <pre>open</pre>
 </div>
-<div list="$:/Import Overview" title="$:/StoryList">
+<div list="[[Naming Conventions]] Overview" title="$:/StoryList">
 <pre></pre>
 </div>
 <div created="20141011164829984" modified="20150221151547115" title="$:/temp/advancedsearch">
@@ -5603,7 +5603,7 @@ __''//Table-of-Contents//''__
 
 &lt;div align=&quot;center&quot;&gt;&lt;iframe src=&quot;./license.txt&quot; frameborder=&quot;0&quot; width=&quot;100%&quot; height=&quot;800&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;</pre>
 </div>
-<div created="20141102032738917" modified="20150215024637325" tags="Standards [[Coding Standards]]" title="Naming Conventions">
+<div created="20141102032738917" modified="20150404044359764" tags="Standards [[Coding Standards]]" title="Naming Conventions">
 <pre>!!!The following is a list of all naming conventions and/or standards for Colony.Core package 
 
 |extraheight|k
@@ -5615,7 +5615,7 @@ __''//Table-of-Contents//''__
 | Rule |Functions that perform in-thread shutdown of an object shall be named `stop(...)` |
 |  Rule |Functions that invoke ITC (inter-thread-communication) initialization (e.g. invoke initialization across thread boundaries) shall be named `open(...)` |
 |  Rule |Function that perform ITC shutdown (e.g. reclaiming resources across thread bounders) shall be named `close(...)` |
-|  Rule |Namespace names should be singular, e.g. Use `Cpl::Container` instead of `Cpll::Containers`. |
+|  Rule |Namespace names should be singular, e.g. Use `Cpl::Container` instead of `Cpl::Containers`. |
 |  Rule |File names shall be named after the primary/principle class contained in the file. |
 |  Rule |Directory names shall be named after/match namespace names. It is okay to have directories that do not map 1-to-1 with namespace, but this should be the minority use case. |
 | Rule |All __private__ - to the namespace - classes shall be identified by a trailing suffix of `_` to the class names, e.g. `class Foo_ {..}` |

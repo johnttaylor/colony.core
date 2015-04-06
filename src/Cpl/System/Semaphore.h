@@ -70,10 +70,10 @@ public:
 
 public:
     /// Signable API    
-    void signal(void) throw();
+    int signal(void) throw();
 
     /// Signable API    
-    void su_signal(void) throw();
+    int su_signal(void) throw();
 
 
 protected:

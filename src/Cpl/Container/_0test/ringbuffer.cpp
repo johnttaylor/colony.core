@@ -28,65 +28,16 @@ void link_ringbuffer(void) {}
 
 ////////////////////////////////////////////////////////////////////////////////
 
-typedef RingBuffer<int,5> IntBuffer_T;
-
-/// Use unamed namespace to make my class local-to-the-file in scope
-namespace {
-
-class ItemAutoAdd
-{
-public:
-    ///
-    ItemAutoAdd( IntBuffer_T& buffer )
-        {
-        int item;
-        item = 1; buffer.add( item ); 
-        item = 2; buffer.add( item );    
-        item = 3; buffer.add( item );
-        item = 4; buffer.add( item );
-        item = 5; buffer.add( item );
-        item = 6; buffer.add( item );    
-        }
-};
-
-}; // end namespace
-
-
-////////////////////////////////////////////////////////////////////////////////
-static IntBuffer_T emptyBuf_( "static constructor" );
-static IntBuffer_T staticBuf_( "static constructor" );
-static ItemAutoAdd staticItem_( staticBuf_ );
-
+int memoryRBuf_[5];
 
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "RINGBUFFER: Validate member functions", "[ringbuffer]" )
     {
-    IntBuffer_T buffer;
+    RingBuffer<int> buffer( sizeof(memoryRBuf_)/sizeof(memoryRBuf_[0]), memoryRBuf_ );
 
     Shutdown_TS::clearAndUseCounter();
 
-    SECTION( "Validate static Constructor" )
-        {
-        REQUIRE( emptyBuf_.isEmpty() == true );
-        REQUIRE( emptyBuf_.isFull() == false );
-        REQUIRE( emptyBuf_.peekHead() == 0 );
-        REQUIRE( emptyBuf_.peekTail() == 0 );
-        REQUIRE( emptyBuf_.getNumItems() == 0 );
-        REQUIRE( emptyBuf_.getMaxItems() == 5 );
-
-        REQUIRE( staticBuf_.isEmpty() == false );
-        REQUIRE( staticBuf_.isFull() == true );
-        REQUIRE( *(staticBuf_.peekHead()) == 1 );
-        REQUIRE( *(staticBuf_.peekTail()) == 5 );
-        REQUIRE( staticBuf_.getNumItems() == 5 );
-        REQUIRE( staticBuf_.getMaxItems() == 5 );
-        int dst = 0;
-        REQUIRE( staticBuf_.remove(dst) == true );
-        REQUIRE( dst == 1 );
-        REQUIRE( staticBuf_.remove(dst) == true );
-        REQUIRE( dst == 2 );
-        }
 
     SECTION( "Operations" )
         {
