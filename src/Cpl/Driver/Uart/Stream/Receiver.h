@@ -1,5 +1,5 @@
-#ifndef Cpl_Driver_Uart_Stream_Transmitter_h_
-#define Cpl_Driver_Uart_Stream_Transmitter_h_
+#ifndef Cpl_Driver_Uart_Stream_Receiver_h_
+#define Cpl_Driver_Uart_Stream_Receiver_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -22,30 +22,19 @@
 namespace Cpl { namespace Driver { namespace Uart { namespace Stream {
 
 
-/** This concrete class implements a blocking Transmit Stream UART driver. What
-    does 'blocking Transmit Stream' mean?  'Blocking' means that the calling
-    thread will block when the transmit buffer is full (and will be unblocked
-    once there is free space in the transmit buffer). 'Stream' means that data
-    is transmitted as a continual stream of bytes, i.e. the data is NOT broken
-    down into frames, packets, etc. (think C stdout stream).
+/** This concrete class implements a blocking Receive Stream UART driver. What
+    does 'blocking Transmit Stream' mean?  'Blocking' means that the calling 
+    thread will block until at least one new byte has been received. 'Stream' 
+    means that data is received as a continual stream of bytes, i.e. the data is
+     NOT broken down into frames, packets, etc. (think C stdin stream).
 
     This driver ASSUMES that at most there is only ONE client attempt to use the
-    driver at any given time.  It is okay to call the start(), stop(), write()
+    driver at any given time.  It is okay to call the start(), stop(), read()
     from  different threads - but the calls CANNOT be concurrent.  It is the
     applicaiton's  responsibility to provide additional
     thread-safety/concurrence protection.
-
-    NOTE: Not all UART behave the same with respect to transmitting the 'first'
-          byte (in a stream/buffer of bytes).  One method (which is the default
-          for Cpl) is that a 'TX-done' interrupt is generated any time the
-          TX data register is empty and the TX-done interrupt is enabled, i.e.
-          the first byte in the stream/buffer is handle the same as all of the
-          other bytes.  The second method is that the application/driver is
-          required to expclity write the first byte to the TX Data register, 
-          i.e. no interrupt for the intitial byte. 
-
  */
-class Transmitter
+class Receiver
 {
 protected:
     /// Handle to my low level hardware
@@ -54,14 +43,16 @@ protected:
     /// Handle of the blocked client thread (if there is one)
     Cpl::System::Thread*    m_waiterPtr;
 
+    /// A Receive error was encountered
+    size_t                  m_errCount;
+    
     /// Transmit buffer
     Cpl::Container::RingBuffer<uint8_t> m_buffer;
 
     /// Started state of the driver
     bool                    m_started;
 
-    /// First TX behavior option
-    bool                    m_manualFirstTx;
+    
 
 
 public:
@@ -71,15 +62,11 @@ public:
         @param uartHdl          The HAL layer UART Handle.  The application is 
                                 required to initialize the low level UART before
                                 starting this driver.
-        @param bufSize          The number of bytes in the supplied transmit 
+        @param bufSize          The number of bytes in the supplied receive 
                                 buffer.
-        @param bufMem           Array of bytes for the transmit/outbound buffer.
-        @param manualFirstTx    When this flag is set to false the driver 
-                                assumes that the initial byte to be transmitted
-                                is interrupt driven.  When set to true, the
-                                initial transmitted byte is 'manually' loaded.
+        @param bufMem           Array of bytes for the receive/inbound buffer.
      */
-    Transmitter( Cpl_Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[], bool manualFirstTx=false ) throw();
+    Receiver( Cpl_Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[] ) throw();
 
 
 
@@ -93,44 +80,58 @@ public:
     void start(void) throw();
 
     /** This method will stop/disable the driver.  The driver can be restarted 
-        by call start() again.  The state of the contents of the outbound buffer 
-        and the byte(s) 'in transmit' when the driver is stop is undetermined.
+        by call start() again.  The state of the contents of the inbound buffer 
+        and the byte(s) 'incoming' when the driver is stop is undetermined.
      */
     void stop(void) throw();
     
 
       
 public:
-    /** Transmits the specified number of bytes.  The method does not return 
-        until all bytes have been transferred to the outbound buffer. The
-        application CANNOT  assume that the byte(s) have been physically
-        transmitted on the 'wire' when this method returns. The method returns
-        true if succesful; else false is returned  When an error is encounter
-        there is no guarenty/information-available with  respect to how many (if
-        any) bytes where transmitted.
+    /** Receives at most the specified number of bytes.  The actual number of
+        bytes received is returned via 'numBytesToRx'.  The method does not 
+        return until at least one byte is available in the inbound buffer. The 
+        method returns true if succesful; else false is returned.
+
+        NOTE: UART Framing errors are silents discarded, i.e. an incoming 
+              byte that is received with an associated framing error is
+              NOT put into the inbound buffer.  A free running counter is 
+              maintain of the number of framing errors encountered.
      */
-    bool write( const void* data, size_t numBytesToTx ) throw();
+    bool read( void* data, size_t& numBytesToRx ) throw();
+
+
+    /** This method returns true if at least one byte is available in the
+        inbound buffer.
+     */
+    bool available( void ) const throw();
+
+
+    /** This method returns and optionally clears the driver's framing error
+        counter.
+     */
+    size_t getFramingErrorsCount( bool clearCount=true ) throw();
 
 
 public:
     /** This is a quasi-private method that the application should NOT call. The 
         method SHOULD only be called by the interrupt service routine (ISR) for 
-        the 'TX-Done' interrupt for the UART identified by the 'uartHdl'
-        supplied  in the constructor.  This requires that a reference (at a
-        minimum) to the  driver instance be a global variable.  
+        the 'RX-Data-Available interrupt for the UART identified by the
+        'uartHdl' supplied  in the constructor.  This requires that a reference
+        (at a minimum) to the  driver instance be a global variable.  
 
         The method returns the result of signalling waiter (i.e. return code
         from su_signal()), or zero if no waiter was signaled.
      */
-    int su_txDoneIsr_(void) throw();
+    int su_rxDataAndErrorIsr_(void) throw();
  
      
 private: 
     /// Prevent access to the copy constructor -->Driver can not be copied!
-    Transmitter( const Transmitter& m );
+    Receiver( const Receiver& m );
 
     /// Prevent access to the assignment operator -->Driver can not be copied!
-    const Transmitter& operator=( const Transmitter& m );
+    const Receiver& operator=( const Receiver& m );
 
 };
 

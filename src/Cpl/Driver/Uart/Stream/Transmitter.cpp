@@ -67,8 +67,14 @@ void Transmitter::stop(void) throw()
 
       
 ////////////////////////
-bool Transmitter::send( const void* data, size_t numBytesToTx ) throw()
+bool Transmitter::write( const void* data, size_t numBytesToTx ) throw()
     {
+    // Fail the write if the driver has not been started
+    if ( !m_started )
+        {
+        return false;
+        }
+
     // Do nothing if no data needs to be transmitted
     if ( numBytesToTx == 0 )
         {
@@ -160,22 +166,29 @@ int Transmitter::su_txDoneIsr_(void) throw()
     uint8_t byte;
     int     result = 0;
 
-    // Transmit the next byte
-    if ( m_buffer.remove( byte ) )
+    // Do nothing if there is no transmit IRQ
+    if ( Cpl_Driver_Uart_Hal_isTxIrq( m_uartHdl ) )
         {
-        Cpl_Driver_Uart_Hal_transmitByte( m_uartHdl, byte );
-        }
-             
-    // Out of data -->disable TX interrupt
-    else
-        {
-        Cpl_Driver_Uart_Hal_disableTxIrq( m_uartHdl );
+        // Ensure the interrupt request gets cleared
+        Cpl_Driver_Uart_Hal_clrTxIrq( m_uartHdl );
 
-        // unblock waiting client (if there is one) once I am out of data
-        if ( m_waiterPtr )
+        // Transmit the next byte
+        if ( m_buffer.remove( byte ) )
             {
-            result      = m_waiterPtr->su_signal();
-            m_waiterPtr = 0;
+            Cpl_Driver_Uart_Hal_transmitByte( m_uartHdl, byte );
+            }
+                 
+        // Out of data -->disable TX interrupt
+        else
+            {
+            Cpl_Driver_Uart_Hal_disableTxIrq( m_uartHdl );
+
+            // unblock waiting client (if there is one) once I am out of data
+            if ( m_waiterPtr )
+                {
+                result      = m_waiterPtr->su_signal();
+                m_waiterPtr = 0;
+                }
             }
         }
 
