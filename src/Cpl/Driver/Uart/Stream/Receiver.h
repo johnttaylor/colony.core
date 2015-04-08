@@ -31,7 +31,7 @@ namespace Cpl { namespace Driver { namespace Uart { namespace Stream {
     This driver ASSUMES that at most there is only ONE client attempt to use the
     driver at any given time.  It is okay to call the start(), stop(), read()
     from  different threads - but the calls CANNOT be concurrent.  It is the
-    applicaiton's  responsibility to provide additional
+    application's  responsibility to provide additional
     thread-safety/concurrence protection.
  */
 class Receiver
@@ -88,17 +88,17 @@ public:
 
       
 public:
-    /** Receives at most the specified number of bytes.  The actual number of
-        bytes received is returned via 'numBytesToRx'.  The method does not 
-        return until at least one byte is available in the inbound buffer. The 
-        method returns true if succesful; else false is returned.
+    /** Receives at most the specified maximum number of bytes.  The actual 
+        number of bytes received is returned via 'numBytesRx'.  The method does
+        not  return until at least one byte is available in the inbound buffer.
+        The  method returns true if succesful; else false is returned.
 
         NOTE: UART Framing errors are silents discarded, i.e. an incoming 
               byte that is received with an associated framing error is
               NOT put into the inbound buffer.  A free running counter is 
               maintain of the number of framing errors encountered.
      */
-    bool read( void* data, size_t& numBytesToRx ) throw();
+    bool read( void* data, size_t maxBytes, size_t& numBytesRx ) throw();
 
 
     /** This method returns true if at least one byte is available in the

@@ -98,8 +98,10 @@ size_t Receiver::getFramingErrorsCount( bool clearCount ) throw()
     }
 
 
-bool Receiver::read( void* data, size_t& numBytesToRx ) throw()
+bool Receiver::read( void* data, size_t maxBytes, size_t& numBytesRx ) throw()
     {
+    numBytesRx = 0;
+    
     // Return an error if the drive has not yet been started
     if ( !m_started )
         {
@@ -107,7 +109,7 @@ bool Receiver::read( void* data, size_t& numBytesToRx ) throw()
         }
 
     // Do nothing if app is requesting zero bytes to read
-    if ( numBytesToRx == 0 )
+    if ( maxBytes == 0 )
         {
         return true;
         }
@@ -128,11 +130,10 @@ bool Receiver::read( void* data, size_t& numBytesToRx ) throw()
 
     // Housekeeping
     uint8_t  byteIn;
-    uint8_t* ptr         = (uint8_t*) data;
-    size_t   numReceived = 0;
+    uint8_t* ptr = (uint8_t*) data;
 
     // Read as much a possible (at this point there is at least one byte in the inbound buffer)
-    while( numBytesToRx )
+    while( maxBytes )
         {
         // INTERRUPT/CRITICAL SECTION: Get the next byte from the inbound buffer
         Bsp_Api_disableIrqs();
@@ -143,8 +144,8 @@ bool Receiver::read( void* data, size_t& numBytesToRx ) throw()
         if ( result )
             {
             *ptr++ = byteIn;         
-            numReceived++;
-            numBytesToRx--;
+            numBytesRx++;
+            maxBytes--;
             }
 
         // No data (or no more data) is available -->exit the loop
@@ -155,7 +156,6 @@ bool Receiver::read( void* data, size_t& numBytesToRx ) throw()
         }
 
     // Always return success
-    numBytesToRx = numReceived;
     return true;
     }           
     

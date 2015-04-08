@@ -32,7 +32,7 @@ namespace Cpl { namespace Driver { namespace Uart { namespace Stream {
     This driver ASSUMES that at most there is only ONE client attempt to use the
     driver at any given time.  It is okay to call the start(), stop(), write()
     from  different threads - but the calls CANNOT be concurrent.  It is the
-    applicaiton's  responsibility to provide additional
+    application's  responsibility to provide additional
     thread-safety/concurrence protection.
 
     NOTE: Not all UART behave the same with respect to transmitting the 'first'

@@ -14,8 +14,6 @@
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/FatalError.h"
-#include "Cpl/Driver/Uart/Stream/Transmitter.h"
-#include "Cpl/Driver/Uart/Stream/Receiver.h"
 #include "Cpl/Text/FString.h"
 #include <string.h>
 
@@ -37,13 +35,9 @@
 #define MSG3                        "[And the traditional... hello world!]"
 
 
-/// 
-using namespace Cpl::Driver::Uart::Stream;
 
-extern void loopback_test( Cpl_Driver_Uart_Hal_T uartHdl, bool manualFirstTx );
+extern void loopback_test( Cpl::Io::InputOutput& fd );
 
-Transmitter* txPtr;
-Receiver*    rxPtr;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,9 +49,7 @@ class Tx: public Cpl::System::Runnable
 {
 public:
     ///
-    Transmitter m_tx;
-    /// 
-    uint8_t     m_bufMem[TEXT_TX_RINGBUFFER_SIZE];
+    Cpl::Io::Output& m_fd;
     ///
     const char* m_msg1;
     ///
@@ -68,8 +60,8 @@ public:
 
 public:
     ///
-    Tx( Cpl_Driver_Uart_Hal_T uartHdl, bool manualFirstTx, const char* msg1, const char* msg2, const char* msg3 )
-        :m_tx(uartHdl, TEXT_TX_RINGBUFFER_SIZE, m_bufMem, manualFirstTx ),
+    Tx( Cpl::Io::Output& fd, const char* msg1, const char* msg2, const char* msg3 )
+        :m_fd(fd)
          m_msg1(msg1),
          m_msg2(msg2),
          m_msg3(msg3)
@@ -80,20 +72,17 @@ public:
     ///
     void appRun()
         {
-        // start the driver
-        m_tx.start();
-
         size_t loopCount = 0;
         for(;;)
             {
             Bsp_Api_toggle_debug1();
 
             Cpl::System::Thread::wait();
-            m_tx.write( m_msg1, strlen(m_msg1) );
+            m_fd.write( m_msg1 );
             Cpl::System::Thread::wait();
-            m_tx.write( m_msg2, strlen(m_msg2) );
+            m_fd.write( m_msg2 );
             Cpl::System::Thread::wait();
-            m_tx.write( m_msg3, strlen(m_msg3) );
+            m_fd.write( m_msg3 );
             loopCount++;
             }
         }
@@ -103,11 +92,9 @@ class Rx: public Cpl::System::Runnable
 {
 public:
     ///
-    Receiver                        m_rx;
+    Cpl::Io::Input&                 m_fd;
     ///
     Tx&                             m_tx;
-    /// 
-    uint8_t                         m_bufMem[TEXT_TX_RINGBUFFER_SIZE];
     ///
     Cpl::System::Thread&            m_txThread;
     ///
@@ -116,8 +103,8 @@ public:
     char                            m_temp[MAX_MESSAGE];
 
 public:
-    Rx( Cpl::System::Thread& txThread, Tx& tx, Cpl_Driver_Uart_Hal_T uartHdl )
-    :m_rx(uartHdl, TEXT_TX_RINGBUFFER_SIZE, m_bufMem ),
+    Rx( Cpl::Io::Input& fd, Cpl::System::Thread& txThread, Tx& tx )
+    :m_fd(fd)
      m_tx(tx),
      m_txThread(txThread)
         {
@@ -126,13 +113,11 @@ public:
 public:
     void appRun()
         {
-        m_rx.start();
-
         // Throw any trash bytes on startup
-        while( m_rx.available() )
+        while( m_fd.available() )
             {
             size_t dummy = 0;
-            m_rx.read( m_temp, MAX_MESSAGE, dummy );
+            m_fd.read( m_temp, MAX_MESSAGE );
             }
 
         size_t loopCount = 0;
@@ -157,18 +142,12 @@ public:
 
     bool rx_message( const char* msg )
         {
-        size_t len   = strlen(msg);
-        size_t rxlen;
-        m_inMsg.clear();
-
         m_txThread.signal();
-        while( len )
-            {
-            m_rx.read( m_temp, len, rxlen );
-            m_inMsg.appendTo( m_temp, rxlen );
-            len -= rxlen;
-            }
-       
+
+        int   maxlen = 0;
+        char* ptr    = m_inMsg.getBuffer( maxlen );
+        m_fd.read( ptr, maxlen );
+        
         return m_inMsg == msg;
         }
 };
@@ -210,16 +189,14 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 
-void loopback_test( Cpl_Driver_Uart_Hal_T uartHdl, bool manualFirstTx )
+void loopback_test( Cpl::Io::InputOutput& fd )
     {
     // Create some threads....
-    Tx*                  transmitterPtr = new Tx( uartHdl, manualFirstTx, MSG1, MSG2, MSG3 );
+    Tx*                  transmitterPtr = new Tx( fd, MSG1, MSG2, MSG3 );
     Cpl::System::Thread* ptr            = Cpl::System::Thread::create( *transmitterPtr, "TX" );
-    txPtr                               = &(transmitterPtr->m_tx);
 
-    Rx* receiverPtr = new Rx( *ptr, *transmitterPtr, uartHdl );
+    Rx* receiverPtr = new Rx( fd, *ptr, *transmitterPtr );
     Cpl::System::Thread::create( *receiverPtr, "RX" );
-    rxPtr           = &(receiverPtr->m_rx);
     
     Led* blinkPtr = new Led( 250, 750 );
     Cpl::System::Thread::create( *blinkPtr, "LEDs" );
