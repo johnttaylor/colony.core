@@ -156,7 +156,7 @@ void Bsp_Api_initialize( void );
 
 // End C++
 #ifdef __cplusplus
-}
+};
 #endif
 
 

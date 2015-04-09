@@ -35,46 +35,26 @@ public:
 
 
 public:
-    /// See Cpl::Io::Input.
-    bool read( char& c );
-                                
-    /// See Cpl::Io::Input.
-    bool read( Cpl::Text::String& destString );
+    /// Pull in overloaded methods from base class
+    using Cpl::Io::InputOutput::read;
 
-    /// See Cpl::Io::Input.
+    /// See Cpl::Io::Input
     bool read( void* buffer, int numBytes, int& bytesRead );
 
-    /// See Cpl::Io::Input.  Note: This method will always return false;
+    /// See Cpl::Io::Input
     bool available();
 
 
 public:
-    /// See Cpl::Io::Output
-    bool write( char c );
+    /// Pull in overloaded methods from base class
+    using Cpl::Io::InputOutput::write;
 
     /// See Cpl::Io::Output
-    bool write( const char* string );
-
-    /// See Cpl::Io::Output
-    bool write( const Cpl::Text::String& string );
-
-    /// See Cpl::Io::Output.  Note: The output string gets formated - just not outputted
-    bool write( Cpl::Text::String& formatBuffer, const char* format, ... );
-
-    /// See Cpl::Io::Output. Note: The output string gets formated - just not outputted
-    bool vwrite( Cpl::Text::String& formatBuffer, const char* format, va_list ap );
-
-    /// See Cpl::Io::Output
-    bool write( const void* buffer, int maxBytes );
-
-    /// See Cpl::Io::Output.  Note: 'bytesWritten' is set to 'maxBytes'
     bool write( const void* buffer, int maxBytes, int& bytesWritten );
 
-    /// See Cpl::Io::Output.  Note: This method has no meaning for the Null output streamd
+    /// See Cpl::Io::Output
     void flush();
 
-
-public:
     /// See Cpl::Io::Close. Note: Once closed() has been called, all of the write() method will return false;
     void close();
 

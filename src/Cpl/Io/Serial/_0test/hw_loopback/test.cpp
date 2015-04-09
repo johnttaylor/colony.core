@@ -15,6 +15,7 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/FatalError.h"
 #include "Cpl/Text/FString.h"
+#include "Cpl/Io/InputOutput.h"
 #include <string.h>
 
 
@@ -61,7 +62,7 @@ public:
 public:
     ///
     Tx( Cpl::Io::Output& fd, const char* msg1, const char* msg2, const char* msg3 )
-        :m_fd(fd)
+        :m_fd(fd),
          m_msg1(msg1),
          m_msg2(msg2),
          m_msg3(msg3)
@@ -104,7 +105,7 @@ public:
 
 public:
     Rx( Cpl::Io::Input& fd, Cpl::System::Thread& txThread, Tx& tx )
-    :m_fd(fd)
+    :m_fd(fd),
      m_tx(tx),
      m_txThread(txThread)
         {
@@ -116,8 +117,7 @@ public:
         // Throw any trash bytes on startup
         while( m_fd.available() )
             {
-            size_t dummy = 0;
-            m_fd.read( m_temp, MAX_MESSAGE );
+            m_fd.read( m_inMsg );
             }
 
         size_t loopCount = 0;
@@ -144,10 +144,16 @@ public:
         {
         m_txThread.signal();
 
-        int   maxlen = 0;
-        char* ptr    = m_inMsg.getBuffer( maxlen );
-        m_fd.read( ptr, maxlen );
-        
+        int len = strlen(msg);
+        m_inMsg.clear();
+        while( len )
+            {
+            char c;
+            m_fd.read( c );
+            m_inMsg += c;
+            len--;
+            }
+
         return m_inMsg == msg;
         }
 };

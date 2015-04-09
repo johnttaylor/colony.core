@@ -12,8 +12,8 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/Io/Close.h"
 #include "Cpl/Text/String.h"
+#include "Cpl/Io/Close.h"
 
 
 

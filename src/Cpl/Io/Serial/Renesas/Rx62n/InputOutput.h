@@ -14,7 +14,6 @@
 
 #include "Cpl/Driver/Uart/Stream/InputOutput_.h"
 #include "Cpl/Io/Serial/Renesas/Rx62n/Hal.h"
-#include "Bsp/Api.h"
 
 
 /// 
@@ -37,11 +36,29 @@ template <int TXSIZE, int RXSIZE>
 class InputOutput: public Cpl::Driver::Uart::Stream::InputOutput_
 {
 private:
+    /// SCI Port selection
+    uint8_t     m_sciPortID;
+
+    /// Pin selection (A vs. B)
+    uint8_t     m_pinSelect;
+
+    /// IRQ Priority
+    uint8_t     m_irqPriority;
+
+    /// Baudrate
+    uint8_t     m_baudrate;
+
+    /// Baudrate divider
+    uint8_t     m_baudrateDivider;
+
+    /// Frame Configuration
+    uint8_t     m_frameConfig;
+
     /// Raw memory for the TX buffer
-    uint8   m_txMemBuffer[TXSIZE];
+    uint8_t     m_txMemBuffer[TXSIZE];
 
     /// Raw memory for the RX buffer
-    uint8   m_rxMemBuffer[RXSIZE];
+    uint8_t     m_rxMemBuffer[RXSIZE];
 
 
 public:
@@ -62,7 +79,13 @@ public:
                  uint8_t               baudrate, 
                  uint8_t               baudrateDivider, 
                  uint8_t               frameConfig      ) throw()
-    :Cpl::Driver::Uart::Stream::InputOutput_(sciPortID, true, m_txMemBuffer, TXSIZE, m_rxMemBuffer, RXSIZE )
+    :Cpl::Driver::Uart::Stream::InputOutput_(sciPortID, true, m_txMemBuffer, TXSIZE, m_rxMemBuffer, RXSIZE ),
+     m_sciPortID(sciPortID),
+     m_pinSelect(pinSelect),
+     m_irqPriority(irqPriority),
+     m_baudrate(baudrate),
+     m_baudrateDivider(baudrateDivider),
+     m_frameConfig(frameConfig)     
         {
         }
 
@@ -75,10 +98,11 @@ public:
     /** This method must be called BEFORE using the InputOutput stream - BUT 
         it must called AFTER the BSP and the CPL library has been initialized.
      */
-    void start(void) throw();
+    void start(void) throw()
         {
-        Cpl_Io_Serial_Renesas_Rx62n_Hal_uartInit( sciPortID, pinSelect, irqPriority, baudrate, baudrateDivider, frameConfig );
-        start();
+        Cpl_Io_Serial_Renesas_Rx62n_Hal_uartInit( m_sciPortID, m_pinSelect, m_irqPriority, m_baudrate, m_baudrateDivider, m_frameConfig );
+        m_tx.start();
+        m_rx.start();
         }
 
 
@@ -87,14 +111,13 @@ public:
     Cpl::Driver::Uart::Stream::Transmitter& su_getTransmitter_(void) throw() { return m_tx; }
 
     /// This psuedo PRIVATE method returns the receiver for the PURPOSE of processing the RX ISRs
-    Cpl::Driver::Uart::Stream::Transmitter& su_getReceiver_(void) throw() { return m_rx; }
+    Cpl::Driver::Uart::Stream::Receiver&    su_getReceiver_(void) throw() { return m_rx; }
 
 };
 
 	
 
 };      // end namespaces
-};
 };
 };
 };
