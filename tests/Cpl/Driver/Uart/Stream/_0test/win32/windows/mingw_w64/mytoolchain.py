@@ -29,7 +29,7 @@ from nqbplib.base import BuildValues
 #---------------------------------------------------
 
 # Set the name for the final output item
-FINAL_OUTPUT_NAME = 'b.exe'
+FINAL_OUTPUT_NAME = 'a.exe'
 
 #
 # For build config/variant: "Release"
@@ -37,7 +37,7 @@ FINAL_OUTPUT_NAME = 'b.exe'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags    = '-std=c++03 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
+base_release.cflags    = '-std=c++03 -Wall -Werror -x c++ -Wl,-static-libgcc -Wl,-static-libstdc++ -fprofile-arcs -ftest-coverage'
 base_release.linkflags = '-fprofile-arcs'
 base_release.linklibs  = '-lgcov'
 
@@ -48,6 +48,7 @@ optimzed_release.cflags = '-O3'
 # Set project specific 'debug' options
 debug_release = BuildValues()       # Do NOT comment out this line
 #debug_release.cflags = '-D_MY_APP_DEBUG_SWITCH_'
+
 
 
 # 
@@ -70,8 +71,6 @@ base_cpp11.linklibs   = '-lgcov'
 optimzed_cpp11.cflags = '-O3'
 
 
-
-
 #-------------------------------------------------
 # ONLY edit this section if you are ADDING options
 # for build configurations/variants OTHER than the
@@ -83,19 +82,20 @@ release_opts = { 'user_base':base_release,
                  'user_debug':debug_release
                }
                
-               
 # Add new dictionary of for new build configuraiton options
 cpp11_opts = { 'user_base':base_cpp11, 
                'user_optimized':optimzed_cpp11, 
                'user_debug':debug_cpp11
              }
   
+               
         
 # Add new variant option dictionary to # dictionary of 
 # build varaints
 build_variants = { 'win32':release_opts,
                    'cpp11':cpp11_opts,
                  }    
+
 
 #---------------------------------------------------
 # END EDITS/CUSTOMIZATIONS
@@ -109,7 +109,7 @@ prjdir = os.path.dirname(os.path.abspath(__file__))
 
 
 # Select Module that contains the desired toolcahin
-from nqbplib.toolchains.windows.mingw.console_exe import ToolChain
+from nqbplib.toolchains.windows.mingw_w64.console_exe import ToolChain
 
 
 # Function that instantiates an instance of the toolchain

@@ -1,38 +1,20 @@
 #ifndef COLONY_MAP_H_
 #define COLONY_MAP_H_
 
-/// Generic API
-#define Bsp_Api_disableIrqs_MAP()              
-
-/// Generic API
-#define Bsp_Api_enableIrqs_MAP()               
-
-/// Generic API
-#define Bsp_Api_pushAndDisableIrqs_MAP()       
-
-/// Generic API
-#define Bsp_Api_popIrqs_MAP()                    
+/// Null BSP
+#include "Bsp/UserSpace/Api.h"
 
 
+// Cpl::System mappings
+#ifdef BUILD_VARIANT_WIN32
+#include "Cpl/System/Win32/mappings_.h"
+#endif
+#ifdef BUILD_VARIANT_CPP11
+#include "Cpl/System/Cpp11/mappings_.h"
+#endif
 
-/// Generic API
-#define Bsp_Api_turnOn_debug1_MAP()    
-
-/// Generic API
-#define Bsp_Api_turnOff_debug1_MAP()   
-
-/// Generic API
-#define Bsp_Api_toggle_debug1_MAP()    
-
-
-/// Generic API
-#define Bsp_Api_turnOn_debug2_MAP()    
-
-/// Generic API
-#define Bsp_Api_turnOff_debug2_MAP()   
-
-/// Generic API
-#define Bsp_Api_toggle_debug2_MAP()    
+// strapi mapping
+#include "Cpl/Text/_mappings/mingw/strapi.h"
 
 
 

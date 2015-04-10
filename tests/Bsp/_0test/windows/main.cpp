@@ -13,7 +13,8 @@ int main( int argc, char* const argv[] )
     Bsp_Api_disableIrqs();
     Bsp_Api_enableIrqs();          
     Bsp_Api_pushAndDisableIrqs();  
-    Bsp_Api_popIrqs();             
+    Bsp_Api_popIrqs();    
+    Bsp_Api_nop();         
     Bsp_Api_turnOn_debug1();       
     Bsp_Api_turnOff_debug1();      
     Bsp_Api_toggle_debug1();       
@@ -26,8 +27,3 @@ int main( int argc, char* const argv[] )
     }
 
 
-
-// My stub function
-void Bsp_Api_initialize( void )
-    {
-    }

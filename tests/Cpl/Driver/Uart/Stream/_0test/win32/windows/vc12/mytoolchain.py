@@ -29,29 +29,26 @@ from nqbplib.base import BuildValues
 #---------------------------------------------------
 
 # Set the name for the final output item
-FINAL_OUTPUT_NAME = 'b.exe'
+FINAL_OUTPUT_NAME = 'a.exe'
 
 #
-# For build config/variant: "Release"
+# For build config/variant: "Release" (aka C++11 threading)
 #
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags    = '-std=c++03 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
-base_release.linkflags = '-fprofile-arcs'
-base_release.linklibs  = '-lgcov'
+base_release.cflags = '/W3 /WX /EHsc'  # /EHsc enables exceptions
 
 # Set project specific 'optimzed' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
-optimzed_release.cflags = '-O3'
+optimzed_release.cflags = '/O2'
 
 # Set project specific 'debug' options
 debug_release = BuildValues()       # Do NOT comment out this line
-#debug_release.cflags = '-D_MY_APP_DEBUG_SWITCH_'
+debug_release.cflags = '/D "_MY_APP_DEBUG_SWITCH_"'
 
-
-# 
-# For build config/variant: "cpp11"
+#
+# For build config/varint: "cpp11"
 # (note: uses same internal toolchain options as the 'Release' variant, 
 #        only the 'User' options will/are different)
 #
@@ -61,15 +58,15 @@ base_cpp11     = BuildValues()
 optimzed_cpp11 = BuildValues()
 debug_cpp11    = BuildValues()
 
+
 # Set 'base' options
-base_cpp11.cflags     = '-std=c++11 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
-base_cpp11.linkflags  = '-fprofile-arcs'
-base_cpp11.linklibs   = '-lgcov'
+base_cpp11.cflags     = '/W3 /WX /EHsc'  # /EHsc enables exceptions
 
 # Set 'Optimized' options
-optimzed_cpp11.cflags = '-O3'
+optimzed_cpp11.cflags = '/O2'
 
-
+# Set project specific 'debug' options
+#debug_cpp11.cflags = '/D "_MY_APP_DEBUG_SWITCH_"'
 
 
 #-------------------------------------------------
@@ -109,10 +106,10 @@ prjdir = os.path.dirname(os.path.abspath(__file__))
 
 
 # Select Module that contains the desired toolcahin
-from nqbplib.toolchains.windows.mingw.console_exe import ToolChain
+from nqbplib.toolchains.windows.vc12.console_exe import ToolChain
 
 
 # Function that instantiates an instance of the toolchain
 def create():
-    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "win32" )
+    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, 'win32' )
     return tc 

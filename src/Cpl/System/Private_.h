@@ -126,7 +126,8 @@ public:
     static void output( Cpl::Text::String& src );
 };
 
-         
+  
+        
 };      // end namespaces
 };
 #endif  // end header latch
