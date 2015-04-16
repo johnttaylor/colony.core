@@ -28,5 +28,4 @@
 *.app
 
 # e2studio junk
-*.metadata*
-`
+.metadata
