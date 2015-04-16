@@ -28,12 +28,13 @@ from nqbplib.base import BuildValues
 from nqbplib.my_globals import NQBP_WORK_ROOT
 
 # Get the location of the compiler toolchain
+env_error = None
 KPIT_ROOT = os.environ.get( 'KPIT_GNURX_ROOT' )
 if ( KPIT_ROOT == None ):
-    exit( "ERROR: The {} environment variable is not set.".format('KPIT_GNURX_ROOT') )
+    KPIT_ROOT = env_error = "KPIT_ROOT"
 KPIT_VER = os.environ.get( 'KPIT_GNURX_VERSION' )
-if ( KPIT_ROOT == None ):
-    exit( "ERROR: The {} environment variable is not set.".format('KPIT_GNURX_VERSION') )
+if ( KPIT_VER == None ):
+    KPIT_VER = env_error = "KPIT_GNURX_VERSION"
 
 
 
@@ -135,5 +136,5 @@ from nqbplib.toolchains.windows.kpit_gnurx_elf.elf import ToolChain
 
 # Function that instantiates an instance of the toolchain
 def create():
-    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "target" )
+    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "target", env_error )
     return tc 

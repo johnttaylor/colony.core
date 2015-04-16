@@ -9,29 +9,31 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "Cpl/System/Mutex.h"
+#include "Cpl/System/FastLock.h"
 
 
 //////////////////////////////////////////////////////////////////////////////
-Cpl::System::Mutex::Mutex()
+Cpl::System::FastLock::FastLock(void) 
     {
-    InitializeCriticalSection( &m_mutex );
     }
 
-Cpl::System::Mutex::~Mutex()
+
+Cpl::System::FastLock::~FastLock(void) 
     {
-    DeleteCriticalSection( &m_mutex );
     }
 
-void Cpl::System::Mutex::lock(void)    
+//////////////////////////////////////////////////////////////////////////////
+void Cpl::System::FastLock::lock(void)    
     { 
-    EnterCriticalSection( &m_mutex );
+    m_flock.lock(); 
     }
 
 
-void Cpl::System::Mutex::unlock(void)  
+void Cpl::System::FastLock::unlock(void)  
     { 
-    LeaveCriticalSection( &m_mutex );
+    m_flock.unlock(); 
     }
+
+
 
 

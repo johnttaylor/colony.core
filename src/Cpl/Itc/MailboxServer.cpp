@@ -48,9 +48,9 @@ void MailboxServer::appRun()
         CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT();
 
         // Trap my exit/please-stop condition
-        m_mutex.lock();
+        m_flock.lock();
         bool stayRunning = m_run;
-        m_mutex.unlock();
+        m_flock.unlock();
         if ( !stayRunning )
             {
             break;
@@ -61,9 +61,9 @@ void MailboxServer::appRun()
         Message* msgPtr = waitNext( wasTimeout );
 
         // Trap my exit/please-stop condition AGAIN since alot could have happen while I was waiting....
-        m_mutex.lock();
+        m_flock.lock();
         stayRunning = m_run;
-        m_mutex.unlock();
+        m_flock.unlock();
         if ( !stayRunning )
             {
             break;
@@ -116,15 +116,14 @@ unsigned long MailboxServer::msecToCounts( unsigned long durationInMsecs ) throw
 void MailboxServer::pleaseStop()
     {
     CPL_SYSTEM_TRACE_FUNC( SECT_ );
-    m_mutex.lock();
+
+    // Set my flag/state to exit my top level thread loop
+    m_flock.lock();
     m_run = false;
-    if ( m_waiting )
-        {
-		m_signaled = true;
-        m_waiting  = false;
-        m_myThreadPtr->signal();
-        }
-    m_mutex.unlock();
+    m_flock.unlock();
+
+    // Signal myself incase the thread is blocked waiting for the 'next message'
+    signal();
     }
 
 

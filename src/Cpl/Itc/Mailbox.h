@@ -15,7 +15,7 @@
 #include "colony_config.h"
 #include "Cpl/Itc/PostApi.h"
 #include "Cpl/System/Signable.h"
-#include "Cpl/System/Mutex.h"
+#include "Cpl/System/FastLock.h"
 #include "Cpl/Container/SList.h"
 
 
@@ -79,15 +79,15 @@ public:
 
 public: 
     /// See Cpl::System::Signable
-    void signal(void) throw();
+    int signal(void) throw();
 
     /// See Cpl::System::Signable
-    void su_signal(void) throw();
+    int su_signal(void) throw();
 
 
 protected:
     /// Mutex used to protect my list
-    Cpl::System::Mutex m_mutex;
+    Cpl::System::FastLock m_flock;
 
     /// Keep track of who (aka which thread the mailbbox is ruuning in) the mailbox waits on
     Cpl::System::Signable* m_myThreadPtr;

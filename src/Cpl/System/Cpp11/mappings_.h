@@ -28,6 +28,8 @@
 
 ///
 #define Cpl_System_Mutex_T_MAP                  std::recursive_mutex
+///
+#define Cpl_System_FastLock_T_MAP               std::mutex // Not sure if this is faster than a recursive_mutex -->but its worth a try
 
 ///
 typedef struct Cpl_System_Cpp11_Sema_Tag

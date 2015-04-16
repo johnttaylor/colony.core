@@ -44,14 +44,14 @@ Mailbox::Mailbox( unsigned long timeOutPeriodInMsec )
 void Mailbox::post(Message& msg) throw() 
     {
     // Update my internal FIFO
-    m_mutex.lock();
+    m_flock.lock();
     put( msg );
     bool waiting = m_waiting;
     if ( waiting )
         {
         m_waiting = false;
         }
-    m_mutex.unlock();
+    m_flock.unlock();
 
     // Only signal myself if the mailbox is current blocked waiting for a next message
     if ( waiting ) 
@@ -81,13 +81,13 @@ Message* Mailbox::waitNext( bool& wasTimeout ) throw()
     for(;;)
         {
         // START critcal section
-        m_mutex.lock();
+        m_flock.lock();
         
         // Trap if I was signalled
         if ( m_signaled )
             {
             m_signaled = false;
-            m_mutex.unlock();       // END the critical section
+            m_flock.unlock();       // END the critical section
             return 0;
             }
 
@@ -95,13 +95,13 @@ Message* Mailbox::waitNext( bool& wasTimeout ) throw()
         msgPtr = get();
         if ( msgPtr )
             {
-            m_mutex.unlock();       // END the critical section
+            m_flock.unlock();       // END the critical section
             break;
             }
         
         // Remember that I am waiting for a next message
         m_waiting = true;
-        m_mutex.unlock();           // END critcal section
+        m_flock.unlock();           // END critcal section
 
 
         // Wait for the next message
@@ -111,9 +111,9 @@ Message* Mailbox::waitNext( bool& wasTimeout ) throw()
             if ( !Cpl::System::Thread::timedWait( m_timeout ) )
                 {
                 // Change my waiting status to: NOT waiting
-                m_mutex.lock();
+                m_flock.lock();
                 m_waiting = false;
-                m_mutex.unlock();          
+                m_flock.unlock();          
 
                 wasTimeout = true;
                 return 0;
@@ -132,29 +132,35 @@ Message* Mailbox::waitNext( bool& wasTimeout ) throw()
     }
 
 
-void Mailbox::signal(void) throw() 
+int Mailbox::signal(void) throw() 
     {
+    int result = 0;
+
     // Mark that I was signaled and capture my 'waiting-on-message' state
-    m_mutex.lock();
+    m_flock.lock();
     m_signaled   = true;
     bool waiting = m_waiting;
     if ( waiting )
         {
         m_waiting = false;
         }
-    m_mutex.unlock();
+    m_flock.unlock();
 
     // Wake myself up (if I was waiting for a next-message)
     if( waiting ) 
         {
-        m_myThreadPtr->signal();
+        result = m_myThreadPtr->signal();
         }
+
+    return result;
     }
 
 
 // NOTE: Same logic as signal(), EXCEPT no critical section is used -->this is because su_signal() is called from an ISR and no mutex is required (and mutexes don't work in from ISRs anyway)
-void Mailbox::su_signal(void) throw() 
+int Mailbox::su_signal(void) throw() 
     {
+    int result = 0;
+
     // Mark that I was signaled and capture my 'waiting-on-message' state
     m_signaled   = true;
     bool waiting = m_waiting;
@@ -166,6 +172,8 @@ void Mailbox::su_signal(void) throw()
     // Wake myself up (if I was waiting for a next-message)
     if( waiting ) 
         {
-        m_myThreadPtr->su_signal();
+        result = m_myThreadPtr->su_signal();
         }
+
+    return result;
     }
