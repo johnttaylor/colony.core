@@ -104,6 +104,7 @@ public:
             Cpl::System::Thread::wait();
             }
 
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "----- Signal main thread that I am done" ));
         m_waiter.signal();
         }
 

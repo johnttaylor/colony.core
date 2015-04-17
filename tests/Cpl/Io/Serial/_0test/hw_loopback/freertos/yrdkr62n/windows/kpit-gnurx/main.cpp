@@ -30,7 +30,7 @@ int main(void)
 
 
 /*-----------------------------------------------------------*/
-Cpl::Io::InputOutput* CplSystemFreeRtosTrace_getFd_(void) throw()
+Cpl::Io::Output* CplSystemFreeRtosTrace_getFd_(void) throw()
     {
     return &fd_;
     }

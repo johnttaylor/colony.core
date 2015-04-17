@@ -29,12 +29,18 @@ protected:
 
 public:
     /// Constructor
-    WriteSync(Cpl::Itc::PostApi& myMbox);
+    WriteSync(Cpl::Itc::PostApi& myMbox):m_mbox(myMbox){}
 
 
 public: 
 	/// See WriteApi
-	void write( int newValue ) throw();
+	void write( int newValue ) throw()
+        {
+	    WritePayload                  payload( newValue );
+        Cpl::Itc::SyncReturnHandler   srh;
+        WriteMsg 	                  msg(*this,payload,srh);
+        m_mbox.postSync(msg);
+        }
 };
 
 
