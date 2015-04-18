@@ -15,6 +15,7 @@ extern void link_dfstring(void);
 extern void link_string(void);
 extern void link_strip(void);
 extern void link_atob(void);
+extern void link_btoa(void);
 extern void link_format(void);
 extern void link_stringItem(void);
 
@@ -39,6 +40,7 @@ int main( int argc, char* const argv[] )
     link_string();
     link_strip();
     link_atob();
+    link_btoa();
     link_format();
     link_stringItem();
 

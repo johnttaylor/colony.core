@@ -12,7 +12,7 @@
 #include "Cpl/Itc/_0test/common.h"
 #include "Bsp/Api.h"
 
-#define REQUIRE(a)  if ( !(a) ) Cpl::System::FatalError::logf("Failed Assert")
+#define REQUIRE(a,b)  if ( !(a) ) Cpl::System::FatalError::logf(b)
 
 
 /// 
@@ -81,13 +81,13 @@ public:
                 testPtr->m_modelMbox.signal();
                 Cpl::System::Thread::wait();
                 Cpl::System::Api::sleep(50);
-                REQUIRE( testPtr->m_myModel.m_value == (NUM_WRITES_ - 1) * ATOMIC_MODIFY_ );
-                REQUIRE( testPtr->m_myViewer.m_attachRspMsg.getPayload().m_value == (NUM_WRITES_ - 1)*ATOMIC_MODIFY_ );
-                REQUIRE( testPtr->m_myViewer.m_ownAttachMsg == true );
-                REQUIRE( testPtr->m_myViewer.m_ownDetachMsg == true );
-                REQUIRE( testPtr->m_myViewer.m_pendingCloseMsgPtr == 0 );
-                REQUIRE( testPtr->m_myViewer.m_opened == false );
-                REQUIRE( testPtr->m_modelMbox.m_sigCount == i+1 );
+                REQUIRE( testPtr->m_myModel.m_value == (NUM_WRITES_ - 1) * ATOMIC_MODIFY_, "Fail: 1" );
+                REQUIRE( testPtr->m_myViewer.m_attachRspMsg.getPayload().m_value == (NUM_WRITES_ - 1)*ATOMIC_MODIFY_, "Fail: 2" );
+                REQUIRE( testPtr->m_myViewer.m_ownAttachMsg == true, "Fail: 3" );
+                REQUIRE( testPtr->m_myViewer.m_ownDetachMsg == true, "Fail: 4" );
+                REQUIRE( testPtr->m_myViewer.m_pendingCloseMsgPtr == 0, "Fail: 5" );
+                REQUIRE( testPtr->m_myViewer.m_opened == false, "Fail: 6" );
+                REQUIRE( testPtr->m_modelMbox.m_sigCount == i+1, "Fail: 7" );
                 masterThreadPtr->signal();
                 }
 
@@ -102,9 +102,9 @@ public:
             testPtr->m_viewerMbox.pleaseStop();
             testPtr->m_modelMbox.pleaseStop();
             Cpl::System::Api::sleep(50); // allow time for threads to stop
-            REQUIRE( viewerThreadPtr->isRunning() == false );
-            REQUIRE( modelThreadPtr->isRunning() == false );
-            REQUIRE( masterThreadPtr->isRunning() == false );
+            REQUIRE( viewerThreadPtr->isRunning() == false, "Fail: 8" );
+            REQUIRE( modelThreadPtr->isRunning() == false, "Fail: 9" );
+            REQUIRE( masterThreadPtr->isRunning() == false, "Fail: 10" );
 
             Cpl::System::Thread::destroy( *viewerThreadPtr );
             Cpl::System::Thread::destroy( *modelThreadPtr );
