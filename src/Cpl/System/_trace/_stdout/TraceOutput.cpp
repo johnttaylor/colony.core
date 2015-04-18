@@ -1,5 +1,3 @@
-#ifndef WriteSync_h_
-#define WriteSync_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -10,33 +8,21 @@
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
-/** @file */
 
-#include "Cpl/Itc/_0test/WriteApi.h"
-#include "Cpl/Itc/_0test/WriteRequest.h"
-
-
-/** This partailly concrete class implements the synchronous ITC open
-    call for the OpenApi.  The subclass is still required to implement the ITC 
-    request() method.
- */
-class WriteSync: public WriteApi,
-                 public WriteRequest
-{
-protected:
-    /// Mailbox (of the server implementing the ITC request() method
-    Cpl::Itc::PostApi& m_mbox;
-
-public:
-    /// Constructor
-    WriteSync(Cpl::Itc::PostApi& myMbox);
+#include "Cpl/System/Trace.h"
+#include "Cpl/Io/Stdio/StdOut.h"
 
 
-public: 
-	/// See WriteApi
-	void write( int newValue ) throw();
-};
+/// 
+using namespace Cpl::System;
+
+///
+static Cpl::Io::Stdio::StdOut fd_;
 
 
+////////////////////////////////////////////////////////////////////////////////
+Cpl::Io::Output* Trace::getDefaultOutputStream_( void ) throw()
+    {
+    return &fd_;
+    }
 
-#endif  // end header latch

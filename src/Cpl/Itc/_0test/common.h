@@ -21,13 +21,15 @@
 #include "Cpl/Itc/AtomicRequest.h"
 #include "Cpl/Itc/AtomicSync.h"
 #include "Cpl/Container/DList.h"
-#include "WriteSync.h"
-#include "ViewRequest.h"
-#include "ReadModifyWrite.h"
+#include "Cpl/Itc/_0test/WriteSync.h"
+#include "Cpl/Itc/_0test/ViewRequest.h"
+#include "Cpl/Itc/_0test/ReadModifyWrite.h"
 
 
 #define SECT_           "_0test"
+#ifndef NUM_SEQ_
 #define NUM_SEQ_        3
+#endif
 #define NUM_WRITES_     5
 #define ATOMIC_MODIFY_  2
 
@@ -113,9 +115,9 @@ public:
     void execute(ReadModifyWrite& api) 
         {
         CPL_SYSTEM_TRACE_FUNC( SECT_ );
-        int t  = api.get();      // Read
-        t     *= ATOMIC_MODIFY_; // Modify
-        api.write( t );          // Write
+        int t  = api.getValue();        // Read
+        t     *= ATOMIC_MODIFY_;        // Modify
+        api.writeValue( t );            // Write
         }
     
 };
@@ -249,10 +251,10 @@ public:
 public: // AtomicRequest<ReadModifyWrite> methods
 
     /// Read the data
-    int get(void) throw() { CPL_SYSTEM_TRACE_FUNC( SECT_ ); return m_value; }
+    int getValue(void) throw() { CPL_SYSTEM_TRACE_FUNC( SECT_ ); return m_value; }
 
     /// Write the data
-    void write(int newValue) throw() { CPL_SYSTEM_TRACE_FUNC( SECT_ ); m_value = newValue; }
+    void writeValue(int newValue) throw() { CPL_SYSTEM_TRACE_FUNC( SECT_ ); m_value = newValue; }
 
     /// Intercept base atomic-request call
     void request( ReqMsg& msg )

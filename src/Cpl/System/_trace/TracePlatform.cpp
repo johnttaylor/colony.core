@@ -14,15 +14,13 @@
 #include "Cpl/System/SimTick.h"
 #include "Cpl/System/Private_.h"
 #include "Cpl/Text/format.h"
-#include "Cpl/Io/Stdio/StdOut.h"
 
 
 /// 
 using namespace Cpl::System;
 
 ///
-static Cpl::Io::Stdio::StdOut fd_;
-static Cpl::Io::Output*       activePtr_ = &fd_;
+static Cpl::Io::Output* activePtr_ = Trace::getDefaultOutputStream_();
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +35,7 @@ void Trace::redirect_( Cpl::Io::Output& newMedia )
 void Trace::revert_( void )
     {
     Locks_::tracing().lock();
-    activePtr_ = &fd_;
+    activePtr_ = getDefaultOutputStream_();
     Locks_::tracing().unlock();
     }
     

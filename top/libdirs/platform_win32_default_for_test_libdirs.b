@@ -10,5 +10,6 @@ src/Cpl/Io/Stdio
 
 # default trace output
 src/Cpl/System/_trace
+src/Cpl/System/_trace/_stdout
 
 
