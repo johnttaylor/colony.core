@@ -1,0 +1,8 @@
+<map id="Cpl::Itc::Mailbox" name="Cpl::Itc::Mailbox">
+<area shape="rect" id="node7" href="$class_cpl_1_1_itc_1_1_mailbox_server.html" title="Cpl::Itc::MailboxServer" alt="" coords="147,276,299,303"/>
+<area shape="rect" id="node2" href="$class_cpl_1_1_itc_1_1_post_api.html" title="Cpl::Itc::PostApi" alt="" coords="5,117,123,143"/>
+<area shape="rect" id="node3" href="$class_cpl_1_1_system_1_1_signable.html" title="Cpl::System::Signable" alt="" coords="147,117,299,143"/>
+<area shape="rect" id="node4" href="$class_cpl_1_1_container_1_1_item.html" title="Cpl::Container::Item" alt="" coords="154,13,291,39"/>
+<area shape="rect" id="node5" href="$class_cpl_1_1_container_1_1_s_list.html" title="Cpl::Container::SList\l\&lt; Message \&gt;" alt="" coords="323,109,466,151"/>
+<area shape="rect" id="node6" href="$class_cpl_1_1_container_1_1_s_list.html" title="Cpl::Container::SList\l\&lt; ITEM \&gt;" alt="" coords="323,5,466,47"/>
+</map>

@@ -1,0 +1,14 @@
+<map id="Cpl::Itc::MailboxServer" name="Cpl::Itc::MailboxServer">
+<area shape="rect" id="node2" href="$class_cpl_1_1_itc_1_1_mailbox.html" title="Cpl::Itc::Mailbox" alt="" coords="768,119,884,145"/>
+<area shape="rect" id="node3" href="$class_cpl_1_1_itc_1_1_post_api.html" title="Cpl::Itc::PostApi" alt="" coords="432,5,549,32"/>
+<area shape="rect" id="node4" href="$class_cpl_1_1_system_1_1_signable.html" title="Cpl::System::Signable" alt="" coords="415,56,567,83"/>
+<area shape="rect" id="node5" href="$class_cpl_1_1_container_1_1_item.html" title="Cpl::Container::Item" alt="" coords="8,56,145,83"/>
+<area shape="rect" id="node6" href="$class_cpl_1_1_container_1_1_s_list.html" title="Cpl::Container::SList\l\&lt; Message \&gt;" alt="" coords="419,107,562,149"/>
+<area shape="rect" id="node7" href="$class_cpl_1_1_container_1_1_s_list.html" title="Cpl::Container::SList\l\&lt; ITEM \&gt;" alt="" coords="5,107,148,149"/>
+<area shape="rect" id="node8" href="$class_cpl_1_1_system_1_1_fast_lock.html" title="Cpl::System::FastLock" alt="" coords="413,173,569,200"/>
+<area shape="rect" id="node9" href="$class_cpl_1_1_system_1_1_runnable.html" title="Cpl::System::Runnable" alt="" coords="748,171,904,197"/>
+<area shape="rect" id="node10" href="$class_cpl_1_1_timer_1_1_counter_list.html" title="Cpl::Timer::CounterList" alt="" coords="749,224,903,251"/>
+<area shape="rect" id="node11" href="$class_cpl_1_1_timer_1_1_counter_source.html" title="Cpl::Timer::CounterSource" alt="" coords="403,224,578,251"/>
+<area shape="rect" id="node12" href="$class_cpl_1_1_container_1_1_d_list.html" title="Cpl::Container::DList\l\&lt; Cpl::Timer::CounterCallback \&gt;" alt="" coords="387,275,595,317"/>
+<area shape="rect" id="node13" href="$class_cpl_1_1_container_1_1_d_list.html" title="Cpl::Container::DList\l\&lt; ITEM \&gt;" alt="" coords="5,275,148,317"/>
+</map>

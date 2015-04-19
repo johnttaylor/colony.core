@@ -1,0 +1,7 @@
+<map id="Cpl::Itc::Message" name="Cpl::Itc::Message">
+<area shape="rect" id="node4" href="$class_cpl_1_1_itc_1_1_response_message.html" title="Cpl::Itc::ResponseMessage\l\&lt; CLIENT, SERVER, PAYLOAD \&gt;" alt="" coords="5,229,228,271"/>
+<area shape="rect" id="node5" href="$class_cpl_1_1_itc_1_1_service_message.html" title="Cpl::Itc::ServiceMessage" alt="" coords="252,237,419,263"/>
+<area shape="rect" id="node2" href="$class_cpl_1_1_container_1_1_extended_item.html" title="Cpl::Container::ExtendedItem" alt="" coords="130,80,322,107"/>
+<area shape="rect" id="node3" href="$class_cpl_1_1_container_1_1_item.html" title="Cpl::Container::Item" alt="" coords="157,5,295,32"/>
+<area shape="rect" id="node6" href="$class_cpl_1_1_itc_1_1_request_message.html" title="Cpl::Itc::RequestMessage\l\&lt; SERVER, PAYLOAD \&gt;" alt="" coords="249,319,421,360"/>
+</map>
