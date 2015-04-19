@@ -257,14 +257,13 @@ public:
     static void revert_( void );
 
 public:
-    /** This PRIVATE internal method that provides the Output stream to the
-        Trace Engine.  The Output stream instance MUST be created statically.
-        However, the Output stream does not necessarily need to fully 
-        'operational' when staticly constructed - it just need to be 
-        "operationally" by the time Cpl::System::Api::initialize() is
-        called.
+    /** This PRIVATE internal method provides the Output stream to the Trace 
+        Engine.  The Output stream instance MUST be created statically. However,
+        the Output stream does not necessarily need to fully  'operational' when
+        statically constructed - it just need to be  "operationally" by the time
+        Cpl::System::Api::initialize() is called.
     
-        This method is the RESPONSIBLITY of the Application to implemented.
+        NOTE: The Application is RESPONSIBLE for implementing this method!
      */
     static Cpl::Io::Output* getDefaultOutputStream_( void ) throw();
 

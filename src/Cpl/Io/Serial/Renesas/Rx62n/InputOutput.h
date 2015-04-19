@@ -67,7 +67,7 @@ public:
 
         @param sciPortID        UART/SCI Port ID (must be one of {0,1,2,3,5,6}
         @param pinSelect        Pin select (A:=0, B:=1), i.e. Pin configuraiton 'A' vs 'B'.  Not all pin configuraiton options are available on all packages of the microcontroller
-        @param buardrate        BRR value
+        @param baudrate         BRR value
         @param baudrateDivider  PCLK divider/prescaler. 0= PCLK, 1=PCLK/4, 2=PCLK/16, 3=PCLK/11
         @param irqPriority      Interrupt Priority. 1=lowest, ... 15=highest
         @param frameConfig      is set by bit-wise ORing the Parity, Stopbits, and data length values together

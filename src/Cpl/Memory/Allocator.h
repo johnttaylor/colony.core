@@ -24,7 +24,7 @@ namespace Cpl { namespace Memory {
     Allocator manages a pool memory that is assigned/released to/from clients
     at run-time (i.e. provides the memory for "dynamic" memory allocations).
 
-    The following are example on how to dynamically create/destroy object
+    The following is an example on how to dynamically create/destroy object
     using the memory provided by a Allocator object:
 
 @htmlonly
