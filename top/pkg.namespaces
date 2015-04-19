@@ -1,8 +1,12 @@
 Cpl
 Bsp
+Bsp::UserSpace
 Cpl::Container
+Cpl::Driver::Uart
+Cpl::Driver::Uart::Stream
 Cpl::Io
 Cpl::Io::File
+Cpl::Io::Serial::Renesas::Rx62n
 Cpl::Io::Socket
 Cpl::Io::Socket::Win32
 Cpl::Io::Stdio

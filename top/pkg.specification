@@ -13,7 +13,7 @@ url = www.integerfox.com/colony.core
 
 [weak_deps]
 catch\\1.0.53
-nqbp\\1.0.5
+nqbp\\1.1.0
 
 [transitive_deps]
 
