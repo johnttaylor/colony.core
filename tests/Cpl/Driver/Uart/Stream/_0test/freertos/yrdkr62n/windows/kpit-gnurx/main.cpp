@@ -3,6 +3,7 @@
 #include "Cpl/System/Trace.h"
 #include "Cpl/Driver/Uart/Stream/Transmitter.h"
 #include "Cpl/Driver/Uart/Stream/Receiver.h"
+#include "Cpl/Io/Null.h"
 #include <stdlib.h>
 
 
@@ -11,7 +12,9 @@ extern void loopback_test( Cpl_Driver_Uart_Hal_T uartHdl, bool manualFirstTx );
 extern Cpl::Driver::Uart::Stream::Transmitter* txPtr;
 extern Cpl::Driver::Uart::Stream::Receiver*    rxPtr;
 
+static Cpl::Io::Null fd_;
                
+/*-----------------------------------------------------------*/
 int main(void)
     {
     // Initialize the board
@@ -30,6 +33,11 @@ int main(void)
     }
 
 
+/*-----------------------------------------------------------*/
+Cpl::Io::Output* Cpl::System::Trace::getDefaultOutputStream_( void ) throw()
+	{
+	return &fd_;
+	}
 
 /*-----------------------------------------------------------*/
 void consoleTxISR( void )

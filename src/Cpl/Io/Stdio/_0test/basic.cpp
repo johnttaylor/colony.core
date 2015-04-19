@@ -53,6 +53,7 @@ TEST_CASE( "basic", "[basic]" )
     REQUIRE( line == "line 2" );
     REQUIRE( reader.readln( line ) );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "line=[%s]", line.getString() ) );
+    line.removeTrailingSpaces();
     REQUIRE( line.isEmpty() );
     REQUIRE( reader.readln( line ) );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "line=[%s]", line.getString() ) );

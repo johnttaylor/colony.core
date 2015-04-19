@@ -6,9 +6,11 @@ src/Cpl/Driver/Uart/Stream
 
 # supporting infrastructure
 //colony.freertos/src/Cpl/System/FreeRTOS
+//colony.freertos/src/Cpl/System/FreeRTOS/_fatalerror
 src/Cpl/System
 src/Cpl/Container
 src/Cpl/Text
+src/Cpl/Io
 
 
 

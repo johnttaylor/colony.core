@@ -68,6 +68,7 @@ TEST_CASE( "read", "[read]" )
     REQUIRE( reader.readln( line ) );
     REQUIRE( fd.length() == TESTINPUT_TXT_FILE_LENGTH );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "line=[%s]", line.getString() ) );
+    line.removeTrailingSpaces();
     REQUIRE( line.isEmpty() );
     REQUIRE( reader.readln( line ) );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "line=[%s]", line.getString() ) );

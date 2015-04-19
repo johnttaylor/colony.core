@@ -28,7 +28,7 @@ namespace Cpl { namespace System { namespace Win32 {
  */
 class Thread: public Cpl::System::Thread 
 {
-private:
+protected:
     /// Reference to the runnable object for the thread
     Cpl::System::Runnable&  m_runnable;         
 

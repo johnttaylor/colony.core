@@ -70,7 +70,7 @@ TEST_CASE( "null", "[null]" )
 
     Cpl::Text::FString<10> buffer("bob");
     REQUIRE( fd.read(buffer) == false );
-    REQUIRE( buffer == "bob" );
+    REQUIRE( buffer == "" );
 
     int myBuffer[10] = { 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29 };
     int bytesRead    = 1;

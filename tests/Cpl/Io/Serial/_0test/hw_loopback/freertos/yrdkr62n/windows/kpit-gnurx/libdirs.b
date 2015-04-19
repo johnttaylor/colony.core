@@ -9,6 +9,7 @@ src/Cpl/Container
 src/Cpl/Text
 src/Cpl/Io
 //colony.freertos/src/Cpl/System/FreeRTOS
+//colony.freertos/src/Cpl/System/FreeRTOS/_fatalerror
 
 
 # BSP

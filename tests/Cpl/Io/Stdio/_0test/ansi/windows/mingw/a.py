@@ -14,7 +14,10 @@ def run_test( root, subdir ):
     utils.push_dir( subdir )
     src = os.path.join( root, 'colony.core', 'src', 'Cpl', 'Io', 'Stdio', '_0test', 'testinput.txt' )
     print "Running unit test dir: {} ...".format( subdir )
-    subprocess.call( 'type {}| b.exe'.format(src), shell=True )
+    p = subprocess.Popen( 'type {}| b.exe'.format(src), shell=True )
+    p.communicate()
+    if ( p.returncode != 0 ):
+        exit( "FAILED test" )
     utils.pop_dir()
         
 
