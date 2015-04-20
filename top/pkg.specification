@@ -14,6 +14,9 @@ url = www.integerfox.com/colony.core
 [weak_deps]
 catch\\1.0.53
 nqbp\\1.1.0
+colony.freertos\\1.0.0
+colony.bsp.renesas.rx\\1.0.0
 
 [transitive_deps]
+*freertos\\8.2.1
 
