@@ -4,3 +4,6 @@
 ~~~~~; 1429486834; Sun, 19 Apr 2015 18:40:34; PUBLISH; DaVinci <build.machine@noemail.com>; 1.1.0; main; OUTCAST_colony.core-main-1.1.0; Add generic UART driver, FastLock, clean-up on the Trace engine, generic BSP interfaces, bug fixes
 
 
+~~~~~; 1429493582; Sun, 19 Apr 2015 20:33:02; PUBLISH; DaVinci <build.machine@noemail.com>; 1.1.1; main; OUTCAST_colony.core-main-1.1.1; set proper weak dependencies (work-around for weak-cyclic use case - which is valid - but the tool support is missing)
+
+

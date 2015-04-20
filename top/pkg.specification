@@ -1,9 +1,9 @@
 [info]
 name = colony.core
 branch = main
-version = 1.1.0
-pubtime = 1429486834
-pubtimelocal = Sun, 19 Apr 2015 18:40:34
+version = 1.1.1
+pubtime = 1429493582
+pubtimelocal = Sun, 19 Apr 2015 20:33:02
 desc = Colony is C++ class library targeted specifically for embedded development.  Colony.Core is the base system/interfaces for the Colony packages.
 owner = John Taylor
 email = John.T.Taylor@gmail.com
