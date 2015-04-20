@@ -1,3 +1,6 @@
 ~~~~~; 1424662106; Sun, 22 Feb 2015 21:28:26; PUBLISH; johnttaylor <john.t.taylor@gmail.com>; 1.0.0; main; OUTCAST_colony.core-main-1.0.0; First publish of package
 
 
+~~~~~; 1429486834; Sun, 19 Apr 2015 18:40:34; PUBLISH; DaVinci <build.machine@noemail.com>; 1.1.0; main; OUTCAST_colony.core-main-1.1.0; Add generic UART driver, FastLock, clean-up on the Trace engine, generic BSP interfaces, bug fixes
+
+
