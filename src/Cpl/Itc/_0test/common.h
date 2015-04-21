@@ -195,9 +195,12 @@ public:
             CPL_SYSTEM_TRACE_MSG( SECT_, ( "CANCELED change notitication (%p)", &attachMsg ));
             attachMsg.returnToSender();    // In subscriber list -->return the notificaiton message
             }
+        else
+            {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ( "attempted to CANCEL change notitication (%p) -->NOT pending -->nothing done", &attachMsg ));
+            }
 
         // Return the cancel message last, this ensure that when the client receives the response to the Detach Msg, he has also been returned the original AttachMsg
-        CPL_SYSTEM_TRACE_MSG( SECT_, ( "attempted to CANCEL change notitication (%p) -->NOT pending -->nothing done", &attachMsg ));
         msg.returnToSender();
         }
 

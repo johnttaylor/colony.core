@@ -22,7 +22,9 @@
 
 #define SECT_                       "_0test"
 
+#ifndef NUM_SEQ_ 
 #define NUM_SEQ_                    3
+#endif
 #define TOLERANCE_                  2
 #define DELAY_                      1050
 
@@ -301,6 +303,7 @@ public:
             Cpl::System::Thread::wait();
             }
 
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "----- All sequences complete, signalling checker thread..." ));
         m_waiter.signal();
         }
 

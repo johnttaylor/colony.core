@@ -68,10 +68,10 @@ public:
             Bsp_Api_turnOn_debug1();    
             
             TestUnit*            testPtr         = new TestUnit();
+            Master*              masterRunPtr    = new Master( NUM_SEQ_, NUM_WRITES_, testPtr->m_myViewer, testPtr->m_myModel, testPtr->m_myModel, Cpl::System::Thread::getCurrent()); 
             Cpl::System::Thread* viewerThreadPtr = Cpl::System::Thread::create( testPtr->m_viewerMbox, "Viewer" );
             Cpl::System::Thread* modelThreadPtr  = Cpl::System::Thread::create( testPtr->m_modelMbox,  "Model" );
-            Cpl::System::Thread* masterThreadPtr = Cpl::System::Thread::create( *(new Master( NUM_SEQ_, NUM_WRITES_, testPtr->m_myViewer, testPtr->m_myModel, testPtr->m_myModel, Cpl::System::Thread::getCurrent()) ),  
-                                                                                "MASTER" );
+            Cpl::System::Thread* masterThreadPtr = Cpl::System::Thread::create( *masterRunPtr, "MASTER" );
         
             CPL_SYSTEM_TRACE_MSG( SECT_, ( "Starting the sequence...." ));
             int i;
@@ -109,6 +109,7 @@ public:
             Cpl::System::Thread::destroy( *viewerThreadPtr );
             Cpl::System::Thread::destroy( *modelThreadPtr );
             Cpl::System::Thread::destroy( *masterThreadPtr );
+            delete masterRunPtr;
             delete testPtr;
             
             // Test done -->flash LED to indicate succesful test (i.e. not stuck in the FatalError handler)
