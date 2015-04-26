@@ -14,7 +14,6 @@
 
 
 #include "Cpl/Text/Frame/Decoder.h"
-#include "Cpl/Io/Input.h"
 
 
 ///
@@ -32,12 +31,9 @@ namespace Cpl { namespace Text { namespace Frame {
                     characters from the Input stream.
  */
 template <int BUFSIZE>
-class StreamDecoder: public Decoder
+class AsciiDecoder: public Decoder
 {
 protected:
-    /// My input source
-    Cpl::Io::Input* m_srcPtr;
-
     /// SOF character
     const char      m_sof;
 
@@ -68,27 +64,12 @@ public:
         to reset and begin searching/looking-for the next start-of-frame
         character.
      */
-    StreamDecoder( Cpl::Io::Input& src, char startOfFrame, char endOfFrame, char escapeChar, bool restrict=true );
+    AsciiDecoder( char startOfFrame, char endOfFrame, char escapeChar, bool restrict=true );
 
-
-    /** Constructor.  Same as the above constructor - but no input src is provided.  
-        When using this constructor, the client/applicaiton MUST call the 
-        setInputSource() method BEFORE calling scan().
-     */
-    StreamDecoder( char startOfFrame, char endOfFrame, char escapeChar, bool restrict=true );
-
-
-public:
-    /** This method is used to set the input source prior to calling the scan()
-        method.  This method MUST be used at least when creating the decoder
-        instance without providing an input source.  This method can be called
-        multiple times to change the input source.
-     */
-    void setInputSource( Cpl::Io::Input* src ) throw();
 
 public:
     /// See Cpl::Text::Frame::Decoder
-    bool scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw();
+    bool scan( Cpl::Io::Input& src, size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw();
 
 };
 
@@ -98,21 +79,8 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 
 template <int BUFSIZE>
-StreamDecoder<BUFSIZE>::StreamDecoder( Cpl::Io::Input& src, char startOfFrame, char endOfFrame, char escapeChar, bool restrict )
-:m_srcPtr(&src)
-,m_sof(startOfFrame)
-,m_eof(endOfFrame)
-,m_esc(escapeChar)
-,m_restricted(restrict)
-,m_dataLen(0)
-,m_dataPtr(0)
-    {
-    }
-
-template <int BUFSIZE>
-StreamDecoder<BUFSIZE>::StreamDecoder( char startOfFrame, char endOfFrame, char escapeChar, bool restrict )
-:m_srcPtr(0)
-,m_sof(startOfFrame)
+AsciiDecoder<BUFSIZE>::AsciiDecoder( char startOfFrame, char endOfFrame, char escapeChar, bool restrict )
+:m_sof(startOfFrame)
 ,m_eof(endOfFrame)
 ,m_esc(escapeChar)
 ,m_restricted(restrict)
@@ -123,24 +91,11 @@ StreamDecoder<BUFSIZE>::StreamDecoder( char startOfFrame, char endOfFrame, char 
 
 
 template <int BUFSIZE>
-void StreamDecoder<BUFSIZE>::setInputSource( Cpl::Io::Input* src ) throw()
-    {
-    m_srcPtr = &src;
-    }
-
-
-template <int BUFSIZE>
-bool StreamDecoder<BUFSIZE>::scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw()
+bool AsciiDecoder<BUFSIZE>::scan( Cpl::Io::Input& src, size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw()
     {
     bool  inFrame  = false;
     bool  escaping = false;
     char* framePtr;
-
-    // Trap: no-valid-input source
-    if ( !m_srcPtr )
-        {
-        return false;
-        }
 
     // Zero out size of the found frame
     frameSize = 0;
@@ -150,7 +105,7 @@ bool StreamDecoder<BUFSIZE>::scan( size_t maxSizeOfFrame, char* frame, size_t& f
         {
         if ( !m_dataLen )
             {
-            if ( !m_srcPtr->read( m_buffer, BUFSIZE, m_dataLen ) )
+            if ( !src.read( m_buffer, BUFSIZE, m_dataLen ) )
                 {
                 // Error reading data -->exit scan
                 m_dataLen = 0; // Reset my internal count so I start 'over' on the next call (if there is one)

@@ -14,6 +14,7 @@
 
 
 #include <stdlib.h>
+#include "Cpl/Io/Input.h"
 
 
 ///
@@ -67,13 +68,13 @@ public:
         or an error occured.  If a valid frame was found, true will be returned
         and the frame will be stored 'frame'.  The length, in bytes, of the 
         frame found is returned via 'frameSize'.  False is returned if a
-        error was encountered while reading the input source.
+        error was encountered while reading the Input source.
 
         CAUTION: The returned frame is NOT a null terminated string - it is
                  ONLY a buffer with 'frameSize' number of characters stored
                  in it. 
      */
-    virtual bool scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw() = 0;
+    virtual bool scan( Cpl::Io::Input& src, size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw() = 0;
 
 
 public:

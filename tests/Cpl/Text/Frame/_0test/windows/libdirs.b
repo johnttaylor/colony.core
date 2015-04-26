@@ -1,5 +1,5 @@
 # Unit under test
-#src/Cpl/Text/Frame
+src/Cpl/Text/Frame
 
 # tests
 src/Cpl/Text/Frame/_0test
