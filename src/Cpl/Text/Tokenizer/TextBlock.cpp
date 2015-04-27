@@ -60,7 +60,7 @@ TextBlock::TextBlock( char* string, char delimiter, char terminator, char quote,
             // Finalize the found token and STOP parsing
             m_terminatorFound = true;
             *m_ptr++          = '\0';
-            m_count++;
+            m_count++; 
             return;
             }
 
@@ -78,7 +78,20 @@ TextBlock::TextBlock( char* string, char delimiter, char terminator, char quote,
             // each 'extra' space would be an empty parameter field
             if ( delimiter == ' ' )
                 {
-                m_ptr = (char*) stripSpace(m_ptr);
+                char* ptr = m_ptr;
+                while( *ptr != '\0' && isspace((int)*ptr) )
+                    {
+                    ptr++;
+                    }
+
+                // Adjust token count when removing trailing whitespace at the last token (i.e. the rule: delimiter+EOS equals an empty token does NOT apply in this case)
+                if ( *ptr == '\0' || *ptr == terminator )
+                    {
+                    m_count--;
+                    }
+
+                // Remove trailing/leading whitespace
+                removeCharacter_( m_ptr, ptr - m_ptr );
                 }
 
             // Housekeeping
