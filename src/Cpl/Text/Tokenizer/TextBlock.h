@@ -12,8 +12,6 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/Text/String.h"
-
 
 ///
 namespace Cpl { namespace Text { namespace Tokenizer {
@@ -95,15 +93,15 @@ public:
         METHODS.  THE PARSED TOKENS ARE ONLY VALID IF THIS METHOD
         RETURNS TRUE!
      */
-    inline bool validTokens() const throw()         { return m_validTokens; }
+    inline bool isValidTokens() const throw()       { return m_validTokens; }
       
             
     /// Returns the number of parameter fields in the Text block
     inline unsigned numParameters() const throw()   { return m_count; }
      
 
-    /// Returns the Nth parameter (index starts with 0). Return true if successful; else false is returned
-    bool getParameter( Cpl::Text::String& dst, unsigned index ) const throw();
+    /// Returns the Nth parameter (index starts with 0). Return a null pointer if index is out-of-range
+    const char* getParameter( unsigned index ) const throw();
     
 
     /// Returns true if the parsing stopped because the terminator character was encounter (vs. end-of-string)
@@ -115,6 +113,11 @@ public:
         character.
      */
     inline const char* remaining() const throw()    { return m_ptr; }
+
+
+protected:
+    /// Helpter method
+    void removeWhiteSpace( char* startOfTokenPtr, char* firstNonSpacePtr, char* lastNonSpacePtr ) throw();
 
 };
 

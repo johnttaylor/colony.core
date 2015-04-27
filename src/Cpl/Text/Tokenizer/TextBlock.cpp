@@ -12,13 +12,14 @@
 #include "TextBlock.h"
 #include "Cpl/Text/strip.h"
 #include <string.h>
+#include <ctype.h>
 
 //
 using namespace Cpl::Text;
 using namespace Cpl::Text::Tokenizer;
 
 
-static void removeCharacter_( char* charToRemovePtr ) throw();
+static void removeCharacter_( char* charToRemovePtr, size_t numCharsToRemove=1 ) throw();
 
 
 ///////////////////////////////
@@ -42,22 +43,33 @@ TextBlock::TextBlock( char* string, char delimiter, char terminator, char quote,
         return;
         }
 
+    // Housekeeping
+    char* firstNonSpacePtr = 0;
+    char* lastNonSpacePtr  = 0;
+    char* startOfTokenPtr  = m_ptr;
+
     // Parse the string
     while( *m_ptr != '\0' )
         {
         // Check for teminator character
         if ( *m_ptr == terminator )
             {
+            // Remove leading/trailing whitespace
+            removeWhiteSpace( startOfTokenPtr, firstNonSpacePtr, lastNonSpacePtr );
+
             // Finalize the found token and STOP parsing
             m_terminatorFound = true;
             *m_ptr++          = '\0';
             m_count++;
-            break;
+            return;
             }
 
         // Check for delimiter
         if ( *m_ptr == delimiter )
             {
+            // Remove leading/trailing whitespace
+            removeWhiteSpace( startOfTokenPtr, firstNonSpacePtr, lastNonSpacePtr );
+
             // Finalize the found token
             *m_ptr++ = '\0';
             m_count++;
@@ -68,6 +80,11 @@ TextBlock::TextBlock( char* string, char delimiter, char terminator, char quote,
                 {
                 m_ptr = (char*) stripSpace(m_ptr);
                 }
+
+            // Housekeeping
+            firstNonSpacePtr = 0;
+            lastNonSpacePtr  = 0;
+            startOfTokenPtr  = m_ptr;
             }
 
             
@@ -76,11 +93,15 @@ TextBlock::TextBlock( char* string, char delimiter, char terminator, char quote,
             {
             // Remove the starting quote character
             removeCharacter_( m_ptr );
-            m_validTokens = false;
-            bool escaping = false;
+            m_validTokens  = false;
+            bool escaping  = false;
+            if ( !firstNonSpacePtr )
+                {
+                firstNonSpacePtr = m_ptr;
+                }
 
             // consume the text string
-            while( m_ptr != '\0' )
+            while( *m_ptr != '\0' )
                 {
                 // process the esacped character
                 if ( escaping )
@@ -94,7 +115,8 @@ TextBlock::TextBlock( char* string, char delimiter, char terminator, char quote,
                     {
                     // Remove the ending quote character
                     removeCharacter_( m_ptr );
-                    m_validTokens = true;
+                    lastNonSpacePtr = m_ptr - 1;
+                    m_validTokens   = true;
                     break;
                     }
 
@@ -116,20 +138,48 @@ TextBlock::TextBlock( char* string, char delimiter, char terminator, char quote,
         // Normal parameter character
         else
             {
-            // nothing todo -->so move on to the next character
+            // Mark leading whitespace
+            if ( !firstNonSpacePtr )
+                {
+                if ( !isspace((int)*m_ptr) )
+                    {
+                    firstNonSpacePtr = m_ptr;
+                    lastNonSpacePtr  = m_ptr;
+                    }
+                }
+
+            // Mark trailing whitespace
+            else if ( lastNonSpacePtr )
+                {
+                if ( !isspace((int)*m_ptr) )
+                    {
+                    lastNonSpacePtr = m_ptr;
+                    }
+                }
+
+            // move on to the next character
             m_ptr++;
             }
         } 
+
+    // If I get here, the Text block did NOT have a terminator (which is okay).
+    // However, I need to the count the last token since the counting scheme
+    // above relies on finding the next delimiter/terminator to increment the
+    // token count.
+    m_count++;
+
+    // Remove leading/trailing whitespace on the last token
+    removeWhiteSpace( startOfTokenPtr, firstNonSpacePtr, lastNonSpacePtr );
     }
 
 
 ///////////////////////////////
-bool TextBlock::getParameter( String& dst, unsigned index ) const throw()
+const char* TextBlock::getParameter( unsigned index ) const throw()
     {
     // Trap out-of-bounds index
     if ( !m_validTokens || index >= m_count )
         {
-        return false;
+        return 0;
         }
 
 	const char* token = m_base;
@@ -143,22 +193,59 @@ bool TextBlock::getParameter( String& dst, unsigned index ) const throw()
 		token++;
 		}
     
-    dst = token;
-    dst.removeLeadingSpaces();
-    dst.removeTrailingSpaces();
-	return true;        
+    return token;
     }
 
 
-///////////////////////////////
-void removeCharacter_( char* charToRemovePtr ) throw()
+void TextBlock::removeWhiteSpace( char* startOfTokenPtr, char* firstNonSpacePtr, char* lastNonSpacePtr ) throw()
     {
-    char*  nextChar = charToRemovePtr + 1;
+    size_t numSpaces = 0;
+
+    // Remove any leading whitespace
+    if ( firstNonSpacePtr )
+        {
+        numSpaces = firstNonSpacePtr - startOfTokenPtr;
+        removeCharacter_( startOfTokenPtr, numSpaces );
+        m_ptr -= numSpaces;
+        }
+
+    // NO non-whitespace was found
+    else
+        {
+        numSpaces = m_ptr - startOfTokenPtr;
+        removeCharacter_( startOfTokenPtr, numSpaces );
+        m_ptr -= numSpaces;
+        }
+
+    // Remove any trailing whitespace
+    if ( lastNonSpacePtr )
+        {
+        // Adjust for any removed spaces from leading whitespace
+        lastNonSpacePtr -= numSpaces;
+
+        // Advance my pointer to the first (if there is any) trailing whitespace char AND determine if there is any whitespace to remove
+        if ( ++lastNonSpacePtr < m_ptr )
+            {
+            size_t numSpaces = m_ptr - lastNonSpacePtr;
+            removeCharacter_( lastNonSpacePtr, numSpaces );
+            m_ptr -= numSpaces;
+            }  
+        }
+    }
+
+///////////////////////////////
+void removeCharacter_( char* charToRemovePtr, size_t numCharsToRemove ) throw()
+    {
+    if ( numCharsToRemove == 0 )
+        {
+        return;
+        }
+
+    char*  nextChar = charToRemovePtr + numCharsToRemove;
     size_t len      = strlen( nextChar ) + 1;
 
 	// the move will include the null terminator
     memmove( charToRemovePtr, nextChar, len );
     }
-
 
 

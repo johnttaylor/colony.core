@@ -86,11 +86,23 @@ bool StreamEncoder::output( char src )
 
 bool StreamEncoder::output( const char* src )
     {
+    // Do NOTHING if invalid input
+    if ( !src )
+        {
+        return true;
+        }
+
     return output( src, strlen(src) );
     }
 
 bool StreamEncoder::output( const char* src, size_t numBytes )
     {
+    // Do NOTHING if invalid input
+    if ( !src )
+        {
+        return true;
+        }
+
     size_t i;
     for(i=0; i<numBytes; i++)
         {

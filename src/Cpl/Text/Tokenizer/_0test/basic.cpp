@@ -30,9 +30,6 @@ void link_basic(void) {}
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef BUFSIZE_
-#define BUFSIZE_        16
-#endif
 
 #define DELIMITERS_     ",.()"
 

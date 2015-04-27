@@ -100,6 +100,12 @@ bool AsciiDecoder<BUFSIZE>::scan( Cpl::Io::Input& src, size_t maxSizeOfFrame, ch
     // Zero out size of the found frame
     frameSize = 0;
 
+    // Error case: Treat a null frame buffer as an IO failure case
+    if ( !frame )
+        {
+        return false;
+        }
+
     // Scan till a frame is found
     for(;;)
         {

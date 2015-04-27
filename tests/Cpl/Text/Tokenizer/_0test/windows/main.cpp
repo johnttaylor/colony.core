@@ -7,6 +7,7 @@
 
 // External references
 extern void link_basic(void);
+extern void link_textblock(void);
 
 
 int main( int argc, char* const argv[] )
@@ -23,6 +24,7 @@ int main( int argc, char* const argv[] )
     // test cases and how NQBP links by libraries.  Short version is do NOT
     // remove these call(s).
     link_basic();
+    link_textblock();
 
 
     // Run the test(s)
