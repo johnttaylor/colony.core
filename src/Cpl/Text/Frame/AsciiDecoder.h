@@ -13,7 +13,7 @@
 /** @file */
 
 
-#include "Cpl/Text/Frame/Decoder.h"
+#include "Cpl/Text/Frame/Decoder_.h"
 
 
 ///
@@ -31,10 +31,10 @@ namespace Cpl { namespace Text { namespace Frame {
                     characters from the Input stream.
  */
 template <int BUFSIZE>
-class AsciiDecoder: public Decoder
+class AsciiDecoder: public Decoder_
 {
 protected:
-    /// SOF character
+        /// SOF character
     const char      m_sof;
 
     /// EOF character
@@ -45,12 +45,6 @@ protected:
 
     /// Remember printable ASCII characters ONLY option
     const bool      m_restricted;
-
-    /// Current number of characters remaining in my raw input buffer
-    int             m_dataLen;
-
-    /// Pointer to the next unprocessed character in my raw input buffer
-    char*           m_dataPtr;
 
     /// Raw input buffer for reading characters in 'chuncks' from my Input stream (i.e. minimize the calls to read())
     char            m_buffer[BUFSIZE];
@@ -64,149 +58,31 @@ public:
         to reset and begin searching/looking-for the next start-of-frame
         character.
      */
-    AsciiDecoder( char startOfFrame, char endOfFrame, char escapeChar, bool restrict=true );
+    AsciiDecoder( char startOfFrame, char endOfFrame, char escapeChar, bool restrict=true )
+        :Decoder_(m_buffer,BUFSIZE)
+        ,m_sof(startOfFrame)
+        ,m_eof(endOfFrame)
+        ,m_esc(escapeChar)
+        ,m_restricted(restrict)
+            {
+            }
 
 
-public:
-    /// See Cpl::Text::Frame::Decoder
-    bool scan( Cpl::Io::Input& src, size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw();
+protected:
+    /// See Cpl::Text::Frame::Decoder_
+    bool isStartOfFrame() throw()   { return *m_dataPtr == m_sof; }
+    
+    /// See Cpl::Text::Frame::Decoder_
+    bool isEofOfFrame() throw()     { return *m_dataPtr == m_eof; }
 
+    /// See Cpl::Text::Frame::Decoder_
+    bool isEscapeChar() throw()     { return *m_dataPtr == m_esc; }
+
+    /// See Cpl::Text::Frame::Decoder_
+    bool isLegalCharacter() throw() { return *m_dataPtr < 0x80 && (!m_restricted || (*m_dataPtr <= 0x7E && *m_dataPtr >= 0x20) ); }
 };
 
 
-/////////////////////////////////////////////////////////////////////////////
-//                          IMPLEMENTATION
-/////////////////////////////////////////////////////////////////////////////
-
-template <int BUFSIZE>
-AsciiDecoder<BUFSIZE>::AsciiDecoder( char startOfFrame, char endOfFrame, char escapeChar, bool restrict )
-:m_sof(startOfFrame)
-,m_eof(endOfFrame)
-,m_esc(escapeChar)
-,m_restricted(restrict)
-,m_dataLen(0)
-,m_dataPtr(0)
-    {
-    }
-
-
-template <int BUFSIZE>
-bool AsciiDecoder<BUFSIZE>::scan( Cpl::Io::Input& src, size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw()
-    {
-    bool  inFrame  = false;
-    bool  escaping = false;
-    char* framePtr;
-
-    // Zero out size of the found frame
-    frameSize = 0;
-
-    // Error case: Treat a null frame buffer as an IO failure case
-    if ( !frame )
-        {
-        return false;
-        }
-
-    // Scan till a frame is found
-    for(;;)
-        {
-        if ( !m_dataLen )
-            {
-            if ( !src.read( m_buffer, BUFSIZE, m_dataLen ) )
-                {
-                // Error reading data -->exit scan
-                m_dataLen = 0; // Reset my internal count so I start 'over' on the next call (if there is one)
-                return false;
-                }
-
-            // Reset my data pointer
-            m_dataPtr = m_buffer;
-            }
-
-        // Process my input buffer one character at a time
-        for( ;m_dataLen; m_dataLen--, m_dataPtr++ )
-            {
-            // OUTSIDE of a frame
-            if ( !inFrame )
-                {
-                if ( *m_dataPtr == m_sof )
-                    {
-                    inFrame   = true;
-                    escaping  = false;
-                    frameSize = 0;
-                    framePtr  = frame;
-                    }
-                }
-
-            // INSIDE a frame
-            else 
-                {
-                // Trap illegal characters
-                if ( *m_dataPtr > 0x7F || (m_restricted && (*m_dataPtr > 0x7E || *m_dataPtr < 0x20 )) )
-                    {
-                    inFrame = false;
-                    } 
-
-                // No escape sequence in progress
-                else if ( !escaping )
-                    {
-                    // EOF Characer
-                    if ( *m_dataPtr == m_eof )
-                        {
-                        // EXIT routine with a success return code
-                        m_dataPtr++;    // Explicitly consume the EOF character (since we are brute force exiting the loop)
-                        m_dataLen--;
-                        return true;
-                        }
-
-                    // Regular character
-                    else if ( *m_dataPtr != m_esc )
-                        {
-                        // Store incoming character into the Client's buffer
-                        if ( frameSize < maxSizeOfFrame )
-                            {
-                            *framePtr++ = *m_dataPtr;
-                            frameSize++;
-                            }
-
-                        // Exceeded the Client's buffer space -->internal error -->reset my Frame state
-                        else
-                            {
-                            inFrame = false;
-                            }
-                        }
-
-                    // Start escape sequence
-                    else
-                        {
-                        escaping = true;
-                        }
-                    }
-
-
-                // Escape Sequence
-                else
-                    {
-                    // Store the escaped character into the Client's buffer
-                    if ( frameSize < maxSizeOfFrame )
-                        {
-                        escaping    = false;
-                        *framePtr++ = *m_dataPtr;
-                        frameSize++;
-                        }
-
-                    // Exceeded the Client's buffer space -->internal error -->reset my Frame state
-                    else
-                        {
-                        inFrame = false;
-                        }
-                    }
-                }
-            }
-        }
-
-    // I should never get here!
-    return false;
-    }
 
 
 

@@ -35,7 +35,7 @@ public:
 
 public:
 	/// See Cpl::Io::Socket::Connector
-	Result_t establish( const char* remoteHostName, int portNumToConnectTo, Cpl::Io::Descriptor& fdOut );
+	Result_T establish( const char* remoteHostName, int portNumToConnectTo, Cpl::Io::Descriptor& fdOut );
 
 };
 

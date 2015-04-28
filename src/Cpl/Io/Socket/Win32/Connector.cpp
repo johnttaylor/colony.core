@@ -35,7 +35,7 @@ Connector::~Connector()
 
 	
 ///////////////////////////////
-Connector::Result_t Connector::establish( const char* remoteHostName, int portNumToConnectTo, Cpl::Io::Descriptor& fdOut )
+Connector::Result_T Connector::establish( const char* remoteHostName, int portNumToConnectTo, Cpl::Io::Descriptor& fdOut )
     {
     SOCKET             sockfd    = INVALID_SOCKET;
     struct addrinfo*   resultPtr = NULL;

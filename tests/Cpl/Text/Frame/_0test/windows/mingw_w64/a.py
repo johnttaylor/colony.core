@@ -12,8 +12,11 @@ import subprocess
 #------------------------------------------------------------------------------
 def run_test( root, subdir ):
     utils.push_dir( subdir )
-    src = os.path.join( root, 'colony.core', 'src', 'Cpl', 'Text', 'Frame', '_0test', 'testinput.txt' )
+    basesrc = os.path.join( root, 'colony.core', 'src', 'Cpl', 'Text', 'Frame', '_0test' )
+    src     = os.path.join( basesrc, 'testinput.txt' )
+    src2    = os.path.join( basesrc, 'testinput2.txt' )
     shutil.copy( src, '.' ); 
+    shutil.copy( src2, '.' ); 
     print "Running unit test dir: {} ...".format( subdir )
     p = subprocess.Popen( 'b.exe', shell=True )
     p.communicate()

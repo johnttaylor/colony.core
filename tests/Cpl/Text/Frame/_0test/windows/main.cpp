@@ -6,6 +6,7 @@
 
 // External references
 extern void link_decoder(void);
+extern void link_decoder2(void);
 extern void link_encoder(void);
 
 
@@ -21,6 +22,7 @@ int main( int argc, char* const argv[] )
     // test cases and how NQBP links by libraries.  Short version is do NOT
     // remove these call(s).
     link_decoder();
+    link_decoder2();
     link_encoder();
 
     CPL_SYSTEM_TRACE_ENABLE();

@@ -28,7 +28,7 @@ class Connector
 {
 public:
     /// Possible return codes when attempting to establish a connection
-    enum Result_t { eSUCCESS=0,     /// Conection was succesful
+    enum Result_T { eSUCCESS=0,     /// Conection was succesful
                     eERROR,         /// Error occurred
                     eREFUSED,       /// Connection request was refused by the remote Host
                   }; 
@@ -39,7 +39,7 @@ public:
         success an opened Cpl::Io::Descriptor is returned (via 'fdOut') for the 
         connection. 
      */
-	virtual Result_t establish( const char* remoteHostName, int portNumToConnectTo, Cpl::Io::Descriptor& fdOut ) = 0;
+	virtual Result_T establish( const char* remoteHostName, int portNumToConnectTo, Cpl::Io::Descriptor& fdOut ) = 0;
 
 
 public:
