@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Command_h_
-#define Cpl_TShell_Command_h_
+#ifndef Cpl_TShell_Debug_Command_h_
+#define Cpl_TShell_Debug_Command_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -13,19 +13,16 @@
 /** @file */
 
 #include "Cpl/Container/MapItem.h"
+#include "Cpl/Io/Output.h"
 
 
 ///
-namespace Cpl { namespace TShell {
+namespace Cpl { namespace TShell { namespace Debug {
 
-// Forward name referencing to avoid circular header file dependencies
-class Processor;
-
-
-/** This class defines the interface for a TShell command.
+/** This Private Namesapce class defines the interface for a Debug command.
  */
 
-class Command: public Cpl::Container::MapItem
+class Command_: public Cpl::Container::MapItem
 {
 public:         
     /// Possible result codes when executing a command
@@ -33,16 +30,15 @@ public:
                     eERROR_IO,              //!< Command failed due to an error writing to the Output stream
                     eERROR_MISSING_ARGS,    //!< Command failed due to execute due to missing one or more required arguments
                     eERROR_INVALID_ARGS,    //!< Command failed due to execute due to one or more arguments being invalid
-                    eERROR_FAILED           //!< Command failed to complete all of its actions
-                    eERROR_PARTIAL          //!< Command completed some of it actions, but not all and the uncompleted work is not consider a 'hard' failure.
+                    eERROR_FAILED           //!< Command failed to complete one or more of actions.
                   }; 
 
 
 
 public:
-    /** This method executes the command
+    /** This method executes the command.  
      */
-    virtual Result_T execute( Processor& context, char* inputString ) throw() = 0;
+    virtual Result_T execute( char* inputString, Cpl::Io::Output& outfd ) throw() = 0;
 
 
 public:
@@ -68,5 +64,6 @@ public:
 };
 
 };      // end namespaces
+};
 };
 #endif  // end header latch
