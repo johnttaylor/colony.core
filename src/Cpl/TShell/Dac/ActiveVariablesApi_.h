@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Debug_ActiveVariables_h_
-#define Cpl_TShell_Debug_ActiveVariables_h_
+#ifndef Cpl_TShell_Dac_ActiveVariablesApi_x_h_
+#define Cpl_TShell_Dac_ActiveVariablesApi_x_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -12,22 +12,16 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/THsell/Debug/Variable_.h"
+#include "Cpl/THsell/Dac/VariableApi_.h"
 
 
 ///
-namespace Cpl { namespace TShell { namespace Debug {
+namespace Cpl { namespace TShell { namespace Dac {
 
-/** This Private Namesapce class defines the interface managing a
-    collection of in-use and/or active Debug shell variables.
-
-    NOTE: This class IS-A a Container Map, so clients can walk the 
-          set of active Varaibles using the Cpl::Container::Map 
-          interface.  Clients SHOULD NEVER use the Map interface
-          for adding to the set of active Variables!
+/** This Private Namespace class defines the interface managing a
+    collection of in-use and/or active DAC shell variables.
  */
-
-class ActiveVariables_
+class ActiveVariablesApi_
 {
 public:
     /** This method searches - by variable name = the collection of active 
@@ -38,7 +32,7 @@ public:
         the command can NOT be 'created' a new variable (e.g. out-of-memory)
         than 0 is returned. 
      */
-    virtual Variable_* get( const char* variableName ) throw() = 0;
+    virtual VariableApi_* get( Cpl::Text::String& variableName ) throw() = 0;
 
 
     /** This method searches - by variable name = the collection of active 
@@ -47,26 +41,26 @@ public:
         0 is returned.  This method is similiar to get() EXCEPT it does
         NOT attempt to create a new variable on the 'not-found' condition.
      */
-    virtual Variable_* find( const char* variableName ) throw() = 0;
+    virtual VariableApi_* find( Cpl::Text::String& variableName ) throw() = 0;
 
 
     /** This method is used to remove (i.e. 'destory') a variable from
         the active collection/state.
      */
-    virtual void remove( Variable_& varNoLongerInUse ) throw() = 0;
+    virtual void remove( VariableApi_& varNoLongerInUse ) throw() = 0;
 
 
 public:
     /// Returns the first active Variable in the collection.  Returns 0 if the collection is empty
-    Variable_* first() const;
+    virtual VariableApi_* first() const throw() = 0;
 
     /// Returns the nextactive Variable in the collection.  Returns 0 if there are no more variables in the collection
-    Variable_* next( Variable_& current ) const;
+    virtual VariableApi_* next( VariableApi_& current ) const throw() = 0;
 
 
 public:
     /// Virtual destructor
-    virtual ~ActiveVariables_(){}
+    virtual ~ActiveVariablesApi_(){}
 
 };
 

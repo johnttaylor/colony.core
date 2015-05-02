@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Debug_Context_h_
-#define Cpl_TShell_Debug_Context_h_
+#ifndef Cpl_TShell_Dac_Context_x_h_
+#define Cpl_TShell_Dac_Context_x_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -13,48 +13,35 @@
 /** @file */
 
 #include "Cpl/TShell/Processor.h"
-#include "Cpl/TShell/Debug/Command_.h"
-#include "Cpl/TShell/Debug/ActiveVariables_.h"
+#include "Cpl/TShell/Dac/Command_.h"
+#include "Cpl/TShell/Dac/ActiveVariablesApi_.h"
 #include "Cpl/System/Mutex.h"
 #include "Cpl/Io/Output.h"
 #include "Cpl/Container/Map.h"
 
 
 ///
-namespace Cpl { namespace TShell { namespace Debug {
+namespace Cpl { namespace TShell { namespace Dac {
 
-/** This Private Namespace class defines a "Context" for a Command Processor.  
-    The Context provide common infrastructure, information, buffers, etc. that
+/** This Private Namespace class defines a "Context" for a DAC shell. The 
+    Context provide common infrastructure, information, buffers, etc. that
     facilitates interaction between the Command Processor and individual
     commands.  The application SHOULD NEVER directly access this interface.
 
-    The Command Processor Context supports limited scripted ability with respect
-    to commands.  This include (in some form) the ability to:
+    The DAC Context supports limited scripted ability with respect to commands.  
+    This include (in some form) the ability to:
 
     - Shell variables that can be set/read in commands
     - Limited looping with IF/ELSE functionality
-
-    The implemeantion assumes a single threaded model, i.e. the Command
-    Processor and all of its  commands run in a single thread.  It is 
-    APPLICATION's responsibility to provide any desired multi-threaded 
-    support. There are two caveats to the single-threaded model:
-        
-        - The output of the commands is mutex protected.  This allows the
-          Output stream to be 'shared' with other sub-systems and/or
-          threads (e.g. the shell shares the same Output stream as the 
-          Cpl::System::Trace logging output).
-
-        - The stop() method can be called safely from other threads.
-      
  */
 
 class Context_: public Cpl::TShell::Processor
 {
 public:
-    /** This method executes attempts to execute the content of the 
-        deframed/decoded 'inputString'.  If a valid command is found in the
-        'inputString' is excuted.  The method always return true UNLESS there
-        is IO stream error - then false is returned.
+    /** This method attempts to execute the content of the deframed/decoded 
+        'inputString'.  The method returns the result code of the execute
+        command.  If 'inputString' is not a valid command, then the appropriate
+        error/result code is returned.
      */
     virtual Command::Result_t executeCommand( const char* deframedInput ) throw() = 0;
         
@@ -71,10 +58,14 @@ public:
 
 
 public:
-    /// This method 
+    /// This method the set of active/in-use Shell variables
     virtual ActiveVariables_& getVariables() throw() = 0;
-    ///
-    virtual Variable_ getErrorLevel() throw() = 0;
+
+    /** This method returns the Shell variable that contains the 
+        numeric value of the returned Result_T code form the last executed
+        command.
+     */
+    virtual VariableApi_ getErrorLevel() throw() = 0;
 
 
 public:
@@ -114,11 +105,23 @@ public:
 
 
 public:
-    /// Shared/common buffer to be used when generating the encoded/framed output string 
+    /** Shared/common buffer to be used when generating the encoded/framed 
+        output string.  All commands are required to use this buffer when
+        generating their Output (this is to support the 'output capture'
+        needed by the EXE command).
+     */
     virtual char* getWorkOutputFrameBuffer( size_t& bufsize ) throw() = 0;
 
-    ///
-    virtual Cpl::Text::String& getWorkBuffer() throw() = 0;
+    /** A shared/common working buffer. The buffer is guarented to be large 
+        enough for converting/format binary numbers (int,floats,etc) into
+        strings.
+     */
+    virtual Cpl::Text::String& getNumericBuffer() throw() = 0;
+
+
+public:
+    /// Virtual destructor
+    virtual ~Context_(){}
 
 
 };      // end namespaces
