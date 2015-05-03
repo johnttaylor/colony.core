@@ -10,16 +10,15 @@
 *----------------------------------------------------------------------------*/ 
 
 
-#include "StreamEncoder.h"
+#include "StringEncoder.h"
 
 
 ///
 using namespace Cpl::Text::Frame;
 
 
-
 ///////////////////////////////////
-StreamEncoder::StreamEncoder( Cpl::Io::Output& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline )
+StringEncoder::StringEncoder( Cpl::Text::String& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline )
 :Encoder_(startOfFrame, endOfFrame, escapeChar, appendNewline)
 ,m_dst(dst)
     {
@@ -28,18 +27,21 @@ StreamEncoder::StreamEncoder( Cpl::Io::Output& dst, char startOfFrame, char endO
 
 
 ///////////////////////////////////
-bool StreamEncoder::start( char src ) throw()
+bool StringEncoder::start( char src ) throw()
     {
-    return m_dst.write(src);
+    m_dst = src;
+    return m_dst.truncated() == false;
     }
 
-bool StreamEncoder::start() throw()
+bool StringEncoder::start() throw()
     {
-    // Nothing to do for stream output
-    return true;
+    m_dst.clear();
+    return m_dst.truncated() == false;
     }
 
-bool StreamEncoder::append( char src ) throw()
+bool StringEncoder::append( char src ) throw()
     {
-    return m_dst.write(src);
+    m_dst += src;
+    return m_dst.truncated() == false;
     }
+

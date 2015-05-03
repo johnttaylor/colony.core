@@ -32,7 +32,8 @@ public:
         begin to process commands.  This command will not return until
         the Command Processor self terminates or a Input/Output stream
         error was encounter.  The method returns true if the Command Processor
-        self terminated; else false is returned.
+        self terminated or was requested to stop; else false is returned (i.e.
+        a Input/Output stream error was encounter).
         
         NOTE: This method is an 'in-thread' intialization, i.e. not thread
         safe.  The application is RESPONSIBLE for managing threading issues.

@@ -16,6 +16,7 @@
 #include "Cpl/TShell/Dac/Context_.h"
 #include "Cpl/System/Mutex.h"
 #include "Cpl/Text/FString.h"
+#include "Cpl/Log/Loggers.h"
 
 
 /** This symbol defines the size, in bytes, of the maximum allowed input
@@ -44,7 +45,12 @@
 #define OPTION_CPL_TSHELL_DAC_PROCESSOR_NAME_ERRORLEVEL         "_errno"
 #define
 
-   
+/** This symbols defines the maximum number of nested loops
+ */
+#ifndef OPTION_CPL_TSHELL_PROCESSOR_MAX_NESTED_LOOPS   
+#define OPTION_CPL_TSHELL_PROCESSOR_MAX_NESTED_LOOPS            3
+#endif
+ 
 
 ///
 namespace Cpl { namespace TShell { namespace Dac {
@@ -87,7 +93,7 @@ class Processor: public Context_
 public:
     /** Data type/structured used to buffer commands. 
      */
-    typedef char CommandBuffer_T[OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE];
+    typedef char CommandBuffer_T[OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE+1];
 
 
 protected:
@@ -112,8 +118,8 @@ protected:
     /// Size of the command buffer
     unsigned                            m_cmdBufSize;
 
-    /// Number of currently buffered commands
-    usigned                             m_numCmdBuffered;
+    /// Comment character
+    char                                m_comment;
 
     /// Argument Escape character
     char                                m_esc;
@@ -133,36 +139,43 @@ protected:
     /// My run state
     bool                                m_running
     
-    /// My command-capturing state
-    bool                                m_capturing;
+    /// My filtering state
+    bool                                m_filtering;
 
-    /// My command-replaying state
-    bool                                m_replaying;
+    /// Filter marker (i.e skip command until marker is encounter)
+    const char*                         m_filterMarker;
 
-    /// My skipping state
-    bool                                m_skipping;
+    /// Reference counter for Replay mode
+    unsigned                            m_replayCount;
 
-    /// Command Buffer index of the start of the replay request
-    unsigned                            m_replayStartIdx;
+    /// Reference counter for Capture mode
+    unsigned                            m_captureCount;
 
-    /// Command Buffer index of the end of the replay request
-    unsigned                            m_replayEndIdx;
+    /// Current index into the command buffer/cache
+    unsigned                            m_currentIdx
 
-    /// The 
-       bool                                  _capturing;
-   bool                                  _replay;
-   bool                                  _skippingUntil;
-   unsigned                              _replayStartIdx;
-   unsigned                              _replayEndIdx;
-   unsigned                              _bufferIdx;
-   const char*                           _filterMarker;
-;
+    /// Current index into the command buffer/cache when in replay mode
+    unsigned                            m_replayIdx;
+
+    /// Stack used to remember start-index of loops for replay mode
+    Cpl::Container::Stack<unsigned>     m_startIndexes;
+
+    /// Memory for the start-indexes stack
+    unsigned                            m_memStack[OPTION_CPL_TSHELL_PROCESSOR_MAX_NESTED_LOOPS];
+
+
+    /// Log warning events
+    Cpl::Log::Api&                      m_logger;
+
+
+    /// Input Frame buffer
+    char                                m_inputBuffer[OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE+1];
 
     /// Copy of the deframed input string (because the parser is a destructive parser)
-    char                                m_inputBuffer[OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE];
+    char                                m_inputCopy[OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE+1];
 
     /// Common Output buffer
-    char                                m_outputBuffer[OPTION_CPL_TSHELL_DAC_PROCESSOR_OUTBUF_SIZE];
+    char                                m_outputBuffer[OPTION_CPL_TSHELL_DAC_PROCESSOR_OUTBUF_SIZE+1];
 
 
     /// Shared work buffer
@@ -180,8 +193,9 @@ public:
         @param variables        Set of available variables for the Command 
                                 Processor. If the application does not use (or
                                 want) shell variables, then it should created
-                                an ActiveVariables instance with 'zero' for 
-                                max number of variables.
+                                an ActiveVariables instance with zero for 
+                                max number of variables (i.e. use NullVariables_
+                                class).
                                 (other than ErrorLevel) is supported.
         @param deframer         Frame decoder used to identify individual command
                                 strings within the raw Input stream
@@ -194,6 +208,9 @@ public:
                                 not supported.
         @param maxBufferCmds    Number of commands that can be stored in the
                                 'command buffer'
+        @param commentChar      The comment character used to indicate that the
+                                input string is a comment and should not be
+                                executed.
         @param argEscape        Escape character to be used when escaping qouble 
                                 quote characters inside a quoted argument.
         @param argDelimiter     The delimiter character used to seperate the
@@ -201,7 +218,7 @@ public:
         @param argQuote         The quote character used to 'double quote' a
                                 argument string.
         @param argTerminator    The command terminator character.
-
+        @param eventLogger      The event logger to be used.
      */
     Processor( Cpl::Container::Map<CommandApi_>& commands,
                ActiveVariablesApi_&              variables,
@@ -210,10 +227,12 @@ public:
                Cpl::System::Mutex&               outputLock,
                CommandBuffer_T*                  cmdBufferPtr=0, 
                unsigned                          maxBufferCmds=0,
+               char                              commentChar='#',
                char                              argEscape='`', 
                char                              argDelimiter=' ', 
                char                              argQuote='"',
-               char                              argTerminator='\n'
+               char                              argTerminator='\n',
+               Cpl::Log::Api&                    eventLogger = Cpl::Log::Loggers::application()
              );
 
 
@@ -227,8 +246,9 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    Command::Result_t executeCommand( const char* deframedInput ) throw();
+    CommandApi_::Result_t executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw();
 
+public:
     /// See Cpl::TShell::Dac::Context_
     Cpl::System::Mutex& getOutputLock() throw();
 
@@ -241,9 +261,7 @@ public:
     /// See Cpl::TShell::Dac::Context_
     VariableApi_& getErrorLevel() throw();
 
-    /// See Cpl::TShell::Dac::Context_
-    unsigned getNumBufferdCmds(void) const throw();
-
+public:
     /// See Cpl::TShell::Dac::Context_
     void beginCommandReplay(void) throw();
 
@@ -256,9 +274,11 @@ public:
     /// See Cpl::TShell::Dac::Context_
     void endCommandCapture(void) throw();
 
+public:
     /// See Cpl::TShell::Dac::Context_
-    void enabelFilter( Command& marker ) throw();
+    void enableFilter( Command& marker ) throw();
 
+public:
     /// See Cpl::TShell::Dac::Context_
     char* getWorkOutputFrameBuffer( size_t& bufsize ) throw();
 

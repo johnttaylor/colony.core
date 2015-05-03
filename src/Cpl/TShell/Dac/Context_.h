@@ -42,7 +42,7 @@ public:
         command.  If 'inputString' is not a valid command, then the appropriate
         error/result code is returned.
      */
-    virtual CommandApi_::Result_t executeCommand( const char* deframedInput ) throw() = 0;
+    virtual CommandApi_::Result_t executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw() = 0;
         
 
 public:
@@ -52,8 +52,6 @@ public:
     /// This method returns the list of implemented commands
     virtual Cpl::Container::Map<CommandApi_>& getCommands() throw() = 0;
 
-
-public:
     /// This method the set of active/in-use Shell variables
     virtual ActiveVariablesApi_& getVariables() throw() = 0;
 
@@ -65,12 +63,6 @@ public:
 
 
 public:
-    /** The method returns the number of commands currently
-        captured in Processor's loop buffer
-     */
-    virtual unsigned getNumBufferdCmds(void) const throw() = 0;
-
-
     /** The method replays (from the start) the contents of 
         the Processor's loop buffer.
      */
@@ -93,11 +85,12 @@ public:
     virtual void endCommandCapture(void) throw() = 0;
 
 
+public:
     /** The method cause the processor to skip/filter all 
         commands until the 'marker' command is encounter.  When the marker
         command is found, the filtering is turn off and the marker is executed.
      */
-    virtual void enabelFilter( Command& marker ) throw() = 0;
+    virtual void enableFilter( Command& marker ) throw() = 0;
 
 
 public:

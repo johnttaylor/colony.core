@@ -54,6 +54,7 @@ public:
     /// Returns the first active Variable in the collection.  Returns 0 if the collection is empty
     virtual VariableApi_* first() const throw() = 0;
 
+
     /// Returns the nextactive Variable in the collection.  Returns 0 if there are no more variables in the collection
     virtual VariableApi_* next( VariableApi_& current ) const throw() = 0;
 

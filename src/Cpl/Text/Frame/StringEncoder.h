@@ -1,5 +1,5 @@
-#ifndef Cpl_Text_Frame_StreamEncoder_h_
-#define Cpl_Text_Frame_StreamEncoder_h_
+#ifndef Cpl_Text_Frame_StringEncoder_h_
+#define Cpl_Text_Frame_StringEncoder_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -14,7 +14,7 @@
 
 
 #include "Cpl/Text/Frame/Encoder_.h"
-#include "Cpl/Io/Output.h"
+#include "Cpl/Text/String.h"
 
 
 
@@ -24,17 +24,15 @@ namespace Cpl { namespace Text { namespace Frame {
 
 
 /** This concrete class implents the Encoder API where the Output destination
-    is a Cpl::Io::Output stream.  There is no checking/enforcement of the
-    content of the Frame (e.g. it will accept non-ASCII character) except
-    for the SOF, EOF, and ESC characters.
+    is a Cpl::Text::String.  There is no checking/enforcement of the content of 
+    the Frame (e.g. it will accept non-ASCII character) except for the SOF, EOF, 
+    and ESC characters.
  */
-class StreamEncoder: public Encoder_
+class StringEncoder: public Encoder_
 {
 protected:
     /// Output stream
-    Cpl::Io::Output&    m_dst;
-
-
+    Cpl::Text::String&  m_dst;
 
 
 public:
@@ -42,7 +40,7 @@ public:
         append a newline character to the output stream AFTER the EOF
         character (this can make for more human readable output stream).
      */
-    StreamEncoder( Cpl::Io::Output& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline=true );
+    StringEncoder( Cpl::Text::String& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline=true );
 
 
 protected:

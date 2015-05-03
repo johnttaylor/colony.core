@@ -8,6 +8,7 @@
 extern void link_decoder(void);
 extern void link_decoder2(void);
 extern void link_encoder(void);
+extern void link_encoder2(void);
 
 
 int main( int argc, char* const argv[] )
@@ -24,6 +25,7 @@ int main( int argc, char* const argv[] )
     link_decoder();
     link_decoder2();
     link_encoder();
+    link_encoder2();
 
     CPL_SYSTEM_TRACE_ENABLE();
     CPL_SYSTEM_TRACE_ENABLE_SECTION("_0test");

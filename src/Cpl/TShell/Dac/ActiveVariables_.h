@@ -13,7 +13,6 @@
 /** @file */
 
 #include "Cpl/TShell/Dac/ActiveVariablesApi_.h"
-#include "Cpl/TShell/Dac/Variable_.h"
 #include "Cpl/Container/Map.h"
 #include "Cpl/Memory/SPool.h"
 
