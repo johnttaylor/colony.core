@@ -23,9 +23,9 @@ namespace Cpl { namespace TShell { namespace Dac {
 
     NOTES:
 
-        - All variables values are stored as strings
+        o All variables values are stored as strings
 
-        - Numeric operation are performed by converting the 'string' to 
+        o Numeric operation are performed by converting the 'string' to 
           a binary data type (e.g. double).  Once the numeric operation has 
           completed, then the binary value is converted back to a string 
           representation. 

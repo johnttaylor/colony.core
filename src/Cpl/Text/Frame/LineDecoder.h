@@ -46,7 +46,7 @@ protected:
     /// Track if I have encountered an invalid character in the 'middle' of a frame
     bool  m_illegal;;
 
-    /// Raw input buffer for reading characters in 'chuncks' from my Input stream (i.e. minimize the calls to read())
+    /// Raw input buffer for reading characters in 'chunks' from my Input stream (i.e. minimize the calls to read())
     char  m_buffer[BUFSIZE];
 
 

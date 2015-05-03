@@ -9,6 +9,7 @@ extern void link_dlist(void);
 extern void link_map(void);
 extern void link_dictionary(void);
 extern void link_ringbuffer(void);
+extern void link_stack(void);
 
 
 int main( int argc, char* const argv[] )
@@ -25,6 +26,7 @@ int main( int argc, char* const argv[] )
     link_map();
     link_dictionary();
     link_ringbuffer();
+    link_stack();
 
 
     // Run the test(s)

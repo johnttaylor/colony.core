@@ -46,7 +46,7 @@ public:
         This method returns immediately.  There is no feedback/confirmation
         when the Command Processor stops.
      */
-    virtual void stop() throw() = 0;
+    virtual void requestStop() throw() = 0;
 
 
 public:

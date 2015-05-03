@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Dac_Context_x_h_
-#define Cpl_TShell_Dac_Context_x_h_
+#ifndef Cpl_TShell_Dac_ContextApi_x_h_
+#define Cpl_TShell_Dac_ContextApi_x_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -13,7 +13,7 @@
 /** @file */
 
 #include "Cpl/TShell/Processor.h"
-#include "Cpl/TShell/Dac/Command_.h"
+#include "Cpl/TShell/Dac/CommandApi_.h"
 #include "Cpl/TShell/Dac/ActiveVariablesApi_.h"
 #include "Cpl/System/Mutex.h"
 #include "Cpl/Io/Output.h"
@@ -34,7 +34,6 @@ namespace Cpl { namespace TShell { namespace Dac {
     - Shell variables that can be set/read in commands
     - Limited looping with IF/ELSE functionality
  */
-
 class Context_: public Cpl::TShell::Processor
 {
 public:
@@ -43,29 +42,26 @@ public:
         command.  If 'inputString' is not a valid command, then the appropriate
         error/result code is returned.
      */
-    virtual Command::Result_t executeCommand( const char* deframedInput ) throw() = 0;
+    virtual CommandApi_::Result_t executeCommand( const char* deframedInput ) throw() = 0;
         
 
 public:
-    /// This method returns the original/unaltered/unparsed command string
-    virtual const char* getOriginalInput() throw() = 0;
-
     /// This method returns the lock for ensuring atomic output data 
     virtual Cpl::System::Mutex& getOutputLock() throw() = 0;
 
     /// This method returns the list of implemented commands
-    virtual Cpl::Container::Map<Command_>& getCommands() throw() = 0;
+    virtual Cpl::Container::Map<CommandApi_>& getCommands() throw() = 0;
 
 
 public:
     /// This method the set of active/in-use Shell variables
-    virtual ActiveVariables_& getVariables() throw() = 0;
+    virtual ActiveVariablesApi_& getVariables() throw() = 0;
 
     /** This method returns the Shell variable that contains the 
         numeric value of the returned Result_T code form the last executed
         command.
      */
-    virtual VariableApi_ getErrorLevel() throw() = 0;
+    virtual VariableApi_& getErrorLevel() throw() = 0;
 
 
 public:

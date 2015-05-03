@@ -38,7 +38,7 @@ namespace Cpl { namespace Text { namespace Tokenizer {
     results will return an 'empty parameter' (a parameter will a zero string
     length) for this sequence.  The EXCEPTION to this rule is when the
     delimiter is the space character, then the tokenizer will never generated
-    and/or detect and 'empty parameter'.
+    and/or detect any 'empty parameters'.
 
     The original string is "corrupted" since the tokenizer changes characters.
     Also, the tokenizer will shorten the string when dealing with 'text

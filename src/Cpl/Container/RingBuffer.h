@@ -90,7 +90,6 @@ public:
     ITEM* peekTail(void) const throw();
 
 
-
 public:
     /** This method returns true if the Ring Buffer is empty
      */
