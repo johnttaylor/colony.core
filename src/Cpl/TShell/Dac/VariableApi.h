@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Dac_VariableApi_x_h_
-#define Cpl_TShell_Dac_VariableApi_x_h_
+#ifndef Cpl_TShell_Dac_VariableApi_h_
+#define Cpl_TShell_Dac_VariableApi_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -19,7 +19,7 @@
 ///
 namespace Cpl { namespace TShell { namespace Dac {
 
-/** This Private Namespace class defines the interface a Debug shell Variable.
+/** This class defines the interface a Debug shell Variable.
 
     NOTES:
 
@@ -31,7 +31,7 @@ namespace Cpl { namespace TShell { namespace Dac {
           representation. 
  */
 
-class VariableApi_: public Cpl::Container::MapItem
+class VariableApi: public Cpl::Container::MapItem
 {
 public:
     /** This method returns the variable's name
@@ -103,7 +103,7 @@ public:
 
 public:
     /// Virtual destructor
-    virtual ~VariableApi_(){}
+    virtual ~VariableApi(){}
 
 };
 

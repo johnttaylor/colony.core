@@ -51,6 +51,25 @@
 #define OPTION_CPL_TSHELL_PROCESSOR_MAX_NESTED_LOOPS            3
 #endif
  
+/** This symbols defines the Shell's greeting message
+ */
+#ifndef OPTION_CPL_TSHELL_DAC_PROCESSOR_GREETING
+#define OPTION_CPL_TSHELL_DAC_PROCESSOR_GREETING                "\n--- Your friendly neighborhood DAC shell. ---\n\n\n"
+#endif
+
+/** This symbols defines the Shell's farewell message
+ */
+#ifndef OPTION_CPL_TSHELL_DAC_PROCESSOR_FAREWELL
+#define OPTION_CPL_TSHELL_DAC_PROCESSOR_FAREWELL                "\n--- ...I am melting, am melting... ---\n\n"
+#endif
+
+/** This symbols defines the Shell's prompt string
+ */
+#ifndef OPTION_CPL_TSHELL_DAC_PROCESSOR_PROMPT
+#define OPTION_CPL_TSHELL_DAC_PROCESSOR_PROMPT                  "$"
+#endif
+
+
 
 ///
 namespace Cpl { namespace TShell { namespace Dac {
@@ -98,16 +117,19 @@ public:
 
 protected:
     /// Command list
-    Cpl::Container::Map<CommandApi_>&   m_commands
+    Cpl::Container::Map<Command_>&      m_commands
 
     /// Variable list
-    ActiveVariablesApi_&                m_variables;
+    ActiveVariablesApi&                m_variables;
 
     /// Raw input deframer
     Cpl::Text::Frame::Decoder&          m_deframer;
 
-    /// Ouput framer
+    /// Output framer
     Cpl::Text::Frame::Encoder&          m_framer;
+
+    /// Buffer that the output framer is required to use
+    Cpl::Text::String&                  m_outputFrameBuffer;
      
     /// Output lock
     Cpl::System::Mutex&                 m_outLock;
@@ -174,15 +196,9 @@ protected:
     /// Copy of the deframed input string (because the parser is a destructive parser)
     char                                m_inputCopy[OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE+1];
 
-    /// Common Output buffer
-    char                                m_outputBuffer[OPTION_CPL_TSHELL_DAC_PROCESSOR_OUTBUF_SIZE+1];
-
 
     /// Shared work buffer
-    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_PROCESSOR_WORKBUF_SIZE>                    m_numericWorkBuffer;
-
-    /// Frame decoder
-    Cpl::Text::Frame::LineDecoder<OPTION_CPL_TSHELL_DAC_PROCESSOR_FRAME_DECODE_BUFSIZE> m_decoder;
+    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_PROCESSOR_WORKBUF_SIZE> m_numericWorkBuffer;
 
 
 
@@ -194,7 +210,7 @@ public:
                                 Processor. If the application does not use (or
                                 want) shell variables, then it should created
                                 an ActiveVariables instance with zero for 
-                                max number of variables (i.e. use NullVariables_
+                                max number of variables (i.e. use NullVariables
                                 class).
                                 (other than ErrorLevel) is supported.
         @param deframer         Frame decoder used to identify individual command
@@ -220,10 +236,11 @@ public:
         @param argTerminator    The command terminator character.
         @param eventLogger      The event logger to be used.
      */
-    Processor( Cpl::Container::Map<CommandApi_>& commands,
-               ActiveVariablesApi_&              variables,
+    Processor( Cpl::Container::Map<Command_>&    commands,
+               ActiveVariablesApi&               variables,
                Cpl::Text::Frame::Decoder&        deframer,
                Cpl::Text::Frame::Encoder&        framer,
+               Cpl::Text::String&                outputFrameBuffer,
                Cpl::System::Mutex&               outputLock,
                CommandBuffer_T*                  cmdBufferPtr=0, 
                unsigned                          maxBufferCmds=0,
@@ -246,7 +263,8 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    CommandApi_::Result_t executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw();
+    Command_::Result_t executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw();
+
 
 public:
     /// See Cpl::TShell::Dac::Context_
@@ -256,11 +274,26 @@ public:
     Cpl::Container::Map<Command_>& getCommands() throw();
 
     /// See Cpl::TShell::Dac::Context_
-    ActiveVariablesApi_& getVariables() throw();
+    ActiveVariablesApi& getVariables() throw();
 
     /// See Cpl::TShell::Dac::Context_
-    VariableApi_& getErrorLevel() throw();
+    VariableApi& getErrorLevel() throw();
 
+    /// See Cpl::TShell::Dac::Context_
+    Cpl::Text::String& getOutputFrameBuffer() throw();
+
+
+public:
+    /// See Cpl::TShell::Dac::Context_
+    void startOutput() throw();
+
+    /// See Cpl::TShell::Dac::Context_
+    void appendOutput( const char* text ) throw();
+
+    /// See Cpl::TShell::Dac::Context_
+    bool commitOutput( Cpl::Io::Output outfd ) throw();
+
+ 
 public:
     /// See Cpl::TShell::Dac::Context_
     void beginCommandReplay(void) throw();
@@ -280,10 +313,18 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    char* getWorkOutputFrameBuffer( size_t& bufsize ) throw();
-
-    /// See Cpl::TShell::Dac::Context_
     Cpl::Text::String& getNumericBuffer() throw();
+
+
+protected:
+    /// Outputs the shell's start message
+    virtual bool Processor::greeting( Cpl::Io::Ouptut& outfd ) throw();
+
+    /// Outputs the shell's end message
+    virtual bool Processor::farewell( Cpl::Io::Ouptut& outfd ) throw();
+
+    /// Outputs the shell's prompt
+    virtual bool Processor::prompt( Cpl::Io::Ouptut& outfd ) throw();
 
 
 };      // end namespaces

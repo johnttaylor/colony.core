@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Context_h_
-#define Cpl_TShell_Context_h_
+#ifndef Cpl_TShell_Processor_h_
+#define Cpl_TShell_Processor_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -14,7 +14,6 @@
 
 #include "Cpl/Io/Input.h"
 #include "Cpl/Io/Output.h"
-#include "Cpl/Container/Map.h"
 
 
 ///

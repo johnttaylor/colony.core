@@ -13,7 +13,7 @@
 /** @file */
 
 #include "colony_config.h"
-#include "Cpl/TShell/Dac/VariableApi_.h"
+#include "Cpl/TShell/Dac/VariableApi.h"
 #include "Cpl/Text/FString.h"
 
 
@@ -38,7 +38,7 @@ namespace Cpl { namespace TShell { namespace Dac {
 /** This Private Namespace concrete class implements a DAC Shell variable
  */
 
-class Variable_: public VariableApi_
+class Variable_: public VariableApi
 {
 protected:
     /// Value buffer
@@ -61,39 +61,39 @@ public:
 
 
 public:
-    /// See Cpl::TShell::Dac::VariableApi_
+    /// See Cpl::TShell::Dac::VariableApi
     static int compare( const char* leftValue, const char* rightValue );
 
 
 public:
-    /// See Cpl::TShell::Dac::VariableApi_
+    /// See Cpl::TShell::Dac::VariableApi
     const char* getName() const throw();
 
-    /// See Cpl::TShell::Dac::VariableApi_
+    /// See Cpl::TShell::Dac::VariableApi
     const char* getValue() const throw();
 
-    /// See Cpl::TShell::Dac::VariableApi_
+    /// See Cpl::TShell::Dac::VariableApi
     bool setValue( const char* newValue ) throw();
 
-    /// See Cpl::TShell::Dac::VariableApi_
+    /// See Cpl::TShell::Dac::VariableApi
     bool setValue( double newValue ) throw();
 
-    /// See Cpl::TShell::Dac::VariableApi_
+    /// See Cpl::TShell::Dac::VariableApi
     bool setValue( long newValue ) throw();
 
-    /// See Cpl::TShell::Dac::VariableApi_
+    /// See Cpl::TShell::Dac::VariableApi
     bool setValue( unsigned long newValue ) throw();
 
-    /// See Cpl::TShell::Dac::VariableApi_
+    /// See Cpl::TShell::Dac::VariableApi
     bool add( const char* amount );
 
-    /// See Cpl::TShell::Dac::VariableApi_
+    /// See Cpl::TShell::Dac::VariableApi
     bool getNumber( double& valueAsNumber ) const throw();
 
-    /// See Cpl::TShell::Dac::VariableApi_
+    /// See Cpl::TShell::Dac::VariableApi
     bool getNumber( long& valueAsNumber ) const throw();
 
-    /// See Cpl::TShell::Dac::VariableApi_
+    /// See Cpl::TShell::Dac::VariableApi
     bool getNumber( unsigned long& valueAsNumber ) const throw();
 };
 

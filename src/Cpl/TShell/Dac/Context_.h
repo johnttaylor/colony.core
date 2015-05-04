@@ -13,8 +13,8 @@
 /** @file */
 
 #include "Cpl/TShell/Processor.h"
-#include "Cpl/TShell/Dac/CommandApi_.h"
-#include "Cpl/TShell/Dac/ActiveVariablesApi_.h"
+#include "Cpl/TShell/Dac/Command_.h"
+#include "Cpl/TShell/Dac/ActiveVariablesApi.h"
 #include "Cpl/System/Mutex.h"
 #include "Cpl/Io/Output.h"
 #include "Cpl/Container/Map.h"
@@ -42,7 +42,7 @@ public:
         command.  If 'inputString' is not a valid command, then the appropriate
         error/result code is returned.
      */
-    virtual CommandApi_::Result_t executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw() = 0;
+    virtual Command_::Result_t executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw() = 0;
         
 
 public:
@@ -50,16 +50,35 @@ public:
     virtual Cpl::System::Mutex& getOutputLock() throw() = 0;
 
     /// This method returns the list of implemented commands
-    virtual Cpl::Container::Map<CommandApi_>& getCommands() throw() = 0;
+    virtual Cpl::Container::Map<Command_>& getCommands() throw() = 0;
 
     /// This method the set of active/in-use Shell variables
-    virtual ActiveVariablesApi_& getVariables() throw() = 0;
+    virtual ActiveVariablesApi& getVariables() throw() = 0;
 
     /** This method returns the Shell variable that contains the 
         numeric value of the returned Result_T code form the last executed
         command.
      */
-    virtual VariableApi_& getErrorLevel() throw() = 0;
+    virtual VariableApi& getErrorLevel() throw() = 0;
+
+    /** Returns a reference to the output frame buffer.  This buffer will
+        contained the framed output of the last command.
+     */
+    virtual Cpl::Text::String& getOutputFrameBuffer() throw() = 0;
+
+
+public:
+    /// Helper method for generating command outputs. Each output 'line' must start with this command
+    virtual void startOutput() throw() = 0;
+
+    /// Helper method for generating command outputs. Contents of the output 'line'
+    virtual void appendOutput( const char* text ) throw() = 0;
+
+    /// Helper method for generating command outputs. Outputs the content of the cache line to the output stream
+    virtual bool commitOutput( Cpl::Io::Output outfd ) throw() = 0;
+
+    /// Helper method for generating command outputs.  Builds and Commits a single output message
+    inline bool outputMessage( const char* text ) throw() { startOutput(); appendOutput(text); return commitOutput(); }
 
 
 public:
