@@ -36,7 +36,7 @@ protected:
     Cpl::System::Thread*    m_threadPtr;
 
     /// Thread priority to run the shell
-    int                     m_priority
+    int                     m_priority;
 
     /// Thread name for the shell
     const char*             m_name;
@@ -59,7 +59,7 @@ public:
         runs in the context of the calling thread - and spawns a new
         thread for Shell/Command Processor to executing in.
      */
-    void launch( Cpl::Io::Input& infd, Cpl::Io::Output outfd ) throw();
+    void launch( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw();
 };
 
 

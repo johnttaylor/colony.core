@@ -58,10 +58,11 @@ protected:
     /// Initialize the node when being inserted in the tree
     inline void initialize( MapItem* parent )    { m_parentPtr_=parent; m_is_NOT_root_=true; m_balance_=eEVEN_; m_nextPtr_=0; m_prevPtr_=0; }
 
+
 protected: // Helper methods 
 
     /// Get tree connection/pointer
-    inline MapItem* getParent() const            { return (MapItem*) m_parentPtr_; }
+    inline MapItem*    getParent() const         { return (MapItem*) m_parentPtr_; }
 
     /// Set tree connection/pointer
     inline void        setParent( MapItem* n )   { m_parentPtr_ = n; }    

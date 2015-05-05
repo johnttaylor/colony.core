@@ -10,7 +10,6 @@
 *----------------------------------------------------------------------------*/ 
 
 #include "Processor.h"
-#include "Cpl/System/FastLock.h"
 
 
 ///
@@ -25,9 +24,9 @@ Processor::Processor( Cpl::Container::Map<Command_>&    commands,
                       Cpl::Text::Frame::Decoder&        deframer,
                       Cpl::Text::Frame::Encoder&        framer,
                       Cpl::Text::String&                outputFrameBuffer,
-                      char                              escapeChar,
+                      Cpl::System::Mutex&               outputLock,
                       CommandBuffer_T*                  cmdBufferPtr,
-                      unsigned                          maxBufferCmds 
+                      unsigned                          maxBufferCmds,
                       char                              commentChar,
                       char                              argEscape,
                       char                              argDelimiter,
@@ -35,7 +34,7 @@ Processor::Processor( Cpl::Container::Map<Command_>&    commands,
                       char                              argTerminator,
                       Cpl::Log::Api&                    eventLogger
                     )
-:m_commadns( commands )
+:m_commands( commands )
 ,m_variables( variables )
 ,m_deframer( deframer )
 ,m_framer( framer )
@@ -43,9 +42,8 @@ Processor::Processor( Cpl::Container::Map<Command_>&    commands,
 ,m_outLock( outputLock )
 ,m_cmdBuffer( cmdBufferPtr )
 ,m_cmdBufSize( maxBufferCmds )
-,m_numCmdBuffered( 0 )
 ,m_comment( commentChar )
-,m_esc( argEsacpe )
+,m_esc( argEscape )
 ,m_del( argDelimiter )
 ,m_quote( argQuote )
 ,m_term( argTerminator )
@@ -64,12 +62,12 @@ Processor::Processor( Cpl::Container::Map<Command_>&    commands,
 
 
 ///////////////////////////////////
-bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output outfd ) throw()
+bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
     {
     // Set my state to: running
-    Cpl::System::FastLock.lock();
+    m_fast.lock();
     m_running = true;
-    Cpl::System::FastLock.unlock();
+    m_fast.unlock();
 
     // Housekeeping
     m_filtering    = false;
@@ -80,18 +78,20 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output outfd ) throw()
     m_startIndexes.clearTheStack();
 
     // Output the greeting message
-    greeting();
+    greeting( outfd );
 
 
     // Run until I am requested to stop
     for(;;)
         {
         // Check for stop request
-        Cpl::System::FastLock.lock();
+        m_fast.lock();
         bool run = m_running;
-        Cpl::System::FastLock.unlock();
+        m_fast.unlock();
         if ( !run )
             {
+            farewell( outfd );
+            Cpl::System::Api::sleep(250); // Allow time for the farewell message to be outputted
             return true;
             }
 
@@ -115,10 +115,10 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output outfd ) throw()
             size_t frameSize = 0;
 
             // Output the prompt
-            prompt();
+            prompt( outfd );
 
             // Get the next command string from my input stream
-            if ( !decoder.scan( infd, OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE, m_inputBuffer, frameSize ) )
+            if ( !m_deframer.scan( infd, OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE, m_inputBuffer, frameSize ) )
                 {
                 // Error reading raw input -->exit the Command processor
                 return false;
@@ -130,12 +130,12 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output outfd ) throw()
             // Cache the raw command input WHEN in capture mode
             if ( m_captureCount )
                 {
-                // Check for exceeding the command buffer 
+                // Check for exceeding the command buffer                               
                 if ( m_currentIdx >= m_cmdBufSize )
                     {
                     // This is bad (but not fatal, well maybe not fatal)
                     m_currentIdx = 0;
-                    m_logger.warning( "Cpl::TShell:DAC::Processor. Exceeded the command script buffer (idx=%ul, size=%ul).  Your DAC shell script commands are broken!", m_currentIdx, m_cmdBufSize ));
+                    m_logger.warning( "Cpl::TShell:DAC::Processor. Exceeded the command script buffer (idx=%ul, size=%ul).  Your DAC shell script commands are broken!", m_currentIdx, m_cmdBufSize );
                     }
 
                 // Store the command
@@ -159,35 +159,31 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output outfd ) throw()
         }
    
 
-    // If I get here, then the requestStop() method was called
-    farewell();
-    return true;
+    // I should never get here!
+    return false;
     }
 
     
 
 void Processor::requestStop() throw()
     {
-    Cpl::System::FastLock.lock();
+    m_fast.lock();
     m_running = false;
-    Cpl::System::FastLock.unlock();
+    m_fast.unlock();
     }
 
 
 ///////////////////////////////////
-Command_::Result_t Processor::executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw()
+Command_::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw()
     {
     // Make a copy of the input and then tokenize/parse the input
     strcpy( m_inputCopy, deframedInput );
-    Cpl::Text::Tokenizer::TextBlock tokens( deframedInput, m_del, m_term, m_quote, m_esc ); 
+    Cpl::Text::Tokenizer::TextBlock tokens( m_inputCopy, m_del, m_term, m_quote, m_esc ); 
 
     // Skip something that doesn't parse
-    if ( tokens.isValidTokens == false )
+    if ( tokens.isValidTokens() == false )
         {
-        bool io  = outputMessage( resultToString_(eERROR_BAD_SYNTAX) );
-        io      &= outputMessage( m_inputCopy );
-        io      &= outputMessage( " " );
-        return io? Command_::eERROR_BAD_SYNTAX: Command_::eERROR_IO;
+        return outputCommandError( outfd, Command_::eERROR_BAD_SYNTAX, deframedInput )? Command_::eERROR_BAD_SYNTAX: Command_::eERROR_IO;
         }
 
     // Skip blank and comment lines
@@ -197,14 +193,11 @@ Command_::Result_t Processor::executeCommand( const char* deframedInput, Cpl::Io
         }
 
     // Lookup the command to be executed
-    KeyLiteralString verb( tokens.getParameter(0) );
-    Command_*        cmdPtr;
+    Cpl::Container::KeyLiteralString verb( tokens.getParameter(0) );
+    Command_*                        cmdPtr;
     if ( (cmdPtr=m_commands.find(verb)) == 0 )
         {
-        bool io  = outputMessage( resultToString_(eERROR_INVALID_CMD) );
-        io      &= outputMessage( m_inputCopy );
-        io      &= outputMessage( " " );
-        return io? Command_::eERROR_INVALID_CMD: Command_::eERROR_IO;
+        return outputCommandError( outfd, Command_::eERROR_INVALID_CMD, deframedInput )? Command_::eERROR_INVALID_CMD: Command_::eERROR_IO;
         }
     
     // Apply filtering (when enabled)
@@ -224,18 +217,14 @@ Command_::Result_t Processor::executeCommand( const char* deframedInput, Cpl::Io
         }
 
     // Execute the found command
-    Command_::Result_t result = cmdPtr->execute( *this, tokens, m_inputCopy, outfd );    
+    Command_::Result_T result = cmdPtr->execute( *this, tokens, deframedInput, outfd );    
     if ( result != Command_::eSUCCESS )
         {
-        bool io  = outputMessage( resultToString_(result) );
-        io      &= outputMessage( m_inputCopy );
-        io      &= outputMessage( " " );
-        return io? result: Command_::eERROR_IO;
+        return outputCommandError( outfd, result, deframedInput )? result: Command_::eERROR_IO;
         }
 
     return result;
     }
-
 
 ///////////////////////////////////
 Cpl::System::Mutex& Processor::getOutputLock() throw()
@@ -275,7 +264,7 @@ void Processor::appendOutput( const char* text ) throw()
     m_framer.output( text );
     }
 
-bool Processor::commitOutput( Cpl::Io::Output outfd ) throw()
+bool Processor::commitOutput( Cpl::Io::Output& outfd ) throw()
     {
     m_framer.endFrame();
     return outfd.write( m_outputFrameBuffer );
@@ -288,20 +277,22 @@ void Processor::beginCommandReplay(void) throw()
     bool status;
 
     m_replayCount++;
-    m_startIndexes.peekTop( status );
+    m_startIndexes.peekTop( &status );
     if ( !status )
         {
-        m_logger.warning( "Cpl::TShell:DAC::Processor. Start-of-Loop request invalid.  Your DAC shell script commands are broken!" ));
+        m_logger.warning( "Cpl::TShell:DAC::Processor. Start-of-Loop request invalid.  Your DAC shell script commands are broken!" );
         }
     }
 
 void Processor::endCommandReplay(void) throw()
     {
+    bool status;
+
     m_replayCount--;
-    m_startIndexes.pop( status );
+    m_startIndexes.pop( &status );
     if ( !status )
         {
-        m_logger.warning( "Cpl::TShell:DAC::Processor. End-of-Loop request invalid.  Your DAC shell script commands are broken!" ));
+        m_logger.warning( "Cpl::TShell:DAC::Processor. End-of-Loop request invalid.  Your DAC shell script commands are broken!" );
         }
     }
 
@@ -323,7 +314,7 @@ void Processor::endCommandCapture(void) throw()
 
 
 ///////////////////////////////////
-void Processor::enableFilter( Command& marker ) throw()
+void Processor::enableFilter( Command_& marker ) throw()
     {
     m_filtering    = true;
     m_filterMarker = marker.getVerb();
@@ -338,50 +329,66 @@ Cpl::Text::String& Processor::getNumericBuffer() throw()
 
 
 ///////////////////////////////////
-bool Processor::greeting( Cpl::Io::Ouptut& outfd )
+bool Processor::greeting( Cpl::Io::Output& outfd ) throw()
 	{
 	return outfd.write( OPTION_CPL_TSHELL_DAC_PROCESSOR_GREETING );
 	}
 	
-bool Processor::farewell( Cpl::Io::Ouptut& outfd )
+bool Processor::farewell( Cpl::Io::Output& outfd ) throw()
 	{
 	return outfd.write( OPTION_CPL_TSHELL_DAC_PROCESSOR_FAREWELL );
 	}
 	
-bool Processor::prompt( Cpl::Io::Ouptut& outfd )
+bool Processor::prompt( Cpl::Io::Output& outfd ) throw()
 	{
 	return outfd.write( OPTION_CPL_TSHELL_DAC_PROCESSOR_PROMPT );
 	}
 
 
 ///////////////////////////////////
+bool Processor::outputCommandError( Cpl::Io::Output& outfd, Command_::Result_T result, const char* deframedInput ) throw()
+    {
+    bool io;
+
+    io  = outputMessage( outfd, resultToString_(result) );
+          startOutput();
+          appendOutput( "[") ;
+          appendOutput( deframedInput );
+          appendOutput( "]" );
+    io &= commitOutput( outfd );
+    io &= outputMessage( outfd, " " );
+
+    return io;
+    }
+
+
 const char* resultToString_( Command_::Result_T errcode )
     {
-    switch( errorcode )
+    switch( errcode )
         {
         default: 
-            return "*** DAC-Shell Error: Command failed - unknown error code ***" );
+            return "*** ERROR: Command failed - unknown error code";
 
         case Command_::eERROR_BAD_SYNTAX:
-            return "*** DAC-Shell Error: Unable to parse command string ***" );
+            return "*** ERROR: Unable to parse command string";
 
         case Command_::eERROR_INVALID_CMD:
-            return "*** DAC-Shell Error: Unable to parse command string ***" );
+            return "*** ERROR: Command not supported";
 
         case Command_::eERROR_IO:
-            return "*** DAC-Shell Error: Input/Output stream IO encounter *** );
+            return "*** ERROR: Input/Output stream IO encounter";
 
-        case Command::eERROR_EXTRA_ARGS:
-            return "*** DAC-Shell Error: Command encounter 'extra' argument(s) ***" );
+        case Command_::eERROR_EXTRA_ARGS:
+            return "*** ERROR: Command encounter 'extra' argument(s)";
 
         case Command_::eERROR_MISSING_ARGS:
-            return "*** DAC-Shell Error: Command is missing argument(s) ***" );
+            return "*** ERROR: Command is missing argument(s)";
 
         case Command_::eERROR_INVALID_ARGS:
-            return "*** DAC-Shell Error: One or more Command arguments are incorrect/invalid ***" );
+            return "*** ERROR: One or more Command arguments are incorrect/invalid";
 
         case Command_::eERROR_FAILED:
-            return "*** DAC-Shell Error: Command failed to complete one or more of its actions ***" );
+            return "*** ERROR: Command failed to complete one or more of its actions";
         }
 
     return "**** I SHOULD NEVER GET HERE! ****";

@@ -13,6 +13,7 @@
 /** @file */
 
 #include "Cpl/TShell/Dac/Command_.h"
+#include "Cpl/TShell/Dac/Context_.h"
 #include "Cpl/Container/Map.h"
 
 
@@ -20,35 +21,29 @@
 namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
 /** This partially concrete Private Namespace class implements infrastructure
-    and/or common functionality for a DAC Shell command
+    and/or common functionality for a DAC Shell command.
  */
 class Command_: public Cpl::TShell::Dac::Command_
 {
-private:
-    /// Verb
-    const char* m_verb;
-
-    /// Usage string
-    const char* m_usage;
-
-    /// Detailed help
-    const char* m_help;
+protected:
+    /// Command 
+    Cpl::Container::KeyLiteralString  m_mapKey;
 
 
 protected:
     /// Constructor
-    Command_( Cpl::Container::Map<Command_>& commandList, const char* verb, const char* usage, const char* help=0 ) throw();
+    Command_( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList, const char* verb ) throw();
 
 
 public:
     /// See Cpl::TShell::Dac::Command_
     const char* getVerb() const throw();
 
-    /// See Cpl::TShell::Dac::Command_
-    const char* getUsage() const throw();
 
-    /// See Cpl::TShell::Dac::Command_
-    const char* getHelp() const throw();
+protected:
+    /// See Cpl::Container::Key
+    const Cpl::Container::Key& getKey() const throw();
+
 };
 
 };      // end namespaces

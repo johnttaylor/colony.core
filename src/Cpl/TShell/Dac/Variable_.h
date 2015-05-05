@@ -85,7 +85,7 @@ public:
     bool setValue( unsigned long newValue ) throw();
 
     /// See Cpl::TShell::Dac::VariableApi
-    bool add( const char* amount );
+    bool add( const char* amount ) throw();
 
     /// See Cpl::TShell::Dac::VariableApi
     bool getNumber( double& valueAsNumber ) const throw();

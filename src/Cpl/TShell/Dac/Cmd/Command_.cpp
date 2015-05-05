@@ -13,31 +13,26 @@
 
 
 ///
-using namespace Cpl::TShell::Dac;
+using namespace Cpl::TShell::Dac::Cmd;
 
 
 ////////////////////////////
-Command_::Command_( Cpl::Container::Map<Command_>& commandList, const char* verb, const char* usage, const char* help ) throw()
-:m_verb(verb)
-,m_usage(usage)
-,m_help(help)
+Command_::Command_( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList, const char* verb  ) throw()
+:m_mapKey(verb)
     {
     commandList.insert( *this );
     }
 
+
+
 ////////////////////////////
-const char* Command_::getVerb() const throw()
-    {
-    return m_verb;
+const char* Command_::getVerb() const throw()                 
+    { 
+    return m_mapKey.getKeyValue(); 
     }
 
-const char* Command_::getUsage() const throw()
-    {
-    return m_usage;
-    }
 
-const char* Command_::getHelp() const throw()
-    {
-    return m_help;
+const Cpl::Container::Key& Command_::getKey() const throw()   
+    { 
+    return m_mapKey; 
     }
-

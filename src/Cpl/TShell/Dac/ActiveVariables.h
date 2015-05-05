@@ -13,6 +13,7 @@
 /** @file */
 
 #include "Cpl/TShell/Dac/ActiveVariablesApi.h"
+#include "Cpl/TShell/Dac/Variable_.h"
 #include "Cpl/Container/Map.h"
 #include "Cpl/Memory/SPool.h"
 
@@ -80,7 +81,7 @@ ActiveVariables<NUMVARS>::ActiveVariables(const char* ignoreThisParameter_usedTo
 
 
 template<int NUMVARS>
-VariableApi* ActiveVariables<NUMVARS>::get( Cpl::Text::String& variableName ) const throw()
+VariableApi* ActiveVariables<NUMVARS>::get( Cpl::Text::String& variableName ) throw()
     {    
     // Handle the case: Variable already exists
     VariableApi* varPtr = m_inUse.find( variableName );
@@ -90,10 +91,10 @@ VariableApi* ActiveVariables<NUMVARS>::get( Cpl::Text::String& variableName ) co
         }
 
     // Case: Craete new variable
-    void* memPtr = m_varMemory.allocate( sizeof(Variable_) );
+    void* memPtr = m_variableMem.allocate( sizeof(Variable_) );
     if ( memPtr )
         {
-        VariableApi* varPtr = new(memPtr) Variable( variableName );
+        VariableApi* varPtr = new(memPtr) Variable_( variableName );
         m_inUse.insert( *varPtr );
         return varPtr;
         }
@@ -105,13 +106,13 @@ VariableApi* ActiveVariables<NUMVARS>::get( Cpl::Text::String& variableName ) co
 
 
 template<int NUMVARS>
-VariableApi* ActiveVariables<NUMVARS>::find( Cpl::Text::String& variableName ) const throw()
+VariableApi* ActiveVariables<NUMVARS>::find( Cpl::Text::String& variableName ) throw()
     {
     return m_inUse.find( variableName );
     }
 
 template<int NUMVARS>
-void ActiveVariables<NUMVARS>::remove( VariableApi& varNoLongerInUse ) const throw()
+void ActiveVariables<NUMVARS>::remove( VariableApi& varNoLongerInUse ) throw()
     {
     m_inUse.removeItem( varNoLongerInUse );
     m_variableMem.release( &varNoLongerInUse );

@@ -41,6 +41,11 @@ public:
     /** Constructor.  The 'appendNewline' argument when set to true will
         append a newline character to the output stream AFTER the EOF
         character (this can make for more human readable output stream).
+
+        NOTE: If 'startOfFrame' is '\0', then Encoder will begin the
+              frame WITHOUT inserting a SOF chracter.  This is useful
+              when there application desires/has multiple start-of-frame
+              characters for a given frame.
      */
     StreamEncoder( Cpl::Io::Output& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline=true );
 

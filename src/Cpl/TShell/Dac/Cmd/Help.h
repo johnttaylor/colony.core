@@ -15,32 +15,39 @@
 #include "Cpl/TShell/Dac/Cmd/Command_.h"
 
 
+/* RULER
+                                    "         1         2         3         4         5         6         7         8"
+                                    "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+*/
+#define CPLTSHELLDACMD_USAGE_HELP_  "help [full]"
+#define CPLTSHELLDACMD_DETAIL_HELP_ "  Displays list of all supported commands and optionally their detailed help."
+
+
 ///
 namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
+
+
 
 /** This class implements a DAC Shell command
  */
 class Help: public Command_
 {
-protected:
-    /// Verb
-    static const char* m_verb  = "help";
-    
-    /// Usage
-    static const char* m_usage = "help [full]"
-    
-    /// Details
-    static const char* m_help  = "  Displays list of all supported commands and optionally their detailed help."
+public:
+    /// See Cpl::TShell::Dac::Command_
+    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_HELP_; }
+
+    /// See Cpl::TShell::Dac::Command_
+    const char* getHelp() const throw()     { return CPLTSHELLDACMD_DETAIL_HELP_; }
     
      
 public:
     /// Constructor
-    Help( Cpl::Container::Map<Command_>& commandList, Cpl::TShell::Dac::Context_& context )
+    Help( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
 
 
 public:
     /// See Cpl::TShell::Dac::Command_
-    Cpl::TShell::Dac::Command_::Result_T execute( Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
+    Cpl::TShell::Dac::Command_::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
 
 };
 

@@ -39,7 +39,7 @@ Basic::Basic( char* stringToParse, const char* delimiterSet )
 
 
 ///////////////////////////////
-const char* Basic::next()
+const char* Basic::next() throw()
     {
     // Trap error: null pointer for input string
     if ( !m_base )

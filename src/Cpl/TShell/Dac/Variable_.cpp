@@ -69,32 +69,36 @@ const char* Variable_::getValue() const throw()
 bool Variable_::setValue( const char* newValue ) throw()
     {
     m_value = newValue;
+    return m_value.truncated() == false;
     }
 
 bool Variable_::setValue( double newValue ) throw()
     {
     m_value.format( "%f", newValue ); 
+    return m_value.truncated() == false;
     }
 
 bool Variable_::setValue( long newValue ) throw()
     {
     m_value = newValue;
+    return m_value.truncated() == false;
     }
 
 bool Variable_::setValue( unsigned long newValue ) throw()
     {
     m_value = newValue;
+    return m_value.truncated() == false;
     }
 
 
 /////////////////////////////////////
-bool Variable_::add( const char* amount )
+bool Variable_::add( const char* amount ) throw()
     {
     double leftOper  = 0.0;
     double rightOper = 0.0;
 
     // Add as numeric
-    if ( Cpl::Text::a2d( leftOper, leftValue ) && Cpl::Text::a2d( rightOper, rightValue ) )
+    if ( Cpl::Text::a2d( leftOper, m_value ) && Cpl::Text::a2d( rightOper, amount ) )
         {
         setValue( leftOper + rightOper );
         return true;

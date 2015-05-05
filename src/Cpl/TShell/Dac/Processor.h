@@ -14,22 +14,22 @@
 
 #include "colony_config.h"
 #include "Cpl/TShell/Dac/Context_.h"
+#include "Cpl/TShell/Dac/Variable_.h"
 #include "Cpl/System/Mutex.h"
+#include "Cpl/System/FastLock.h"
+#include "Cpl/System/Api.h"
 #include "Cpl/Text/FString.h"
+#include "Cpl/Text/Frame/Encoder.h"
+#include "Cpl/Text/Frame/Decoder.h"
 #include "Cpl/Log/Loggers.h"
+#include "Cpl/Container/Stack.h"
 
 
 /** This symbol defines the size, in bytes, of the maximum allowed input
     stirng/command.
  */
 #ifndef OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE
-#ifndef OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE              128
-#endif
-
-/** This symbol defines the size, in bytes, of the common Output work buffer
- */
-#ifndef OPTION_CPL_TSHELL_DAC_PROCESSOR_OUTBUF_SIZE
-#define OPTION_CPL_TSHELL_DAC_PROCESSOR_OUTBUF_SIZE             256
+#define OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE              128
 #endif
 
 /** This symbols define the size, in bytes (not including the null termintor) of
@@ -43,7 +43,7 @@
  */
 #ifndef OPTION_CPL_TSHELL_DAC_PROCESSOR_NAME_ERRORLEVEL
 #define OPTION_CPL_TSHELL_DAC_PROCESSOR_NAME_ERRORLEVEL         "_errno"
-#define
+#endif
 
 /** This symbols defines the maximum number of nested loops
  */
@@ -66,7 +66,7 @@
 /** This symbols defines the Shell's prompt string
  */
 #ifndef OPTION_CPL_TSHELL_DAC_PROCESSOR_PROMPT
-#define OPTION_CPL_TSHELL_DAC_PROCESSOR_PROMPT                  "$"
+#define OPTION_CPL_TSHELL_DAC_PROCESSOR_PROMPT                  "$ "
 #endif
 
 
@@ -117,10 +117,10 @@ public:
 
 protected:
     /// Command list
-    Cpl::Container::Map<Command_>&      m_commands
+    Cpl::Container::Map<Command_>&      m_commands;
 
     /// Variable list
-    ActiveVariablesApi&                m_variables;
+    ActiveVariablesApi&                 m_variables;
 
     /// Raw input deframer
     Cpl::Text::Frame::Decoder&          m_deframer;
@@ -139,6 +139,9 @@ protected:
 
     /// Size of the command buffer
     unsigned                            m_cmdBufSize;
+
+    /// Fast lock (for protecting stop request)
+    Cpl::System::FastLock               m_fast;
 
     /// Comment character
     char                                m_comment;
@@ -159,7 +162,7 @@ protected:
     Variable_                           m_errorLevel;
 
     /// My run state
-    bool                                m_running
+    bool                                m_running;
     
     /// My filtering state
     bool                                m_filtering;
@@ -174,7 +177,7 @@ protected:
     unsigned                            m_captureCount;
 
     /// Current index into the command buffer/cache
-    unsigned                            m_currentIdx
+    unsigned                            m_currentIdx;
 
     /// Current index into the command buffer/cache when in replay mode
     unsigned                            m_replayIdx;
@@ -249,13 +252,13 @@ public:
                char                              argDelimiter=' ', 
                char                              argQuote='"',
                char                              argTerminator='\n',
-               Cpl::Log::Api&                    eventLogger = Cpl::Log::Loggers::application()
+               Cpl::Log::Api&                    eventLogger = Cpl::Log::Loggers::console()
              );
 
 
 public:
     /// See Cpl::TShell::Processor
-    bool start( Cpl::Io::Input& infd, Cpl::Io::Output outfd ) throw();
+    bool start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw();
 
     /// See Cpl::TShell::Processor
     void requestStop() throw();
@@ -263,7 +266,7 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    Command_::Result_t executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw();
+    Command_::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw();
 
 
 public:
@@ -291,7 +294,7 @@ public:
     void appendOutput( const char* text ) throw();
 
     /// See Cpl::TShell::Dac::Context_
-    bool commitOutput( Cpl::Io::Output outfd ) throw();
+    bool commitOutput( Cpl::Io::Output& outfd ) throw();
 
  
 public:
@@ -309,7 +312,7 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    void enableFilter( Command& marker ) throw();
+    void enableFilter( Command_& marker ) throw();
 
 public:
     /// See Cpl::TShell::Dac::Context_
@@ -318,13 +321,20 @@ public:
 
 protected:
     /// Outputs the shell's start message
-    virtual bool Processor::greeting( Cpl::Io::Ouptut& outfd ) throw();
+    virtual bool greeting( Cpl::Io::Output& outfd ) throw();
 
     /// Outputs the shell's end message
-    virtual bool Processor::farewell( Cpl::Io::Ouptut& outfd ) throw();
+    virtual bool farewell( Cpl::Io::Output& outfd ) throw();
 
     /// Outputs the shell's prompt
-    virtual bool Processor::prompt( Cpl::Io::Ouptut& outfd ) throw();
+    virtual bool prompt( Cpl::Io::Output& outfd ) throw();
+
+
+protected:
+    /// Helper method
+    bool outputCommandError( Cpl::Io::Output& outfd, Command_::Result_T result, const char* deframedInput ) throw();
+
+};
 
 
 };      // end namespaces

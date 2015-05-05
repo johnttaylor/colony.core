@@ -73,7 +73,7 @@ public:
         a valid 'numeric' value OR the variable's value is a not valid
         'numeric' value then false is returned; else true is returned.
      */
-    virtual bool add( const char* amount );
+    virtual bool add( const char* amount ) throw() = 0;
 
 
 public:

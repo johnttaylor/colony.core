@@ -37,7 +37,7 @@ public:
         NOTE: This method is an 'in-thread' intialization, i.e. not thread
         safe.  The application is RESPONSIBLE for managing threading issues.
      */
-    virtual bool start( Cpl::Io::Input& infd, Cpl::Io::Output outfd ) throw() = 0;
+    virtual bool start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw() = 0;
 
 
     /** This non-blocking method requests the Command Processor to stop.  When 
@@ -52,6 +52,7 @@ public:
 public:
     /// Virtual destructor
     virtual ~Processor(){}
+};
 
 
 };      // end namespaces

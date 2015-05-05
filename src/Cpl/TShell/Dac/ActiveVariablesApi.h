@@ -12,7 +12,8 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/THsell/Dac/VariableApi.h"
+#include "Cpl/TShell/Dac/VariableApi.h"
+#include "Cpl/Text/String.h"
 
 
 ///

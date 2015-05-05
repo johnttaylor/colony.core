@@ -16,13 +16,13 @@
 using namespace Cpl::TShell::Dac::Cmd;
 
 ///////////////////////////
-Help::Help( Cpl::Container::Map<Command_>& commandList, Cpl::TShell::Dac::Context_& context )
-:Command_(commandList, m_verb, m_usage, m_help)
+Exit::Exit( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
+:Command_(commandList, "exit")
     {
     }
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T Help::execute( Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command_::Result_T Exit::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     // Error checking
     if ( tokens.numParameters() > 1 )

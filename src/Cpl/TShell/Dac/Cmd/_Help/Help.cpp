@@ -16,13 +16,13 @@
 using namespace Cpl::TShell::Dac::Cmd;
 
 ///////////////////////////
-Help::Help( Cpl::Container::Map<Command_>& commandList, Cpl::TShell::Dac::Context_& context )
-:Command_(commandList, m_verb, m_usage, m_help)
+Help::Help( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
+:Command_(commandList, "help")
     {
     }
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T Help::execute( Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command_::Result_T Help::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     // Error checking
     if ( tokens.numParameters() > 2 )
@@ -31,17 +31,18 @@ Cpl::TShell::Dac::Command_::Result_T Help::execute( Context_& context, Cpl::Text
         }
 
     // List the commands
-    Cpl::Container::Map<Command_>& cmdList = context.getCommands();
-    Cpl::TShell::Dac::Command_*    cmdPtr  = cmdList.first();
+    Cpl::Container::Map<Cpl::TShell::Dac::Command_>& cmdList = context.getCommands();
+    Cpl::TShell::Dac::Command_*                      cmdPtr  = cmdList.first();
     while( cmdPtr )
         {
-        context.outputMessage( cmdPtr->getUsage() );
+        context.outputMessage( outfd, cmdPtr->getUsage() );
         if ( tokens.numParameters() == 2 )
             {
             const char* details = cmdPtr->getHelp();
             if ( details )
                 {
-                context.outputMessage( details );
+                context.outputMessage( outfd, details );
+                context.outputMessage( outfd, " " );
                 }
             }
 

@@ -31,8 +31,8 @@ public:
     ///
     Cpl::Io::Output& m_outfd;
 
-public
-    Shell_( Processor& shell, Cpl::Io::Input& infd, Cpl::Io::Output outfd )
+public:
+    Shell_( Processor& shell, Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
         :m_shell(shell)
         ,m_infd(infd)
         ,m_outfd(outfd)
@@ -58,9 +58,9 @@ public:
 /////////////////////////////////////////
 Stdio::Stdio( Processor& shell, const char* threadName, int threadPriority ) throw()
 :m_shell(shell)
+,m_threadPtr(0)
 ,m_priority(threadPriority)
 ,m_name(threadName)
-,m_threadPtr(0)
 ,m_runnablePtr(0)
     {
     }
@@ -76,7 +76,7 @@ Stdio::~Stdio()
 
 
 /////////////////////////////////////////
-void Stdio::launch( Cpl::Io::Input& infd, Cpl::Io::Output outfd ) throw()
+void Stdio::launch( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
     {
     // If I am re-launched -->kill the previous shell
     delete m_runnablePtr;

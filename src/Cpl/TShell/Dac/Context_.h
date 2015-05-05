@@ -42,8 +42,8 @@ public:
         command.  If 'inputString' is not a valid command, then the appropriate
         error/result code is returned.
      */
-    virtual Command_::Result_t executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw() = 0;
-        
+    virtual Command_::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw() = 0;
+                     
 
 public:
     /// This method returns the lock for ensuring atomic output data 
@@ -75,10 +75,10 @@ public:
     virtual void appendOutput( const char* text ) throw() = 0;
 
     /// Helper method for generating command outputs. Outputs the content of the cache line to the output stream
-    virtual bool commitOutput( Cpl::Io::Output outfd ) throw() = 0;
+    virtual bool commitOutput( Cpl::Io::Output& outfd ) throw() = 0;
 
     /// Helper method for generating command outputs.  Builds and Commits a single output message
-    inline bool outputMessage( const char* text ) throw() { startOutput(); appendOutput(text); return commitOutput(); }
+    inline bool outputMessage( Cpl::Io::Output& outfd, const char* text ) throw() { startOutput(); appendOutput(text); return commitOutput(outfd); }
 
 
 public:
@@ -109,17 +109,10 @@ public:
         commands until the 'marker' command is encounter.  When the marker
         command is found, the filtering is turn off and the marker is executed.
      */
-    virtual void enableFilter( Command& marker ) throw() = 0;
+    virtual void enableFilter( Command_& marker ) throw() = 0;
 
 
 public:
-    /** Shared/common buffer to be used when generating the encoded/framed 
-        output string.  All commands are required to use this buffer when
-        generating their Output (this is to support the 'output capture'
-        needed by the EXE command).
-     */
-    virtual char* getWorkOutputFrameBuffer( size_t& bufsize ) throw() = 0;
-
     /** A shared/common working buffer. The buffer is guarented to be large 
         enough for converting/format binary numbers (int,floats,etc) into
         strings.
@@ -130,6 +123,7 @@ public:
 public:
     /// Virtual destructor
     virtual ~Context_(){}
+};
 
 
 };      // end namespaces
