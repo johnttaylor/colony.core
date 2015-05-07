@@ -4,9 +4,6 @@
 #include "Cpl/Io/Stdio/StdOut.h"
 
 
-//#define CATCH_CONFIG_RUNNER  
-//#include "Catch/catch.hpp"
-
 // External references
 extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 
@@ -22,16 +19,7 @@ int main( int argc, char* const argv[] )
     CPL_SYSTEM_TRACE_ENABLE_SECTION("_0test");
     CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eINFO );
 
-    // THIS CODE DOES NOTHING.  It is needed to force the inclusion of
-    // the test code due to the combination of how CATCH auto registers
-    // test cases and how NQBP links by libraries.  Short version is do NOT
-    // remove these call(s).
-    //link_basic();
-    //link_textblock();
-
-
-    // Run the test(s)
-    //int result = Catch::Session().run( argc, argv );
+	// Run the test
     shell_test( infd_, outfd_ );
 
     // do not exit
@@ -40,6 +28,5 @@ int main( int argc, char* const argv[] )
         Cpl::System::Api::sleep(1000);
         }
 
-    //return result;
 	return 0;
 }

@@ -49,6 +49,12 @@ public:
         the active collection/state.
      */
     virtual void remove( VariableApi& varNoLongerInUse ) throw() = 0;
+     
+    
+    /** This method returns the maximum number of active variables allowed 
+        and/or supported.
+     */
+    virtual unsigned getMaxCount() const throw() = 0;
 
 
 public:

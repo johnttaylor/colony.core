@@ -18,7 +18,7 @@
 namespace Cpl { namespace TShell { namespace Dac {
 
 /** This concrete class implements the Active DAC Variables interface with ZERO 
-    support variables.  This is typically used when the Application does not 
+    supported variables.  This is typically used when the Application does not 
     need/want shell variable support.  
  */
 class NullVariables: public ActiveVariablesApi

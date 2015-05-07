@@ -93,7 +93,7 @@ static int preprocess_shutdown_( int exit_code, bool& true_exit )
     }
 
 
-void Shutdown::success( void )
+int Shutdown::success( void )
     {  
     bool true_exit = true;
     int  exit_code = preprocess_shutdown_( OPTION_CPL_SYSTEM_SHUTDOWN_SUCCESS_ERROR_CODE, true_exit );
@@ -102,6 +102,8 @@ void Shutdown::success( void )
         exit_code = notifyShutdownHandlers( exit_code );
         exit( exit_code );
         }
+
+    return exit_code;
     }
 
 int Shutdown::failure( int exit_code )

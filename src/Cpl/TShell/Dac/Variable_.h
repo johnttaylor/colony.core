@@ -12,24 +12,9 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "colony_config.h"
 #include "Cpl/TShell/Dac/VariableApi.h"
 #include "Cpl/Text/FString.h"
 
-
-/** This symbol defines the size of the string (not including the null 
-    terminator) used to store a Variable's name.
- */
-#ifndef OPTION_CPL_TSHELL_DAC_VARIABLE_NAME_SIZE
-#define OPTION_CPL_TSHELL_DAC_VARIABLE_NAME_SIZE    16
-#endif
-
-/** This symbol defines the size of the string (not including the null 
-    terminator) used to store a Variable's value.
- */
-#ifndef OPTION_CPL_TSHELL_DAC_VARIABLE_VALUE_SIZE
-#define OPTION_CPL_TSHELL_DAC_VARIABLE_VALUE_SIZE   64
-#endif
 
 
 ///
@@ -42,10 +27,10 @@ class Variable_: public VariableApi
 {
 protected:
     /// Value buffer
-    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_VARIABLE_VALUE_SIZE>   m_value;
+    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_VARIABLEAPI_VALUE_SIZE>   m_value;
 
     /// Name buffer
-    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_VARIABLE_NAME_SIZE>    m_name;
+    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_VARIABLEAPI_NAME_SIZE>    m_name;
 
 
 public:

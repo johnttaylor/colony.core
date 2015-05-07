@@ -40,10 +40,15 @@ public:
         append a newline character to the output stream AFTER the EOF
         character (this can make for more human readable output stream).
 
-        NOTE: If 'startOfFrame' is '\0', then Encoder will begin the
+        NOTES: 
+        
+            o If 'startOfFrame' is '\0', then Encoder will begin the
               frame WITHOUT inserting a SOF chracter.  This is useful
               when there application desires/has multiple start-of-frame
               characters for a given frame.
+
+            o If 'escapeChar' is '\0', then Encoder will NOT escape any
+              characters - buyers beware when using this feature!
      */
     StringEncoder( Cpl::Text::String& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline=true );
 

@@ -61,7 +61,7 @@ public:
     /** Constructor.  When the 'fatalErrors' argument is set to true, memory errors
         (e.g. out-of-memory) will generate a Cpl::System::FatalError call. 
      */
-    HPool( size_t maxNumBlocks, bool fatalErrors = true )
+    HPool( size_t maxNumBlocks, bool fatalErrors = false )
     :m_infoBlocks( new Pool_::BlockInfo_ [maxNumBlocks] () ),
      m_blocks( new AlignedClass<T> [maxNumBlocks] ),
      m_poolPtr( new Pool_( m_infoBlocks, sizeof(T), sizeof(AlignedClass<T>), maxNumBlocks, m_blocks, fatalErrors ) ) 

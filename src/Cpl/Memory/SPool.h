@@ -60,7 +60,7 @@ public:
     /** Constructor.  When the 'fatalErrors' argument is set to true, memory errors
         (e.g. out-of-memory) will generate a Cpl::System::FatalError call. .
      */
-    SPool( bool fatalErrors = true )
+    SPool( bool fatalErrors = false )
     :m_infoBlocks(),
      m_pool(m_infoBlocks, sizeof(T), sizeof(AlignedClass<T>), N, m_blocks, fatalErrors )
         {

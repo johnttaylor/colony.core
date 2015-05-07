@@ -247,7 +247,7 @@ public:
                Cpl::System::Mutex&               outputLock,
                CommandBuffer_T*                  cmdBufferPtr=0, 
                unsigned                          maxBufferCmds=0,
-               char                              commentChar='#',
+               char                              commentChar=';',
                char                              argEscape='`', 
                char                              argDelimiter=' ', 
                char                              argQuote='"',

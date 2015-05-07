@@ -62,7 +62,7 @@ bool Encoder_::output( char src ) throw()
         }
     else
         {
-        if ( src == m_esc || src == m_eof )
+        if ( m_esc != '\0' && (src == m_esc || src == m_eof) )
             {
             bool result = append( m_esc );
             result     &= append( src );

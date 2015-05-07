@@ -87,7 +87,7 @@ public:
         actual platform.  All registered callback methods will be called
         before exiting the application. 
      */             
-    static void success( void ); 
+    static int success( void ); 
 
     /** This function will force a shutdown of the application with a 'failure'
         exit code.  The caller can optional specify an exit code. What 'forced' 

@@ -30,10 +30,10 @@ class ActiveVariables: public ActiveVariablesApi
 {
 protected:    
     /// Storage for variables
-    Cpl::Memory::SPool<VariableApi,NUMVARS> m_variableMem;
+    Cpl::Memory::SPool<Variable_,NUMVARS> m_variableMem;
 
     /// Sorted list of active/in-use variables
-    Cpl::Container::Map<VariableApi>        m_inUse;
+    Cpl::Container::Map<VariableApi>      m_inUse;
 
 
 public:
@@ -54,6 +54,10 @@ public:
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
     void remove( VariableApi& varNoLongerInUse ) throw();
+
+    /// See Cpl::TShell::Dac::ActiveVariablesApi
+    unsigned getMaxCount() const throw();
+
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
     VariableApi* first() const throw();
@@ -118,6 +122,11 @@ void ActiveVariables<NUMVARS>::remove( VariableApi& varNoLongerInUse ) throw()
     m_variableMem.release( &varNoLongerInUse );
     }
 
+template<int NUMVARS>
+unsigned ActiveVariables<NUMVARS>::getMaxCount() const throw()
+    {
+    return NUMVARS;
+    }
 
 
 template<int NUMVARS>

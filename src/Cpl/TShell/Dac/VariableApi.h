@@ -12,8 +12,23 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-
+#include "colony_config.h"
 #include "Cpl/Container/MapItem.h"
+
+/** This symbol defines the minimum size of the string (not including the null 
+    terminator) used to store a Variable's name.
+ */
+#ifndef OPTION_CPL_TSHELL_DAC_VARIABLEAPI_NAME_SIZE
+#define OPTION_CPL_TSHELL_DAC_VARIABLEAPI_NAME_SIZE    16
+#endif
+
+/** This symbol defines the minimum size of the string (not including the null 
+    terminator) used to store a Variable's value.
+ */
+#ifndef OPTION_CPL_TSHELL_DAC_VARIABLEAPI_VALUE_SIZE
+#define OPTION_CPL_TSHELL_DAC_VARIABLEAPI_VALUE_SIZE   64
+#endif
+
 
 
 ///

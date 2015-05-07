@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Dac_Cmd_Help_h
-#define Cpl_TShell_Dac_Cmd_Help_h
+#ifndef Cpl_TShell_Dac_Cmd_Set_h
+#define Cpl_TShell_Dac_Cmd_Set_h
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -19,10 +19,11 @@
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define CPLTSHELLDACMD_USAGE_HELP_  "help [* | <cmd>]"
-#define CPLTSHELLDACMD_DETAIL_HELP_ "  Displays list of all supported commands and optionally their detailed help. If\n" \
-                                    "  the second argument is command, then the detailed help for that command will\n"   \
-                                    "  be displayed."
+#define CPLTSHELLDACMD_USAGE_SET_   "set [<varnam> [(#<literal_value> | <srcvar>)]]"
+#define CPLTSHELLDACMD_DETAIL_SET_  "  Updates the contents of the variable <varnam> to <literal_value> or to the \n" \
+                                    "  the contents of <srcvar>.  If only the varnam argument is provied, then\n"      \
+                                    "  the variable's context is cleared. If no arguments are provided, then a list\n" \
+                                    "  of allall variables (and their current value) is generated."
 
 
 ///
@@ -32,19 +33,19 @@ namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
 /** This class implements a DAC Shell command
  */
-class Help: public Command_
+class Set: public Command_
 {
 public:
     /// See Cpl::TShell::Dac::Command_
-    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_HELP_; }
+    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_SET_; }
 
     /// See Cpl::TShell::Dac::Command_
-    const char* getHelp() const throw()     { return CPLTSHELLDACMD_DETAIL_HELP_; }
+    const char* getHelp() const throw()    { return CPLTSHELLDACMD_DETAIL_SET_; }
     
      
 public:
     /// Constructor
-    Help( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
+    Set( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
 
 
 public:

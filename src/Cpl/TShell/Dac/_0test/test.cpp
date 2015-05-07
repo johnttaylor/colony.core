@@ -25,6 +25,8 @@
 #include "Cpl/TShell/Dac/ActiveVariables.h"
 #include "Cpl/TShell/Dac/Processor.h"
 #include "Cpl/TShell/Stdio.h"
+
+#include "Cpl/TShell/Dac/Cmd/Set.h"
 #include "Cpl/TShell/Dac/Cmd/Help.h"
 #include "Cpl/TShell/Dac/Cmd/Exit.h"
 
@@ -37,7 +39,7 @@ extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 #endif
 
 #ifndef FRAME_SIZE_ 
-#define FRAME_SIZE_             OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE
+#define FRAME_SIZE_             (OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE * 3)
 #endif
 
 #ifndef SOF_                    
@@ -49,7 +51,7 @@ extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 #endif
 
 #ifndef ESC_
-#define ESC_                    '\1'   // Not used -->so set to non-printable ASCII character
+#define ESC_                    '\0'   // Disable Escape sequence -->need for proper 'long line' output
 #endif
 
 #ifndef APPEND_NEWLINE_
@@ -61,7 +63,7 @@ extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 #endif
 
 #ifndef COMMENT_CHAR_       
-#define COMMENT_CHAR_           '#'
+#define COMMENT_CHAR_           ';'
 #endif
 
 #ifndef ARG_DEL_                    
@@ -105,6 +107,7 @@ Cpl::TShell::Dac::Processor                      cmdProccessor_( cmdlist_,
 Cpl::TShell::Stdio                               shell_( cmdProccessor_ );
 Cpl::TShell::Dac::Cmd::Help                      helpCmd_( cmdlist_ );
 Cpl::TShell::Dac::Cmd::Exit                      exitCmd_( cmdlist_ );
+Cpl::TShell::Dac::Cmd::Set                       setCmd_( cmdlist_ );
 
 
 
