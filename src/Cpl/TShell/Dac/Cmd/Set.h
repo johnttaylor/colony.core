@@ -21,9 +21,10 @@
 */
 #define CPLTSHELLDACMD_USAGE_SET_   "set [<varnam> [(#<literal_value> | <srcvar>)]]"
 #define CPLTSHELLDACMD_DETAIL_SET_  "  Updates the contents of the variable <varnam> to <literal_value> or to the \n" \
-                                    "  the contents of <srcvar>.  If only the varnam argument is provied, then\n"      \
-                                    "  the variable's context is cleared. If no arguments are provided, then a list\n" \
-                                    "  of allall variables (and their current value) is generated."
+                                    "  the contents of <srcvar>.  If only the <varnam> argument is provided, then\n"      \
+                                    "  the variable is removed from the active variable list. If no arguments are\n" \
+                                    "  provided, then a list of all active variables (and their current value) is\n" \
+                                    "  generated."
 
 
 ///

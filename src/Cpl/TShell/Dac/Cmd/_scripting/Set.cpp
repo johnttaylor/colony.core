@@ -10,7 +10,6 @@
 *----------------------------------------------------------------------------*/ 
 
 #include "Cpl/TShell/Dac/Cmd/Set.h"
-#include "Cpl/Text/FString.h"
 
 
 ///
@@ -26,7 +25,8 @@ Set::Set( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
 ///////////////////////////
 Cpl::TShell::Dac::Command_::Result_T Set::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
-    ActiveVariablesApi& vars = context.getVariables();
+    ActiveVariablesApi& vars  = context.getVariables();
+    Cpl::Text::String&  token = context.getTokenBuffer();
 
     // Error checking
     if ( tokens.numParameters() > 3 )
@@ -34,17 +34,15 @@ Cpl::TShell::Dac::Command_::Result_T Set::execute( Cpl::TShell::Dac::Context_& c
         return Command_::eERROR_EXTRA_ARGS;
         }
 
-    // Wrong number of arguments
+    // Delete the variable
     if ( tokens.numParameters() == 2 )
         {
-        Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_VARIABLEAPI_VALUE_SIZE> name = tokens.getParameter(1);
-        VariableApi* varPtr = vars.find( name );
+        Cpl::Container::KeyLiteralString name( tokens.getParameter(1) );
+        VariableApi*                     varPtr = vars.find( name );
         if ( varPtr )
             {
-            if ( varPtr->setValue( "" ) )
-                {
-                return Command_::eSUCCESS;
-                }
+            vars.remove( *varPtr );
+            return Command_::eSUCCESS;
             }
         }
 
@@ -52,23 +50,23 @@ Cpl::TShell::Dac::Command_::Result_T Set::execute( Cpl::TShell::Dac::Context_& c
     // Update the variable
     else if ( tokens.numParameters() == 3 )
         {
-        Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_VARIABLEAPI_VALUE_SIZE> name = tokens.getParameter(1);
+        Cpl::Container::KeyLiteralString name( tokens.getParameter(1) );
         VariableApi* varPtr = vars.get( name );
         if ( varPtr )
             {
             bool success = false;
-            name = tokens.getParameter(2);
+            token        = tokens.getParameter(2);
 
             // Set literal value
-            if ( name[0] == '#' )
+            if ( token[0] == '#' )
                 {
-                success = varPtr->setValue( name() + 1 );
+                success = varPtr->setValue( token() + 1 );
                 }
             
             // Set equal to 'srcvar'
             else
                 {
-                VariableApi* srcPtr = vars.find( name );
+                VariableApi* srcPtr = vars.find( token );
                 if ( srcPtr )
                     {
                     success = varPtr->setValue( srcPtr->getValue() );

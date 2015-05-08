@@ -47,10 +47,10 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    VariableApi* get( Cpl::Text::String& variableName ) throw();
+    VariableApi* get( Cpl::Container::Key& variableName ) throw();
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    VariableApi* find( Cpl::Text::String& variableName ) throw();
+    VariableApi* find( Cpl::Container::Key& variableName ) throw();
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
     void remove( VariableApi& varNoLongerInUse ) throw();
@@ -85,7 +85,7 @@ ActiveVariables<NUMVARS>::ActiveVariables(const char* ignoreThisParameter_usedTo
 
 
 template<int NUMVARS>
-VariableApi* ActiveVariables<NUMVARS>::get( Cpl::Text::String& variableName ) throw()
+VariableApi* ActiveVariables<NUMVARS>::get( Cpl::Container::Key& variableName ) throw()
     {    
     // Handle the case: Variable already exists
     VariableApi* varPtr = m_inUse.find( variableName );
@@ -98,7 +98,7 @@ VariableApi* ActiveVariables<NUMVARS>::get( Cpl::Text::String& variableName ) th
     void* memPtr = m_variableMem.allocate( sizeof(Variable_) );
     if ( memPtr )
         {
-        VariableApi* varPtr = new(memPtr) Variable_( variableName );
+        VariableApi* varPtr = new(memPtr) Variable_( (const char*) variableName.getRawKey() );
         m_inUse.insert( *varPtr );
         return varPtr;
         }
@@ -110,7 +110,7 @@ VariableApi* ActiveVariables<NUMVARS>::get( Cpl::Text::String& variableName ) th
 
 
 template<int NUMVARS>
-VariableApi* ActiveVariables<NUMVARS>::find( Cpl::Text::String& variableName ) throw()
+VariableApi* ActiveVariables<NUMVARS>::find( Cpl::Container::Key& variableName ) throw()
     {
     return m_inUse.find( variableName );
     }

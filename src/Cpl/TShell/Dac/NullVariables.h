@@ -30,10 +30,10 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    VariableApi* get( Cpl::Text::String& variableName ) throw();
+    VariableApi* get( Cpl::Container::Key& variableName ) throw();
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    VariableApi* find( Cpl::Text::String& variableName ) throw();
+    VariableApi* find( Cpl::Container::Key& variableName ) throw();
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
     void remove( VariableApi& varNoLongerInUse ) throw();

@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Dac_Cmd_Exit_h
-#define Cpl_TShell_Dac_Cmd_Exit_h
+#ifndef Cpl_TShell_Dac_Cmd_TPrint_h
+#define Cpl_TShell_Dac_Cmd_TPrint_h
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -12,35 +12,40 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/TShell/Dac/Cmd/Command_.h"
+#include "colony_config.h"
+#include "Cpl/TShell/Dac/Cmd/Print_.h"
+                                                 
+
 
 /* RULER
-                                    "         1         2         3         4         5         6         7         8"
-                                    "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                                      "         1         2         3         4         5         6         7         8"
+                                      "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define CPLTSHELLDACMD_USAGE_EXIT_  "exit [app <exitcode>]"
-#define CPLTSHELLDACMD_DETAIL_EXIT_ "  Requests the DAC shell to exit. If the optional argument 'app' is specified\n" \
-                                    "  then the application is exited with the specifed <exitcode>."
+#define CPLTSHELLDACMD_USAGE_TPRINT_  "tprint [[<esc>] <etext>]"
+#define CPLTSHELLDACMD_DETAIL_TPRINT_ "  Same operation as 'print', except the current elasped time is prepended to the\n" \
+                                      "  expanded text."
 
 
 ///
 namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
-/** This Private Namespace class defines the interface for a DAC shell command.
+
+
+/** This class implements a DAC Shell command
  */
-class Exit: public Command_
+class TPrint: public Print_
 {
-protected:
+public:
     /// See Cpl::TShell::Dac::Command_
-    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_EXIT_; }
+    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_TPRINT_; }
 
     /// See Cpl::TShell::Dac::Command_
-    const char* getHelp() const throw()     { return CPLTSHELLDACMD_DETAIL_EXIT_; }
+    const char* getHelp() const throw()    { return CPLTSHELLDACMD_DETAIL_TPRINT_; }
     
      
 public:
     /// Constructor
-    Exit( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
+    TPrint( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
 
 
 public:

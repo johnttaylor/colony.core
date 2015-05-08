@@ -146,6 +146,13 @@ public:
     /// Returns the Key's content value
     inline const char* getKeyValue(void) const throw() { return m_stringKeyPtr; }
 
+    /// Cast to read-only character string pointer.
+    inline operator const char* () const  { return m_stringKeyPtr; }
+
+    /// Returns a Read-only pointer to the "raw" (short-hand for getKeyValue())
+    inline const char* operator()() const { return m_stringKeyPtr; }
+
+
 
 public: // Cpl::Container::Key
     ///

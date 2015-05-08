@@ -200,6 +200,9 @@ protected:
     char                                m_inputCopy[OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE+1];
 
 
+    /// Shared token work buffer
+    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE>   m_tokenBuffer;
+
     /// Shared work buffer
     Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_PROCESSOR_WORKBUF_SIZE> m_numericWorkBuffer;
 
@@ -293,6 +296,10 @@ public:
     /// See Cpl::TShell::Dac::Context_
     void appendOutput( const char* text ) throw();
 
+    /// Helper method for generating command outputs. Contents of the output 'line'
+    void appendOutput( const char* text, size_t numBytes ) throw();
+
+
     /// See Cpl::TShell::Dac::Context_
     bool commitOutput( Cpl::Io::Output& outfd ) throw();
 
@@ -315,6 +322,9 @@ public:
     void enableFilter( Command_& marker ) throw();
 
 public:
+    /// See Cpl::TShell::Dac::Context_
+    Cpl::Text::String& getTokenBuffer() throw();
+
     /// See Cpl::TShell::Dac::Context_
     Cpl::Text::String& getNumericBuffer() throw();
 

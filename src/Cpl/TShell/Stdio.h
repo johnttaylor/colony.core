@@ -44,10 +44,20 @@ protected:
     /// Runnable instance
     Cpl::System::Runnable*  m_runnablePtr;
 
+    /// How I was created
+    bool                    m_staticInstance;
 
 public:
-    /// Constructor
-    Stdio( Processor& shell, const char* threadName = "DAC-Shell", int threadPriority = CPL_SYSTEM_THREAD_PRIORITY_NORMAL + CPL_SYSTEM_THREAD_PRIORITY_LOWER ) throw();
+    /** Constructor.  The 'thisIsAStaticInstance' argument is to inform the 
+        instance being create that it is being created statically (i.e. before 
+        main() is entered) - which is the intended typically behavior.  This
+        knowledge is used to inhibit delete/destroy-thread actions in the 
+        instance's destructor.  This is neccesary because there is no
+        guaranteed order to when static destructor fire and as such the state
+        of the CPL Libraries static resources (e.g. mutexes) are unknown
+        which your application will crash/behavior poorly on exit.
+     */
+    Stdio( Processor& shell, const char* threadName = "DAC-Shell", int threadPriority = CPL_SYSTEM_THREAD_PRIORITY_NORMAL + CPL_SYSTEM_THREAD_PRIORITY_LOWER, bool thisIsAStaticInstance=true ) throw();
 
 
     /// Destructor

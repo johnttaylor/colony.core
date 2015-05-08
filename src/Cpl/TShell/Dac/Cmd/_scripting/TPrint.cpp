@@ -9,41 +9,23 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "NullVariables.h"
+#include "Cpl/TShell/Dac/Cmd/TPrint.h"
+
 
 ///
+using namespace Cpl::TShell::Dac::Cmd;
 using namespace Cpl::TShell::Dac;
 
 
 
-//////////////////////////////////////////
-NullVariables::NullVariables()
+///////////////////////////
+TPrint::TPrint( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
+:Print_(commandList, "tprint")
     {
     }
 
-
-//////////////////////////////////////////
-VariableApi* NullVariables::get( Cpl::Container::Key& variableName ) throw()
+///////////////////////////
+Cpl::TShell::Dac::Command_::Result_T TPrint::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
-    return 0;
+    return Print_::execute( true, context, tokens, rawInputString, outfd );
     }
-
-VariableApi* NullVariables::find( Cpl::Container::Key& variableName ) throw()
-    {
-    return 0;
-    }
-
-void NullVariables::remove( VariableApi& varNoLongerInUse ) throw()
-    {
-    }
-
-VariableApi* NullVariables::first() const throw()
-    {
-    return 0;
-    }
-
-VariableApi* NullVariables::next( VariableApi& current ) const throw()
-    {
-    return 0;
-    }
-

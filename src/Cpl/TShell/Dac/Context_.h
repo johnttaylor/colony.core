@@ -74,6 +74,9 @@ public:
     /// Helper method for generating command outputs. Contents of the output 'line'
     virtual void appendOutput( const char* text ) throw() = 0;
 
+    /// Helper method for generating command outputs. Contents of the output 'line'
+    virtual void appendOutput( const char* text, size_t numBytes ) throw() = 0;
+
     /// Helper method for generating command outputs. Outputs the content of the cache line to the output stream
     virtual bool commitOutput( Cpl::Io::Output& outfd ) throw() = 0;
 
@@ -113,6 +116,11 @@ public:
 
 
 public:
+    /** A shared/common working buffer. The buffer is guarented to be large 
+        enough hold any valid token from an input frame.
+     */
+    virtual Cpl::Text::String& getTokenBuffer() throw() = 0;
+
     /** A shared/common working buffer. The buffer is guarented to be large 
         enough for converting/format binary numbers (int,floats,etc) into
         strings.

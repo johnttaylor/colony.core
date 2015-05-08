@@ -56,22 +56,25 @@ public:
 
 
 /////////////////////////////////////////
-Stdio::Stdio( Processor& shell, const char* threadName, int threadPriority ) throw()
+Stdio::Stdio( Processor& shell, const char* threadName, int threadPriority, bool thisIsAStaticInstance ) throw()
 :m_shell(shell)
 ,m_threadPtr(0)
 ,m_priority(threadPriority)
 ,m_name(threadName)
 ,m_runnablePtr(0)
+,m_staticInstance(thisIsAStaticInstance)
+
     {
     }
 
 Stdio::~Stdio()
     {
-    delete m_runnablePtr;
-    if ( m_threadPtr )
+    if ( !m_staticInstance && m_threadPtr )
         {
         Cpl::System::Thread::destroy( *m_threadPtr );
         }
+
+    delete m_runnablePtr;
     }
 
 

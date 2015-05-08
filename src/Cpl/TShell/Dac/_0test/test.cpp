@@ -29,6 +29,8 @@
 #include "Cpl/TShell/Dac/Cmd/Set.h"
 #include "Cpl/TShell/Dac/Cmd/Help.h"
 #include "Cpl/TShell/Dac/Cmd/Exit.h"
+#include "Cpl/TShell/Dac/Cmd/Print.h"
+#include "Cpl/TShell/Dac/Cmd/TPrint.h"
 
 /// 
 extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
@@ -39,7 +41,7 @@ extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 #endif
 
 #ifndef FRAME_SIZE_ 
-#define FRAME_SIZE_             (OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE * 3)
+#define FRAME_SIZE_             OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE
 #endif
 
 #ifndef SOF_                    
@@ -108,6 +110,8 @@ Cpl::TShell::Stdio                               shell_( cmdProccessor_ );
 Cpl::TShell::Dac::Cmd::Help                      helpCmd_( cmdlist_ );
 Cpl::TShell::Dac::Cmd::Exit                      exitCmd_( cmdlist_ );
 Cpl::TShell::Dac::Cmd::Set                       setCmd_( cmdlist_ );
+Cpl::TShell::Dac::Cmd::Print                     printCmd_( cmdlist_ );
+Cpl::TShell::Dac::Cmd::TPrint                    tprintCmd_( cmdlist_ );
 
 
 

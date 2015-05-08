@@ -264,6 +264,11 @@ void Processor::appendOutput( const char* text ) throw()
     m_framer.output( text );
     }
 
+void Processor::appendOutput( const char* text, size_t numBytes ) throw()
+    {
+    m_framer.output( text, numBytes );
+    }
+
 bool Processor::commitOutput( Cpl::Io::Output& outfd ) throw()
     {
     m_framer.endFrame();
@@ -322,6 +327,11 @@ void Processor::enableFilter( Command_& marker ) throw()
 
 
 ///////////////////////////////////
+Cpl::Text::String& Processor::getTokenBuffer() throw()
+    {
+    return m_tokenBuffer;
+    }
+
 Cpl::Text::String& Processor::getNumericBuffer() throw()
     {
     return m_numericWorkBuffer;

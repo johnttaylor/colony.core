@@ -33,7 +33,7 @@ public:
         the command can NOT be 'created' a new variable (e.g. out-of-memory)
         than 0 is returned. 
      */
-    virtual VariableApi* get( Cpl::Text::String& variableName ) throw() = 0;
+    virtual VariableApi* get( Cpl::Container::Key& variableName ) throw() = 0;
 
 
     /** This method searches - by variable name = the collection of active 
@@ -42,7 +42,7 @@ public:
         0 is returned.  This method is similiar to get() EXCEPT it does
         NOT attempt to create a new variable on the 'not-found' condition.
      */
-    virtual VariableApi* find( Cpl::Text::String& variableName ) throw() = 0;
+    virtual VariableApi* find( Cpl::Container::Key& variableName ) throw() = 0;
 
 
     /** This method is used to remove (i.e. 'destory') a variable from

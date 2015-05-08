@@ -17,6 +17,7 @@ using namespace Cpl::TShell::Dac::Cmd;
 
 
 static void outputCmdHelp_( Cpl::TShell::Dac::Context_& context, Cpl::Io::Output& outfd, Cpl::TShell::Dac::Command_& cmd, bool& io, bool includeDetails );
+static void outputLongText_( Cpl::TShell::Dac::Context_& context, Cpl::Io::Output& outfd, bool& io, const char* text );
 
 
 ///////////////////////////
@@ -65,14 +66,45 @@ Cpl::TShell::Dac::Command_::Result_T Help::execute( Cpl::TShell::Dac::Context_& 
 
 void outputCmdHelp_( Cpl::TShell::Dac::Context_& context, Cpl::Io::Output& outfd, Cpl::TShell::Dac::Command_& cmd, bool& io, bool includeDetails )
     {
-    io &= context.outputMessage( outfd, cmd.getUsage() );
+    outputLongText_( context, outfd, io, cmd.getUsage() );
     if ( includeDetails )
         {
         const char* details = cmd.getHelp();
         if ( details )
             {
-            io &= context.outputMessage( outfd, details );
+            outputLongText_( context, outfd, io, details );
             io &= context.outputMessage( outfd, " " );
             }
+        }
+    }
+
+
+void outputLongText_( Cpl::TShell::Dac::Context_& context, Cpl::Io::Output& outfd, bool& io, const char* text )
+    {
+    context.startOutput();
+    const char* ptr = text;
+    while( *ptr )
+        {
+        if ( *ptr == '\n' )
+            {
+            context.appendOutput( text, ptr - text );
+            io &= context.commitOutput( outfd );
+            text = ++ptr;
+            if ( *ptr )
+                {
+                context.startOutput();
+                }
+            }
+        else
+            {
+            ptr++;
+            }
+        }
+
+    size_t numBytes = ptr - text;
+    if ( numBytes )
+        {
+        context.appendOutput( text, numBytes );
+        io &= context.commitOutput( outfd );
         }
     }

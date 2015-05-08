@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Dac_Cmd_Exit_h
-#define Cpl_TShell_Dac_Cmd_Exit_h
+#ifndef Cpl_TShell_Dac_Cmd_Print_h
+#define Cpl_TShell_Dac_Cmd_Print_h
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -12,35 +12,42 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/TShell/Dac/Cmd/Command_.h"
+#include "colony_config.h"
+#include "Cpl/TShell/Dac/Cmd/Print_.h"
+
+
 
 /* RULER
-                                    "         1         2         3         4         5         6         7         8"
-                                    "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                                      "         1         2         3         4         5         6         7         8"
+                                      "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define CPLTSHELLDACMD_USAGE_EXIT_  "exit [app <exitcode>]"
-#define CPLTSHELLDACMD_DETAIL_EXIT_ "  Requests the DAC shell to exit. If the optional argument 'app' is specified\n" \
-                                    "  then the application is exited with the specifed <exitcode>."
+#define CPLTSHELLDACMD_USAGE_PRINT_   "print [<esc>] <etext>"
+#define CPLTSHELLDACMD_DETAIL_PRINT_  "  Outputs the expanded text. Shell variables can be referenced in the <etext>\n" \
+                                      "  by using the sequence: <esc><varnam><esc>.  When this sequence is encounted,\n" \
+                                      "  the sequence of characters is replaced by the specified variable's content.\n" \
+                                      "  The default <esc> character is '" OPTION_CPL_TSHELL_DAC_CMD_PRINT_ESCAPE_CHAR "'"
 
 
 ///
 namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
-/** This Private Namespace class defines the interface for a DAC shell command.
+
+
+/** This class implements a DAC Shell command
  */
-class Exit: public Command_
+class Print: public Print_
 {
-protected:
+public:
     /// See Cpl::TShell::Dac::Command_
-    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_EXIT_; }
+    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_PRINT_; }
 
     /// See Cpl::TShell::Dac::Command_
-    const char* getHelp() const throw()     { return CPLTSHELLDACMD_DETAIL_EXIT_; }
+    const char* getHelp() const throw()    { return CPLTSHELLDACMD_DETAIL_PRINT_; }
     
      
 public:
     /// Constructor
-    Exit( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
+    Print( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
 
 
 public:
