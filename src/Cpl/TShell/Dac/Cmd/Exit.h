@@ -12,6 +12,7 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
+#include "colony_config.h"
 #include "Cpl/TShell/Dac/Cmd/Command_.h"
 
 /* RULER
@@ -19,8 +20,11 @@
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLDACMD_USAGE_EXIT_  "exit [app <exitcode>]"
+#ifndef CPLTSHELLDACMD_DETAIL_EXIT_
 #define CPLTSHELLDACMD_DETAIL_EXIT_ "  Requests the DAC shell to exit. If the optional argument 'app' is specified\n" \
                                     "  then the application is exited with the specifed <exitcode>."
+
+#endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
 
 
 ///

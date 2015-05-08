@@ -70,7 +70,7 @@ void outputCmdHelp_( Cpl::TShell::Dac::Context_& context, Cpl::Io::Output& outfd
     if ( includeDetails )
         {
         const char* details = cmd.getHelp();
-        if ( details )
+        if ( details && *details != '\0' )
             {
             outputLongText_( context, outfd, io, details );
             io &= context.outputMessage( outfd, " " );

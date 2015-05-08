@@ -22,9 +22,12 @@
                                       "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLDACMD_USAGE_TPRINT_  "tprint [[<esc>] <etext>]"
+#ifndef CPLTSHELLDACMD_DETAIL_TPRINT_
 #define CPLTSHELLDACMD_DETAIL_TPRINT_ "  Same operation as 'print', except the current elasped time is prepended to the\n" \
                                       "  expanded text."
 
+
+#endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
 
 ///
 namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {

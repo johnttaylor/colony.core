@@ -12,6 +12,7 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
+#include "colony_config.h"
 #include "Cpl/TShell/Dac/Cmd/Command_.h"
 
 
@@ -20,9 +21,12 @@
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLDACMD_USAGE_HELP_  "help [* | <cmd>]"
+#ifndef CPLTSHELLDACMD_DETAIL_HELP_
 #define CPLTSHELLDACMD_DETAIL_HELP_ "  Displays list of all supported commands and optionally their detailed help. If\n" \
                                     "  the second argument is command, then the detailed help for that command will\n"   \
                                     "  be displayed."
+
+#endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
 
 
 ///

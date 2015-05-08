@@ -12,6 +12,7 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
+#include "colony_config.h"
 #include "Cpl/TShell/Dac/Cmd/Command_.h"
 
 
@@ -20,11 +21,15 @@
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLDACMD_USAGE_SET_   "set [<varnam> [(#<literal_value> | <srcvar>)]]"
+#ifndef CPLTSHELLDACMD_DETAIL_SET_
 #define CPLTSHELLDACMD_DETAIL_SET_  "  Updates the contents of the variable <varnam> to <literal_value> or to the \n" \
                                     "  the contents of <srcvar>.  If only the <varnam> argument is provided, then\n"      \
                                     "  the variable is removed from the active variable list. If no arguments are\n" \
                                     "  provided, then a list of all active variables (and their current value) is\n" \
                                     "  generated."
+
+#endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
+
 
 
 ///
