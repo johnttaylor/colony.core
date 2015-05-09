@@ -35,28 +35,41 @@ protected:
     /// Sorted list of active/in-use variables
     Cpl::Container::Map<VariableApi>      m_inUse;
 
+    /// Count of active user variable
+    unsigned                              m_activeCount;
 
+    /// System Variable prefix
+    const char                            m_sysVarPrefix;
+    
+     
 public:
     /// Constructor
-    ActiveVariables();
+    ActiveVariables( char systemVarPrefix = '_' );
 
     /// Special Construct to be used when creating an instance statically!
-    ActiveVariables( const char* ignoreThisParameter_usedToCreateAUniqueConstructor );
+    ActiveVariables( const char* ignoreThisParameter_usedToCreateAUniqueConstructor, char systemVarPrefix = '_' );
 
 
 
 public:
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    VariableApi* get( Cpl::Container::Key& variableName ) throw();
+    VariableApi* get( const Cpl::Container::Key& variableName ) throw();
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    VariableApi* find( Cpl::Container::Key& variableName ) throw();
+    VariableApi* find( const Cpl::Container::Key& variableName ) throw();
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
     void remove( VariableApi& varNoLongerInUse ) throw();
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    unsigned getMaxCount() const throw();
+    unsigned getUserCount() const throw();
+
+    /// See Cpl::TShell::Dac::ActiveVariablesApi
+    unsigned getMaxUserCount() const throw();
+
+
+    /// See Cpl::TShell::Dac::ActiveVariablesApi
+    void addSystem( VariableApi& systemVariable ) throw();
 
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
@@ -72,20 +85,24 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 
 template<int NUMVARS>
-ActiveVariables<NUMVARS>::ActiveVariables()
+ActiveVariables<NUMVARS>::ActiveVariables( char systemVarPrefix )
+:m_activeCount(0)
+,m_sysVarPrefix(systemVarPrefix)
     {
     }
 
 template<int NUMVARS>
-ActiveVariables<NUMVARS>::ActiveVariables(const char* ignoreThisParameter_usedToCreateAUniqueConstructor)
- :m_inUse(ignoreThisParameter_usedToCreateAUniqueConstructor) 
+ActiveVariables<NUMVARS>::ActiveVariables( const char* ignoreThisParameter_usedToCreateAUniqueConstructor, char systemVarPrefix )
+:m_inUse(ignoreThisParameter_usedToCreateAUniqueConstructor) 
+,m_activeCount(0)
+,m_sysVarPrefix(systemVarPrefix)
     {
     }
 
 
 
 template<int NUMVARS>
-VariableApi* ActiveVariables<NUMVARS>::get( Cpl::Container::Key& variableName ) throw()
+VariableApi* ActiveVariables<NUMVARS>::get( const Cpl::Container::Key& variableName ) throw()
     {    
     // Handle the case: Variable already exists
     VariableApi* varPtr = m_inUse.find( variableName );
@@ -100,6 +117,7 @@ VariableApi* ActiveVariables<NUMVARS>::get( Cpl::Container::Key& variableName ) 
         {
         VariableApi* varPtr = new(memPtr) Variable_( (const char*) variableName.getRawKey() );
         m_inUse.insert( *varPtr );
+        m_activeCount++;
         return varPtr;
         }
 
@@ -110,7 +128,7 @@ VariableApi* ActiveVariables<NUMVARS>::get( Cpl::Container::Key& variableName ) 
 
 
 template<int NUMVARS>
-VariableApi* ActiveVariables<NUMVARS>::find( Cpl::Container::Key& variableName ) throw()
+VariableApi* ActiveVariables<NUMVARS>::find( const Cpl::Container::Key& variableName ) throw()
     {
     return m_inUse.find( variableName );
     }
@@ -118,12 +136,30 @@ VariableApi* ActiveVariables<NUMVARS>::find( Cpl::Container::Key& variableName )
 template<int NUMVARS>
 void ActiveVariables<NUMVARS>::remove( VariableApi& varNoLongerInUse ) throw()
     {
-    m_inUse.removeItem( varNoLongerInUse );
-    m_variableMem.release( &varNoLongerInUse );
+    if ( *(varNoLongerInUse.getName()) != m_sysVarPrefix )
+        {
+        m_activeCount--;
+        m_inUse.removeItem( varNoLongerInUse );
+        m_variableMem.release( &varNoLongerInUse );
+        }
     }
 
 template<int NUMVARS>
-unsigned ActiveVariables<NUMVARS>::getMaxCount() const throw()
+void ActiveVariables<NUMVARS>::addSystem( VariableApi& systemVariable )  throw()
+    {
+    m_inUse.insert( systemVariable );
+    }
+
+
+template<int NUMVARS>
+unsigned ActiveVariables<NUMVARS>::getUserCount() const throw()
+    {
+    return m_activeCount;
+    }
+
+
+template<int NUMVARS>
+unsigned ActiveVariables<NUMVARS>::getMaxUserCount() const throw()
     {
     return NUMVARS;
     }

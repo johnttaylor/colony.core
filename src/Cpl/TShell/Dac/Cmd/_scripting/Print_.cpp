@@ -32,8 +32,8 @@ Print_::Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList, co
 ///////////////////////////
 Cpl::TShell::Dac::Command_::Result_T Print_::execute( bool prependTimeStamp, Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
-    ActiveVariablesApi& vars   = context.getVariables();
-    Cpl::Text::String& outtext = context.getTokenBuffer();
+    ActiveVariablesApi& vars    = context.getVariables();
+    Cpl::Text::String&  outtext = context.getOutputBuffer();
     const char*         etext;
 
     // Error checking
@@ -117,7 +117,7 @@ Cpl::TShell::Dac::Command_::Result_T Print_::execute( bool prependTimeStamp, Cpl
         
 
     // Output the final expanded text
-    return context.outputMessage( outfd, outtext )? Command_::eSUCCESS: Command_::eERROR_IO;
+    return context.writeFrame( outtext )? Command_::eSUCCESS: Command_::eERROR_IO;
     }
 
 

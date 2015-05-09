@@ -52,6 +52,10 @@ public:
      */
     StringEncoder( Cpl::Text::String& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline=true );
 
+public:
+    /// Returns a refernce to the String that holds the encoded frame.  The contents of the buffer depends on the state of frame being built.
+    Cpl::Text::String& getFramedOutput();
+
 
 protected:
     /// See Cpl::Text::Frame::Encoder_

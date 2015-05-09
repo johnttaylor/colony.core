@@ -19,18 +19,29 @@ using namespace Cpl::Text::Frame;
 
 
 ///////////////////////////////////
-StreamEncoder::StreamEncoder( Cpl::Io::Output& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline )
+StreamEncoder::StreamEncoder( Cpl::Io::Output* dstPtr, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline )
 :Encoder_(startOfFrame, endOfFrame, escapeChar, appendNewline)
-,m_dst(dst)
+,m_dstPtr(dstPtr)
     {
     }
 
+
+///////////////////////////////////
+void StreamEncoder::setOutput( Cpl::Io::Output& newOutfd ) throw()
+    {
+    m_dstPtr = &newOutfd;
+    }
 
 
 ///////////////////////////////////
 bool StreamEncoder::start( char src ) throw()
     {
-    return m_dst.write(src);
+    if ( !m_dstPtr )
+        {
+        return false;
+        }
+
+    return m_dstPtr->write(src);
     }
 
 bool StreamEncoder::start() throw()
@@ -39,7 +50,13 @@ bool StreamEncoder::start() throw()
     return true;
     }
 
+
 bool StreamEncoder::append( char src ) throw()
     {
-    return m_dst.write(src);
+    if ( !m_dstPtr )
+        {
+        return false;
+        }
+
+    return m_dstPtr->write(src);
     }

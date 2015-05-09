@@ -13,19 +13,28 @@
 /** @file */
 
 #include "Cpl/TShell/Dac/ActiveVariablesApi.h"
+#include "Cpl/Container/Map.h"
 
 ///
 namespace Cpl { namespace TShell { namespace Dac {
 
 /** This concrete class implements the Active DAC Variables interface with ZERO 
-    supported variables.  This is typically used when the Application does not 
-    need/want shell variable support.  
+    supported USER variables.  This is typically used when the Application does 
+    not need/want shell variable support.  
  */
 class NullVariables: public ActiveVariablesApi
 {
+protected:
+    /// Sorted list of system variables
+    Cpl::Container::Map<VariableApi>      m_inUse;
+
 public:
     /// Constructor
     NullVariables();
+
+    /// Special Construct to be used when creating an instance statically!
+    NullVariables( const char* ignoreThisParameter_usedToCreateAUniqueConstructor );
+
 
 
 public:
@@ -37,6 +46,15 @@ public:
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
     void remove( VariableApi& varNoLongerInUse ) throw();
+
+    /// See Cpl::TShell::Dac::ActiveVariablesApi
+    unsigned getUserCount() const throw();
+
+    /// See Cpl::TShell::Dac::ActiveVariablesApi
+    unsigned getMaxUserCount() const throw();
+
+    /// See Cpl::TShell::Dac::ActiveVariablesApi
+    void addSystem( VariableApi& systemVariable ) throw();
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
     VariableApi* first() const throw();

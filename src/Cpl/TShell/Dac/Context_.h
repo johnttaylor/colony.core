@@ -61,27 +61,18 @@ public:
      */
     virtual VariableApi& getErrorLevel() throw() = 0;
 
-    /** Returns a reference to the output frame buffer.  This buffer will
-        contained the framed output of the last command.
+    /** Returns a reference to the Shell variable that contains the
+        unframed output of the last command. 
      */
-    virtual Cpl::Text::String& getOutputFrameBuffer() throw() = 0;
+    virtual VariableApi& getLastOutput() throw() = 0;
 
 
 public:
-    /// Helper method for generating command outputs. Each output 'line' must start with this command
-    virtual void startOutput() throw() = 0;
+    /// This method encodes and outputs the specified message/text.  The method returns false if there was Output Stream error
+    virtual bool writeFrame( const char* text ) throw() = 0;
 
-    /// Helper method for generating command outputs. Contents of the output 'line'
-    virtual void appendOutput( const char* text ) throw() = 0;
-
-    /// Helper method for generating command outputs. Contents of the output 'line'
-    virtual void appendOutput( const char* text, size_t numBytes ) throw() = 0;
-
-    /// Helper method for generating command outputs. Outputs the content of the cache line to the output stream
-    virtual bool commitOutput( Cpl::Io::Output& outfd ) throw() = 0;
-
-    /// Helper method for generating command outputs.  Builds and Commits a single output message
-    inline bool outputMessage( Cpl::Io::Output& outfd, const char* text ) throw() { startOutput(); appendOutput(text); return commitOutput(outfd); }
+    /// Same as writeFrame(), but only outputs (at most) 'N' bytes as the content of the frame
+    virtual bool writeFrame( const char* text, size_t maxBytes ) throw() = 0;
 
 
 public:
@@ -116,16 +107,15 @@ public:
 
 
 public:
+    /** This method returns a working buffer for a command to format its
+        output prior to 'writing the frame'.
+     */
+    virtual Cpl::Text::String& getOutputBuffer() throw() = 0;
+
     /** A shared/common working buffer. The buffer is guarented to be large 
         enough hold any valid token from an input frame.
      */
     virtual Cpl::Text::String& getTokenBuffer() throw() = 0;
-
-    /** A shared/common working buffer. The buffer is guarented to be large 
-        enough for converting/format binary numbers (int,floats,etc) into
-        strings.
-     */
-    virtual Cpl::Text::String& getNumericBuffer() throw() = 0;
 
 
 public:

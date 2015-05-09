@@ -19,7 +19,7 @@
 #include "Cpl/System/FastLock.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/Text/FString.h"
-#include "Cpl/Text/Frame/Encoder.h"
+#include "Cpl/Text/Frame/StreamEncoder.h"
 #include "Cpl/Text/Frame/Decoder.h"
 #include "Cpl/Log/Loggers.h"
 #include "Cpl/Container/Stack.h"
@@ -32,11 +32,11 @@
 #define OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE              128
 #endif
 
-/** This symbols define the size, in bytes (not including the null termintor) of
-    the common Numeric work buffer
+/** This symbol defines the size, in bytes, of the maximum allowed unframed
+    output stirng/command.
  */
-#ifndef OPTION_CPL_TSHELL_DAC_PROCESSOR_WORKBUF_SIZE
-#define OPTION_CPL_TSHELL_DAC_PROCESSOR_WORKBUF_SIZE            22
+#ifndef OPTION_CPL_TSHELL_DAC_PROCESSOR_OUTPUT_SIZE
+#define OPTION_CPL_TSHELL_DAC_PROCESSOR_OUTPUT_SIZE             256
 #endif
 
 /** The symbol defines the string name of the ErrorLevel shell variable
@@ -44,6 +44,13 @@
 #ifndef OPTION_CPL_TSHELL_DAC_PROCESSOR_NAME_ERRORLEVEL
 #define OPTION_CPL_TSHELL_DAC_PROCESSOR_NAME_ERRORLEVEL         "_errno"
 #endif
+
+/** The symbol defines the string name of the ErrorLevel shell variable
+ */
+#ifndef OPTION_CPL_TSHELL_DAC_PROCESSOR_NAME_LAST_OUTPUT
+#define OPTION_CPL_TSHELL_DAC_PROCESSOR_NAME_LAST_OUTPUT        "_lastout"
+#endif
+
 
 /** This symbols defines the maximum number of nested loops
  */
@@ -125,12 +132,9 @@ protected:
     /// Raw input deframer
     Cpl::Text::Frame::Decoder&          m_deframer;
 
-    /// Output framer
-    Cpl::Text::Frame::Encoder&          m_framer;
+    /// Output framer handle
+    Cpl::Text::Frame::StreamEncoder&    m_framer;
 
-    /// Buffer that the output framer is required to use
-    Cpl::Text::String&                  m_outputFrameBuffer;
-     
     /// Output lock
     Cpl::System::Mutex&                 m_outLock;
 
@@ -160,6 +164,9 @@ protected:
 
     /// Error level Shell variable
     Variable_                           m_errorLevel;
+
+    /// Last-Command-Ouput Shell variable
+    VariableBase_                       m_lastCmdOutput;
 
     /// My run state
     bool                                m_running;
@@ -200,11 +207,15 @@ protected:
     char                                m_inputCopy[OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE+1];
 
 
+    /// Buffer that is used to construct output messages
+    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_PROCESSOR_OUTPUT_SIZE>  m_outputBuffer;
+     
     /// Shared token work buffer
     Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE>   m_tokenBuffer;
 
-    /// Shared work buffer
-    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_PROCESSOR_WORKBUF_SIZE> m_numericWorkBuffer;
+    /// Memory for last-command-output Shell variable vaule
+    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_PROCESSOR_OUTPUT_SIZE>  m_lastCmdOutputValue;
+
 
 
 
@@ -225,9 +236,6 @@ public:
                                 command in the Output stream.
         @param outputLock       Mutex to be used for ensuring the atomic output
                                 of the commands.
-        @param cmdBufferPtr     Memory to store buffered commands.  If the value
-                                is zero, then capturing/replaying of commands is
-                                not supported.
         @param maxBufferCmds    Number of commands that can be stored in the
                                 'command buffer'
         @param commentChar      The comment character used to indicate that the
@@ -245,8 +253,7 @@ public:
     Processor( Cpl::Container::Map<Command_>&    commands,
                ActiveVariablesApi&               variables,
                Cpl::Text::Frame::Decoder&        deframer,
-               Cpl::Text::Frame::Encoder&        framer,
-               Cpl::Text::String&                outputFrameBuffer,
+               Cpl::Text::Frame::StreamEncoder&  framer,
                Cpl::System::Mutex&               outputLock,
                CommandBuffer_T*                  cmdBufferPtr=0, 
                unsigned                          maxBufferCmds=0,
@@ -286,23 +293,15 @@ public:
     VariableApi& getErrorLevel() throw();
 
     /// See Cpl::TShell::Dac::Context_
-    Cpl::Text::String& getOutputFrameBuffer() throw();
+    VariableApi& getLastOutput() throw();
 
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    void startOutput() throw();
+    bool writeFrame( const char* text  ) throw();
 
     /// See Cpl::TShell::Dac::Context_
-    void appendOutput( const char* text ) throw();
-
-    /// Helper method for generating command outputs. Contents of the output 'line'
-    void appendOutput( const char* text, size_t numBytes ) throw();
-
-
-    /// See Cpl::TShell::Dac::Context_
-    bool commitOutput( Cpl::Io::Output& outfd ) throw();
-
+    bool writeFrame( const char* text, size_t maxBytes ) throw();
  
 public:
     /// See Cpl::TShell::Dac::Context_
@@ -323,10 +322,10 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    Cpl::Text::String& getTokenBuffer() throw();
+    Cpl::Text::String& getOutputBuffer() throw();
 
     /// See Cpl::TShell::Dac::Context_
-    Cpl::Text::String& getNumericBuffer() throw();
+    Cpl::Text::String& getTokenBuffer() throw();
 
 
 protected:
@@ -342,7 +341,7 @@ protected:
 
 protected:
     /// Helper method
-    bool outputCommandError( Cpl::Io::Output& outfd, Command_::Result_T result, const char* deframedInput ) throw();
+    bool outputCommandError( Command_::Result_T result, const char* deframedInput ) throw();
 
 };
 

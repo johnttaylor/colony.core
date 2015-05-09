@@ -22,8 +22,7 @@ static const char* resultToString_( Command_::Result_T errcode );
 Processor::Processor( Cpl::Container::Map<Command_>&    commands,
                       ActiveVariablesApi&               variables,
                       Cpl::Text::Frame::Decoder&        deframer,
-                      Cpl::Text::Frame::Encoder&        framer,
-                      Cpl::Text::String&                outputFrameBuffer,
+                      Cpl::Text::Frame::StreamEncoder&  framer,
                       Cpl::System::Mutex&               outputLock,
                       CommandBuffer_T*                  cmdBufferPtr,
                       unsigned                          maxBufferCmds,
@@ -38,7 +37,6 @@ Processor::Processor( Cpl::Container::Map<Command_>&    commands,
 ,m_variables( variables )
 ,m_deframer( deframer )
 ,m_framer( framer )
-,m_outputFrameBuffer( outputFrameBuffer )
 ,m_outLock( outputLock )
 ,m_cmdBuffer( cmdBufferPtr )
 ,m_cmdBufSize( maxBufferCmds )
@@ -48,6 +46,7 @@ Processor::Processor( Cpl::Container::Map<Command_>&    commands,
 ,m_quote( argQuote )
 ,m_term( argTerminator )
 ,m_errorLevel( OPTION_CPL_TSHELL_DAC_PROCESSOR_NAME_ERRORLEVEL )
+,m_lastCmdOutput( OPTION_CPL_TSHELL_DAC_PROCESSOR_NAME_LAST_OUTPUT, m_lastCmdOutputValue )
 ,m_running( false )
 ,m_filtering( false )
 ,m_filterMarker( 0 )
@@ -75,7 +74,15 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
     m_captureCount = 0;
     m_currentIdx   = 0;
     m_replayIdx    = 0;
+    m_outputBuffer.clear();
     m_startIndexes.clearTheStack();
+    m_framer.setOutput( outfd );
+
+    // Add my system variables (but make sure they don't get add twice if the processor is 'restarted')
+    if ( m_variables.find( m_errorLevel ) == 0 )
+        {
+        m_variables.addSystem( m_errorLevel );
+        }
 
     // Output the greeting message
     greeting( outfd );
@@ -183,7 +190,7 @@ Command_::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io
     // Skip something that doesn't parse
     if ( tokens.isValidTokens() == false )
         {
-        return outputCommandError( outfd, Command_::eERROR_BAD_SYNTAX, deframedInput )? Command_::eERROR_BAD_SYNTAX: Command_::eERROR_IO;
+        return outputCommandError( Command_::eERROR_BAD_SYNTAX, deframedInput )? Command_::eERROR_BAD_SYNTAX: Command_::eERROR_IO;
         }
 
     // Skip blank and comment lines
@@ -197,7 +204,7 @@ Command_::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io
     Command_*                        cmdPtr;
     if ( (cmdPtr=m_commands.find(verb)) == 0 )
         {
-        return outputCommandError( outfd, Command_::eERROR_INVALID_CMD, deframedInput )? Command_::eERROR_INVALID_CMD: Command_::eERROR_IO;
+        return outputCommandError( Command_::eERROR_INVALID_CMD, deframedInput )? Command_::eERROR_INVALID_CMD: Command_::eERROR_IO;
         }
     
     // Apply filtering (when enabled)
@@ -220,7 +227,7 @@ Command_::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io
     Command_::Result_T result = cmdPtr->execute( *this, tokens, deframedInput, outfd );    
     if ( result != Command_::eSUCCESS )
         {
-        return outputCommandError( outfd, result, deframedInput )? result: Command_::eERROR_IO;
+        return outputCommandError( result, deframedInput )? result: Command_::eERROR_IO;
         }
 
     return result;
@@ -247,32 +254,39 @@ VariableApi& Processor::getErrorLevel() throw()
     return m_errorLevel;
     }
 
-Cpl::Text::String& Processor::getOutputFrameBuffer() throw()
+VariableApi& Processor::getLastOutput() throw()
     {                     
-    return m_outputFrameBuffer;
+    return m_lastCmdOutput;
     }
 
 
 ///////////////////////////////////
-void Processor::startOutput() throw()
+bool Processor::writeFrame( const char* text  ) throw()
     {
-    m_framer.startFrame();
+    // Capture last output
+    m_lastCmdOutputValue = text;
+
+    // Encode and output the text
+    bool io = true;
+    io &= m_framer.startFrame();
+    io &= m_framer.output( text );
+    io &= m_framer.endFrame();
+
+    return io;
     }
 
-void Processor::appendOutput( const char* text ) throw()
+bool Processor::writeFrame( const char* text, size_t maxBytes  ) throw()
     {
-    m_framer.output( text );
-    }
+    // Capture last output
+    m_lastCmdOutputValue.copyIn( text, maxBytes );
 
-void Processor::appendOutput( const char* text, size_t numBytes ) throw()
-    {
-    m_framer.output( text, numBytes );
-    }
+    // Encode and output the text
+    bool io = true;
+    io &= m_framer.startFrame();
+    io &= m_framer.output( text, maxBytes );
+    io &= m_framer.endFrame();
 
-bool Processor::commitOutput( Cpl::Io::Output& outfd ) throw()
-    {
-    m_framer.endFrame();
-    return outfd.write( m_outputFrameBuffer );
+    return io;
     }
 
 
@@ -327,15 +341,16 @@ void Processor::enableFilter( Command_& marker ) throw()
 
 
 ///////////////////////////////////
+Cpl::Text::String& Processor::getOutputBuffer() throw()
+    {
+    return m_outputBuffer;
+    }
+
 Cpl::Text::String& Processor::getTokenBuffer() throw()
     {
     return m_tokenBuffer;
     }
 
-Cpl::Text::String& Processor::getNumericBuffer() throw()
-    {
-    return m_numericWorkBuffer;
-    }
 
 
 ///////////////////////////////////
@@ -356,51 +371,46 @@ bool Processor::prompt( Cpl::Io::Output& outfd ) throw()
 
 
 ///////////////////////////////////
-bool Processor::outputCommandError( Cpl::Io::Output& outfd, Command_::Result_T result, const char* deframedInput ) throw()
+bool Processor::outputCommandError( Command_::Result_T result, const char* deframedInput ) throw()
     {
-    bool io;
+    bool io = true;
 
-    io  = outputMessage( outfd, resultToString_(result) );
-          startOutput();
-          appendOutput( "[") ;
-          appendOutput( deframedInput );
-          appendOutput( "]" );
-    io &= commitOutput( outfd );
-    io &= outputMessage( outfd, " " );
+    m_outputBuffer.format( "ERROR: [%s]", deframedInput );
+    io &= writeFrame( m_outputBuffer ); 
+    io &= writeFrame( resultToString_(result) );
 
     return io;
     }
-
 
 const char* resultToString_( Command_::Result_T errcode )
     {
     switch( errcode )
         {
         default: 
-            return "*** ERROR: Command failed - unknown error code";
+            return "ERRNO: Command failed - unknown error code";
 
         case Command_::eERROR_BAD_SYNTAX:
-            return "*** ERROR: Unable to parse command string";
+            return "ERRNO: (1) Unable to parse command string";
 
         case Command_::eERROR_INVALID_CMD:
-            return "*** ERROR: Command not supported";
+            return "ERRNO: (2) Command not supported";
 
         case Command_::eERROR_IO:
-            return "*** ERROR: Input/Output stream IO encounter";
-
-        case Command_::eERROR_EXTRA_ARGS:
-            return "*** ERROR: Command encounter 'extra' argument(s)";
+            return "ERRNO: (3) Input/Output stream IO encounter";
 
         case Command_::eERROR_MISSING_ARGS:
-            return "*** ERROR: Command is missing argument(s)";
+            return "ERRNO: (4) Command is missing argument(s)";
+
+        case Command_::eERROR_EXTRA_ARGS:
+            return "ERRNO: (5) Command encounter 'extra' argument(s)";
 
         case Command_::eERROR_INVALID_ARGS:
-            return "*** ERROR: One or more Command arguments are incorrect/invalid";
+            return "ERRNO: (6) One or more Command arguments are incorrect/invalid";
 
         case Command_::eERROR_FAILED:
-            return "*** ERROR: Command failed to complete one or more of its actions";
+            return "ERRNO: (7) Command failed to complete one or more of its actions";
         }
 
-    return "**** I SHOULD NEVER GET HERE! ****";
+    return "ERROR: I SHOULD NEVER GET HERE!";
     }
 

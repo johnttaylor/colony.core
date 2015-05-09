@@ -9,7 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "Variable_.h"
+#include "VariableBase_.h"
 #include "Cpl/Text/atob.h"
 
 
@@ -18,8 +18,8 @@ using namespace Cpl::TShell::Dac;
 
 
 /////////////////////////////////////
-Variable_::Variable_( const char* name )
-:m_value(""),
+VariableBase_::VariableBase_( const char* name, Cpl::Text::String& storageForValue )
+:m_value(storageForValue),
  m_name(name)
     {
     }
@@ -27,7 +27,7 @@ Variable_::Variable_( const char* name )
 
 
 /////////////////////////////////////
-int Variable_::compare( const char* leftValue, const char* rightValue )
+int VariableApi::compare( const char* leftValue, const char* rightValue )
     {
     double leftOper  = 0.0;
     double rightOper = 0.0;
@@ -54,37 +54,37 @@ int Variable_::compare( const char* leftValue, const char* rightValue )
     }      
 
 /////////////////////////////////////
-const char* Variable_::getName() const throw()
+const char* VariableBase_::getName() const throw()
     {
     return m_name;
     }
 
-const char* Variable_::getValue() const throw()
+const char* VariableBase_::getValue() const throw()
     {
     return m_value;
     }
 
 
 /////////////////////////////////////
-bool Variable_::setValue( const char* newValue ) throw()
+bool VariableBase_::setValue( const char* newValue ) throw()
     {
     m_value = newValue;
     return m_value.truncated() == false;
     }
 
-bool Variable_::setValue( double newValue ) throw()
+bool VariableBase_::setValue( double newValue ) throw()
     {
     m_value.format( "%f", newValue ); 
     return m_value.truncated() == false;
     }
 
-bool Variable_::setValue( long newValue ) throw()
+bool VariableBase_::setValue( long newValue ) throw()
     {
     m_value = newValue;
     return m_value.truncated() == false;
     }
 
-bool Variable_::setValue( unsigned long newValue ) throw()
+bool VariableBase_::setValue( unsigned long newValue ) throw()
     {
     m_value = newValue;
     return m_value.truncated() == false;
@@ -92,7 +92,7 @@ bool Variable_::setValue( unsigned long newValue ) throw()
 
 
 /////////////////////////////////////
-bool Variable_::add( const char* amount ) throw()
+bool VariableBase_::add( const char* amount ) throw()
     {
     double leftOper  = 0.0;
     double rightOper = 0.0;
@@ -109,12 +109,12 @@ bool Variable_::add( const char* amount ) throw()
 
 
 /////////////////////////////////////
-bool Variable_::getNumber( double& valueAsNumber ) const throw()
+bool VariableBase_::getNumber( double& valueAsNumber ) const throw()
     {
     return Cpl::Text::a2d( valueAsNumber, m_value );
     }
 
-bool Variable_::getNumber( long& valueAsNumber ) const throw()
+bool VariableBase_::getNumber( long& valueAsNumber ) const throw()
     {
     double value  = 0.0;
     bool   rc     = Cpl::Text::a2d( value, m_value );
@@ -122,7 +122,7 @@ bool Variable_::getNumber( long& valueAsNumber ) const throw()
     return rc;
     }
 
-bool Variable_::getNumber( unsigned long& valueAsNumber ) const throw()
+bool VariableBase_::getNumber( unsigned long& valueAsNumber ) const throw()
     {
     double value  = 0.0;
     bool   rc     = Cpl::Text::a2d( value, m_value );

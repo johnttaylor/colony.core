@@ -16,8 +16,8 @@
 using namespace Cpl::TShell::Dac::Cmd;
 
 
-static void outputCmdHelp_( Cpl::TShell::Dac::Context_& context, Cpl::Io::Output& outfd, Cpl::TShell::Dac::Command_& cmd, bool& io, bool includeDetails );
-static void outputLongText_( Cpl::TShell::Dac::Context_& context, Cpl::Io::Output& outfd, bool& io, const char* text );
+static void outputCmdHelp_( Cpl::TShell::Dac::Context_& context, Cpl::TShell::Dac::Command_& cmd, bool& io, bool includeDetails );
+static void outputLongText_( Cpl::TShell::Dac::Context_& context, bool& io, const char* text );
 
 
 ///////////////////////////
@@ -44,7 +44,7 @@ Cpl::TShell::Dac::Command_::Result_T Help::execute( Cpl::TShell::Dac::Context_& 
     // Command specific help
     if ( (cmdPtr=cmdList.find(verb)) )
         {
-        outputCmdHelp_( context, outfd, *cmdPtr, io, true );
+        outputCmdHelp_( context, *cmdPtr, io, true );
         }
 
     // List the commands
@@ -54,7 +54,7 @@ Cpl::TShell::Dac::Command_::Result_T Help::execute( Cpl::TShell::Dac::Context_& 
 
         while( cmdPtr && io == true )
             {
-            outputCmdHelp_( context, outfd, *cmdPtr, io, tokens.numParameters() == 2 );
+            outputCmdHelp_( context, *cmdPtr, io, tokens.numParameters() == 2 );
             cmdPtr = cmdList.next( *cmdPtr );
             }
         }
@@ -64,36 +64,30 @@ Cpl::TShell::Dac::Command_::Result_T Help::execute( Cpl::TShell::Dac::Context_& 
 
 
 
-void outputCmdHelp_( Cpl::TShell::Dac::Context_& context, Cpl::Io::Output& outfd, Cpl::TShell::Dac::Command_& cmd, bool& io, bool includeDetails )
+void outputCmdHelp_( Cpl::TShell::Dac::Context_& context, Cpl::TShell::Dac::Command_& cmd, bool& io, bool includeDetails )
     {
-    outputLongText_( context, outfd, io, cmd.getUsage() );
+    outputLongText_( context, io, cmd.getUsage() );
     if ( includeDetails )
         {
         const char* details = cmd.getHelp();
         if ( details && *details != '\0' )
             {
-            outputLongText_( context, outfd, io, details );
-            io &= context.outputMessage( outfd, " " );
+            outputLongText_( context, io, details );
+            io &= context.writeFrame( " " );
             }
         }
     }
 
 
-void outputLongText_( Cpl::TShell::Dac::Context_& context, Cpl::Io::Output& outfd, bool& io, const char* text )
+void outputLongText_( Cpl::TShell::Dac::Context_& context, bool& io, const char* text )
     {
-    context.startOutput();
     const char* ptr = text;
     while( *ptr )
         {
         if ( *ptr == '\n' )
             {
-            context.appendOutput( text, ptr - text );
-            io &= context.commitOutput( outfd );
+            io &= context.writeFrame( text, ptr - text );
             text = ++ptr;
-            if ( *ptr )
-                {
-                context.startOutput();
-                }
             }
         else
             {
@@ -104,7 +98,6 @@ void outputLongText_( Cpl::TShell::Dac::Context_& context, Cpl::Io::Output& outf
     size_t numBytes = ptr - text;
     if ( numBytes )
         {
-        context.appendOutput( text, numBytes );
-        io &= context.commitOutput( outfd );
+        io &= context.writeFrame( text, numBytes );
         }
     }

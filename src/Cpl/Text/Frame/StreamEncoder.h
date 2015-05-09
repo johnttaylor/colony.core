@@ -32,24 +32,31 @@ class StreamEncoder: public Encoder_
 {
 protected:
     /// Output stream
-    Cpl::Io::Output&    m_dst;
+    Cpl::Io::Output*    m_dstPtr;
 
 
 
 
 public:
-    /** Constructor.  The 'appendNewline' argument when set to true will
-        append a newline character to the output stream AFTER the EOF
-        character (this can make for more human readable output stream).
+    /** Constructor.  The Output Stream is not required to be specified at
+        construction time (i.e. 'dstPtr' can be zero).  However, the must
+        by a valid Output Stream handle BEFORE the start() method is called.
+        The 'appendNewline' argument when set to true will append a newline 
+        character to the output stream AFTER the EOF character (this can make 
+        for more human readable output stream).
 
         NOTE: If 'startOfFrame' is '\0', then Encoder will begin the
               frame WITHOUT inserting a SOF chracter.  This is useful
               when there application desires/has multiple start-of-frame
               characters for a given frame.
      */
-    StreamEncoder( Cpl::Io::Output& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline=true );
+    StreamEncoder( Cpl::Io::Output* dstPtr, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline=true );
 
-
+public:
+    /// Allow the consumer to change/Set the Output stream handle.  Note: No guarantees on what happens if this method is called in the 'middle of a frame'
+    void setOutput( Cpl::Io::Output& newOutfd ) throw();
+    
+     
 protected:
     /// See Cpl::Text::Frame::Encoder_
     bool start( char src ) throw();

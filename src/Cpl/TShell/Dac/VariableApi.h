@@ -84,6 +84,11 @@ public:
 
 
 public:
+    /// Overload the Cast-to-Container::Key as a short-cut to getKey()
+    inline operator const Cpl::Container::Key& () const { return getKey(); }
+
+
+public:
     /** Adds the specified amount to the variable.  If 'amount' is not
         a valid 'numeric' value OR the variable's value is a not valid
         'numeric' value then false is returned; else true is returned.

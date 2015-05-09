@@ -12,8 +12,7 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/TShell/Dac/VariableApi.h"
-#include "Cpl/Text/FString.h"
+#include "Cpl/TShell/Dac/VariableBase_.h"
 
 
 
@@ -21,65 +20,21 @@
 namespace Cpl { namespace TShell { namespace Dac {
 
 /** This Private Namespace concrete class implements a DAC Shell variable
+    a DAC shell variable. The memory for the shell's value MUST be provided
+    by a child class.
  */
 
-class Variable_: public VariableApi
+class Variable_: public VariableBase_
 {
 protected:
     /// Value buffer
-    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_VARIABLEAPI_VALUE_SIZE>   m_value;
-
-    /// Name buffer
-    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_VARIABLEAPI_NAME_SIZE>    m_name;
+    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_VARIABLEAPI_VALUE_SIZE>    m_storageForValue;
 
 
 public:
     /// Constructor
-    Variable_( const char* name );
+    Variable_( const char* name ):VariableBase_(name,m_storageForValue),m_storageForValue(""){}
 
-
-
-
-public:
-    /// See Cpl::Container::Key
-    const Cpl::Container::Key& getKey() const throw() { return m_name; }
-
-
-public:
-    /// See Cpl::TShell::Dac::VariableApi
-    static int compare( const char* leftValue, const char* rightValue );
-
-
-public:
-    /// See Cpl::TShell::Dac::VariableApi
-    const char* getName() const throw();
-
-    /// See Cpl::TShell::Dac::VariableApi
-    const char* getValue() const throw();
-
-    /// See Cpl::TShell::Dac::VariableApi
-    bool setValue( const char* newValue ) throw();
-
-    /// See Cpl::TShell::Dac::VariableApi
-    bool setValue( double newValue ) throw();
-
-    /// See Cpl::TShell::Dac::VariableApi
-    bool setValue( long newValue ) throw();
-
-    /// See Cpl::TShell::Dac::VariableApi
-    bool setValue( unsigned long newValue ) throw();
-
-    /// See Cpl::TShell::Dac::VariableApi
-    bool add( const char* amount ) throw();
-
-    /// See Cpl::TShell::Dac::VariableApi
-    bool getNumber( double& valueAsNumber ) const throw();
-
-    /// See Cpl::TShell::Dac::VariableApi
-    bool getNumber( long& valueAsNumber ) const throw();
-
-    /// See Cpl::TShell::Dac::VariableApi
-    bool getNumber( unsigned long& valueAsNumber ) const throw();
 };
 
 };      // end namespaces

@@ -40,9 +40,7 @@ extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 #define MAXVARS_                4
 #endif
 
-#ifndef FRAME_SIZE_ 
 #define FRAME_SIZE_             OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE
-#endif
 
 #ifndef SOF_                    
 #define SOF_                    '\0'
@@ -89,14 +87,12 @@ extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 Cpl::TShell::Dac::ActiveVariables<MAXVARS_>      variables_("invoke_special_static_constructor");
 Cpl::Container::Map<Cpl::TShell::Dac::Command_>  cmdlist_;
 Cpl::Text::Frame::LineDecoder<FRAME_SIZE_>       deframer_;
-Cpl::Text::FString<FRAME_SIZE_>                  outputFrameBuffer_;
-Cpl::Text::Frame::StringEncoder                  framer_( outputFrameBuffer_, SOF_, EOF_, ESC_, APPEND_NEWLINE_ );
+Cpl::Text::Frame::StreamEncoder                  framer_( 0, SOF_, EOF_, ESC_, APPEND_NEWLINE_ );
 Cpl::TShell::Dac::Processor::CommandBuffer_T     cmdBuffer_[MAX_CMD_BUFFER_];
 Cpl::TShell::Dac::Processor                      cmdProccessor_( cmdlist_, 
                                                                  variables_, 
                                                                  deframer_, 
                                                                  framer_, 
-                                                                 outputFrameBuffer_,
                                                                  Cpl::System::Locks_::tracing(),
                                                                  cmdBuffer_,
                                                                  MAX_CMD_BUFFER_,

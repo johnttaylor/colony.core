@@ -84,30 +84,18 @@ Cpl::TShell::Dac::Command_::Result_T Set::execute( Cpl::TShell::Dac::Context_& c
     // Generate list of variables
     else
         {
-        unsigned     count  = 0;
-        bool         io     = true;
-        VariableApi* varPtr = vars.first();
+        Cpl::Text::String& outtext = context.getOutputBuffer();
+        bool               io      = true;
+        VariableApi*       varPtr  = vars.first();
         while( varPtr && io == true )
             {
-            context.startOutput();
-            context.appendOutput( varPtr->getName() );
-            context.appendOutput( "=" );
-            context.appendOutput( varPtr->getValue() );
-            io &= context.commitOutput( outfd );
-
-            count++;
+            outtext.format( "%s=%s", varPtr->getName(), varPtr->getValue() );
+            io    &= context.writeFrame( outtext );
             varPtr = vars.next( *varPtr );
             }
 
-        Cpl::Text::String& temp = context.getNumericBuffer();
-        context.startOutput();
-        context.appendOutput( "Active variables: " );
-        temp = count;
-        context.appendOutput( temp );
-        context.appendOutput( ". Max allowed User variables: " );
-        temp = vars.getMaxCount();
-        context.appendOutput( temp );
-        io &= context.commitOutput( outfd );
+        outtext.format( "Active User variables: %u. Max allowed User variables: %u", vars.getUserCount(), vars.getMaxUserCount() );
+        io &= context.writeFrame( outtext );
 
         return io? Command_::eSUCCESS: Command_::eERROR_IO;
         }

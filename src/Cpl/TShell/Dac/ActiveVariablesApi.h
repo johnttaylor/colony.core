@@ -33,7 +33,7 @@ public:
         the command can NOT be 'created' a new variable (e.g. out-of-memory)
         than 0 is returned. 
      */
-    virtual VariableApi* get( Cpl::Container::Key& variableName ) throw() = 0;
+    virtual VariableApi* get( const Cpl::Container::Key& variableName ) throw() = 0;
 
 
     /** This method searches - by variable name = the collection of active 
@@ -42,7 +42,7 @@ public:
         0 is returned.  This method is similiar to get() EXCEPT it does
         NOT attempt to create a new variable on the 'not-found' condition.
      */
-    virtual VariableApi* find( Cpl::Container::Key& variableName ) throw() = 0;
+    virtual VariableApi* find( const Cpl::Container::Key& variableName ) throw() = 0;
 
 
     /** This method is used to remove (i.e. 'destory') a variable from
@@ -50,11 +50,25 @@ public:
      */
     virtual void remove( VariableApi& varNoLongerInUse ) throw() = 0;
      
+
+    /** This method returns the current number of active User variables
+     */
+    virtual unsigned getUserCount() const throw() = 0;
     
-    /** This method returns the maximum number of active variables allowed 
+
+    /** This method returns the maximum number of active User variables allowed 
         and/or supported.
      */
-    virtual unsigned getMaxCount() const throw() = 0;
+    virtual unsigned getMaxUserCount() const throw() = 0;
+
+
+public:
+    /** This method add a 'system' variable to the list of active varaibles.
+        ALL system variables must start with a unique (relative to 'user'
+        variables) prefix, e.g. leading underscore: '_errno'. System 
+        variables cannot be remove once added.
+     */
+    virtual void addSystem( VariableApi& systemVariable ) throw() = 0;
 
 
 public:
