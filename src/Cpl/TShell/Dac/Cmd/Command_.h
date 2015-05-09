@@ -15,6 +15,7 @@
 #include "Cpl/TShell/Dac/Command_.h"
 #include "Cpl/TShell/Dac/Context_.h"
 #include "Cpl/Container/Map.h"
+#include "Cpl/Text/String.h"
 
 
 ///
@@ -43,6 +44,11 @@ public:
 protected:
     /// See Cpl::Container::Key
     const Cpl::Container::Key& getKey() const throw();
+
+
+protected:
+    /// Helper method to expand text
+    static Result_T Command_::expandText( const char* textToExpand, Cpl::Text::String& dst, char escChar, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw();
 
 };
 

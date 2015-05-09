@@ -49,15 +49,13 @@ Cpl::TShell::Dac::Command_::Result_T Print_::execute( bool prependTimeStamp, Cpl
 
 
     // Set the default escape character
-    char esc[2];
-    esc[0] = *OPTION_CPL_TSHELL_DAC_CMD_PRINT_ESCAPE_CHAR;
-    esc[1] = '\0';
+    char esc = *OPTION_CPL_TSHELL_DAC_CMD_PRINT_ESCAPE_CHAR;
 
     // Trap non-default escape character
     if ( tokens.numParameters() == 3 )
         {
-        esc[0] = *(tokens.getParameter(1));
-        etext  = tokens.getParameter(2);
+        esc   = *(tokens.getParameter(1));
+        etext = tokens.getParameter(2);
         }
     else
         {
@@ -66,55 +64,13 @@ Cpl::TShell::Dac::Command_::Result_T Print_::execute( bool prependTimeStamp, Cpl
 
 
     // Generated expanded text
-    char* nextPtr;
     initializeOuttext_( outtext, prependTimeStamp );
-    while( etext && *etext )
+    Command_::Result_T result = expandText( etext, outtext, esc, vars );
+    if ( result != Command_::eSUCCESS )
         {
-        // Find the next embedded variable
-        nextPtr = (char*) Cpl::Text::stripNotChars( etext, esc );
-        if ( *nextPtr )
-            {
-            // Save off the text BEFORE the found variable
-            outtext.appendTo( etext, nextPtr - etext );
-            etext = nextPtr + 1;
-
-            // Malformed etext: <esc> character, but no variable
-            if ( *etext == '\0' )
-                {
-                return Command_::eERROR_INVALID_ARGS;
-                }
-
-            // Find the variable name
-            nextPtr = (char*) Cpl::Text::stripNotChars( etext, esc );
-            if ( *nextPtr == '\0' )    
-                {
-                return Command_::eERROR_INVALID_ARGS;  // Malformed etext: no trailing <esc>
-                }
-
-            // Look-up variable name
-            *nextPtr = '\0'; // null terminate variable name
-            Cpl::Container::KeyLiteralString varname( etext );
-            VariableApi*                     varPtr;
-            if ( (varPtr=vars.find(varname)) == 0 )
-                {
-                return Command_::eERROR_INVALID_ARGS;  // Malformed etext: variable does not exist
-                }
-
-            // Substitute the variable's value
-            outtext += varPtr->getValue();
-           
-            // complete the variable sequence
-            etext = nextPtr + 1;
-            }
-
-        // Add the final/trailing non-expanded text (if there is any)            
-        else
-            {
-            outtext.appendTo( etext, nextPtr - etext );
-            etext = nextPtr;          
-            }
+        return result;
         }
-        
+
 
     // Output the final expanded text
     return context.writeFrame( outtext )? Command_::eSUCCESS: Command_::eERROR_IO;
