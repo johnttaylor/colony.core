@@ -11,6 +11,7 @@
 
 #include "VariableBase_.h"
 #include "Cpl/Text/atob.h"
+#include <math.h>
 
 
 ///
@@ -90,6 +91,21 @@ bool VariableBase_::setValue( unsigned long newValue ) throw()
     return m_value.truncated() == false;
     }
 
+bool VariableBase_::setNumericValue( double newValue ) throw()
+    {
+    double intpart;
+    double fracpart = modf( newValue, &intpart );
+
+    if ( fracpart < 0.0 || fracpart > 0.0 )
+        {
+        return setValue( newValue );
+        }
+    else
+        {
+        return setValue( (long) intpart );
+        }
+    }
+
 
 /////////////////////////////////////
 bool VariableBase_::add( const char* amount ) throw()
@@ -100,7 +116,7 @@ bool VariableBase_::add( const char* amount ) throw()
     // Add as numeric
     if ( Cpl::Text::a2d( leftOper, m_value ) && Cpl::Text::a2d( rightOper, amount ) )
         {
-        setValue( leftOper + rightOper );
+        setNumericValue( leftOper + rightOper );
         return true;
         }
 

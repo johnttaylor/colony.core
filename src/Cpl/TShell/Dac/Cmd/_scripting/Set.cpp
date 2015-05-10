@@ -42,8 +42,10 @@ Cpl::TShell::Dac::Command_::Result_T Set::execute( Cpl::TShell::Dac::Context_& c
         if ( varPtr )
             {
             vars.remove( *varPtr );
-            return Command_::eSUCCESS;
             }
+
+        // Always pass the remove/delete case -->i.e. it is okay to delete a non-existant variable
+        return Command_::eSUCCESS;
         }
 
 
@@ -101,6 +103,6 @@ Cpl::TShell::Dac::Command_::Result_T Set::execute( Cpl::TShell::Dac::Context_& c
         }
 
 
-    // If I get the command failed!
+    // If I get here the command failed!
     return Command_::eERROR_FAILED;
     }

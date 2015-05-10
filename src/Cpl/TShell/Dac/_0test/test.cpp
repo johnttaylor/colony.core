@@ -28,9 +28,11 @@
 
 #include "Cpl/TShell/Dac/Cmd/Set.h"
 #include "Cpl/TShell/Dac/Cmd/Help.h"
-#include "Cpl/TShell/Dac/Cmd/Exit.h"
+#include "Cpl/TShell/Dac/Cmd/Bye.h"
 #include "Cpl/TShell/Dac/Cmd/Print.h"
 #include "Cpl/TShell/Dac/Cmd/TPrint.h"
+#include "Cpl/TShell/Dac/Cmd/Try.h"
+#include "Cpl/TShell/Dac/Cmd/Inc.h"
 
 /// 
 extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
@@ -104,10 +106,12 @@ Cpl::TShell::Dac::Processor                      cmdProccessor_( cmdlist_,
                                                                );
 Cpl::TShell::Stdio                               shell_( cmdProccessor_ );
 Cpl::TShell::Dac::Cmd::Help                      helpCmd_( cmdlist_ );
-Cpl::TShell::Dac::Cmd::Exit                      exitCmd_( cmdlist_ );
+Cpl::TShell::Dac::Cmd::Bye                       byeCmd_( cmdlist_ );
 Cpl::TShell::Dac::Cmd::Set                       setCmd_( cmdlist_ );
 Cpl::TShell::Dac::Cmd::Print                     printCmd_( cmdlist_ );
 Cpl::TShell::Dac::Cmd::TPrint                    tprintCmd_( cmdlist_ );
+Cpl::TShell::Dac::Cmd::Try                       tryCmd( cmdlist_ );
+Cpl::TShell::Dac::Cmd::Inc                       incCmd( cmdlist_ );
 
 
 

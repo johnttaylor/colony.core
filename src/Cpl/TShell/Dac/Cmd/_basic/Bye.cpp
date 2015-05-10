@@ -9,7 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "Cpl/TShell/Dac/Cmd/Exit.h"
+#include "Cpl/TShell/Dac/Cmd/Bye.h"
 #include "Cpl/Text/atob.h"
 #include "Cpl/System/Shutdown.h"
 #include <string.h>         
@@ -19,13 +19,13 @@
 using namespace Cpl::TShell::Dac::Cmd;
 
 ///////////////////////////
-Exit::Exit( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
-:Command_(commandList, "exit")
+Bye::Bye( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
+:Command_(commandList, "bye")
     {
     }
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T Exit::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command_::Result_T Bye::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     // Error checking
     if ( tokens.numParameters() > 3 )
@@ -39,7 +39,7 @@ Cpl::TShell::Dac::Command_::Result_T Exit::execute( Cpl::TShell::Dac::Context_& 
         }
 
 
-    // Exit just the command shell
+    // Bye just the command shell
     if ( tokens.numParameters() == 1 )
         {
         // Request the Command Processor to stop
@@ -47,7 +47,7 @@ Cpl::TShell::Dac::Command_::Result_T Exit::execute( Cpl::TShell::Dac::Context_& 
         return Cpl::TShell::Dac::Command_::eSUCCESS;
         }
 
-    // Exit the application
+    // Bye the application
     if ( strcmp( tokens.getParameter(1), "app" ) == 0 )
         {
         int exitCode = OPTION_CPL_SYSTEM_SHUTDOWN_FAILURE_ERROR_CODE;

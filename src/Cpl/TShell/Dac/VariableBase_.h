@@ -65,6 +65,9 @@ public:
     bool setValue( unsigned long newValue ) throw();
 
     /// See Cpl::TShell::Dac::VariableApi
+    bool setNumericValue( double newValue ) throw();
+
+    /// See Cpl::TShell::Dac::VariableApi
     bool add( const char* amount ) throw();
 
     /// See Cpl::TShell::Dac::VariableApi
@@ -75,6 +78,9 @@ public:
 
     /// See Cpl::TShell::Dac::VariableApi
     bool getNumber( unsigned long& valueAsNumber ) const throw();
+
+
+protected:
 };
 
 };      // end namespaces

@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Dac_Cmd_Exit_h
-#define Cpl_TShell_Dac_Cmd_Exit_h
+#ifndef Cpl_TShell_Dac_Cmd_Bye_h
+#define Cpl_TShell_Dac_Cmd_Bye_h
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -19,9 +19,9 @@
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define CPLTSHELLDACMD_USAGE_EXIT_  "exit [app <exitcode>]"
-#ifndef CPLTSHELLDACMD_DETAIL_EXIT_
-#define CPLTSHELLDACMD_DETAIL_EXIT_ "  Requests the DAC shell to exit. If the optional argument 'app' is specified\n" \
+#define CPLTSHELLDACMD_USAGE_BYE_   "bye [app <exitcode>]"
+#ifndef CPLTSHELLDACMD_DETAIL_BYE_
+#define CPLTSHELLDACMD_DETAIL_BYE_  "  Requests the DAC shell to exit. If the optional argument 'app' is specified\n" \
                                     "  then the application is exited with the specifed <exitcode>."
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
@@ -32,19 +32,19 @@ namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
 /** This Private Namespace class defines the interface for a DAC shell command.
  */
-class Exit: public Command_
+class Bye: public Command_
 {
 protected:
     /// See Cpl::TShell::Dac::Command_
-    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_EXIT_; }
+    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_BYE_; }
 
     /// See Cpl::TShell::Dac::Command_
-    const char* getHelp() const throw()     { return CPLTSHELLDACMD_DETAIL_EXIT_; }
+    const char* getHelp() const throw()     { return CPLTSHELLDACMD_DETAIL_BYE_; }
     
      
 public:
     /// Constructor
-    Exit( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
+    Bye( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
 
 
 public:

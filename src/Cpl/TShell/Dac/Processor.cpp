@@ -47,6 +47,7 @@ Processor::Processor( Cpl::Container::Map<Command_>&    commands,
 ,m_term( argTerminator )
 ,m_errorLevel( OPTION_CPL_TSHELL_DAC_PROCESSOR_NAME_ERRORLEVEL )
 ,m_lastCmdOutput( OPTION_CPL_TSHELL_DAC_PROCESSOR_NAME_LAST_OUTPUT, m_lastCmdOutputValue )
+,m_last(0)
 ,m_running( false )
 ,m_filtering( false )
 ,m_filterMarker( 0 )
@@ -82,6 +83,10 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
     if ( m_variables.find( m_errorLevel ) == 0 )
         {
         m_variables.addSystem( m_errorLevel );
+        }
+    if ( m_variables.find( m_lastCmdOutput ) == 0 )
+        {
+        m_variables.addSystem( m_lastCmdOutput );
         }
 
     // Output the greeting message
@@ -163,6 +168,9 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
             // Output stream error -->exit Command Processlr
             return false;
             }
+
+        // Capture last output
+        m_lastCmdOutputValue = m_last;
         }
    
 
@@ -263,8 +271,8 @@ VariableApi& Processor::getLastOutput() throw()
 ///////////////////////////////////
 bool Processor::writeFrame( const char* text  ) throw()
     {
-    // Capture last output
-    m_lastCmdOutputValue = text;
+    // Cache last output
+    m_last = text;
 
     // Encode and output the text
     bool io = true;
@@ -277,9 +285,6 @@ bool Processor::writeFrame( const char* text  ) throw()
 
 bool Processor::writeFrame( const char* text, size_t maxBytes  ) throw()
     {
-    // Capture last output
-    m_lastCmdOutputValue.copyIn( text, maxBytes );
-
     // Encode and output the text
     bool io = true;
     io &= m_framer.startFrame();

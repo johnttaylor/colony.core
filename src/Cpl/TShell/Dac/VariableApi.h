@@ -82,6 +82,9 @@ public:
     /// Same as above
     virtual bool setValue( unsigned long newValue ) throw() = 0;
 
+    /// Similiar to setValue() methods above, but sets the value as an double or long depending on if there is/is-not an fractional digits
+    virtual bool setNumericValue( double newValue ) throw() = 0;
+
 
 public:
     /// Overload the Cast-to-Container::Key as a short-cut to getKey()

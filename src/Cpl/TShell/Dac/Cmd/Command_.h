@@ -50,6 +50,9 @@ protected:
     /// Helper method to expand text
     static Result_T Command_::expandText( const char* textToExpand, Cpl::Text::String& dst, char escChar, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw();
 
+    /// Helper method that returns the value of the 'operand' (can be literal or varaible value).  Returns 0 if there is an error
+    static const char* getOperValue( const char* oper, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw();
+
 };
 
 };      // end namespaces

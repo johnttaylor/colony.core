@@ -168,6 +168,9 @@ protected:
     /// Last-Command-Ouput Shell variable
     VariableBase_                       m_lastCmdOutput;
 
+    /// Pointer to cache the current output string
+    const char*                         m_last;
+
     /// My run state
     bool                                m_running;
     

@@ -29,7 +29,7 @@ from nqbplib.base import BuildValues
 #---------------------------------------------------
 
 # Set the name for the final output item
-FINAL_OUTPUT_NAME = 'a.exe'
+FINAL_OUTPUT_NAME = 'b.exe'
 
 #
 # For build config/variant: "Release" (aka C++11 threading)

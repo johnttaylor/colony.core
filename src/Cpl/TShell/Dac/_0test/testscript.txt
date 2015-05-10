@@ -1,0 +1,156 @@
+; initialize vars
+set a #0
+set b #-10
+set c #to-be-deleted
+
+;TEST set operations
+set
+try IF _lastout != #"Active User variables: 3. Max allowed User variables: 4"
+print "Failed. variable count test ($_lastout$)"
+bye app 1
+try ENDIF
+set d
+set
+try IF _lastout != #"Active User variables: 3. Max allowed User variables: 4"
+print "Failed. variable delete test#1"
+bye app 1
+try ENDIF
+set c
+set
+try IF _lastout != #"Active User variables: 2. Max allowed User variables: 4"
+print "Failed. variable delete test#2"
+bye app 1
+try ENDIF
+try IF a != #0
+print "Failed. a ($a$) != 0 "
+bye app 1
+try ENDIF
+try IF b != #-10
+print "Failed. b ($b$) != -10 "
+bye app 1
+try ENDIF
+
+print "PASSED set tests"
+
+;TEST'_lastout' variable
+print "Hello World"
+try IF _lastout != #"Hello World"
+print "Failed. _lastout test#1"
+bye app 1
+try ENDIF
+
+print "PASSED _lastout test#1"
+
+;TEST'inc' command
+inc a
+try IF a != #1
+print "Failed. a ($a$) != 1 "
+bye app 1
+try ENDIF
+inc a #2
+try IF a != #3
+print "Failed. a ($a$) != 3 "
+bye app 1
+try ENDIF
+inc a b
+try IF a != #-7
+print "Failed. a ($a$) != -7 "
+bye app 1
+try ENDIF
+
+print "PASSED inc test"
+
+;TEST'_lastout' variable
+try IF _lastout != #"PASSED inc test"
+print "Failed. _lastout != `"PASSED inc test`""
+bye app 1
+try ENDIF
+
+print "PASSED _lastout test#2"
+
+;TEST text string
+print "`"hello world`""
+try IF _errno != #0 
+print "Failed. text-string test#1"
+bye app 1
+try ENDIF
+try IF _lastout != #"`"hello world`"" 
+print "Failed. text-string test#2"
+bye app 1
+try ENDIF
+print ""HELLO world"
+try IF _errno != #1 
+print "Failed. text-string test#3"
+bye app 1
+try ENDIF
+print "``HELLO-world"
+try IF _errno != #0 
+print "Failed. text-string test#4"
+bye app 1
+try ENDIF
+try IF _lastout != #`HELLO-world 
+print "Failed. text-string test#5"
+bye app 1
+try ENDIF
+
+print "PASSED text-string tests"
+
+
+;TEST IF/ELSE constructs
+set a
+set b
+set true  #0
+set false #0
+set elif  #0
+set
+try IF #2 = #3
+inc true
+try ELSE
+inc false
+try ENDIF
+set
+try IF true != #0
+print "Failed. IF/ELSE test#1"
+bye app 1
+try ENDIF
+try IF false != #1
+print "Failed. IF/ELSE test#2"
+bye app 1
+try ENDIF
+set
+try IF false = #0
+print true-clause
+inc true
+try ELIF false == #1
+print elif-true-clause
+inc elif
+try ELSE
+print else-clause
+inc elif
+try ENDIF
+try IF true != #0
+print "Fail. IF/ELSE test#3"
+bye app 1
+try ENDIF
+try IF false != #1
+print "Failed. IF/ELSE test#4"
+bye app 1
+try ENDIF
+try IF elif != #1
+print "Failed. IF/ELSE test#5"
+bye app 1
+try ENDIF
+
+print "PASSED IF/ELSE tests"
+
+
+; ALL DONE (and ALL passed)
+print "ALL TESTS PASSED!"
+bye app 0
+
+try IF #2 = #2
+print true-clause
+try IF #3 = #3
+print true-true-clause
+try ENDIF
+try ENDIF
