@@ -14,8 +14,14 @@
 
 #include "colony_config.h"
 #include "Cpl/TShell/Dac/Cmd/Command_.h"
-                                                 
+#include "Cpl/Container/Stack.h"
 
+                                                 
+/** This symbol defines the number of levels an IF/ELSE construct can be nested
+ */
+#ifndef OPTION_CPL_TSHELL_DAC_CMD_TRY_IFELSE_NEST_LEVELS
+#define OPTION_CPL_TSHELL_DAC_CMD_TRY_IFELSE_NEST_LEVELS    3
+#endif
 
 /* RULER
                                       "         1         2         3         4         5         6         7         8"
@@ -54,7 +60,16 @@ protected:
 
 protected:
     /// My FSM state
-    State_T     m_state;
+    State_T                         m_state;
+
+    /// Keep track of my nest IF/ELSE (when evaluating the false clauses)
+    unsigned                        m_level;
+
+    /// State Stack for nested IF/ELSE
+    Cpl::Container::Stack<State_T>  m_stack;
+
+    /// Memory for my state stack
+    State_T                         m_memStack[OPTION_CPL_TSHELL_DAC_CMD_TRY_IFELSE_NEST_LEVELS];
 
 
 public:
@@ -81,6 +96,10 @@ protected:
 
     /// Helper method
     virtual State_T evaluate( const char* leftVal, const char* oper, const char* rightVal ) const throw();
+
+    /// Helper method
+    virtual State_T popState() throw();
+    
 
 
 };

@@ -356,6 +356,10 @@ Cpl::Text::String& Processor::getTokenBuffer() throw()
     return m_tokenBuffer;
     }
 
+Cpl::Text::String& Processor::getLastOutValue() throw()
+    {
+    return m_lastCmdOutputValue;
+    }
 
 
 ///////////////////////////////////

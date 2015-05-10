@@ -117,6 +117,10 @@ public:
      */
     virtual Cpl::Text::String& getTokenBuffer() throw() = 0;
 
+    /** Provides direct access to the _lastout variable's value - should used with CAUTION!
+     */
+    virtual Cpl::Text::String& getLastOutValue() throw() = 0;
+
 
 public:
     /// Virtual destructor

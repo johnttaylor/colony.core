@@ -155,7 +155,7 @@ inline ITEM Stack<ITEM>::pop( bool* statusPtr ) throw()
             *statusPtr = false;
             }
 
-        return 0;
+        return (ITEM) 0;
         }
 
 
@@ -178,7 +178,7 @@ inline ITEM Stack<ITEM>::peekTop( bool* statusPtr ) const throw()
             *statusPtr = false;
             }
 
-        return 0;
+        return (ITEM) 0;
         }
 
 

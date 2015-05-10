@@ -330,7 +330,10 @@ public:
     /// See Cpl::TShell::Dac::Context_
     Cpl::Text::String& getTokenBuffer() throw();
 
+    /// See Cpl::TShell::Dac::Context_
+    Cpl::Text::String& getLastOutValue() throw();
 
+    
 protected:
     /// Outputs the shell's start message
     virtual bool greeting( Cpl::Io::Output& outfd ) throw();
