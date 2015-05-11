@@ -314,3 +314,41 @@ try ENDIF
 ; ALL DONE (and ALL passed)
 print "ALL TESTS PASSED!"
 bye app 0
+
+
+set a #0
+print "Start of loop: a=$a$"
+loop BEGIN
+       inc a
+       print a=$a$
+try    IF a >= #5
+         print Breaking....
+loop     BREAK
+try    ENDIF
+loop UNTIL
+print "End of loop: a=$a$"
+
+set a #0
+set c #0
+print "Start of OUTER loop: a=$a$, c=$c$"
+loop BEGIN
+       inc a
+       print a=$a$
+       set b #0
+print  "  Start of INNER loop: b=$b$, c=$c$"
+loop   BEGIN
+         inc b
+         inc c
+         print b=$b$
+try      IF b >= #3
+           print Breaking....
+loop       BREAK
+try      ENDIF
+loop   UNTIL
+print  "  End of INNER loop: b=$b$, c=$c$"
+try    IF a >= #5
+         print Breaking....
+loop     BREAK
+try    ENDIF
+loop UNTIL
+print "End of OUTER loop: a=$a$, c=$c$"

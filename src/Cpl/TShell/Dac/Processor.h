@@ -22,7 +22,6 @@
 #include "Cpl/Text/Frame/StreamEncoder.h"
 #include "Cpl/Text/Frame/Decoder.h"
 #include "Cpl/Log/Loggers.h"
-#include "Cpl/Container/Stack.h"
 
 
 /** This symbol defines the size, in bytes, of the maximum allowed input
@@ -193,10 +192,7 @@ protected:
     unsigned                            m_replayIdx;
 
     /// Stack used to remember start-index of loops for replay mode
-    Cpl::Container::Stack<unsigned>     m_startIndexes;
-
-    /// Memory for the start-indexes stack
-    unsigned                            m_memStack[OPTION_CPL_TSHELL_PROCESSOR_MAX_NESTED_LOOPS];
+    unsigned                            m_startIndexes[OPTION_CPL_TSHELL_PROCESSOR_MAX_NESTED_LOOPS];
 
 
     /// Log warning events
@@ -279,7 +275,7 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    Command_::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw();
+    Command_::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing=0 ) throw();
 
 
 public:
@@ -308,13 +304,13 @@ public:
  
 public:
     /// See Cpl::TShell::Dac::Context_
-    void beginCommandReplay(void) throw();
+    void beginCommandReplay(  unsigned level ) throw();
 
     /// See Cpl::TShell::Dac::Context_
     void endCommandReplay(void) throw();
 
     /// See Cpl::TShell::Dac::Context_
-    void beginCommandCapture(void) throw();
+    void beginCommandCapture( unsigned level ) throw();
 
     /// See Cpl::TShell::Dac::Context_
     void endCommandCapture(void) throw();
@@ -346,6 +342,9 @@ protected:
 
 
 protected:
+    /// Helper method
+    void backoutCaptureLine( unsigned capturing ) throw();
+
     /// Helper method
     bool outputCommandError( Command_::Result_T result, const char* deframedInput ) throw();
 

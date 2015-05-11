@@ -33,6 +33,7 @@
 #include "Cpl/TShell/Dac/Cmd/TPrint.h"
 #include "Cpl/TShell/Dac/Cmd/Try.h"
 #include "Cpl/TShell/Dac/Cmd/Inc.h"
+#include "Cpl/TShell/Dac/Cmd/Loop.h"
 
 /// 
 extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
@@ -61,7 +62,7 @@ extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 #endif
 
 #ifndef MAX_CMD_BUFFER_
-#define MAX_CMD_BUFFER_         16
+#define MAX_CMD_BUFFER_         64
 #endif
 
 #ifndef COMMENT_CHAR_       
@@ -112,6 +113,7 @@ Cpl::TShell::Dac::Cmd::Print                     printCmd_( cmdlist_ );
 Cpl::TShell::Dac::Cmd::TPrint                    tprintCmd_( cmdlist_ );
 Cpl::TShell::Dac::Cmd::Try                       tryCmd( cmdlist_ );
 Cpl::TShell::Dac::Cmd::Inc                       incCmd( cmdlist_ );
+Cpl::TShell::Dac::Cmd::Loop                      loopCmd( cmdlist_ );
 
 
 

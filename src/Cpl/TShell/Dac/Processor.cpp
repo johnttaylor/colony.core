@@ -55,7 +55,6 @@ Processor::Processor( Cpl::Container::Map<Command_>&    commands,
 ,m_captureCount( 0 )
 ,m_currentIdx( 0 )
 ,m_replayIdx( 0 )
-,m_startIndexes( sizeof(m_memStack)/sizeof(m_memStack[0]), m_memStack )
 ,m_logger( eventLogger )
     {
     }
@@ -76,7 +75,6 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
     m_currentIdx   = 0;
     m_replayIdx    = 0;
     m_outputBuffer.clear();
-    m_startIndexes.clearTheStack();
     m_framer.setOutput( outfd );
 
     // Add my system variables (but make sure they don't get add twice if the processor is 'restarted')
@@ -159,9 +157,9 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
                 }
             }
 
-
+        
         // Execute the command
-        Command_::Result_T result = executeCommand( m_inputBuffer, outfd );
+        Command_::Result_T result = executeCommand( m_inputBuffer, outfd, m_captureCount );
         m_errorLevel.setValue ( (long) result );
         if ( result == Command_::eERROR_IO )
             {
@@ -189,7 +187,7 @@ void Processor::requestStop() throw()
 
 
 ///////////////////////////////////
-Command_::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw()
+Command_::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing ) throw()
     {
     // Make a copy of the input and then tokenize/parse the input
     strcpy( m_inputCopy, deframedInput );
@@ -198,12 +196,14 @@ Command_::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io
     // Skip something that doesn't parse
     if ( tokens.isValidTokens() == false )
         {
+        backoutCaptureLine( capturing );
         return outputCommandError( Command_::eERROR_BAD_SYNTAX, deframedInput )? Command_::eERROR_BAD_SYNTAX: Command_::eERROR_IO;
         }
 
     // Skip blank and comment lines
     if ( tokens.numParameters() == 0 || *(tokens.getParameter(0)) == m_comment )
         {
+        backoutCaptureLine( capturing );
         return Command_::eSUCCESS;
         }
 
@@ -296,31 +296,18 @@ bool Processor::writeFrame( const char* text, size_t maxBytes  ) throw()
 
 
 ///////////////////////////////////
-void Processor::beginCommandReplay(void) throw()
+void Processor::beginCommandReplay( unsigned level ) throw()
     {
-    bool status;
-
-    m_replayCount++;
-    m_startIndexes.peekTop( &status );
-    if ( !status )
-        {
-        m_logger.warning( "Cpl::TShell:DAC::Processor. Start-of-Loop request invalid.  Your DAC shell script commands are broken!" );
-        }
+    m_replayCount = 1;
+    m_replayIdx   = m_startIndexes[level];
     }
 
 void Processor::endCommandReplay(void) throw()
     {
-    bool status;
-
-    m_replayCount--;
-    m_startIndexes.pop( &status );
-    if ( !status )
-        {
-        m_logger.warning( "Cpl::TShell:DAC::Processor. End-of-Loop request invalid.  Your DAC shell script commands are broken!" );
-        }
+    m_replayCount = 0;
     }
 
-void Processor::beginCommandCapture(void) throw()
+void Processor::beginCommandCapture( unsigned level ) throw()
     {
     if ( m_captureCount == 0 )
         {
@@ -328,7 +315,7 @@ void Processor::beginCommandCapture(void) throw()
         }
 
     m_captureCount++;
-    m_startIndexes.push( m_currentIdx );
+    m_startIndexes[level] = m_currentIdx;
     }
 
 void Processor::endCommandCapture(void) throw()
@@ -336,6 +323,13 @@ void Processor::endCommandCapture(void) throw()
     m_captureCount--;
     }
 
+void Processor::backoutCaptureLine( unsigned capturing ) throw()
+    {
+    if ( capturing )
+        {
+        m_currentIdx--;
+        }
+    }
 
 ///////////////////////////////////
 void Processor::enableFilter( Command_& marker ) throw()

@@ -42,7 +42,7 @@ public:
         command.  If 'inputString' is not a valid command, then the appropriate
         error/result code is returned.
      */
-    virtual Command_::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd ) throw() = 0;
+    virtual Command_::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing = 0 ) throw() = 0;
                      
 
 public:
@@ -76,21 +76,20 @@ public:
 
 
 public:
-    /** The method replays (from the start) the contents of 
-        the Processor's loop buffer.
+    /** The method replays (from the 'level') the contents of the Processor's 
+        loop buffer. 
      */
-    virtual void beginCommandReplay(void) throw() = 0;
-
+    virtual void beginCommandReplay( unsigned level ) throw() = 0;
 
     /** The method stops the replay of commands
      */
     virtual void endCommandReplay(void) throw() = 0;
 
 
-    /** The method begins the capture (into the Processor's 
-        loop buffer) of commands.
+    /** The method begins the capture (into the Processor's loop buffer) of 
+        commands.
      */
-    virtual void beginCommandCapture(void) throw() = 0;
+    virtual void beginCommandCapture( unsigned level ) throw() = 0;
 
 
     /** The method stops catpure of commands
@@ -99,9 +98,9 @@ public:
 
 
 public:
-    /** The method cause the processor to skip/filter all 
-        commands until the 'marker' command is encounter.  When the marker
-        command is found, the filtering is turn off and the marker is executed.
+    /** The method cause the processor to skip/filter all commands until the 
+        'marker' command is encounter.  When the marker command is found, the 
+        filtering is turn off and the marker is executed.
      */
     virtual void enableFilter( Command_& marker ) throw() = 0;
 

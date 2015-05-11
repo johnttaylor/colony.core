@@ -12,7 +12,6 @@
 #include "Cpl/TShell/Dac/Cmd/Try.h"
 #include <string.h>
 
-#include <stdio.h>
 
 ///
 using namespace Cpl::TShell::Dac::Cmd;
@@ -67,8 +66,6 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
             
 
         case eCLAUSE_FALSE:
-//printf( "\n** state=eCLAUSE_FALSE, level=%d, stack.count=%d\n", m_level, m_stack.getNumItems() );
-
             if ( token == "ENDIF" )
                 {
                 if ( m_level > m_stack.getNumItems() )
@@ -145,8 +142,6 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
                     return Command_::eERROR_INVALID_ARGS;
                     }
                 m_level++;
-//printf( "\n** pushState. level=%d, stack.count=%d\n", m_level, m_stack.getNumItems() );
-
                 if ( (m_state=compare(context,tokens,vars)) == eCLAUSE_FALSE )
                     {
                     context.enableFilter( *this );
@@ -188,11 +183,7 @@ Try::compare( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlo
         return eCOMPARE_ERROR;
         }
 
-    // For debuggin purpose -->put the result of the compare into the 'last out' variable
-    State_T result  = evaluate( op1, tokens.getParameter(3), op2 );
-//printf( "\n** lastout=[%s]\n", result == eCLAUSE_TRUE? "true": "false" );
-    
-    return result;
+    return evaluate( op1, tokens.getParameter(3), op2 );
     }
 
 
@@ -241,7 +232,6 @@ Try::State_T Try::popState() throw()
         {
         newState = eIDLE;
         }
-//printf( "\n** popState. level=%d, stack.count=%d\n", m_level, m_stack.getNumItems() );
 
     return newState;
     }
