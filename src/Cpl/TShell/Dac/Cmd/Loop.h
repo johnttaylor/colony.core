@@ -14,6 +14,7 @@
 
 #include "colony_config.h"
 #include "Cpl/TShell/Dac/Cmd/Command_.h"
+#include "Cpl/TShell/Dac/Cmd/Try.h"
 #include "Cpl/TShell/Dac/Processor.h"
 
                                                  
@@ -60,6 +61,8 @@ protected:
     /// Track the number of nested levels
     unsigned m_level;
 
+    /// Handle to the try command (if it is included)
+    Try&     m_tryCmd;
 
 public:
     /// See Cpl::TShell::Dac::Command_
@@ -71,7 +74,7 @@ public:
      
 public:
     /// Constructor
-    Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
+    Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList, Try& tryCmd ) throw();
 
 
 public:

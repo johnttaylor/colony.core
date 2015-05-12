@@ -19,12 +19,12 @@ using namespace Cpl::TShell::Dac;
 
 
 
-
 ///////////////////////////
 Try::Try( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
 :Command_(commandList, "try")
 ,m_state(eIDLE)
 ,m_level(0)
+,m_loopCmdPtr(0)
 ,m_stack(OPTION_CPL_TSHELL_DAC_CMD_TRY_IFELSE_NEST_LEVELS,m_memStack)
     {
     }
@@ -68,15 +68,10 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
         case eCLAUSE_FALSE:
             if ( token == "ENDIF" )
                 {
-                if ( m_level > m_stack.getNumItems() )
-                    {
-                    m_level--;
-                    context.enableFilter( *this );
-                    }
-                else
-                    {
-                    m_state = eIDLE;
-                    }
+                endLevelFalse( context );
+
+                // Handle breaking out of loop
+                checkForBreakout( context );
                 }
             else if ( token == "ELSE" )
                 {
@@ -87,6 +82,12 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
                 else
                     {
                     context.enableFilter( *this );
+                    }
+
+                // Handle breaking out of loop
+                if ( checkForBreakout( context ) )
+                    {
+                    endLevelFalse( context, false );
                     }
                 }
             else if ( token == "ELIF" )
@@ -102,53 +103,93 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
                     {
                     context.enableFilter( *this );
                     }
+                
+                // Handle breaking out of loop
+                if ( checkForBreakout( context ) )
+                    {
+                    endLevelFalse( context, false );
+                    }
                 }
             else if ( token == "IF" )
                 {
-                m_level++;
-                context.enableFilter( *this );
+                if ( !checkForBreakout( context ) )
+                    {
+                    m_level++;
+                    context.enableFilter( *this );
+                    }
+                else
+                    {
+                    // If I get here there is something is messed up, i.e. shouldn't/can't happen
+                    m_state = eIDLE;
+                    return Command_::eERROR_INVALID_ARGS;
+                    }
                 }
             else
                 {
+                // Handle breaking out of loop
+                checkForBreakout( context );
+
                 m_state = eIDLE;
                 return Command_::eERROR_INVALID_ARGS;
                 }
             break;
             
-               
+
         case eCLAUSE_TRUE:
             if ( token == "ENDIF" )
                 {
-                m_state = popState();
-                m_level--;
-                if ( m_state != eIDLE )
-                    {
-                    context.enableFilter( *this );
-                    }
+                endLevelTrue( context );
+
+                // Handle breaking out of loop
+                checkForBreakout( context );
                 }
             else if ( token == "ELSE" )
                 {
                 context.enableFilter( *this );
+
+                // Handle breaking out of loop
+                if ( checkForBreakout( context ) )
+                    {
+                    endLevelTrue( context, false );
+                    }
                 }
             else if ( token == "ELIF" )
                 {
                 context.enableFilter( *this );
+
+                // Handle breaking out of loop
+                if ( checkForBreakout( context ) )
+                    {
+                    endLevelTrue( context, false );
+                    }
                 }
             else if ( token == "IF" )
                 {
-                if ( !m_stack.push( m_state ) )
+                if ( !checkForBreakout( context ) )
                     {
+                    if ( !m_stack.push( m_state ) )
+                        {
+                        m_state = eIDLE;
+                        return Command_::eERROR_INVALID_ARGS;
+                        }
+                    m_level++;
+                    if ( (m_state=compare(context,tokens,vars)) == eCLAUSE_FALSE )
+                        {
+                        context.enableFilter( *this );
+                        }
+                    }
+                else
+                    {
+                    // If I get here there is something messed up, i.e. shouldn't/can't happen
                     m_state = eIDLE;
                     return Command_::eERROR_INVALID_ARGS;
-                    }
-                m_level++;
-                if ( (m_state=compare(context,tokens,vars)) == eCLAUSE_FALSE )
-                    {
-                    context.enableFilter( *this );
                     }
                 }
             else
                 {
+                // Handle breaking out of loop
+                checkForBreakout( context );
+
                 m_state = eIDLE;
                 return Command_::eERROR_INVALID_ARGS;
                 }
@@ -160,9 +201,60 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
             return Command_::eERROR_FAILED;
         }
 
-
     // If I get the command succeeded!
     return Command_::eSUCCESS;
+    }
+
+
+void Try::endLevelFalse( Cpl::TShell::Dac::Context_& context, bool enableFilter ) throw()
+    {
+    if ( m_level > m_stack.getNumItems() )
+        {
+        m_level--;
+        if ( enableFilter )
+            {
+            context.enableFilter( *this );
+            }
+        }
+    else
+        {
+        m_state = eIDLE;
+        }
+    }
+
+void Try::endLevelTrue( Cpl::TShell::Dac::Context_& context, bool enableFilter ) throw()
+    {
+    m_state = popState();
+    m_level--;
+    if ( m_state != eIDLE && enableFilter )
+        {
+        context.enableFilter( *this );
+        }
+    }
+               
+
+///////////////////////////
+bool Try::breaking( Loop* loopCmdInstance ) throw()
+    {
+    if ( m_state != eIDLE )
+        {
+        m_loopCmdPtr = loopCmdInstance;
+        return true;
+        }
+
+    return false;
+    }
+
+bool Try::checkForBreakout( Cpl::TShell::Dac::Context_& context ) throw()
+    {
+    if ( m_loopCmdPtr )
+        {
+        context.enableFilter( *((Cpl::TShell::Dac::Command_*)m_loopCmdPtr) );
+        m_loopCmdPtr = 0;
+        return true;
+        }
+
+    return false;
     }
 
 
@@ -235,3 +327,6 @@ Try::State_T Try::popState() throw()
 
     return newState;
     }
+
+
+

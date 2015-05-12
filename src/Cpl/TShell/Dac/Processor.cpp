@@ -138,13 +138,14 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
             m_inputBuffer[frameSize] = '\0';
 
             // Cache the raw command input WHEN in capture mode
-            if ( m_captureCount )
+            if ( m_captureCount != 0 )
                 {
                 // Check for exceeding the command buffer                               
                 if ( m_currentIdx >= m_cmdBufSize )
                     {
                     // This is bad (but not fatal, well maybe not fatal)
-                    m_currentIdx = 0;
+                    m_currentIdx   = 0;
+                    m_captureCount = -1; // Set error-state to be returned when endCapture() is called
                     m_logger.warning( "Cpl::TShell:DAC::Processor. Exceeded the command script buffer (idx=%ul, size=%ul).  Your DAC shell script commands are broken!", m_currentIdx, m_cmdBufSize );
                     }
 
@@ -296,10 +297,17 @@ bool Processor::writeFrame( const char* text, size_t maxBytes  ) throw()
 
 
 ///////////////////////////////////
-void Processor::beginCommandReplay( unsigned level ) throw()
+bool Processor::beginCommandReplay( unsigned level ) throw()
     {
+    // Trap out-of-range level/index
+    if ( level >= OPTION_CPL_TSHELL_PROCESSOR_MAX_NESTED_LOOPS )
+        {
+        return false;
+        }
+
     m_replayCount = 1;
     m_replayIdx   = m_startIndexes[level];
+    return true;
     }
 
 void Processor::endCommandReplay(void) throw()
@@ -307,20 +315,35 @@ void Processor::endCommandReplay(void) throw()
     m_replayCount = 0;
     }
 
-void Processor::beginCommandCapture( unsigned level ) throw()
+bool Processor::beginCommandCapture( unsigned level ) throw()
     {
-    if ( m_captureCount == 0 )
+    // Trap out-of-range level/index
+    if ( level >= OPTION_CPL_TSHELL_PROCESSOR_MAX_NESTED_LOOPS )
+        {
+        return false;
+        }
+
+    // Reset beginning index
+    if ( m_captureCount <= 0 )
         {
         m_currentIdx = 0;
         }
 
-    m_captureCount++;
+    m_captureCount = 1;
     m_startIndexes[level] = m_currentIdx;
+    return true;
     }
 
-void Processor::endCommandCapture(void) throw()
+bool Processor::endCommandCapture(void) throw()
     {
-    m_captureCount--;
+    bool result = true;
+    if ( m_captureCount < 0 )
+        {
+        result = false;
+        }
+
+    m_captureCount = 0;
+    return result;
     }
 
 void Processor::backoutCaptureLine( unsigned capturing ) throw()

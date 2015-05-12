@@ -20,7 +20,7 @@
 /** This symbol defines the number of levels an IF/ELSE construct can be nested
  */
 #ifndef OPTION_CPL_TSHELL_DAC_CMD_TRY_IFELSE_NEST_LEVELS
-#define OPTION_CPL_TSHELL_DAC_CMD_TRY_IFELSE_NEST_LEVELS    3
+#define OPTION_CPL_TSHELL_DAC_CMD_TRY_IFELSE_NEST_LEVELS    4
 #endif
 
 /* RULER
@@ -43,6 +43,8 @@
 ///
 namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
+/// Forward name reference to avoid circular header includes
+class Loop;
 
 
 /** This class implements a DAC Shell command
@@ -65,12 +67,14 @@ protected:
     /// Keep track of my nest IF/ELSE (when evaluating the false clauses)
     unsigned                        m_level;
 
+    /// Remember my Loop cmd instance
+    Loop*                           m_loopCmdPtr;
+
     /// State Stack for nested IF/ELSE
     Cpl::Container::Stack<State_T>  m_stack;
 
     /// Memory for my state stack
     State_T                         m_memStack[OPTION_CPL_TSHELL_DAC_CMD_TRY_IFELSE_NEST_LEVELS];
-
 
 public:
     /// See Cpl::TShell::Dac::Command_
@@ -91,6 +95,14 @@ public:
             
 
 protected:
+    /// Special method to allow 'breaking' out of an IF/ELSE construct when looping. Returns true if inside an IF/ELSE construct
+    virtual bool breaking( Loop* loopCmdInstance ) throw();
+
+    /// Allow friend access
+    friend class Loop;
+
+
+protected:
     /// Performs the comparision of IF and ELIF actions
     virtual State_T compare( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, ActiveVariablesApi& vars ) throw();
 
@@ -99,6 +111,16 @@ protected:
 
     /// Helper method
     virtual State_T popState() throw();
+
+    /// Helper method
+    virtual void endLevelFalse( Cpl::TShell::Dac::Context_& context, bool enableFilter=true ) throw();
+
+    /// Helper method
+    virtual void endLevelTrue( Cpl::TShell::Dac::Context_& context, bool enableFilter=true ) throw();   
+
+    /// Helper method
+    virtual bool checkForBreakout( Cpl::TShell::Dac::Context_& context ) throw();
+
     
 
 

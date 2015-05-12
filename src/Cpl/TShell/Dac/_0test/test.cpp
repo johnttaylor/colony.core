@@ -113,7 +113,7 @@ Cpl::TShell::Dac::Cmd::Print                     printCmd_( cmdlist_ );
 Cpl::TShell::Dac::Cmd::TPrint                    tprintCmd_( cmdlist_ );
 Cpl::TShell::Dac::Cmd::Try                       tryCmd( cmdlist_ );
 Cpl::TShell::Dac::Cmd::Inc                       incCmd( cmdlist_ );
-Cpl::TShell::Dac::Cmd::Loop                      loopCmd( cmdlist_ );
+Cpl::TShell::Dac::Cmd::Loop                      loopCmd( cmdlist_, tryCmd );
 
 
 

@@ -183,7 +183,7 @@ protected:
     unsigned                            m_replayCount;
 
     /// Reference counter for Capture mode
-    unsigned                            m_captureCount;
+    int                                 m_captureCount;
 
     /// Current index into the command buffer/cache
     unsigned                            m_currentIdx;
@@ -304,16 +304,16 @@ public:
  
 public:
     /// See Cpl::TShell::Dac::Context_
-    void beginCommandReplay(  unsigned level ) throw();
+    bool beginCommandReplay(  unsigned level ) throw();
 
     /// See Cpl::TShell::Dac::Context_
     void endCommandReplay(void) throw();
 
     /// See Cpl::TShell::Dac::Context_
-    void beginCommandCapture( unsigned level ) throw();
+    bool beginCommandCapture( unsigned level ) throw();
 
     /// See Cpl::TShell::Dac::Context_
-    void endCommandCapture(void) throw();
+    bool endCommandCapture(void) throw();
 
 public:
     /// See Cpl::TShell::Dac::Context_

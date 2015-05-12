@@ -77,24 +77,30 @@ public:
 
 public:
     /** The method replays (from the 'level') the contents of the Processor's 
-        loop buffer. 
+        loop buffer. The method returns false if/when 'level' is out of
+        range, i.e. exceeded the allocated memory for storing level/index
+        pairs.
      */
-    virtual void beginCommandReplay( unsigned level ) throw() = 0;
+    virtual bool beginCommandReplay( unsigned level ) throw() = 0;
 
-    /** The method stops the replay of commands
+
+    /** The method stops the replay of commands.       
      */
     virtual void endCommandReplay(void) throw() = 0;
 
 
     /** The method begins the capture (into the Processor's loop buffer) of 
-        commands.
+        commands.  The method returns false if/when 'level' is out of
+        range, i.e. exceeded the allocated memory for storing level/index
+        pairs.
      */
-    virtual void beginCommandCapture( unsigned level ) throw() = 0;
+    virtual bool beginCommandCapture( unsigned level ) throw() = 0;
 
 
-    /** The method stops catpure of commands
+    /** The method stops catpure of commands. The method returns if/when
+        the command capture buffer overflowed.
      */
-    virtual void endCommandCapture(void) throw() = 0;
+    virtual bool endCommandCapture(void) throw() = 0;
 
 
 public:

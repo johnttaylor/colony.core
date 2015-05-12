@@ -310,10 +310,7 @@ try IF clause != #1000000
 try ENDIF
 
 
-
-; ALL DONE (and ALL passed)
-print "ALL TESTS PASSED!"
-bye app 0
+print "PASSED NESTED IF/ELSE tests"
 
 
 set a #0
@@ -327,6 +324,12 @@ loop     BREAK
 try    ENDIF
 loop UNTIL
 print "End of loop: a=$a$"
+try IF a = #5 
+      print "Passed Loop test #1"
+try ELSE
+      print "Failed.  Loop test #1"
+      bye app 1
+try ENDIF
 
 set a #0
 set c #0
@@ -335,20 +338,48 @@ loop BEGIN
        inc a
        print a=$a$
        set b #0
-print  "  Start of INNER loop: b=$b$, c=$c$"
+print  "Start of INNER loop: a=$a$, b=$b$, c=$c$"
 loop   BEGIN
          inc b
+;
+
          inc c
          print b=$b$
 try      IF b >= #3
-           print Breaking....
+           print "Breaking inner loop...."
+
+
 loop       BREAK
+try      ELSE
+           print "continue inner loop..."
 try      ENDIF
 loop   UNTIL
-print  "  End of INNER loop: b=$b$, c=$c$"
 try    IF a >= #5
-         print Breaking....
+         print "Breaking outer loop...."
 loop     BREAK
 try    ENDIF
 loop UNTIL
 print "End of OUTER loop: a=$a$, c=$c$"
+try IF a = #5 
+try   IF b = #3
+try     IF c = #15
+          print "Passed Loop test #2"
+try     ELSE
+          print "Failed.  Loop test #2"
+          bye app 1
+try     ENDIF
+try   ELSE
+        print "Failed.  Loop test #2"
+        bye app 1
+try   ENDIF
+try ELSE
+      print "Failed.  Loop test #2"
+      bye app 1
+try ENDIF
+
+
+; ALL DONE (and ALL passed)
+print "ALL TESTS PASSED!"
+bye app 0
+
+

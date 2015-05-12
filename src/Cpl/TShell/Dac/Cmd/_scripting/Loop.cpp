@@ -17,10 +17,11 @@ using namespace Cpl::TShell::Dac::Cmd;
 using namespace Cpl::TShell::Dac;
 
 ///////////////////////////
-Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
+Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList, Try& tryCmd ) throw()
 :Command_(commandList, "loop")
 ,m_state(eIDLE)
 ,m_level(0)
+,m_tryCmd(tryCmd)
     {
     }
 
@@ -67,11 +68,20 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
                 }
             else if ( token == "UNTIL" )
                 {
-                context.endCommandCapture();
                 if ( m_level == 0 )
                     {
                     m_state = eLOOPING;
-                    context.beginCommandReplay( m_level );
+                    if ( context.endCommandCapture() )
+                        {
+                        if ( context.beginCommandReplay( m_level ) )
+                            {
+                            break; // If I get -->No errors where encounter during the capture of the loop contents.
+                            }
+                        }
+
+                    // If I get here that is/was a problem with capture of the contents of the loop
+                    m_state = eIDLE;
+                    return Command_::eERROR_FAILED;
                     }
                 else
                     {
@@ -81,6 +91,7 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
             else
                 {
                 m_state = eIDLE;
+                context.endCommandCapture(); // Reset/Cancel capture when an error is encountered
                 return Command_::eERROR_INVALID_ARGS;
                 }
             break;
@@ -96,14 +107,28 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
                 {
                 m_state = eBREAKING;
                 context.enableFilter( *this );
+
+                // Handle the case of breaking out of IF/ELSE construct
+                if ( m_tryCmd.breaking( this ) )
+                    {
+                    context.enableFilter( m_tryCmd );
+                    }
                 }
             else if ( token == "UNTIL" )
                 {
-                context.beginCommandReplay(m_level);
+                if ( !context.beginCommandReplay(m_level) )
+                    {
+                    // Reset the FSM on error
+                    m_state = eIDLE;
+                    context.endCommandReplay();
+                    return Command_::eERROR_INVALID_ARGS;
+                    }
                 }
             else
                 {
+                // Reset the FSM on error
                 m_state = eIDLE;
+                context.endCommandReplay();
                 return Command_::eERROR_INVALID_ARGS;
                 }
             break;
@@ -135,7 +160,9 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
                 }
             else
                 {
+                // Reset the FSM on error
                 m_state = eIDLE;
+                context.endCommandReplay();
                 return Command_::eERROR_INVALID_ARGS;
                 }
             break;
@@ -144,6 +171,8 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
 
         case eCOMPARE_ERROR:
             m_state = eIDLE;
+            context.endCommandCapture();
+            context.endCommandReplay();
             return Command_::eERROR_FAILED;
         }
 
