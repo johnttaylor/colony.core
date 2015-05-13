@@ -12,28 +12,29 @@
 #include "Cpl/TShell/Dac/Cmd/Loop.h"
 
 
+
 ///
 using namespace Cpl::TShell::Dac::Cmd;
 using namespace Cpl::TShell::Dac;
 
 ///////////////////////////
-Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList, Try& tryCmd ) throw()
+Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
 :Command_(commandList, "loop")
 ,m_state(eIDLE)
 ,m_level(0)
-,m_tryCmd(tryCmd)
     {
     }
 
 ///////////////////////////
 Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
-    ActiveVariablesApi& vars  = context.getVariables();
-    Cpl::Text::String&  token = context.getTokenBuffer();
-
+    ActiveVariablesApi& vars      = context.getVariables();
+    Cpl::Text::String&  token     = context.getTokenBuffer();
+    unsigned            numTokens = tokens.numParameters();
     // Error checking
-    if ( tokens.numParameters() < 2 )
+    if ( numTokens < 2 )
         {
+        m_state = eIDLE;
         return Command_::eERROR_MISSING_ARGS;
         }
 
@@ -43,27 +44,28 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
         {
         case eIDLE:
             // Error checking
-            if ( token != "BEGIN" )
+            if ( token != "WHILE" )
                 {
                 return Command_::eERROR_INVALID_ARGS;
                 }
 
+            // Housekeeping    
             m_level = 0;
             m_state = eCAPTURE_LOOP;
-            context.beginCommandCapture( m_level );
+            context.endCommandCapture(); 
+            context.endCommandReplay();
+
+            // Start capture of the loop contents
+            context.beginCommandCapture( m_level, rawInputString );
             context.enableFilter( *this );
             break;
             
 
         case eCAPTURE_LOOP:
-            if ( token == "BEGIN" )
+            if ( token == "WHILE" )
                 {
                 m_level++;
                 context.beginCommandCapture( m_level );
-                context.enableFilter( *this );
-                }
-            else if ( token == "BREAK" )
-                {
                 context.enableFilter( *this );
                 }
             else if ( token == "UNTIL" )
@@ -91,62 +93,122 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
             else
                 {
                 m_state = eIDLE;
-                context.endCommandCapture(); // Reset/Cancel capture when an error is encountered
                 return Command_::eERROR_INVALID_ARGS;
                 }
             break;
             
 
-
         case eLOOPING:
-            if ( token == "BEGIN" )
+            if ( token == "WHILE" )
                 {
                 m_level++;
-                }
-            else if ( token == "BREAK" )
-                {
-                m_state = eBREAKING;
-                context.enableFilter( *this );
 
-                // Handle the case of breaking out of IF/ELSE construct
-                if ( m_tryCmd.breaking( this ) )
+                // Process conditional clause when there is one
+                if ( numTokens > 2 )
                     {
-                    context.enableFilter( m_tryCmd );
+                    switch( conditional( context, tokens, 2, vars ) )
+                        {
+                        // Exit the loop if WHILE statement is false
+                        case eFALSE:
+                            m_state      = eBREAKING_WHILE;
+                            m_breakLevel = m_level;
+							context.enableFilter(*this);
+                            break;
+
+                        case eERROR:
+                            m_state = eIDLE;
+                            return Command_::eERROR_INVALID_ARGS;
+                            break;
+                        }
                     }
                 }
             else if ( token == "UNTIL" )
                 {
-                if ( !context.beginCommandReplay(m_level) )
+                // Decrement my nest level now that I am bottom of the loop
+                m_level--;
+                
+                // Process conditional clause when there is one
+                if ( numTokens > 2 )
                     {
-                    // Reset the FSM on error
-                    m_state = eIDLE;
-                    context.endCommandReplay();
-                    return Command_::eERROR_INVALID_ARGS;
+                    switch( conditional( context, tokens, 2, vars ) )
+                        {
+                        // Exit the loop if UNTIL statement is true
+                        case eTRUE:
+                            if ( m_level == 0 )
+                                {
+                                context.endCommandReplay();
+                                m_state = eIDLE;
+                                }
+                            else
+                                {
+                                m_state = eBREAKING;
+							    context.enableFilter(*this);
+                                }
+                            break;
+
+                        // Continue the loop
+                        case eFALSE:
+                            context.beginCommandReplay( m_level );
+                            break;
+
+                        case eERROR:
+                            m_state = eIDLE;
+                            return Command_::eERROR_INVALID_ARGS;
+                            break;
+                        }
+                    }
+
+                else
+                    {
+                    // Continue the loop
+                    context.beginCommandReplay( m_level );
                     }
                 }
             else
                 {
                 // Reset the FSM on error
                 m_state = eIDLE;
-                context.endCommandReplay();
                 return Command_::eERROR_INVALID_ARGS;
                 }
             break;
 
 
-        case eBREAKING:
-            if ( token == "BEGIN" )
+        case eBREAKING_WHILE:
+            if ( token == "WHILE" )
                 {
                 m_level++;
                 context.enableFilter( *this );
                 }
-            else if ( token == "BREAK" )
+            else if ( token == "UNTIL" )
                 {
-                // Ignore
+                m_level--;
+                if ( m_level == 0 )
+                    {
+                    context.endCommandReplay();
+                    m_state = eIDLE;
+                    }
+                if ( m_breakLevel < m_level )
+                    {
+                    context.enableFilter( *this );
+                    }
+                }
+            else
+                {
+                // Reset the FSM on error
+                m_state = eIDLE;
+                return Command_::eERROR_INVALID_ARGS;
+                }
+            break;
+
+        case eBREAKING:
+            if ( token == "WHILE" )
+                {
+                m_level++;
                 context.enableFilter( *this );
                 }
             else if ( token == "UNTIL" )
                 {
+                m_level--;
                 if ( m_level == 0 )
                     {
                     context.endCommandReplay();
@@ -154,7 +216,6 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
                     }
                 else
                     {
-                    m_level--;
                     m_state = eLOOPING;
                     }
                 }
@@ -162,19 +223,11 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
                 {
                 // Reset the FSM on error
                 m_state = eIDLE;
-                context.endCommandReplay();
                 return Command_::eERROR_INVALID_ARGS;
                 }
             break;
-
-
-
-        case eCOMPARE_ERROR:
-            m_state = eIDLE;
-            context.endCommandCapture();
-            context.endCommandReplay();
-            return Command_::eERROR_FAILED;
         }
+
 
     // If I get the command succeeded!
     return Command_::eSUCCESS;

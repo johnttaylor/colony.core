@@ -90,11 +90,12 @@ public:
 
 
     /** The method begins the capture (into the Processor's loop buffer) of 
-        commands.  The method returns false if/when 'level' is out of
-        range, i.e. exceeded the allocated memory for storing level/index
-        pairs.
+        commands.  If 'firstCmd' is NOT null,then the string is store as
+        the first caputred command.  The method returns false if/when 'level' 
+        is out of range, i.e. exceeded the allocated memory for storing 
+        level/index pairs.
      */
-    virtual bool beginCommandCapture( unsigned level ) throw() = 0;
+    virtual bool beginCommandCapture( unsigned level, const char* firstCmd=0 ) throw() = 0;
 
 
     /** The method stops catpure of commands. The method returns if/when

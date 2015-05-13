@@ -310,7 +310,7 @@ public:
     void endCommandReplay(void) throw();
 
     /// See Cpl::TShell::Dac::Context_
-    bool beginCommandCapture( unsigned level ) throw();
+    bool beginCommandCapture( unsigned level, const char* firstCmd=0  ) throw();
 
     /// See Cpl::TShell::Dac::Context_
     bool endCommandCapture(void) throw();

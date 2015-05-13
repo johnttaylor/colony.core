@@ -43,8 +43,6 @@
 ///
 namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
-/// Forward name reference to avoid circular header includes
-class Loop;
 
 
 /** This class implements a DAC Shell command
@@ -66,9 +64,6 @@ protected:
 
     /// Keep track of my nest IF/ELSE (when evaluating the false clauses)
     unsigned                        m_level;
-
-    /// Remember my Loop cmd instance
-    Loop*                           m_loopCmdPtr;
 
     /// State Stack for nested IF/ELSE
     Cpl::Container::Stack<State_T>  m_stack;
@@ -94,34 +89,15 @@ public:
     Cpl::TShell::Dac::Command_::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
             
 
-protected:
-    /// Special method to allow 'breaking' out of an IF/ELSE construct when looping. Returns true if inside an IF/ELSE construct
-    virtual bool breaking( Loop* loopCmdInstance ) throw();
-
-    /// Allow friend access
-    friend class Loop;
 
 
 protected:
-    /// Performs the comparision of IF and ELIF actions
-    virtual State_T compare( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, ActiveVariablesApi& vars ) throw();
-
-    /// Helper method
-    virtual State_T evaluate( const char* leftVal, const char* oper, const char* rightVal ) const throw();
-
     /// Helper method
     virtual State_T popState() throw();
 
-    /// Helper method
-    virtual void endLevelFalse( Cpl::TShell::Dac::Context_& context, bool enableFilter=true ) throw();
+    /// Helpter method
+    virtual State_T convert2State( Cpl::TShell::Dac::Cmd::Command_::CondResult_T result ) const throw();
 
-    /// Helper method
-    virtual void endLevelTrue( Cpl::TShell::Dac::Context_& context, bool enableFilter=true ) throw();   
-
-    /// Helper method
-    virtual bool checkForBreakout( Cpl::TShell::Dac::Context_& context ) throw();
-
-    
 
 
 };

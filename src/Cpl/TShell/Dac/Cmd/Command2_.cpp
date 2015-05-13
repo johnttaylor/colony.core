@@ -110,3 +110,126 @@ const char* Command_::getOperValue( const char* oper, Cpl::TShell::Dac::ActiveVa
     return 0;
     }
 
+
+
+#define ACTION_FIRST_   0
+#define ACTION_AND_     1
+#define ACTION_OR_      2
+
+//////////////////////////////////////////////////////////
+Command_::CondResult_T Command_::conditional( Cpl::TShell::Dac::Context_&           context, 
+                                              Cpl::Text::Tokenizer::TextBlock&      tokens, 
+                                              unsigned                              startingTokenIndex, 
+                                              Cpl::TShell::Dac::ActiveVariablesApi& vars 
+                                            ) throw()
+    {
+    CondResult_T result;
+    unsigned     numParms = tokens.numParameters();
+    unsigned     action   = ACTION_FIRST_;
+
+    for(;;)
+        {
+        // Trap missing operands/arguments
+        if ( startingTokenIndex + 3 > numParms )
+            {
+            return eERROR;
+            }
+
+
+        // Get operand values
+        const char* op1 = getOperValue( tokens.getParameter(startingTokenIndex),   vars );
+        const char* op2 = getOperValue( tokens.getParameter(startingTokenIndex+2), vars );
+        if ( !op1 || !op2 )
+            {
+            return eERROR;
+            }
+
+        // Evaulate the statement
+        CondResult_T temp = evaluate( op1, tokens.getParameter(3), op2 );
+        if ( action == ACTION_AND_ )
+            {
+            if ( result == eFALSE || temp == eFALSE )
+                {
+                return eFALSE;
+                }
+            }
+        else if ( action == ACTION_OR_ )
+            {
+            if ( result == eTRUE || temp == eTRUE )
+                {
+                return eTRUE;
+                }
+            }
+        result = temp;
+
+
+        // Exit if no more compare statements
+        startingTokenIndex += 3;
+        if ( startingTokenIndex == numParms )
+            {
+            return result;
+            }
+
+        // Additional tokens - but the invalid number of additional tokens
+        if ( startingTokenIndex + 4 > numParms )
+            {
+            return eERROR;
+            }
+        
+        // Determine what action to take when evaulating the next compare statement
+        Cpl::Text::String& token = context.getTokenBuffer();
+        if ( token == "AND" )
+            {
+            action = ACTION_AND_;
+            }
+
+        else if ( token == "OR" )
+            {
+            action = ACTION_OR_;
+            }
+        else
+            {
+            return eERROR;
+            }
+
+        // Advance to the start of the compare statement
+        startingTokenIndex++;
+        }
+    }
+
+
+
+
+Command_::CondResult_T Command_::evaluate( const char* leftVal, const char* oper, const char* rightVal ) throw()
+    {
+    int compareResult =  VariableApi::compare( leftVal, rightVal );
+
+    if ( strcmp( oper, "=" ) == 0 || strcmp( oper, "==") == 0 )
+        {
+        return compareResult == 0? eTRUE: eFALSE;
+        }
+    else if ( strcmp( oper, "!=" ) == 0 )
+        {
+        return compareResult != 0? eTRUE: eFALSE;
+        }
+    else if ( strcmp( oper, "<" ) == 0 )
+        {
+        return compareResult < 0? eTRUE: eFALSE;
+        }
+    else if ( strcmp( oper, ">" ) == 0 )
+        {
+        return compareResult > 0? eTRUE: eFALSE;
+        }
+    else if ( strcmp( oper, "<=" ) == 0 )
+        {
+        return compareResult <= 0? eTRUE: eFALSE;
+        }
+    else if ( strcmp( oper, ">=" ) == 0 )
+        {
+        return compareResult >= 0? eTRUE: eFALSE;
+        }
+    else
+        {
+        return eERROR;
+        }
+    }

@@ -27,6 +27,13 @@ namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 class Command_: public Cpl::TShell::Dac::Command_
 {
 protected:
+    /// Result when processing a conditional statement
+    enum CondResult_T { eFALSE, //!< The conditional statement evaluated to false
+                        eTRUE,  //!< The conditional statement evaluated to true
+                        eERROR  //!< Error occuring during the evaulation of the conditional
+                      }; 
+
+protected:
     /// Command 
     Cpl::Container::KeyLiteralString  m_mapKey;
 
@@ -52,6 +59,16 @@ protected:
 
     /// Helper method that returns the value of the 'operand' (can be literal or varaible value).  Returns 0 if there is an error
     static const char* getOperValue( const char* oper, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw();
+
+    /// Helper method that processes the a conditional expression
+    static CondResult_T conditional( Cpl::TShell::Dac::Context_&           context, 
+                                     Cpl::Text::Tokenizer::TextBlock&      tokens, 
+                                     unsigned                              startingTokenIndex, 
+                                     Cpl::TShell::Dac::ActiveVariablesApi& vars 
+                                   ) throw();
+
+    /// Helper method that compares to values
+    static CondResult_T evaluate( const char* leftVal, const char* oper, const char* rightVal ) throw();
 
 };
 

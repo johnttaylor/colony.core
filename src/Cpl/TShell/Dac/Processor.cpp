@@ -315,7 +315,7 @@ void Processor::endCommandReplay(void) throw()
     m_replayCount = 0;
     }
 
-bool Processor::beginCommandCapture( unsigned level ) throw()
+bool Processor::beginCommandCapture( unsigned level, const char* firstCmd ) throw()
     {
     // Trap out-of-range level/index
     if ( level >= OPTION_CPL_TSHELL_PROCESSOR_MAX_NESTED_LOOPS )
@@ -329,8 +329,16 @@ bool Processor::beginCommandCapture( unsigned level ) throw()
         m_currentIdx = 0;
         }
 
+    // Enable Capture mode and store the capture index
     m_captureCount = 1;
     m_startIndexes[level] = m_currentIdx;
+
+    // Capture the actual command that initiated the capturing (when selected, i.e. firstCmd NOT a null pointer)
+    if ( firstCmd )
+        {
+        strcpy( m_cmdBuffer[m_currentIdx++], firstCmd );
+        }
+
     return true;
     }
 
