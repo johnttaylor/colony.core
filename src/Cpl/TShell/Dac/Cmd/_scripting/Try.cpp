@@ -12,7 +12,6 @@
 #include "Cpl/TShell/Dac/Cmd/Try.h"
 #include <string.h>
 
-#include <stdio.h>
 
 
 ///
@@ -47,8 +46,6 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
 
     // Process my state machine
     token = tokens.getParameter(1);
-printf( "CURRENT m_state=%d, m_level=%u cmd[%s]\n", m_state, m_level, rawInputString );
-
     switch( m_state )
         {
         case eIDLE:
@@ -156,13 +153,18 @@ printf( "CURRENT m_state=%d, m_level=%u cmd[%s]\n", m_state, m_level, rawInputSt
                 }
             break;
 
-
         case eCOMPARE_ERROR:
-            m_state = eIDLE;
-            return Command_::eERROR_FAILED;
+            // I can't really get here is a single pass -->and it is handled once the switch statement is exited
+            break;
         }
 
-printf( "NEW m_state=%d, m_level=%u\n", m_state, m_level );
+
+    // Trap compare errors
+    if ( m_state == eCOMPARE_ERROR )
+        {
+        m_state = eIDLE;
+        return Command_::eERROR_FAILED;
+        }
 
     // If I get the command succeeded!
     return Command_::eSUCCESS;
@@ -191,7 +193,9 @@ Try::State_T Try::convert2State( Cpl::TShell::Dac::Cmd::Command_::CondResult_T r
         {
         case eTRUE:  return eCLAUSE_TRUE;
         case eFALSE: return eCLAUSE_FALSE;
+        case eERROR: return eCOMPARE_ERROR;
         }
-    
+
+    // I can't get here! (but I need to make the compiler happy.  The assumption is that compiler will optimized out this dead code)
     return eCOMPARE_ERROR;
     }

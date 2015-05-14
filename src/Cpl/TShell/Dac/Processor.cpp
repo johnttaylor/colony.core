@@ -326,18 +326,23 @@ bool Processor::beginCommandCapture( unsigned level, const char* firstCmd ) thro
     // Reset beginning index
     if ( m_captureCount <= 0 )
         {
-        m_currentIdx = 0;
+        m_currentIdx          = 0;
+        m_startIndexes[level] = 0;
+        m_captureCount        = 1;
+
+        // Capture the actual command that initiated the capturing (when selected, i.e. firstCmd NOT a null pointer)
+        if ( firstCmd )
+            {
+            strcpy( m_cmdBuffer[m_currentIdx++], firstCmd );
+            }
         }
-
-    // Enable Capture mode and store the capture index
-    m_captureCount = 1;
-    m_startIndexes[level] = m_currentIdx;
-
-    // Capture the actual command that initiated the capturing (when selected, i.e. firstCmd NOT a null pointer)
-    if ( firstCmd )
+    else
         {
-        strcpy( m_cmdBuffer[m_currentIdx++], firstCmd );
+        // Enable Capture mode and store the capture index
+        m_captureCount        = 1;
+        m_startIndexes[level] = m_currentIdx - 1;
         }
+
 
     return true;
     }

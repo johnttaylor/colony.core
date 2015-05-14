@@ -46,8 +46,7 @@ protected:
     enum State_T { eIDLE,           //!< Outside of any loop
                    eCAPTURE_LOOP,   //!< First time through the loop (i.e. capturing the commands in the loop)
                    eLOOPING,        //!< Executing the loop (i.e. it is at least the second time I have been in the loop)
-                   eBREAKING_WHILE, //!< Exiting the loop because WHILE evaluated to false
-                   eBREAKING_UNTIL  //!< Exiting the loop because UNTIL evaluated to true
+                   eBREAKING        //!< Exiting the loop because WHILE evaluated to false
                  }; 
 
 
@@ -57,6 +56,10 @@ protected:
 
     /// Track the number of nested levels
     unsigned m_level;
+
+    /// Remember my 'nest level' when breaking out of the loop from the WHILE statement
+    unsigned m_breakLevel;
+
 
 public:
     /// See Cpl::TShell::Dac::Command_

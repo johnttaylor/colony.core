@@ -340,7 +340,7 @@ loop   WHILE
 ;
 
          inc c
-         print b=$b$
+         print "b=$b$, c=$c$"
 loop   UNTIL b >= #3
 ;print  "End of INNER loop: a=$a$, b=$b$, c=$c$"
 loop UNTIL
@@ -361,6 +361,36 @@ try ELSE
       print "Failed.  Loop test #2"
       bye app 1
 try ENDIF
+
+print "PASSED Loops tests"
+
+
+try IF a = #5 AND b = #3 AND c = #15
+      print "Passed AND clauses test#1"
+try ELSE
+      print "Failed AND clauses test#1."
+      bye app 1
+try ENDIF
+try IF a != #5 AND b = #3 AND c = #15
+      print "Failed AND clauses test#2."
+      bye app 1
+try ELSE
+      print "Passed AND clauses test#2"
+try ENDIF
+
+try IF a != #5 OR b != #3 OR c = #15
+      print "Passed OR clauses test#3"
+try ELSE
+      print "Failed OR clauses test#3."
+      bye app 1
+try ENDIF
+try IF a = #5 AND b = #3 OR c != #15 OR #5 = #5
+      print "Passed AND/OR clauses test#4"
+try ELSE
+      print "Failed AND/DOR clauses test#4."
+      bye app 1
+try ENDIF
+
 
 
 ; ALL DONE (and ALL passed)

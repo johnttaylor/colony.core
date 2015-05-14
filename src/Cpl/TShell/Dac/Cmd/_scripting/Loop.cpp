@@ -12,7 +12,6 @@
 #include "Cpl/TShell/Dac/Cmd/Loop.h"
 
 
-
 ///
 using namespace Cpl::TShell::Dac::Cmd;
 using namespace Cpl::TShell::Dac;
@@ -22,6 +21,7 @@ Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw
 :Command_(commandList, "loop")
 ,m_state(eIDLE)
 ,m_level(0)
+,m_breakLevel(0)
     {
     }
 
@@ -50,8 +50,9 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
                 }
 
             // Housekeeping    
-            m_level = 0;
-            m_state = eCAPTURE_LOOP;
+            m_level      = 0;
+            m_breakLevel = 0;
+            m_state      = eCAPTURE_LOOP;
             context.endCommandCapture(); 
             context.endCommandReplay();
 
@@ -110,7 +111,7 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
                         {
                         // Exit the loop if WHILE statement is false
                         case eFALSE:
-                            m_state      = eBREAKING_WHILE;
+                            m_state      = eBREAKING;
                             m_breakLevel = m_level;
 							context.enableFilter(*this);
                             break;
@@ -118,6 +119,10 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
                         case eERROR:
                             m_state = eIDLE;
                             return Command_::eERROR_INVALID_ARGS;
+                            break;
+
+                        case eTRUE:
+                            // Do nothing, i.e. continue looping
                             break;
                         }
                     }
@@ -132,17 +137,12 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
                     {
                     switch( conditional( context, tokens, 2, vars ) )
                         {
-                        // Exit the loop if UNTIL statement is true
+                        // Exit the current loop if UNTIL statement is true
                         case eTRUE:
                             if ( m_level == 0 )
                                 {
                                 context.endCommandReplay();
                                 m_state = eIDLE;
-                                }
-                            else
-                                {
-                                m_state = eBREAKING;
-							    context.enableFilter(*this);
                                 }
                             break;
 
@@ -173,33 +173,6 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
             break;
 
 
-        case eBREAKING_WHILE:
-            if ( token == "WHILE" )
-                {
-                m_level++;
-                context.enableFilter( *this );
-                }
-            else if ( token == "UNTIL" )
-                {
-                m_level--;
-                if ( m_level == 0 )
-                    {
-                    context.endCommandReplay();
-                    m_state = eIDLE;
-                    }
-                if ( m_breakLevel < m_level )
-                    {
-                    context.enableFilter( *this );
-                    }
-                }
-            else
-                {
-                // Reset the FSM on error
-                m_state = eIDLE;
-                return Command_::eERROR_INVALID_ARGS;
-                }
-            break;
-
         case eBREAKING:
             if ( token == "WHILE" )
                 {
@@ -209,14 +182,24 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
             else if ( token == "UNTIL" )
                 {
                 m_level--;
+
+                // Exiting outer most loop
                 if ( m_level == 0 )
                     {
                     context.endCommandReplay();
                     m_state = eIDLE;
                     }
-                else
+
+                // Exiting an inner loop
+                else if ( m_level < m_breakLevel )
                     {
                     m_state = eLOOPING;
+                    }
+
+                // Skipping over inner loop(s)
+                else
+                    {
+                    context.enableFilter( *this );
                     }
                 }
             else

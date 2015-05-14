@@ -13,6 +13,7 @@
 #include "Encoder_.h"
 #include "Cpl/Io/NewLine.h"
 #include "Cpl/System/FatalError.h"
+#include <string.h>
 
 
 ///

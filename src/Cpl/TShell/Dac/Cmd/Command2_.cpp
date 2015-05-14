@@ -123,7 +123,7 @@ Command_::CondResult_T Command_::conditional( Cpl::TShell::Dac::Context_&       
                                               Cpl::TShell::Dac::ActiveVariablesApi& vars 
                                             ) throw()
     {
-    CondResult_T result;
+    CondResult_T result   = eTRUE;
     unsigned     numParms = tokens.numParameters();
     unsigned     action   = ACTION_FIRST_;
 
@@ -145,7 +145,7 @@ Command_::CondResult_T Command_::conditional( Cpl::TShell::Dac::Context_&       
             }
 
         // Evaulate the statement
-        CondResult_T temp = evaluate( op1, tokens.getParameter(3), op2 );
+        CondResult_T temp = evaluate( op1, tokens.getParameter(startingTokenIndex+1), op2 );
         if ( action == ACTION_AND_ )
             {
             if ( result == eFALSE || temp == eFALSE )
@@ -177,13 +177,13 @@ Command_::CondResult_T Command_::conditional( Cpl::TShell::Dac::Context_&       
             }
         
         // Determine what action to take when evaulating the next compare statement
-        Cpl::Text::String& token = context.getTokenBuffer();
-        if ( token == "AND" )
+        const char* logical = tokens.getParameter( startingTokenIndex );
+        if ( strcmp(logical,"AND") == 0 )
             {
             action = ACTION_AND_;
             }
 
-        else if ( token == "OR" )
+        else if ( strcmp(logical,"OR") == 0 )
             {
             action = ACTION_OR_;
             }

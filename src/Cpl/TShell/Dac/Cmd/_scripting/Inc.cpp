@@ -26,7 +26,6 @@ Inc::Inc( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
 Cpl::TShell::Dac::Command_::Result_T Inc::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     ActiveVariablesApi& vars  = context.getVariables();
-    Cpl::Text::String&  token = context.getTokenBuffer();
 
     // Error checking
     if ( tokens.numParameters() > 3 )

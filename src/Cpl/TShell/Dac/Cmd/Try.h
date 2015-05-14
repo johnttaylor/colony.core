@@ -35,7 +35,8 @@
 #define CPLTSHELLDACMD_DETAIL_TRY_    "  Provides an if/else construct.  Valid <test> operations are: '=', '!=', '<',\n" \
                                       "  '>', '>=', and '<='.  The operands (e.g. <op1>) can be a shell variable or a\n" \
                                       "  literal value (a literal is prefixed with a '#').  The AND|OR clauses are\n" \
-                                      "  evaluated stricly left to right."
+                                      "  evaluated stricly left to right. The AND|OR clauses will 'short-circuit' when\n" \
+                                      "  the comparison results are false|true respectively." 
 
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
