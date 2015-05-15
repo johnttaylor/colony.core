@@ -33,12 +33,6 @@ Cpl::TShell::Dac::Command_::Result_T Bye::execute( Cpl::TShell::Dac::Context_& c
         return Cpl::TShell::Dac::Command_::eERROR_EXTRA_ARGS;
         }
 
-    if ( tokens.numParameters() == 2 )
-        {
-        return Cpl::TShell::Dac::Command_::eERROR_MISSING_ARGS;
-        }
-
-
     // Bye just the command shell
     if ( tokens.numParameters() == 1 )
         {
@@ -50,8 +44,12 @@ Cpl::TShell::Dac::Command_::Result_T Bye::execute( Cpl::TShell::Dac::Context_& c
     // Bye the application
     if ( strcmp( tokens.getParameter(1), "app" ) == 0 )
         {
-        int exitCode = OPTION_CPL_SYSTEM_SHUTDOWN_FAILURE_ERROR_CODE;
-        Cpl::Text::a2i( exitCode, tokens.getParameter(2) );
+        int exitCode = OPTION_CPL_SYSTEM_SHUTDOWN_SUCCESS_ERROR_CODE;
+        if ( tokens.numParameters() > 2 )
+            {
+            Cpl::Text::a2i( exitCode, tokens.getParameter(2) );
+            }
+
         Cpl::System::Shutdown::failure( exitCode );
         return Cpl::TShell::Dac::Command_::eSUCCESS;
         }

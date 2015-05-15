@@ -26,7 +26,7 @@
 #define CPLTSHELLDACMD_DETAIL_PRINT_  "  Outputs the expanded text. Shell variables can be referenced in the <etext>\n" \
                                       "  by using the sequence: <esc><varnam><esc>.  When this sequence is encounted,\n" \
                                       "  the sequence of characters is replaced by the specified variable's content.\n" \
-                                      "  The default <esc> character is '" OPTION_CPL_TSHELL_DAC_CMD_PRINT_ESCAPE_CHAR "'"
+                                      "  The default <esc> character is '" OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ "'"
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
 

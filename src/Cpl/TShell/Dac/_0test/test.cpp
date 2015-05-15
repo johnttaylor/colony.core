@@ -34,6 +34,8 @@
 #include "Cpl/TShell/Dac/Cmd/Try.h"
 #include "Cpl/TShell/Dac/Cmd/Inc.h"
 #include "Cpl/TShell/Dac/Cmd/Loop.h"
+#include "Cpl/TShell/Dac/Cmd/Exe.h"
+#include "Cpl/TShell/Dac/Cmd/Tokenize.h"
 
 /// 
 extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
@@ -89,7 +91,7 @@ extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 ////////////////////////////////////////////////////////////////////////////////
 Cpl::TShell::Dac::ActiveVariables<MAXVARS_>      variables_("invoke_special_static_constructor");
 Cpl::Container::Map<Cpl::TShell::Dac::Command_>  cmdlist_;
-Cpl::Text::Frame::LineDecoder<FRAME_SIZE_>       deframer_;
+Cpl::Text::Frame::LineDecoder<FRAME_SIZE_>       deframer_(true);
 Cpl::Text::Frame::StreamEncoder                  framer_( 0, SOF_, EOF_, ESC_, APPEND_NEWLINE_ );
 Cpl::TShell::Dac::Processor::CommandBuffer_T     cmdBuffer_[MAX_CMD_BUFFER_];
 Cpl::TShell::Dac::Processor                      cmdProccessor_( cmdlist_, 
@@ -114,6 +116,8 @@ Cpl::TShell::Dac::Cmd::TPrint                    tprintCmd_( cmdlist_ );
 Cpl::TShell::Dac::Cmd::Try                       tryCmd( cmdlist_ );
 Cpl::TShell::Dac::Cmd::Inc                       incCmd( cmdlist_ );
 Cpl::TShell::Dac::Cmd::Loop                      loopCmd( cmdlist_ );
+Cpl::TShell::Dac::Cmd::Exe                       ExeCmd( cmdlist_ );
+Cpl::TShell::Dac::Cmd::Tokenize                  TokenizeCmd( cmdlist_ );
 
 
 

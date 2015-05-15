@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Dac_Cmd_Bye_h
-#define Cpl_TShell_Dac_Cmd_Bye_h
+#ifndef Cpl_TShell_Dac_Cmd_Exe_h
+#define Cpl_TShell_Dac_Cmd_Exe_h
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -15,37 +15,42 @@
 #include "colony_config.h"
 #include "Cpl/TShell/Dac/Cmd/Command_.h"
 
+
 /* RULER
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define CPLTSHELLDACMD_USAGE_BYE_   "bye [app [<exitcode>]]"
-#ifndef CPLTSHELLDACMD_DETAIL_BYE_
-#define CPLTSHELLDACMD_DETAIL_BYE_  "  Requests the DAC shell to exit. If the optional argument 'app' is specified\n" \
-                                    "  then the application is exited with the specifed <exitcode>. The default\n" \
-                                    "  <exitcode> is '0'."
+#define CPLTSHELLDACMD_USAGE_EXE_   "exe [<esc>] <cmdstring>"
+#ifndef CPLTSHELLDACMD_DETAIL_EXE_
+#define CPLTSHELLDACMD_DETAIL_EXE_  "  Attemps to executes the contents of expanded <cmdstring> text. Shell variables\n" \
+                                    "  can be referenced in <cmdstring> by using the sequence: <esc><varnam><esc>.\n" \
+                                    "  When this sequence is encounted the sequence of characters is replaced by the\n" \
+                                    "  specified variable's content. The default <esc> character is '" OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ "'"
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
+
 
 
 ///
 namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
-/** This Private Namespace class defines the interface for a DAC shell command.
+
+
+/** This class implements a DAC Shell command
  */
-class Bye: public Command_
+class Exe: public Command_
 {
-protected:
+public:
     /// See Cpl::TShell::Dac::Command_
-    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_BYE_; }
+    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_EXE_; }
 
     /// See Cpl::TShell::Dac::Command_
-    const char* getHelp() const throw()     { return CPLTSHELLDACMD_DETAIL_BYE_; }
+    const char* getHelp() const throw()    { return CPLTSHELLDACMD_DETAIL_EXE_; }
     
      
 public:
     /// Constructor
-    Bye( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
+    Exe( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
 
 
 public:

@@ -12,15 +12,7 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "colony_config.h"
 #include "Cpl/TShell/Dac/Cmd/Command_.h"
-
-
-/** This symbol defines the default <esc> character
- */
-#ifndef OPTION_CPL_TSHELL_DAC_CMD_PRINT_ESCAPE_CHAR
-#define OPTION_CPL_TSHELL_DAC_CMD_PRINT_ESCAPE_CHAR     "$"
-#endif
 
 
 

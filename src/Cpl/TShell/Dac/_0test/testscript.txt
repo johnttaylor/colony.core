@@ -392,7 +392,37 @@ try ELSE
 try ENDIF
 
 
+;TEST EXECUTE command
+set a #print
+exe "$a$ `"hello world`""
+set b _lastout
+try IF _errno != #0
+      print "Failed EXE test#1a"
+try ELSE
+      print "Passed EXE test#1a"
+try ENDIF
+try IF b == #"hello world"
+      print "Passed EXE text#1b"
+try ELSE
+      print "Failed EXE test#1b"
+      bye app 1
+try ENDIF
 
+set a #set
+set b
+exe "$a$ b #bob"
+try IF _errno != #0
+      print "Failed EXE test#2a"
+try ELSE
+      print "Passed EXE test#2a"
+try ENDIF
+try IF b != #bob
+      print "Failed EXE test#2b"
+try ELSE
+      print "Passed EXE test#2b"
+try ENDIF
+
+ 
 ; ALL DONE (and ALL passed)
 print "ALL TESTS PASSED!"
 bye app 0

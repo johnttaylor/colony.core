@@ -38,11 +38,11 @@ Command_::Result_T Command_::expandText( const char* textToExpand, Cpl::Text::St
     esc[1] = '\0';
 
     // Generated expanded text
-    char* nextPtr;
+    const char* nextPtr;
     while( textToExpand && *textToExpand )
         {
         // Find the next embedded variable
-        nextPtr = (char*) Cpl::Text::stripNotChars( textToExpand, esc );
+        nextPtr = Cpl::Text::stripNotChars( textToExpand, esc );
         if ( *nextPtr )
             {
             // Save off the text BEFORE the found variable
@@ -56,16 +56,16 @@ Command_::Result_T Command_::expandText( const char* textToExpand, Cpl::Text::St
                 }
 
             // Find the variable name
-            nextPtr = (char*) Cpl::Text::stripNotChars( textToExpand, esc );
+            nextPtr = Cpl::Text::stripNotChars( textToExpand, esc );
             if ( *nextPtr == '\0' )    
                 {
                 return eERROR_INVALID_ARGS;  // Malformed textToExpand: no trailing <esc>
                 }
 
             // Look-up variable name
-            *nextPtr = '\0'; // null terminate variable name
-            Cpl::Container::KeyLiteralString varname( textToExpand );
-            VariableApi*                     varPtr;
+            Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_VARIABLEAPI_NAME_SIZE> varname;
+            varname.copyIn( textToExpand, nextPtr - textToExpand );
+            VariableApi* varPtr;
             if ( (varPtr=vars.find(varname)) == 0 )
                 {
                 return eERROR_INVALID_ARGS;  // Malformed textToExpand: variable does not exist

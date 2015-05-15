@@ -44,18 +44,25 @@ class LineDecoder: public Decoder_
 {
 protected:
     /// Track if I have encountered an invalid character in the 'middle' of a frame
-    bool  m_illegal;;
+    bool  m_illegal;
+
+    /// Remember my tabs option
+    bool  m_convertTabs;
+
 
     /// Raw input buffer for reading characters in 'chunks' from my Input stream (i.e. minimize the calls to read())
     char  m_buffer[BUFSIZE];
 
 
 public:
-    /** Constructor.  
+    /** Constructor. If the 'convertTabsSpaces' flag is set to true than any
+        tab character encountered within a frame are converted to space
+        characters. Note: A tab character will not start a frame.
      */
-    LineDecoder()
+    LineDecoder( bool convertTabsToSpaces = false )
         :Decoder_(m_buffer,BUFSIZE)
         ,m_illegal(false)
+        ,m_convertTabs(convertTabsToSpaces)
             {
             }
 
@@ -95,6 +102,12 @@ protected:
             {
             m_illegal = false;
             return true;
+            }
+
+        // Convert tabs to spaces (when feature is enabled)
+        if ( m_convertTabs && *m_dataPtr == 0x09 )
+            {
+            *m_dataPtr = ' ';
             }
 
         // Reject all non printable ASCII character

@@ -49,7 +49,7 @@ Cpl::TShell::Dac::Command_::Result_T Print_::execute( bool prependTimeStamp, Cpl
 
 
     // Set the default escape character
-    char esc = *OPTION_CPL_TSHELL_DAC_CMD_PRINT_ESCAPE_CHAR;
+    char esc = *OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_;
 
     // Trap non-default escape character
     if ( tokens.numParameters() == 3 )
