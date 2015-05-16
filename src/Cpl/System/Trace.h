@@ -118,7 +118,7 @@ public:
                        eINFO,           //!< Additional prolog info
                        eVERBOSE,        //!< more prolog info  
                        eMAX             //!< Maximum prolog info
-                     } ;            
+                     };            
 
 public:
     /** This function is used to trace the 'location' for general purpose trace 
@@ -156,7 +156,7 @@ public:
         NOTE: NEVER call this method directly -->use the CPL_SYSTEM_TRACE_xxx() 
               macros.
      */
-    static bool isEnabled_( const char* area );
+    static bool isEnabled_( void );
 
     /** This method sets the information level for the trace messages. The method
         returns the previous level setting.
@@ -165,6 +165,13 @@ public:
               macros.
      */
     static InfoLevel_T setInfoLevel_( InfoLevel_T newLevel );
+
+    /** This method returns the current information level setting
+        
+        NOTE: NEVER call this method directly -->use the CPL_SYSTEM_TRACE_xxx() 
+              macros.
+     */
+    static InfoLevel_T getInfoLevel_(void) throw();
 
     /** This method enables the output/logging of trace message at run-time for 
         the specificed 'section'.  A 'section' name can NOT contain any white
@@ -216,6 +223,17 @@ public:
                                   const char* threadName3 =0,
                                   const char* threadName4 =0
                                 );
+
+    /** This method returns the number of enabled 'thread filters' and returns 
+        the actual thread name(s) via the String 'dst'.  It is the caller 
+        responsiblity to ensure that 'dst' is large enough to hold all of the 
+        enable thread filters.  If 'dst' is to short, the results will be 
+        truncated.
+
+        NOTE: NEVER call this method directly -->use the CPL_SYSTEM_TRACE_xxx() 
+              macros.
+     */
+    static unsigned getThreadFilters_( Cpl::Text::String& dst );
 
     /** This method removes  that thread filter (if there is one present).  If
         no filter has been applied when this method is called, then this
@@ -331,6 +349,9 @@ protected:
     #define CPL_SYSTEM_TRACE_SET_INFO_LEVEL(l)          Cpl::System::Trace::setInfoLevel_(l)
 
     /// Macro Wrapper
+    #define CPL_SYSTEM_TRACE_GET_INFO_LEVEL()           Cpl::System::Trace::getInfoLevel_()
+
+    /// Macro Wrapper
     #define CPL_SYSTEM_TRACE_ENABLE_SECTION(sect)       Cpl::System::Trace::enableSection_(sect)
 
     /// Macro Wrapper
@@ -352,6 +373,9 @@ protected:
     #define CPL_SYSTEM_TRACE_SET_THREAD_4FILTERS(t1,t2,t3,t4)   Cpl::System::Trace::setThreadFilter_(t1,t2,t3,t4)
 
     /// Macro Wrapper
+    #define CPL_SYSTEM_TRACE_GET_THREAD_FILTERS(dst)            Cpl::System::Trace::getThreadFilters_(dst)
+
+    /// Macro Wrapper
     #define CPL_SYSTEM_TRACE_CLEAR_THREAD_FILTER()              Cpl::System::Trace::clearThreadFilter_()
 
     /// Macro Wrapper
@@ -366,7 +390,8 @@ protected:
     /// Macro Wrapper
     #define CPL_SYSTEM_TRACE_REVERT()                           Cpl::System::Trace::revert_()
 
-
+    /// Returns true if TRACE was activated/enabled at compile time
+    #define CPL_SYSTEM_TRACE_IS_COMPILED()                      true
 
 #else
     /// Macro Wrapper 
@@ -393,6 +418,9 @@ protected:
     /// Macro Wrapper 
     #define CPL_SYSTEM_TRACE_SET_INFO_LEVEL(l)          
 
+    /// Macro Wrapper
+    #define CPL_SYSTEM_TRACE_GET_INFO_LEVEL()           0
+
     /// Macro Wrapper 
     #define CPL_SYSTEM_TRACE_ENABLE_SECTION(sect)       
 
@@ -412,19 +440,25 @@ protected:
     #define CPL_SYSTEM_TRACE_SET_THREAD_4FILTERS(t1,t2,t3,t4)
 
     /// Macro Wrapper
+    #define CPL_SYSTEM_TRACE_GET_THREAD_FILTERS(dst)        0
+
+    /// Macro Wrapper
     #define CPL_SYSTEM_TRACE_CLEAR_THREAD_FILTER()        
 
     /// Macro Wrapper
-    #define CPL_SYSTEM_TRACE_PASSED_THREAD_FILTER(tname)    
+    #define CPL_SYSTEM_TRACE_PASSED_THREAD_FILTER(tname)    false
     
     /// Macro Wrapper 
-    #define CPL_SYSTEM_TRACE_GET_SECTIONS(dst)          0  
+    #define CPL_SYSTEM_TRACE_GET_SECTIONS(dst)          	0  
 
     /// Macro Wrapper 
     #define CPL_SYSTEM_TRACE_REDIRECT(newdst)           
 
     /// Macro Wrapper 
     #define CPL_SYSTEM_TRACE_REVERT()                   
+
+    /// Returns false if TRACE was NOT activated/enabled at compile time
+    #define CPL_SYSTEM_TRACE_IS_COMPILED()                  false
 
 #endif  // USE_CPL_SYSTEM_TRACE
 

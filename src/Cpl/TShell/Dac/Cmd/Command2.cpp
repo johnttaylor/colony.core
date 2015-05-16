@@ -8,24 +8,26 @@
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
+/* 
+   This file contains helper commands that are primarly used by the Scripting
+   commands.  They are seperated into a seperate from Command.cpp so that
+   an application that does not use Scripting commands does not 'pick-up'
+   the object code for these functions
+*/
 
 #include "Command.h"
 #include "Cpl/Text/strip.h"
 #include "Cpl/TShell/Dac/Processor.h"
 
 
-/* 
-
-   This file contains helper commands that are primarly used by the Scripting
-   commands.  They are seperated into a seperate from Command.cpp so that
-   an application that does not use Scripting commands does not 'pick-up'
-   the object code for these functions
-
-*/
 
 ///
 using namespace Cpl::TShell::Dac::Cmd;
 
+
+#define ACTION_FIRST_   0
+#define ACTION_AND_     1
+#define ACTION_OR_      2
 
 
 
@@ -111,10 +113,6 @@ const char* Command::getOperValue( const char* oper, Cpl::TShell::Dac::ActiveVar
     }
 
 
-
-#define ACTION_FIRST_   0
-#define ACTION_AND_     1
-#define ACTION_OR_      2
 
 //////////////////////////////////////////////////////////
 Command::CondResult_T Command::conditional( Cpl::TShell::Dac::Context_&           context, 
@@ -208,7 +206,7 @@ Command::CondResult_T Command::evaluate( const char* leftVal, const char* oper, 
         {
         return compareResult == 0? eTRUE: eFALSE;
         }
-    else if ( strcmp( oper, "!=" ) == 0 )
+    else if ( strcmp( oper, "!=") == 0 || strcmp( oper, "=!") == 0  )
         {
         return compareResult != 0? eTRUE: eFALSE;
         }
@@ -220,11 +218,11 @@ Command::CondResult_T Command::evaluate( const char* leftVal, const char* oper, 
         {
         return compareResult > 0? eTRUE: eFALSE;
         }
-    else if ( strcmp( oper, "<=" ) == 0 )
+    else if ( strcmp( oper, "<=") == 0 || strcmp( oper, "=<") == 0  )
         {
         return compareResult <= 0? eTRUE: eFALSE;
         }
-    else if ( strcmp( oper, ">=" ) == 0 )
+    else if ( strcmp( oper, ">=") == 0 || strcmp( oper, "=>") == 0  )
         {
         return compareResult >= 0? eTRUE: eFALSE;
         }

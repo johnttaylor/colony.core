@@ -32,3 +32,7 @@ src/Cpl/System/_trace/_stdout
 [win32] /top/libdirs/platform_win32_default_realtime_libdirs.b
 [cpp11] /top/libdirs/platform_cpp11_default_realtime_libdirs.b
 
+# BSP
+src/Bsp/UserSpace
+
+

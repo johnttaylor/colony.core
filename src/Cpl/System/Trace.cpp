@@ -56,6 +56,7 @@ Trace::~Trace()
         }
     }
 
+
 ////////////////////////////////////////////////////////////////////////
 // NOTE The following two methods MUST be called in order AND always
 //      as pair!
@@ -107,7 +108,7 @@ void Trace::disable_( void )
     }
 
 
-bool Trace::isEnabled_( const char* area )
+bool Trace::isEnabled_( void )
     {
     bool result;
     Locks_::tracing().lock();
@@ -124,6 +125,14 @@ Trace::InfoLevel_T Trace::setInfoLevel_( Trace::InfoLevel_T newLevel )
     infoLevel_           = newLevel;
     Locks_::tracing().unlock();
     return previous;
+    }
+
+Trace::InfoLevel_T Trace::getInfoLevel_(void) throw()
+    {
+    Locks_::tracing().lock();
+    InfoLevel_T current = infoLevel_;
+    Locks_::tracing().unlock();
+    return current;
     }
 
 
@@ -286,3 +295,30 @@ bool Trace::passedThreadFilter_( const char* threadNameToTest )
     return result;
     }
 
+
+unsigned Trace::getThreadFilters_( Cpl::Text::String& dst )
+    {
+    bool     first = true;
+    unsigned count = 0;
+    dst.clear();  
+
+    Locks_::tracing().lock();
+    int i;
+    for(i=0; i<NUM_THREAD_FILTERS_; i++)
+        {
+        if ( threadFilters_[i] != 0 )
+            {
+            if ( !first )
+                {
+                dst += ' ';
+                }
+
+            dst  += threadFilters_[i];
+            first = false;
+            count++;
+            }
+        }
+
+    Locks_::tracing().unlock();
+    return count;
+    }
