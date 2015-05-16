@@ -123,7 +123,7 @@ public:
 
 protected:
     /// Command list
-    Cpl::Container::Map<Command_>&      m_commands;
+    Cpl::Container::Map<Command>&       m_commands;
 
     /// Variable list
     ActiveVariablesApi&                 m_variables;
@@ -249,7 +249,7 @@ public:
         @param argTerminator    The command terminator character.
         @param eventLogger      The event logger to be used.
      */
-    Processor( Cpl::Container::Map<Command_>&    commands,
+    Processor( Cpl::Container::Map<Command>&    commands,
                ActiveVariablesApi&               variables,
                Cpl::Text::Frame::Decoder&        deframer,
                Cpl::Text::Frame::StreamEncoder&  framer,
@@ -275,7 +275,7 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    Command_::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing=0 ) throw();
+    Command::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing=0 ) throw();
 
 
 public:
@@ -283,7 +283,7 @@ public:
     Cpl::System::Mutex& getOutputLock() throw();
 
     /// See Cpl::TShell::Dac::Context_
-    Cpl::Container::Map<Command_>& getCommands() throw();
+    Cpl::Container::Map<Command>& getCommands() throw();
 
     /// See Cpl::TShell::Dac::Context_
     ActiveVariablesApi& getVariables() throw();
@@ -317,7 +317,7 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    void enableFilter( Command_& marker ) throw();
+    void enableFilter( Command& marker ) throw();
 
 public:
     /// See Cpl::TShell::Dac::Context_
@@ -346,7 +346,7 @@ protected:
     void backoutCaptureLine( unsigned capturing ) throw();
 
     /// Helper method
-    bool outputCommandError( Command_::Result_T result, const char* deframedInput ) throw();
+    bool outputCommandError( Command::Result_T result, const char* deframedInput ) throw();
 
 };
 

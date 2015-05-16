@@ -9,7 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "Command_.h"
+#include "Command.h"
 
 
 ///
@@ -17,7 +17,7 @@ using namespace Cpl::TShell::Dac::Cmd;
 
 
 ////////////////////////////
-Command_::Command_( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList, const char* verb  ) throw()
+Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb  ) throw()
 :m_mapKey(verb)
     {
     commandList.insert( *this );
@@ -26,13 +26,13 @@ Command_::Command_( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList
 
 
 ////////////////////////////
-const char* Command_::getVerb() const throw()                 
+const char* Command::getVerb() const throw()                 
     { 
     return m_mapKey.getKeyValue(); 
     }
 
 
-const Cpl::Container::Key& Command_::getKey() const throw()   
+const Cpl::Container::Key& Command::getKey() const throw()   
     { 
     return m_mapKey; 
     }

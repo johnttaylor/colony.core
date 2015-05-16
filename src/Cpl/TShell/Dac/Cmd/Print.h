@@ -41,21 +41,21 @@ namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 class Print: public Print_
 {
 public:
-    /// See Cpl::TShell::Dac::Command_
+    /// See Cpl::TShell::Dac::Command
     const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_PRINT_; }
 
-    /// See Cpl::TShell::Dac::Command_
+    /// See Cpl::TShell::Dac::Command
     const char* getHelp() const throw()    { return CPLTSHELLDACMD_DETAIL_PRINT_; }
     
      
 public:
     /// Constructor
-    Print( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
+    Print( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw();
 
 
 public:
-    /// See Cpl::TShell::Dac::Command_
-    Cpl::TShell::Dac::Command_::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
+    /// See Cpl::TShell::Dac::Command
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
 
 };
 

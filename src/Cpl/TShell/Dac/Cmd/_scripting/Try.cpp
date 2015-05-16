@@ -21,8 +21,8 @@ using namespace Cpl::TShell::Dac;
 
 
 ///////////////////////////
-Try::Try( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
-:Command_(commandList, "try")
+Try::Try( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+:Command(commandList, "try")
 ,m_state(eIDLE)
 ,m_level(0)
 ,m_stack(OPTION_CPL_TSHELL_DAC_CMD_TRY_IFELSE_NEST_LEVELS,m_memStack)
@@ -31,7 +31,7 @@ Try::Try( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
 
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Try::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     ActiveVariablesApi& vars  = context.getVariables();
     Cpl::Text::String&  token = context.getTokenBuffer();
@@ -41,7 +41,7 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
     if ( tokens.numParameters() == 1 )
         {
         m_state = eIDLE;
-        return Command_::eERROR_MISSING_ARGS;
+        return Command::eERROR_MISSING_ARGS;
         }
 
     // Process my state machine
@@ -52,7 +52,7 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
             // Error checking
             if ( token != "IF" )
                 {
-                return Command_::eERROR_INVALID_ARGS;
+                return Command::eERROR_INVALID_ARGS;
                 }
 
             m_stack.clearTheStack();
@@ -111,7 +111,7 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
             else
                 {
                 m_state = eIDLE;
-                return Command_::eERROR_INVALID_ARGS;
+                return Command::eERROR_INVALID_ARGS;
                 }
             break;
             
@@ -138,7 +138,7 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
                 if ( !m_stack.push( m_state ) )
                     {
                     m_state = eIDLE;
-                    return Command_::eERROR_INVALID_ARGS;
+                    return Command::eERROR_INVALID_ARGS;
                     }
                 m_level++;
                 if ( (m_state=convert2State(conditional(context,tokens,2,vars))) == eCLAUSE_FALSE )
@@ -149,7 +149,7 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
             else
                 {
                 m_state = eIDLE;
-                return Command_::eERROR_INVALID_ARGS;
+                return Command::eERROR_INVALID_ARGS;
                 }
             break;
 
@@ -163,11 +163,11 @@ Cpl::TShell::Dac::Command_::Result_T Try::execute( Cpl::TShell::Dac::Context_& c
     if ( m_state == eCOMPARE_ERROR )
         {
         m_state = eIDLE;
-        return Command_::eERROR_FAILED;
+        return Command::eERROR_FAILED;
         }
 
     // If I get the command succeeded!
-    return Command_::eSUCCESS;
+    return Command::eSUCCESS;
     }
 
 
@@ -187,7 +187,7 @@ Try::State_T Try::popState() throw()
     }
 
 
-Try::State_T Try::convert2State( Cpl::TShell::Dac::Cmd::Command_::CondResult_T result ) const throw()
+Try::State_T Try::convert2State( Cpl::TShell::Dac::Cmd::Command::CondResult_T result ) const throw()
     {
     switch( result )
         {

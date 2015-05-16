@@ -19,13 +19,13 @@ using namespace Cpl::TShell::Dac;
 
 
 ///////////////////////////
-TPrint::TPrint( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
+TPrint::TPrint( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
 :Print_(commandList, "tprint")
     {
     }
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T TPrint::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T TPrint::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     return Print_::execute( true, context, tokens, rawInputString, outfd );
     }

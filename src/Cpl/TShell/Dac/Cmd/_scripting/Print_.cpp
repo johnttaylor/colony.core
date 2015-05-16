@@ -24,13 +24,13 @@ static void initializeOuttext_( Cpl::Text::String& outtext, bool prependTimeStam
 
 
 ///////////////////////////
-Print_::Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList, const char* verb ) throw()
-:Command_(commandList, verb)
+Print_::Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb ) throw()
+:Command(commandList, verb)
     {
     }
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T Print_::execute( bool prependTimeStamp, Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Print_::execute( bool prependTimeStamp, Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     ActiveVariablesApi& vars    = context.getVariables();
     Cpl::Text::String&  outtext = context.getOutputBuffer();
@@ -39,12 +39,12 @@ Cpl::TShell::Dac::Command_::Result_T Print_::execute( bool prependTimeStamp, Cpl
     // Error checking
     if ( tokens.numParameters() > 3 )
         {
-        return Command_::eERROR_EXTRA_ARGS;
+        return Command::eERROR_EXTRA_ARGS;
         }
 
     if ( tokens.numParameters() == 1 && !prependTimeStamp )
         {
-        return Command_::eERROR_MISSING_ARGS;
+        return Command::eERROR_MISSING_ARGS;
         }
 
 
@@ -65,15 +65,15 @@ Cpl::TShell::Dac::Command_::Result_T Print_::execute( bool prependTimeStamp, Cpl
 
     // Generated expanded text
     initializeOuttext_( outtext, prependTimeStamp );
-    Command_::Result_T result = expandText( etext, outtext, esc, vars );
-    if ( result != Command_::eSUCCESS )
+    Command::Result_T result = expandText( etext, outtext, esc, vars );
+    if ( result != Command::eSUCCESS )
         {
         return result;
         }
 
 
     // Output the final expanded text
-    return context.writeFrame( outtext )? Command_::eSUCCESS: Command_::eERROR_IO;
+    return context.writeFrame( outtext )? Command::eSUCCESS: Command::eERROR_IO;
     }
 
 

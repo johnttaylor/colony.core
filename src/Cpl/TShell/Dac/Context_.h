@@ -13,7 +13,7 @@
 /** @file */
 
 #include "Cpl/TShell/Processor.h"
-#include "Cpl/TShell/Dac/Command_.h"
+#include "Cpl/TShell/Dac/Command.h"
 #include "Cpl/TShell/Dac/ActiveVariablesApi.h"
 #include "Cpl/System/Mutex.h"
 #include "Cpl/Io/Output.h"
@@ -42,7 +42,7 @@ public:
         command.  If 'inputString' is not a valid command, then the appropriate
         error/result code is returned.
      */
-    virtual Command_::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing = 0 ) throw() = 0;
+    virtual Command::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing = 0 ) throw() = 0;
                      
 
 public:
@@ -50,7 +50,7 @@ public:
     virtual Cpl::System::Mutex& getOutputLock() throw() = 0;
 
     /// This method returns the list of implemented commands
-    virtual Cpl::Container::Map<Command_>& getCommands() throw() = 0;
+    virtual Cpl::Container::Map<Command>& getCommands() throw() = 0;
 
     /// This method the set of active/in-use Shell variables
     virtual ActiveVariablesApi& getVariables() throw() = 0;
@@ -109,7 +109,7 @@ public:
         'marker' command is encounter.  When the marker command is found, the 
         filtering is turn off and the marker is executed.
      */
-    virtual void enableFilter( Command_& marker ) throw() = 0;
+    virtual void enableFilter( Command& marker ) throw() = 0;
 
 
 public:

@@ -17,13 +17,13 @@ using namespace Cpl::TShell::Dac::Cmd;
 using namespace Cpl::TShell::Dac;
 
 ///////////////////////////
-Exe::Exe( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
-:Command_(commandList, "exe")
+Exe::Exe( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+:Command(commandList, "exe")
     {
     }
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T Exe::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Exe::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     ActiveVariablesApi& vars  = context.getVariables();
     Cpl::Text::String&  etext = context.getTokenBuffer();
@@ -32,11 +32,11 @@ Cpl::TShell::Dac::Command_::Result_T Exe::execute( Cpl::TShell::Dac::Context_& c
     // Error checking
     if ( tokens.numParameters() > 3 )
         {
-        return Command_::eERROR_EXTRA_ARGS;
+        return Command::eERROR_EXTRA_ARGS;
         }
     if ( tokens.numParameters() < 2 )
         {
-        return Command_::eERROR_MISSING_ARGS;
+        return Command::eERROR_MISSING_ARGS;
         }
 
     // Set the default escape character
@@ -55,8 +55,8 @@ Cpl::TShell::Dac::Command_::Result_T Exe::execute( Cpl::TShell::Dac::Context_& c
 
     // Expand the command string
     etext.clear();
-    Command_::Result_T result = expandText( cmdstring, etext, esc, vars );
-    if ( result != Command_::eSUCCESS )
+    Command::Result_T result = expandText( cmdstring, etext, esc, vars );
+    if ( result != Command::eSUCCESS )
         {
         return result;
         }

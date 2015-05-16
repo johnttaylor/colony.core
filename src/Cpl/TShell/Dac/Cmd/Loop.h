@@ -13,7 +13,7 @@
 /** @file */
 
 #include "colony_config.h"
-#include "Cpl/TShell/Dac/Cmd/Command_.h"
+#include "Cpl/TShell/Dac/Cmd/Command.h"
 #include "Cpl/TShell/Dac/Processor.h"
 
                                                  
@@ -39,7 +39,7 @@ namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
 /** This class implements a DAC Shell command
  */
-class Loop: public Command_
+class Loop: public Command
 {
 protected:         
     /// States for my top level FSM
@@ -62,21 +62,21 @@ protected:
 
 
 public:
-    /// See Cpl::TShell::Dac::Command_
+    /// See Cpl::TShell::Dac::Command
     const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_LOOP_; }
 
-    /// See Cpl::TShell::Dac::Command_
+    /// See Cpl::TShell::Dac::Command
     const char* getHelp() const throw()    { return CPLTSHELLDACMD_DETAIL_LOOP_; }
     
      
 public:
     /// Constructor
-    Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
+    Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw();
 
 
 public:
-    /// See Cpl::TShell::Dac::Command_
-    Cpl::TShell::Dac::Command_::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
+    /// See Cpl::TShell::Dac::Command
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
           
             
 };

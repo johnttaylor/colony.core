@@ -21,13 +21,13 @@ using namespace Cpl::TShell::Dac::Cmd;
 using namespace Cpl::TShell::Dac;
 
 ///////////////////////////
-Tokenize::Tokenize( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
-:Command_(commandList, "tokenize")
+Tokenize::Tokenize( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+:Command(commandList, "tokenize")
     {
     }
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T Tokenize::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Tokenize::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     ActiveVariablesApi& vars     = context.getVariables();
     Cpl::Text::String&  etext    = context.getTokenBuffer();
@@ -36,7 +36,7 @@ Cpl::TShell::Dac::Command_::Result_T Tokenize::execute( Cpl::TShell::Dac::Contex
     // Error checking
     if ( tokens.numParameters() < 5 )
         {
-        return Command_::eERROR_MISSING_ARGS;
+        return Command::eERROR_MISSING_ARGS;
         }
 
     // Set tokenizer symbols
@@ -49,7 +49,7 @@ Cpl::TShell::Dac::Command_::Result_T Tokenize::execute( Cpl::TShell::Dac::Contex
         {
         if ( len < 3 )
             {
-            return Command_::eERROR_INVALID_ARGS;
+            return Command::eERROR_INVALID_ARGS;
             }
 
         delimiter = symbols[0];
@@ -60,8 +60,8 @@ Cpl::TShell::Dac::Command_::Result_T Tokenize::execute( Cpl::TShell::Dac::Contex
 
     // Expand the text that will be tokenized
     etext.clear();
-    Command_::Result_T result = expandText( tokens.getParameter(2), etext, *OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_, vars );
-    if ( result != Command_::eSUCCESS )
+    Command::Result_T result = expandText( tokens.getParameter(2), etext, *OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_, vars );
+    if ( result != Command::eSUCCESS )
         {
         return result;
         }
@@ -71,7 +71,7 @@ Cpl::TShell::Dac::Command_::Result_T Tokenize::execute( Cpl::TShell::Dac::Contex
     Cpl::Text::Tokenizer::TextBlock parser( etext.getBuffer( dummy ), delimiter, '\n', quote, escape );
     if ( parser.isValidTokens() == false )
         {
-        return Command_::eERROR_FAILED;
+        return Command::eERROR_FAILED;
         }
 
 
@@ -86,14 +86,14 @@ Cpl::TShell::Dac::Command_::Result_T Tokenize::execute( Cpl::TShell::Dac::Contex
         VariableApi*                     varPtr = vars.find( name );
         if ( !varPtr )
             {
-            return Command_::eERROR_INVALID_ARGS;
+            return Command::eERROR_INVALID_ARGS;
             }
 
         // Convert token index to an integer
         unsigned tokIdx = 0;
         if ( !Cpl::Text::a2ui( tokIdx, tokens.getParameter(tokIdxIdx) ) )
             {
-            return Command_::eERROR_INVALID_ARGS;
+            return Command::eERROR_INVALID_ARGS;
             }
 
         // Update variable. Note: Silently skip invalid token indexes
@@ -112,10 +112,10 @@ Cpl::TShell::Dac::Command_::Result_T Tokenize::execute( Cpl::TShell::Dac::Contex
     // Error if incorrect number of arguments, i.e. bad var/idx pairs
     if ( numParms != 0 )
         {
-        return Command_::eERROR_MISSING_ARGS;
+        return Command::eERROR_MISSING_ARGS;
         }
 
 
     // If I get here, everything worked!
-    return Command_::eSUCCESS;
+    return Command::eSUCCESS;
     }

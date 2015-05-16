@@ -9,7 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "Command_.h"
+#include "Command.h"
 #include "Cpl/Text/strip.h"
 #include "Cpl/TShell/Dac/Processor.h"
 
@@ -17,7 +17,7 @@
 /* 
 
    This file contains helper commands that are primarly used by the Scripting
-   commands.  They are seperated into a seperate from Command_.cpp so that
+   commands.  They are seperated into a seperate from Command.cpp so that
    an application that does not use Scripting commands does not 'pick-up'
    the object code for these functions
 
@@ -30,7 +30,7 @@ using namespace Cpl::TShell::Dac::Cmd;
 
 
 ////////////////////////////////////////
-Command_::Result_T Command_::expandText( const char* textToExpand, Cpl::Text::String& dst, char escChar, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw()
+Command::Result_T Command::expandText( const char* textToExpand, Cpl::Text::String& dst, char escChar, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw()
     {
     // Convert the escape character to a null terminated string
     char esc[2];
@@ -90,7 +90,7 @@ Command_::Result_T Command_::expandText( const char* textToExpand, Cpl::Text::St
     }
 
 
-const char* Command_::getOperValue( const char* oper, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw()
+const char* Command::getOperValue( const char* oper, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw()
     {
     if ( *oper == '#' )
         {
@@ -117,11 +117,11 @@ const char* Command_::getOperValue( const char* oper, Cpl::TShell::Dac::ActiveVa
 #define ACTION_OR_      2
 
 //////////////////////////////////////////////////////////
-Command_::CondResult_T Command_::conditional( Cpl::TShell::Dac::Context_&           context, 
-                                              Cpl::Text::Tokenizer::TextBlock&      tokens, 
-                                              unsigned                              startingTokenIndex, 
-                                              Cpl::TShell::Dac::ActiveVariablesApi& vars 
-                                            ) throw()
+Command::CondResult_T Command::conditional( Cpl::TShell::Dac::Context_&           context, 
+                                            Cpl::Text::Tokenizer::TextBlock&      tokens, 
+                                            unsigned                              startingTokenIndex, 
+                                            Cpl::TShell::Dac::ActiveVariablesApi& vars 
+                                          ) throw()
     {
     CondResult_T result   = eTRUE;
     unsigned     numParms = tokens.numParameters();
@@ -200,9 +200,9 @@ Command_::CondResult_T Command_::conditional( Cpl::TShell::Dac::Context_&       
 
 
 
-Command_::CondResult_T Command_::evaluate( const char* leftVal, const char* oper, const char* rightVal ) throw()
+Command::CondResult_T Command::evaluate( const char* leftVal, const char* oper, const char* rightVal ) throw()
     {
-    int compareResult =  VariableApi::compare( leftVal, rightVal );
+    int compareResult = VariableApi::compare( leftVal, rightVal );
 
     if ( strcmp( oper, "=" ) == 0 || strcmp( oper, "==") == 0 )
         {

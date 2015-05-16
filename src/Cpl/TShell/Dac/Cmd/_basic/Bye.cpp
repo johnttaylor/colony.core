@@ -19,18 +19,18 @@
 using namespace Cpl::TShell::Dac::Cmd;
 
 ///////////////////////////
-Bye::Bye( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
-:Command_(commandList, "bye")
+Bye::Bye( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+:Command(commandList, "bye")
     {
     }
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T Bye::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Bye::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     // Error checking
     if ( tokens.numParameters() > 3 )
         {
-        return Cpl::TShell::Dac::Command_::eERROR_EXTRA_ARGS;
+        return Cpl::TShell::Dac::Command::eERROR_EXTRA_ARGS;
         }
 
     // Bye just the command shell
@@ -38,7 +38,7 @@ Cpl::TShell::Dac::Command_::Result_T Bye::execute( Cpl::TShell::Dac::Context_& c
         {
         // Request the Command Processor to stop
         context.requestStop();
-        return Cpl::TShell::Dac::Command_::eSUCCESS;
+        return Cpl::TShell::Dac::Command::eSUCCESS;
         }
 
     // Bye the application
@@ -51,10 +51,10 @@ Cpl::TShell::Dac::Command_::Result_T Bye::execute( Cpl::TShell::Dac::Context_& c
             }
 
         Cpl::System::Shutdown::failure( exitCode );
-        return Cpl::TShell::Dac::Command_::eSUCCESS;
+        return Cpl::TShell::Dac::Command::eSUCCESS;
         }
 
     // If I get here -->the argument(s) where bad
-    return Cpl::TShell::Dac::Command_::eERROR_INVALID_ARGS;
+    return Cpl::TShell::Dac::Command::eERROR_INVALID_ARGS;
     }
 

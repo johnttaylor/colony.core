@@ -17,13 +17,13 @@ using namespace Cpl::TShell::Dac::Cmd;
 using namespace Cpl::TShell::Dac;
 
 ///////////////////////////
-Set::Set( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
-:Command_(commandList, "set")
+Set::Set( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+:Command(commandList, "set")
     {
     }
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T Set::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Set::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     ActiveVariablesApi& vars  = context.getVariables();
     Cpl::Text::String&  token = context.getTokenBuffer();
@@ -31,7 +31,7 @@ Cpl::TShell::Dac::Command_::Result_T Set::execute( Cpl::TShell::Dac::Context_& c
     // Error checking
     if ( tokens.numParameters() > 3 )
         {
-        return Command_::eERROR_EXTRA_ARGS;
+        return Command::eERROR_EXTRA_ARGS;
         }
 
     // Delete the variable
@@ -45,7 +45,7 @@ Cpl::TShell::Dac::Command_::Result_T Set::execute( Cpl::TShell::Dac::Context_& c
             }
 
         // Always pass the remove/delete case -->i.e. it is okay to delete a non-existant variable
-        return Command_::eSUCCESS;
+        return Command::eSUCCESS;
         }
 
 
@@ -78,7 +78,7 @@ Cpl::TShell::Dac::Command_::Result_T Set::execute( Cpl::TShell::Dac::Context_& c
             // Return success code if everything worked
             if ( success )
                 {
-                return Command_::eSUCCESS;
+                return Command::eSUCCESS;
                 }
             }
          }
@@ -99,10 +99,10 @@ Cpl::TShell::Dac::Command_::Result_T Set::execute( Cpl::TShell::Dac::Context_& c
         outtext.format( "Active User variables: %u. Max allowed User variables: %u", vars.getUserCount(), vars.getMaxUserCount() );
         io &= context.writeFrame( outtext );
 
-        return io? Command_::eSUCCESS: Command_::eERROR_IO;
+        return io? Command::eSUCCESS: Command::eERROR_IO;
         }
 
 
     // If I get here the command failed!
-    return Command_::eERROR_FAILED;
+    return Command::eERROR_FAILED;
     }

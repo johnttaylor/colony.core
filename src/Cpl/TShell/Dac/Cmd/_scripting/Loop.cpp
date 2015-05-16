@@ -17,8 +17,8 @@ using namespace Cpl::TShell::Dac::Cmd;
 using namespace Cpl::TShell::Dac;
 
 ///////////////////////////
-Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
-:Command_(commandList, "loop")
+Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+:Command(commandList, "loop")
 ,m_state(eIDLE)
 ,m_level(0)
 ,m_breakLevel(0)
@@ -26,7 +26,7 @@ Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw
     }
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Loop::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     ActiveVariablesApi& vars      = context.getVariables();
     Cpl::Text::String&  token     = context.getTokenBuffer();
@@ -35,7 +35,7 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
     if ( numTokens < 2 )
         {
         m_state = eIDLE;
-        return Command_::eERROR_MISSING_ARGS;
+        return Command::eERROR_MISSING_ARGS;
         }
 
     // Process my state machine
@@ -46,7 +46,7 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
             // Error checking
             if ( token != "WHILE" )
                 {
-                return Command_::eERROR_INVALID_ARGS;
+                return Command::eERROR_INVALID_ARGS;
                 }
 
             // Housekeeping    
@@ -84,7 +84,7 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
 
                     // If I get here that is/was a problem with capture of the contents of the loop
                     m_state = eIDLE;
-                    return Command_::eERROR_FAILED;
+                    return Command::eERROR_FAILED;
                     }
                 else
                     {
@@ -94,7 +94,7 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
             else
                 {
                 m_state = eIDLE;
-                return Command_::eERROR_INVALID_ARGS;
+                return Command::eERROR_INVALID_ARGS;
                 }
             break;
             
@@ -118,7 +118,7 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
 
                         case eERROR:
                             m_state = eIDLE;
-                            return Command_::eERROR_INVALID_ARGS;
+                            return Command::eERROR_INVALID_ARGS;
                             break;
 
                         case eTRUE:
@@ -153,7 +153,7 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
 
                         case eERROR:
                             m_state = eIDLE;
-                            return Command_::eERROR_INVALID_ARGS;
+                            return Command::eERROR_INVALID_ARGS;
                             break;
                         }
                     }
@@ -168,7 +168,7 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
                 {
                 // Reset the FSM on error
                 m_state = eIDLE;
-                return Command_::eERROR_INVALID_ARGS;
+                return Command::eERROR_INVALID_ARGS;
                 }
             break;
 
@@ -206,14 +206,14 @@ Cpl::TShell::Dac::Command_::Result_T Loop::execute( Cpl::TShell::Dac::Context_& 
                 {
                 // Reset the FSM on error
                 m_state = eIDLE;
-                return Command_::eERROR_INVALID_ARGS;
+                return Command::eERROR_INVALID_ARGS;
                 }
             break;
         }
 
 
     // If I get the command succeeded!
-    return Command_::eSUCCESS;
+    return Command::eSUCCESS;
     }
 
 

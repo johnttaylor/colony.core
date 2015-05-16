@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Dac_Command_x_h_
-#define Cpl_TShell_Dac_Command_x_h_
+#ifndef Cpl_TShell_Dac_Command_h_
+#define Cpl_TShell_Dac_Command_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -24,9 +24,9 @@ namespace Cpl { namespace TShell { namespace Dac {
 class Context_;
 
 
-/** This Private Namespace class defines the interface for a DAC shell command.
+/** This class defines the interface for a DAC shell command.
  */
-class Command_: public Cpl::Container::MapItem
+class Command: public Cpl::Container::MapItem
 {
 public:         
     /// Possible result codes when executing a command
@@ -66,7 +66,7 @@ public:
 
 public:
     /// Virtual destructor
-    virtual ~Command_(){}
+    virtual ~Command(){}
 
 };
 

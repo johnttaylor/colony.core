@@ -17,25 +17,25 @@ using namespace Cpl::TShell::Dac::Cmd;
 using namespace Cpl::TShell::Dac;
 
 ///////////////////////////
-Inc::Inc( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
-:Command_(commandList, "inc")
+Inc::Inc( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+:Command(commandList, "inc")
     {
     }
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T Inc::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Inc::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     ActiveVariablesApi& vars  = context.getVariables();
 
     // Error checking
     if ( tokens.numParameters() > 3 )
         {
-        return Command_::eERROR_EXTRA_ARGS;
+        return Command::eERROR_EXTRA_ARGS;
         }
 
     if ( tokens.numParameters() < 2 )
         {
-        return Command_::eERROR_MISSING_ARGS;
+        return Command::eERROR_MISSING_ARGS;
         }
 
     // Look-up variable name
@@ -43,7 +43,7 @@ Cpl::TShell::Dac::Command_::Result_T Inc::execute( Cpl::TShell::Dac::Context_& c
     VariableApi*                     varPtr = vars.find( name );
     if ( !varPtr )
         {
-        return Command_::eERROR_INVALID_ARGS;
+        return Command::eERROR_INVALID_ARGS;
         }
 
     // Increment 
@@ -54,9 +54,9 @@ Cpl::TShell::Dac::Command_::Result_T Inc::execute( Cpl::TShell::Dac::Context_& c
         }
     if ( !varPtr->add(amount) )
         {
-        return Command_::eERROR_FAILED;
+        return Command::eERROR_FAILED;
         }
 
     // If I get here the command succeeded!
-    return Command_::eSUCCESS;
+    return Command::eSUCCESS;
     }

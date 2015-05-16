@@ -13,7 +13,7 @@
 /** @file */
 
 #include "colony_config.h"
-#include "Cpl/TShell/Dac/Cmd/Command_.h"
+#include "Cpl/TShell/Dac/Cmd/Command.h"
 #include "Cpl/Container/Stack.h"
 
                                                  
@@ -48,7 +48,7 @@ namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
 /** This class implements a DAC Shell command
  */
-class Try: public Command_
+class Try: public Command
 {
 protected:         
     /// States for my top level FSM
@@ -73,21 +73,21 @@ protected:
     State_T                         m_memStack[OPTION_CPL_TSHELL_DAC_CMD_TRY_IFELSE_NEST_LEVELS];
 
 public:
-    /// See Cpl::TShell::Dac::Command_
+    /// See Cpl::TShell::Dac::Command
     const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_TRY_; }
 
-    /// See Cpl::TShell::Dac::Command_
+    /// See Cpl::TShell::Dac::Command
     const char* getHelp() const throw()    { return CPLTSHELLDACMD_DETAIL_TRY_; }
     
      
 public:
     /// Constructor
-    Try( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
+    Try( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw();
 
 
 public:
-    /// See Cpl::TShell::Dac::Command_
-    Cpl::TShell::Dac::Command_::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
+    /// See Cpl::TShell::Dac::Command
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
             
 
 
@@ -97,7 +97,7 @@ protected:
     virtual State_T popState() throw();
 
     /// Helpter method
-    virtual State_T convert2State( Cpl::TShell::Dac::Cmd::Command_::CondResult_T result ) const throw();
+    virtual State_T convert2State( Cpl::TShell::Dac::Cmd::Command::CondResult_T result ) const throw();
 
 
 

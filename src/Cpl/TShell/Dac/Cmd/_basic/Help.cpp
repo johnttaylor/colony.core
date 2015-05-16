@@ -16,30 +16,30 @@
 using namespace Cpl::TShell::Dac::Cmd;
 
 
-static void outputCmdHelp_( Cpl::TShell::Dac::Context_& context, Cpl::TShell::Dac::Command_& cmd, bool& io, bool includeDetails );
+static void outputCmdHelp_( Cpl::TShell::Dac::Context_& context, Cpl::TShell::Dac::Command& cmd, bool& io, bool includeDetails );
 static void outputLongText_( Cpl::TShell::Dac::Context_& context, bool& io, const char* text );
 
 
 ///////////////////////////
-Help::Help( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw()
-:Command_(commandList, "help")
+Help::Help( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+:Command(commandList, "help")
     {
     }
 
 ///////////////////////////
-Cpl::TShell::Dac::Command_::Result_T Help::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Help::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     // Error checking
     if ( tokens.numParameters() > 2 )
         {
-        return Command_::eERROR_EXTRA_ARGS;
+        return Command::eERROR_EXTRA_ARGS;
         }
 
     // Housekeeping
-    Cpl::Container::Map<Cpl::TShell::Dac::Command_>&  cmdList = context.getCommands();
-    bool                                              io      = true;
-    Cpl::TShell::Dac::Command_*                       cmdPtr;
-    Cpl::Container::KeyLiteralString                  verb( tokens.getParameter(1) );
+    Cpl::Container::Map<Cpl::TShell::Dac::Command>&  cmdList = context.getCommands();
+    bool                                             io      = true;
+    Cpl::TShell::Dac::Command*                       cmdPtr;
+    Cpl::Container::KeyLiteralString                 verb( tokens.getParameter(1) );
 
     // Command specific help
     if ( (cmdPtr=cmdList.find(verb)) )
@@ -59,12 +59,12 @@ Cpl::TShell::Dac::Command_::Result_T Help::execute( Cpl::TShell::Dac::Context_& 
             }
         }
 
-    return io? Command_::eSUCCESS: Command_::eERROR_IO;
+    return io? Command::eSUCCESS: Command::eERROR_IO;
     }
 
 
 
-void outputCmdHelp_( Cpl::TShell::Dac::Context_& context, Cpl::TShell::Dac::Command_& cmd, bool& io, bool includeDetails )
+void outputCmdHelp_( Cpl::TShell::Dac::Context_& context, Cpl::TShell::Dac::Command& cmd, bool& io, bool includeDetails )
     {
     outputLongText_( context, io, cmd.getUsage() );
     if ( includeDetails )

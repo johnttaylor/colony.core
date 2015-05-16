@@ -13,7 +13,7 @@
 /** @file */
 
 #include "colony_config.h"
-#include "Cpl/TShell/Dac/Cmd/Command_.h"
+#include "Cpl/TShell/Dac/Cmd/Command.h"
 
 /* RULER
                                     "         1         2         3         4         5         6         7         8"
@@ -33,24 +33,24 @@ namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
 /** This Private Namespace class defines the interface for a DAC shell command.
  */
-class Bye: public Command_
+class Bye: public Command
 {
 protected:
-    /// See Cpl::TShell::Dac::Command_
+    /// See Cpl::TShell::Dac::Command
     const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_BYE_; }
 
-    /// See Cpl::TShell::Dac::Command_
+    /// See Cpl::TShell::Dac::Command
     const char* getHelp() const throw()     { return CPLTSHELLDACMD_DETAIL_BYE_; }
     
      
 public:
     /// Constructor
-    Bye( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList ) throw();
+    Bye( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw();
 
 
 public:
-    /// See Cpl::TShell::Dac::Command_
-    Cpl::TShell::Dac::Command_::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
+    /// See Cpl::TShell::Dac::Command
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
 
 };
 

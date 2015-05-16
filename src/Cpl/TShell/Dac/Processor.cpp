@@ -15,11 +15,11 @@
 ///
 using namespace Cpl::TShell::Dac;
 
-static const char* resultToString_( Command_::Result_T errcode );
+static const char* resultToString_( Command::Result_T errcode );
 
 
 ///////////////////////////////////
-Processor::Processor( Cpl::Container::Map<Command_>&    commands,
+Processor::Processor( Cpl::Container::Map<Command>&     commands,
                       ActiveVariablesApi&               variables,
                       Cpl::Text::Frame::Decoder&        deframer,
                       Cpl::Text::Frame::StreamEncoder&  framer,
@@ -160,9 +160,9 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
 
         
         // Execute the command
-        Command_::Result_T result = executeCommand( m_inputBuffer, outfd, m_captureCount );
+        Command::Result_T result = executeCommand( m_inputBuffer, outfd, m_captureCount );
         m_errorLevel.setValue ( (long) result );
-        if ( result == Command_::eERROR_IO )
+        if ( result == Command::eERROR_IO )
             {
             // Output stream error -->exit Command Processlr
             return false;
@@ -188,7 +188,7 @@ void Processor::requestStop() throw()
 
 
 ///////////////////////////////////
-Command_::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing ) throw()
+Command::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing ) throw()
     {
     // Make a copy of the input and then tokenize/parse the input
     strcpy( m_inputCopy, deframedInput );
@@ -198,22 +198,22 @@ Command_::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io
     if ( tokens.isValidTokens() == false )
         {
         backoutCaptureLine( capturing );
-        return outputCommandError( Command_::eERROR_BAD_SYNTAX, deframedInput )? Command_::eERROR_BAD_SYNTAX: Command_::eERROR_IO;
+        return outputCommandError( Command::eERROR_BAD_SYNTAX, deframedInput )? Command::eERROR_BAD_SYNTAX: Command::eERROR_IO;
         }
 
     // Skip blank and comment lines
     if ( tokens.numParameters() == 0 || *(tokens.getParameter(0)) == m_comment )
         {
         backoutCaptureLine( capturing );
-        return Command_::eSUCCESS;
+        return Command::eSUCCESS;
         }
 
     // Lookup the command to be executed
     Cpl::Container::KeyLiteralString verb( tokens.getParameter(0) );
-    Command_*                        cmdPtr;
+    Command*                         cmdPtr;
     if ( (cmdPtr=m_commands.find(verb)) == 0 )
         {
-        return outputCommandError( Command_::eERROR_INVALID_CMD, deframedInput )? Command_::eERROR_INVALID_CMD: Command_::eERROR_IO;
+        return outputCommandError( Command::eERROR_INVALID_CMD, deframedInput )? Command::eERROR_INVALID_CMD: Command::eERROR_IO;
         }
     
     // Apply filtering (when enabled)
@@ -228,15 +228,15 @@ Command_::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io
         // Skip the command
         else
             {
-            return Command_::eSUCCESS;
+            return Command::eSUCCESS;
             }
         }
 
     // Execute the found command
-    Command_::Result_T result = cmdPtr->execute( *this, tokens, deframedInput, outfd );    
-    if ( result != Command_::eSUCCESS )
+    Command::Result_T result = cmdPtr->execute( *this, tokens, deframedInput, outfd );    
+    if ( result != Command::eSUCCESS )
         {
-        return outputCommandError( result, deframedInput )? result: Command_::eERROR_IO;
+        return outputCommandError( result, deframedInput )? result: Command::eERROR_IO;
         }
 
     return result;
@@ -248,7 +248,7 @@ Cpl::System::Mutex& Processor::getOutputLock() throw()
     return m_outLock;
     }
 
-Cpl::Container::Map<Command_>& Processor::getCommands() throw()
+Cpl::Container::Map<Command>& Processor::getCommands() throw()
     {
     return m_commands;
     }
@@ -368,7 +368,7 @@ void Processor::backoutCaptureLine( unsigned capturing ) throw()
     }
 
 ///////////////////////////////////
-void Processor::enableFilter( Command_& marker ) throw()
+void Processor::enableFilter( Command& marker ) throw()
     {
     m_filtering    = true;
     m_filterMarker = marker.getVerb();
@@ -410,7 +410,7 @@ bool Processor::prompt( Cpl::Io::Output& outfd ) throw()
 
 
 ///////////////////////////////////
-bool Processor::outputCommandError( Command_::Result_T result, const char* deframedInput ) throw()
+bool Processor::outputCommandError( Command::Result_T result, const char* deframedInput ) throw()
     {
     bool io = true;
 
@@ -421,32 +421,32 @@ bool Processor::outputCommandError( Command_::Result_T result, const char* defra
     return io;
     }
 
-const char* resultToString_( Command_::Result_T errcode )
+const char* resultToString_( Command::Result_T errcode )
     {
     switch( errcode )
         {
         default: 
             return "ERRNO: Command failed - unknown error code";
 
-        case Command_::eERROR_BAD_SYNTAX:
+        case Command::eERROR_BAD_SYNTAX:
             return "ERRNO: (1) Unable to parse command string";
 
-        case Command_::eERROR_INVALID_CMD:
+        case Command::eERROR_INVALID_CMD:
             return "ERRNO: (2) Command not supported";
 
-        case Command_::eERROR_IO:
+        case Command::eERROR_IO:
             return "ERRNO: (3) Input/Output stream IO encounter";
 
-        case Command_::eERROR_MISSING_ARGS:
+        case Command::eERROR_MISSING_ARGS:
             return "ERRNO: (4) Command is missing argument(s)";
 
-        case Command_::eERROR_EXTRA_ARGS:
+        case Command::eERROR_EXTRA_ARGS:
             return "ERRNO: (5) Command encounter 'extra' argument(s)";
 
-        case Command_::eERROR_INVALID_ARGS:
+        case Command::eERROR_INVALID_ARGS:
             return "ERRNO: (6) One or more Command arguments are incorrect/invalid";
 
-        case Command_::eERROR_FAILED:
+        case Command::eERROR_FAILED:
             return "ERRNO: (7) Command failed to complete one or more of its actions";
         }
 

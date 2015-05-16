@@ -12,7 +12,7 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/TShell/Dac/Cmd/Command_.h"
+#include "Cpl/TShell/Dac/Cmd/Command.h"
 
 
 
@@ -23,16 +23,16 @@ namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
 /** This Private Namespace class is the base class for the printX commands
  */
-class Print_: public Command_
+class Print_: public Command
 {
 public:
     /// Constructor
-    Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command_>& commandList, const char* verb ) throw();
+    Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb ) throw();
 
 
 public:
-    /// See Cpl::TShell::Dac::Command_
-    Cpl::TShell::Dac::Command_::Result_T execute( bool prependTimeStamp, Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
+    /// See Cpl::TShell::Dac::Command
+    Cpl::TShell::Dac::Command::Result_T execute( bool prependTimeStamp, Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
 
 };
 
