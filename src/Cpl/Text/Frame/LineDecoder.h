@@ -47,7 +47,7 @@ protected:
     bool  m_illegal;
 
     /// Remember my tabs option
-    bool  m_convertTabs;
+    char m_convertTabs;
 
 
     /// Raw input buffer for reading characters in 'chunks' from my Input stream (i.e. minimize the calls to read())
@@ -55,14 +55,14 @@ protected:
 
 
 public:
-    /** Constructor. If the 'convertTabsSpaces' flag is set to true than any
-        tab character encountered within a frame are converted to space
-        characters. Note: A tab character will not start a frame.
+    /** Constructor. If the 'convertTabs' argument is set to a value OTHER
+        than a tab character, then any tab characters encounter will be 
+        converted to the value of 'convertTabs'.
      */
-    LineDecoder( bool convertTabsToSpaces = false )
+    LineDecoder( char convertTabs = '\t' )
         :Decoder_(m_buffer,BUFSIZE)
         ,m_illegal(false)
-        ,m_convertTabs(convertTabsToSpaces)
+        ,m_convertTabs(convertTabs)
             {
             }
 
@@ -71,6 +71,12 @@ protected:
     /// See Cpl::Text::Frame::Decoder_
     bool isStartOfFrame() throw()   
         { 
+        // Convert tabs (when feature is enabled)
+        if ( *m_dataPtr == '\t' && m_convertTabs != '\t'  )
+            {
+            *m_dataPtr = m_convertTabs;
+            }
+
         // Reset my illegal-character-in-middle-of-frame flag when encountering an newline
         if ( isEofOfFrame() )
             {
@@ -97,17 +103,17 @@ protected:
     /// See Cpl::Text::Frame::Decoder_
     bool isLegalCharacter() throw() 
         {
+        // Convert tabs (when feature is enabled)
+        if ( *m_dataPtr == '\t' && m_convertTabs != '\t'  )
+            {
+            *m_dataPtr = m_convertTabs;
+            }
+
         // Newline is always 'valid' 
         if ( isEofOfFrame() )
             {
             m_illegal = false;
             return true;
-            }
-
-        // Convert tabs to spaces (when feature is enabled)
-        if ( m_convertTabs && *m_dataPtr == 0x09 )
-            {
-            *m_dataPtr = ' ';
             }
 
         // Reject all non printable ASCII character
