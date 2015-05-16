@@ -22,12 +22,12 @@
 */
 #define CPLTSHELLDACMD_USAGE_TRACE_   "trace [on|off]\n" \
                                       "trace section (on|off) <sect1> [<sect2>]...\n" \
-                                      "trace threadfilter (on|off) <threadname1> [<threadname2>]...\n" \
+                                      "trace threadfilters [<threadname1> [<threadname2>]]...\n" \
                                       "trace level (none|brief|info|verbose|max)"
 
 #ifndef CPLTSHELLDACMD_DETAIL_TRACE_
-#define CPLTSHELLDACMD_DETAIL_TRACE_  "  Enables/Disable the Cpl::System::Trace statements and manages the 'sections'\n" \
-                                      "  and thread filter options."
+#define CPLTSHELLDACMD_DETAIL_TRACE_  "  Enables/Disables the Cpl::System::Trace engine and manages the 'sections',\n" \
+                                      "  information level, and thread filter options."
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
 

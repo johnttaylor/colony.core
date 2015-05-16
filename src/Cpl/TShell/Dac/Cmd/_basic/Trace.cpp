@@ -65,7 +65,7 @@ Cpl::TShell::Dac::Command::Result_T Trace::execute( Cpl::TShell::Dac::Context_& 
             {
             const char* next = Cpl::Text::stripNotSpace( ptr );
             io &= context.writeFrame( ptr, next-ptr );
-            ptr = next;
+			ptr = Cpl::Text::stripSpace(next);
             }
 
         // Output Enable Thread Filters
@@ -81,8 +81,8 @@ Cpl::TShell::Dac::Command::Result_T Trace::execute( Cpl::TShell::Dac::Context_& 
             {
             const char* next = Cpl::Text::stripNotSpace( ptr );
             io &= context.writeFrame( ptr, next-ptr );
-            ptr = next;
-            }
+			ptr = Cpl::Text::stripSpace(next);
+			}
 
         // Runtime state
         outtext.format( "TRACE: Runtime state:= %s, Info Level:= %s", CPL_SYSTEM_TRACE_IS_ENABLED()? "ENABLED": "DISABLED", info2text_( CPL_SYSTEM_TRACE_GET_INFO_LEVEL() ) );
@@ -112,6 +112,79 @@ Cpl::TShell::Dac::Command::Result_T Trace::execute( Cpl::TShell::Dac::Context_& 
         CPL_SYSTEM_TRACE_SET_INFO_LEVEL( text2info_( tokens.getParameter(2), errorOccurred )  );
         return errorOccurred? Command::eERROR_INVALID_ARGS: Command::eSUCCESS;
         }
+
+    // Enable/Disable sections
+    if ( numParms > 3 && strcmp(tokens.getParameter(1), "section") == 0 )
+        {
+        numParms    -= 3;
+        unsigned idx = 3;
+        if ( strcmp(tokens.getParameter(2), "on") == 0 )
+            {
+            while( numParms-- )
+                {
+                CPL_SYSTEM_TRACE_ENABLE_SECTION( tokens.getParameter(idx++) );
+                }
+            }
+        else if ( strcmp(tokens.getParameter(2), "off") == 0 )
+            {
+            while( numParms-- )
+                {
+                CPL_SYSTEM_TRACE_DISABLE_SECTION( tokens.getParameter(idx++) );
+                }
+            }
+        else
+            {
+            // If I get here -->the argument(s) where bad
+            return Command::eERROR_INVALID_ARGS;
+            }
+
+        // Enable/disable trace sections WORKED!
+        return Command::eSUCCESS;
+        }
+
+
+    // Set/remove thread filters
+    if ( numParms < 7 && strcmp(tokens.getParameter(1), "threadfilters") == 0 )
+        {
+        const char* f1 = 0;
+        const char* f2 = 0;
+        const char* f3 = 0;
+        const char* f4 = 0;
+
+        // Get thread filters (max of 4)
+        if ( numParms >= 3 )
+            {
+            f1 = tokens.getParameter(2);
+            }
+        if ( numParms >= 4 )
+            {
+            f2 = tokens.getParameter(3);
+            }
+        if ( numParms >= 5 )
+            {
+            f3 = tokens.getParameter(4);
+            }
+        if ( numParms >= 6 )
+            {
+            f4 = tokens.getParameter(5);
+            }
+                                          
+        // Set thread filters
+        if ( numParms != 2 )
+            {
+            CPL_SYSTEM_TRACE_SET_THREAD_4FILTERS(f1,f2,f3,f4);
+            }
+        
+        // Clear thread filters
+        else
+            {
+            CPL_SYSTEM_TRACE_CLEAR_THREAD_FILTER();
+            }
+
+        return Command::eSUCCESS;
+        }
+
+
 
     // If I get here -->the argument(s) where bad
     return Command::eERROR_INVALID_ARGS;
