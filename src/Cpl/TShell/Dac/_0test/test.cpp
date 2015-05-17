@@ -191,7 +191,7 @@ public:
 #endif
 
 #ifndef COMMENT_CHAR_       
-#define COMMENT_CHAR_           ';'
+#define COMMENT_CHAR_           '#'
 #endif
 
 #ifndef ARG_DEL_                    

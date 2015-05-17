@@ -1,9 +1,9 @@
-; initialize vars
+# initialize vars
 set a 0
 set b -10
 set c to-be-deleted
 
-;TEST set operations
+# TEST set operations
 set
 tokenize * $_lastout$ a 3
 try IF $a$ != 3
@@ -31,7 +31,7 @@ try ENDIF
 
 print "PASSED set tests"
 
-;TEST '_lastout' variable
+# TEST '_lastout' variable
 print "Hello World"
 try IF $_lastout$ != "Hello World"
       print "Failed. _lastout test#1"
@@ -40,7 +40,7 @@ try ENDIF
 
 print "PASSED _lastout test#1"
 
-;TEST'inc' command
+# TEST'inc' command
 set a 0
 inc a
 try IF $a$ != 1
@@ -60,7 +60,7 @@ try ENDIF
 
 print "PASSED inc test"
 
-;TEST'_lastout' variable
+# TEST'_lastout' variable
 try IF $_lastout$ != "PASSED inc test"
       print "Failed. _lastout != `"PASSED inc test`""
       bye app 1
@@ -68,7 +68,7 @@ try ENDIF
 
 print "PASSED _lastout test#2"
 
-;TEST text string
+# TEST text string
 print "`"hello world`""
 try IF $_errno$ != 0 
       print "Failed. text-string test#1"
@@ -96,7 +96,7 @@ try ENDIF
 print "PASSED text-string tests"
 
 
-;TEST IF/ELSE constructs
+# TEST IF/ELSE constructs
 set a
 set b
 set true  0
@@ -146,7 +146,7 @@ try ENDIF
 print "PASSED IF/ELSE tests"
 
 
-;TEST Nested IF/ELSE
+# TEST Nested IF/ELSE
 print "Starting Nested IF/ELSE tests...."
 set a
 set b
@@ -337,12 +337,12 @@ loop WHILE $a$ < 5
 print  "Start of INNER loop: a=$a$, b=$b$, c=$c$"
 loop   WHILE
          inc b
-;
+# 
 
          inc c
          print "b=$b$, c=$c$"
 loop   UNTIL $b$ >= 3
-;print  "End of INNER loop: a=$a$, b=$b$, c=$c$"
+# print  "End of INNER loop: a=$a$, b=$b$, c=$c$"
 loop UNTIL
 print "End of OUTER loop: a=$a$, b=$b$, c=$c$"
 try IF $a$ = 5 
@@ -392,7 +392,7 @@ try ELSE
 try ENDIF
 
 
-;TEST EXECUTE command
+# TEST EXECUTE command
 set a print
 exe "$a$ `"hello world`""
 set b $_lastout$
@@ -423,7 +423,7 @@ try ELSE
 try ENDIF
 
  
-; TEST TOKENIZE command
+# TEST TOKENIZE command
 set a 0
 set b 2
 set c 3
@@ -504,7 +504,7 @@ try ENDIF
 print "Passed ALL TOKENIZE tests."
 
 
-; ALL DONE (and ALL passed)
+# ALL DONE (and ALL passed)
 print "ALL TESTS PASSED!"
 bye app 0
 
