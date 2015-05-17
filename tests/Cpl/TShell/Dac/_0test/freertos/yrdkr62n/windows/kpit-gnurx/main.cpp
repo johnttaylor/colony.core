@@ -2,46 +2,51 @@
 #include "Cpl/Io/Serial/Renesas/Rx62n/InputOutput.h"               
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Trace.h"
-#include "Cpl/Io/Null.h"
 #include <stdlib.h>
 
 
-/// Create my InputOutput stream for Trace logging
-static Cpl::Io::Serial::Renesas::Rx62n::InputOutput<16,16> fd_( BSP_DB9_CONSOLE, BSP_DB9_CONSOLE_PIN_SELECT, configMAX_SYSCALL_INTERRUPT_PRIORITY-2, BSP_BAUDRATE_57600, BSP_BAUDRATE_DIVIDER_57600, (BSP_PARITY_NONE|BSP_DATABITS_8|BSP_STOPBITS_1) );
-
-/// Trace output
-static Cpl::Io::Null nullfd_;
+/// Create my InputOutput stream for Shell and Trace logging
+static Cpl::Io::Serial::Renesas::Rx62n::InputOutput<256,32> fd_( BSP_DB9_CONSOLE, BSP_DB9_CONSOLE_PIN_SELECT, configMAX_SYSCALL_INTERRUPT_PRIORITY-2, BSP_BAUDRATE_57600, BSP_BAUDRATE_DIVIDER_57600, (BSP_PARITY_NONE|BSP_DATABITS_8|BSP_STOPBITS_1) );
 
 
-extern void loopback_test( Cpl::Io::InputOutput& fd );
-    
+// External references
+extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
+
+
 /*-----------------------------------------------------------*/
 int main(void)
-    {
+{
     // Initialize the board
     Bsp_Api_initialize();
 
-    // Initialize CPL
+    // Initialize Colony
     Cpl::System::Api::initialize();
 
-    
-    // Go run the test(s) (Note: This method should never return)
+    CPL_SYSTEM_TRACE_ENABLE();
+    CPL_SYSTEM_TRACE_ENABLE_SECTION("_0test");
+    CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eINFO );
+
+	// Run the test
     fd_.start();
-    loopback_test( fd_ );
+    shell_test( fd_, fd_ );
 
-    // I should never get here!
-	for( ;; );
-    return 0;
-    }
+    // do not exit
+    for(;;)
+        {
+        Cpl::System::Api::sleep(1000);
+        }
 
-
+	return 0;
+}
+    
 
 /*-----------------------------------------------------------*/
 Cpl::Io::Output* Cpl::System::Trace::getDefaultOutputStream_(void) throw()
 	{
-	return &nullfd_;
+	return &fd_;
 	}
 
+               
 /*-----------------------------------------------------------*/
 void consoleTxISR( void )
 	{

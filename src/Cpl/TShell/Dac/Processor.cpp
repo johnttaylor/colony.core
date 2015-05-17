@@ -277,9 +277,11 @@ bool Processor::writeFrame( const char* text  ) throw()
 
     // Encode and output the text
     bool io = true;
+    m_outLock.lock();
     io &= m_framer.startFrame();
     io &= m_framer.output( text );
     io &= m_framer.endFrame();
+    m_outLock.unlock();
 
     return io;
     }
@@ -288,9 +290,11 @@ bool Processor::writeFrame( const char* text, size_t maxBytes  ) throw()
     {
     // Encode and output the text
     bool io = true;
+    m_outLock.lock();
     io &= m_framer.startFrame();
     io &= m_framer.output( text, maxBytes );
     io &= m_framer.endFrame();
+    m_outLock.unlock();
 
     return io;
     }

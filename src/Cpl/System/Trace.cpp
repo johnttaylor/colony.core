@@ -269,6 +269,12 @@ void Trace::clearThreadFilter_( void )
     // Set filter to: OFF
     Locks_::tracing().lock();
     threadFilterEnabled_ = false;
+
+    // Clear  filter table
+    threadFilters_[0] = 0;
+    threadFilters_[1] = 0;
+    threadFilters_[2] = 0;
+    threadFilters_[3] = 0;
     Locks_::tracing().unlock();
     }
 
