@@ -1,40 +1,39 @@
 ; initialize vars
-set a #0
-set b #-10
-set c #to-be-deleted
+set a 0
+set b -10
+set c to-be-deleted
 
 ;TEST set operations
 set
-try IF _lastout != #"Active User variables: 3. Max allowed User variables: 4"
+tokenize * $_lastout$ a 3
+try IF $a$ != 3
       print "Failed. variable count test ($_lastout$)"
       bye app 1
 try ENDIF
-set d
+set c
 set
-try IF _lastout != #"Active User variables: 3. Max allowed User variables: 4"
+tokenize * $_lastout$ a 3
+try IF $a$ != 2
       print "Failed. variable delete test#1"
       bye app 1
 try ENDIF
 set c
 set
-try IF _lastout != #"Active User variables: 2. Max allowed User variables: 4"
+tokenize * $_lastout$ a 3
+try IF $a$ != 2
       print "Failed. variable delete test#2"
       bye app 1
 try ENDIF
-try IF a != #0
-      print "Failed. a ($a$) != 0 "
-      bye app 1
-try ENDIF
-      try IF b != #-10
+try IF $b$ != -10
       print "Failed. b ($b$) != -10 "
       bye app 1
 try ENDIF
 
 print "PASSED set tests"
 
-;TEST'_lastout' variable
+;TEST '_lastout' variable
 print "Hello World"
-try IF _lastout != #"Hello World"
+try IF $_lastout$ != "Hello World"
       print "Failed. _lastout test#1"
       bye app 1
 try ENDIF
@@ -42,18 +41,19 @@ try ENDIF
 print "PASSED _lastout test#1"
 
 ;TEST'inc' command
+set a 0
 inc a
-try IF a != #1
+try IF $a$ != 1
       print "Failed. a ($a$) != 1 "
       bye app 1
 try ENDIF
-inc a #2
-try IF a != #3
+inc a 2
+try IF $a$ != 3
       print "Failed. a ($a$) != 3 "
       bye app 1
 try ENDIF
-inc a b
-try IF a != #-7
+inc a $b$
+try IF $a$ != -7
       print "Failed. a ($a$) != -7 "
       bye app 1
 try ENDIF
@@ -61,7 +61,7 @@ try ENDIF
 print "PASSED inc test"
 
 ;TEST'_lastout' variable
-try IF _lastout != #"PASSED inc test"
+try IF $_lastout$ != "PASSED inc test"
       print "Failed. _lastout != `"PASSED inc test`""
       bye app 1
 try ENDIF
@@ -70,25 +70,25 @@ print "PASSED _lastout test#2"
 
 ;TEST text string
 print "`"hello world`""
-try IF _errno != #0 
+try IF $_errno$ != 0 
       print "Failed. text-string test#1"
       bye app 1
 try ENDIF
-try IF _lastout != #"`"hello world`"" 
+try IF $_lastout$ != "`"hello world`"" 
       print "Failed. text-string test#2"
       bye app 1
 try ENDIF
 print ""HELLO world"
-try IF _errno != #1 
+try IF $_errno$ != 1 
       print "Failed. text-string test#3"
       bye app 1
 try ENDIF
 print "``HELLO-world"
-try IF _errno != #0 
+try IF $_errno$ != 0 
       print "Failed. text-string test#4"
       bye app 1
 try ENDIF
-try IF _lastout != #`HELLO-world 
+try IF $_lastout$ != `HELLO-world 
       print "Failed. text-string test#5"
       bye app 1
 try ENDIF
@@ -99,11 +99,11 @@ print "PASSED text-string tests"
 ;TEST IF/ELSE constructs
 set a
 set b
-set true  #0
-set false #0
-set elif  #0
+set true  0
+set false 0
+set elif  0
 set
-try IF #2 = #3
+try IF 2 = 3
       inc true
       print inc-true
 try ELSE
@@ -111,34 +111,34 @@ try ELSE
       print inc-false
 try ENDIF
 set
-try IF true != #0
+try IF $true$ != 0
       print "Failed. IF/ELSE test#1"
       bye app 1
 try ENDIF
-try IF false != #1
+try IF $false$ != 1
       print "Failed. IF/ELSE test#2"
       bye app 1
 try ENDIF
 set
-try IF false = #0
+try IF $false$ = 0
       print true-clause
       inc true
-try ELIF false == #1
+try ELIF $false$ == 1
       print elif-true-clause
       inc elif
 try ELSE
       print else-clause
       inc elif
 try ENDIF
-try IF true != #0
+try IF $true$ != 0
       print "Fail. IF/ELSE test#3"
       bye app 1
 try ENDIF
-try IF false != #1
+try IF $false$ != 1
       print "Failed. IF/ELSE test#4"
       bye app 1
 try ENDIF
-try IF elif != #1
+try IF $elif$ != 1
       print "Failed. IF/ELSE test#5"
       bye app 1
 try ENDIF
@@ -153,158 +153,158 @@ set b
 set true
 set false
 set elif
-set clause #0
+set clause 0
 print "start test: clause=$clause$"
-try IF #2 = #2
-      inc clause #1
+try IF 2 = 2
+      inc clause 1
       print true-clause
-try   IF #3 = #3
+try   IF 3 = 3
         print true-true-clause
-        inc clause #10
+        inc clause 10
 try   ELSE
         print true-false-clause
-        inc clause #100
+        inc clause 100
 try   ENDIF
-try ELIF #3 = #3
+try ELIF 3 = 3
       print elif-true-claus
-      inc clause #1000
+      inc clause 1000
 try ENDIF
 print "end test: clause=$clause$"
-try IF clause != #11
-      print "Failed. Nested IF/ELSE test #1"
+try IF $clause$ != 11
+      print "Failed. Nested IF/ELSE test 1"
       bye app 1
 try ENDIF
 
-set clause #0
+set clause 0
 print "start test: clause=$clause$"
-try IF #2 = #2
-      inc clause #1
+try IF 2 = 2
+      inc clause 1
       print true-clause
-try   IF #3 != #3
+try   IF 3 != 3
         print true-true-clause
-        inc clause #10
+        inc clause 10
 try   ELSE
         print true-false-clause
-        inc clause #100
+        inc clause 100
 try   ENDIF
-try ELIF #4 = #4
+try ELIF 4 = 4
       print elif-true-claus
-      inc clause #1000
+      inc clause 1000
 try ENDIF
 print "end test: clause=$clause$"
-try IF clause != #101
+try IF $clause$ != 101
       print "Failed. Nested IF/ELSE test #2"
       bye app 1
 try ENDIF
 
-set clause #0
+set clause 0
 print "start test: clause=$clause$"
-try IF #2 != #2
-      inc clause #1
+try IF 2 != 2
+      inc clause 1
       print true-clause
-try   IF #3 != #3
+try   IF 3 != 3
         print true-true-clause
-        inc clause #10
+        inc clause 10
 try   ELSE
         print true-false-clause
-        inc clause #100
+        inc clause 100
 try   ENDIF
 try ELSE
       print else-true-claus
-      inc clause #1000
+      inc clause 1000
 try ENDIF
 print "end test: clause=$clause$"
-try IF clause != #1000
+try IF $clause$ != 1000
       print "Failed. Nested IF/ELSE test #3"
       bye app 1
 try ENDIF
 
-set clause #0
+set clause 0
 print "start test: clause=$clause$"
-try IF #2 != #2
-      inc clause #1
+try IF 2 != 2
+      inc clause 1
       print true-clause
-try   IF #3 != #3
+try   IF 3 != 3
         print true-true-clause
-        inc clause #10
+        inc clause 10
 try   ELSE
         print true-false-clause
-        inc clause #100
+        inc clause 100
 try   ENDIF
-try ELIF #4 = #4
+try ELIF 4 = 4
       print elif-true-claus
-      inc clause #1000
-try   IF #5 = #5
+      inc clause 1000
+try   IF 5 = 5
         print elif-true-true-clause
-        inc clause #10000
+        inc clause 10000
 try   ELSE
         print elif-true-false-clause
-        inc clause #100000
+        inc clause 100000
 try   ENDIF
 try ENDIF
 print "end test: clause=$clause$"
-try IF clause != #11000
+try IF $clause$ != 11000
       print "Failed. Nested IF/ELSE test #4"
       bye app 1
 try ENDIF
 
-set clause #0
+set clause 0
 print "start test: clause=$clause$"
-try IF #2 != #2
-      inc clause #1
+try IF 2 != 2
+      inc clause 1
       print true-clause
-try   IF #3 != #3
+try   IF 3 != 3
         print true-true-clause
-        inc clause #10
+        inc clause 10
 try   ELSE
         print true-false-clause
-        inc clause #100
+        inc clause 100
 try   ENDIF
-try ELIF #4 = #4
+try ELIF 4 = 4
       print elif-true-claus
-      inc clause #1000
-try   IF #5 != #5
+      inc clause 1000
+try   IF 5 != 5
         print elif-true-true-clause
-        inc clause #10000
+        inc clause 10000
 try   ELSE
         print elif-true-false-clause
-        inc clause #100000
+        inc clause 100000
 try   ENDIF
 try ENDIF
 print "end test: clause=$clause$"
-try IF clause != #101000
+try IF $clause$ != 101000
       print "Failed. Nested IF/ELSE test #5"
       bye app 1
 try ENDIF
 
-set clause #0
+set clause 0
 print "start test: clause=$clause$"
-try IF #2 != #2
-      inc clause #1
+try IF 2 != 2
+      inc clause 1
       print true-clause
-try   IF #3 != #3
+try   IF 3 != 3
         print true-true-clause
-        inc clause #10
+        inc clause 10
 try   ELSE
         print true-false-clause
-        inc clause #100
+        inc clause 100
 try   ENDIF
-try ELIF #4 != #4
+try ELIF 4 != 4
       print elif-true-claus
-      inc clause #1000
-try   IF #5 != #5
+      inc clause 1000
+try   IF 5 != 5
         print elif-true-true-clause
-        inc clause #10000
+        inc clause 10000
 try   ELSE
         print elif-true-false-clause
-        inc clause #100000
+        inc clause 100000
 try   ENDIF
 try ELSE
       print else-clause
-      inc clause #1000000
+      inc clause 1000000
 try ENDIF
 print "end test: clause=$clause$"
-try IF clause != #1000000
+try IF $clause$ != 1000000
       print "Failed. Nested IF/ELSE test #6"
       bye app 1
 try ENDIF
@@ -313,27 +313,27 @@ try ENDIF
 print "PASSED NESTED IF/ELSE tests"
 
 
-set a #0
+set a 0
 print "Start of loop: a=$a$"
-loop WHILE a < #5
+loop WHILE $a$ < 5
        inc a
        print a=$a$
 loop UNTIL
 print "End of loop: a=$a$"
-try IF a = #5 
-      print "Passed Loop test #1"
+try IF $a$ = 5 
+      print "Passed Loop test 1"
 try ELSE
-      print "Failed.  Loop test #1"
+      print "Failed.  Loop test 1"
       bye app 1
 try ENDIF
 
-set a #0
-set c #0
+set a 0
+set c 0
 print "Start of OUTER loop: a=$a$, c=$c$"
-loop WHILE a < #5
+loop WHILE $a$ < 5
        inc a
        print a=$a$
-       set b #0
+       set b 0
 print  "Start of INNER loop: a=$a$, b=$b$, c=$c$"
 loop   WHILE
          inc b
@@ -341,13 +341,13 @@ loop   WHILE
 
          inc c
          print "b=$b$, c=$c$"
-loop   UNTIL b >= #3
+loop   UNTIL $b$ >= 3
 ;print  "End of INNER loop: a=$a$, b=$b$, c=$c$"
 loop UNTIL
 print "End of OUTER loop: a=$a$, b=$b$, c=$c$"
-try IF a = #5 
-try   IF b = #3
-try     IF c = #15
+try IF $a$ = 5 
+try   IF $b$ = 3
+try     IF $c$ = 15
           print "Passed Loop test #2"
 try     ELSE
           print "Failed.  Loop test #2"
@@ -365,26 +365,26 @@ try ENDIF
 print "PASSED Loops tests"
 
 
-try IF a = #5 AND b = #3 AND c = #15
+try IF $a$ = 5 AND $b$ = 3 AND $c$ = 15
       print "Passed AND clauses test#1"
 try ELSE
       print "Failed AND clauses test#1."
       bye app 1
 try ENDIF
-try IF a != #5 AND b = #3 AND c = #15
+try IF $a$ != 5 AND $b$ = 3 AND $c$ = 15
       print "Failed AND clauses test#2."
       bye app 1
 try ELSE
       print "Passed AND clauses test#2"
 try ENDIF
 
-try IF a != #5 OR b != #3 OR c = #15
+try IF $a$ != 5 OR $b$ != 3 OR $c$ = 15
       print "Passed OR clauses test#3"
 try ELSE
       print "Failed OR clauses test#3."
       bye app 1
 try ENDIF
-try IF a = #5 AND b = #3 OR c != #15 OR #5 = #5
+try IF $a$ = 5 AND $b$ = 3 OR $c$ != 15 OR 5 = #5
       print "Passed AND/OR clauses test#4"
 try ELSE
       print "Failed AND/DOR clauses test#4."
@@ -393,36 +393,117 @@ try ENDIF
 
 
 ;TEST EXECUTE command
-set a #print
+set a print
 exe "$a$ `"hello world`""
-set b _lastout
-try IF _errno != #0
+set b $_lastout$
+try IF $_errno$ != 0
       print "Failed EXE test#1a"
 try ELSE
       print "Passed EXE test#1a"
 try ENDIF
-try IF b == #"hello world"
+try IF $b$ == "hello world"
       print "Passed EXE text#1b"
 try ELSE
       print "Failed EXE test#1b"
       bye app 1
 try ENDIF
 
-set a #set
+set a set
 set b
-exe "$a$ b #bob"
-try IF _errno != #0
+exe "$a$ b bob"
+try IF $_errno$ != 0
       print "Failed EXE test#2a"
 try ELSE
       print "Passed EXE test#2a"
 try ENDIF
-try IF b != #bob
+try IF $b$ != bob
       print "Failed EXE test#2b"
 try ELSE
       print "Passed EXE test#2b"
 try ENDIF
 
  
+; TEST TOKENIZE command
+set a 0
+set b 2
+set c 3
+tokenize * "hello world" a 1 b 0
+try IF $a$ != world
+      print "Failed TOKENIZE test#1a"
+      bye app 1
+try ENDIF
+try IF $b$ != hello
+      print "Failed TOKENIZE test#1b"
+      bye app 1
+try ENDIF
+set a 0
+set b 2
+set c 3
+tokenize ."`""` "hello.world.`"bobs.your.uncle`"" a 0 b 1 c 2
+try IF $a$ != hello
+      print "Failed TOKENIZE test#2a"
+      bye app 1
+try ENDIF
+try IF $b$ != world
+      print "Failed TOKENIZE test#2b"
+      bye app 1
+try ENDIF
+try IF $c$ != "bobs.your.uncle"
+      print "Failed TOKENIZE test#2c"
+      bye app 1
+try ENDIF
+set a 0
+set b 2
+set c 3
+tokenize .!` "hello.world.!bobs.not..your.uncle!" a 0 b 1 c 2
+try IF $a$ != hello
+      print "Failed TOKENIZE test#3a"
+      bye app 1
+try ENDIF
+try IF $b$ != world
+      print "Failed TOKENIZE test#3b"
+      bye app 1
+try ENDIF
+try IF $c$ != "bobs.not..your.uncle"
+      print "Failed TOKENIZE test#3c"
+      bye app 1
+try ENDIF
+set a 0
+set b 2
+set c 3
+tokenize " !~" "hello world !bob is really not your.uncle!" a 0 b 1 c 2
+try IF $a$ != hello
+      print "Failed TOKENIZE test#4a"
+      bye app 1
+try ENDIF
+try IF $b$ != world
+      print "Failed TOKENIZE test#4b"
+      bye app 1
+try ENDIF
+try IF $c$ != "bob is really not your.uncle"
+      print "Failed TOKENIZE test#4c"
+      bye app 1
+try ENDIF
+set a 0
+set b 2
+set c 3
+tokenize * "hello $a$$b$ world" a 0 b 1 c 2
+try IF $a$ != hello
+      print "Failed TOKENIZE test#5a"
+      bye app 1
+try ENDIF
+try IF $b$ != 02
+      print "Failed TOKENIZE test#5b"
+      bye app 1
+try ENDIF
+try IF $c$ != "world"
+      print "Failed TOKENIZE test#5c"
+      bye app 1
+try ENDIF
+
+print "Passed ALL TOKENIZE tests."
+
+
 ; ALL DONE (and ALL passed)
 print "ALL TESTS PASSED!"
 bye app 0

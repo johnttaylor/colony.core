@@ -383,7 +383,14 @@ Cpl::Text::String& Processor::getOutputBuffer() throw()
 
 Cpl::Text::String& Processor::getTokenBuffer() throw()
     {
+    m_tokenBuffer.clear();
     return m_tokenBuffer;
+    }
+
+Cpl::Text::String& Processor::getTokenBuffer2() throw()
+    {
+    m_tokenBuffer2.clear();
+    return m_tokenBuffer2;
     }
 
 Cpl::Text::String& Processor::getLastOutValue() throw()

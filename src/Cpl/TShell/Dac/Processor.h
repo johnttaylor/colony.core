@@ -212,6 +212,9 @@ protected:
     /// Shared token work buffer
     Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE>   m_tokenBuffer;
 
+    /// Shared token work buffer
+    Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE>   m_tokenBuffer2;
+
     /// Memory for last-command-output Shell variable vaule
     Cpl::Text::FString<OPTION_CPL_TSHELL_DAC_PROCESSOR_OUTPUT_SIZE>  m_lastCmdOutputValue;
 
@@ -325,6 +328,9 @@ public:
 
     /// See Cpl::TShell::Dac::Context_
     Cpl::Text::String& getTokenBuffer() throw();
+
+    /// See Cpl::TShell::Dac::Context_
+    Cpl::Text::String& getTokenBuffer2() throw();
 
     /// See Cpl::TShell::Dac::Context_
     Cpl::Text::String& getLastOutValue() throw();

@@ -21,7 +21,7 @@
                                       "         1         2         3         4         5         6         7         8"
                                       "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define CPLTSHELLDACMD_USAGE_TPRINT_  "tprint [[<esc>] <etext>]"
+#define CPLTSHELLDACMD_USAGE_TPRINT_  "tprint [<etext>]"
 #ifndef CPLTSHELLDACMD_DETAIL_TPRINT_
 #define CPLTSHELLDACMD_DETAIL_TPRINT_ "  Same operation as 'print', except the current elasped time is prepended to the\n" \
                                       "  expanded text."

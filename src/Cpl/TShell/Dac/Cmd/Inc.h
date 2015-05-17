@@ -24,10 +24,10 @@
 #define CPLTSHELLDACMD_USAGE_INC_     "inc <var> [<amount>]" 
 #ifndef CPLTSHELLDACMD_DETAIL_INC_
 #define CPLTSHELLDACMD_DETAIL_INC_    "  Increments the contents of <var> by 1.  An optional <amount> to increment the\n" \
-                                      "  variable can be provided. Note: <amount> can be a literal (prefixed with '#')\n" \
-                                      "  or a variable; and the value can be negative.  If the contents of <var> is not\n" \
-                                      "  numeric or <amount> is not numeric than contents of <var> remains unchanged\n" \
-                                      "  and an error is returned."
+                                      "  variable can be provided. Note: <amount> is an 'etext' argument (see the Set\n" \
+                                      "  command for additional details). If the contents of <var> is not numeric or\n" \
+                                      "  <amount> is not numeric than contents of <var> remains unchanged and an error\n" \
+                                      "  is returned."
 
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue

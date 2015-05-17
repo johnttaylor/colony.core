@@ -119,9 +119,14 @@ public:
     virtual Cpl::Text::String& getOutputBuffer() throw() = 0;
 
     /** A shared/common working buffer. The buffer is guarented to be large 
-        enough hold any valid token from an input frame.
+        enough hold any valid token from an input frame.  The contents of
+        buffer is guaranteed to be empty/cleared. 
      */
     virtual Cpl::Text::String& getTokenBuffer() throw() = 0;
+
+    /** Same as getTokenBuffer(), except provides a second/seperate token buffer
+     */
+    virtual Cpl::Text::String& getTokenBuffer2() throw() = 0;
 
     /** Provides direct access to the _lastout variable's value - should used with CAUTION!
      */

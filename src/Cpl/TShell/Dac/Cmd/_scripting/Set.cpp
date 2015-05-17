@@ -26,7 +26,6 @@ Set::Set( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
 Cpl::TShell::Dac::Command::Result_T Set::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     ActiveVariablesApi& vars  = context.getVariables();
-    Cpl::Text::String&  token = context.getTokenBuffer();
 
     // Error checking
     if ( tokens.numParameters() > 3 )
@@ -56,29 +55,14 @@ Cpl::TShell::Dac::Command::Result_T Set::execute( Cpl::TShell::Dac::Context_& co
         VariableApi* varPtr = vars.get( name );
         if ( varPtr )
             {
-            bool success = false;
-            token        = tokens.getParameter(2);
-
-            // Set literal value
-            if ( token[0] == '#' )
+            Cpl::Text::String& token = context.getTokenBuffer();
+            if ( expandText( tokens.getParameter(2), token, vars ) == Command::eSUCCESS )
                 {
-                success = varPtr->setValue( token() + 1 );
-                }
-            
-            // Set equal to 'srcvar'
-            else
-                {
-                VariableApi* srcPtr = vars.find( token );
-                if ( srcPtr )
+                if ( varPtr->setValue( token() ) )
                     {
-                    success = varPtr->setValue( srcPtr->getValue() );
+                    // Return success code if everything worked
+                    return Command::eSUCCESS;
                     }
-                }
-
-            // Return success code if everything worked
-            if ( success )
-                {
-                return Command::eSUCCESS;
                 }
             }
          }

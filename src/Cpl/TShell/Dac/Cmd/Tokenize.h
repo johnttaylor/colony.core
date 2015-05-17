@@ -27,9 +27,8 @@
                                          "  index of the token being stored. The <dqe> argument specifies the delimeter,\n" \
                                          "  quote, and escape characters (respectively) to be used during the tokenize\n" \
                                          "  operation. If '*' is specified in lieu of the <dqe> argument then: space,\n" \
-                                         "  quote, back-tick characters are used for the vaule of <dqe>.  <etext> is an\n" \
-                                         "  expanded text' argument (see the print command for semantics). Note: the 'esc'\n" \
-                                         "  character for <etext> is: '" OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ "'."
+                                         "  quote, back-tick characters are used for the vaule of <dqe>.  See the Set\n" \
+                                         "  command for additional details about 'etext' arugments."
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
 

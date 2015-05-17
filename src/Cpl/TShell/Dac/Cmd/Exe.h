@@ -20,12 +20,10 @@
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define CPLTSHELLDACMD_USAGE_EXE_   "exe [<esc>] <cmdstring>"
+#define CPLTSHELLDACMD_USAGE_EXE_   "exe <etext>"
 #ifndef CPLTSHELLDACMD_DETAIL_EXE_
-#define CPLTSHELLDACMD_DETAIL_EXE_  "  Attemps to executes the contents of expanded <cmdstring> text. Shell variables\n" \
-                                    "  can be referenced in <cmdstring> by using the sequence: <esc><varnam><esc>.\n" \
-                                    "  When this sequence is encounted the sequence of characters is replaced by the\n" \
-                                    "  specified variable's content. The default <esc> character is '" OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ "'"
+#define CPLTSHELLDACMD_DETAIL_EXE_  "  Attemps to executes the contents of expanded <etext> text. See the Set command\n" \
+                                    "  for additional details about 'etext' arguments."
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
 

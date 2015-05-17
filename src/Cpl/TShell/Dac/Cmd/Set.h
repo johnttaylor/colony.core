@@ -20,17 +20,16 @@
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define CPLTSHELLDACMD_USAGE_SET_   "set [<varname> [(#<literal_value> | <srcvar>)]]"
+#define CPLTSHELLDACMD_USAGE_SET_   "set [<varname> [<etext>]]"
 #ifndef CPLTSHELLDACMD_DETAIL_SET_
-#define CPLTSHELLDACMD_DETAIL_SET_  "  Updates the contents of the variable <varname> to <literal_value> or to the \n" \
-                                    "  the contents of <srcvar>.  If only the <varname> argument is provided, then\n"      \
-                                    "  the variable is removed from the active variable list. If no arguments are\n" \
-                                    "  provided, then a list of all active variables (and their current value) is\n" \
-                                    "  generated."
-
-#endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
-
-
+#define CPLTSHELLDACMD_DETAIL_SET_  "  Updates the contents of the variable <varname> to the expanded <etext>. If\n" \
+                                    "  only the <varname> argument is provided, then the variable is removed from the\n" \
+                                    "  active variable list. If no arguments are provided, then a list of all active\n" \
+                                    "  variables (and their current value) is generated. <etext> is literal text with\n" \
+                                    "  an optional escape sequences that embeds a varaible's value into the string.\n" \
+                                    "  The escape sequnce is: " OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ "<varname>" OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ ".  <etext> is THE mechanism for\n" \
+                                    "  a variable's value."
+#endif
 
 ///
 namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {

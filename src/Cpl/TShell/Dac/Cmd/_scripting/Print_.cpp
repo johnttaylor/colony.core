@@ -34,10 +34,9 @@ Cpl::TShell::Dac::Command::Result_T Print_::execute( bool prependTimeStamp, Cpl:
     {
     ActiveVariablesApi& vars    = context.getVariables();
     Cpl::Text::String&  outtext = context.getOutputBuffer();
-    const char*         etext;
 
     // Error checking
-    if ( tokens.numParameters() > 3 )
+    if ( tokens.numParameters() > 2 )
         {
         return Command::eERROR_EXTRA_ARGS;
         }
@@ -48,24 +47,9 @@ Cpl::TShell::Dac::Command::Result_T Print_::execute( bool prependTimeStamp, Cpl:
         }
 
 
-    // Set the default escape character
-    char esc = *OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_;
-
-    // Trap non-default escape character
-    if ( tokens.numParameters() == 3 )
-        {
-        esc   = *(tokens.getParameter(1));
-        etext = tokens.getParameter(2);
-        }
-    else
-        {
-        etext = tokens.getParameter(1);
-        }
-
-
     // Generated expanded text
     initializeOuttext_( outtext, prependTimeStamp );
-    Command::Result_T result = expandText( etext, outtext, esc, vars );
+    Command::Result_T result = expandText( tokens.getParameter(1), outtext, vars );
     if ( result != Command::eSUCCESS )
         {
         return result;
@@ -80,13 +64,12 @@ Cpl::TShell::Dac::Command::Result_T Print_::execute( bool prependTimeStamp, Cpl:
 
 void initializeOuttext_( Cpl::Text::String& outtext, bool prependTimeStamp )
     {
-    // NO timestamp
+    // Generate the current timestamp
     if ( !prependTimeStamp )
         {
         outtext.clear();
         }
 
-    // Generate the current timestamp
     else
         {
         Cpl::Text::formatPrecisionTimeStamp( outtext, Cpl::System::ElaspedTime::precision() );

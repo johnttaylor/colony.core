@@ -26,7 +26,7 @@
                                       "trace level (none|brief|info|verbose|max)"
 
 #ifndef CPLTSHELLDACMD_DETAIL_TRACE_
-#define CPLTSHELLDACMD_DETAIL_TRACE_  "  Enables/Disables the Cpl::System::Trace engine and manages the 'sections',\n" \
+#define CPLTSHELLDACMD_DETAIL_TRACE_  "  Enables/Disables the Cpl::System::Trace engine and manages the section',\n" \
                                       "  information level, and thread filter options."
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue

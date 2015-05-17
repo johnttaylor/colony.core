@@ -65,10 +65,7 @@ protected:
 
 protected:
     /// Helper method to expand text
-    static Result_T expandText( const char* textToExpand, Cpl::Text::String& dst, char escChar, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw();
-
-    /// Helper method that returns the value of the 'operand' (can be literal or varaible value).  Returns 0 if there is an error
-    static const char* getOperValue( const char* oper, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw();
+    static Result_T expandText( const char* textToExpand, Cpl::Text::String& dst, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw();
 
     /// Helper method that processes the a conditional expression
     static CondResult_T conditional( Cpl::TShell::Dac::Context_&           context, 

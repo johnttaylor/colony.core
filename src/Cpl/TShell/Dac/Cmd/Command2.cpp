@@ -32,24 +32,27 @@ using namespace Cpl::TShell::Dac::Cmd;
 
 
 ////////////////////////////////////////
-Command::Result_T Command::expandText( const char* textToExpand, Cpl::Text::String& dst, char escChar, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw()
+Command::Result_T Command::expandText( const char* textToExpand, Cpl::Text::String& dst, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw()
     {
-    // Convert the escape character to a null terminated string
-    char esc[2];
-    esc[0] = escChar;
-    esc[1] = '\0';
-
     // Generated expanded text
     const char* nextPtr;
     while( textToExpand && *textToExpand )
         {
         // Find the next embedded variable
-        nextPtr = Cpl::Text::stripNotChars( textToExpand, esc );
+        nextPtr = Cpl::Text::stripNotChars( textToExpand, OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ );
         if ( *nextPtr )
             {
             // Save off the text BEFORE the found variable
             dst.appendTo( textToExpand, nextPtr - textToExpand );
             textToExpand = nextPtr + 1;
+
+            // Escape the Escape character
+            if ( *textToExpand == *OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ )
+                {
+                dst += *OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_;
+                textToExpand++;
+                continue;
+                }
 
             // Malformed textToExpand: <esc> character, but no variable
             if ( *textToExpand == '\0' )
@@ -58,7 +61,7 @@ Command::Result_T Command::expandText( const char* textToExpand, Cpl::Text::Stri
                 }
 
             // Find the variable name
-            nextPtr = Cpl::Text::stripNotChars( textToExpand, esc );
+            nextPtr = Cpl::Text::stripNotChars( textToExpand, OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ );
             if ( *nextPtr == '\0' )    
                 {
                 return eERROR_INVALID_ARGS;  // Malformed textToExpand: no trailing <esc>
@@ -92,27 +95,6 @@ Command::Result_T Command::expandText( const char* textToExpand, Cpl::Text::Stri
     }
 
 
-const char* Command::getOperValue( const char* oper, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw()
-    {
-    if ( *oper == '#' )
-        {
-        return oper + 1;
-        }
-    else 
-        {
-        Cpl::Container::KeyLiteralString name( oper );
-        VariableApi*                     varPtr = vars.find( name );
-        if ( varPtr )
-            {
-            return varPtr->getValue();
-            }
-        }
-
-    // If I get then bad syntax OR non-existant variable
-    return 0;
-    }
-
-
 
 //////////////////////////////////////////////////////////
 Command::CondResult_T Command::conditional( Cpl::TShell::Dac::Context_&           context, 
@@ -135,9 +117,11 @@ Command::CondResult_T Command::conditional( Cpl::TShell::Dac::Context_&         
 
 
         // Get operand values
-        const char* op1 = getOperValue( tokens.getParameter(startingTokenIndex),   vars );
-        const char* op2 = getOperValue( tokens.getParameter(startingTokenIndex+2), vars );
-        if ( !op1 || !op2 )
+        Cpl::Text::String& op1     = context.getTokenBuffer();
+        Cpl::Text::String& op2     = context.getTokenBuffer2();
+        Result_T           result1 = expandText( tokens.getParameter(startingTokenIndex),   op1, vars );
+        Result_T           result2 = expandText( tokens.getParameter(startingTokenIndex+2), op2, vars );
+        if ( result1 != eSUCCESS || result2 != eSUCCESS )
             {
             return eERROR;
             }

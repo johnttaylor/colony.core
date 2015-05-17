@@ -419,7 +419,7 @@ protected:
     #define CPL_SYSTEM_TRACE_SET_INFO_LEVEL(l)          
 
     /// Macro Wrapper
-    #define CPL_SYSTEM_TRACE_GET_INFO_LEVEL()           0
+    #define CPL_SYSTEM_TRACE_GET_INFO_LEVEL()           ((Cpl::System::Trace::InfoLevel_T)0)
 
     /// Macro Wrapper 
     #define CPL_SYSTEM_TRACE_ENABLE_SECTION(sect)       

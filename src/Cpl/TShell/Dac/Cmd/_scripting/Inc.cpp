@@ -50,7 +50,15 @@ Cpl::TShell::Dac::Command::Result_T Inc::execute( Cpl::TShell::Dac::Context_& co
     const char* amount = "1";
     if ( tokens.numParameters() == 3 )
         {
-        amount = getOperValue( tokens.getParameter(2), vars );
+        Cpl::Text::String& buf = context.getTokenBuffer();
+        if ( expandText( tokens.getParameter(2), buf, vars ) == Command::eSUCCESS )
+            {
+            amount = buf;
+            }
+        else
+            {
+            return Command::eERROR_INVALID_ARGS;
+            }
         }
     if ( !varPtr->add(amount) )
         {

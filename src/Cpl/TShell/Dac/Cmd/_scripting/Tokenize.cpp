@@ -30,7 +30,6 @@ Tokenize::Tokenize( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList 
 Cpl::TShell::Dac::Command::Result_T Tokenize::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     ActiveVariablesApi& vars     = context.getVariables();
-    Cpl::Text::String&  etext    = context.getTokenBuffer();
     unsigned            numParms = tokens.numParameters();
 
     // Error checking
@@ -59,8 +58,8 @@ Cpl::TShell::Dac::Command::Result_T Tokenize::execute( Cpl::TShell::Dac::Context
 
 
     // Expand the text that will be tokenized
-    etext.clear();
-    Command::Result_T result = expandText( tokens.getParameter(2), etext, *OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_, vars );
+    Cpl::Text::String& etext  = context.getTokenBuffer();
+    Command::Result_T  result = expandText( tokens.getParameter(2), etext, vars );
     if ( result != Command::eSUCCESS )
         {
         return result;

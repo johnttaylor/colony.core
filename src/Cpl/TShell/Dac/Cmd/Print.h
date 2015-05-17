@@ -21,12 +21,10 @@
                                       "         1         2         3         4         5         6         7         8"
                                       "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define CPLTSHELLDACMD_USAGE_PRINT_   "print [<esc>] <etext>"
+#define CPLTSHELLDACMD_USAGE_PRINT_   "print <etext>"
 #ifndef CPLTSHELLDACMD_DETAIL_PRINT_ 
-#define CPLTSHELLDACMD_DETAIL_PRINT_  "  Outputs the expanded text. Shell variables can be referenced in the <etext>\n" \
-                                      "  by using the sequence: <esc><varnam><esc>.  When this sequence is encounted,\n" \
-                                      "  the sequence of characters is replaced by the specified variable's content.\n" \
-                                      "  The default <esc> character is '" OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ "'"
+#define CPLTSHELLDACMD_DETAIL_PRINT_  "  Outputs the expanded text. See the Set command for additional details about\n" \
+                                      "  'etext' arguments."
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
 

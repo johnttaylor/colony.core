@@ -27,10 +27,9 @@ Cpl::TShell::Dac::Command::Result_T Exe::execute( Cpl::TShell::Dac::Context_& co
     {
     ActiveVariablesApi& vars  = context.getVariables();
     Cpl::Text::String&  etext = context.getTokenBuffer();
-    const char*         cmdstring;
 
     // Error checking
-    if ( tokens.numParameters() > 3 )
+    if ( tokens.numParameters() > 2 )
         {
         return Command::eERROR_EXTRA_ARGS;
         }
@@ -39,23 +38,8 @@ Cpl::TShell::Dac::Command::Result_T Exe::execute( Cpl::TShell::Dac::Context_& co
         return Command::eERROR_MISSING_ARGS;
         }
 
-    // Set the default escape character
-    char esc = *OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_;
-
-    // Trap non-default escape character
-    if ( tokens.numParameters() == 3 )
-        {
-        esc       = *(tokens.getParameter(1));
-        cmdstring = tokens.getParameter(2);
-        }
-    else
-        {
-        cmdstring = tokens.getParameter(1);
-        }
-
     // Expand the command string
-    etext.clear();
-    Command::Result_T result = expandText( cmdstring, etext, esc, vars );
+    Command::Result_T result = expandText( tokens.getParameter(1), etext, vars );
     if ( result != Command::eSUCCESS )
         {
         return result;

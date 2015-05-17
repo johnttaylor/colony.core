@@ -23,6 +23,7 @@ using namespace Cpl::TShell::Dac;
 
 static const char* info2text_( Cpl::System::Trace::InfoLevel_T level );
 static Cpl::System::Trace::InfoLevel_T text2info_( const char* level, bool& errorOccurred );
+static void dummy_( const char* f1, const char* f2, const char* f3, const char* f4 );
 
 
 
@@ -35,7 +36,6 @@ Trace::Trace( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) thro
 ///////////////////////////
 Cpl::TShell::Dac::Command::Result_T Trace::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
-    ActiveVariablesApi& vars     = context.getVariables();
     Cpl::Text::String&  token    = context.getTokenBuffer();
     Cpl::Text::String&  outtext  = context.getOutputBuffer();
     unsigned            numParms = tokens.numParameters();
@@ -55,12 +55,8 @@ Cpl::TShell::Dac::Command::Result_T Trace::execute( Cpl::TShell::Dac::Context_& 
         io  &= context.writeFrame( " ");
         io  &= context.writeFrame( "TRACE: Currently Enabled Sections:" );
         io  &= context.writeFrame( "----------------------------------" );
-        const char* ptr;
         unsigned    count = CPL_SYSTEM_TRACE_GET_SECTIONS( token );
-        if ( count )
-            {
-            ptr  = Cpl::Text::stripSpace( token );
-            }
+        const char* ptr   = Cpl::Text::stripSpace( token );
         while( count-- )
             {
             const char* next = Cpl::Text::stripNotSpace( ptr );
@@ -73,10 +69,7 @@ Cpl::TShell::Dac::Command::Result_T Trace::execute( Cpl::TShell::Dac::Context_& 
         io  &= context.writeFrame( "TRACE: Currently Enabled Thread Filters:" );
         io  &= context.writeFrame( "----------------------------------------" );
         count = CPL_SYSTEM_TRACE_GET_THREAD_FILTERS( token );
-        if ( count )
-            {
-            ptr  = Cpl::Text::stripSpace( token );
-            }
+        ptr   = Cpl::Text::stripSpace( token );
         while( count-- )
             {
             const char* next = Cpl::Text::stripNotSpace( ptr );
@@ -122,14 +115,16 @@ Cpl::TShell::Dac::Command::Result_T Trace::execute( Cpl::TShell::Dac::Context_& 
             {
             while( numParms-- )
                 {
-                CPL_SYSTEM_TRACE_ENABLE_SECTION( tokens.getParameter(idx++) );
+                CPL_SYSTEM_TRACE_ENABLE_SECTION( tokens.getParameter(idx) );
+                idx++;
                 }
             }
         else if ( strcmp(tokens.getParameter(2), "off") == 0 )
             {
             while( numParms-- )
                 {
-                CPL_SYSTEM_TRACE_DISABLE_SECTION( tokens.getParameter(idx++) );
+                CPL_SYSTEM_TRACE_DISABLE_SECTION( tokens.getParameter(idx) );
+                idx++;
                 }
             }
         else
@@ -181,9 +176,10 @@ Cpl::TShell::Dac::Command::Result_T Trace::execute( Cpl::TShell::Dac::Context_& 
             CPL_SYSTEM_TRACE_CLEAR_THREAD_FILTER();
             }
 
+        // Klug:: Attempt to avoid unused-variable compiler warnings when TRACE is disable at compile time. 
+        dummy_(f1,f2,f3,f4);
         return Command::eSUCCESS;
         }
-
 
 
     // If I get here -->the argument(s) where bad
@@ -196,11 +192,11 @@ const char* info2text_( Cpl::System::Trace::InfoLevel_T level )
     {
     switch( level )
         {
-        case Cpl::System::Trace::InfoLevel_T::eNONE:    return "NONE";
-        case Cpl::System::Trace::InfoLevel_T::eBRIEF:   return "BRIEF";
-        case Cpl::System::Trace::InfoLevel_T::eINFO:    return "INFO";
-        case Cpl::System::Trace::InfoLevel_T::eVERBOSE: return "VERBOSE";
-        case Cpl::System::Trace::InfoLevel_T::eMAX:     return "MAX";
+        case Cpl::System::Trace::eNONE:    return "NONE";
+        case Cpl::System::Trace::eBRIEF:   return "BRIEF";
+        case Cpl::System::Trace::eINFO:    return "INFO";
+        case Cpl::System::Trace::eVERBOSE: return "VERBOSE";
+        case Cpl::System::Trace::eMAX:     return "MAX";
         }
     
     return "??UNKNOWN??";
@@ -212,23 +208,23 @@ Cpl::System::Trace::InfoLevel_T text2info_( const char* level, bool& errorOccurr
 
     if ( strcmp( level, "none" ) == 0 )
         {
-        return Cpl::System::Trace::InfoLevel_T::eNONE;
+        return Cpl::System::Trace::eNONE;
         }
     else if ( strcmp( level, "brief" ) == 0 )
         {
-        return Cpl::System::Trace::InfoLevel_T::eBRIEF;
+        return Cpl::System::Trace::eBRIEF;
         }
     else if ( strcmp( level, "info" ) == 0 )
         {
-        return Cpl::System::Trace::InfoLevel_T::eINFO;
+        return Cpl::System::Trace::eINFO;
         }
     else if ( strcmp( level, "verbose" ) == 0 )
         {
-        return Cpl::System::Trace::InfoLevel_T::eVERBOSE;
+        return Cpl::System::Trace::eVERBOSE;
         }
     else if ( strcmp( level, "max" ) == 0 )
         {
-        return Cpl::System::Trace::InfoLevel_T::eMAX;
+        return Cpl::System::Trace::eMAX;
         }
 
     // If I get here -->there was bad token -->so no change in level
@@ -236,3 +232,9 @@ Cpl::System::Trace::InfoLevel_T text2info_( const char* level, bool& errorOccurr
     return CPL_SYSTEM_TRACE_GET_INFO_LEVEL();
     }
 
+
+void dummy_( const char* f1, const char* f2, const char* f3, const char* f4 )
+    {
+    bool dummy;
+    text2info_( 0, dummy );
+    }
