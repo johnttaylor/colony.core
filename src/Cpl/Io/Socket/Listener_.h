@@ -14,6 +14,7 @@
 
 #include "Cpl/Io/Socket/Listener.h"
 #include "Cpl/System/Thread.h"
+#include "Cpl/System/Mutex.h"
 
 
 ///
@@ -35,6 +36,9 @@ protected:
 	/// Used to synchronize the startListening command
     Cpl::System::Signable*  m_myThreadPtr;
 	
+    /// Mutex to guard start up sequence
+    Cpl::System::Mutex      m_lock;
+
 	/// Indicates if the listener was instructed to start
 	bool					m_startCalled;
 	

@@ -100,14 +100,6 @@ void Listener::listen()
             break;
 			}
 		
-		// Create a Descriptor for the accepted connection and pass it to the client
-		Cpl::Io::Descriptor streamFd( (void*)newfd );
-		if ( !m_clientPtr->newConnection(streamFd, inet_ntoa(client_addr.sin_addr)) )
-			{
-			closesocket(newfd);    // Connection refused
-			continue;		
-			}
-		
         // Enable SO_KEEPALIVE so we know when the client terminated the TCP session
         BOOL bOptVal = TRUE;
         int  bOptLen = sizeof(BOOL);
@@ -115,6 +107,13 @@ void Listener::listen()
             {
             m_logger.warning( "Cpl::Io::Socket::Win32::Listener:: start() - Failed enable SO_KEEPALIVE. errCode=%X.", WSAGetLastError() );
             }
+
+		// Create a Descriptor for the accepted connection and pass it to the client
+		Cpl::Io::Descriptor streamFd( (void*)newfd );
+		if ( !m_clientPtr->newConnection(streamFd, inet_ntoa(client_addr.sin_addr)) )
+			{
+			closesocket(newfd);    // Connection refused
+			}
         }
 
 	

@@ -30,24 +30,28 @@ Listener_::Listener_()
 ///////////////////////////////
 void Listener_::startListening( Listener::Client& client, int portNumToListenOn  )
 	{
+    Cpl::System::Mutex::ScopeBlock lock(m_lock);
+
 	if ( !m_startCalled )
 		{		
 		m_startCalled 	= true;
 		m_socket  		= portNumToListenOn;
 		m_clientPtr 	= &client;
 
-        if ( !m_myThreadPtr )
+        if ( m_myThreadPtr )
             {
-            Cpl::System::FatalError::logf( "Cpl::Io::Socket::Listener - Protocol Error.  startListening() called before the listener's thread has started" );
-            }
-		
-		m_myThreadPtr->signal();
-		}
+		    m_myThreadPtr->signal();
+		    }
+        }
 	}
 
 void Listener_::terminate()
 	{
-	if ( !m_startCalled )
+    m_lock.lock();
+    bool started = m_startCalled;
+    m_lock.unlock();
+
+	if ( !started )
         {
         Cpl::System::FatalError::logf( "Cpl::Io::Socket::Listener - Protocol Error.  terminate() called before startListening()" );
         }
@@ -60,13 +64,21 @@ void Listener_::terminate()
 ////////////////////////////////////////
 void Listener_::appRun() 
 	{
-	Cpl::System::Thread::wait();
+    m_lock.lock();
+    bool started = m_startCalled;
+    m_lock.unlock();
+    if ( !started )
+        {
+	    Cpl::System::Thread::wait();
+        }
+
 	listen();
 	}
 
 
 void Listener_::setThreadOfExecution_( Cpl::System::Thread* myThreadPtr )
     {
+    Cpl::System::Mutex::ScopeBlock lock(m_lock);
     m_myThreadPtr = myThreadPtr;
     }
 
