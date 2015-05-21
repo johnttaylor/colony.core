@@ -62,6 +62,7 @@ namespace {
         void notify( InitLevel_T init_level )
             {
             // Create a thread object for the native thread
+            m_running = true;
             new Thread( *this );
             }
 
@@ -151,6 +152,11 @@ bool Thread::isRunning() throw()
     return m_runnable.isRunning();
     }
     
+Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle(void) throw()
+    {
+    return m_thread.native_handle();
+    }
+
 
 //////////////////////////////
 void Thread::entryPoint(Thread* myThreadPtr)

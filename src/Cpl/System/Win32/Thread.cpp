@@ -55,6 +55,7 @@ namespace {
         void notify( InitLevel_T init_level )
             {
             // Create a thread object for the native thread
+            m_running = true;
             new Thread( *this );
             }
 
@@ -93,6 +94,9 @@ Thread::Thread( Cpl::System::Runnable& dummyRunnable )
 
     // Mark the NATIVE/Main thread as 'real time' thread for the SimTick engine
     CPL_SYSTEM_SIM_TICK_THREAD_INIT_(false);
+
+    // Get a 'Real Handle' to this thread
+    DuplicateHandle(GetCurrentProcess(), GetCurrentThread(), GetCurrentProcess(), &m_threadHandle, 0, FALSE, DUPLICATE_SAME_ACCESS);
     }
 
 
@@ -163,6 +167,11 @@ bool Thread::isRunning() throw()
     return m_runnable.isRunning();
     }
     
+Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle(void) throw()
+    {
+    return m_threadHandle;
+    }
+
 
 //////////////////////////////
 //DWORD WINAPI Thread::entryPoint(void* data)

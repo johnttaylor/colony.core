@@ -19,6 +19,8 @@
 #include <stdlib.h>
 
 
+/// Defer the definition of the native thread handle to the application's 'platform'
+#define Cpl_System_Thread_NativeHdl_T               Cpl_System_Thread_NativeHdl_T_MAP
 
 
 /// The highest possible thread priority
@@ -72,6 +74,11 @@ public:
         deleted using the destroy() method below.
      */
     virtual bool isRunning(void) throw() = 0;
+
+    /** Returns the native thread handle.  Note: This handle can NOT be used
+        a handle/reference/pointer to a Thread object instnace.
+     */
+    virtual Cpl_System_Thread_NativeHdl_T getNativeHandle(void) throw() = 0;
 
 
 public:

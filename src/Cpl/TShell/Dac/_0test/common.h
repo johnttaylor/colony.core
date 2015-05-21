@@ -26,6 +26,7 @@
 #include "Cpl/TShell/Dac/Cmd/Help.h"
 #include "Cpl/TShell/Dac/Cmd/Bye.h"
 #include "Cpl/TShell/Dac/Cmd/Trace.h"
+#include "Cpl/TShell/Dac/Cmd/Threads.h"
 #include "Cpl/TShell/Dac/Cmd/Set.h"
 #include "Cpl/TShell/Dac/Cmd/Print.h"
 #include "Cpl/TShell/Dac/Cmd/TPrint.h"
@@ -229,6 +230,7 @@ static Cpl::TShell::Dac::Processor                      cmdProcessor_( cmdlist_,
 static Cpl::TShell::Dac::Cmd::Help                      helpCmd_( cmdlist_ );
 static Cpl::TShell::Dac::Cmd::Bye                       byeCmd_( cmdlist_ );
 static Cpl::TShell::Dac::Cmd::Trace                     traceCmd_( cmdlist_ );
+static Cpl::TShell::Dac::Cmd::Threads                   threadsCmd_( cmdlist_ );
 static Cpl::TShell::Dac::Cmd::Set                       setCmd_( cmdlist_ );
 static Cpl::TShell::Dac::Cmd::Print                     printCmd_( cmdlist_ );
 static Cpl::TShell::Dac::Cmd::TPrint                    tprintCmd_( cmdlist_ );

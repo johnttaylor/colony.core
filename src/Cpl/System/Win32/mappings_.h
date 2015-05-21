@@ -23,6 +23,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+///
+#define Cpl_System_Thread_NativeHdl_T_MAP       HANDLE  
 
 ///
 #define Cpl_System_Mutex_T_MAP                  CRITICAL_SECTION

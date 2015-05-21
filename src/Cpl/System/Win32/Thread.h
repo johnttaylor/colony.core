@@ -76,6 +76,10 @@ public:
     /// See Cpl::System::Thread
     bool isRunning(void) throw();
 
+    /// See Cpl::System::Thread
+    Cpl_System_Thread_NativeHdl_T getNativeHandle(void) throw();
+
+
 
 public: 
     /// See Cpl::System::Signable

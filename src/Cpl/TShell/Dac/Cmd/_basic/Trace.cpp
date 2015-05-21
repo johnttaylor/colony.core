@@ -98,6 +98,20 @@ Cpl::TShell::Dac::Command::Result_T Trace::execute( Cpl::TShell::Dac::Context_& 
         }
 
 
+    // Relocate Trace output
+    if ( numParms == 2 && strcmp(tokens.getParameter(1), "here") == 0 )
+        {
+        CPL_SYSTEM_TRACE_REDIRECT( outfd );
+        return Command::eSUCCESS;
+        }
+    if ( numParms == 2 && strcmp(tokens.getParameter(1), "revert") == 0 )
+        {
+        CPL_SYSTEM_TRACE_REVERT();
+        return Command::eSUCCESS;
+        }
+     
+
+
     // Change info level
     if ( numParms == 3 && strcmp(tokens.getParameter(1), "level") == 0 )
         {

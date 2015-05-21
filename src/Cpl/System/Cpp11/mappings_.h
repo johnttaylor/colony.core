@@ -24,8 +24,12 @@
 #include <condition_variable>
 #include <time.h>
 #include <stdlib.h>
+#include <thread>
 
 
+
+///
+#define Cpl_System_Thread_NativeHdl_T_MAP       std::thread*  
 ///
 #define Cpl_System_Mutex_T_MAP                  std::recursive_mutex
 ///
