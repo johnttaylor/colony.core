@@ -4,6 +4,7 @@ src/Cpl/TShell/Dac
 src/Cpl/TShell/Dac/Cmd
 src/Cpl/TShell/Dac/Cmd/_basic
 src/Cpl/TShell/Dac/Cmd/_scripting
+src/Cpl/TShell/Dac/Cmd/Win32
 
 # tests
 src/Cpl/TShell/Dac/_0test

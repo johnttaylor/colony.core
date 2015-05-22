@@ -29,7 +29,7 @@
 
 
 ///
-#define Cpl_System_Thread_NativeHdl_T_MAP       std::thread*  
+#define Cpl_System_Thread_NativeHdl_T_MAP       std::thread::native_handle_type
 ///
 #define Cpl_System_Mutex_T_MAP                  std::recursive_mutex
 ///

@@ -1,10 +1,15 @@
 #include "Cpl/Io/Socket/Win32/Listener.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Trace.h"
+#include "Cpl/TShell/Dac/Cmd/Threads.h"
 
 
 // External references
 extern void shell_test2( Cpl::Io::Socket::Listener& listener );
+                                                
+
+Cpl::Container::Map<Cpl::TShell::Dac::Command>  cmdlist;
+Cpl::TShell::Dac::Cmd::Threads                  threadsCmd_( cmdlist );
 
 
 int main( int argc, char* const argv[] )

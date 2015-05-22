@@ -44,10 +44,10 @@ Cpl::TShell::Dac::Command::Result_T Threads::execute( Cpl::TShell::Dac::Context_
 
     // Display list header
     m_io &= context.writeFrame( " " );
-    outtext.format( "%-16s  %-1s  %-8s  %-8s", "Name", "R", "ID", "Native Hdl" );
+    outtext.format( "%-16s  %-1s  %-10s  %-10s", "Name", "R", "ID", "Native Hdl" );
     hookHeader1( outtext );
     m_io &= context.writeFrame( outtext );
-    outtext.format( "%-16s  %-1s  %-8s  %-8s", "----", "-", "--", "----------" );
+    outtext.format( "%-16s  %-1s  %-10s  %-10s", "----", "-", "--", "----------" );
     hookHeader2( outtext );
     m_io &= context.writeFrame( outtext );
 
@@ -55,7 +55,7 @@ Cpl::TShell::Dac::Command::Result_T Threads::execute( Cpl::TShell::Dac::Context_
     Cpl::System::Thread::traverse( *this );
 
     // Finished-up and exit
-    outtext.format( "THREADS: Total number of threads: %u", m_count );
+    outtext.format( "Total number of threads: %u", m_count );
     m_io &= context.writeFrame( " ");
     m_io &= context.writeFrame( outtext );
     return m_io? Command::eSUCCESS: Command::eERROR_IO;
@@ -67,7 +67,7 @@ Cpl::Type::Traverser::Status_T Threads::item( Cpl::System::Thread& t )
     Cpl::Text::String& outtext = m_contextPtr->getOutputBuffer();
 
     m_count++;
-    outtext.format( "%-16s  %-1s  %-8p  %-8p", t.getName(), t.isRunning()? "Y" : "n", (void*)(t.getId()), (void*)(t.getNativeHandle()) );
+    outtext.format( "%-16s  %-1s  %-10p  %-10p", t.getName(), t.isRunning()? "Y" : "n", (void*)(t.getId()), (void*)(t.getNativeHandle()) );
     hookThreadEntry( outtext, t );
     m_io &= m_contextPtr->writeFrame( outtext );
     return Cpl::Type::Traverser::eCONTINUE;
@@ -89,5 +89,7 @@ void Threads::hookThreadEntry( Cpl::Text::String& text, Cpl::System::Thread& cur
     {
     // Default is: No additional columns
     }
+
+
 
 

@@ -26,7 +26,6 @@
 #include "Cpl/TShell/Dac/Cmd/Help.h"
 #include "Cpl/TShell/Dac/Cmd/Bye.h"
 #include "Cpl/TShell/Dac/Cmd/Trace.h"
-#include "Cpl/TShell/Dac/Cmd/Threads.h"
 #include "Cpl/TShell/Dac/Cmd/Set.h"
 #include "Cpl/TShell/Dac/Cmd/Print.h"
 #include "Cpl/TShell/Dac/Cmd/TPrint.h"
@@ -208,12 +207,14 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////
+
+extern Cpl::Container::Map<Cpl::TShell::Dac::Command>   cmdlist;
+
 static Cpl::TShell::Dac::ActiveVariables<MAXVARS_>      variables_("invoke_special_static_constructor");
-static Cpl::Container::Map<Cpl::TShell::Dac::Command>   cmdlist_;
 static Cpl::Text::Frame::LineDecoder<FRAME_SIZE_>       deframer_(' ');
 static Cpl::Text::Frame::StreamEncoder                  framer_( 0, SOF_, EOF_, ESC_, APPEND_NEWLINE_ );
 static Cpl::TShell::Dac::Processor::CommandBuffer_T     cmdBuffer_[MAX_CMD_BUFFER_];
-static Cpl::TShell::Dac::Processor                      cmdProcessor_( cmdlist_, 
+static Cpl::TShell::Dac::Processor                      cmdProcessor_( cmdlist, 
                                                                        variables_, 
                                                                        deframer_, 
                                                                        framer_, 
@@ -227,21 +228,20 @@ static Cpl::TShell::Dac::Processor                      cmdProcessor_( cmdlist_,
                                                                        ARG_TERM_
                                                                      );
 
-static Cpl::TShell::Dac::Cmd::Help                      helpCmd_( cmdlist_ );
-static Cpl::TShell::Dac::Cmd::Bye                       byeCmd_( cmdlist_ );
-static Cpl::TShell::Dac::Cmd::Trace                     traceCmd_( cmdlist_ );
-static Cpl::TShell::Dac::Cmd::Threads                   threadsCmd_( cmdlist_ );
-static Cpl::TShell::Dac::Cmd::Set                       setCmd_( cmdlist_ );
-static Cpl::TShell::Dac::Cmd::Print                     printCmd_( cmdlist_ );
-static Cpl::TShell::Dac::Cmd::TPrint                    tprintCmd_( cmdlist_ );
-static Cpl::TShell::Dac::Cmd::Try                       tryCmd( cmdlist_ );
-static Cpl::TShell::Dac::Cmd::Inc                       incCmd( cmdlist_ );
-static Cpl::TShell::Dac::Cmd::Loop                      loopCmd( cmdlist_ );
-static Cpl::TShell::Dac::Cmd::Exe                       ExeCmd( cmdlist_ );
-static Cpl::TShell::Dac::Cmd::Tokenize                  TokenizeCmd( cmdlist_ );
+static Cpl::TShell::Dac::Cmd::Help                      helpCmd_( cmdlist );
+static Cpl::TShell::Dac::Cmd::Bye                       byeCmd_( cmdlist );
+static Cpl::TShell::Dac::Cmd::Trace                     traceCmd_( cmdlist );
+static Cpl::TShell::Dac::Cmd::Set                       setCmd_( cmdlist );
+static Cpl::TShell::Dac::Cmd::Print                     printCmd_( cmdlist );
+static Cpl::TShell::Dac::Cmd::TPrint                    tprintCmd_( cmdlist );
+static Cpl::TShell::Dac::Cmd::Try                       tryCmd( cmdlist );
+static Cpl::TShell::Dac::Cmd::Inc                       incCmd( cmdlist );
+static Cpl::TShell::Dac::Cmd::Loop                      loopCmd( cmdlist );
+static Cpl::TShell::Dac::Cmd::Exe                       ExeCmd( cmdlist );
+static Cpl::TShell::Dac::Cmd::Tokenize                  TokenizeCmd( cmdlist );
 
 
 static Apple   mockApp;
-static Bob     bobCmd( cmdlist_, mockApp );
+static Bob     bobCmd( cmdlist, mockApp );
 
 

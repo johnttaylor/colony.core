@@ -44,6 +44,7 @@ protected:
     /// C++11 thread object
     std::thread             m_thread;
 
+
 public: 
     /** Constructor.  
         NOTE: Does NOT support the following:
