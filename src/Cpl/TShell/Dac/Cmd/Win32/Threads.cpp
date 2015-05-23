@@ -28,13 +28,13 @@ Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) 
 /////////////////////////////////////////////////////////
 void Threads::hookHeader1( Cpl::Text::String& text )    
     {
-    text.formatAppend( "  %-3s  %20s", "Pri", "CPU Cycles" );
+    text.formatAppend( "  %-3s  %-12s  %-12s", "Pri", "User Time", "Kernel Time" );
     }
 
 void Threads::hookHeader2( Cpl::Text::String& text )
     {
-    text.formatAppend( "  %-3s  %20s", "---", "----------" );
-    }
+    text.formatAppend( "  %-3s  %-12s  %-12s", "---", "---------", "-----------" );
+    }                                     
 
 void Threads::hookThreadEntry( Cpl::Text::String& text, Cpl::System::Thread& currentThread )
     {
@@ -47,13 +47,26 @@ void Threads::hookThreadEntry( Cpl::Text::String& text, Cpl::System::Thread& cur
         return;
         }
 
-    // Get CPU Cycles (and skip Win32 specific.....)
-    ULONG64 cycles;
-    if ( !QueryThreadCycleTime( hdl, &cycles ) )
+    // Get Thread Times. NOTE: The accuracy of the GetThreadTimes() values is VERY Suspect (google 'GetThreadTimes())
+    FILETIME ftCreate, ftExit, ftKernel, ftUser;
+    if ( !GetThreadTimes( hdl, &ftCreate, &ftExit, &ftKernel, &ftUser ) )
         {
         return;
         }
 
-    text.formatAppend( "  %3d  %20llu", GetThreadPriority(hdl), cycles );
+    // Output info
+    SYSTEMTIME kt,ut;
+    FileTimeToSystemTime(&ftKernel, &kt);
+    FileTimeToSystemTime(&ftUser,   &ut);
+    text.formatAppend( "  %3d  %02d:%02d:%02d.%03d  %02d:%02d:%02d.%03d", GetThreadPriority(hdl), 
+                                                                              ut.wHour, 
+                                                                              ut.wMinute, 
+                                                                              ut.wSecond, 
+                                                                              ut.wMilliseconds, 
+                                                                              kt.wHour, 
+                                                                              kt.wMinute, 
+                                                                              kt.wSecond, 
+                                                                              kt.wMilliseconds 
+                     );
     }
 

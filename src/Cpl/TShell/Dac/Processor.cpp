@@ -337,6 +337,12 @@ bool Processor::beginCommandCapture( unsigned level, const char* firstCmd ) thro
         // Capture the actual command that initiated the capturing (when selected, i.e. firstCmd NOT a null pointer)
         if ( firstCmd )
             {
+            // Check for exceeding the command buffer, aka the processor is NOT configured to support loops                               
+            if ( m_cmdBufSize == 0 )
+                {
+                return false;
+                }
+
             strcpy( m_cmdBuffer[m_currentIdx++], firstCmd );
             }
         }

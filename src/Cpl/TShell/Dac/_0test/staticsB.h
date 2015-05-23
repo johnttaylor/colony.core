@@ -9,40 +9,22 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "colony_config.h"
-
-// Cheat here: in the name of less files
-#ifdef BUILD_TEST_A_
-#include "staticsA.h"
-#endif
-#ifdef BUILD_TEST_B_
-#include "staticsB.h"
-#endif
-
-#include "Cpl/TShell/Socket.h"
-
-#ifndef PORT_
-#define PORT_   5002
-#endif
-
-/// 
-extern void shell_test2( Cpl::Io::Socket::Listener& listener );
+#include "helpers.h"
+#include "Cpl/TShell/Dac/Maker.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
 
+extern Cpl::Container::Map<Cpl::TShell::Dac::Command>   cmdlist;
 
-void shell_test2( Cpl::Io::Socket::Listener& listener )
-    {
-    // Start the shell
-    Cpl::TShell::Socket* shellPtr = new Cpl::TShell::Socket( cmdProcessor_, listener );
-    shellPtr->launch( PORT_ );
-       
-    // Create thread for my mock-application to run in
-    Cpl::System::Thread::create( mockApp, "APP-BOB" );
+static Cpl::TShell::Dac::Maker cmdProcessor_( cmdlist );
 
-    // Start the schedular
-    Cpl::System::Api::enableScheduling();
-    }
+static Cpl::TShell::Dac::Cmd::Help    helpCmd_( cmdlist );
+static Cpl::TShell::Dac::Cmd::Bye     byeCmd_( cmdlist );
+static Cpl::TShell::Dac::Cmd::Trace   traceCmd_( cmdlist );
+
+
+static Apple   mockApp;
+static Bob     bobCmd( cmdlist, mockApp );
 
 

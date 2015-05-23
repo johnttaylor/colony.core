@@ -21,22 +21,17 @@ NullVariables::NullVariables()
     {
     }
 
-NullVariables::NullVariables( const char* ignoreThisParameter_usedToCreateAUniqueConstructor )
-:m_inUse(ignoreThisParameter_usedToCreateAUniqueConstructor)
-    {
-    }
-
 
 //////////////////////////////////////////
-VariableApi* NullVariables::get( Cpl::Container::Key& variableName ) throw()
+VariableApi* NullVariables::get( const Cpl::Container::Key& variableName ) throw()
     {
-    return m_inUse.find( variableName );
+    return 0;
     }
 
 
-VariableApi* NullVariables::find( Cpl::Container::Key& variableName ) throw()
+VariableApi* NullVariables::find( const Cpl::Container::Key& variableName ) throw()
     {
-    return m_inUse.find( variableName );
+    return 0;
     }
 
 
@@ -57,13 +52,18 @@ unsigned NullVariables::getMaxUserCount() const throw()
     }
 
 
+void NullVariables::addSystem( VariableApi& systemVariable )  throw()
+    {
+    }
+
+
 VariableApi* NullVariables::first() const throw()
     {
-    return m_inUse.first();
+    return 0;
     }
 
 
 VariableApi* NullVariables::next( VariableApi& current ) const throw()
     {
-    return m_inUse.next( current );
+    return 0;
     }

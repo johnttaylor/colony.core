@@ -27,7 +27,7 @@
                                     "  active variable list. If no arguments are provided, then a list of all active\n" \
                                     "  variables (and their current value) is generated. <etext> is literal text with\n" \
                                     "  an optional escape sequences that embeds a varaible's value into the string.\n" \
-                                    "  The escape sequnce is: " OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ "<varname>" OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ ".  <etext> is THE mechanism for\n" \
+                                    "  The escape sequnce is: " OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ "<varname>" OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_ ".  <etext> is THE mechanism for referencing\n" \
                                     "  a variable's value."
 #endif
 

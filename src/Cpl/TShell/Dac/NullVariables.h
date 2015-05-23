@@ -13,7 +13,6 @@
 /** @file */
 
 #include "Cpl/TShell/Dac/ActiveVariablesApi.h"
-#include "Cpl/Container/Map.h"
 
 ///
 namespace Cpl { namespace TShell { namespace Dac {
@@ -24,25 +23,17 @@ namespace Cpl { namespace TShell { namespace Dac {
  */
 class NullVariables: public ActiveVariablesApi
 {
-protected:
-    /// Sorted list of system variables
-    Cpl::Container::Map<VariableApi>      m_inUse;
-
 public:
     /// Constructor
     NullVariables();
 
-    /// Special Construct to be used when creating an instance statically!
-    NullVariables( const char* ignoreThisParameter_usedToCreateAUniqueConstructor );
-
-
 
 public:
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    VariableApi* get( Cpl::Container::Key& variableName ) throw();
+    VariableApi* get( const Cpl::Container::Key& variableName ) throw();
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    VariableApi* find( Cpl::Container::Key& variableName ) throw();
+    VariableApi* find( const Cpl::Container::Key& variableName ) throw();
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
     void remove( VariableApi& varNoLongerInUse ) throw();

@@ -9,40 +9,19 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "colony_config.h"
+#include "Maker.h"
 
-// Cheat here: in the name of less files
-#ifdef BUILD_TEST_A_
-#include "staticsA.h"
-#endif
-#ifdef BUILD_TEST_B_
-#include "staticsB.h"
-#endif
-
-#include "Cpl/TShell/Socket.h"
-
-#ifndef PORT_
-#define PORT_   5002
-#endif
-
-/// 
-extern void shell_test2( Cpl::Io::Socket::Listener& listener );
+///
+using namespace Cpl::TShell::Dac;
 
 
-////////////////////////////////////////////////////////////////////////////////
-
-
-void shell_test2( Cpl::Io::Socket::Listener& listener )
+////////////////////////////////
+Maker::Maker( Cpl::Container::Map<Cpl::TShell::Dac::Command>& cmdlist, Cpl::System::Mutex& lock )
+:m_variables()
+,m_framer( 0, '\0', '\n', '\0', false )
+,m_deframer( ' ' )
+,m_processor( cmdlist, m_variables, m_deframer, m_framer, lock, 0, 0 ) 
     {
-    // Start the shell
-    Cpl::TShell::Socket* shellPtr = new Cpl::TShell::Socket( cmdProcessor_, listener );
-    shellPtr->launch( PORT_ );
-       
-    // Create thread for my mock-application to run in
-    Cpl::System::Thread::create( mockApp, "APP-BOB" );
-
-    // Start the schedular
-    Cpl::System::Api::enableScheduling();
     }
 
 

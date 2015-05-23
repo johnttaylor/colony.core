@@ -19,24 +19,21 @@
 #include "staticsB.h"
 #endif
 
-#include "Cpl/TShell/Socket.h"
 
-#ifndef PORT_
-#define PORT_   5002
-#endif
+#include "Cpl/TShell/Stdio.h"
 
 /// 
-extern void shell_test2( Cpl::Io::Socket::Listener& listener );
+extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 
 
 ////////////////////////////////////////////////////////////////////////////////
+Cpl::TShell::Stdio shell_( cmdProcessor_ );
 
 
-void shell_test2( Cpl::Io::Socket::Listener& listener )
+void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
     {
     // Start the shell
-    Cpl::TShell::Socket* shellPtr = new Cpl::TShell::Socket( cmdProcessor_, listener );
-    shellPtr->launch( PORT_ );
+    shell_.launch( infd, outfd );
        
     // Create thread for my mock-application to run in
     Cpl::System::Thread::create( mockApp, "APP-BOB" );
