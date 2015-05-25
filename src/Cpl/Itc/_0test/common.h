@@ -274,7 +274,7 @@ class Viewer: public Cpl::Itc::CloseSync,
 {
 public:
     ///
-    bool                                m_opened;
+    volatile bool                       m_opened;
     ///
     Cpl::Itc::CloseRequest::CloseMsg*   m_pendingCloseMsgPtr;
     ///
@@ -288,9 +288,9 @@ public:
     ///
     ViewRequest::SAP&                   m_viewReqSAP;
     ///
-    bool                                m_ownAttachMsg;
+    volatile bool                       m_ownAttachMsg;
     ///
-    bool                                m_ownDetachMsg;
+    volatile bool                       m_ownDetachMsg;
 
 
     /// Constructor
