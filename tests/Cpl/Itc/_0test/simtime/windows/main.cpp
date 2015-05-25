@@ -18,7 +18,9 @@ int main( int argc, char* const argv[] )
 
     CPL_SYSTEM_TRACE_ENABLE();
     CPL_SYSTEM_TRACE_ENABLE_SECTION("_0test");
-    CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eVERBOSE );
+    CPL_SYSTEM_TRACE_ENABLE_SECTION("Cpl::Itc");
+    CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eBRIEF );
+    CPL_SYSTEM_TRACE_SET_THREAD_FILTER( "MASTER" );
 
     // THIS CODE DOES NOTHING.  It is needed to force the inclusion of
     // the test code due to the combination of how CATCH auto registers

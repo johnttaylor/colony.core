@@ -126,7 +126,7 @@ class MyMailboxServer: public Cpl::Itc::MailboxServer
 {
 public:
     ///
-    int m_sigCount;
+    volatile int m_sigCount;
 
     /// Constructor
     MyMailboxServer():m_sigCount(0){}
@@ -147,7 +147,7 @@ class Model: public WriteSync,
 {
 public:
     ///
-    int m_value;
+    volatile int m_value;
     ///
     Cpl::Container::DList<ViewRequest::AttachMsg> m_subscribers;
 

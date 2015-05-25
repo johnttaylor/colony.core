@@ -21,7 +21,8 @@ int main( int argc, char* const argv[] )
     CPL_SYSTEM_TRACE_ENABLE_SECTION("Cpl::Timer" );
     CPL_SYSTEM_TRACE_ENABLE_SECTION("Cpl::Itc" );
     //CPL_SYSTEM_TRACE_SET_THREAD_4FILTERS( "FLOWERS", "MASTER", "Win32Main", "Cpp11Main" );
-    CPL_SYSTEM_TRACE_SET_THREAD_3FILTERS( "MASTER", "Win32Main", "Cpp11Main" );
+    //CPL_SYSTEM_TRACE_SET_THREAD_3FILTERS( "MASTER", "Win32Main", "Cpp11Main" );
+    CPL_SYSTEM_TRACE_SET_THREAD_2FILTERS( "Win32Main", "Cpp11Main" );
     CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eVERBOSE );
 
     // THIS CODE DOES NOTHING.  It is needed to force the inclusion of
