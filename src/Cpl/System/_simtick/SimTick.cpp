@@ -205,7 +205,7 @@ bool SimTick::testAndQueue( SimTick* simInfoPtr ) throw()
 
     // Increment my threads internal tick count and setup for intra-tick-iterations
     simInfoPtr->m_iterCount = 1;
-    simInfoPtr->m_curTicks  = milliseconds_;
+    simInfoPtr->m_curTicks++; //  = milliseconds_;
     return queued;
     }
     
@@ -316,7 +316,7 @@ void Api::sleep(unsigned long milliseconds) throw()
     // Get my thread's SimInfo
     SimTick* simInfoPtr = (SimTick*) simTlsPtr_->get();
 
-    // ALWAYS use the 'real' sleep call when I am a non-simulated-tick thread (OR if my 
+    // ALWAYS use the 'real' sleep call when I am a non-simulated-tick thread 
     if ( !simInfoPtr )
         {
         sleepInRealTime( milliseconds );

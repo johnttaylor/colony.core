@@ -77,18 +77,23 @@ public:
             }
 
         // Test#2 Timed semaphores
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Test#2 (Timed semaphores - wait to start)" ));
         Thread::wait();
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Test#2 (Timed semaphores - starting)" ));
         m_sema.signal();
         m_sema.signal();
         m_sema.signal();
         Thread::wait();
 
         // Test#3 Timed Thread waits
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Test#3 (Timed Thread waits - Part1 )" ));
         m_cherryThreadPtr->signal();
         Thread::wait();
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Test#3 (Timed Thread waits - Part2)" ));
         m_cherryThreadPtr->signal();
         m_cherryThreadPtr->signal();
         Thread::wait();
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Test#3 (Timed Thread waits - DONE)" ));
         }
 
 
@@ -261,6 +266,39 @@ public:
         }
 };
 
+class MyRunnable3: public Runnable
+{
+public:
+    volatile bool m_run;
+
+public:
+    ///
+    MyRunnable3()
+        :m_run(true)
+            {
+            }
+
+public:
+    ///
+    void appRun()
+        {
+        CPL_SYSTEM_TRACE_SCOPE( SECT_, Thread::getCurrent().getName() );
+
+        while( m_run )
+            {
+            Cpl::System::Api::sleep(1);
+            }  
+        }
+
+
+    /// Override default implemenation
+    void pleaseStop( void )
+        {
+        m_run = false;
+        }
+
+};
+
 class Lister: public Thread::Traverser
 {
 public:
@@ -327,6 +365,10 @@ TEST_CASE( "basic", "[basic]" )
     MyRunnable2 cherryRun( *masterThreadPtr, sema );
     Thread* cherryThreadPtr   = Thread::create( cherryRun, "Cherry", CPL_SYSTEM_THREAD_PRIORITY_NORMAL );
 
+    MyRunnable3 timerRun;
+    Thread* timerThreadPtr    = Thread::create( timerRun, "Timer", CPL_SYSTEM_THREAD_PRIORITY_NORMAL );
+
+
     // Update my master thread with additional info
     masterRun.m_appleThreadPtr  = appleThreadPtr;
     masterRun.m_cherryThreadPtr = cherryThreadPtr;
@@ -345,6 +387,7 @@ TEST_CASE( "basic", "[basic]" )
         {
         if ( !SimTick::advance(1) )
             {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("EXITED tick loop early (waiting on apple, orange, & pear)" ));
             break;
             }
         }
@@ -362,6 +405,19 @@ TEST_CASE( "basic", "[basic]" )
         {
         if ( !SimTick::advance(1) )
             {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("EXITED tick loop early (waiting on cherry & master)" ));
+            break;
+            }
+        }
+
+    // Shutdown timer thread
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Shutting down timer thread..." ));
+    timerThreadPtr->pleaseStop();
+    while( timerThreadPtr->isRunning() )
+        {
+        if ( !SimTick::advance(1) )
+            {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("EXITED tick loop early (waiting on timer)" ));
             break;
             }
         }
@@ -370,6 +426,7 @@ TEST_CASE( "basic", "[basic]" )
     CPL_SYSTEM_TRACE_MSG( SECT_, ("ALL simulated ticks completed.  [SimTime=%lu]", (unsigned long) SimTick::current() ));
     Thread::destroy( *cherryThreadPtr );
     Thread::destroy( *masterThreadPtr );
+    Thread::destroy( *timerThreadPtr );
 
     REQUIRE( appleRun.m_loops  == 3 );
     REQUIRE( orangeRun.m_loops == 3 );
