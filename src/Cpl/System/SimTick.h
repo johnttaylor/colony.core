@@ -134,6 +134,13 @@ namespace Cpl { namespace System {
         o All of the Colony.Core's ITC message queues/mailbox servers, etc. also 
           have support for simulated ticks build in.
 
+        o With respect to threads that are using simulated time, There needs to 
+          be at least one thread (at any given time) that is a 'timing' source,
+          e.g. waiting on sleep(), timedWait(), etc.  If your application uses
+          a Cpl::Itc::MailboxServer instance - then this requirement has been 
+          met. Worse case you a create a thread that forever loops on sleep().
+          
+          providing a 
         o This interface is independent of the underlaying platform, i.e works
           on ALL platforms.
 
