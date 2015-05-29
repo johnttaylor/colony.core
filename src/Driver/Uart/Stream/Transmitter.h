@@ -1,5 +1,5 @@
-#ifndef Cpl_Driver_Uart_Stream_Transmitter_h_
-#define Cpl_Driver_Uart_Stream_Transmitter_h_
+#ifndef Driver_Uart_Stream_Transmitter_h_
+#define Driver_Uart_Stream_Transmitter_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -12,14 +12,14 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/Driver/Uart/Hal.h"
+#include "Driver/Uart/Hal.h"
 #include "Cpl/Container/RingBuffer.h"
 #include "Cpl/System/Thread.h"
 
 
 
 /// 
-namespace Cpl { namespace Driver { namespace Uart { namespace Stream {
+namespace Driver { namespace Uart { namespace Stream {
 
 
 /** This concrete class implements a blocking Transmit Stream UART driver. What
@@ -49,7 +49,7 @@ class Transmitter
 {
 protected:
     /// Handle to my low level hardware
-    Cpl_Driver_Uart_Hal_T   m_uartHdl;
+    Driver_Uart_Hal_T       m_uartHdl;
 
     /// Handle of the blocked client thread (if there is one)
     Cpl::System::Thread*    m_waiterPtr;
@@ -79,7 +79,7 @@ public:
                                 is interrupt driven.  When set to true, the
                                 initial transmitted byte is 'manually' loaded.
      */
-    Transmitter( Cpl_Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[], bool manualFirstTx=false ) throw();
+    Transmitter( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[], bool manualFirstTx=false ) throw();
 
 
 
@@ -137,7 +137,6 @@ private:
 	
 
 };      // end namespaces
-};
 };
 };
 #endif  // end header latch

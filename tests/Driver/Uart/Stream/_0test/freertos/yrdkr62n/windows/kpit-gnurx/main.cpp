@@ -1,16 +1,16 @@
 #include "Bsp/Api.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Trace.h"
-#include "Cpl/Driver/Uart/Stream/Transmitter.h"
-#include "Cpl/Driver/Uart/Stream/Receiver.h"
+#include "Driver/Uart/Stream/Transmitter.h"
+#include "Driver/Uart/Stream/Receiver.h"
 #include "Cpl/Io/Null.h"
 #include <stdlib.h>
 
 
-extern void loopback_test( Cpl_Driver_Uart_Hal_T uartHdl, bool manualFirstTx );
+extern void loopback_test( Driver_Uart_Hal_T uartHdl, bool manualFirstTx );
 
-extern Cpl::Driver::Uart::Stream::Transmitter* txPtr;
-extern Cpl::Driver::Uart::Stream::Receiver*    rxPtr;
+extern Driver::Uart::Stream::Transmitter* txPtr;
+extern Driver::Uart::Stream::Receiver*    rxPtr;
 
 static Cpl::Io::Null fd_;
                

@@ -1,5 +1,5 @@
-#ifndef Cpl_Driver_Uart_Stream_InputOutput_h_
-#define Cpl_Driver_Uart_Stream_InputOutput_h_
+#ifndef Driver_Uart_Stream_InputOutput_h_
+#define Driver_Uart_Stream_InputOutput_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -13,11 +13,11 @@
 /** @file */ 
 
 #include "Cpl/Io/InputOutput.h"
-#include "Cpl/Driver/Uart/Stream/Transmitter.h"
-#include "Cpl/Driver/Uart/Stream/Receiver.h"
+#include "Driver/Uart/Stream/Transmitter.h"
+#include "Driver/Uart/Stream/Receiver.h"
 
 ///
-namespace Cpl { namespace Driver { namespace Uart { namespace Stream {
+namespace Driver { namespace Uart { namespace Stream {
 
 
 /** This private concrete class implements the InputOutput stream interface
@@ -48,12 +48,12 @@ protected:
     /** Constructor. The child class is responsible for providing the HAL 
         UART Handle of an INITIALIZED UART.
      */
-    InputOutput_( Cpl_Driver_Uart_Hal_T uartHdl,         //!< HAL handle for the initialized UART
-                  bool                  manualFirstTx,   //!< Tx-first-behavior of the UART
-                  uint8_t               memTxBuffer[],   //!< Memory for the transmit buffer
-                  size_t                txBufSize,       //!< Size, in bytes, of the transmit buffer   
-                  uint8_t               memRxBuffer[],   //!< Memory for the receive buffer
-                  size_t                rxBufSize        //!< Size, in bytes, of the receive buffer   
+    InputOutput_( Driver_Uart_Hal_T uartHdl,         //!< HAL handle for the initialized UART
+                  bool              manualFirstTx,   //!< Tx-first-behavior of the UART
+                  uint8_t           memTxBuffer[],   //!< Memory for the transmit buffer
+                  size_t            txBufSize,       //!< Size, in bytes, of the transmit buffer   
+                  uint8_t           memRxBuffer[],   //!< Memory for the receive buffer
+                  size_t            rxBufSize        //!< Size, in bytes, of the receive buffer   
                 );
 
     /// Destructor
@@ -92,7 +92,6 @@ public:
 };
 
 };      // end namespaces
-};
 };
 };
 #endif  // end header latch

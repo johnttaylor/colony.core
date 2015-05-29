@@ -1,8 +1,8 @@
 # Test App
-src/Cpl/Driver/Uart/Stream/_0test
+src/Driver/Uart/Stream/_0test
 
 # Unit under test
-src/Cpl/Driver/Uart/Stream
+src/Driver/Uart/Stream
 
 # Common libdirs.b
 

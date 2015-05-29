@@ -1,5 +1,5 @@
 /** @file */
-/** @namespace Cpl::Driver::Uart::Stream
+/** @namespace Driver::Uart::Stream
 @htmlonly
 <pre>    
 

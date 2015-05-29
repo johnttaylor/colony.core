@@ -23,52 +23,52 @@
 *----------------------------------------------------------------------------*/ 
 
 //////////////////////////////////////////////////////////////////////////////
-// Cpl::Driver::Uart
+// Driver::Uart
 
 ///
-#define Cpl_Driver_Uart_Hal_T_MAP                   uint8_t
-
-
-///
-#define Cpl_Driver_Uart_Hal_transmitByte_MAP(h,b)
-///
-#define Cpl_Driver_Uart_Hal_clrTxIrq_MAP(h) 
-///
-#define Cpl_Driver_Uart_Hal_enableTx_MAP(h)
-///
-#define Cpl_Driver_Uart_Hal_disableTx_MAP(h)
-///
-#define Cpl_Driver_Uart_Hal_enableTxIrq_MAP(h)
-///
-#define Cpl_Driver_Uart_Hal_disableTxIrq_MAP(h)
-///
-#define Cpl_Driver_Uart_Hal_isTxIrqEnabled_MAP(h)   (0)
-///
-#define Cpl_Driver_Uart_Hal_isTxIrq_MAP(h)          (0)
-///
-#define Cpl_Driver_Uart_Hal_isTxPipeEmpty_MAP(h)    (0)
-///
-#define Cpl_Driver_Uart_Hal_resetTxPipe_MAP(h)
+#define Driver_Uart_Hal_T_MAP                   uint8_t
 
 
 ///
-#define Cpl_Driver_Uart_Hal_getRxByte_MAP(h)        (0)
+#define Driver_Uart_Hal_transmitByte_MAP(h,b)
 ///
-#define Cpl_Driver_Uart_Hal_clrRxIrq_MAP(h)     
+#define Driver_Uart_Hal_clrTxIrq_MAP(h) 
 ///
-#define Cpl_Driver_Uart_Hal_isRxError_MAP(h)        (0)
+#define Driver_Uart_Hal_enableTx_MAP(h)
 ///
-#define Cpl_Driver_Uart_Hal_clrRxErrors_MAP(h)
+#define Driver_Uart_Hal_disableTx_MAP(h)
 ///
-#define Cpl_Driver_Uart_Hal_enableRx_MAP(h)
+#define Driver_Uart_Hal_enableTxIrq_MAP(h)
 ///
-#define Cpl_Driver_Uart_Hal_disableRx_MAP(h)
+#define Driver_Uart_Hal_disableTxIrq_MAP(h)
 ///
-#define Cpl_Driver_Uart_Hal_enableRxIrq_MAP(h)
+#define Driver_Uart_Hal_isTxIrqEnabled_MAP(h)   (0)
 ///
-#define Cpl_Driver_Uart_Hal_disableRxIrq_MAP(h)
+#define Driver_Uart_Hal_isTxIrq_MAP(h)          (0)
 ///
-#define Cpl_Driver_Uart_Hal_isRxIrq_MAP(h)          (0)
+#define Driver_Uart_Hal_isTxPipeEmpty_MAP(h)    (0)
+///
+#define Driver_Uart_Hal_resetTxPipe_MAP(h)
+
+
+///
+#define Driver_Uart_Hal_getRxByte_MAP(h)        (0)
+///
+#define Driver_Uart_Hal_clrRxIrq_MAP(h)     
+///
+#define Driver_Uart_Hal_isRxError_MAP(h)        (0)
+///
+#define Driver_Uart_Hal_clrRxErrors_MAP(h)
+///
+#define Driver_Uart_Hal_enableRx_MAP(h)
+///
+#define Driver_Uart_Hal_disableRx_MAP(h)
+///
+#define Driver_Uart_Hal_enableRxIrq_MAP(h)
+///
+#define Driver_Uart_Hal_disableRxIrq_MAP(h)
+///
+#define Driver_Uart_Hal_isRxIrq_MAP(h)          (0)
 
 
 // Cpl::Driver::Uart

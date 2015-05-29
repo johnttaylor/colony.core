@@ -1,9 +1,9 @@
 #include "Bsp/Api.h"
 #include "Cpl/System/Api.h"
-#include "Cpl/Driver/Uart/Hal.h"
+#include "Driver/Uart/Hal.h"
 
 
-extern void loopback_test( Cpl_Driver_Uart_Hal_T uartHdl, bool manualFirstTx );
+extern void loopback_test( Driver_Uart_Hal_T uartHdl, bool manualFirstTx );
 
 // UNIT TEST -->Only checks if the code compiles & links using different compilers
 

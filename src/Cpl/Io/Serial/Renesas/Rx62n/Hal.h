@@ -16,7 +16,7 @@
     the UARTs (SCIn) peripherals on the Renesas RX62n microcontroller. 
 */
 
-#include "Cpl/Driver/Uart/Hal.h"
+#include "Driver/Uart/Hal.h"
 
 
 /*-------------- PUBLIC API ------------------------------------------------*/

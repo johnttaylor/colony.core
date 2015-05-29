@@ -1,5 +1,5 @@
 /** @file */
-/** @namespace Cpl::Driver
+/** @namespace Driver
 @htmlonly
 <pre>    
 

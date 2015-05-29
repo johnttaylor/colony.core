@@ -1,5 +1,5 @@
-#ifndef Cpl_Driver_Uart_Hal_h_
-#define Cpl_Driver_Uart_Hal_h_
+#ifndef Driver_Uart_Hal_h_
+#define Driver_Uart_Hal_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -35,7 +35,7 @@
 /** This data type defines the platform specifc 'handle' of a UART.  The
     'handle' is used to unique identify a specific UART instance.
  */
-#define Cpl_Driver_Uart_Hal_T               Cpl_Driver_Uart_Hal_T_MAP
+#define Driver_Uart_Hal_T               Driver_Uart_Hal_T_MAP
 
 
 
@@ -44,84 +44,84 @@
     initiates a transmit sequence.
 
     Prototype:
-        void Cpl_Driver_Uart_Hal_transmitByte( Cpl_Driver_Uart_Hal_T hdl, uint8_t byteToTransmit );
+        void Driver_Uart_Hal_transmitByte( Driver_Uart_Hal_T hdl, uint8_t byteToTransmit );
  */
-#define  Cpl_Driver_Uart_Hal_transmitByte         Cpl_Driver_Uart_Hal_transmitByte_MAP
+#define  Driver_Uart_Hal_transmitByte         Driver_Uart_Hal_transmitByte_MAP
 
 
 /** This method clears the Tx Interrupt request.  This method can be empty/null
     if the loadind the data register clears the IRQ.
 
     Prototype:
-        void Cpl_Driver_Uart_Hal_clrTxIrq( Cpl_Driver_Uart_Hal_T hdl );
+        void Driver_Uart_Hal_clrTxIrq( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_clrTxIrq             Cpl_Driver_Uart_Hal_clrTxIrq_MAP
+#define  Driver_Uart_Hal_clrTxIrq             Driver_Uart_Hal_clrTxIrq_MAP
 
 
 /** This method enables the UART transmitter 
 
     Prototype:
-        void Cpl_Driver_Uart_Hal_enableTx( Cpl_Driver_Uart_Hal_T hdl );
+        void Driver_Uart_Hal_enableTx( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_enableTx             Cpl_Driver_Uart_Hal_enableTx_MAP
+#define  Driver_Uart_Hal_enableTx             Driver_Uart_Hal_enableTx_MAP
 
 
 /** This method disables the UART transmitter 
 
     Prototype:
-        void Cpl_Driver_Uart_Hal_disableTx( Cpl_Driver_Uart_Hal_T hdl );
+        void Driver_Uart_Hal_disableTx( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_disableTx            Cpl_Driver_Uart_Hal_disableTx_MAP
+#define  Driver_Uart_Hal_disableTx            Driver_Uart_Hal_disableTx_MAP
 
 
 /** This method enables the UART Transmit Data register emtpy interrupt 
 
     Prototype:
-        void Cpl_Driver_Uart_Hal_enableTxIrq( Cpl_Driver_Uart_Hal_T hdl );
+        void Driver_Uart_Hal_enableTxIrq( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_enableTxIrq          Cpl_Driver_Uart_Hal_enableTxIrq_MAP
+#define  Driver_Uart_Hal_enableTxIrq          Driver_Uart_Hal_enableTxIrq_MAP
 
 
 /** This method disables the UART Transmit Data register empty interrupt
     Prototype:
-        void Cpl_Driver_Uart_Hal_enableTxIrq( Cpl_Driver_Uart_Hal_T hdl );
+        void Driver_Uart_Hal_enableTxIrq( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_disableTxIrq         Cpl_Driver_Uart_Hal_disableTxIrq_MAP
+#define  Driver_Uart_Hal_disableTxIrq         Driver_Uart_Hal_disableTxIrq_MAP
 
 
 /** This method returns true if the Transmit Data empty interrupt is enabled
     Prototype:
-        bool Cpl_Driver_Uart_Hal_isTxIrqEnabled( Cpl_Driver_Uart_Hal_T hdl );
+        bool Driver_Uart_Hal_isTxIrqEnabled( Driver_Uart_Hal_T hdl );
  */
-#define Cpl_Driver_Uart_Hal_isTxIrqEnabled        Cpl_Driver_Uart_Hal_isTxIrqEnabled_MAP
+#define Driver_Uart_Hal_isTxIrqEnabled        Driver_Uart_Hal_isTxIrqEnabled_MAP
 
        
-/** This method return non-zero ( Cpl_Driver_Uart_Hal_T hdl, true) if the 'current' UART interrupt
+/** This method return non-zero ( Driver_Uart_Hal_T hdl, true) if the 'current' UART interrupt
     request is a tx-data-register-empty interrupt.
 
     Prototype:
-        bool Cpl_Driver_Uart_Hal_isTxIrq( Cpl_Driver_Uart_Hal_T hdl );
+        bool Driver_Uart_Hal_isTxIrq( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_isTxIrq              Cpl_Driver_Uart_Hal_isTxIrq_MAP
+#define  Driver_Uart_Hal_isTxIrq              Driver_Uart_Hal_isTxIrq_MAP
 
 
-/** This method returns non-zero ( Cpl_Driver_Uart_Hal_T hdl, true) if the UART transmit buffer
+/** This method returns non-zero ( Driver_Uart_Hal_T hdl, true) if the UART transmit buffer
     register is empty.  This method is used to 'manually' load the first 
     transmit byte.  
 
     Prototype
-        bool Cpl_Driver_Uart_Hal_isTxPipeEmpty( Cpl_Driver_Uart_Hal_T hdl );
+        bool Driver_Uart_Hal_isTxPipeEmpty( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_isTxPipeEmpty         Cpl_Driver_Uart_Hal_isTxPipeEmpty_MAP
+#define  Driver_Uart_Hal_isTxPipeEmpty         Driver_Uart_Hal_isTxPipeEmpty_MAP
 
 
 /** This method is used to reset/prep the UART's transmit engine for
     the first byte transmit condition. 
 
     Prototype
-        void Cpl_Driver_Uart_Hal_resetTxPipe( Cpl_Driver_Uart_Hal_T hdl );
+        void Driver_Uart_Hal_resetTxPipe( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_resetTxPipe           Cpl_Driver_Uart_Hal_resetTxPipe_MAP
+#define  Driver_Uart_Hal_resetTxPipe           Driver_Uart_Hal_resetTxPipe_MAP
 
 
 
@@ -129,76 +129,76 @@
 /** This method returns the last received byte, independent of any Rx errors
 
     Prototype:
-        uint8_t Cpl_Driver_Uart_Hal_getRxByte( Cpl_Driver_Uart_Hal_T hdl );
+        uint8_t Driver_Uart_Hal_getRxByte( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_getRxByte            Cpl_Driver_Uart_Hal_getRxByte_MAP
+#define  Driver_Uart_Hal_getRxByte            Driver_Uart_Hal_getRxByte_MAP
 
 
 /** This method clears the Rx Interrupt request.  This method can be empty/null
     if the reading the received byte clears the IRQ.
 
     Prototype:
-        void Cpl_Driver_Uart_Hal_clrRxIrq( Cpl_Driver_Uart_Hal_T hdl );
+        void Driver_Uart_Hal_clrRxIrq( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_clrRxIrq             Cpl_Driver_Uart_Hal_clrRxIrq_MAP
+#define  Driver_Uart_Hal_clrRxIrq             Driver_Uart_Hal_clrRxIrq_MAP
 
 
 /** This method returns non-zero (true) if any Rx error (framing, overrung, 
     parity, etc.) has occurred on the 'current' byte 
 
     Prototype:
-        uint8_t Cpl_Driver_Uart_Hal_isRxError( Cpl_Driver_Uart_Hal_T hdl );
+        uint8_t Driver_Uart_Hal_isRxError( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_isRxError            Cpl_Driver_Uart_Hal_isRxError_MAP
+#define  Driver_Uart_Hal_isRxError            Driver_Uart_Hal_isRxError_MAP
 
 
 /** This method clears ALL Rx errors for the 'current' byte.
 
     Prototype:
-        void Cpl_Driver_Uart_Hal_clrRxErrors( Cpl_Driver_Uart_Hal_T hdl );
+        void Driver_Uart_Hal_clrRxErrors( Driver_Uart_Hal_T hdl );
 */
-#define  Cpl_Driver_Uart_Hal_clrRxErrors          Cpl_Driver_Uart_Hal_clrRxErrors_MAP
+#define  Driver_Uart_Hal_clrRxErrors          Driver_Uart_Hal_clrRxErrors_MAP
 
 
 /** This method enables the UART receiver 
 
     Prototype:
-        void Cpl_Driver_Uart_Hal_enableRx( Cpl_Driver_Uart_Hal_T hdl );
+        void Driver_Uart_Hal_enableRx( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_enableRx             Cpl_Driver_Uart_Hal_enableRx_MAP
+#define  Driver_Uart_Hal_enableRx             Driver_Uart_Hal_enableRx_MAP
 
 
 /** This method disables the UART receiver 
 
     Prototype:
-        void Cpl_Driver_Uart_Hal_disableRx( Cpl_Driver_Uart_Hal_T hdl );
+        void Driver_Uart_Hal_disableRx( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_disableRx            Cpl_Driver_Uart_Hal_disableRx_MAP
+#define  Driver_Uart_Hal_disableRx            Driver_Uart_Hal_disableRx_MAP
 
 
 /** This method enables the UART Receive data interrupt.
 
     Prototype:
-        void Cpl_Driver_Uart_Hal_enableRxIrq( Cpl_Driver_Uart_Hal_T hdl );
+        void Driver_Uart_Hal_enableRxIrq( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_enableRxIrq          Cpl_Driver_Uart_Hal_enableRxIrq_MAP
+#define  Driver_Uart_Hal_enableRxIrq          Driver_Uart_Hal_enableRxIrq_MAP
 
 
 /** This method disables the UART Receive data interrupt.
 
     Prototype:
-        void Cpl_Driver_Uart_Hal_disableRxIrq( Cpl_Driver_Uart_Hal_T hdl );
+        void Driver_Uart_Hal_disableRxIrq( Driver_Uart_Hal_T hdl );
  */
-#define  Cpl_Driver_Uart_Hal_disableRxIrq         Cpl_Driver_Uart_Hal_disableRxIrq_MAP
+#define  Driver_Uart_Hal_disableRxIrq         Driver_Uart_Hal_disableRxIrq_MAP
 
 
 /** This method return non-zero (true) if the 'current' UART interrupt
     request is a unread-data-in-the-rx-data-registe interrupt.
 
     Prototype:
-        bool Cpl_Driver_Uart_Hal_isRxIrq( Cpl_Driver_Uart_Hal_T hdl );
+        bool Driver_Uart_Hal_isRxIrq( Driver_Uart_Hal_T hdl );
  */ 
-#define  Cpl_Driver_Uart_Hal_isRxIrq              Cpl_Driver_Uart_Hal_isRxIrq_MAP
+#define  Driver_Uart_Hal_isRxIrq              Driver_Uart_Hal_isRxIrq_MAP
 
 
 

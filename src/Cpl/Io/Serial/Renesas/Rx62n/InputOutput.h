@@ -12,7 +12,7 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/Driver/Uart/Stream/InputOutput_.h"
+#include "Driver/Uart/Stream/InputOutput_.h"
 #include "Cpl/Io/Serial/Renesas/Rx62n/Hal.h"
 
 
@@ -33,7 +33,7 @@ namespace  Cpl { namespace Io { namespace Serial { namespace Renesas { namespace
         RXSIZE:=    Size, in bytes, for the RX buffer
  */
 template <int TXSIZE, int RXSIZE>
-class InputOutput: public Cpl::Driver::Uart::Stream::InputOutput_
+class InputOutput: public Driver::Uart::Stream::InputOutput_
 {
 private:
     /// SCI Port selection
@@ -73,13 +73,13 @@ public:
         @param frameConfig      is set by bit-wise ORing the Parity, Stopbits, and data length values together
 
      */
-    InputOutput( Cpl_Driver_Uart_Hal_T sciPortID, 
-                 uint8_t               pinSelect, 
-                 uint8_t               irqPriority, 
-                 uint8_t               baudrate, 
-                 uint8_t               baudrateDivider, 
-                 uint8_t               frameConfig      ) throw()
-    :Cpl::Driver::Uart::Stream::InputOutput_(sciPortID, true, m_txMemBuffer, TXSIZE, m_rxMemBuffer, RXSIZE ),
+    InputOutput( Driver_Uart_Hal_T sciPortID, 
+                 uint8_t           pinSelect, 
+                 uint8_t           irqPriority, 
+                 uint8_t           baudrate, 
+                 uint8_t           baudrateDivider, 
+                 uint8_t           frameConfig      ) throw()
+    :Driver::Uart::Stream::InputOutput_(sciPortID, true, m_txMemBuffer, TXSIZE, m_rxMemBuffer, RXSIZE ),
      m_sciPortID(sciPortID),
      m_pinSelect(pinSelect),
      m_irqPriority(irqPriority),
@@ -108,10 +108,10 @@ public:
 
 public:
     /// This psuedo PRIVATE method returns the transmitter for the PURPOSE of processing the TX ISR
-    Cpl::Driver::Uart::Stream::Transmitter& su_getTransmitter_(void) throw() { return m_tx; }
+    Driver::Uart::Stream::Transmitter& su_getTransmitter_(void) throw() { return m_tx; }
 
     /// This psuedo PRIVATE method returns the receiver for the PURPOSE of processing the RX ISRs
-    Cpl::Driver::Uart::Stream::Receiver&    su_getReceiver_(void) throw() { return m_rx; }
+    Driver::Uart::Stream::Receiver&    su_getReceiver_(void) throw() { return m_rx; }
 
 };
 

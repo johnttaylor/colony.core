@@ -14,11 +14,11 @@
 
 
 /// 
-using namespace Cpl::Driver::Uart::Stream;
+using namespace Driver::Uart::Stream;
 
 
 ////////////////////////
-Transmitter::Transmitter( Cpl_Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[], bool manualFirstTx ) throw()
+Transmitter::Transmitter( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[], bool manualFirstTx ) throw()
 :m_uartHdl(uartHdl),
  m_waiterPtr(0),
  m_buffer(bufSize,bufMem),
@@ -42,15 +42,15 @@ void Transmitter::start(void) throw()
     m_started = true;
 
     // Enable the TX side of the UART
-    Cpl_Driver_Uart_Hal_enableTx( m_uartHdl );
+    Driver_Uart_Hal_enableTx( m_uartHdl );
     }
 
 
 void Transmitter::stop(void) throw()
     {
     // Disable the TX side of the UART
-    Cpl_Driver_Uart_Hal_disableTxIrq( m_uartHdl );
-    Cpl_Driver_Uart_Hal_disableTx( m_uartHdl );
+    Driver_Uart_Hal_disableTxIrq( m_uartHdl );
+    Driver_Uart_Hal_disableTx( m_uartHdl );
 
     // Free up any blocked client (if there is one)
     if ( m_waiterPtr )
@@ -120,12 +120,12 @@ bool Transmitter::write( const void* data, size_t numBytesToTx ) throw()
             
 
         // Start the initial transmit my outbound buffer
-        if ( !Cpl_Driver_Uart_Hal_isTxIrqEnabled( m_uartHdl ) )
+        if ( !Driver_Uart_Hal_isTxIrqEnabled( m_uartHdl ) )
             {
             // Enable TX Done interrupt to trigger the initial byte
             if ( m_manualFirstTx == false )
                 {
-                Cpl_Driver_Uart_Hal_enableTxIrq( m_uartHdl );
+                Driver_Uart_Hal_enableTxIrq( m_uartHdl );
                 }
 
             // Brute force approach to trigger the initial byte
@@ -136,9 +136,9 @@ bool Transmitter::write( const void* data, size_t numBytesToTx ) throw()
                 m_buffer.remove( byte );
             
                 // Transmit/load first byte
-                Cpl_Driver_Uart_Hal_resetTxPipe( m_uartHdl );
-                Cpl_Driver_Uart_Hal_enableTxIrq( m_uartHdl );
-                Cpl_Driver_Uart_Hal_transmitByte( m_uartHdl, byte );
+                Driver_Uart_Hal_resetTxPipe( m_uartHdl );
+                Driver_Uart_Hal_enableTxIrq( m_uartHdl );
+                Driver_Uart_Hal_transmitByte( m_uartHdl, byte );
                 }
             }
            
@@ -167,21 +167,21 @@ int Transmitter::su_txDoneIsr_(void) throw()
     int     result = 0;
 
     // Do nothing if there is no transmit IRQ
-    if ( Cpl_Driver_Uart_Hal_isTxIrq( m_uartHdl ) )
+    if ( Driver_Uart_Hal_isTxIrq( m_uartHdl ) )
         {
         // Ensure the interrupt request gets cleared
-        Cpl_Driver_Uart_Hal_clrTxIrq( m_uartHdl );
+        Driver_Uart_Hal_clrTxIrq( m_uartHdl );
 
         // Transmit the next byte
         if ( m_buffer.remove( byte ) )
             {
-            Cpl_Driver_Uart_Hal_transmitByte( m_uartHdl, byte );
+            Driver_Uart_Hal_transmitByte( m_uartHdl, byte );
             }
                  
         // Out of data -->disable TX interrupt
         else
             {
-            Cpl_Driver_Uart_Hal_disableTxIrq( m_uartHdl );
+            Driver_Uart_Hal_disableTxIrq( m_uartHdl );
 
             // unblock waiting client (if there is one) once I am out of data
             if ( m_waiterPtr )

@@ -14,11 +14,11 @@
 
 
 /// 
-using namespace Cpl::Driver::Uart::Stream;
+using namespace Driver::Uart::Stream;
 
 
 ////////////////////////
-Receiver::Receiver( Cpl_Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[] ) throw()
+Receiver::Receiver( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[] ) throw()
 :m_uartHdl(uartHdl),
  m_waiterPtr(0),
  m_errCount(0),
@@ -42,16 +42,16 @@ void Receiver::start(void) throw()
     m_started = true;
 
     // Enable the RX side of the UART
-    Cpl_Driver_Uart_Hal_enableRx( m_uartHdl );
-    Cpl_Driver_Uart_Hal_enableRxIrq( m_uartHdl );
+    Driver_Uart_Hal_enableRx( m_uartHdl );
+    Driver_Uart_Hal_enableRxIrq( m_uartHdl );
     }
 
 
 void Receiver::stop(void) throw()
     {
     // Disable the RX side of the UART
-    Cpl_Driver_Uart_Hal_disableRxIrq( m_uartHdl );
-    Cpl_Driver_Uart_Hal_disableRx( m_uartHdl );
+    Driver_Uart_Hal_disableRxIrq( m_uartHdl );
+    Driver_Uart_Hal_disableRx( m_uartHdl );
 
     // Free up any blocked client (if there is one)
     if ( m_waiterPtr )
@@ -166,21 +166,21 @@ int Receiver::su_rxDataAndErrorIsr_(void) throw()
     int result = 0;
 
     // Check for RX errors
-    if ( Cpl_Driver_Uart_Hal_isRxError( m_uartHdl ) )
+    if ( Driver_Uart_Hal_isRxError( m_uartHdl ) )
         {
-        Cpl_Driver_Uart_Hal_clrRxErrors( m_uartHdl );
-        Cpl_Driver_Uart_Hal_clrRxIrq( m_uartHdl );
+        Driver_Uart_Hal_clrRxErrors( m_uartHdl );
+        Driver_Uart_Hal_clrRxIrq( m_uartHdl );
         m_errCount++;
         }
 
     // Check for a byte received 
-    else if ( Cpl_Driver_Uart_Hal_isRxIrq( m_uartHdl ) )
+    else if ( Driver_Uart_Hal_isRxIrq( m_uartHdl ) )
         {
         // Clear the RX interrupt request flag
-        Cpl_Driver_Uart_Hal_clrRxIrq( m_uartHdl );
+        Driver_Uart_Hal_clrRxIrq( m_uartHdl );
 
         // Add incoming byte to the inbound buffer
-        uint8_t byte = Cpl_Driver_Uart_Hal_getRxByte( m_uartHdl );
+        uint8_t byte = Driver_Uart_Hal_getRxByte( m_uartHdl );
         m_buffer.add( byte );
 
         // unblock waiting client (if there is one) now that I have least one byte

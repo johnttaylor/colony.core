@@ -14,8 +14,8 @@
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/FatalError.h"
-#include "Cpl/Driver/Uart/Stream/Transmitter.h"
-#include "Cpl/Driver/Uart/Stream/Receiver.h"
+#include "Driver/Uart/Stream/Transmitter.h"
+#include "Driver/Uart/Stream/Receiver.h"
 #include "Cpl/Text/FString.h"
 #include <string.h>
 
@@ -38,9 +38,9 @@
 
 
 /// 
-using namespace Cpl::Driver::Uart::Stream;
+using namespace Driver::Uart::Stream;
 
-extern void loopback_test( Cpl_Driver_Uart_Hal_T uartHdl, bool manualFirstTx );
+extern void loopback_test( Driver_Uart_Hal_T uartHdl, bool manualFirstTx );
 
 Transmitter* txPtr;
 Receiver*    rxPtr;
@@ -68,7 +68,7 @@ public:
 
 public:
     ///
-    Tx( Cpl_Driver_Uart_Hal_T uartHdl, bool manualFirstTx, const char* msg1, const char* msg2, const char* msg3 )
+    Tx( Driver_Uart_Hal_T uartHdl, bool manualFirstTx, const char* msg1, const char* msg2, const char* msg3 )
         :m_tx(uartHdl, TEXT_TX_RINGBUFFER_SIZE, m_bufMem, manualFirstTx ),
          m_msg1(msg1),
          m_msg2(msg2),
@@ -116,7 +116,7 @@ public:
     char                            m_temp[MAX_MESSAGE];
 
 public:
-    Rx( Cpl::System::Thread& txThread, Tx& tx, Cpl_Driver_Uart_Hal_T uartHdl )
+    Rx( Cpl::System::Thread& txThread, Tx& tx, Driver_Uart_Hal_T uartHdl )
     :m_rx(uartHdl, TEXT_TX_RINGBUFFER_SIZE, m_bufMem ),
      m_tx(tx),
      m_txThread(txThread)
@@ -210,7 +210,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 
-void loopback_test( Cpl_Driver_Uart_Hal_T uartHdl, bool manualFirstTx )
+void loopback_test( Driver_Uart_Hal_T uartHdl, bool manualFirstTx )
     {
     // Create some threads....
     Tx*                  transmitterPtr = new Tx( uartHdl, manualFirstTx, MSG1, MSG2, MSG3 );

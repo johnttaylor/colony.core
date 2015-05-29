@@ -1,5 +1,5 @@
-#ifndef Cpl_Driver_Uart_Stream_Receiver_h_
-#define Cpl_Driver_Uart_Stream_Receiver_h_
+#ifndef Driver_Uart_Stream_Receiver_h_
+#define Driver_Uart_Stream_Receiver_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -12,14 +12,14 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/Driver/Uart/Hal.h"
+#include "Driver/Uart/Hal.h"
 #include "Cpl/Container/RingBuffer.h"
 #include "Cpl/System/Thread.h"
 
 
 
 /// 
-namespace Cpl { namespace Driver { namespace Uart { namespace Stream {
+namespace Driver { namespace Uart { namespace Stream {
 
 
 /** This concrete class implements a blocking Receive Stream UART driver. What
@@ -38,7 +38,7 @@ class Receiver
 {
 protected:
     /// Handle to my low level hardware
-    Cpl_Driver_Uart_Hal_T   m_uartHdl;
+    Driver_Uart_Hal_T       m_uartHdl;
 
     /// Handle of the blocked client thread (if there is one)
     Cpl::System::Thread*    m_waiterPtr;
@@ -66,7 +66,7 @@ public:
                                 buffer.
         @param bufMem           Array of bytes for the receive/inbound buffer.
      */
-    Receiver( Cpl_Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[] ) throw();
+    Receiver( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[] ) throw();
 
 
 
@@ -138,7 +138,6 @@ private:
 	
 
 };      // end namespaces
-};
 };
 };
 #endif  // end header latch

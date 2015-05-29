@@ -12,12 +12,12 @@
 #include "InputOutput_.h"
 
 ///
-using namespace Cpl::Driver::Uart::Stream;
+using namespace Driver::Uart::Stream;
 
 
 
 ////////////////////////////////////
-InputOutput_::InputOutput_( Cpl_Driver_Uart_Hal_T uartHdl,      
+InputOutput_::InputOutput_( Driver_Uart_Hal_T uartHdl,      
                             bool                  manualFirstTx,
                             uint8_t               memTxBuffer[],
                             size_t                txBufSize,   

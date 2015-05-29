@@ -3,7 +3,7 @@ src/Cpl/Io/Serial/_0test/hw_loopback
 
 
 # supporting infrastructure
-src/Cpl/Driver/Uart/Stream
+src/Driver/Uart/Stream
 src/Cpl/System
 src/Cpl/Container
 src/Cpl/Text
