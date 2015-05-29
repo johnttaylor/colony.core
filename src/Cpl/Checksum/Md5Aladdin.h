@@ -1,5 +1,5 @@
-#ifndef Cpl_Checksum_Crc16CcittFast_h_
-#define Cpl_Checksum_Crc16CcittFast_h_
+#ifndef Cpl_Checksum_Md5Aladdin_h_
+#define Cpl_Checksum_Md5Aladdin_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -12,7 +12,8 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/Checksum/Api16.h"
+#include "Cpl/Checksum/ApiMd5.h"
+#include "Cpl/Checksum/md5_aladdin_.h"
 
 
 
@@ -20,40 +21,34 @@
 namespace Cpl { namespace Checksum {
 
 
-/** This class provides an implementation for the 16 Bit CRC-CCITT
-    standard.  The CRC has following characteristics (aka CRC-CCITT(0xFFFF):
-        o The poloynomal is x16 + x12 + x5 + 1
-        o The Data bytes are NOT refelected
-        o The remainder is NOT reflected.
-        o The final remainder is NOT XOR'd
+/** This class provides an implementation for the MD5 Hash interface
+    that is wrapper to the third party MD5 Library code developed
+    by  L. Peter Deutsch, ghost@aladdin.com
  */
-
-class Crc16CcittFast: public Api16
+class Md5Aladdin: public ApiMd5
 {
 private:
-    /// Calcualted CRC value
-    uint16_t    m_crc;
+    /// Hash state
+    md5_state_t m_state;
 
+    /// Hask result
+    Digest_T    m_result;
 
 public:
     /// Constructor
-    Crc16CcittFast() throw();
+    Md5Aladdin() throw();
 
 
 public:
-    /// See Cpl::Checksum::Ap16
+    /// See Cpl::Checksum::ApiMd5
     void reset(void) throw();
 
-    /// See Cpl::Checksum::Ap16
-    void accumulate( void* bytes, unsigned numbytes=1 ) throw();
+    /// See Cpl::Checksum::ApiMd5
+    void accumulate( const void* bytes, unsigned numbytes=1 ) throw();
 
-    /// See Cpl::Checksum::Ap16
-    uint16_t finalize( void* destBuffer=0 ) throw();
-
-    /// See Cpl::Checksum::Ap16
-    bool isOkay(void) throw();
+    /// See Cpl::Checksum::ApiMd5
+    Digest_T& finalize( Cpl::Text::String* convertToString=0, bool uppercase=true, bool append=false ) throw();
 };
-
 
 };      // end namespaces
 };

@@ -34,7 +34,7 @@ private:
 
 public:
     /// Constructor
-    Crc32EthernetFast();
+    Crc32EthernetFast() throw();
 
 
 public:

@@ -44,7 +44,7 @@ public:
 
     /** Call the method for every byte being hash'd
      */
-    virtual void accumulate( const void* bytes, int numbytes=1 ) throw() = 0;
+    virtual void accumulate( const void* bytes, unsigned numbytes=1 ) throw() = 0;
 
     /** Call this method to finalize the Hash.  The calcualted hash
         value is returned.  If 'convertToString' is NOT null, then the

@@ -79,14 +79,14 @@ Crc32EthernetFast::Crc32EthernetFast() throw()
     reset();
     }
 
-void Crc32EthernetFast::reset(void)
+void Crc32EthernetFast::reset(void) throw()
     {
     m_crc = ~0;
     }
 
 
 ///////////////////////////////////////
-void Crc32EthernetFast::accumulate( void* bytes, unsigned numbytes )
+void Crc32EthernetFast::accumulate( void* bytes, unsigned numbytes ) throw()
     {
     unsigned i;
     uint8_t* ptr = (uint8_t*) bytes;
@@ -98,7 +98,7 @@ void Crc32EthernetFast::accumulate( void* bytes, unsigned numbytes )
         }
     }
 
-uint32_t Crc32EthernetFast::finalize( void* destBuffer )
+uint32_t Crc32EthernetFast::finalize( void* destBuffer ) throw()
     {
     uint8_t* ptr = (uint8_t*) destBuffer;
     if ( ptr )
@@ -112,7 +112,7 @@ uint32_t Crc32EthernetFast::finalize( void* destBuffer )
     return m_crc;
     }
 
-bool Crc32EthernetFast::isOkay(void)
+bool Crc32EthernetFast::isOkay(void) throw()
     {
     return m_crc == 0;
     }

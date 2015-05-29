@@ -1,5 +1,5 @@
-#ifndef Cpl_Checksum_Crc16CcittFast_h_
-#define Cpl_Checksum_Crc16CcittFast_h_
+#ifndef Cpl_Checksum_Fletcher16_h_
+#define Cpl_Checksum_Fletcher16_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -20,24 +20,22 @@
 namespace Cpl { namespace Checksum {
 
 
-/** This class provides an implementation for the 16 Bit CRC-CCITT
-    standard.  The CRC has following characteristics (aka CRC-CCITT(0xFFFF):
-        o The poloynomal is x16 + x12 + x5 + 1
-        o The Data bytes are NOT refelected
-        o The remainder is NOT reflected.
-        o The final remainder is NOT XOR'd
+/** This class provides an implementation for the 16 Bit wide
+    Fletcher Checksum
  */
-
-class Crc16CcittFast: public Api16
+class Fletcher16: public Api16
 {
 private:
-    /// Calcualted CRC value
-    uint16_t    m_crc;
+    /// current sum
+    uint8_t m_sum1;
+
+    /// current sum
+    uint8_t m_sum2;
 
 
 public:
     /// Constructor
-    Crc16CcittFast() throw();
+    Fletcher16() throw();
 
 
 public:
