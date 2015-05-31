@@ -35,7 +35,7 @@ bool Decoder_::scan( Cpl::Io::Input& src, size_t maxSizeOfFrame, char* frame, si
     // Housekeeping
     bool  inFrame  = false;
     bool  escaping = false;
-    char* framePtr;
+    char* framePtr = 0;
 
     // Zero out size of the found frame
     frameSize = 0;
