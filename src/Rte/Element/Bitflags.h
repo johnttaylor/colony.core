@@ -13,6 +13,7 @@
 /** @file */
 
 #include "Rte/Element/Base.h"
+#include <stdint.h>
 
 
 ///

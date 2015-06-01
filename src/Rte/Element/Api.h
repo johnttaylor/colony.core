@@ -61,7 +61,7 @@ public:
     inline void setInUse(void)      { setInUseState(true); }
 
     /// This method is used to mark the element as 'not in use'
-    inline void setNotInUse(void)    setInUseState(false); }
+    inline void setNotInUse(void)   { setInUseState(false); }
 
 
 public:

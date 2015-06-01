@@ -1,5 +1,3 @@
-#ifndef Rte_Element_CoralAddr_h_
-#define Rte_Element_CoralAddr_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -10,32 +8,27 @@
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
-/** @file */
 
-//#include "Coral/Definitions.h"
-#include "Rte/Element/String.h"
+#include "Container.h"
+
 
 ///
-namespace Rte { namespace Element {
+using namespace Rte::Point::Controller;
+
+///////////////////
+Container::Container( Rte::Point::ContainerApi& myPoint, Rte::Point::Model::Api& modelPoint )
+:m_myPoint(myPoint)
+,m_modelPoint(modelPoint)
+    {
+    }
 
 
-/** This concrete class provides a concrete implemenation for a Element
-    that represents a symbolic CORAL address
- */
-//class CoralAddr: public String<OPTION_CORAL_SZ_ADDRESS>
-class CoralAddr: public String<10>
-{
-public:
-    /// Constructor
-    CoralAddr( const char* initialValue = "",
-               bool        inUse        = false,
-               bool        validFlag    = false
-             );
-};
+///////////////////
+void Container::updateModel( void  )
+    {
+    m_modelPoint.update( m_myPoint );
 
-
-
-};      // end namespaces
-};
-#endif  // end header latch
+    // Ensure that the sequence number gets reset if the client reuses the controller 
+    m_myPoint.invalidateSequenceNumber();
+    }
 

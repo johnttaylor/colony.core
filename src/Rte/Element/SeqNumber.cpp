@@ -22,8 +22,8 @@ using namespace Rte::Element;
 
 //////////////////////////////////
 SeqNumber::SeqNumber( bool inUse, bool validFlag )
-:Base(DataType::SEQNUMBER, inUse, validFlag),
- _data(1) // Default value is 'perform normal copy'
+:Base(DataType::SEQNUMBER, inUse, validFlag)
+,m_data(1) // Default value is 'perform normal copy'
     {
     }
 
@@ -37,6 +37,7 @@ int32_t SeqNumber::get( void ) const
     {
     return m_data;
     }
+
 
 /////////////////
 void SeqNumber::copyDataFrom( const Api& other )

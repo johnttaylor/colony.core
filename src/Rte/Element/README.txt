@@ -1,5 +1,5 @@
 /** @file */
-/** @namespace Rte::Mvc::Element
+/** @namespace Rte::Element
 @htmlonly
 <pre>    
 

@@ -27,7 +27,7 @@ class Md5: public Base
 {
 protected:
     ///
-    Cpl::Checksum::ApiMd5::Digest_T _data;
+    Cpl::Checksum::ApiMd5::Digest_T m_data;
 
 
 public:

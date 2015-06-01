@@ -1,5 +1,5 @@
-#ifndef Rte_Element_CoralAddr_h_
-#define Rte_Element_CoralAddr_h_
+#ifndef Rte_Tuple_ContainerItem_h_
+#define Rte_Tuple_ContainerItem_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -12,25 +12,30 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-//#include "Coral/Definitions.h"
-#include "Rte/Element/String.h"
+
+#include "Rte/Element/Basic.h"
+
 
 ///
-namespace Rte { namespace Element {
+namespace Rte { namespace Tuple {
 
 
-/** This concrete class provides a concrete implemenation for a Element
-    that represents a symbolic CORAL address
+/** This base class provides the infra-structure for creating a Tuple that
+    can be used in a "Point Container"
  */
-//class CoralAddr: public String<OPTION_CORAL_SZ_ADDRESS>
-class CoralAddr: public String<10>
+class ContainerItem
 {
 public:
+    ///
+    Rte::Element::Boolean_T   m_inContainer_;
+
+protected:
     /// Constructor
-    CoralAddr( const char* initialValue = "",
-               bool        inUse        = false,
-               bool        validFlag    = false
-             );
+    ContainerItem( void )
+    :m_inContainer_(false)
+        {
+        }
+
 };
 
 
@@ -38,4 +43,3 @@ public:
 };      // end namespaces
 };
 #endif  // end header latch
-

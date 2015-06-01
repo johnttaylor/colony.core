@@ -1,5 +1,5 @@
-#ifndef Rte_Element_CoralAddr_h_
-#define Rte_Element_CoralAddr_h_
+#ifndef Rte_Point_Query_Api_h_
+#define Rte_Point_Query_Api_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -12,30 +12,29 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-//#include "Coral/Definitions.h"
-#include "Rte/Element/String.h"
 
 ///
-namespace Rte { namespace Element {
+namespace Rte { namespace Point { namespace Query {
 
 
-/** This concrete class provides a concrete implemenation for a Element
-    that represents a symbolic CORAL address
+
+/** This class defines the interface for the base operations of a Query Point
  */
-//class CoralAddr: public String<OPTION_CORAL_SZ_ADDRESS>
-class CoralAddr: public String<10>
+class Api
 {
 public:
-    /// Constructor
-    CoralAddr( const char* initialValue = "",
-               bool        inUse        = false,
-               bool        validFlag    = false
-             );
+    /** This method takes updates the client point with the contents of the 
+        associated model point.
+     */
+    virtual void issueQuery( void ) = 0;
+
+
+public: 
+    /// Virtual destructor to make the compiler happy
+    virtual ~Api(void){}
 };
-
-
 
 };      // end namespaces
 };
+};
 #endif  // end header latch
-

@@ -1,5 +1,5 @@
-#ifndef Rte_Element_CoralAddr_h_
-#define Rte_Element_CoralAddr_h_
+#ifndef Rte_Point_Query_Base_h_
+#define Rte_Point_Query_Base_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -12,30 +12,40 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-//#include "Coral/Definitions.h"
-#include "Rte/Element/String.h"
+#include "Rte/Point/Query/Api.h"
+#include "Rte/Point/Model/Api.h"
+
 
 ///
-namespace Rte { namespace Element {
+namespace Rte { namespace Point { namespace Query {
 
 
-/** This concrete class provides a concrete implemenation for a Element
-    that represents a symbolic CORAL address
+/** This concrete class implements the Controller Point interface 
  */
-//class CoralAddr: public String<OPTION_CORAL_SZ_ADDRESS>
-class CoralAddr: public String<10>
+class Base: public Api
 {
-public:
-    /// Constructor
-    CoralAddr( const char* initialValue = "",
-               bool        inUse        = false,
-               bool        validFlag    = false
-             );
-};
+protected:
+    /// Destination to where to stoe the query results
+    Rte::Point::Api&         m_myPoint;
 
+    /// The Model Point to read the data from (aka the source)
+    Rte::Point::Model::Api&  m_modelPoint;
+
+
+protected:
+    ///
+    Base( Rte::Point::Api& myPoint, Rte::Point::Model::Api& modelPoint );
+
+
+public:
+    /// See Rte::Point::Query::Api
+    void issueQuery( void );
+
+
+};
 
 
 };      // end namespaces
 };
+};
 #endif  // end header latch
-

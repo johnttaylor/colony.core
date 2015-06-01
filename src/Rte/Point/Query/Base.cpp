@@ -1,5 +1,3 @@
-#ifndef Rte_Element_CoralAddr_h_
-#define Rte_Element_CoralAddr_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -10,32 +8,30 @@
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
-/** @file */
 
-//#include "Coral/Definitions.h"
-#include "Rte/Element/String.h"
+#include "Base.h"
 
-///
-namespace Rte { namespace Element {
+using namespace Rte::Point::Query;
 
 
-/** This concrete class provides a concrete implemenation for a Element
-    that represents a symbolic CORAL address
- */
-//class CoralAddr: public String<OPTION_CORAL_SZ_ADDRESS>
-class CoralAddr: public String<10>
-{
-public:
-    /// Constructor
-    CoralAddr( const char* initialValue = "",
-               bool        inUse        = false,
-               bool        validFlag    = false
-             );
-};
+///////////////////
+Base::Base( Rte::Point::Api& myPoint, Rte::Point::Model::Api& modelPoint )
+:m_myPoint(myPoint)
+,m_modelPoint(modelPoint)
+    {
+    m_myPoint.setAllInUseState(true);
+    }
 
 
+///////////////////
+void Base::issueQuery( void )
+    {
+    // Set the query/client point to 'All Invalid' - this ensures that query/client
+    // point will be updated with meaningful value(s) from the model point (or the 
+    // default state of invalid is correct).
+    m_myPoint.setAllValidFlagState(false);
 
-};      // end namespaces
-};
-#endif  // end header latch
+    // issue the query
+    m_modelPoint.query(m_myPoint);
+    }
 

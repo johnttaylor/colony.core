@@ -23,7 +23,7 @@ Base::Base( int   myDataType,
             bool  validFlag
            )
 :m_myDataType(myDataType)
-.m_valid(validFlag)
+,m_valid(validFlag)
 ,m_inUse(inUse)
     {
     }
@@ -34,7 +34,7 @@ void Base::assertTypeMatches( const Api& other ) const
     {
     if ( m_myDataType.isNotEqual(other.getType()) )
         {
-        Cpl::System::FatalError::logf( "Rte::Element::Base - type mismatch (me=%d, other=%d)", m_myDataType, other.getType()._dataTypeId );
+        Cpl::System::FatalError::logf( "Rte::Element::Base - type mismatch (me=%d, other=%d)", m_myDataType, other.getType() );
         }
     }
 

@@ -36,11 +36,12 @@ The MVC paradigm is based around 'Points'. Points can be viewed as data items
 and/or structures that are stored in the model and that Application uses viewers
 or controllers to  read, write the data items.  Some terminology:
 
-- A 'Point' is a physical collection of data such that read/write operations
-  (via the Model) to the contained data are atomic operations.  A Point consist
-  of one or more 'Tuples'.  A Tuple (think data structure) contains one or more
-  'Elements'. A Element is the primitive data unit, e.g. a boolean, a integer, a
-  string, etc.
+- A 'Point' is a physical collection of data.  The Point mechanisms provide the
+  ability to create fairly sophiscated data structures. A Point consist of one 
+  or more 'Tuples' (think a data structure contain structures and/or an array of
+  structures).  A Tuple (think data structure) contains one or more 'Elements'.
+  A Element is the primitive data unit, e.g. a boolean, a integer, a string,
+  etc.
 
 - A 'Model Point' provides access to a Point that is owned by the model. The 
   life time scope of a Model Point is the life time scope of the Point (in the

@@ -29,7 +29,7 @@ Md5::Md5( bool inUse, bool validFlag )
 /////////////////
 void Md5::set( const Cpl::Checksum::ApiMd5::Digest_T& newValue )
     {
-    memcpy(&_data, &newValue, sizeof(m_data));
+    memcpy(&m_data, &newValue, sizeof(m_data));
     }
 
 Cpl::Checksum::ApiMd5::Digest_T& Md5::get( void )

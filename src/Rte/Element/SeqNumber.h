@@ -30,7 +30,6 @@ namespace Rte { namespace Element {
         if src._data == 0, then dst._data is NOT updated
         if src._data > 0,  then dst._data:= src._data
  */
-
 class SeqNumber: public Base
 {
 protected:
