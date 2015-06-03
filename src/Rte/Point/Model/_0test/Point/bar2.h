@@ -12,8 +12,8 @@
 *----------------------------------------------------------------------------*/ 
 
 #include "Rte/Point/Basic.h"
+#include "Rte/Point/Model/_0test/Tuple/Foo1.h"
 #include "Rte/Point/Model/_0test/Tuple/Foo2.h"
-#include "Rte/Point/Model/_0test/Tuple/Foo3.h"
 
 
 ///
@@ -26,17 +26,17 @@ class Bar2: public Rte::Point::Basic<2>
 {
 public:
     ///
-    Tuple::Foo2   m_tupleFoo2;
+    Tuple::Foo1   m_foo1;
     ///
-    Tuple::Foo3   m_tupleFoo3;
+    Tuple::Foo2   m_foo2;
 
 
 public:
     /// Constructor
     Bar2( void )
         {
-        setTupleIndex( m_tupleFoo2, 0 );
-        setTupleIndex( m_tupleFoo3, 0 );
+        setTupleIndex( m_foo1, 0 );
+        setTupleIndex( m_foo2, 1 );
         }
 
 };

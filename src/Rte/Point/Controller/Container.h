@@ -56,7 +56,8 @@ public:
               performs all its operations AND it will cause a
               container membership change notification.
      */
-    inline void addItem( unsigned tupleIdx )                 { m_myPoint.addTuple( tupleIdx ); }
+    void addItem( unsigned tupleIdx );
+
 
     /** This method is used to 'remove' a item/tuple from the Point container.
         The remove is done by marking the specified item as NOT "in the
@@ -69,22 +70,36 @@ public:
               performs all its operations AND it will cause a
               container membership change notification.
      */
-    inline void removeItem( unsigned tupleIdx )              { m_myPoint.removeTuple( tupleIdx ); }
+    void removeItem( unsigned tupleIdx );
+
+
+    /** This method is used to cause an force container membership 
+        change notification (i.e. it increments the container's
+        sequence number).
+
+        Notes: 
+            o The application must still call updateModel() after callomg
+              touch() to update the actual model.
+     */
+    inline void touch(void)                                  { m_myPoint.incrementSequenceNumber(); }
+
 
     /// Returns true if the specified tuple is "in" the container
     inline bool isItemInContainer( unsigned tupleIdx ) const { return m_myPoint.isTupleInContainer( tupleIdx ); }
+
 
     /** Returns the an index of the next 'in the container' tuple entry.
         The search begins with the specified index. If there a no 
         items in the container, then -1 is returned.
      */
-    inline int nextItem( unsigned startIdx ) const      { return m_myPoint.nextTuple(startIdx); }
+    inline int nextItem( unsigned startIdx ) const           { return m_myPoint.nextTuple(startIdx); }
+
 
     /** Returns the an index of the next 'available' tuple entry
         that can be added.  The search begins with the specified
         index. If there a no empty items, then -1 is returned.
      */
-    inline int nextEmptyItem( unsigned startIdx ) const { return m_myPoint.nextEmptyTuple(startIdx); }
+    inline int nextEmptyItem( unsigned startIdx ) const      { return m_myPoint.nextEmptyTuple(startIdx); }
 
 };
 

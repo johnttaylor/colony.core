@@ -42,6 +42,11 @@ protected:
     Container( void );
 
 
+public:
+    /// Provide public access to my tuples
+    inline TUPLE& operator[] (unsigned i) { return m_tuples[i]; }
+
+
 public: 
     /// See Rte::Point::Api
     unsigned getNumTuples(void) const;

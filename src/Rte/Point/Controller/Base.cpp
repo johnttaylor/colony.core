@@ -29,6 +29,6 @@ void Base::updateModel( void )
 
     // Ensure that the sequence number gets reset if the client
     // reuses the controller 
-    m_myPoint.invalidateSequenceNumber();
+    m_myPoint.resetSequenceNumber();
     }
 

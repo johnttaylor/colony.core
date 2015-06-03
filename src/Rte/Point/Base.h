@@ -29,8 +29,8 @@ protected:
     /// Internal sequence number to track changes to the Point
     uint32_t m_seqnum;
 
-    /// Was this Point updated/modified.
-    bool     m_updated;
+    /// My membership changed flag/state (For a Point Container
+    bool     m_changed;
 
 
 protected:
@@ -55,17 +55,8 @@ public:
     size_t sumAllExternalSize( void );
 
     /// See Rte::Point::Api
-    bool isUpdated(void) const;
-
-    /// See Rte::Point::Api
-    void clearUpdatedState(void);
-
-    /// See Rte::Point::Api
-    void setUpdatedState(void);
-
-    /// See Rte::Point::Api
     void incrementSequenceNumber(void);
-
+     
     /// See Rte::Point::Api
     uint32_t getSequenceNumber(void) const;
 
@@ -73,10 +64,17 @@ public:
     void setSequenceNumber( uint32_t newSeqNum );
     
     /// See Rte::Point::Api
-    void invalidateSequenceNumber(void);
+    void resetSequenceNumber(void);
 
     /// See Rte::Point::Api
-    bool isDifferent( Api& other ) const;
+    void clearMembershipChanged(void);
+
+    /// See Rte::Point::Api
+    void setMembershipChanged(void);
+
+    /// See Rte::Point::Api
+    bool isMembershipChanged(void) const;
+
 };
 
 };      // end namespaces

@@ -158,9 +158,11 @@ void Base::request( UpdateTupleMsg& msg )
     // Update the Tuple
     Rte::Tuple::Api::copy( m_myPoint.getTuple(msg.getPayload().m_tupleIdx), msg.getPayload().m_srcTuple, &(msg.getPayload().m_srcTuple) );
     
-    // Increment my Point's seqeuence number since something changed
-    m_myPoint.incrementSequenceNumber();
-    m_myPoint.setUpdatedState();
+    // Detect membership updates (from the Controller)
+    if ( msg.getPayload().m_srcTuple.getSequenceNumber() > 0 )
+        {
+        m_myPoint.incrementSequenceNumber();
+        }
 
     // Process any change notifications
     checkForNotifications();

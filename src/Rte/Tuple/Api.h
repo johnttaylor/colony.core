@@ -40,8 +40,6 @@ public:
      */
     virtual Rte::Element::Api& getElement( unsigned elementIdx ) const = 0;
 
-    /// Same as getElement()
-    inline Rte::Element::Api& operator[] (unsigned i) const { return getElement(i); }
 
 
 public:

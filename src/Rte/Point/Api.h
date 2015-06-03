@@ -83,30 +83,11 @@ public:
      */
     virtual Rte::Tuple::Api& getTuple( unsigned tupleIdx ) = 0;
 
-    /// Same as getTuple()
-    inline Rte::Tuple::Api& operator[] (unsigned i) { return getTuple(i); }
-
-
-public:
-    /** This method returns true when one or more Tuples in the Point
-        have been updated.  Typically this method is used by a viewer.
-     */
-    virtual bool isUpdated(void) const = 0;
-
-    /** This method clears the updated state.  Typically this method is ONLY
-        used by the model to mark a newly registered 'viewer' as not-changed
-     */
-    virtual void clearUpdatedState(void) = 0;
-
-    /** This method sets the updated state.  Typically this method is ONLY
-        used by the model when it generates a change notification
-     */
-    virtual void setUpdatedState(void) = 0;
 
 
 public:
     /** Increments the Point's internal sequence number.  The sequence number
-        is used to track any/all 'writes/changes' made to the Point
+        is ONLY used to track membership changes in a Point Container.
      */
     virtual void incrementSequenceNumber(void) = 0;
 
@@ -116,11 +97,25 @@ public:
     /// Sets the Point's sequence number
     virtual void setSequenceNumber( uint32_t newSeqNum ) = 0;
 
-    /// Invaldates the Point's internal sequence number
-    virtual void invalidateSequenceNumber(void) = 0;
+    /// Resets the Point's internal sequence number.
+    virtual void resetSequenceNumber(void) = 0;
 
-    /// Returns true if there is a different by two Points - as determined by the Sequence number
-    virtual bool isDifferent( Api& other ) const = 0;
+public:
+    /** This method clears the membership-has-changed state for a Point 
+        Container.  This only applies to Viewers and/or change 
+        notifications
+     */
+    virtual void clearMembershipChanged(void) = 0;
+    
+    /** This method sets the membership-has-changed state for a Point
+        Container.
+     */
+    virtual void setMembershipChanged(void) = 0;
+
+    /** The method returns if there is/has been a membership change for a
+        Point Conatiner.
+     */
+    virtual bool isMembershipChanged(void) const = 0;
 
 
 public:

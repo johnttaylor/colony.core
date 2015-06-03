@@ -29,6 +29,19 @@ void Container::updateModel( void  )
     m_modelPoint.update( m_myPoint );
 
     // Ensure that the sequence number gets reset if the client reuses the controller 
-    m_myPoint.invalidateSequenceNumber();
+    m_myPoint.resetSequenceNumber();
     }
 
+
+
+void Container::addItem( unsigned tupleIdx )                 
+    { 
+    m_myPoint.addTuple( tupleIdx ); 
+    m_myPoint.incrementSequenceNumber();
+    }
+
+void Container::removeItem( unsigned tupleIdx )              
+    { 
+    m_myPoint.removeTuple( tupleIdx ); 
+    m_myPoint.incrementSequenceNumber();
+    }

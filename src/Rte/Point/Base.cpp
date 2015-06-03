@@ -19,27 +19,11 @@ using namespace Rte::Point;
 ////////////////////////
 Base::Base( void )
 :m_seqnum(0)
-,m_updated(false)
+,m_changed(false)
     {
     }
 
 /////////////////
-bool Base::isUpdated( void ) const
-    {
-    return m_updated;
-    }
-
-void Base::clearUpdatedState( void )
-    {
-    m_updated = false;
-    }
-
-void Base::setUpdatedState( void )
-    {
-    m_updated = true;
-    }
-
-
 void Base::incrementSequenceNumber(void)
     {
     // Do not allow a sequence number of zero (zero represents 'unknown sequence number')
@@ -59,20 +43,27 @@ void Base::setSequenceNumber( uint32_t newSeqNum )
     m_seqnum = newSeqNum;
     }
 
-void Base::invalidateSequenceNumber(void)
+void Base::resetSequenceNumber(void)
     {
     m_seqnum = 0;
     }
 
-bool Base::isDifferent( Api& other ) const
-    {
-    if ( m_seqnum == 0 || other.getSequenceNumber() == 0 || m_seqnum != other.getSequenceNumber() )
-        {
-        return true;
-        }
 
-    return false;
+void Base::clearMembershipChanged(void)
+    {
+    m_changed = false;
     }
+
+void Base::setMembershipChanged(void)
+    {
+    m_changed = true;
+    }
+
+bool Base::isMembershipChanged(void) const
+    {
+    return m_changed;
+    }
+
 
 
 ////////////////////////
@@ -84,9 +75,11 @@ void Base::copyFrom( Api& other, Api* inUseFilterP )
         Cpl::System::FatalError::logf( "Rte::Point::Base::copyFrom(point) - otherTuple's tuple count does not match (my count=%u, other count=%u)", getNumTuples(), other.getNumTuples() );
         }
     
-    // Mark the Point state: as 'updated'
-    setUpdatedState();
-    incrementSequenceNumber();
+    // Detect membership updates (from the Controller)
+    if ( other.getSequenceNumber() > 0 )
+        {
+        incrementSequenceNumber();
+        }
 
     // Copy ALL tuples
     unsigned j;
@@ -105,40 +98,20 @@ bool Base::compareAndCopy( Api& other, bool allElements, bool compareValues )
         Cpl::System::FatalError::logf( "Rte::Point::Base::compareAndCopy(point) - otherTuple's tuple count does not match (my count=%u, other count=%u)", getNumTuples(), other.getNumTuples() );
         }
     
-    // Clear the 'destination point' (aka the point that might be updated) as not-updated
-    other.clearUpdatedState();
-
-    // Do the compare by SEQUENCE number
-    bool pointDifferent = false;
-    if ( !compareValues )
-        {
-        if ( isDifferent(other) )
-            {
-            pointDifferent = true;
-
-            unsigned j;
-            for(j=0; j<getNumTuples(); j++)
-                {
-                Tuple::Api::copy( other.getTuple(j), getTuple(j), allElements? 0: &(other.getTuple(j)) );
-                }
-            }
-        }
-
     // Do the compare by VALUE
-    else
+    bool     pointDifferent = false;
+    unsigned j;
+    for(j=0; j<getNumTuples(); j++)
         {
-        unsigned j;
-        for(j=0; j<getNumTuples(); j++)
-            {
-            pointDifferent |= Rte::Tuple::Api::compareAndCopy( getTuple(j), other.getTuple(j), allElements, true );
-            }
+        pointDifferent |= Rte::Tuple::Api::compareAndCopy( getTuple(j), other.getTuple(j), allElements, compareValues );
         }
 
-    // Update the 'Others' seqeuence number (and changed-state) to match this Point if/when there was a difference between the two
-    if ( pointDifferent )
+    // Update the other's (aka Viewer's) membership changed flag 
+    other.clearMembershipChanged();
+    if ( other.getSequenceNumber() != getSequenceNumber() )
         {
+        other.setMembershipChanged();
         other.setSequenceNumber( getSequenceNumber() );
-        other.setUpdatedState();
         }
 
     // Return true if at least one tuple was different (and updated)
