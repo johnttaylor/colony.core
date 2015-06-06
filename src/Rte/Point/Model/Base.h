@@ -12,7 +12,7 @@
 *----------------------------------------------------------------------------*/ 
 
 #include "Rte/Point/Model/Api.h"
-#include "Cpl/Container/SList.h"
+#include "Cpl/Container/DList.h"
 #include "Cpl/Itc/PostApi.h"
 
 
@@ -24,7 +24,7 @@ namespace Rte { namespace Point { namespace Model {
     from controllers.
  */
 class Base: public Api,
-            //public Rte::Point::Model::ViewerRequest,
+            public Rte::Point::Model::ViewerRequest,
             public Rte::Point::Model::ControllerRequest,
             public Rte::Point::Model::QueryRequest
 {
@@ -33,10 +33,10 @@ protected:
     Rte::Point::Api&                            m_myPoint;
 
     /// List of Viewers waiting on changes
-//    Cpl::Container::SList<AttachMsg>            m_pendingNotify;
+    Cpl::Container::DList<RegisterMsg>          m_pendingNotify;
 
     /// SAP for my Viewer ITC interface
-//    Rte::Point::Model::ViewerRequest::SAP       m_viewerSAP;
+    Rte::Point::Model::ViewerRequest::SAP       m_viewerSAP;
 
     /// SAP for my Controller ITC interface
     Rte::Point::Model::ControllerRequest::SAP   m_controllerSAP;
@@ -68,13 +68,18 @@ public:
 
 public:
     /// See Rte::Point::Model::Api
-//    void request( AttachMsg& msg );
-//
-//    /// See Rte::Point::Model::Api
-//    void request( DetachMsg& msg );
-//
-//    /// See Rte::Point::Model::Api
-//    void request( ForceMsg& msg );
+    void pollViewer( ViewerRequest::RegisterMsg& viewerToPoll );
+
+
+public:
+    /// See Rte::Point::Model::Api
+    void request( RegisterMsg& msg );
+
+    /// See Rte::Point::Model::Api
+    void request( CancelMsg& msg );
+
+    /// See Rte::Point::Model::Api
+    void request( PollMsg& msg );
 
 
 public:
@@ -93,9 +98,10 @@ public:
     void request( QueryTupleMsg& msg );
 
 
+
 public: 
     /// See Rte::Point::Model::Api
-//    Rte::Point::Model::ViewerRequest::SAP&     getViewerSAP(void);
+    Rte::Point::Model::ViewerRequest::SAP&     getViewerSAP(void);
 
     /// See Rte::Point::Model::Api
     Rte::Point::Model::ControllerRequest::SAP& getControllerSAP(void);

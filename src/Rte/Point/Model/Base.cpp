@@ -22,7 +22,7 @@ using namespace Rte::Point::Model;
 ///////////////////
 Base::Base( Rte::Point::Api& myPoint, Cpl::Itc::PostApi& myMbox )
 :m_myPoint(myPoint)
-//,m_viewerSAP(*this,myMbox)
+,m_viewerSAP(*this,myMbox)
 ,m_controllerSAP(*this,myMbox)
 ,m_querySAP(*this,myMbox)
     {
@@ -32,11 +32,11 @@ Base::Base( Rte::Point::Api& myPoint, Cpl::Itc::PostApi& myMbox )
 
 
 ///////////////////
-//Rte::Point::Model::ViewerRequest::SAP&     
-//Base::getViewerSAP(void)
-//    {
-//    return m_viewerSAP;
-//    }
+Rte::Point::Model::ViewerRequest::SAP&     
+Base::getViewerSAP(void)
+    {
+    return m_viewerSAP;
+    }
 
 Rte::Point::Model::ControllerRequest::SAP& 
 Base::getControllerSAP(void)
@@ -53,6 +53,14 @@ Base::getQuerySAP(void)
 
 
 ///////////////////
+void Base::pollViewer( ViewerRequest::RegisterMsg& viewerToPoll )
+    {
+    PollPayload                   payload( viewerToPoll );
+    Cpl::Itc::SyncReturnHandler   srh;
+    PollMsg                       msg(*this,payload,srh);
+    m_viewerSAP.postSync(msg);
+    }
+
 void Base::update( Rte::Point::Api& controllerPoint )
     {
     UpdatePayload                 payload( controllerPoint );
@@ -88,56 +96,56 @@ void Base::query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx )
 
 
 ///////////////////
-//void Base::request( AttachMsg& msg )
-//    {
-//    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(AttachMsg) - (%p) viewer=%p (msgP=%p)", this, &(msg.getPayload()._point), &msg ));
-//
-//    // If different -->make a copy and return immediately
-//    if ( m_myPoint.compareAndCopy(msg.getPayload()._point) )
-//        {
-//        msg.returnToSender();
-//        }
-//
-//    // Hold the notification request until the tuple changes
-//    else
-//        {
-//        m_pendingNotify.put( &msg );
-//        }
-//    }
-//    
-//void Base::request( DetachMsg& msg ) 
-//    {
-//    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(DetachMsg) - (%p) msgToDetach=%p", this, &(msg.getPayload()._msgToDetachP) ));
-//
-//    // Remove the pending change notification if there is one
-//    // NOTE: I intentionally do NOT return a pending Attach message, but
-//    //       simply drop my reference to it.  This is to maintain the
-//    //       sematics that when the client's response() method for the
-//    //       Attach Message is called - it is due to change and ONLY a 
-//    //       change in state of Point.
-//    m_pendingNotify.remove( msg.getPayload()._msgToDetachP );
-//    msg.returnToSender();
-//    }
-//
-//void Base::request( ForceMsg& msg ) 
-//    {
-//    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(ForceMsg) - (%p) msgToForce=%p", this, &(msg.getPayload()._msgToForceP) ));
-//
-//    // Remove the viewer message from my list of pending notificatinos
-//    AttachMsg* viewerMsgP = msg.getPayload()._msgToForceP;
-//    if ( m_pendingNotify.remove(viewerMsgP) )
-//        {
-//        // Force an update to the viewer point (this is important
-//        // if there are any Delta/Threshold element types being viewed)
-//        viewerMsgP->getPayload()._point.copyFrom( m_myPoint,  &(viewerMsgP->getPayload()._point) );
-//
-//        // Generate the change notification
-//        viewerMsgP->returnToSender();
-//        }
-//
-//    // Return the force message
-//    msg.returnToSender();
-//    }
+void Base::request( RegisterMsg& msg )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(RegisterMsg) - (%p) viewer=%p (msgP=%p)", this, &(msg.getPayload().m_viewerPoint), &msg ));
+
+    // If different -->make a copy and return immediately
+    if ( m_myPoint.compareAndCopy(msg.getPayload().m_viewerPoint, false, msg.getPayload().m_compareValues) )
+        {
+        msg.returnToSender();
+        }
+
+    // Hold the notification request until the tuple changes
+    else
+        {
+        m_pendingNotify.put( msg );
+        }
+    }
+    
+void Base::request( CancelMsg& msg ) 
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(CancelMsg) - (%p) msgToCancel=%p", this, &(msg.getPayload().m_msgToCancel) ));
+
+    // Remove the pending change notification if there is one
+    // NOTE: I intentionally do NOT return a pending Register message, but
+    //       simply drop my reference to it.  This is to maintain the
+    //       sematics that when the client's response() method for the
+    //       Register Message is called - it is due to change and ONLY a 
+    //       change in state of Point.
+    m_pendingNotify.remove( msg.getPayload().m_msgToCancel );
+    msg.returnToSender();
+    }
+
+void Base::request( PollMsg& msg ) 
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(PollMsg) - (%p) msgToPoll=%p", this, &(msg.getPayload().m_msgToPoll) ));
+
+    // Remove the viewer message from my list of pending notificatinos
+    RegisterMsg& viewerMsg = msg.getPayload().m_msgToPoll;
+    if ( m_pendingNotify.remove(viewerMsg) )
+        {
+        // Force an update to the viewer point (this is important
+        // if there are any Delta/Threshold element types being viewed)
+        viewerMsg.getPayload().m_viewerPoint.copyFrom( m_myPoint,  &(viewerMsg.getPayload().m_viewerPoint) );
+
+        // Generate the change notification
+        viewerMsg.returnToSender();
+        }
+
+    // Return the force message
+    msg.returnToSender();
+    }
 
 
 ///////////////////
@@ -246,27 +254,19 @@ void Base::request( UpdateTupleMsg& msg )
 void Base::checkForNotifications(void)
     {
     // Walk the pending Notification list looking for changes
-    // NOTE: I create a temporary list to hold the non-changed
-    //       items in hopes of making the process as efficient as
-    //       possible since the pending Notification list is only
-    //       a singly-linked list.
-//    Cpl::Container::SList<AttachMsg> tempList;
-//    AttachMsg*                       ptr = m_pendingNotify.get();
-//    while( ptr )
-//        {
-//        if ( m_myPoint.compareAndCopy(ptr->getPayload()._point) )
-//            {
-//            ptr->returnToSender();
-//            }
-//        else
-//            {
-//            tempList.put( *ptr );
-//            }
-//        ptr = m_pendingNotify.get();
-//        }
-//
-//    // Restore the pending list
-//    tempList.move( m_pendingNotify );
+    RegisterMsg* ptr = m_pendingNotify.getFirst();
+    while( ptr )
+        {
+        RegisterMsg* nextPtr = m_pendingNotify.next( *ptr );
+         
+        if ( m_myPoint.compareAndCopy(ptr->getPayload().m_viewerPoint) )
+            {
+            m_pendingNotify.remove( *ptr );
+            ptr->returnToSender();
+            }
+
+        ptr = nextPtr;
+        }
     }
 
 
@@ -277,6 +277,11 @@ void Base::request( QueryMsg& msg )
 
     // Brute force update (no isDifferent() check) the client's 'point' and return immediately
     msg.getPayload().m_dstPoint.copyFrom( m_myPoint, &(msg.getPayload().m_dstPoint) );
+
+    // Update the Client's (i.e. the Querier's) Point sequence number to match the Model's Point sequence number
+    msg.getPayload().m_dstPoint.setSequenceNumber( m_myPoint.getSequenceNumber() );
+
+    // Return the client's message
     msg.returnToSender();
     }
     
@@ -287,6 +292,9 @@ void Base::request( QueryTupleMsg& msg )
     // Brute force update (no isDifferent() check) the client's 'tuple' 
     unsigned index = msg.getPayload().m_tupleIdx;
     Rte::Tuple::Api::copy( msg.getPayload().m_dstTuple, m_myPoint.getTuple(index), &(msg.getPayload().m_dstTuple) );
+
+    // Update the Client's (i.e. the Querier's) Tuple sequence number to match the Model's Tuple sequence number
+    msg.getPayload().m_dstTuple.setSequenceNumber( m_myPoint.getTuple(index).getSequenceNumber() );
 
 //    // If a search callback was specified, iterate through all tuple in the CONTAINER
 //    if ( msg.getPayload()._searchCallback )

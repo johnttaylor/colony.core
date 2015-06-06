@@ -5,6 +5,7 @@ src/Rte/Point
 src/Rte/Point/Model
 src/Rte/Point/Controller
 src/Rte/Point/Query
+src/Rte/Point/Viewer
 
 # tests
 src/Rte/Point/Model/_0test

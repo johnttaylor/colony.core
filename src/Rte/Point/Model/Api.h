@@ -12,6 +12,7 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
+#include "Rte/Point/Model/ViewerRequest.h"
 #include "Rte/Point/Model/ControllerRequest.h"
 #include "Rte/Point/Model/QueryRequest.h"
 
@@ -43,12 +44,18 @@ public:
     /** This method synchronously queries a single Tuple in the Model Point
      */
     virtual void query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx ) = 0;
+          
 
-
+public:
+    /** This method is used force a change notification to a viewer, aka Poll 
+        a viewer.
+     */
+    virtual void pollViewer( ViewerRequest::RegisterMsg& viewerToPoll ) = 0;
+    
 
 public:
     /// Returns the SAP to the viewer ITC interface
-//    virtual Rte::Point::Model::ViewerRequest::SAP&      getViewerSAP(void) = 0;
+    virtual Rte::Point::Model::ViewerRequest::SAP&      getViewerSAP(void) = 0;
 
     /// Returns the SAP to the controller ITC interface
     virtual Rte::Point::Model::ControllerRequest::SAP&  getControllerSAP(void) = 0;
