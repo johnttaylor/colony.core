@@ -35,8 +35,9 @@ public:
     /// Constructor
     Bar2( void )
         {
-        setTupleIndex( m_foo1, 0 );
-        setTupleIndex( m_foo2, 1 );
+        registerTuple( m_foo1 );
+        registerTuple( m_foo2 );
+        endRegistration();
         }
 
 };

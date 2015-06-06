@@ -47,7 +47,7 @@ TEST_CASE( "mvc", "[mvc]" )
     Cpl::System::Api::sleep(50);
 
     // BAR1 Query
-    Point::QueryBar1 queryBar1(modelBar1_);
+    Point::QueryBar1 queryBar1( modelBar1_ );
     queryBar1.issueQuery();
     traceBar1_( queryBar1, "Bar1", "Query - model point in its initial state" );
     REQUIRE( queryBar1.m_tuple.m_name.isValid() == false );
@@ -55,7 +55,7 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( queryBar1.m_tuple.m_count.isValid() == false );
 
     /// BAR1 Controller 
-    Point::ControllerBar1 controllerBar1(modelBar1_);
+    Point::ControllerBar1 controllerBar1( modelBar1_ );
     controllerBar1.m_tuple.m_name.setInUse();
     controllerBar1.m_tuple.m_name.setValid();
     controllerBar1.m_tuple.m_name.set("bob");
@@ -102,7 +102,7 @@ TEST_CASE( "mvc", "[mvc]" )
 
     
     // BAR2 Query
-    Point::QueryBar2 queryBar2(modelBar2_);
+    Point::QueryBar2 queryBar2( modelBar2_ );
     queryBar2.issueQuery();
     traceBar2_( queryBar2, "Bar2", "Query - model point in its initial state" );
     REQUIRE( queryBar2.m_foo1.m_name.isValid() == false );
@@ -112,7 +112,7 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( queryBar2.m_foo2.m_limit.isValid() == false );
 
     /// BAR2 Controller 
-    Point::ControllerBar2 controllerBar2(modelBar2_);
+    Point::ControllerBar2 controllerBar2( modelBar2_ );
     controllerBar2.setAllInUseState(true);
     controllerBar2.setAllValidFlagState(true);
     controllerBar2.m_foo1.m_name.set("charlie");
@@ -147,10 +147,111 @@ TEST_CASE( "mvc", "[mvc]" )
     traceBar2_( queryBar2, "Bar2", "Query - after update of foo2.enabled" );
     REQUIRE( queryBar2.m_foo1.m_name.getString() == "charlie" );
     REQUIRE( queryBar2.m_foo1.m_enabled.get() == false );
-    REQUIRE( queryBar2.m_foo1.m_count.get() == 111 );       // Should be Query's client value -->NOT the model value (this is a mis-use case test of the 'in-use' flag on a query)
+    REQUIRE( queryBar2.m_foo1.m_count.get() == 111 );        // Should be Query's client value -->NOT the model value (this is a mis-use case test of the 'in-use' flag on a query)
     REQUIRE( queryBar2.m_foo2.m_enabled.get() == false );
     REQUIRE( queryBar2.m_foo2.m_limit.get() == 100 );
     REQUIRE( queryBar2.m_foo2.m_enabled.isValid() == true ); // Can only check the isValid flag for the Elements that I queried for (i.e. only for foo2.m_enabled)
+
+
+    // BAR3 Query
+    Point::QueryBar3 queryBar3( modelBar3_ );
+    queryBar3.issueQuery();
+    traceBar3_( queryBar3, "Bar3", "Query - model point in its initial state" );
+    unsigned idx;
+    for(idx=0; idx<4; idx++)
+        {
+        REQUIRE( queryBar3.isTupleInContainer(idx) == false );
+        REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == false );
+        REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == false );
+        REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == false );
+        }
+
+    REQUIRE( queryBar3.nextItem(0) == -1 );
+    idx = 0;
+    unsigned j;
+    for(j=0; j<4; j++)
+        {
+        REQUIRE( queryBar3.nextEmptyItem(j) == j );
+        }
+
+    /// FOO3 Controller 
+    Point::ControllerBar3 controllerBar3( modelBar3_ );
+    idx = 2;
+    controllerBar3.m_tuples[idx].m_name.set("bob2");
+    controllerBar3.m_tuples[idx].m_enabled.set(true);
+    controllerBar3.m_tuples[idx].m_count.set(102);
+    controllerBar3.m_tuples[idx].setAllValidFlagState(true);
+    controllerBar3.m_tuples[idx].setAllInUseState(true);
+    controllerBar3.addItem(idx);
+    controllerBar3.updateModel();
+
+    queryBar3.issueQuery();
+    traceBar3_( queryBar3, "Bar3", "Query - after add of tuple idx: 2" );
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob2" );
+    REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 102 );
+    REQUIRE( queryBar3.isTupleInContainer(0) == false );
+    REQUIRE( queryBar3.isTupleInContainer(1) == false );
+    REQUIRE( queryBar3.isTupleInContainer(3) == false );
+
+    REQUIRE( queryBar3.nextItem(0) == idx );
+    REQUIRE( queryBar3.nextItem(idx+1) == -1 );
+    REQUIRE( queryBar3.nextEmptyItem(0) == 0 );
+    REQUIRE( queryBar3.nextEmptyItem(1) == 1 );
+    REQUIRE( queryBar3.nextEmptyItem(2) == 3 );
+    REQUIRE( queryBar3.nextEmptyItem(3) == 3 );
+
+
+    idx = 1;
+    controllerBar3.m_tuples[idx].m_name.set("bob1");
+    controllerBar3.m_tuples[idx].m_enabled.set(true);
+    controllerBar3.m_tuples[idx].m_count.set(101);
+    controllerBar3.m_tuples[idx].setAllValidFlagState(true);
+    controllerBar3.m_tuples[idx].setAllInUseState(true);
+    controllerBar3.addItem(idx);
+    controllerBar3.updateModel();
+
+    queryBar3.issueQuery();
+    traceBar3_( queryBar3, "Bar3", "Query - after add of tuple idx: 2, 1" );
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob1" );
+    REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 101 );
+    REQUIRE( queryBar3.isTupleInContainer(0) == false );
+    REQUIRE( queryBar3.isTupleInContainer(3) == false );
+    idx = 2;
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob2" );
+    REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 102 );
+
+    idx = 2;
+    controllerBar3.removeItem(idx);
+    controllerBar3.updateModel();
+    queryBar3.issueQuery();
+    traceBar3_( queryBar3, "Bar3", "Query - after remove of tuple idx: 2" );
+    REQUIRE( queryBar3.isTupleInContainer(idx) == false );
+    idx = 1;
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob1" );
+    REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 101 );
+    REQUIRE( queryBar3.isTupleInContainer(0) == false );
+    REQUIRE( queryBar3.isTupleInContainer(3) == false );
+
 
     // Shutdown threads
     viewerMailbox_.pleaseStop();

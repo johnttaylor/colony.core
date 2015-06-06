@@ -21,6 +21,7 @@ Container::Container( Rte::Point::ContainerApi& myPoint, Rte::Point::Model::Api&
 :m_myPoint(myPoint)
 ,m_modelPoint(modelPoint)
     {
+    m_myPoint.setAllInUseState(true);
     }
 
 

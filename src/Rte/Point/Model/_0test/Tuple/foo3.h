@@ -25,6 +25,8 @@ namespace Tuple {
  */
 class Foo3: public Rte::Tuple::Basic<4>,
             public Rte::Tuple::ContainerItem
+            
+            
 {
 public: // Provide the domain application access to the Data
     ///
@@ -36,12 +38,12 @@ public: // Provide the domain application access to the Data
 
 public:
     /// Constructor
-    Foo3( void )
+    Foo3( void ):Rte::Tuple::Basic<4>( &m_inContainer_ )
         {
-        setElementIndex( m_inContainer_, 0 );
-        setElementIndex( m_name, 1 );
-        setElementIndex( m_enabled, 2 );
-        setElementIndex( m_count, 3 );
+        registerElement( m_name );
+        registerElement( m_enabled );
+        registerElement( m_count );
+        endRegistration();
         }
 };
 

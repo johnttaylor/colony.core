@@ -33,8 +33,9 @@ public:
     /// Constructor
     Foo2( void )
         {
-        setElementIndex( m_enabled, 0 );
-        setElementIndex( m_limit, 1 );
+        registerElement( m_enabled );
+        registerElement( m_limit );
+        endRegistration();
         }
 };
 

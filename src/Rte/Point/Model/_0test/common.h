@@ -67,7 +67,7 @@ static void traceFoo2_( Tuple::Foo2& tuple, const char* name, const char* msg )
 static void traceFoo3_( Tuple::Foo3& tuple, const char* name, const char* msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo3: %s", name, msg ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _inContainer_:=[%s]. valid=%s, inUse=%d",  b2t_(tuple.m_inContainer_.get()), b2t_(tuple.m_inContainer_.isValid()), tuple.m_inContainer_.isInUse()  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _inContainer_:=%s. valid=%s, inUse=%d",    b2t_(tuple.m_inContainer_.get()), b2t_(tuple.m_inContainer_.isValid()), tuple.m_inContainer_.isInUse()  ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%d",          tuple.m_name.get(), b2t_(tuple.m_name.isValid()), tuple.m_name.isInUse()  ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%d",         tuple.m_enabled.get(), b2t_(tuple.m_enabled.isValid()), tuple.m_enabled.isInUse()  ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%d",           tuple.m_count.get(), b2t_(tuple.m_count.isValid()), tuple.m_count.isInUse() ));
@@ -95,9 +95,11 @@ static void traceBar3_( Point::Bar3& point, const char* name, const char* msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("==> %s::Bar3: %s", name, msg ));
     unsigned i;
+    Cpl::Text::FString<2> idx;
     for(i=0; i<point.getNumTuples(); i++)
-        {
-        traceFoo3_( point[i], name, "" );
+        {                    
+        idx = i;
+        traceFoo3_( point[i], name, idx );
         CPL_SYSTEM_TRACE_MSG( SECT_, ("") );
         }
     }

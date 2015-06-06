@@ -116,9 +116,6 @@ void Rte::Point::Container<TUPLE,N>::addTuple( unsigned tupleIdx  )
     m_tuples[tupleIdx].m_inContainer_.set(true);
     m_tuples[tupleIdx].m_inContainer_.setValid();
     m_tuples[tupleIdx].m_inContainer_.setInUse();
-
-    // Membership changes ARE changes to the Point
-    incrementSequenceNumber();
     }
 
 template<class TUPLE, int N>
@@ -132,9 +129,6 @@ void Rte::Point::Container<TUPLE,N>::removeTuple( unsigned tupleIdx  )
     m_tuples[tupleIdx].m_inContainer_.set(false);
     m_tuples[tupleIdx].m_inContainer_.setValid();
     m_tuples[tupleIdx].m_inContainer_.setInUse();
-
-    // Membership changes ARE changes to the Point
-    incrementSequenceNumber();
     }
 
 template<class TUPLE, int N>

@@ -52,6 +52,8 @@ public:
               enabled item/tuple with meaningful data.
             o The application must still call updateModel() after calling
               addItem() to update the actual model.
+            o The call to updateModel() should immediately follow the call
+              to this method.
             o If the item/tuple is ALREADY in the container the method
               performs all its operations AND it will cause a
               container membership change notification.
@@ -66,6 +68,8 @@ public:
         Notes: 
             o The application must still call updateModel() after callomg
               removeItem() to update the actual model.
+            o The call to updateModel() should immediately follow the call
+              to this method.
             o If the item/tuple is NOT in the container the method
               performs all its operations AND it will cause a
               container membership change notification.

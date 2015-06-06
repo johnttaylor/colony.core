@@ -37,10 +37,18 @@ protected:
 
 
 protected:
-    /** This method attaches/registers the element into the array of elements at
-        the specified index.
+    /** This method attaches/registers the Tuple into the array of Tuples.
+        This method should ONLY be called in the constructor of the concrete
+        child class. Also, the endRegistration() method must be called once
+        all Tuples have been registered.
      */
-    virtual void setTupleIndex( Rte::Tuple::Api& tuple, unsigned idx );
+    virtual void registerTuple( Rte::Tuple::Api& tuple );
+
+    /** This method is used to information base class that ALL Tuples for
+        the Point have been registered.  This method should ONLY be called
+        in the constructor of the concrete child class.
+     */
+    virtual void endRegistration(void);
 
 
 public: 
@@ -68,15 +76,22 @@ Rte::Point::Basic<N>::Basic( void )
 
 /////////////////
 template<int N>
-void Rte::Point::Basic<N>::setTupleIndex( Rte::Tuple::Api& tuple, unsigned idx )
+void Rte::Point::Basic<N>::registerTuple( Rte::Tuple::Api& tuple )
     {
-    if ( idx >= N )
+    if ( m_seqnum >= N )
         {
-        Cpl::System::FatalError::logf( "Rte::Point::Basic::setTupleIndex - out-of-range index (maxIdx=%u, requestIdx=%u)", N, idx );
+        Cpl::System::FatalError::logf( "Rte::Point::Basic::registerTuple - exceeded max number of tuples (N=%u)", N );
         }
 
-    m_tuplePtrs[idx] = &tuple;
+    m_tuplePtrs[m_seqnum++] = &tuple;
     }
+
+template<int N>
+void Rte::Point::Basic<N>::endRegistration( void )
+    {
+    m_seqnum = 0;
+    }
+
 
 /////////////////
 template<int N>

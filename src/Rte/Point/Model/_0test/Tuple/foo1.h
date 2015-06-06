@@ -33,9 +33,10 @@ public:
     /// Constructor
     Foo1( void )
         {
-        setElementIndex( m_name, 0 );
-        setElementIndex( m_enabled, 1 );
-        setElementIndex( m_count, 2 );
+        registerElement( m_name );
+        registerElement( m_enabled );
+        registerElement( m_count );
+        endRegistration();
         }
 };
 
