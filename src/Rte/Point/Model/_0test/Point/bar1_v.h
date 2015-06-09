@@ -1,42 +1,41 @@
+#ifndef Point_ViewerBar1_h_
+#define Point_ViewerBar1_h_
 /*----------------------------------------------------------------------------- 
-* This file is part of the Shift-Right Open Repository.  The Repository is an   
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the root directory or on the Internet at           
-* http://www.shift-right.com/openrepo/license.htm                               
+* agreement (license.txt) in the top/ directory or on the Internet at           
+* http://integerfox.com/colony.core/license.txt
 *                                                                               
-* Copyright (c) 2001-2010 John T. Taylor                                        
+* Copyright (c) 2014, 2015  John T. Taylor                                        
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
-#ifndef _eden_devtests_mvc_server_point_foo1_viewer_h_
-#define _eden_devtests_mvc_server_point_foo1_viewer_h_
+/** @file */
 
-#include "eden/devtests/mvc/server/points/foo1.h"
-#include "eden/mvc/point/viewer/composer.h"
+#include "Rte/Point/Viewer/Composer.h"
+#include "Rte/Point/Model/_0test/Point/Bar1.h"
 
 ///
-namespace DevTest {
-///
-namespace Points {
+namespace Point {
 
 
 /** Concrete Viewer Point: BAR1
  */
-template <class Context>
+template <class CONTEXT>
 class ViewerBar1: public Bar1,
-                  public Eden::MVC::Point::Viewer::Composer<Context>
+                  public Rte::Point::Viewer::Composer<CONTEXT>
 {
 public:
     /// Constructor
-    ViewerBar1( Context&                         context,
-                typename Eden::MVC::Point::Viewer::Composer<Context>::ChangeNotificationFunc_t         contextChangedCb,
-                typename Eden::MVC::Point::Viewer::Composer<Context>::StoppedNotificationFunc_t        contextStoppedCb,
-                Eden::MVC::Point::Model::Api&    modelPoint,
-                Jcl::PostMessageApi&             viewerMbox )
-              :Eden::MVC::Point::Viewer::Composer<Context>::Composer(*this,context,contextChangedCb,contextStoppedCb,modelPoint,viewerMbox)
-              {}
+    ViewerBar1( CONTEXT&                                                                    context,
+                typename Rte::Point::Viewer::Composer<CONTEXT>::ChangeNotificationFunc_T    contextChangedCb,
+                typename Rte::Point::Viewer::Composer<CONTEXT>::StoppedNotificationFunc_T   contextStoppedCb,
+                Rte::Point::Model::Api&                                                     modelPoint,
+                Cpl::Itc::PostApi&                                                          viewerMbox 
+              )
+    :Rte::Point::Viewer::Composer<CONTEXT>::Composer(*this, context, contextChangedCb, contextStoppedCb, modelPoint, viewerMbox)
+        {}
 };
 
 };
-};
-#endif // end _eden_devtests_mvc_server_point_foo1_viewer_h_
+#endif 

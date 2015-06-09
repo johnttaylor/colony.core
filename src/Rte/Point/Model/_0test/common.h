@@ -16,31 +16,26 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Api.h"
 
+#include "Cpl/Itc/CloseSync.h"
+
 #include "Rte/Point/Model/_0test/Point/bar1_m.h"   // Note: violating #include rule about not including from sub-directories -->since this is test code I rationalize the cheating!
 #include "Rte/Point/Model/_0test/Point/bar1_c.h"
 #include "Rte/Point/Model/_0test/Point/bar1_q.h"
+#include "Rte/Point/Model/_0test/Point/bar1_v.h"
 
 #include "Rte/Point/Model/_0test/Point/bar2_m.h"
 #include "Rte/Point/Model/_0test/Point/bar2_c.h"
 #include "Rte/Point/Model/_0test/Point/bar2_q.h"
+#include "Rte/Point/Model/_0test/Point/bar2_v.h"
 
 #include "Rte/Point/Model/_0test/Point/bar3_m.h"
 #include "Rte/Point/Model/_0test/Point/bar3_c.h"
 #include "Rte/Point/Model/_0test/Point/bar3_q.h"
+#include "Rte/Point/Model/_0test/Point/bar3_v.h"
 
 
 #define SECT_           "_0test"
 
-
-
-// Mailbox for the server and viewer threads
-static Cpl::Itc::MailboxServer modelMailbox_;
-static Cpl::Itc::MailboxServer viewerMailbox_;
-
-// Model Points
-static  Point::ModelBar1 modelBar1_(modelMailbox_);
-static  Point::ModelBar2 modelBar2_(modelMailbox_);
-static  Point::ModelBar3 modelBar3_(modelMailbox_);
 
 
 ///////////////////////////////////
@@ -103,6 +98,162 @@ static void traceBar3_( Point::Bar3& point, const char* name, const char* msg )
         CPL_SYSTEM_TRACE_MSG( SECT_, ("") );
         }
     }
+
+
+////////////////////////////////////////////
+class ViewerContext: public Cpl::Itc::CloseSync
+{
+public: // Make public to simply testing
+    ///    
+    Point::ViewerBar1<ViewerContext>   m_bar1;
+    ///
+    Point::ViewerBar2<ViewerContext>   m_bar2;
+    ///
+    Point::ViewerBar3<ViewerContext>   m_bar3;
+    ///
+    int                                m_openViewerCount;
+    ///
+    Cpl::Itc::CloseRequest::CloseMsg*  m_closeMsgPtr;
+    ///
+    const char*                        m_name;
+
+public:
+    ///
+    ViewerContext( const char*          viewerName,
+                   Cpl::Itc::PostApi&   viewerMbox, 
+                   Point::ModelBar1&    modelBar1,
+                   Point::ModelBar2&    modelBar2,
+                   Point::ModelBar3&    modelBar3,
+                   bool                 enableAllInUseBar1 = true,
+                   bool                 enableAllInUseBar2 = true,
+                   bool                 enableAllInUseBar3 = true
+                 )
+        :CloseSync(viewerMbox)
+        ,m_bar1(*this,
+                &ViewerContext::bar1Changed,
+                &ViewerContext::bar1Stopped,
+                modelBar1,
+                viewerMbox
+               )
+        ,m_bar2(*this,
+                &ViewerContext::bar2Changed,
+                &ViewerContext::bar2Stopped,
+                modelBar2,
+                viewerMbox
+               )
+        ,m_bar3(*this,
+                &ViewerContext::bar3Changed,
+                &ViewerContext::bar3ContainerChanged,
+                &ViewerContext::bar3Stopped,
+                modelBar3,
+                viewerMbox
+               )
+        ,m_openViewerCount(0)
+        ,m_closeMsgPtr(0)
+        ,m_name(viewerName)
+            {
+            if ( enableAllInUseBar1 )
+                {
+                m_bar1.setAllInUseState(true);
+                }
+            if ( enableAllInUseBar2 )
+                {
+                m_bar2.setAllInUseState(true);
+                }
+            if ( enableAllInUseBar3 )
+                {
+                m_bar3.setAllInUseState(true);
+                }
+            }
+
+private:
+    ///
+    void viewerStopped(void)
+        {
+        if ( --m_openViewerCount == 0 )
+            {
+            if ( m_closeMsgPtr )
+                {
+                m_closeMsgPtr->returnToSender();
+                }
+            }
+        }
+
+protected:
+    ///
+    void bar1Changed(void)
+        {
+        traceBar1_( m_bar1, m_name, "Viewer::Changed" );
+        }
+    ///
+    void bar1Stopped(void)
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Viewer(%s).Bar1 STOPPED", m_name ));
+        viewerStopped();
+        }
+
+    ///
+    void bar2Changed(void)
+        {
+        traceBar2_( m_bar2, m_name, "Viewer::Changed" );
+        }
+    ///
+    void bar2Stopped(void)
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Viewer(%s).Bar2 STOPPED", m_name ));
+        viewerStopped();
+        }
+
+    ///
+    void bar3Changed(void)
+        {
+        traceBar3_( m_bar3, m_name, "Viewer::Tuple Changed" );
+        }
+    void bar3ContainerChanged(void)
+        {
+        traceBar3_( m_bar3, m_name, "Viewer::CONTAINER Changed" );
+        }
+    void bar3Stopped(void)
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Viewer(%s).Bar3 STOPPED", m_name ));
+        viewerStopped();
+        }
+
+
+protected: // Cpl::Itc::Close/Open
+    void request( Cpl::Itc::OpenRequest::OpenMsg& msg )
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "ViewerContext::request( OpenMsg ): starting viewers" ));
+        m_openViewerCount += m_bar1.startViewing();
+        m_openViewerCount += m_bar2.startViewing();
+        m_openViewerCount += m_bar3.startViewing();
+        msg.returnToSender();
+        }
+
+    ///
+    void request( Cpl::Itc::CloseRequest::CloseMsg& msg )
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "ViewerContext::request( CloseMsg ): stopping viewers" ));
+        m_bar1.stopViewing();
+        m_bar2.stopViewing();
+        m_bar3.stopViewing();
+        m_closeMsgPtr      = &msg;        
+        }
+
+};
+
+
+///////////////////////////////////////////////////////////////////
+
+// Mailbox for the server and viewer threads
+static Cpl::Itc::MailboxServer modelMailbox_;
+static Cpl::Itc::MailboxServer viewerMailbox_;
+
+// Model Points
+static  Point::ModelBar1 modelBar1_(modelMailbox_);
+static  Point::ModelBar2 modelBar2_(modelMailbox_);
+static  Point::ModelBar3 modelBar3_(modelMailbox_);
+
 
 
 

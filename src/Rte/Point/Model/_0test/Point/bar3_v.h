@@ -1,43 +1,42 @@
+#ifndef Point_ViewerBar3_h_
+#define Point_ViewerBar3_h_
 /*----------------------------------------------------------------------------- 
-* This file is part of the Shift-Right Open Repository.  The Repository is an   
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the root directory or on the Internet at           
-* http://www.shift-right.com/openrepo/license.htm                               
+* agreement (license.txt) in the top/ directory or on the Internet at           
+* http://integerfox.com/colony.core/license.txt
 *                                                                               
-* Copyright (c) 2001-2010 John T. Taylor                                        
+* Copyright (c) 2014, 2015  John T. Taylor                                        
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
-#ifndef _eden_devtests_mvc_server_point_foo3_viewer_h_
-#define _eden_devtests_mvc_server_point_foo3_viewer_h_
+/** @file */
 
-#include "eden/devtests/mvc/server/points/foo3.h"
-#include "eden/mvc/point/viewer/container.h"
+#include "Rte/Point/Viewer/Container.h"
+#include "Rte/Point/Model/_0test/Point/Bar3.h"
 
 ///
-namespace DevTest {
-///
-namespace Points {
+namespace Point {
 
 
 /** Concrete Viewer Point: BAR3
  */
-template <class Context>
+template <class CONTEXT>
 class ViewerBar3: public Bar3,
-                  public Eden::MVC::Point::Viewer::Container<Context>
+                  public Rte::Point::Viewer::Container<CONTEXT>
 {
 public:
     /// Constructor
-    ViewerBar3( Context&                          context,
-                typename Eden::MVC::Point::Viewer::Container<Context>::TupleChangeNotificationFunc_t     tupleChangedCb,
-                typename Eden::MVC::Point::Viewer::Container<Context>::ContainerChangeNotificationFunc_t containerChangedCb,
-                typename Eden::MVC::Point::Viewer::Container<Context>::StoppedNotificationFunc_t         contextStoppedCb,
-                Eden::MVC::Point::Model::Api&     modelPoint,
-                Jcl::PostMessageApi&              viewerMbox )
-              :Eden::MVC::Point::Viewer::Container<Context>::Container(*this,context,tupleChangedCb,containerChangedCb,contextStoppedCb,modelPoint,viewerMbox)
-              {}
+    ViewerBar3( CONTEXT&                                                                            context,
+                typename Rte::Point::Viewer::Container<CONTEXT>::TupleChangeNotificationFunc_T      tupleChangedCb,
+                typename Rte::Point::Viewer::Container<CONTEXT>::ContainerChangeNotificationFunc_T  containerChangedCb,
+                typename Rte::Point::Viewer::Container<CONTEXT>::StoppedNotificationFunc_T          contextStoppedCb,
+                Rte::Point::Model::Api&                                                             modelPoint,
+                Cpl::Itc::PostApi&                                                                  viewerMbox 
+              )
+    :Rte::Point::Viewer::Container<CONTEXT>::Container(*this, context, tupleChangedCb, containerChangedCb, contextStoppedCb, modelPoint, viewerMbox)
+        {}
 };
 
 };
-};
-#endif // end _eden_devtests_mvc_server_point_foo3_viewer_h_
+#endif 

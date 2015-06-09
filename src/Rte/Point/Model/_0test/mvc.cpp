@@ -31,6 +31,11 @@ void link_mvc(void) {}
 */
 
 
+// Viewers
+ViewerContext v1_( "V1", viewerMailbox_, modelBar1_, modelBar2_, modelBar3_, true, false, true );
+ViewerContext v2_( "V2", viewerMailbox_, modelBar1_, modelBar2_, modelBar3_, true, true, false );
+
+
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "mvc", "[mvc]" )
     {
@@ -41,14 +46,20 @@ TEST_CASE( "mvc", "[mvc]" )
     Cpl::System::Thread* viewerThreadPtr = Cpl::System::Thread::create( viewerMailbox_,  "Viewer" );
 
     Cpl::System::Thread* t1 = Cpl::System::Thread::create( viewerMailbox_, "Viewer" );
-    Cpl::System::Thread* t3 = Cpl::System::Thread::create( modelMailbox_,  "MASTER" );
+    Cpl::System::Thread* t3 = Cpl::System::Thread::create( modelMailbox_,  "MODEL" );
+
+    // Start viewers
+    v1_.open();
+    v2_.open();
 
     // Pause to let the Model thread start
     Cpl::System::Api::sleep(50);
 
+   
     // BAR1 Query
     Point::QueryBar1 queryBar1( modelBar1_ );
     queryBar1.issueQuery();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar1_( queryBar1, "Bar1", "Query - model point in its initial state" );
     REQUIRE( queryBar1.m_tuple.m_name.isValid() == false );
     REQUIRE( queryBar1.m_tuple.m_enabled.isValid() == false );
@@ -65,8 +76,11 @@ TEST_CASE( "mvc", "[mvc]" )
     controllerBar1.m_tuple.m_count.setInUse();
     controllerBar1.m_tuple.m_count.setValid();
     controllerBar1.m_tuple.m_count.set(12);
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
     controllerBar1.updateModel();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     queryBar1.issueQuery();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar1_( queryBar1, "Bar1", "Query - after initial controller write" );
     REQUIRE( queryBar1.m_tuple.m_name.getString() == "bob" );
     REQUIRE( queryBar1.m_tuple.m_enabled.get() == true );
@@ -80,8 +94,11 @@ TEST_CASE( "mvc", "[mvc]" )
     controllerBar1.m_tuple.m_enabled.set(false);
     controllerBar1.m_tuple.m_name.set("bobs not here"); // Should NOT change since 'in-use' is marked as false
     controllerBar1.m_tuple.m_count.set(36);             // Should NOT change since 'in-use' is marked as false
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
     controllerBar1.updateModel();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     queryBar1.issueQuery();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar1_( queryBar1, "Bar1", "Query - after update of 'm_enabled'" );
     REQUIRE( queryBar1.m_tuple.m_name.isValid() == true );
     REQUIRE( queryBar1.m_tuple.m_enabled.isValid() == true );
@@ -93,8 +110,11 @@ TEST_CASE( "mvc", "[mvc]" )
     controllerBar1.m_tuple.m_count.setInUse();
     controllerBar1.m_tuple.m_count.set(6);
     controllerBar1.m_tuple.m_enabled.set(true);        // Should change since it is 'in-use' flag is still true!
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
     controllerBar1.updateModel();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     queryBar1.issueQuery();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar1_( queryBar1, "Bar1", "Query - after update of 'm_count'" );
     REQUIRE( queryBar1.m_tuple.m_name.getString() == "bob" );
     REQUIRE( queryBar1.m_tuple.m_enabled.get() == true );
@@ -104,6 +124,7 @@ TEST_CASE( "mvc", "[mvc]" )
     // BAR2 Query
     Point::QueryBar2 queryBar2( modelBar2_ );
     queryBar2.issueQuery();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar2_( queryBar2, "Bar2", "Query - model point in its initial state" );
     REQUIRE( queryBar2.m_foo1.m_name.isValid() == false );
     REQUIRE( queryBar2.m_foo1.m_enabled.isValid() == false );
@@ -120,8 +141,11 @@ TEST_CASE( "mvc", "[mvc]" )
     controllerBar2.m_foo1.m_count.set(42);
     controllerBar2.m_foo2.m_enabled.set(true);
     controllerBar2.m_foo2.m_limit.set(100);
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
     controllerBar2.updateModel();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     queryBar2.issueQuery();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar2_( queryBar2, "Bar2", "Query - after initial controller write" );
     REQUIRE( queryBar2.m_foo1.m_name.getString() == "charlie" );
     REQUIRE( queryBar2.m_foo1.m_enabled.get() == false );
@@ -139,11 +163,14 @@ TEST_CASE( "mvc", "[mvc]" )
     controllerBar2.m_foo2.m_enabled.set(false);
     controllerBar2.m_foo1.m_name.set("bobs not here"); // Should NOT change since 'in-use' is marked as false
     controllerBar2.m_foo1.m_count.set(36);             // Should NOT change since 'in-use' is marked as false
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
     controllerBar2.updateModel();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     queryBar2.setAllInUseState(false);
     queryBar2.m_foo1.m_count.set( 111 );    // This should not get over-written on the query since it marked as not-in-use
     queryBar2.m_foo2.m_enabled.setInUse();  // Retrieve just foo2.enabled field
     queryBar2.issueQuery();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar2_( queryBar2, "Bar2", "Query - after update of foo2.enabled" );
     REQUIRE( queryBar2.m_foo1.m_name.getString() == "charlie" );
     REQUIRE( queryBar2.m_foo1.m_enabled.get() == false );
@@ -155,6 +182,7 @@ TEST_CASE( "mvc", "[mvc]" )
 
     // BAR3 Query
     Point::QueryBar3 queryBar3( modelBar3_ );
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     queryBar3.issueQuery();
     traceBar3_( queryBar3, "Bar3", "Query - model point in its initial state" );
     unsigned idx;
@@ -183,9 +211,12 @@ TEST_CASE( "mvc", "[mvc]" )
     controllerBar3.m_tuples[idx].setAllValidFlagState(true);
     controllerBar3.m_tuples[idx].setAllInUseState(true);
     controllerBar3.addItem(idx);
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
     controllerBar3.updateModel();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
 
     queryBar3.issueQuery();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar3_( queryBar3, "Bar3", "Query - after add of tuple idx: 2" );
     REQUIRE( queryBar3.isTupleInContainer(idx) == true );
     REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
@@ -205,17 +236,43 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( queryBar3.nextEmptyItem(2) == 3 );
     REQUIRE( queryBar3.nextEmptyItem(3) == 3 );
 
+    controllerBar3.m_tuples[idx].setAllInUseState(false);
+    controllerBar3.m_tuples[idx].m_name.set("bob33");
+    controllerBar3.m_tuples[idx].m_name.setInUse();
+    controllerBar3.m_tuples[idx].m_count.set(1023);
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
+    controllerBar3.updateModel();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
+
+    queryBar3.issueQuery();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
+    traceBar3_( queryBar3, "Bar3", "Query - after update to tuple.1.m_name ONLY" );
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob33" );
+    REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 102 );
+    REQUIRE( queryBar3.isTupleInContainer(0) == false );
+    REQUIRE( queryBar3.isTupleInContainer(1) == false );
+    REQUIRE( queryBar3.isTupleInContainer(3) == false );
+
 
     idx = 1;
+    controllerBar3.m_tuples[idx].setAllInUseState(true);
     controllerBar3.m_tuples[idx].m_name.set("bob1");
     controllerBar3.m_tuples[idx].m_enabled.set(true);
     controllerBar3.m_tuples[idx].m_count.set(101);
     controllerBar3.m_tuples[idx].setAllValidFlagState(true);
     controllerBar3.m_tuples[idx].setAllInUseState(true);
     controllerBar3.addItem(idx);
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
     controllerBar3.updateModel();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
 
     queryBar3.issueQuery();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar3_( queryBar3, "Bar3", "Query - after add of tuple idx: 2, 1" );
     REQUIRE( queryBar3.isTupleInContainer(idx) == true );
     REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
@@ -231,14 +288,17 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
     REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
     REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob2" );
+    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob33" );
     REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == true );
     REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 102 );
 
     idx = 2;
     controllerBar3.removeItem(idx);
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
     controllerBar3.updateModel();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     queryBar3.issueQuery();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar3_( queryBar3, "Bar3", "Query - after remove of tuple idx: 2" );
     REQUIRE( queryBar3.isTupleInContainer(idx) == false );
     idx = 1;
@@ -252,6 +312,10 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( queryBar3.isTupleInContainer(0) == false );
     REQUIRE( queryBar3.isTupleInContainer(3) == false );
 
+
+    // Stop viewers
+    v1_.close();
+    v2_.close();
 
     // Shutdown threads
     viewerMailbox_.pleaseStop();

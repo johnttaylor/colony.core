@@ -30,8 +30,8 @@ class Api
 public:
     /** This method is used to register/detach for change notifications
         for this Viewer to its associate Model Point. This method returns 
-        returns true if the viewer was stopped prior to this call, else
-        returns false.  NOTE: If start is called multiple times in row
+        returns 1 if the viewer was stopped prior to this call, else
+        returns 0.  NOTE: If start is called multiple times in row
         (without a call stop) - the 'extra' start calls are ignored.
         
         If 'forceInitialUpdate' is true, then the viewer is assumed
@@ -51,7 +51,7 @@ public:
         the associated Model Point.  The underlying Viewer Point is
         updated to match the Model Point prior to the callback.   
      */
-    virtual bool startViewing( bool forceInitialUpdate = true, bool useValueForDifference = true ) = 0;
+    virtual unsigned startViewing( bool forceInitialUpdate = true, bool useValueForDifference = true ) = 0;
 
     /** This method is used to cancel change notifications for this 
         Viewer to its associate Model Point.  NOTE: If stop is called 

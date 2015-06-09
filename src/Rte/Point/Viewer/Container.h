@@ -37,7 +37,14 @@ public:
         as a change of state on the one or mores tuple's m_inContainer_
         Elements.  When there is membership change in the container,
         this method is guaranteed to be called AFTER the 
-        TupleChangeNotificationFunc_T callback.
+        TupleChangeNotificationFunc_T callback. 
+
+        NOTE: All Container membership changes ARE also Tuple changes
+              i.e. both the ContainerChangeNotificationFunc_T and
+              TupleChangeNotificationFunc_T callback methods will ALWAYS
+              be called when there is membership change.  HOWEVER, a
+              change to a Tuple that is already 'in the container' will
+              ONLY trigger the TupleChangeNotificationFunc_T callback.
      */
     typedef void (CONTEXT::*ContainerChangeNotificationFunc_T)(void);
 
@@ -74,7 +81,7 @@ protected:
      */
     Container( Rte::Point::Api&                  myContainerPoint, 
                CONTEXT&                          context,
-               ChangeNotificationFunc_T          tupleChangedCb,
+               TupleChangeNotificationFunc_T     tupleChangedCb,
                ContainerChangeNotificationFunc_T containerChangedCb,
                StoppedNotificationFunc_T         contextStoppedCb,
                Rte::Point::Model::Api&           modelPoint,
@@ -83,7 +90,7 @@ protected:
 
 public:
     /// See Rte::Point::Viewer::Api
-    int startViewing( bool forceInitialUpdate = true, bool useValueForDifference = true );
+    unsigned startViewing( bool forceInitialUpdate = true, bool useValueForDifference = true );
 
 
 protected:
@@ -101,7 +108,7 @@ protected:
 template <class CONTEXT>
 Rte::Point::Viewer::Container<CONTEXT>::Container( Rte::Point::Api&                  myContainerPoint, 
                                                    CONTEXT&                          context,
-                                                   ChangeNotificationFunc_T          tupleChangedCb,
+                                                   TupleChangeNotificationFunc_T     tupleChangedCb,
                                                    ContainerChangeNotificationFunc_T containerChangedCb,
                                                    StoppedNotificationFunc_T         contextStoppedCb,
                                                    Rte::Point::Model::Api&           modelPoint,
@@ -117,7 +124,7 @@ Rte::Point::Viewer::Container<CONTEXT>::Container( Rte::Point::Api&             
 
 /////////////////
 template <class CONTEXT>
-int Rte::Point::Viewer::Container<CONTEXT>::startViewing( bool forceInitialUpdate, bool useValueForDifference )
+unsigned Rte::Point::Viewer::Container<CONTEXT>::startViewing( bool forceInitialUpdate, bool useValueForDifference )
     {
     getMyPoint().resetSequenceNumber();
     return Base::startViewing(forceInitialUpdate, useValueForDifference);
@@ -131,7 +138,7 @@ void Rte::Point::Viewer::Container<CONTEXT>::modelHasChanged( void )
         {
         (m_context.*m_changedCb)();
         }
-    if ( m_containerChangedCb && m_myContainerPoint.isMembershipChanged() )
+    if ( m_containerChangedCb && getMyPoint().isMembershipChanged() )
         {
         (m_context.*m_containerChangedCb)();
         }

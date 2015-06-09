@@ -36,16 +36,16 @@ Base::Base( Rte::Point::Api&        myPoint,
 
 
 /////////////////
-bool Base::startViewing( bool forceInitialUpdate, bool useValueForDifference )
+unsigned Base::startViewing( bool forceInitialUpdate, bool useValueForDifference )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::startViewing - (%p)", this ));
-    bool result = false;
+    unsigned result = 0;
 
     // Ignore 'extra' start calls
     if ( m_state == eSTOPPED )
         {
         // Set my state to STARTED
-        result  = true;
+        result  = 1;
         m_state = eSTARTED;
 
         // Initialize my viewer to the current contents of the model point
@@ -86,7 +86,7 @@ bool Base::poll( void )
         result = false;
         }
 
-    return true;
+    return result;
     }
 
 bool Base::stopViewing( void )
