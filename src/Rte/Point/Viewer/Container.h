@@ -32,26 +32,12 @@ template <class CONTEXT>
 class Container: public Base
 {
 public:
-    /** Defines a callback method function for when Membership in 
-        the Model Point changes.  A change in Membership is defined
-        as a change of state on the one or mores tuple's m_inContainer_
-        Elements.  When there is membership change in the container,
-        this method is guaranteed to be called AFTER the 
-        TupleChangeNotificationFunc_T callback. 
-
-        NOTE: All Container membership changes ARE also Tuple changes
-              i.e. both the ContainerChangeNotificationFunc_T and
-              TupleChangeNotificationFunc_T callback methods will ALWAYS
-              be called when there is membership change.  HOWEVER, a
-              change to a Tuple that is already 'in the container' will
-              ONLY trigger the TupleChangeNotificationFunc_T callback.
+    /** Defines a callback method function for when a Tuple and/or there has 
+        been membership change within the Model Point changes.  The bool
+        parameter is set to true when the change(s) include a membership
+        change.
      */
-    typedef void (CONTEXT::*ContainerChangeNotificationFunc_T)(void);
-
-    /** Defines a callback method function for when a Tuple within 
-        the Model Point changes.
-     */
-    typedef void (CONTEXT::*TupleChangeNotificationFunc_T)(void);
+    typedef void (CONTEXT::*ChangeNotificationFunc_T)(bool);
 
     /** Define sa callback method function for when the viewer has been
         be successfully stopped.
@@ -61,16 +47,13 @@ public:
 
 protected:
     /// Reference to my containing instance
-    CONTEXT&                            m_context;
+    CONTEXT&                       m_context;
 
-    /// Method (in my Context) to call when a Tuple change notificaiton is received
-    TupleChangeNotificationFunc_T       m_changedCb;
+    /// Method (in my Context) to call when there is a Tuple/Membership change notificaiton is received
+    ChangeNotificationFunc_T       m_changedCb;
 
-    /// Method (in my Context) to call when there is change in membmership in the Model's Container Point
-    ContainerChangeNotificationFunc_T   m_containerChangedCb;
-    
     /// Method (in my Context) to call when the viewer has been stopped
-    StoppedNotificationFunc_T           m_stoppedCb;
+    StoppedNotificationFunc_T      m_stoppedCb;
 
 
 protected:
@@ -81,8 +64,7 @@ protected:
      */
     Container( Rte::Point::Api&                  myContainerPoint, 
                CONTEXT&                          context,
-               TupleChangeNotificationFunc_T     tupleChangedCb,
-               ContainerChangeNotificationFunc_T containerChangedCb,
+               ChangeNotificationFunc_T          changedCb,
                StoppedNotificationFunc_T         contextStoppedCb,
                Rte::Point::Model::Api&           modelPoint,
                Cpl::Itc::PostApi&                viewerMbox 
@@ -108,16 +90,14 @@ protected:
 template <class CONTEXT>
 Rte::Point::Viewer::Container<CONTEXT>::Container( Rte::Point::Api&                  myContainerPoint, 
                                                    CONTEXT&                          context,
-                                                   TupleChangeNotificationFunc_T     tupleChangedCb,
-                                                   ContainerChangeNotificationFunc_T containerChangedCb,
+                                                   ChangeNotificationFunc_T          changedCb,
                                                    StoppedNotificationFunc_T         contextStoppedCb,
                                                    Rte::Point::Model::Api&           modelPoint,
                                                    Cpl::Itc::PostApi&                viewerMbox 
                                                  )
 :Base( myContainerPoint, modelPoint, viewerMbox ),
  m_context( context ),
- m_changedCb( tupleChangedCb ),
- m_containerChangedCb( containerChangedCb ),
+ m_changedCb( changedCb ),
  m_stoppedCb( contextStoppedCb )
     {
     }
@@ -134,14 +114,7 @@ template <class CONTEXT>
 void Rte::Point::Viewer::Container<CONTEXT>::modelHasChanged( void )
     {
     // Notify context
-    if ( m_changedCb )
-        {
-        (m_context.*m_changedCb)();
-        }
-    if ( m_containerChangedCb && getMyPoint().isMembershipChanged() )
-        {
-        (m_context.*m_containerChangedCb)();
-        }
+    (m_context.*m_changedCb)( getMyPoint().isMembershipChanged() );
     }
     
 template <class CONTEXT>

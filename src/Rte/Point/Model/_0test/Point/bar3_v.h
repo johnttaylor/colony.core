@@ -27,14 +27,13 @@ class ViewerBar3: public Bar3,
 {
 public:
     /// Constructor
-    ViewerBar3( CONTEXT&                                                                            context,
-                typename Rte::Point::Viewer::Container<CONTEXT>::TupleChangeNotificationFunc_T      tupleChangedCb,
-                typename Rte::Point::Viewer::Container<CONTEXT>::ContainerChangeNotificationFunc_T  containerChangedCb,
-                typename Rte::Point::Viewer::Container<CONTEXT>::StoppedNotificationFunc_T          contextStoppedCb,
-                Rte::Point::Model::Api&                                                             modelPoint,
-                Cpl::Itc::PostApi&                                                                  viewerMbox 
+    ViewerBar3( CONTEXT&                                                                    context,
+                typename Rte::Point::Viewer::Container<CONTEXT>::ChangeNotificationFunc_T   contextChangedCb,
+                typename Rte::Point::Viewer::Container<CONTEXT>::StoppedNotificationFunc_T  contextStoppedCb,
+                Rte::Point::Model::Api&                                                     modelPoint,
+                Cpl::Itc::PostApi&                                                          viewerMbox 
               )
-    :Rte::Point::Viewer::Container<CONTEXT>::Container(*this, context, tupleChangedCb, containerChangedCb, contextStoppedCb, modelPoint, viewerMbox)
+    :Rte::Point::Viewer::Container<CONTEXT>::Container(*this, context, contextChangedCb, contextStoppedCb, modelPoint, viewerMbox)
         {}
 };
 

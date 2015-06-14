@@ -107,7 +107,7 @@ Message* Mailbox::waitNext( bool& wasTimeout ) throw()
         // Wait for the next message
         if ( m_timeout )
             {
-            // Note: For Simulation: the timedWait() call if it blocks - does so waiting on the next tick - so Application Wait() call is needed    
+            // Note: For Simulation: the timedWait() call if it blocks - does so waiting on the next tick - so no Application Wait() call is needed    
             if ( !Cpl::System::Thread::timedWait( m_timeout ) )
                 {
                 // Change my waiting status to: NOT waiting
@@ -121,7 +121,7 @@ Message* Mailbox::waitNext( bool& wasTimeout ) throw()
             }
         else
             {
-            // For Simulation: Since this call can block 'past a tick boundary', I need to to call Appliation Wait()
+            // For Simulation: Since this call can block 'past a tick boundary', I need a call Appliation Wait()
             CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT();
             Cpl::System::Thread::wait();
             }

@@ -121,7 +121,7 @@ void Base::request( CancelMsg& msg )
     // NOTE: I intentionally do NOT return a pending Register message, but
     //       simply drop my reference to it.  This is to maintain the
     //       sematics that when the client's response() method for the
-    //       Register Message is called - it is due to change and ONLY a 
+    //       Register Message is called - it is due to a change and ONLY a 
     //       change in state of Point.
     m_pendingNotify.remove( msg.getPayload().m_msgToCancel );
     msg.returnToSender();
@@ -254,12 +254,12 @@ void Base::request( UpdateTupleMsg& msg )
 void Base::checkForNotifications(void)
     {
     // Walk the pending Notification list looking for changes
-    RegisterMsg* ptr = m_pendingNotify.getFirst();
+    RegisterMsg* ptr = m_pendingNotify.first();
     while( ptr )
         {
         RegisterMsg* nextPtr = m_pendingNotify.next( *ptr );
          
-        if ( m_myPoint.compareAndCopy(ptr->getPayload().m_viewerPoint) )
+        if ( m_myPoint.compareAndCopy(ptr->getPayload().m_viewerPoint, false, ptr->getPayload().m_compareValues) )
             {
             m_pendingNotify.remove( *ptr );
             ptr->returnToSender();

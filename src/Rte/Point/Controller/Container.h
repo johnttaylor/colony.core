@@ -82,7 +82,7 @@ public:
         sequence number).
 
         Notes: 
-            o The application must still call updateModel() after callomg
+            o The application must still call updateModel() after calling
               touch() to update the actual model.
      */
     inline void touch(void)                                  { m_myPoint.incrementSequenceNumber(); }

@@ -144,6 +144,5 @@ void MailboxServer::cleanup() throw()
 
 void MailboxServer::signaled() throw()
     {
-    // This should never happen unless the sub-class overrides this operation.
-    Cpl::System::FatalError::logf( "Cpl::Itc::MailboxServer::signaled! (thread=%s)", Cpl::System::Thread::myName() );
+    // Default is to do: NOTHING
     }

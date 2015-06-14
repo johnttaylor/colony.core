@@ -25,6 +25,7 @@ int main( int argc, char* const argv[] )
     CPL_SYSTEM_TRACE_ENABLE_SECTION("Rte::Point::Model");
     CPL_SYSTEM_TRACE_ENABLE_SECTION("Rte::Tuple");
     CPL_SYSTEM_TRACE_ENABLE_SECTION("Rte::Element");
+    CPL_SYSTEM_TRACE_ENABLE_SECTION("Rte::Point::Viewer");
     CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eINFO );
 
     // Run the test(s)

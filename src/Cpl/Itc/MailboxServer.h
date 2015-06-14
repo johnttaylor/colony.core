@@ -102,9 +102,7 @@ protected:
         mailbox, but the mailbox's thread semaphore is signaled. This can
         happen, for example, when a timer is associated with the
         mailbox "Signable" interface. The default implementation
-        of this function asserts a fatal error condition, since
-        the signal should not happen unless the sub-class overrides
-        this operation.
+        of this function does NOTHING.
      */
     virtual void signaled() throw();
 

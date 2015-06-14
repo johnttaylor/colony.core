@@ -17,7 +17,7 @@ src/Cpl/Log/_default
 src/Cpl/Text
 src/Cpl/System
 src/Cpl/Itc
-src/Cpl/TImer
+src/Cpl/Timer
 
 # Platforms
 src/Cpl/Io/Stdio/_ansi

@@ -85,7 +85,7 @@ Rte::Tuple::Basic<N>::Basic( Rte::Element::Api* membershipElementPtr )
     // Register the membership Element (when I am a Container Tuple)
     if ( membershipElementPtr )
         {
-        registerElement( *membershipElementPtr );
+        m_elementPtrs[N-1] = membershipElementPtr;
         }
     }
 
@@ -94,8 +94,8 @@ Rte::Tuple::Basic<N>::Basic( Rte::Element::Api* membershipElementPtr )
 template<int N>
 void Rte::Tuple::Basic<N>::registerElement( Rte::Element::Api& element )
     {
-    // NOTE: I re-use the 'm_seqnum' member variable for my array index when registering elements (since the array index is used during the constructor)
-    if ( m_seqnum >= N )
+    // NOTE: I re-use the 'm_seqnum' member variable for my array index when registering elements (since the array index is ONLY used during the constructor)
+    if ( m_seqnum >= N || m_elementPtrs[m_seqnum] != 0 )
         {
         Cpl::System::FatalError::logf( "Rte::Tuple::Basic::registerElement - exceeded max number of elements (N=%u)", N );
         }
