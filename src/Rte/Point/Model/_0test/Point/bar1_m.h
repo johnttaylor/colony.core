@@ -13,7 +13,7 @@
 /** @file */
 
 #include "Rte/Point/Model/Base.h"
-#include "Rte/Point/Model/_0test/Point/Bar1.h"
+#include "Rte/Point/Model/_0test/Point/bar1.h"
 
 ///
 namespace Point {

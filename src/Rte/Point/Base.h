@@ -75,6 +75,9 @@ public:
     /// See Rte::Point::Api
     bool isMembershipChanged(void) const;
 
+    /// See Rte::Point::Api
+    void invalidateAllTupleSequenceNumbers(void);
+
 };
 
 };      // end namespaces

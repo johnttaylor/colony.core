@@ -107,7 +107,7 @@ void Rte::Tuple::Basic<N>::registerElement( Rte::Element::Api& element )
 template<int N>
 void Rte::Tuple::Basic<N>::endRegistration()
     {
-    m_seqnum = 0;
+    m_seqnum = 1;  // Set the sequence to '1', i.e. a valid number (which requires viewers to invalidate their sequence numbers)
     }
     
 

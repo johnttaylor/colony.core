@@ -65,6 +65,16 @@ bool Base::isMembershipChanged(void) const
     }
 
 
+////////////////////////
+void Base::invalidateAllTupleSequenceNumbers(void)
+    {
+    unsigned j;
+    for(j=0; j<getNumTuples(); j++)
+        {
+        getTuple(j).invalidateSequenceNumber();
+        }
+    }
+
 
 ////////////////////////
 void Base::copyFrom( Api& other, Api* inUseFilterP )
@@ -98,7 +108,7 @@ bool Base::compareAndCopy( Api& other, bool allElements, bool compareValues )
         Cpl::System::FatalError::logf( "Rte::Point::Base::compareAndCopy(point) - otherTuple's tuple count does not match (my count=%u, other count=%u)", getNumTuples(), other.getNumTuples() );
         }
     
-    // Do the compare by VALUE
+    // Do the compare 
     bool     pointDifferent = false;
     unsigned j;
     for(j=0; j<getNumTuples(); j++)

@@ -34,7 +34,7 @@ protected:
 
 
 protected:
-    ///
+    /// Constructor
     Container( Rte::Point::ContainerApi& myPoint, Rte::Point::Model::Api& modelPoint );
 
 
@@ -66,7 +66,7 @@ public:
         container".
 
         Notes: 
-            o The application must still call updateModel() after callomg
+            o The application must still call updateModel() after calling
               removeItem() to update the actual model.
             o The call to updateModel() should immediately follow the call
               to this method.

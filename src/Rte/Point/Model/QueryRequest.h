@@ -15,6 +15,7 @@
 #include "Cpl/Itc/RequestMessage.h"
 #include "Cpl/Itc/SAP.h"
 #include "Rte/Point/Api.h"
+#include "Rte/Point/Query/TupleItem.h"
 #include "Rte/Tuple/Api.h"
 
 ///
@@ -55,16 +56,21 @@ public:
     {
     public:
         /// Destination for where the Model Point Tuple's data will be COPIED to
-        Rte::Tuple::Api& m_dstTuple;
+        Rte::Tuple::Api&                m_dstTuple;
 
         /// Index (within the Point) of the Tuple being queried.
-        unsigned         m_tupleIdx;
+        unsigned                        m_tupleIdx;
+
+        /// Callback Pointer to traversing a Container Point
+        Rte::Point::Query::Traverser*   m_callbackPtr;
+
 
     public:
         ///
-        QueryTuplePayload( Rte::Tuple::Api& queryTuple, unsigned tupleIdx )
+        QueryTuplePayload( Rte::Tuple::Api& queryTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* callbackPtr = 0 )
             :m_dstTuple(queryTuple)
             ,m_tupleIdx(tupleIdx) 
+            ,m_callbackPtr(callbackPtr)
                 {}
     };
 

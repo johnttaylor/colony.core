@@ -13,7 +13,8 @@
 /** @file */
 
 #include "Rte/Point/Controller/Container.h"
-#include "Rte/Point/Model/_0test/Point/Bar3.h"
+#include "Rte/Point/Controller/TupleItem.h"
+#include "Rte/Point/Model/_0test/Point/bar3_m.h"
 
 ///
 namespace Point {
@@ -26,12 +27,28 @@ class ControllerBar3: public Bar3,
 {
 public:
     /// Constructor
-    ControllerBar3( Rte::Point::Model::Api& modelPoint )
+    ControllerBar3( ModelBar3& modelPoint )
         :Rte::Point::Controller::Container(*this, modelPoint)
             {
             }
 
 };
+
+
+/** Concrete Tuple ITEM Controller Point: BAR3::Foo3
+ */
+class TupleItemControllerBar3: public Tuple::Foo3, 
+                               public Rte::Point::Controller::TupleItem<Tuple::Foo3>
+{
+public:
+    /// Constructor
+    TupleItemControllerBar3( unsigned myTupleItemIdx, ModelBar3& modelPoint )
+        :Rte::Point::Controller::TupleItem<Tuple::Foo3>(myTupleItemIdx, *this, modelPoint)
+            {
+            }
+
+};
+
 
 };
 #endif 

@@ -13,7 +13,8 @@
 /** @file */
 
 #include "Rte/Point/Controller/Base.h"
-#include "Rte/Point/Model/_0test/Point/Bar1.h"
+#include "Rte/Point/Controller/Tuple.h"
+#include "Rte/Point/Model/_0test/Point/bar1_m.h"
 
 ///
 namespace Point {
@@ -26,8 +27,23 @@ class ControllerBar1: public Point::Bar1,
 {
 public:
     /// Constructor
-    ControllerBar1( Rte::Point::Model::Api& modelPoint )
+    ControllerBar1( ModelBar1& modelPoint )
         :Rte::Point::Controller::Base(*this, modelPoint)
+            {
+            }
+
+};
+
+
+/** Concrete Tuple Controller Point: BAR1::Foo1
+ */
+class TupleFoo1ControllerBar1: public Tuple::Foo1, 
+                               public Rte::Point::Controller::Tuple
+{
+public:
+    /// Constructor
+    TupleFoo1ControllerBar1( ModelBar1& modelPoint )
+        :Rte::Point::Controller::Tuple(0, *this, modelPoint)
             {
             }
 

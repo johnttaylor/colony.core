@@ -13,7 +13,7 @@
 /** @file */
 
 #include "Rte/Point/Viewer/Composer.h"
-#include "Rte/Point/Model/_0test/Point/Bar1.h"
+#include "Rte/Point/Model/_0test/Point/bar1.h"
 
 ///
 namespace Point {
@@ -30,7 +30,7 @@ public:
     ViewerBar1( CONTEXT&                                                                    context,
                 typename Rte::Point::Viewer::Composer<CONTEXT>::ChangeNotificationFunc_T    contextChangedCb,
                 typename Rte::Point::Viewer::Composer<CONTEXT>::StoppedNotificationFunc_T   contextStoppedCb,
-                Rte::Point::Model::Api&                                                     modelPoint,
+                ModelBar1&                                                                  modelPoint,
                 Cpl::Itc::PostApi&                                                          viewerMbox 
               )
     :Rte::Point::Viewer::Composer<CONTEXT>::Composer(*this, context, contextChangedCb, contextStoppedCb, modelPoint, viewerMbox)

@@ -13,7 +13,8 @@
 /** @file */
 
 #include "Rte/Point/Query/Base.h"
-#include "Rte/Point/Model/_0test/Point/Bar1.h"
+#include "Rte/Point/Query/Tuple.h"
+#include "Rte/Point/Model/_0test/Point/bar1_m.h"
 
 ///
 namespace Point {
@@ -26,8 +27,23 @@ class QueryBar1: public Bar1,
 {
 public:
     /// Constructor
-    QueryBar1( Rte::Point::Model::Api& modelPoint )
+    QueryBar1( ModelBar1& modelPoint )
         :Rte::Point::Query::Base(*this, modelPoint)
+            {
+            }
+
+};
+
+
+/** Concrete Tuple Query Point: BAR1::Foo1
+ */
+class TupleFoo1QueryBar1: public Tuple::Foo1, 
+                          public Rte::Point::Query::Tuple
+{
+public:
+    /// Constructor
+    TupleFoo1QueryBar1( ModelBar1& modelPoint )
+        :Rte::Point::Query::Tuple(0, *this, modelPoint)
             {
             }
 

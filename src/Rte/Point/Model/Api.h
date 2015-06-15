@@ -33,7 +33,7 @@ public:
 
     /** This method synchronously updates a single Tuple in the Model Point
      */
-    virtual void update( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx ) = 0;
+    virtual void update( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx, bool membershipChanged = false ) = 0;
 
 
 public:
@@ -41,9 +41,14 @@ public:
      */
     virtual void query( Rte::Point::Api& dstPoint ) = 0;
 
-    /** This method synchronously queries a single Tuple in the Model Point
+    /** This method synchronously queries a single Tuple in the Model Point.
+        The 'walkCallbackPtr' is an optional argument that ONLY applies when
+        querying a Container Point.  The 'walkCallbackPtr' allows a client to
+        walk/traverse/read every Tuple in the Container Point - one Tuple at a
+        time (i.e. only need memory for a single Tuple). The traversal of the
+        Tuples starts with Tuple index 'tupleIdx'.
      */
-    virtual void query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx ) = 0;
+    virtual void query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* walkCallbackPtr = 0 ) = 0;
           
 
 public:

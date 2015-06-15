@@ -1,5 +1,3 @@
-#ifndef Point_ModelBar3_h_
-#define Point_ModelBar3_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -10,25 +8,25 @@
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
-/** @file */
 
-#include "Rte/Point/Model/Base.h"
-#include "Rte/Point/Model/_0test/Point/bar3.h"
+
+#include "Tuple.h"
 
 ///
-namespace Point {
+using namespace Rte::Point::Query;
 
 
-/** Concrete Model Point: BAR3
- */
-class ModelBar3: public Bar3,
-                 public Rte::Point::Model::Base
-{
-public:
-    /// Constructor
-    ModelBar3( Cpl::Itc::PostApi& myMbox ):Rte::Point::Model::Base(*this,myMbox){}
-};
+///////////////////////////////////////////////////
+Tuple::Tuple( unsigned tupleIndex, Rte::Tuple::Api& myTuple, Rte::Point::Model::Api& modelPoint )
+:m_myTuple(myTuple)
+,m_modelPoint(modelPoint)
+,m_tupleIdx(tupleIndex)
+    {
+    }
 
 
-};
-#endif 
+///////////////////////////////////////////////////
+void Tuple::issueQuery( void )
+    {
+    m_modelPoint.query( m_myTuple, m_tupleIdx );
+    }

@@ -119,6 +119,18 @@ public:
 
 
 public:
+    /** This method invalidates ALL of the contained TUPLE's sequence 
+        numbers.  This method is ONLY used by Viewer on initialize
+        to set the correct initial state for their sequence numbers.
+
+        NOTE: The Tuple sequence number is used for has the Tuple been
+              written to (vs the Point's sequence number which is used
+              for detecting membership changes for Container Points.)
+     */
+    virtual void invalidateAllTupleSequenceNumbers(void) = 0;
+
+
+public:
     /// Virtual destructor to make the compiler happy
     virtual ~Api(){}
 };

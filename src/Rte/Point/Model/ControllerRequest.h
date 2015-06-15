@@ -60,11 +60,15 @@ public:
         /// Index (within the Point) of the Tuple being updated.
         unsigned           m_tupleIdx;
 
+        /// Flag that indicates that the Tuple update invovles a Point Membership change
+        bool               m_membershipChanged;
+
     public:
         ///
-        UpdateTuplePayload( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx )
+        UpdateTuplePayload( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx, bool membershipChanged=false )
             :m_srcTuple(controllerTuple)
-            ,m_tupleIdx(tupleIdx) 
+            ,m_tupleIdx(tupleIdx)
+            ,m_membershipChanged(membershipChanged) 
                 {}
     };
 

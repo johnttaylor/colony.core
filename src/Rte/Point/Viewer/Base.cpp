@@ -32,6 +32,7 @@ Base::Base( Rte::Point::Api&        myPoint,
 ,m_cancelPayload( m_registerMsg.getRequestMsg() )
 ,m_cancelMsg( *this, viewerMbox, modelPoint.getViewerSAP(), m_cancelPayload )
     {
+    myPoint.invalidateAllTupleSequenceNumbers();
     }
 
 
@@ -56,8 +57,9 @@ unsigned Base::startViewing( bool forceInitialUpdate, bool useValueForDifference
         // Initialize my viewer to the current contents of the model point
         if ( forceInitialUpdate )
             {
-            m_modelPoint.query( m_registerPayload.m_viewerPoint ); 
-            modelHasChanged();          
+            m_modelPoint.query( m_registerPayload.m_viewerPoint );  // Read the initial value
+            m_registerPayload.m_viewerPoint.setMembershipChanged(); // Force membership change
+            modelHasChanged();                                      // Generate callback
             }
 
         // Register with the model for future updates        

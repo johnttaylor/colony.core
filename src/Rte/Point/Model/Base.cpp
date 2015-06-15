@@ -69,9 +69,9 @@ void Base::update( Rte::Point::Api& controllerPoint )
     m_controllerSAP.postSync(msg);
     }
 
-void Base::update( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx )
+void Base::update( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx, bool membershipChanged  )
     {
-    UpdateTuplePayload            payload( controllerTuple, tupleIdx );
+    UpdateTuplePayload            payload( controllerTuple, tupleIdx, membershipChanged );
     Cpl::Itc::SyncReturnHandler   srh;
     UpdateTupleMsg                msg(*this,payload,srh);
     m_controllerSAP.postSync(msg);
@@ -85,9 +85,9 @@ void Base::query( Rte::Point::Api& dstPoint )
     m_querySAP.postSync(msg);
     }
 
-void Base::query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx )
+void Base::query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* walkCallbackPtr )
     {
-    QueryTuplePayload             payload( dstTuple, tupleIdx );
+    QueryTuplePayload             payload( dstTuple, tupleIdx, walkCallbackPtr );
     Cpl::Itc::SyncReturnHandler   srh;
     QueryTupleMsg                 msg(*this,payload,srh);
     m_querySAP.postSync(msg);
@@ -167,7 +167,7 @@ void Base::request( UpdateTupleMsg& msg )
     Rte::Tuple::Api::copy( m_myPoint.getTuple(msg.getPayload().m_tupleIdx), msg.getPayload().m_srcTuple, &(msg.getPayload().m_srcTuple) );
     
     // Detect membership updates (from the Controller)
-    if ( msg.getPayload().m_srcTuple.getSequenceNumber() > 0 )
+    if ( msg.getPayload().m_membershipChanged )
         {
         m_myPoint.incrementSequenceNumber();
         }
@@ -285,9 +285,10 @@ void Base::request( QueryMsg& msg )
     msg.returnToSender();
     }
     
+
 void Base::request( QueryTupleMsg& msg )
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(QueryTupleMsg) - (%p) idx=%d, dst=%p", this, msg.getPayload().m_tupleIdx, &(msg.getPayload().m_dstTuple) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(QueryTupleMsg) - (%p) idx=%d, dst=%p, callback=%p", this, msg.getPayload().m_tupleIdx, &(msg.getPayload().m_dstTuple), msg.getPayload().m_callbackPtr ));
 
     // Brute force update (no isDifferent() check) the client's 'tuple' 
     unsigned index = msg.getPayload().m_tupleIdx;
@@ -296,29 +297,28 @@ void Base::request( QueryTupleMsg& msg )
     // Update the Client's (i.e. the Querier's) Tuple sequence number to match the Model's Tuple sequence number
     msg.getPayload().m_dstTuple.setSequenceNumber( m_myPoint.getTuple(index).getSequenceNumber() );
 
-//    // If a search callback was specified, iterate through all tuple in the CONTAINER
-//    if ( msg.getPayload()._searchCallback )
-//        {
-//        for(;;)
-//            {
-//            // Callback the client and exit if the client has 'found' what it is searching for
-//            if ( msg.getPayload()._searchCallback->item(index) == Jcl::TraverserPattern::_abortTraversal )
-//                {
-//                break;
-//                }
-//
-//            // Check if I am at the end of the Tuples.  Since in theory I am 
-//            // walking the tuples in a Container - I need to SKIP container's 
-//            // sequence number tuple.
-//            if ( ++index >= m_myPoint.getNumTuples() - 1 )
-//                {
-//                break;
-//                }
-//
-//            // Load the next tuple
-//            Eden::MVC::Tuple::Api::copy( msg.getPayload().m_dstTuple, m_myPoint.getTuple(index), &(msg.getPayload().m_dstTuple) );
-//            }
-//        }
+    // If a search callback was specified, iterate through all tuple in the CONTAINER
+    if ( msg.getPayload().m_callbackPtr )
+        {
+        for(;;)
+            {
+            // Callback the client and exit if the client has 'found' what it is searching for
+            if ( msg.getPayload().m_callbackPtr->item(index) == Cpl::Type::Traverser::eABORT )
+                {
+                break;
+                }
+
+            // Check if I am at the end of the Tuples. 
+            if ( ++index >= m_myPoint.getNumTuples() )
+                {
+                break;
+                }
+
+            // Load the next tuple
+            Rte::Tuple::Api::copy( msg.getPayload().m_dstTuple, m_myPoint.getTuple(index), &(msg.getPayload().m_dstTuple) );
+            msg.getPayload().m_dstTuple.setSequenceNumber( m_myPoint.getTuple(index).getSequenceNumber() );
+            }
+        }
             
     msg.returnToSender();
     }

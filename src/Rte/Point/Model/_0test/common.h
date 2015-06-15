@@ -124,6 +124,13 @@ public: // Make public to simply testing
     unsigned                           m_changed3Count;
     ///
     unsigned                           m_membershipChanged3Count;
+    ///
+    bool                               m_useValueCompare1;
+    ///
+    bool                               m_useValueCompare2;
+    ///
+    bool                               m_useValueCompare3;
+
 
 public:
     ///
@@ -132,9 +139,12 @@ public:
                    Point::ModelBar1&    modelBar1,
                    Point::ModelBar2&    modelBar2,
                    Point::ModelBar3&    modelBar3,
-                   bool                 enableAllInUseBar1 = true,
-                   bool                 enableAllInUseBar2 = true,
-                   bool                 enableAllInUseBar3 = true
+                   bool                 enableAllInUseBar1  = true,
+                   bool                 enableAllInUseBar2  = true,
+                   bool                 enableAllInUseBar3  = true,
+                   bool                 useValueCompareBar1 = true,
+                   bool                 useValueCompareBar2 = true,
+                   bool                 useValueCompareBar3 = true
                  )
         :CloseSync(viewerMbox)
         ,m_bar1(*this,
@@ -162,6 +172,9 @@ public:
         ,m_changed2Count(0)
         ,m_changed3Count(0)
         ,m_membershipChanged3Count(0)
+        ,m_useValueCompare1(useValueCompareBar1)
+        ,m_useValueCompare2(useValueCompareBar2)
+        ,m_useValueCompare3(useValueCompareBar3)
             {
             if ( enableAllInUseBar1 )
                 {
@@ -244,9 +257,9 @@ protected: // Cpl::Itc::Close/Open
     void request( Cpl::Itc::OpenRequest::OpenMsg& msg )
         {
         CPL_SYSTEM_TRACE_MSG( SECT_, ( "ViewerContext::request( OpenMsg ): starting viewers" ));
-        m_openViewerCount += m_bar1.startViewing(true);
-        m_openViewerCount += m_bar2.startViewing(true);
-        m_openViewerCount += m_bar3.startViewing(true);
+        m_openViewerCount += m_bar1.startViewing(true, m_useValueCompare1);
+        m_openViewerCount += m_bar2.startViewing(true, m_useValueCompare2);
+        m_openViewerCount += m_bar3.startViewing(true, m_useValueCompare3);
         msg.returnToSender();
         }
 

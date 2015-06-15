@@ -56,7 +56,7 @@ public:
     void update( Rte::Point::Api& controllerPoint );
 
     /// See Rte::Point::Model::Api
-    void update( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx );
+    void update( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx, bool membershipChanged = false );
 
 
 public:
@@ -64,7 +64,7 @@ public:
     void query( Rte::Point::Api& dstPoint );
 
     /// See Rte::Point::Model::Api
-    void query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx );
+    void query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* walkCallbackPtr = 0 );
 
 
 public:

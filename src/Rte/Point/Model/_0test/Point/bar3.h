@@ -13,7 +13,7 @@
 /** @file */
 
 #include "Rte/Point/Container.h"
-#include "Rte/Point/Model/_0test/Tuple/Foo3.h"
+#include "Rte/Point/Model/_0test/Tuple/foo3.h"
 
 ///
 namespace Point {
