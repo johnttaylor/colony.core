@@ -36,6 +36,10 @@ protected:
         {
         }
 
+public:
+    /// Returns true if the Tuple is marked/flagged as being in-the-container
+    bool isInContainer(void) const { return m_inContainer_.get(); }
+
 };
 
 

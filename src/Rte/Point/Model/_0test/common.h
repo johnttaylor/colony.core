@@ -283,6 +283,55 @@ protected: // Cpl::Itc::Close/Open
 };
 
 
+
+class Foo3TupleTraverserContext
+{
+public:
+    ///
+    unsigned m_abortIdx;
+    /// 
+    unsigned m_startIdx;
+    ///
+    unsigned m_lastIdx;
+    ///
+    Rte::Point::Query::TupleItem<Tuple::Foo3, Foo3TupleTraverserContext> m_tupleWalker;
+    ///
+    Tuple::Foo3 m_tuples[4];
+
+    
+public:
+    ///
+    Foo3TupleTraverserContext( Point::ModelBar3& modelPoint )
+        :m_abortIdx(0xFF)
+        ,m_startIdx(0xFF)                
+        ,m_lastIdx(0xFF)
+        ,m_tupleWalker( modelPoint, *this, &Foo3TupleTraverserContext::item )
+            {}
+
+public:
+    ///
+    Cpl::Type::Traverser::Status_T item( Tuple::Foo3& nextTuple, unsigned tupleIndex )
+        {
+        Cpl::Text::FString<3> idx = tupleIndex;
+        traceFoo3_( nextTuple, "Foo3 Traversal", idx );
+
+        // Capture index info for unittesting checks
+        Rte::Tuple::Api::copy( m_tuples[tupleIndex], nextTuple );
+        m_lastIdx = tupleIndex;
+        if ( m_startIdx == 0xFF )
+            {
+            m_startIdx = tupleIndex;
+            }
+        if ( tupleIndex == m_abortIdx )
+            {
+            return Cpl::Type::Traverser::eABORT;
+            }
+
+        return Cpl::Type::Traverser::eCONTINUE;
+        }
+};
+
+
 ///////////////////////////////////////////////////////////////////
 
 // Mailbox for the server and viewer threads

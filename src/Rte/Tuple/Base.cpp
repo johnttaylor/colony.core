@@ -18,55 +18,55 @@ using namespace Rte::Tuple;
 
 ///////////////////////
 Base::Base( void )
-:m_seqnum(0)
-,m_updated(false)
+:m_seqnum_(0)
+,m_updated_(false)
     {
     }
 
 /////////////////
 bool Base::isUpdated( void ) const
     {
-    return m_updated;
+    return m_updated_;
     }
 
 void Base::clearUpdatedState( void )
     {
-    m_updated = false;
+    m_updated_ = false;
     }
 
 void Base::setUpdatedState( void )
     {
-    m_updated = true;
+    m_updated_ = true;
     }
 
 
 void Base::incrementSequenceNumber(void)
     {
     // Do not allow a sequence number of zero (zero represents 'unknown sequence number')
-    if ( ++m_seqnum == 0 )
+    if ( ++m_seqnum_ == 0 )
         {
-        m_seqnum = 1;
+        m_seqnum_ = 1;
         }
     }
 
 uint32_t Base::getSequenceNumber(void) const
     {
-    return m_seqnum;
+    return m_seqnum_;
     }
 
 void Base::setSequenceNumber( uint32_t newSeqNum )
     {
-    m_seqnum = newSeqNum;
+    m_seqnum_ = newSeqNum;
     }
 
 void Base::invalidateSequenceNumber(void)
     {
-    m_seqnum = 0;
+    m_seqnum_ = 0;
     }
 
 bool Base::isDifferent( Api& other ) const
     {
-    if ( m_seqnum == 0 || other.getSequenceNumber() == 0 || m_seqnum != other.getSequenceNumber() )
+    if ( m_seqnum_ == 0 || other.getSequenceNumber() == 0 || m_seqnum_ != other.getSequenceNumber() )
         {
         return true;
         }

@@ -31,7 +31,7 @@ class Basic: public Base
 {
 protected:
     /// Pointers to all of my contained Elements
-    Rte::Element::Api*  m_elementPtrs[N];
+    Rte::Element::Api*  m_elementPtrs_[N];
 
 
 protected:
@@ -79,13 +79,13 @@ Rte::Tuple::Basic<N>::Basic( Rte::Element::Api* membershipElementPtr )
     unsigned i;
     for(i=0; i<N; i++)
         {
-        m_elementPtrs[i] = 0;
+        m_elementPtrs_[i] = 0;
         }
 
     // Register the membership Element (when I am a Container Tuple)
     if ( membershipElementPtr )
         {
-        m_elementPtrs[N-1] = membershipElementPtr;
+        m_elementPtrs_[N-1] = membershipElementPtr;
         }
     }
 
@@ -94,20 +94,20 @@ Rte::Tuple::Basic<N>::Basic( Rte::Element::Api* membershipElementPtr )
 template<int N>
 void Rte::Tuple::Basic<N>::registerElement( Rte::Element::Api& element )
     {
-    // NOTE: I re-use the 'm_seqnum' member variable for my array index when registering elements (since the array index is ONLY used during the constructor)
-    if ( m_seqnum >= N || m_elementPtrs[m_seqnum] != 0 )
+    // NOTE: I re-use the 'm_seqnum_' member variable for my array index when registering elements (since the array index is ONLY used during the constructor)
+    if ( m_seqnum_ >= N || m_elementPtrs_[m_seqnum_] != 0 )
         {
         Cpl::System::FatalError::logf( "Rte::Tuple::Basic::registerElement - exceeded max number of elements (N=%u)", N );
         }
 
-    m_elementPtrs[m_seqnum++] = &element;
+    m_elementPtrs_[m_seqnum_++] = &element;
     }
 
 
 template<int N>
 void Rte::Tuple::Basic<N>::endRegistration()
     {
-    m_seqnum = 1;  // Set the sequence to '1', i.e. a valid number (which requires viewers to invalidate their sequence numbers)
+    m_seqnum_ = 1;  // Set the sequence to '1', i.e. a valid number (which requires viewers to invalidate their sequence numbers)
     }
     
 
@@ -126,7 +126,7 @@ Rte::Element::Api& Rte::Tuple::Basic<N>::getElement( unsigned elementIdx ) const
         Cpl::System::FatalError::logf( "Rte::Tuple::Basic::getElement - out-of-range index (maxIdx=%u, requestIdx=%u)", N, elementIdx );
         }
 
-    Rte::Element::Api* ptr = m_elementPtrs[elementIdx];
+    Rte::Element::Api* ptr = m_elementPtrs_[elementIdx];
     if ( !ptr )
         {
         Cpl::System::FatalError::logf( "Rte::Tuple::Basic::getElement - un-initialized element index (%u)", elementIdx );

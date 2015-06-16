@@ -29,7 +29,7 @@ class Basic: public Rte::Point::Base
 {
 protected:
     /// Pointers to all of my contained Tuples
-    Rte::Tuple::Api*  m_tuplePtrs[N];
+    Rte::Tuple::Api*  m_tuplePtrs_[N];
 
 protected:
     /// Constructor
@@ -70,7 +70,7 @@ Rte::Point::Basic<N>::Basic( void )
     unsigned i;
     for(i=0; i<N; i++)
         {
-        m_tuplePtrs[i] = 0;
+        m_tuplePtrs_[i] = 0;
         }
     }
 
@@ -78,18 +78,18 @@ Rte::Point::Basic<N>::Basic( void )
 template<int N>
 void Rte::Point::Basic<N>::registerTuple( Rte::Tuple::Api& tuple )
     {
-    if ( m_seqnum >= N )
+    if ( m_seqnum_ >= N )
         {
         Cpl::System::FatalError::logf( "Rte::Point::Basic::registerTuple - exceeded max number of tuples (N=%u)", N );
         }
 
-    m_tuplePtrs[m_seqnum++] = &tuple;
+    m_tuplePtrs_[m_seqnum_++] = &tuple;
     }
 
 template<int N>
 void Rte::Point::Basic<N>::endRegistration( void )
     {
-    m_seqnum = 0;
+    m_seqnum_ = 0;
     }
 
 
@@ -108,7 +108,7 @@ Rte::Tuple::Api& Rte::Point::Basic<N>::getTuple( unsigned tupleIdx )
         Cpl::System::FatalError::logf( "Rte::Point::Basic::getTuple - out-of-range index (maxIdx=%u, requestIdx=%u)", N, tupleIdx );
         }
 
-    Rte::Tuple::Api* ptr = m_tuplePtrs[tupleIdx];
+    Rte::Tuple::Api* ptr = m_tuplePtrs_[tupleIdx];
     if ( !ptr )
         {
         Cpl::System::FatalError::logf( "Rte::Point::Basic::getTuple - un-initialize tuple index (%u)", tupleIdx );

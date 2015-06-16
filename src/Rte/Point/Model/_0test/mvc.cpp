@@ -316,9 +316,9 @@ TEST_CASE( "mvc", "[mvc]" )
     for(idx=0; idx<4; idx++)
         {
         REQUIRE( queryBar3.isTupleInContainer(idx) == false );
-        REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == false );
-        REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == false );
-        REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == false );
+        REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == false );
+        REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == false );
+        REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == false );
         }
 
     REQUIRE( queryBar3.nextItem(0) == -1 );
@@ -332,11 +332,11 @@ TEST_CASE( "mvc", "[mvc]" )
     /// FOO3 Controller 
     Point::ControllerBar3 controllerBar3( modelBar3_ );
     idx = 2;
-    controllerBar3.m_tuples[idx].m_name.set("bob2");
-    controllerBar3.m_tuples[idx].m_enabled.set(true);
-    controllerBar3.m_tuples[idx].m_count.set(102);
-    controllerBar3.m_tuples[idx].setAllValidFlagState(true);
-    controllerBar3.m_tuples[idx].setAllInUseState(true);
+    controllerBar3.m_tuples_[idx].m_name.set("bob2");
+    controllerBar3.m_tuples_[idx].m_enabled.set(true);
+    controllerBar3.m_tuples_[idx].m_count.set(102);
+    controllerBar3.m_tuples_[idx].setAllValidFlagState(true);
+    controllerBar3.m_tuples_[idx].setAllInUseState(true);
     controllerBar3.addItem(idx);
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
     controllerBar3.updateModel();
@@ -346,12 +346,12 @@ TEST_CASE( "mvc", "[mvc]" )
     Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar3_( queryBar3, "Bar3", "Query - after add of tuple idx: 2" );
     REQUIRE( queryBar3.isTupleInContainer(idx) == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob2" );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 102 );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == "bob2" );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == 102 );
     REQUIRE( queryBar3.isTupleInContainer(0) == false );
     REQUIRE( queryBar3.isTupleInContainer(1) == false );
     REQUIRE( queryBar3.isTupleInContainer(3) == false );
@@ -373,21 +373,21 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v3_.m_changed1Count == 4 );
     REQUIRE( v3_.m_changed2Count == 1 );
     REQUIRE( v3_.m_changed3Count == 1 );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.getString() == "bob2" );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.get() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.get() == 102 );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.getString() == "bob2" );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.get() == 102 );
     REQUIRE( v1_.m_bar3.isTupleInContainer(0) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(1) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(3) == false );
 
 
-    controllerBar3.m_tuples[idx].setAllInUseState(false);
-    controllerBar3.m_tuples[idx].m_name.set("bob33");
-    controllerBar3.m_tuples[idx].m_name.setInUse();
-    controllerBar3.m_tuples[idx].m_count.set(1023);
+    controllerBar3.m_tuples_[idx].setAllInUseState(false);
+    controllerBar3.m_tuples_[idx].m_name.set("bob33");
+    controllerBar3.m_tuples_[idx].m_name.setInUse();
+    controllerBar3.m_tuples_[idx].m_count.set(1023);
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
     controllerBar3.updateModel();
     Cpl::System::Api::sleep(50); // Pause to allow other threads to run
@@ -396,12 +396,12 @@ TEST_CASE( "mvc", "[mvc]" )
     Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar3_( queryBar3, "Bar3", "Query - after update to tuple.1.m_name ONLY" );
     REQUIRE( queryBar3.isTupleInContainer(idx) == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob33" );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 102 );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == "bob33" );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == 102 );
     REQUIRE( queryBar3.isTupleInContainer(0) == false );
     REQUIRE( queryBar3.isTupleInContainer(1) == false );
     REQUIRE( queryBar3.isTupleInContainer(3) == false );
@@ -415,24 +415,24 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v3_.m_changed1Count == 4 );
     REQUIRE( v3_.m_changed2Count == 1 );
     REQUIRE( v3_.m_changed3Count == 1 );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.getString() == "bob33" );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.get() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.get() == 102 );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.getString() == "bob33" );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.get() == 102 );
     REQUIRE( v1_.m_bar3.isTupleInContainer(0) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(1) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(3) == false );
 
 
     idx = 1;
-    controllerBar3.m_tuples[idx].setAllInUseState(true);
-    controllerBar3.m_tuples[idx].m_name.set("bob1");
-    controllerBar3.m_tuples[idx].m_enabled.set(true);
-    controllerBar3.m_tuples[idx].m_count.set(101);
-    controllerBar3.m_tuples[idx].setAllValidFlagState(true);
-    controllerBar3.m_tuples[idx].setAllInUseState(true);
+    controllerBar3.m_tuples_[idx].setAllInUseState(true);
+    controllerBar3.m_tuples_[idx].m_name.set("bob1");
+    controllerBar3.m_tuples_[idx].m_enabled.set(true);
+    controllerBar3.m_tuples_[idx].m_count.set(101);
+    controllerBar3.m_tuples_[idx].setAllValidFlagState(true);
+    controllerBar3.m_tuples_[idx].setAllInUseState(true);
     controllerBar3.addItem(idx);
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
     controllerBar3.updateModel();
@@ -442,12 +442,12 @@ TEST_CASE( "mvc", "[mvc]" )
     Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar3_( queryBar3, "Bar3", "Query - after add of tuple idx: 2, 1" );
     REQUIRE( queryBar3.isTupleInContainer(idx) == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob1" );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 101 );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == "bob1" );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == 101 );
     REQUIRE( queryBar3.isTupleInContainer(0) == false );
     REQUIRE( queryBar3.isTupleInContainer(3) == false );
     REQUIRE( v1_.m_changed1Count == 4 );
@@ -460,28 +460,28 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v3_.m_changed1Count == 4 );
     REQUIRE( v3_.m_changed2Count == 1 );
     REQUIRE( v3_.m_changed3Count == 1 );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.getString() == "bob1" );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.get() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.get() == 101 );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.getString() == "bob1" );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.get() == 101 );
     REQUIRE( v1_.m_bar3.isTupleInContainer(0) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(3) == false );
     idx = 2;
     REQUIRE( queryBar3.isTupleInContainer(idx) == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob33" );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 102 );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.getString() == "bob33" );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.get() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.get() == 102 );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == "bob33" );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == 102 );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.getString() == "bob33" );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.get() == 102 );
 
     idx = 2;
     controllerBar3.removeItem(idx);
@@ -502,21 +502,21 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v1_.m_bar3.isTupleInContainer(idx) == false );
     idx = 1;
     REQUIRE( queryBar3.isTupleInContainer(idx) == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob1" );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 101 );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == "bob1" );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == 101 );
     REQUIRE( queryBar3.isTupleInContainer(0) == false );
     REQUIRE( queryBar3.isTupleInContainer(3) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(idx) == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.getString() == "bob1" );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.get() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.get() == 101 );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.getString() == "bob1" );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.get() == 101 );
     REQUIRE( v1_.m_bar3.isTupleInContainer(0) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(3) == false );
 
@@ -649,12 +649,12 @@ TEST_CASE( "mvc", "[mvc]" )
     Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar3_( queryBar3, "Bar3", "Query - after add of tuple idx: 2 (BY TUPLE)" );
     REQUIRE( queryBar3.isTupleInContainer(idx) == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob4" );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 112 );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == "bob4" );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == 112 );
     REQUIRE( queryBar3.isTupleInContainer(0) == false );
     REQUIRE( queryBar3.isTupleInContainer(1) == true );
     REQUIRE( queryBar3.isTupleInContainer(2) == false );
@@ -662,12 +662,12 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v1_.m_changed2Count == 1 );
     REQUIRE( v1_.m_changed3Count == 6 );
     REQUIRE( v1_.m_membershipChanged3Count == 5 );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.getString() == "bob4" );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.get() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.get() == 112 );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.getString() == "bob4" );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.get() == 112 );
     REQUIRE( v1_.m_bar3.isTupleInContainer(idx) == true );
     REQUIRE( v1_.m_bar3.isTupleInContainer(0) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(1) == true );
@@ -684,12 +684,12 @@ TEST_CASE( "mvc", "[mvc]" )
     Cpl::System::Api::sleep(50); // Pause to allow other threads to run
     traceBar3_( queryBar3, "Bar3", "Query - after add of tuple idx: 2 (BY TUPLE - second try)" );
     REQUIRE( queryBar3.isTupleInContainer(idx) == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( queryBar3.m_tuples[idx].m_name.getString() == "bob42" );
-    REQUIRE( queryBar3.m_tuples[idx].m_enabled.get() == false );
-    REQUIRE( queryBar3.m_tuples[idx].m_count.get() == 1122 );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == "bob42" );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == 1122 );
     REQUIRE( queryBar3.isTupleInContainer(0) == false );
     REQUIRE( queryBar3.isTupleInContainer(1) == true );
     REQUIRE( queryBar3.isTupleInContainer(2) == false );
@@ -697,12 +697,12 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v1_.m_changed2Count == 1 );
     REQUIRE( v1_.m_changed3Count == 7 );
     REQUIRE( v1_.m_membershipChanged3Count == 5 );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.isValid() == true );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_name.getString() == "bob42" );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_enabled.get() == false );
-    REQUIRE( v1_.m_bar3.m_tuples[idx].m_count.get() == 1122 );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.getString() == "bob42" );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.get() == false );
+    REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.get() == 1122 );
     REQUIRE( v1_.m_bar3.isTupleInContainer(idx) == true );
     REQUIRE( v1_.m_bar3.isTupleInContainer(0) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(1) == true );
@@ -730,6 +730,66 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v1_.m_bar3.isTupleInContainer(0) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(2) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(3) == true );
+
+
+    // TEST Query Tuple (Bar2)
+    Point::TupleFoo1QueryBar2 queryBar2_foo1( modelBar2_ );
+    Point::TupleFoo2QueryBar2 queryBar2_foo2( modelBar2_ );
+    queryBar2_foo1.issueQuery();
+    traceFoo1_( queryBar2_foo1, "Bar2", "Query by Tuple: Foo1" );
+    queryBar2_foo2.issueQuery();
+    traceFoo2_( queryBar2_foo2, "Bar2", "Query by Tuple: Foo2" );
+    REQUIRE( queryBar2_foo1.m_name.getString() == "daryl" );
+    REQUIRE( queryBar2_foo1.m_enabled.get() == true );
+    REQUIRE( queryBar2_foo1.m_count.get() == 66 );
+    REQUIRE( queryBar2_foo2.m_enabled.get() == true );
+    REQUIRE( queryBar2_foo2.m_limit.get() == 67 );
+    REQUIRE( queryBar2_foo1.m_name.isValid() == true );
+    REQUIRE( queryBar2_foo1.m_enabled.isValid() == true );
+    REQUIRE( queryBar2_foo1.m_count.isValid() == true );
+    REQUIRE( queryBar2_foo2.m_enabled.isValid() == true );
+    REQUIRE( queryBar2_foo2.m_limit.isValid() == true );
+
+ 
+    // TEST Query Tuple (Bar3)
+    Point::TupleFoo3QueryBar3 queryBar3_single( modelBar3_, 3 );
+    queryBar3_single.issueQuery();
+    traceFoo3_( queryBar3_single, "Bar3", "Query by Tuple[3]: Foo3" );
+    REQUIRE( queryBar3_single.isInContainer() == true );
+    REQUIRE( queryBar3_single.m_name.isValid() == true );
+    REQUIRE( queryBar3_single.m_enabled.isValid() == true );
+    REQUIRE( queryBar3_single.m_count.isValid() == true );
+    REQUIRE( queryBar3_single.m_name.getString() == "bob42" );
+    REQUIRE( queryBar3_single.m_enabled.get() == false );
+    REQUIRE( queryBar3_single.m_count.get() == 1122 );
+
+
+    // TEST Query Tuple TRAVERSAL (Bar3)
+    Foo3TupleTraverserContext queryBar3_traversal( modelBar3_ );
+    queryBar3_traversal.m_abortIdx = 1;
+    queryBar3_traversal.m_tupleWalker.setStartIndex(0);
+    queryBar3_traversal.m_tupleWalker.issueQuery();
+    REQUIRE( queryBar3_traversal.m_startIdx == 0 );
+    REQUIRE( queryBar3_traversal.m_lastIdx == 1 );
+    REQUIRE( queryBar3_traversal.m_tuples[0].isInContainer() == false );
+    REQUIRE( queryBar3_traversal.m_tuples[1].isInContainer() == false );
+
+    queryBar3_traversal.m_startIdx = 0xFF;
+    queryBar3_traversal.m_abortIdx = 3;
+    queryBar3_traversal.m_tupleWalker.setStartIndex(2);
+    queryBar3_traversal.m_tupleWalker.issueQuery();
+    REQUIRE( queryBar3_traversal.m_startIdx == 2 );
+    REQUIRE( queryBar3_traversal.m_lastIdx == 3 );
+    REQUIRE( queryBar3_traversal.m_tuples[2].isInContainer() == false );
+    REQUIRE( queryBar3_traversal.m_tuples[3].isInContainer() == true );
+    REQUIRE( queryBar3_traversal.m_tuples[3].m_name.isValid() == true );
+    REQUIRE( queryBar3_traversal.m_tuples[3].m_enabled.isValid() == true );
+    REQUIRE( queryBar3_traversal.m_tuples[3].m_count.isValid() == true );
+    REQUIRE( queryBar3_traversal.m_tuples[3].m_name.getString() == "bob42" );
+    REQUIRE( queryBar3_traversal.m_tuples[3].m_enabled.get() == false );
+    REQUIRE( queryBar3_traversal.m_tuples[3].m_count.get() == 1122 );
+
+
 
     // Stop viewers
     v1_.close();

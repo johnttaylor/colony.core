@@ -34,7 +34,7 @@ class Container: public ContainerApi
 {
 public:
     /// Tuple instances 
-    TUPLE m_tuples[N];
+    TUPLE m_tuples_[N];
 
 
 protected:
@@ -44,7 +44,7 @@ protected:
 
 public:
     /// Provide public access to my tuples
-    inline TUPLE& operator[] (unsigned i) { return m_tuples[i]; }
+    inline TUPLE& operator[] (unsigned i) { return m_tuples_[i]; }
 
 
 public: 
@@ -82,7 +82,7 @@ Rte::Point::Container<TUPLE,N>::Container( void )
     unsigned i;;
     for(i=0; i<N; i++)
         {
-        m_tuples[i].m_inContainer_.set(false);
+        m_tuples_[i].m_inContainer_.set(false);
         }
     }
 
@@ -101,7 +101,7 @@ Rte::Tuple::Api& Rte::Point::Container<TUPLE,N>::getTuple( unsigned tupleIdx )
         Cpl::System::FatalError::logf( "Rte::Point::Container::getTuple - out-of-range index (maxIdx=%u, requestIdx=%u)", N, tupleIdx );
         }
 
-    return m_tuples[tupleIdx];
+    return m_tuples_[tupleIdx];
     }
 
 /////////////////
@@ -113,9 +113,9 @@ void Rte::Point::Container<TUPLE,N>::addTuple( unsigned tupleIdx  )
         Cpl::System::FatalError::logf( "Rte::Point::Container::addTuple - out-of-range index (maxIdx=%u, requestIdx=%u)", N, tupleIdx );
         }
 
-    m_tuples[tupleIdx].m_inContainer_.set(true);
-    m_tuples[tupleIdx].m_inContainer_.setValid();
-    m_tuples[tupleIdx].m_inContainer_.setInUse();
+    m_tuples_[tupleIdx].m_inContainer_.set(true);
+    m_tuples_[tupleIdx].m_inContainer_.setValid();
+    m_tuples_[tupleIdx].m_inContainer_.setInUse();
     }
 
 template<class TUPLE, int N>
@@ -126,9 +126,9 @@ void Rte::Point::Container<TUPLE,N>::removeTuple( unsigned tupleIdx  )
         Cpl::System::FatalError::logf( "Rte::Point::Container::removeTuple - out-of-range index (maxIdx=%u, requestIdx=%u)", N, tupleIdx );
         }
 
-    m_tuples[tupleIdx].m_inContainer_.set(false);
-    m_tuples[tupleIdx].m_inContainer_.setValid();
-    m_tuples[tupleIdx].m_inContainer_.setInUse();
+    m_tuples_[tupleIdx].m_inContainer_.set(false);
+    m_tuples_[tupleIdx].m_inContainer_.setValid();
+    m_tuples_[tupleIdx].m_inContainer_.setInUse();
     }
 
 template<class TUPLE, int N>
@@ -139,7 +139,7 @@ bool Rte::Point::Container<TUPLE,N>::isTupleInContainer( unsigned tupleIdx ) con
         Cpl::System::FatalError::logf( "Rte::Point::Container::isTupleInContainer - out-of-range index (maxIdx=%u, requestIdx=%u)", N, tupleIdx );
         }
 
-    return m_tuples[tupleIdx].m_inContainer_.get() == true;
+    return m_tuples_[tupleIdx].m_inContainer_.get() == true;
     }
 
 template<class TUPLE, int N>
@@ -147,7 +147,7 @@ int Rte::Point::Container<TUPLE,N>::nextTuple( unsigned startIdx ) const
     {
     while( startIdx < N )
         {
-        if ( m_tuples[startIdx].m_inContainer_.get() == true )
+        if ( m_tuples_[startIdx].m_inContainer_.get() == true )
             {
             return startIdx;
             }
@@ -163,7 +163,7 @@ int Rte::Point::Container<TUPLE,N>::nextEmptyTuple( unsigned startIdx ) const
     {
     while( startIdx < N )
         {
-        if ( m_tuples[startIdx].m_inContainer_.get() == false )
+        if ( m_tuples_[startIdx].m_inContainer_.get() == false )
             {
             return startIdx;
             }

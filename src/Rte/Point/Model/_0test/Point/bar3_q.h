@@ -13,6 +13,7 @@
 /** @file */
 
 #include "Rte/Point/Query/Container.h"
+#include "Rte/Point/Query/Tuple.h"
 #include "Rte/Point/Query/TupleItem.h"
 #include "Rte/Point/Model/_0test/Point/bar3.h"
 
@@ -35,19 +36,49 @@ public:
 };
 
 
-/** Concrete Tuple ITEM Query Point: BAR3::Foo3
+/** Concrete Tuple Query Point: BAR3::Foo3 (Single Tuple, no traversal)
  */
-class TupleItemQueryBar3: public Tuple::Foo3, 
-                          public Rte::Point::Query::TupleItem<Tuple::Foo3>
+class TupleFoo3QueryBar3: public Tuple::Foo3, 
+                          public Rte::Point::Query::Tuple
 {
 public:
     /// Constructor
-    TupleItemQueryBar3( unsigned myTupleItemIdx, ModelBar3& modelPoint )
-        :Rte::Point::Query::TupleItem<Tuple::Foo3>(myTupleItemIdx, *this, modelPoint)
+    TupleFoo3QueryBar3( ModelBar3& modelPoint, unsigned tupleIndex )
+        :Rte::Point::Query::Tuple(tupleIndex, *this, modelPoint)
             {
             }
 
 };
+
+
+/** For Tuple QUERY Traversal:
+
+    class MyContext
+    {
+    protected:
+        ///
+        Rte::Point::Query::TupleItem<Tuple::Foo3, MyContext> m_tupleWalker;
+
+    
+    public:
+        /// Constructor
+        MyContext( Point::ModelBar3& modelPoint, .... )
+        :m_tupleWalker( modelPoint, *this, &MyContext::walkFoo3 )
+            {
+            ....
+            m_tupleWalker.issueQuery();
+            ...
+            }
+        
+
+    protectd:
+        /// Traversal Callback
+        Cpl::Type::Traverser::Status_T walkFoo3( Tuple::Foo3& nextTuple, unsigned tupleIndex );
+    };
+
+
+           
+ */
 
 };
 #endif 

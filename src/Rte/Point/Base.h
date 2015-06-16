@@ -27,10 +27,10 @@ class Base: public Rte::Point::Api
 {
 protected:
     /// Internal sequence number to track changes to the Point
-    uint32_t m_seqnum;
+    uint32_t m_seqnum_;
 
     /// My membership changed flag/state (For a Point Container
-    bool     m_changed;
+    bool     m_changed_;
 
 
 protected:

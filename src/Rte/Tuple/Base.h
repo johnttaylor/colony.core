@@ -26,10 +26,10 @@ class Base: public Api
 {
 protected:
     /// Internal sequence number to track changes to the Tuple
-    uint32_t m_seqnum;
+    uint32_t m_seqnum_;
 
     /// Was this Tuple updated/modified.
-    bool     m_updated;
+    bool     m_updated_;
 
 
 protected:

@@ -19,6 +19,7 @@ Base::Base( Rte::Point::Api& myPoint, Rte::Point::Model::Api& modelPoint )
 :m_myPoint(myPoint)
 ,m_modelPoint(modelPoint)
     {
+    // Default to querying EVERYTHING
     m_myPoint.setAllInUseState(true);
     }
 
@@ -26,11 +27,6 @@ Base::Base( Rte::Point::Api& myPoint, Rte::Point::Model::Api& modelPoint )
 ///////////////////
 void Base::issueQuery( void )
     {
-    // Set the query/client point to 'All Invalid' - this ensures that query/client
-    // point will be updated with meaningful value(s) from the model point (or the 
-    // default state of invalid is correct).
-    m_myPoint.setAllValidFlagState(false);
-
     // issue the query
     m_modelPoint.query(m_myPoint);
     }

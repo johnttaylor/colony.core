@@ -22,6 +22,8 @@ Tuple::Tuple( unsigned tupleIndex, Rte::Tuple::Api& myTuple, Rte::Point::Model::
 ,m_modelPoint(modelPoint)
 ,m_tupleIdx(tupleIndex)
     {
+    // Default to querying EVERYTHING
+    m_myTuple.setAllInUseState(true);
     }
 
 

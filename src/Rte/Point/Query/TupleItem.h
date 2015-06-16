@@ -21,7 +21,6 @@
 ///
 namespace Rte { namespace Point { namespace Query {
 
-
 /** This abstract class defines the client interface for walking
     the list of Tuple's in a Container Point, i.e. it defines the 
     callback method for when walking/travering the list of Tuples
@@ -40,7 +39,6 @@ public:
         the client has 'found' the tuple it is searching for, this method
         should return continue; else to continue the search the method
         should return eCONTINUE.
-
         Note: An 'item' in this context is a Tuple. The parameter 'tupleIndex'
               is the zero based index of the Model Point's Tuple that has been
               copied to the client's TupleItem instance.
@@ -55,31 +53,63 @@ public:
     and/or traverses - one Tuple at time - the individual Tuples within
     a Container Point..
 
-    The template arg 'TUPLE' is the Tuple type of the Point Container.
+    The template arg 'TUPLE' is the Tuple type of the Point Container. The
+    template arg 'CONTEXT' is a member function in the context class that
+    is responsible for processing the traversal callback methods.
+
     Note: The concrete 'TUPLE' class must inherit from Rte::Tupe::ContainerItem
           per the Point Container semantics/contract.
  */
-template <class TUPLE>
-class TupleItem: public Api
+template <class TUPLE, class CONTEXT>
+class TupleItem: public Api,
+                 public Traverser,
+                 public TUPLE
 {
-protected:
-    /// The client's Tuple data, aka the destination Tuple for the read operation
-    TUPLE&                      m_myTuple;
+public:
+    /** Defines the callback method function for when traversing Tuples within 
+        the Container Point.
 
+        This method is called once for every tuple in the Model point
+        being queried.  The client can terminate the traversal before the
+        last Tuple has been visited by returning eABORT; else the client
+        should return eCONTINUE.
+
+        NOTES:
+            o The client needs to MINIMIZE the amount of time spend during
+              the traversal since all other operations on the Model are blocked
+              until the traversal completes (to be precise - the ITC QueryTuple 
+              msg must run to completion before the thread its Model Point is
+              executing in will process the next ITC message).
+               
+            o The supplied 'unsiged' argument is the is the zero based index 
+              of the 'TUPLE' being visited.  
+     */
+    typedef Cpl::Type::Traverser::Status_T (CONTEXT::*ItemFunc_T)(TUPLE& /* nextTuple */, unsigned /* tupleIndex */ );
+
+
+
+protected:
     /// Refrence to the Model Point to be query (aka the source)
     Rte::Point::Model::Api&     m_modelPoint;
 
-    /// Optional Traversal callback
-    Traverser*                  m_callbackPtr;
+    /// Context that processes the callback
+    CONTEXT&                    m_context;
+
+    /// Traversal callback
+    ItemFunc_T                  m_itemCb;
 
     /// Index of Tuple within the Model Point
     unsigned                    m_tupleIdx;
 
 
 
-protected:
+public:
     /// Constructor. 
-    TupleItem( unsigned tupleIndex, TUPLE& myTuple, Rte::Point::Model::Api& modelPoint, Traverser* walkCallbackPtr =0 );
+    TupleItem( Rte::Point::Model::Api&   modelPoint, 
+               CONTEXT&                  context,
+               ItemFunc_T                itemCb,
+               unsigned                  tupleIndex = 0 
+             );
 
 
 public: 
@@ -87,13 +117,22 @@ public:
     void issueQuery( void );
 
 
-public: 
-    /// Returns true if the specified tuple is "in" the container
-    bool isItemInContainer( void ) const;
+protected:
+    /// See Rte::Point::Query::Traverser
+    Cpl::Type::Traverser::Status_T item( unsigned tupleIndex );
 
-    /** This method allows the client to change/turn-off the traverser callback funciton
+
+public: 
+    /** This method allows the client to change/set the starting Tuple index 
+        in which to start the traversal. The change is applied on the next call
+        to issueQuery().
      */
-    void setWalkerPtr( Traverser* newCallbackPtr );
+    void setStartIndex( unsigned newStartingIndex );
+     
+    /** This method allows the client to change/turn-off the traverser callback 
+        function. The change is applied on the next call to issueQuery().
+     */
+    void setCallback( ItemFunc_T newItemCb );
 
 };
 
@@ -101,35 +140,47 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 //                  INLINE IMPLEMENTAION
 /////////////////////////////////////////////////////////////////////////////
-template<class TUPLE>
-Rte::Point::Query::TupleItem<TUPLE>::TupleItem( unsigned tupleIndex, TUPLE& myTuple, Rte::Point::Model::Api& modelPoint, Traverser* walkCallbackPtr )
-:m_myTuple(myTuple)
-,m_modelPoint(modelPoint)
-,m_callbackPtr(walkCallbackPtr)
+template<class TUPLE, class CONTEXT>
+Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::TupleItem( Rte::Point::Model::Api&   modelPoint, 
+                                                         CONTEXT&                  context,
+                                                         ItemFunc_T                itemCb,
+                                                         unsigned                  tupleIndex
+                                                       )
+:m_modelPoint(modelPoint)
+,m_context(context)
+,m_itemCb(itemCb)
 ,m_tupleIdx(tupleIndex)
     {
+    // Default to querying EVERYTHING
+    setAllInUseState(true);
     }
 
 /////////////////
-template<class TUPLE>
-void Rte::Point::Query::TupleItem<TUPLE>::issueQuery( void )
+template<class TUPLE, class CONTEXT>
+void Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::issueQuery( void )
     {
-    m_modelPoint.query( m_myTuple, m_tupleIdx, m_callbackPtr );
+    m_modelPoint.query( *this, m_tupleIdx, this );
+    }
+
+
+template<class TUPLE, class CONTEXT>
+Cpl::Type::Traverser::Status_T Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::item( unsigned tupleIndex )
+    {
+    return (m_context.*m_itemCb)( *this, tupleIndex );
     }
 
 
 /////////////////
-template<class TUPLE>
-bool Rte::Point::Query::TupleItem<TUPLE>::isItemInContainer( void ) const
+template<class TUPLE, class CONTEXT>
+void Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::setCallback( ItemFunc_T newItemCb )
     {
-    return m_myTuple.m_inContainer_.get() == true;
+    m_itemCb = newItemCb;
     }
 
-
-template<class TUPLE>
-void Rte::Point::Query::TupleItem<TUPLE>::setWalkerPtr( Traverser* newCallbackPtr )
+template<class TUPLE, class CONTEXT>
+void Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::setStartIndex( unsigned newStartingIndex )
     {
-    m_callbackPtr = newCallbackPtr;
+    m_tupleIdx = newStartingIndex;
     }
 
 

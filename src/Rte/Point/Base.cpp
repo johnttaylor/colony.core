@@ -18,8 +18,8 @@ using namespace Rte::Point;
 
 ////////////////////////
 Base::Base( void )
-:m_seqnum(0)
-,m_changed(false)
+:m_seqnum_(0)
+,m_changed_(false)
     {
     }
 
@@ -27,41 +27,41 @@ Base::Base( void )
 void Base::incrementSequenceNumber(void)
     {
     // Do not allow a sequence number of zero (zero represents 'unknown sequence number')
-    if ( ++m_seqnum == 0 )
+    if ( ++m_seqnum_ == 0 )
         {
-        m_seqnum = 1;
+        m_seqnum_ = 1;
         }
     }
 
 uint32_t Base::getSequenceNumber(void) const
     {
-    return m_seqnum;
+    return m_seqnum_;
     }
 
 void Base::setSequenceNumber( uint32_t newSeqNum )
     {
-    m_seqnum = newSeqNum;
+    m_seqnum_ = newSeqNum;
     }
 
 void Base::resetSequenceNumber(void)
     {
-    m_seqnum = 0;
+    m_seqnum_ = 0;
     }
 
 
 void Base::clearMembershipChanged(void)
     {
-    m_changed = false;
+    m_changed_ = false;
     }
 
 void Base::setMembershipChanged(void)
     {
-    m_changed = true;
+    m_changed_ = true;
     }
 
 bool Base::isMembershipChanged(void) const
     {
-    return m_changed;
+    return m_changed_;
     }
 
 
