@@ -34,10 +34,16 @@ protected:
     /// Refrence to the Model Point to be updated (aka the destination)
     Rte::Point::Model::Api&     m_modelPoint;
 
+    /// Query copy operation Option
+    Rte::Point::Model::QueryRequest::Option_T m_copyOption;
+
 
 protected:
     ///
-    Container( Rte::Point::ContainerApi& myPoint, Rte::Point::Model::Api& modelPoint );
+    Container( Rte::Point::ContainerApi&                 myPoint, 
+               Rte::Point::Model::Api&                   modelPoint,  
+               Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY
+             );
 
 
 public: 

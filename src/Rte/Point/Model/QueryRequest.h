@@ -15,7 +15,7 @@
 #include "Cpl/Itc/RequestMessage.h"
 #include "Cpl/Itc/SAP.h"
 #include "Rte/Point/Api.h"
-#include "Rte/Point/Query/TupleItem.h"
+#include "Rte/Point/Query/Traverser.h"
 #include "Rte/Tuple/Api.h"
 
 ///
@@ -32,6 +32,13 @@ public:
 
 
 public:
+    /// Query options
+    enum Option_T { eCOPY,                       //!< Unconditional copy of Model Point
+                    eCOMPARE_VALUES_AND_COPY,    //!< Only copy Tuples when the values are different
+                    eCOMPARE_SEQNUM_AND_COPY     //<! Only copy Tuples when their sequence numbers are different
+                  };
+
+public:
     /// Payload for Message: Query Point
     class QueryPayload
     {
@@ -39,10 +46,15 @@ public:
         /// Destination for where the Model Point's data will be COPIED to
         Rte::Point::Api& m_dstPoint;
 
+        /// Query Option
+        Option_T         m_copyOption;
+
+
     public:
         ///
-        QueryPayload( Rte::Point::Api& queryPoint )
+        QueryPayload( Rte::Point::Api& queryPoint, Option_T copyOption =eCOPY )
             :m_dstPoint(queryPoint)
+            ,m_copyOption(copyOption)
                 {}
     };
 
@@ -64,13 +76,17 @@ public:
         /// Callback Pointer to traversing a Container Point
         Rte::Point::Query::Traverser*   m_callbackPtr;
 
+        /// Query Option
+        Option_T                        m_copyOption;
+
 
     public:
         ///
-        QueryTuplePayload( Rte::Tuple::Api& queryTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* callbackPtr = 0 )
+        QueryTuplePayload( Rte::Tuple::Api& queryTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* callbackPtr = 0, Option_T copyOption =eCOPY )
             :m_dstTuple(queryTuple)
             ,m_tupleIdx(tupleIdx) 
             ,m_callbackPtr(callbackPtr)
+            ,m_copyOption(copyOption)
                 {}
     };
 

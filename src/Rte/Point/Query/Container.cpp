@@ -17,9 +17,13 @@ using namespace Rte::Point::Query;
 
 
 ///////////////////
-Container::Container( Rte::Point::ContainerApi& myPoint, Rte::Point::Model::Api& modelPoint )
+Container::Container( Rte::Point::ContainerApi&                 myPoint, 
+                      Rte::Point::Model::Api&                   modelPoint,  
+                      Rte::Point::Model::QueryRequest::Option_T copyOption
+                    )
 :m_myPoint(myPoint)
 ,m_modelPoint(modelPoint)
+,m_copyOption(copyOption)
     {
     m_myPoint.setAllInUseState(true);
     }
@@ -28,12 +32,7 @@ Container::Container( Rte::Point::ContainerApi& myPoint, Rte::Point::Model::Api&
 ///////////////////
 void Container::issueQuery( void )
     {
-    // Set the query/client point to 'All Invalid' - this ensures that query/client
-    // point will be updated with meaningful value(s) from the model point (or the 
-    // default state of invalid is correct).
-    m_myPoint.setAllValidFlagState( false );
-
     // issue the query
-    m_modelPoint.query( m_myPoint );
+    m_modelPoint.query( m_myPoint, m_copyOption );
     }
 

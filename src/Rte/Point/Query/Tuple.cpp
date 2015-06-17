@@ -17,10 +17,15 @@ using namespace Rte::Point::Query;
 
 
 ///////////////////////////////////////////////////
-Tuple::Tuple( unsigned tupleIndex, Rte::Tuple::Api& myTuple, Rte::Point::Model::Api& modelPoint )
+Tuple::Tuple( unsigned                                  tupleIndex, 
+              Rte::Tuple::Api&                          myTuple, 
+              Rte::Point::Model::Api&                   modelPoint, 
+              Rte::Point::Model::QueryRequest::Option_T copyOption
+            )
 :m_myTuple(myTuple)
 ,m_modelPoint(modelPoint)
 ,m_tupleIdx(tupleIndex)
+,m_copyOption(copyOption)
     {
     // Default to querying EVERYTHING
     m_myTuple.setAllInUseState(true);
@@ -30,5 +35,11 @@ Tuple::Tuple( unsigned tupleIndex, Rte::Tuple::Api& myTuple, Rte::Point::Model::
 ///////////////////////////////////////////////////
 void Tuple::issueQuery( void )
     {
-    m_modelPoint.query( m_myTuple, m_tupleIdx );
+    m_modelPoint.query( m_myTuple, m_tupleIdx, 0, m_copyOption );
+    }
+
+
+void Tuple::setTupleIndex( unsigned newTupleIndex )
+    {
+    m_tupleIdx = newTupleIndex;
     }

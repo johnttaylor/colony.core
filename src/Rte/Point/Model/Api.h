@@ -39,7 +39,7 @@ public:
 public:
     /** This method synchronously queries the Model Point
      */
-    virtual void query( Rte::Point::Api& dstPoint ) = 0;
+    virtual void query( Rte::Point::Api& dstPoint, QueryRequest::Option_T copyOption = QueryRequest::eCOPY ) = 0;
 
     /** This method synchronously queries a single Tuple in the Model Point.
         The 'walkCallbackPtr' is an optional argument that ONLY applies when
@@ -48,7 +48,7 @@ public:
         time (i.e. only need memory for a single Tuple). The traversal of the
         Tuples starts with Tuple index 'tupleIdx'.
      */
-    virtual void query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* walkCallbackPtr = 0 ) = 0;
+    virtual void query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* walkCallbackPtr = 0, QueryRequest::Option_T copyOption = QueryRequest::eCOPY  ) = 0;
           
 
 public:

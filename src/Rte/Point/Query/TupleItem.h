@@ -13,40 +13,13 @@
 /** @file */
 
 #include "Rte/Point/Query/Api.h"
+#include "Rte/Point/Query/Traverser.h"
 #include "Rte/Tuple/Api.h"
 #include "Rte/Point/Model/Api.h"
-#include "Cpl/Type/Traverser.h"
 
 
 ///
 namespace Rte { namespace Point { namespace Query {
-
-/** This abstract class defines the client interface for walking
-    the list of Tuple's in a Container Point, i.e. it defines the 
-    callback method for when walking/travering the list of Tuples
-    in a Container Point.  
- */
-class Traverser
-{
-public: 
-    /// Virtual Destructor
-    virtual ~Traverser(){}
-
-public: 
-    /** This method is called once for every tuple in the Model point
-        being queried.  The contents of the model point's tuple is first
-        copied to the client's tuple BEFORE this method is called.  When
-        the client has 'found' the tuple it is searching for, this method
-        should return continue; else to continue the search the method
-        should return eCONTINUE.
-        Note: An 'item' in this context is a Tuple. The parameter 'tupleIndex'
-              is the zero based index of the Model Point's Tuple that has been
-              copied to the client's TupleItem instance.
-     */
-    virtual Cpl::Type::Traverser::Status_T item( unsigned tupleIndex ) = 0;
-};
-
-
 
 /** This template class implements the Query Point interface 
     for a Point that reads a SINGLE Tuple within a CONTAINER Point
@@ -101,14 +74,16 @@ protected:
     /// Index of Tuple within the Model Point
     unsigned                    m_tupleIdx;
 
-
+    /// Query copy operation Option
+    Rte::Point::Model::QueryRequest::Option_T m_copyOption;             
 
 public:
     /// Constructor. 
-    TupleItem( Rte::Point::Model::Api&   modelPoint, 
-               CONTEXT&                  context,
-               ItemFunc_T                itemCb,
-               unsigned                  tupleIndex = 0 
+    TupleItem( Rte::Point::Model::Api&                   modelPoint, 
+               CONTEXT&                                  context,
+               ItemFunc_T                                itemCb,
+               Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY,
+               unsigned                                  tupleIndex = 0 
              );
 
 
@@ -141,15 +116,17 @@ public:
 //                  INLINE IMPLEMENTAION
 /////////////////////////////////////////////////////////////////////////////
 template<class TUPLE, class CONTEXT>
-Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::TupleItem( Rte::Point::Model::Api&   modelPoint, 
-                                                         CONTEXT&                  context,
-                                                         ItemFunc_T                itemCb,
-                                                         unsigned                  tupleIndex
+Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::TupleItem( Rte::Point::Model::Api&                   modelPoint, 
+                                                         CONTEXT&                                  context,
+                                                         ItemFunc_T                                itemCb,
+                                                         Rte::Point::Model::QueryRequest::Option_T copyOption,
+                                                         unsigned                                  tupleIndex
                                                        )
 :m_modelPoint(modelPoint)
 ,m_context(context)
 ,m_itemCb(itemCb)
 ,m_tupleIdx(tupleIndex)
+,m_copyOption(copyOption)
     {
     // Default to querying EVERYTHING
     setAllInUseState(true);
@@ -159,7 +136,7 @@ Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::TupleItem( Rte::Point::Model::Api&
 template<class TUPLE, class CONTEXT>
 void Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::issueQuery( void )
     {
-    m_modelPoint.query( *this, m_tupleIdx, this );
+    m_modelPoint.query( *this, m_tupleIdx, this, m_copyOption );
     }
 
 

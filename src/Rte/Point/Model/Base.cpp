@@ -77,17 +77,17 @@ void Base::update( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx, bool mem
     m_controllerSAP.postSync(msg);
     }
 
-void Base::query( Rte::Point::Api& dstPoint )
+void Base::query( Rte::Point::Api& dstPoint, QueryRequest::Option_T copyOption  )
     {
-    QueryPayload                  payload( dstPoint );
+    QueryPayload                  payload( dstPoint, copyOption );
     Cpl::Itc::SyncReturnHandler   srh;
     QueryMsg                      msg(*this,payload,srh);
     m_querySAP.postSync(msg);
     }
 
-void Base::query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* walkCallbackPtr )
+void Base::query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* walkCallbackPtr, QueryRequest::Option_T copyOption )
     {
-    QueryTuplePayload             payload( dstTuple, tupleIdx, walkCallbackPtr );
+    QueryTuplePayload             payload( dstTuple, tupleIdx, walkCallbackPtr, copyOption );
     Cpl::Itc::SyncReturnHandler   srh;
     QueryTupleMsg                 msg(*this,payload,srh);
     m_querySAP.postSync(msg);
@@ -136,8 +136,11 @@ void Base::request( PollMsg& msg )
     if ( m_pendingNotify.remove(viewerMsg) )
         {
         // Force an update to the viewer point (this is important
-        // if there are any Delta/Threshold element types being viewed)
+        // if there are any Delta/Threshold Element types being viewed)
         viewerMsg.getPayload().m_viewerPoint.copyFrom( m_myPoint,  &(viewerMsg.getPayload().m_viewerPoint) );
+       
+        // Update the Client's (i.e. the Viewer's) Point sequence number to match the Model's Point sequence number
+        viewerMsg.getPayload().m_viewerPoint.setSequenceNumber( m_myPoint.getSequenceNumber() );
 
         // Generate the change notification
         viewerMsg.returnToSender();
@@ -276,10 +279,20 @@ void Base::request( QueryMsg& msg )
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(QueryMsg) - (%p) dst=%p", this, &(msg.getPayload().m_dstPoint) ));
 
     // Brute force update (no isDifferent() check) the client's 'point' and return immediately
-    msg.getPayload().m_dstPoint.copyFrom( m_myPoint, &(msg.getPayload().m_dstPoint) );
+    if ( msg.getPayload().m_copyOption == eCOPY )
+        {
+        msg.getPayload().m_dstPoint.copyFrom( m_myPoint, &(msg.getPayload().m_dstPoint) );
 
-    // Update the Client's (i.e. the Querier's) Point sequence number to match the Model's Point sequence number
-    msg.getPayload().m_dstPoint.setSequenceNumber( m_myPoint.getSequenceNumber() );
+        // Update the Client's (i.e. the Querier's) Point sequence number to match the Model's Point sequence number
+        msg.getPayload().m_dstPoint.setSequenceNumber( m_myPoint.getSequenceNumber() );
+        }
+
+    // Use the compare-n-copy method to set the 'is different' status/state of the client's Query Point
+    else    
+        {
+        m_myPoint.compareAndCopy(msg.getPayload().m_dstPoint, false, msg.getPayload().m_copyOption == eCOMPARE_VALUES_AND_COPY );
+        }
+
 
     // Return the client's message
     msg.returnToSender();
@@ -290,12 +303,9 @@ void Base::request( QueryTupleMsg& msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(QueryTupleMsg) - (%p) idx=%d, dst=%p, callback=%p", this, msg.getPayload().m_tupleIdx, &(msg.getPayload().m_dstTuple), msg.getPayload().m_callbackPtr ));
 
-    // Brute force update (no isDifferent() check) the client's 'tuple' 
+    // Copy the Model's tuple to the Query Tuple
     unsigned index = msg.getPayload().m_tupleIdx;
-    Rte::Tuple::Api::copy( msg.getPayload().m_dstTuple, m_myPoint.getTuple(index), &(msg.getPayload().m_dstTuple) );
-
-    // Update the Client's (i.e. the Querier's) Tuple sequence number to match the Model's Tuple sequence number
-    msg.getPayload().m_dstTuple.setSequenceNumber( m_myPoint.getTuple(index).getSequenceNumber() );
+    copyTuple( msg, index );
 
     // If a search callback was specified, iterate through all tuple in the CONTAINER
     if ( msg.getPayload().m_callbackPtr )
@@ -315,11 +325,29 @@ void Base::request( QueryTupleMsg& msg )
                 }
 
             // Load the next tuple
-            Rte::Tuple::Api::copy( msg.getPayload().m_dstTuple, m_myPoint.getTuple(index), &(msg.getPayload().m_dstTuple) );
-            msg.getPayload().m_dstTuple.setSequenceNumber( m_myPoint.getTuple(index).getSequenceNumber() );
+            copyTuple( msg, index );
             }
         }
             
     msg.returnToSender();
     }
     
+
+void Base::copyTuple( QueryTupleMsg& msg, unsigned index )
+    {
+    // Brute force update (no isDifferent() check) the client's 'tuple' 
+    if ( msg.getPayload().m_copyOption == eCOPY )
+        {
+        Rte::Tuple::Api::copy( msg.getPayload().m_dstTuple, m_myPoint.getTuple(index), &(msg.getPayload().m_dstTuple) );
+        
+        // Update the Client's (i.e. the Querier's) Tuple sequence number to match the Model's Tuple sequence number
+        msg.getPayload().m_dstTuple.setSequenceNumber( m_myPoint.getTuple(index).getSequenceNumber() );
+        }
+
+    // Use the compare-n-copy method to set the 'is different' status/state of the client's Query Tuple
+    else
+        {
+        Rte::Tuple::Api::compareAndCopy( m_myPoint.getTuple(index), msg.getPayload().m_dstTuple, false,  msg.getPayload().m_copyOption == eCOMPARE_VALUES_AND_COPY );
+        }
+    }
+

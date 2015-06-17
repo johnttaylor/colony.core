@@ -61,10 +61,10 @@ public:
 
 public:
     /// See Rte::Point::Model::Api
-    void query( Rte::Point::Api& dstPoint );
+    void query( Rte::Point::Api& dstPoint, QueryRequest::Option_T copyOption = QueryRequest::eCOPY  );
 
     /// See Rte::Point::Model::Api
-    void query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* walkCallbackPtr = 0 );
+    void query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* walkCallbackPtr = 0, QueryRequest::Option_T copyOption = QueryRequest::eCOPY  );
 
 
 public:
@@ -114,6 +114,10 @@ public:
 protected:
     /// Helper
     void checkForNotifications(void);
+
+    /// Helper
+    void copyTuple( QueryTupleMsg& msg, unsigned index );
+
 
 };
 

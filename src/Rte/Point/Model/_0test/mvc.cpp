@@ -119,6 +119,35 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v2_.m_bar1.m_tuple.m_enabled.isValid() == true );
     REQUIRE( v2_.m_bar1.m_tuple.m_count.isValid() == true );
 
+    Point::QueryBar1 query2Bar1( modelBar1_, Rte::Point::Model::QueryRequest::eCOMPARE_VALUES_AND_COPY );
+    query2Bar1.issueQuery();
+    traceBar1_( query2Bar1, "Bar1", "Query::Compare & Copy#1: - after initial controller write" );
+    REQUIRE( query2Bar1.m_tuple.isUpdated() == true );
+    REQUIRE( query2Bar1.m_tuple.m_name.getString() == "bob" );
+    REQUIRE( query2Bar1.m_tuple.m_enabled.get() == true );
+    REQUIRE( query2Bar1.m_tuple.m_count.get() == 12 );
+    REQUIRE( query2Bar1.m_tuple.m_name.isValid() == true );
+    REQUIRE( query2Bar1.m_tuple.m_enabled.isValid() == true );
+    REQUIRE( query2Bar1.m_tuple.m_count.isValid() == true );
+    query2Bar1.issueQuery();
+    traceBar1_( query2Bar1, "Bar1", "Query::Compare & Copy#1: - after initial controller write - second query" );
+    REQUIRE( query2Bar1.m_tuple.isUpdated() == false );
+
+    Point::QueryBar1 query3Bar1( modelBar1_, Rte::Point::Model::QueryRequest::eCOMPARE_SEQNUM_AND_COPY );
+    query3Bar1.issueQuery();
+    traceBar1_( query3Bar1, "Bar1", "Query::Compare & Copy#2: - after initial controller write" );
+    REQUIRE( query3Bar1.m_tuple.isUpdated() == true );
+    REQUIRE( query3Bar1.m_tuple.m_name.getString() == "bob" );
+    REQUIRE( query3Bar1.m_tuple.m_enabled.get() == true );
+    REQUIRE( query3Bar1.m_tuple.m_count.get() == 12 );
+    REQUIRE( query3Bar1.m_tuple.m_name.isValid() == true );
+    REQUIRE( query3Bar1.m_tuple.m_enabled.isValid() == true );
+    REQUIRE( query3Bar1.m_tuple.m_count.isValid() == true );
+    query3Bar1.issueQuery();
+    traceBar1_( query3Bar1, "Bar1", "Query::Compare & Copy#2: - after initial controller write - second query" );
+    REQUIRE( query3Bar1.m_tuple.isUpdated() == false );
+
+
     controllerBar1.setAllInUseState(false);
     controllerBar1.m_tuple.m_enabled.setInUse();
     controllerBar1.m_tuple.m_enabled.set(false);
@@ -259,7 +288,6 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v2_.m_bar2.m_foo1.m_count.isValid() == true );
     REQUIRE( v2_.m_bar2.m_foo2.m_enabled.isValid() == true );
     REQUIRE( v2_.m_bar2.m_foo2.m_limit.isValid() == true );
-
 
     controllerBar2.setAllInUseState(false);
     controllerBar2.m_foo2.m_enabled.setInUse();
@@ -520,6 +548,10 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v1_.m_bar3.isTupleInContainer(0) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(3) == false );
 
+    // Get my Compare-n-Copy queries current
+    query2Bar1.issueQuery();
+    query3Bar1.issueQuery();
+   
     // FOO1 Controller -->Test compare by value
     controllerBar1.setAllInUseState(false);
     controllerBar1.m_tuple.m_enabled.setInUse();
@@ -553,6 +585,13 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v3_.m_bar1.m_tuple.m_name.isValid() == true );
     REQUIRE( v3_.m_bar1.m_tuple.m_enabled.isValid() == true );
     REQUIRE( v3_.m_bar1.m_tuple.m_count.isValid() == true );
+
+    query2Bar1.issueQuery();
+    query3Bar1.issueQuery();
+    traceBar1_( query2Bar1, "Bar1", "Query::Compare & Copy#2: - after update of 'm_enabled' #2" );
+    REQUIRE( query2Bar1.m_tuple.isUpdated() == false );
+    traceBar1_( query3Bar1, "Bar1", "Query::Compare & Copy#2: - after update of 'm_enabled' #2" );
+    REQUIRE( query3Bar1.m_tuple.isUpdated() == true );
 
 
     /// BAR2 Controller: BY TUPLE: FOO1 
@@ -631,7 +670,16 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v2_.m_bar2.m_foo2.m_limit.isValid() == true );
 
 
-    /// FOO3 Controller: BY TUPE 
+    Point::TupleFoo3QueryBar3 query2Bar3_single( modelBar3_, 3, Rte::Point::Model::QueryRequest::eCOMPARE_VALUES_AND_COPY );
+    query2Bar3_single.issueQuery();
+    traceFoo3_( query2Bar3_single, "Bar3", "Query (COMPARE & COPY) by Tuple[3]: Foo3 (Before index 3 is 'in-the-container'" );
+    REQUIRE( query2Bar3_single.isUpdated() == false );    // NOTE: This is expected to be FALSE because the Model Tuple is in the invalid state and the Query Tuple is also in the invalid state -->so no actual copy operation occurs -->therefore 'isUpdated' is FALSE
+    REQUIRE( query2Bar3_single.isInContainer() == false );
+    query2Bar3_single.issueQuery();
+    REQUIRE( query2Bar3_single.isUpdated() == false );
+
+
+    /// FOO3 Controller: BY TUPLE 
     idx = 3;
     Point::TupleItemControllerBar3 ctrlBar3Tuple( idx, modelBar3_ );
     ctrlBar3Tuple.m_name.set("bob4");
@@ -647,7 +695,7 @@ TEST_CASE( "mvc", "[mvc]" )
     queryBar3.setAllInUseState(true);
     queryBar3.issueQuery();
     Cpl::System::Api::sleep(50); // Pause to allow other threads to run
-    traceBar3_( queryBar3, "Bar3", "Query - after add of tuple idx: 2 (BY TUPLE)" );
+    traceBar3_( queryBar3, "Bar3", "Query - after add of tuple idx: 3 (BY TUPLE)" );
     REQUIRE( queryBar3.isTupleInContainer(idx) == true );
     REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
     REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
@@ -672,6 +720,19 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v1_.m_bar3.isTupleInContainer(0) == false );
     REQUIRE( v1_.m_bar3.isTupleInContainer(1) == true );
     REQUIRE( v1_.m_bar3.isTupleInContainer(2) == false );
+
+    query2Bar3_single.issueQuery();
+    traceFoo3_( query2Bar3_single, "Bar3", "Query (COMPARE & COPY) by Tuple[3]: Foo3 (after add of index 3" );
+    REQUIRE( query2Bar3_single.isUpdated() == true );
+    REQUIRE( query2Bar3_single.isInContainer() == true );
+    REQUIRE( query2Bar3_single.m_name.isValid() == true );
+    REQUIRE( query2Bar3_single.m_enabled.isValid() == true );
+    REQUIRE( query2Bar3_single.m_count.isValid() == true );
+    REQUIRE( query2Bar3_single.m_name.getString() == "bob4" );
+    REQUIRE( query2Bar3_single.m_enabled.get() == true );
+    REQUIRE( query2Bar3_single.m_count.get() == 112 );
+    query2Bar3_single.issueQuery();
+    REQUIRE( query2Bar3_single.isUpdated() == false );
 
     ctrlBar3Tuple.m_name.set("bob42");
     ctrlBar3Tuple.m_enabled.set(false);

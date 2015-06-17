@@ -43,8 +43,8 @@ class TupleFoo3QueryBar3: public Tuple::Foo3,
 {
 public:
     /// Constructor
-    TupleFoo3QueryBar3( ModelBar3& modelPoint, unsigned tupleIndex )
-        :Rte::Point::Query::Tuple(tupleIndex, *this, modelPoint)
+    TupleFoo3QueryBar3( ModelBar3& modelPoint, unsigned tupleIndex, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
+        :Rte::Point::Query::Tuple(tupleIndex, *this, modelPoint, copyOption )
             {
             }
 
@@ -62,8 +62,8 @@ public:
     
     public:
         /// Constructor
-        MyContext( Point::ModelBar3& modelPoint, .... )
-        :m_tupleWalker( modelPoint, *this, &MyContext::walkFoo3 )
+        MyContext( Point::ModelBar3& modelPoint, .... , Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
+        :m_tupleWalker( modelPoint, *this, &MyContext::walkFoo3, copyOption )
             {
             ....
             m_tupleWalker.issueQuery();

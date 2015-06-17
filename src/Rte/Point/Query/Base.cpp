@@ -15,9 +15,13 @@ using namespace Rte::Point::Query;
 
 
 ///////////////////
-Base::Base( Rte::Point::Api& myPoint, Rte::Point::Model::Api& modelPoint )
+Base::Base( Rte::Point::Api&                          myPoint, 
+            Rte::Point::Model::Api&                   modelPoint, 
+            Rte::Point::Model::QueryRequest::Option_T copyOption
+          )
 :m_myPoint(myPoint)
 ,m_modelPoint(modelPoint)
+,m_copyOption(copyOption)
     {
     // Default to querying EVERYTHING
     m_myPoint.setAllInUseState(true);
@@ -28,6 +32,6 @@ Base::Base( Rte::Point::Api& myPoint, Rte::Point::Model::Api& modelPoint )
 void Base::issueQuery( void )
     {
     // issue the query
-    m_modelPoint.query(m_myPoint);
+    m_modelPoint.query(m_myPoint, m_copyOption);
     }
 

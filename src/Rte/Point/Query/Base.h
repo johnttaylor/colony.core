@@ -34,10 +34,16 @@ protected:
     /// The Model Point to read the data from (aka the source)
     Rte::Point::Model::Api&  m_modelPoint;
 
+    /// Query copy operation Option
+    Rte::Point::Model::QueryRequest::Option_T m_copyOption;
+
 
 protected:
     ///
-    Base( Rte::Point::Api& myPoint, Rte::Point::Model::Api& modelPoint );
+    Base( Rte::Point::Api&                          myPoint, 
+          Rte::Point::Model::Api&                   modelPoint, 
+          Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY
+        );
 
 
 public:

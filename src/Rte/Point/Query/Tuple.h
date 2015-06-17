@@ -34,15 +34,30 @@ protected:
     /// Index of Tuple within the Model Point
     unsigned                    m_tupleIdx;
 
+    /// Query copy operation Option
+    Rte::Point::Model::QueryRequest::Option_T m_copyOption;
+
 
 protected:
     /// Constructor
-    Tuple( unsigned tupleIndex, Rte::Tuple::Api& myTuple, Rte::Point::Model::Api& modelPoint );
+    Tuple( unsigned                                  tupleIndex, 
+           Rte::Tuple::Api&                          myTuple, 
+           Rte::Point::Model::Api&                   modelPoint, 
+           Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY 
+         );
 
 
 public: 
     /// See Rte::Point::Query::Api
     void issueQuery( void );
+
+
+public:
+    /** This method allows the client to change the Tuple's index (in the 
+        Point). This method SHOULD ONLY BE USED when the Point is Container
+        Point - you have been warned!. 
+     */
+    void setTupleIndex( unsigned newTupleIndex );
 };
 
 
