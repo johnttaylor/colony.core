@@ -30,15 +30,24 @@ public:
     virtual ~Traverser(){}
 
 public: 
-    /** This method is called once for every tuple in the Model point
-        being queried.  The contents of the model point's tuple is first
-        copied to the client's tuple BEFORE this method is called.  When
-        the client has 'found' the tuple it is searching for, this method
-        should return continue; else to continue the search the method
-        should return eCONTINUE.
-        Note: An 'item' in this context is a Tuple. The parameter 'tupleIndex'
-              is the zero based index of the Model Point's Tuple that has been
-              copied to the client's TupleItem instance.
+    /** This method is called once for every tuple in the Model point being 
+        queried.  This method is called once for every tuple in the Model
+        point being queried.  The contents of the Model point's tuple is first
+        copied to the client's Tuple BEFORE this method is called. The client
+        can terminate the traversal by returning eABORT; else return eCONTINUE
+        for the next tuple.
+
+        NOTES:
+            o The client needs to MINIMIZE the amount of time spend during
+              the traversal since all other operations on the Model are blocked
+              until the traversal completes (to be precise - the ITC QueryTuple 
+              msg must run to completion before the thread its Model Point is
+              executing in will process the next ITC message).
+               
+            o The supplied 'tupleIndex' argument is the is the zero based index 
+              of the 'TUPLE' being visited.  The client can identify that
+              last tuple in traversal when 'tupleIndex' == number-of-tuples - 1
+
      */
     virtual Cpl::Type::Traverser::Status_T item( unsigned tupleIndex ) = 0;
 };

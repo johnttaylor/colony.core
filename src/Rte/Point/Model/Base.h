@@ -58,6 +58,16 @@ public:
     /// See Rte::Point::Model::Api
     void update( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx, bool membershipChanged = false );
 
+    /// See Rte::Point::Model::Api
+    void update( Rte::Point::Api& rmwPoint, Rte::Point::Controller::RmwClient& modifyCallback );
+
+    /// See Rte::Point::Model::Api
+    void update( Rte::Tuple::Api&                            rmwTuple,
+                 bool                                        membershipChanged,
+                 Rte::Point::Controller::RmwContainerClient& modifyCallback,
+                 unsigned                                    itemIndexStart = 0   
+               );
+
 
 public:
     /// See Rte::Point::Model::Api
@@ -89,6 +99,12 @@ public:
 
     /// See Rte::Point::Model::Api
     void request( UpdateTupleMsg& msg ); 
+
+    /// See Rte::Point::Model::Api
+    void request( RmwMsg& msg );
+    
+    /// See Rte::Point::Model::Api
+    void request( RmwContainerMsg& msg );
 
 
 public:

@@ -35,6 +35,18 @@ public:
      */
     virtual void update( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx, bool membershipChanged = false ) = 0;
 
+    /** This method synchronously Performs a Read-Modify-Write operation on the Model Point
+     */
+    virtual void update( Rte::Point::Api& rmwPoint, Rte::Point::Controller::RmwClient& modifyCallback ) = 0;
+
+    /** This method synchronously Performs a Read-Modify-Write operation on a Model Container Point
+     */
+    virtual void update( Rte::Tuple::Api&                            rmwTuple,
+                         bool                                        membershipChanged,
+                         Rte::Point::Controller::RmwContainerClient& modifyCallback,
+                         unsigned                                    itemIndexStart = 0   
+                       ) = 0;
+
 
 public:
     /** This method synchronously queries the Model Point

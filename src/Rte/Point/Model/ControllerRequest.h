@@ -16,6 +16,8 @@
 #include "Cpl/Itc/SAP.h"
 #include "Rte/Point/Api.h"
 #include "Rte/Tuple/Api.h"
+#include "Rte/Point/Controller/RmwClient.h"
+
 
 ///
 namespace Rte { namespace Point { namespace Model {
@@ -78,11 +80,81 @@ public:
 
 
 public:
+    /// Payload for Message: Read-Modify-Write a Model Point
+    class RmwPayload
+    {
+    public:
+        /// Application Point for the 'Read' operation
+        Rte::Point::Api&                   m_clientPoint;
+
+        /// Callback to the client for the modify/write operations
+        Rte::Point::Controller::RmwClient& m_clientCb;
+
+    public:
+        /// Constructor
+        RmwPayload( Rte::Point::Api&                   clientPoint, 
+                    Rte::Point::Controller::RmwClient& clientCallback
+                  )
+            :m_clientPoint(clientPoint)
+            ,m_clientCb(clientCallback)
+                {}
+    
+    };
+    
+    /// Message Type: Read-Modify-Write a Model Point
+    typedef Cpl::Itc::RequestMessage<ControllerRequest,RmwPayload> RmwMsg;
+    
+
+
+public:
+    /// Payload for Message: Read-Modify-Write a Model Container Point
+    class RmwContainerPayload
+    {
+    public:
+        /// Application Tuple for the 'Read' operation
+        Rte::Tuple::Api&                            m_clientTuple;
+
+        /// Callback to the client for the modify/write operations
+        Rte::Point::Controller::RmwContainerClient& m_clientCb;
+
+        /// Starting Tuple index for the traversal
+        unsigned                                    m_tupleIdx;
+
+        /// Flag that indicates that the Tuple update invovles a Point Membership change
+        bool                                        m_membershipChanged;
+
+    public:
+        /// Constructor
+        RmwContainerPayload( Rte::Tuple::Api&                            clientTuple,
+                             bool                                        membershipChanged,
+                             Rte::Point::Controller::RmwContainerClient& clientCallback,
+                             unsigned                                    startingTupleIndex=0
+                           )
+            :m_clientTuple(clientTuple)
+            ,m_clientCb(clientCallback)
+            ,m_tupleIdx(startingTupleIndex)
+            ,m_membershipChanged(membershipChanged)
+                {}
+    
+    };
+    
+    /// Message Type: Read-Modify-Write a Model Container Point
+    typedef Cpl::Itc::RequestMessage<ControllerRequest,RmwContainerPayload> RmwContainerMsg;
+
+
+
+public:
     /// Request: Update Model Point
     virtual void request( UpdateMsg& msg ) = 0;
     
-    /// Request: pdate a single Tuple in the Model Point
+    /// Request: Update a single Tuple in the Model Point
     virtual void request( UpdateTupleMsg& msg ) = 0;
+
+    /// Request: Read-Modify-Write a Model Point
+    virtual void request( RmwMsg& msg ) = 0;
+    
+    /// Request: Read-Modify-Write a Model Container Point
+    virtual void request( RmwContainerMsg& msg ) = 0;
 };
 
 

@@ -53,14 +53,6 @@ Base::getQuerySAP(void)
 
 
 ///////////////////
-void Base::pollViewer( ViewerRequest::RegisterMsg& viewerToPoll )
-    {
-    PollPayload                   payload( viewerToPoll );
-    Cpl::Itc::SyncReturnHandler   srh;
-    PollMsg                       msg(*this,payload,srh);
-    m_viewerSAP.postSync(msg);
-    }
-
 void Base::update( Rte::Point::Api& controllerPoint )
     {
     UpdatePayload                 payload( controllerPoint );
@@ -77,6 +69,29 @@ void Base::update( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx, bool mem
     m_controllerSAP.postSync(msg);
     }
 
+
+void Base::update( Rte::Point::Api& rmwPoint, Rte::Point::Controller::RmwClient& modifyCallback )
+    {
+    RmwPayload                    payload( rmwPoint, modifyCallback );
+    Cpl::Itc::SyncReturnHandler   srh;
+    RmwMsg                        msg(*this,payload,srh);
+    m_controllerSAP.postSync(msg);
+    }
+
+void Base::update( Rte::Tuple::Api&                            rmwTuple,
+                   bool                                        membershipChanged,
+                   Rte::Point::Controller::RmwContainerClient& modifyCallback,
+                   unsigned                                    itemIndexStart
+                 )
+    {
+    RmwContainerPayload           payload( rmwTuple, membershipChanged, modifyCallback, itemIndexStart );
+    Cpl::Itc::SyncReturnHandler   srh;
+    RmwContainerMsg               msg(*this,payload,srh);
+    m_controllerSAP.postSync(msg);
+    }
+
+
+///////////////////
 void Base::query( Rte::Point::Api& dstPoint, QueryRequest::Option_T copyOption  )
     {
     QueryPayload                  payload( dstPoint, copyOption );
@@ -93,6 +108,15 @@ void Base::query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Quer
     m_querySAP.postSync(msg);
     }
 
+
+///////////////////
+void Base::pollViewer( ViewerRequest::RegisterMsg& viewerToPoll )
+    {
+    PollPayload                   payload( viewerToPoll );
+    Cpl::Itc::SyncReturnHandler   srh;
+    PollMsg                       msg(*this,payload,srh);
+    m_viewerSAP.postSync(msg);
+    }
 
 
 ///////////////////
@@ -180,28 +204,32 @@ void Base::request( UpdateTupleMsg& msg )
     msg.returnToSender();
     }
 
-//void Base::request( QueryAndModifyPointMsg& msg ) 
-//    {
-//    // Do: Read
-//    msg.getPayload()._point.copyFrom( m_myPoint, 0 ); // Note: Read ALL elements
-//
-//    // Do: Modify
-//    Rte::Point::Api* modifiedPoint = 0;
-//    msg.getPayload()._modifyCallback.modify( modifiedPoint );
-//
-//    // Do: Write
-//    if ( modifiedPoint )
-//        {
-//        m_myPoint.copyFrom( *modifiedPoint, modifiedPoint );
-//        }
-//
-//    // Notify the viewers if neccesary
-//    checkForNotifications();
-//    msg.returnToSender();
-//    }
-//
-//
-//void Base::request( QueryAndModifyContainerMsg& msg ) 
+
+///////////////////
+void Base::request( RmwMsg& msg ) 
+    {
+    // DO: Read
+    msg.getPayload().m_clientPoint.copyFrom( m_myPoint, 0 ); // Force a read of ALL Tuples/Elements
+
+    // DO: Modify
+    Rte::Point::Api* modifiedPoint = 0;
+    msg.getPayload().m_clientCb.modify( modifiedPoint );
+
+    // DO: Write (if any)
+    if ( modifiedPoint )
+        {
+        m_myPoint.copyFrom( *modifiedPoint, modifiedPoint );
+        checkForNotifications();
+        }
+
+    msg.returnToSender();
+    }
+
+
+void Base::request( RmwContainerMsg& msg ) 
+    {
+    msg.returnToSender();
+    }
 //    {
 //    // Proceass ALL tuples items (but not the sequence number tuple)
 //    int j = msg.getPayload()._indexStart;

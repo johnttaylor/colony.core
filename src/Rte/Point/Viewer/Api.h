@@ -71,7 +71,7 @@ public:
         latest Model data - it works EVEN IF THE VIEWER has not been
         started. The method returns true when succesfull; else false
         is returned.  False is returned when the viewer is in the
-        'STOPPING' state and does own the memory to store the poll
+        'STOPPING' state and does NOT own the memory to store the poll
         results.
      */
     virtual bool poll( void ) = 0;

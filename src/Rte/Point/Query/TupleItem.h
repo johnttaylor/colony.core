@@ -42,10 +42,10 @@ public:
     /** Defines the callback method function for when traversing Tuples within 
         the Container Point.
 
-        This method is called once for every tuple in the Model point
-        being queried.  The client can terminate the traversal before the
-        last Tuple has been visited by returning eABORT; else the client
-        should return eCONTINUE.
+        This method is called once for every tuple in the Model point being
+        queried.  The client can terminate the traversal before the last Tuple
+        has been visited by returning eABORT; else the client should return
+        eCONTINUE.
 
         NOTES:
             o The client needs to MINIMIZE the amount of time spend during

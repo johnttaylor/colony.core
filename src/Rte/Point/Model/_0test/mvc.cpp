@@ -851,6 +851,38 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( queryBar3_traversal.m_tuples[3].m_count.get() == 1122 );
 
 
+    // Test viewer.poll()
+    v1_.m_bar1.m_tuple.m_name.set( "dog" );
+    v1_.m_bar1.m_tuple.m_enabled.set( false );
+    v1_.m_bar1.m_tuple.m_count.set( 51 );
+    traceBar1_( v1_.m_bar1, "Bar1", "Poll - client values" );
+    REQUIRE( v1_.m_changed1Count == 4 );
+    REQUIRE( v1_.m_bar1.m_tuple.m_name.getString() == "dog" );
+    REQUIRE( v1_.m_bar1.m_tuple.m_enabled.get() == false );
+    REQUIRE( v1_.m_bar1.m_tuple.m_count.get() == 51 );
+    v1_.m_bar1.poll();
+    Cpl::System::Api::sleep(50); // Pause to allow callback to run in the Viewer thread
+    traceBar1_( v1_.m_bar1, "Bar1", "Poll - model values" );
+    REQUIRE( v1_.m_bar1.m_tuple.m_name.getString() == "bob" );
+    REQUIRE( v1_.m_bar1.m_tuple.m_enabled.get() == true );
+    REQUIRE( v1_.m_bar1.m_tuple.m_count.get() == 6 );
+    REQUIRE( v1_.m_changed1Count == 5 );
+
+    
+    // Test: Read-Modify-Controller
+    queryBar1.issueQuery();
+    traceBar1_( queryBar1, "Bar1", "Read-Modify-Write - BEFORE" );
+    REQUIRE( queryBar1.m_tuple.m_name.getString() == "bob" );
+    REQUIRE( queryBar1.m_tuple.m_enabled.get() == true );
+    REQUIRE( queryBar1.m_tuple.m_count.get() == 6 );
+    Bar1RmwControllerContext rmwBar1( modelBar1_, 10 );
+    rmwBar1.updateModel();
+    queryBar1.issueQuery();
+    traceBar1_( queryBar1, "Bar1", "Read-Modify-Write - AFTER" );
+    REQUIRE( queryBar1.m_tuple.m_name.getString() == "bob" );
+    REQUIRE( queryBar1.m_tuple.m_enabled.get() == true );
+    REQUIRE( queryBar1.m_tuple.m_count.get() == 6+10 );
+
 
     // Stop viewers
     v1_.close();
