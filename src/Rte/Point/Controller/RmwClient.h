@@ -32,6 +32,20 @@ public:
         updated. If the 'modifiedPoint' pointer is set to zero, then
         no modification of the model point will occur (the model sets
         'modifiedPoint' argument to zero prior to each call).
+
+        NOTES:
+
+            o When the read/queried operaiton is performed ALL Elements
+              are read/copied, i.e. no 'in-use' settings are used
+        
+            o The 'in-use' settings/flags of 'modifiedPoint' are used
+              to determine which Elements are written to
+
+            o The client needs to MINIMIZE the amount of time spend during
+              the modify since all other operations on the Model are blocked
+              until the modify completes (to be precise - the ITC Controller 
+              msg must run to completion before the thread its Model Point is
+              executing in will process the next ITC message).
      */
     virtual void modify( Rte::Point::Api*& modifiedPoint ) = 0;
 
@@ -63,6 +77,10 @@ public:
         updated. If the 'modifiedTuple' pointer is set to zero, then
         no modification of the model's point will occur (the model sets
         'modifiedTuple' argument to zero prior to each call).
+
+        If the client changes a Tuple membership status during this callback
+        method - the client MUST set the 'membershipChanged' flag to true before
+        returning from the callback.
         
         The traversal starts with index 0.  However the client controls 
         the traversal sequence by returning the index of 'next' item/tuple it 
@@ -70,8 +88,22 @@ public:
         eNEXT and eDONE - that will advance to next index or abort the 
         traversal respectively.  The traversal stops when an index that is 
         greater than the number of container items or eDONE is returned.
+
+        NOTES:
+
+            o When the read/queried operaiton is performed ALL Elements
+              are read/copied, i.e. no 'in-use' settings are used
+        
+            o The 'in-use' settings/flags of 'modifiedPoint' are used
+              to determine which Elements are written to
+        
+            o The client needs to MINIMIZE the amount of time spend during
+              the traversal since all other operations on the Model are blocked
+              until the traversal completes (to be precise - the ITC Controller 
+              msg must run to completion before the thread its Model Point is
+              executing in will process the next ITC message).
      */
-    virtual int modifyItem( unsigned tupleIndex, Rte::Tuple::Api*& modifiedTuple ) = 0;
+    virtual int modifyItem( unsigned tupleIndex, Rte::Tuple::Api*& modifiedTuple, bool& membershipChanged ) = 0;
 
 
 public: 

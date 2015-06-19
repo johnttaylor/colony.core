@@ -63,7 +63,6 @@ public:
 
     /// See Rte::Point::Model::Api
     void update( Rte::Tuple::Api&                            rmwTuple,
-                 bool                                        membershipChanged,
                  Rte::Point::Controller::RmwContainerClient& modifyCallback,
                  unsigned                                    itemIndexStart = 0   
                );

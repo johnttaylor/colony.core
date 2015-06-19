@@ -79,12 +79,11 @@ void Base::update( Rte::Point::Api& rmwPoint, Rte::Point::Controller::RmwClient&
     }
 
 void Base::update( Rte::Tuple::Api&                            rmwTuple,
-                   bool                                        membershipChanged,
                    Rte::Point::Controller::RmwContainerClient& modifyCallback,
                    unsigned                                    itemIndexStart
                  )
     {
-    RmwContainerPayload           payload( rmwTuple, membershipChanged, modifyCallback, itemIndexStart );
+    RmwContainerPayload           payload( rmwTuple, modifyCallback, itemIndexStart );
     Cpl::Itc::SyncReturnHandler   srh;
     RmwContainerMsg               msg(*this,payload,srh);
     m_controllerSAP.postSync(msg);
@@ -228,58 +227,63 @@ void Base::request( RmwMsg& msg )
 
 void Base::request( RmwContainerMsg& msg ) 
     {
+    // Proceass ALL tuples items 
+    bool     membershipChanged = false;
+    unsigned j = msg.getPayload().m_tupleIdx;
+    for(;;)
+        {
+        // DO: Read
+        Rte::Tuple::Api::copy( msg.getPayload().m_clientTuple, m_myPoint.getTuple(j), 0 ); // Note: Read ALL elements
+
+        // DO: Modify
+        Rte::Tuple::Api* modifiedTuple  = 0;
+        bool             membershipFlag = false;
+        int              next           = msg.getPayload().m_clientCb.modifyItem( j, modifiedTuple, membershipFlag );
+
+        // Process Membership changes
+        if ( membershipFlag )
+            {
+            membershipChanged = true;
+            }
+
+        // DO: Write
+        if ( modifiedTuple )
+            {
+            Rte::Tuple::Api::copy( m_myPoint.getTuple(j), *modifiedTuple, modifiedTuple );
+            }
+
+        // Auto increment the tuple index 
+        if ( next == Rte::Point::Controller::RmwContainerClient::eNEXT )
+            {
+            if ( ++j >= m_myPoint.getNumTuples() )
+                {
+                break;
+                }
+            }
+
+        // Controller driving the tuple sequence
+        else if ( next >= 0 && ((unsigned) next) < m_myPoint.getNumTuples() )
+            {
+            j = next;
+            }
+
+        // Exit if end-of-items is reached (either eDONE or invalid return value)
+        else
+            {
+            break;
+            }
+        }
+                                                   
+    // Detect membership changesfrom the Controller
+    if ( membershipChanged )
+        {
+        m_myPoint.incrementSequenceNumber();
+        }
+
+    // Notify the viewers if neccesary
+    checkForNotifications();
     msg.returnToSender();
     }
-//    {
-//    // Proceass ALL tuples items (but not the sequence number tuple)
-//    int j = msg.getPayload()._indexStart;
-//    for(;;)
-//        {
-//        // Do: Read
-//        Eden::MVC::Tuple::Api::copy( msg.getPayload()._tuple, m_myPoint.getTuple(j), 0 ); // Note: Read ALL elements
-//
-//        // Do: Modify
-//        Eden::MVC::Tuple::Api* modifiedTuple = 0;
-//        int  next     = msg.getPayload()._modifyCallback.item( j, modifiedTuple );
-//
-//        // Do: Write
-//        if ( modifiedTuple )
-//            {
-//            Eden::MVC::Tuple::Api::copy( m_myPoint.getTuple(j), *modifiedTuple, modifiedTuple );
-//            }
-//
-//        // Auto increment the tuple index 
-//        if ( next == Eden::MVC::Point::Controller::QueryAndModify::ModifyContainerApi::_NEXT )
-//            {
-//            j++;
-//            }
-//
-//        // Exit if requested by the controller
-//        else if ( next == Eden::MVC::Point::Controller::QueryAndModify::ModifyContainerApi::_DONE ) 
-//            {
-//            break;
-//            }
-//
-//        // Controller driving the tuple sequence
-//        else 
-//            {
-//            j = next;
-//            }
-//
-//        // Exit if end-of-items is reached 
-//        if ( j >= m_myPoint.getNumTuples()-1 )
-//            {
-//            break;
-//            }
-//        }
-//
-//    // Update the sequence number to process any membership changes
-//    Eden::MVC::Tuple::Api::copy( m_myPoint.getTuple(m_myPoint.getNumTuples()-1), msg.getPayload()._seqNum, &(msg.getPayload()._seqNum) );
-//
-//    // Notify the viewers if neccesary
-//    checkForNotifications();
-//    msg.returnToSender();
-//    }
 
 
 void Base::checkForNotifications(void)

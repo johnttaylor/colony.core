@@ -56,34 +56,37 @@ public:
     static const int SIZE_T     = 9;
 
     /// Element Type ID
-    static const int REAL32     = 10;
+    static const int FLOAT      = 10;
 
     /// Element Type ID
-    static const int REAL64     = 11;
+    static const int DOUBLE     = 11;
 
     /// Element Type ID
-    static const int STRING     = 12;
+    static const int VOIDPTR    = 12;
 
     /// Element Type ID
-    static const int BOOLEAN    = 13;
+    static const int STRING     = 13;
 
     /// Element Type ID
-    static const int TOKEN4     = 14;
+    static const int BOOLEAN    = 14;
 
     /// Element Type ID
-    static const int MD5        = 15;
+    static const int TOKEN4     = 15;
 
     /// Element Type ID
-    static const int SEQNUMBER  = 16;
+    static const int MD5        = 16;
 
     /// Element Type ID
-    static const int TIMET      = 17;
+    static const int SEQNUMBER  = 17;
 
     /// Element Type ID
-    static const int BITFLAGS   = 18;
+    static const int TIMET      = 18;
+
+    /// Element Type ID
+    static const int BITFLAGS   = 19;
 
     /// Element Type ID 
-    static const int CORAL_ADDR = 19;
+    static const int CORAL_ADDR = 20;
 
 
     /// Start of APPLICATION defined Element Type IDs

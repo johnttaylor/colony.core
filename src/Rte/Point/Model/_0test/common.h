@@ -331,16 +331,19 @@ public:
         }
 };
 
-class Bar1RmwControllerContext: public Point::RwmControllerBar1
+
+class Bar1RmwControllerContext
 {
 public:
     ///
-    uint32_t m_adder;
+    Point::RwmControllerBar1<Bar1RmwControllerContext> m_rmwPoint;
+    ///
+    uint32_t                                           m_adder;
 
 public:
     ///
     Bar1RmwControllerContext( Point::ModelBar1& modelPoint, uint32_t adder )
-        :RwmControllerBar1( modelPoint )
+        :m_rmwPoint( *this, &Bar1RmwControllerContext::modify, modelPoint )
         ,m_adder(adder)
             {
             }
@@ -350,17 +353,17 @@ public:
     void modify( Rte::Point::Api*& modifiedPoint )
         {
         // Set my Point all NOT in-use (so I can update one and only one Element)
-        setAllInUseState(false);
+        m_rmwPoint.setAllInUseState(false);
 
         // Modify my read value
-        m_tuple.m_count.setInUse();
-        m_tuple.m_count.set( m_tuple.m_count.get() + m_adder );
+        m_rmwPoint.m_tuple.m_count.setInUse();
+        m_rmwPoint.m_tuple.m_count.set( m_rmwPoint.m_tuple.m_count.get() + m_adder );
 
         // For testing purpose attempt to modify m_name -->which WOULDN'T take since its in-use flag is false
-        m_tuple.m_name.set( "hello" );
+        m_rmwPoint.m_tuple.m_name.set( "hello" );
  
         // Pass the Point to be used as the source for the write operation
-        modifiedPoint = this;
+        modifiedPoint = &m_rmwPoint;
         }
 };
 

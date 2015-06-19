@@ -42,7 +42,6 @@ public:
     /** This method synchronously Performs a Read-Modify-Write operation on a Model Container Point
      */
     virtual void update( Rte::Tuple::Api&                            rmwTuple,
-                         bool                                        membershipChanged,
                          Rte::Point::Controller::RmwContainerClient& modifyCallback,
                          unsigned                                    itemIndexStart = 0   
                        ) = 0;

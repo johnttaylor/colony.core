@@ -89,11 +89,13 @@ typedef Delta<uint64_t,DataType::UINTEGER64>   Uinteger64Delta_t;
 typedef Delta<uint64_t,DataType::SIZE_T>       SizeTDelta_T;
 
 /// C POD type
-typedef Delta<float,DataType::REAL32>          Real32Delta_t;
+typedef Delta<float,DataType::FLOAT>           FloatDelta_t;
 
 /// C POD type
-typedef Delta<double,DataType::REAL64>         Real64Delta_t;
+typedef Delta<double,DataType::DOUBLE>         DoubleDelta_t;
 
+/// C POD type
+typedef Delta<void*,DataType::VOIDPTR>         VoidPtrDelta_t;
 
 
 /////////////////////////////////////////////////////////////////////////////

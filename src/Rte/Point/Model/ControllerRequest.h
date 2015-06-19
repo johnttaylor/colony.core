@@ -120,20 +120,16 @@ public:
         /// Starting Tuple index for the traversal
         unsigned                                    m_tupleIdx;
 
-        /// Flag that indicates that the Tuple update invovles a Point Membership change
-        bool                                        m_membershipChanged;
 
     public:
         /// Constructor
         RmwContainerPayload( Rte::Tuple::Api&                            clientTuple,
-                             bool                                        membershipChanged,
                              Rte::Point::Controller::RmwContainerClient& clientCallback,
                              unsigned                                    startingTupleIndex=0
                            )
             :m_clientTuple(clientTuple)
             ,m_clientCb(clientCallback)
             ,m_tupleIdx(startingTupleIndex)
-            ,m_membershipChanged(membershipChanged)
                 {}
     
     };

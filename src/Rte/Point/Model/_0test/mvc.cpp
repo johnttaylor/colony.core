@@ -876,7 +876,7 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( queryBar1.m_tuple.m_enabled.get() == true );
     REQUIRE( queryBar1.m_tuple.m_count.get() == 6 );
     Bar1RmwControllerContext rmwBar1( modelBar1_, 10 );
-    rmwBar1.updateModel();
+    rmwBar1.m_rmwPoint.updateModel();
     queryBar1.issueQuery();
     traceBar1_( queryBar1, "Bar1", "Read-Modify-Write - AFTER" );
     REQUIRE( queryBar1.m_tuple.m_name.getString() == "bob" );

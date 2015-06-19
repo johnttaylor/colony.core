@@ -14,7 +14,7 @@
 
 #include "Rte/Point/Controller/Base.h"
 #include "Rte/Point/Controller/Tuple.h"
-#include "Rte/Point/Controller/RmwBase.h"
+#include "Rte/Point/Controller/RmwComposer.h"
 #include "Rte/Point/Model/_0test/Point/bar1_m.h"
 
 ///
@@ -53,17 +53,19 @@ public:
 
 /** Concrete Read-Modify-Write Controller Point: BAR1
  */
+template <class CONTEXT>
 class RwmControllerBar1: public Point::Bar1,
-                         public Rte::Point::Controller::RmwBase,
-                         public Rte::Point::Controller::RmwClient
+                         public Rte::Point::Controller::RmwComposer<CONTEXT>
 {
-protected:
+public:
     /// Constructor. A child class must be create that implements Rte::Point::Controller::RmwClient::modify()
-    RwmControllerBar1( ModelBar1& modelPoint )
-        :Rte::Point::Controller::RmwBase(*this, modelPoint, *this)
-            {
-            }
+    RwmControllerBar1( CONTEXT& context, ModifyFunc_T modifyCallback, ModelBar1& modelPoint )
+        :Rte::Point::Controller::RmwComposer<CONTEXT>(*this, context, modifyCallback, modelPoint )
+            {}
 };
+
+
+
 
 
 };

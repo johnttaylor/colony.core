@@ -102,11 +102,13 @@ typedef Basic<uint64_t,DataType::UINTEGER32>   Uinteger64_T;
 typedef Basic<size_t,DataType::SIZE_T>         Size_T;
 
 /// C POD type
-typedef Basic<float,DataType::REAL32>          Real32_T;
+typedef Basic<float,DataType::FLOAT>           Float_T;
 
 /// C POD type
-typedef Basic<double,DataType::REAL64>         Real64_T;
+typedef Basic<double,DataType::DOUBLE>         Double_T;
 
+/// C POD type
+typedef Basic<void*,DataType::VOIDPTR>         VoidPtr_T;
 
 
 /////////////////////////////////////////////////////////////////////////////

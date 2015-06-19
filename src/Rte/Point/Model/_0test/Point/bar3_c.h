@@ -13,6 +13,7 @@
 /** @file */
 
 #include "Rte/Point/Controller/Container.h"
+#include "Rte/Point/Controller/RmwContainer.h"
 #include "Rte/Point/Controller/TupleItem.h"
 #include "Rte/Point/Model/_0test/Point/bar3_m.h"
 
@@ -47,6 +48,19 @@ public:
             {
             }
 
+};
+
+
+/** Concrete Read-Modify-Write Controller CONTAINER Point: BAR3
+ */
+template <class CONTEXT>
+class RwmFoo3ControllerBar3: public Rte::Point::Controller::RmwContainer<Tuple::Foo3, CONTEXT>
+{
+public:
+    /// Constructor. A child class must be create that implements Rte::Point::Controller::RmwClient::modify()
+    RwmFoo3ControllerBar3( CONTEXT& context, ModifyFunc_T modifyCallback, ModelBar3& modelPoint )
+        :Rte::Point::Controller::RmwContainer<Tuple::Foo3, CONTEXT>(context, modifyCallback, modelPoint )
+            {}
 };
 
 
