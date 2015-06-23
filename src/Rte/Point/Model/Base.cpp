@@ -236,9 +236,9 @@ void Base::request( RmwContainerMsg& msg )
         Rte::Tuple::Api::copy( msg.getPayload().m_clientTuple, m_myPoint.getTuple(j), 0 ); // Note: Read ALL elements
 
         // DO: Modify
-        Rte::Tuple::Api* modifiedTuple  = 0;
-        bool             membershipFlag = false;
-        int              next           = msg.getPayload().m_clientCb.modifyItem( j, modifiedTuple, membershipFlag );
+        Rte::Tuple::Api* modifiedTuplePtr = 0;
+        bool             membershipFlag   = false;
+        int              next             = msg.getPayload().m_clientCb.modifyItem( j, modifiedTuplePtr, membershipFlag );
 
         // Process Membership changes
         if ( membershipFlag )
@@ -247,9 +247,9 @@ void Base::request( RmwContainerMsg& msg )
             }
 
         // DO: Write
-        if ( modifiedTuple )
+        if ( modifiedTuplePtr )
             {
-            Rte::Tuple::Api::copy( m_myPoint.getTuple(j), *modifiedTuple, modifiedTuple );
+            Rte::Tuple::Api::copy( m_myPoint.getTuple(j), *modifiedTuplePtr, modifiedTuplePtr );
             }
 
         // Auto increment the tuple index 

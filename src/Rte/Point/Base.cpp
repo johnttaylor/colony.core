@@ -124,7 +124,7 @@ bool Base::compareAndCopy( Api& other, bool allElements, bool compareValues )
         other.setSequenceNumber( getSequenceNumber() );
 
         // Ensure that the Point is marked as different (handles the case where the Point was 'touched' - but no tuple was actually changed)
-        pointDifferent true;  
+        pointDifferent = true;  
         }
 
     // Return true if at least one tuple was different (and updated)

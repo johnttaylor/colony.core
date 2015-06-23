@@ -12,6 +12,7 @@
 #include "VariableBase_.h"
 #include "Cpl/Text/atob.h"
 #include <math.h>
+#include "Cpl/Math/real.h"
 
 
 ///
@@ -36,7 +37,7 @@ int VariableApi::compare( const char* leftValue, const char* rightValue )
     // Compare as numeric
     if ( Cpl::Text::a2d( leftOper, leftValue ) && Cpl::Text::a2d( rightOper, rightValue ) )
         {
-        if ( leftOper == rightOper )
+        if ( Cpl::Math::areDoublesEqual(leftOper,rightOper) )
             {
             return 0;
             }
@@ -96,7 +97,7 @@ bool VariableBase_::setNumericValue( double newValue ) throw()
     double intpart;
     double fracpart = modf( newValue, &intpart );
 
-    if ( fracpart < 0.0 || fracpart > 0.0 )
+    if ( Cpl::Math::areDoublesEqual(fracpart,0) )
         {
         return setValue( newValue );
         }

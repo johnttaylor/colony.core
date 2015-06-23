@@ -47,7 +47,7 @@ public:
               msg must run to completion before the thread its Model Point is
               executing in will process the next ITC message).
      */
-    virtual void modify( Rte::Point::Api*& modifiedPoint ) = 0;
+    virtual void modify( Rte::Point::Api*& modifiedPointPtr ) = 0;
 
 public: 
     /// Virtual destructor to make the compiler happy
@@ -103,7 +103,7 @@ public:
               msg must run to completion before the thread its Model Point is
               executing in will process the next ITC message).
      */
-    virtual int modifyItem( unsigned tupleIndex, Rte::Tuple::Api*& modifiedTuple, bool& membershipChanged ) = 0;
+    virtual int modifyItem( unsigned tupleIndex, Rte::Tuple::Api*& modifiedTuplePtr, bool& membershipChanged ) = 0;
 
 
 public: 

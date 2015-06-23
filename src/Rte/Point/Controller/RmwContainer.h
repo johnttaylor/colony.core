@@ -39,7 +39,7 @@ public:
     /** Define a callback method function for the Modify Point callback (See 
         Rte::Point::Controller::RmwContainerClient for additional details)
      */
-    typedef int (CONTEXT::*ModifyFunc_T)(unsigned /* tupleIndex */, Rte::Point::Api*& /* modifiedPoint */, bool& /* membershipChanged */);
+    typedef int (CONTEXT::*ModifyFunc_T)(unsigned /* tupleIndex */, Rte::Tuple::Api*& /* modifiedTuplePtr */, bool& /* membershipChanged */);
 
 
 protected:
@@ -67,7 +67,7 @@ public:
 
 public:
     /** This method allows the client to change the starting Tuple index for
-        Traversal.  This method needs to be calle BEFORE the call to 
+        Traversal.  This method needs to be called BEFORE the call to 
         updateModel()
      */
     void setStartingTupleIndex( unsigned newStartIndex );
@@ -96,7 +96,7 @@ public:
 
 public:
     /// See Rte::Point::Controller::RmwContainerClient
-    int modifyItem( unsigned tupleIndex, Rte::Point::Api*& modifiedPoint, bool& membershipChanged );
+    int modifyItem( unsigned tupleIndex, Rte::Tuple::Api*& modifiedTuplePtr, bool& membershipChanged );
 
 };
 
@@ -113,7 +113,6 @@ Rte::Point::Controller::RmwContainer<TUPLE, CONTEXT>::RmwContainer( CONTEXT&    
 ,m_context(context)
 ,m_modifyCb(modifyCallback)
 ,m_startTupleIdx(startingTupleIndex)
-,m_membershipChanged(false)
     {
     }
 
@@ -155,10 +154,10 @@ void Rte::Point::Controller::RmwContainer<TUPLE, CONTEXT>::updateModel( void )
 
 /////////////////
 template <class TUPLE, class CONTEXT>
-int Rte::Point::Controller::RmwContainer<TUPLE, CONTEXT>::modifyItem( unsigned tupleIndex, Rte::Point::Api*& modifiedPoint, bool& membershipChanged )
+int Rte::Point::Controller::RmwContainer<TUPLE, CONTEXT>::modifyItem( unsigned tupleIndex, Rte::Tuple::Api*& modifiedTuplePtr, bool& membershipChanged )
     {
     // Modify the Tuple
-    return (m_context.*m_modifyCb)( tupleIndex, modifiedPoint, membershipChanged );
+    return (m_context.*m_modifyCb)( tupleIndex, modifiedTuplePtr, membershipChanged );
     }
 
 

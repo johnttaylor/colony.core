@@ -36,7 +36,7 @@ public:
     /** Define a callback method function for the Modify Point callback (See 
         Rte::Point::Controller::RmwClient for additional details)
      */
-    typedef void (CONTEXT::*ModifyFunc_T)(Rte::Point::Api*& /* modifiedPoint */);
+    typedef void (CONTEXT::*ModifyFunc_T)(Rte::Point::Api*& /* modifiedPointPtr */);
 
 
 protected:
@@ -69,7 +69,7 @@ public:
 
 public:
     /// See Rte::Point::Controller::RmwClient
-    void modify( Rte::Point::Api*& modifiedPoint );
+    void modify( Rte::Point::Api*& modifiedPointPtr );
 
 };
 
@@ -100,10 +100,10 @@ void Rte::Point::Controller::RmwComposer<CONTEXT>::updateModel( void )
 
 /////////////////
 template <class CONTEXT>
-void Rte::Point::Controller::RmwComposer<CONTEXT>::modify( Rte::Point::Api*& modifiedPoint )
+void Rte::Point::Controller::RmwComposer<CONTEXT>::modify( Rte::Point::Api*& modifiedPointPtr )
     {
     // Notify context
-    (m_context.*m_modifyCb)( modifiedPoint );
+    (m_context.*m_modifyCb)( modifiedPointPtr );
     }
 
 

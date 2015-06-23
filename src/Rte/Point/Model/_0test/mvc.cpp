@@ -397,10 +397,10 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v1_.m_membershipChanged3Count == 2 );
     REQUIRE( v2_.m_changed1Count == 4 );
     REQUIRE( v2_.m_changed2Count == 3 );
-    REQUIRE( v2_.m_changed3Count == 1 );
+    REQUIRE( v2_.m_changed3Count == 2 );    // NOTE: Change notification because membershp sequence changed!
     REQUIRE( v3_.m_changed1Count == 4 );
     REQUIRE( v3_.m_changed2Count == 1 );
-    REQUIRE( v3_.m_changed3Count == 1 );
+    REQUIRE( v3_.m_changed3Count == 2 );    // NOTE: Change notification because membershp sequence changed!
     REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.isValid() == true );
     REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.isValid() == true );
     REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.isValid() == true );
@@ -439,10 +439,10 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v1_.m_membershipChanged3Count == 2 );
     REQUIRE( v2_.m_changed1Count == 4 );
     REQUIRE( v2_.m_changed2Count == 3 );
-    REQUIRE( v2_.m_changed3Count == 1 );
+    REQUIRE( v2_.m_changed3Count == 2 );
     REQUIRE( v3_.m_changed1Count == 4 );
     REQUIRE( v3_.m_changed2Count == 1 );
-    REQUIRE( v3_.m_changed3Count == 1 );
+    REQUIRE( v3_.m_changed3Count == 2 );
     REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.isValid() == true );
     REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.isValid() == true );
     REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.isValid() == true );
@@ -484,10 +484,10 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v1_.m_membershipChanged3Count == 3 );
     REQUIRE( v2_.m_changed1Count == 4 );
     REQUIRE( v2_.m_changed2Count == 3 );
-    REQUIRE( v2_.m_changed3Count == 1 );
+    REQUIRE( v2_.m_changed3Count == 3 );
     REQUIRE( v3_.m_changed1Count == 4 );
     REQUIRE( v3_.m_changed2Count == 1 );
-    REQUIRE( v3_.m_changed3Count == 1 );
+    REQUIRE( v3_.m_changed3Count == 3 );
     REQUIRE( v1_.m_bar3.m_tuples_[idx].m_name.isValid() == true );
     REQUIRE( v1_.m_bar3.m_tuples_[idx].m_enabled.isValid() == true );
     REQUIRE( v1_.m_bar3.m_tuples_[idx].m_count.isValid() == true );
@@ -526,7 +526,7 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v1_.m_membershipChanged3Count == 4 );
     REQUIRE( v2_.m_changed1Count == 4 );
     REQUIRE( v2_.m_changed2Count == 3 );
-    REQUIRE( v2_.m_changed3Count == 1 );
+    REQUIRE( v2_.m_changed3Count == 4 );
     REQUIRE( v1_.m_bar3.isTupleInContainer(idx) == false );
     idx = 1;
     REQUIRE( queryBar3.isTupleInContainer(idx) == true );
@@ -572,7 +572,7 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v1_.m_changed2Count == 1 );
     REQUIRE( v3_.m_changed1Count == 5 );
     REQUIRE( v3_.m_changed2Count == 1 );
-    REQUIRE( v3_.m_changed3Count == 1 );
+    REQUIRE( v3_.m_changed3Count == 4 );
     REQUIRE( v1_.m_bar1.m_tuple.m_name.getString() == "bob" );
     REQUIRE( v1_.m_bar1.m_tuple.m_enabled.get() == true );
     REQUIRE( v1_.m_bar1.m_tuple.m_count.get() == 6 );
@@ -620,7 +620,7 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( queryBar2.m_foo2.m_limit.isValid() == true );
     REQUIRE( v2_.m_changed1Count == 4 );
     REQUIRE( v2_.m_changed2Count == 4 );
-    REQUIRE( v2_.m_changed3Count == 1 );
+    REQUIRE( v2_.m_changed3Count == 4 );
     REQUIRE( v2_.m_bar2.m_foo1.m_name.getString() == "daryl" );
     REQUIRE( v2_.m_bar2.m_foo1.m_enabled.get() == true );
     REQUIRE( v2_.m_bar2.m_foo1.m_count.get() == 66 );
@@ -657,7 +657,7 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( queryBar2.m_foo2.m_limit.isValid() == true );
     REQUIRE( v2_.m_changed1Count == 4 );
     REQUIRE( v2_.m_changed2Count == 5 );
-    REQUIRE( v2_.m_changed3Count == 1 );
+    REQUIRE( v2_.m_changed3Count == 4 );
     REQUIRE( v2_.m_bar2.m_foo1.m_name.getString() == "daryl" );
     REQUIRE( v2_.m_bar2.m_foo1.m_enabled.get() == true );
     REQUIRE( v2_.m_bar2.m_foo1.m_count.get() == 66 );
@@ -882,6 +882,32 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( queryBar1.m_tuple.m_name.getString() == "bob" );
     REQUIRE( queryBar1.m_tuple.m_enabled.get() == true );
     REQUIRE( queryBar1.m_tuple.m_count.get() == 6+10 );
+
+
+    // Test:: Read-Modify-CONTAINER-Controller
+    queryBar3.issueQuery();
+    traceBar3_( queryBar3, "Bar3", "Read-Modify-Write - BEFORE" );
+    REQUIRE( queryBar3.isTupleInContainer(0) == false );
+    REQUIRE( queryBar3.isTupleInContainer(1) == false );
+    REQUIRE( queryBar3.isTupleInContainer(2) == false );
+    REQUIRE( queryBar3.isTupleInContainer(3) == true );
+    REQUIRE( queryBar3.m_tuples_[0].m_count.get() == 0 );
+    REQUIRE( queryBar3.m_tuples_[1].m_count.get() == 1122 );
+    REQUIRE( queryBar3.m_tuples_[2].m_count.get() == 102 );
+    REQUIRE( queryBar3.m_tuples_[3].m_count.get() == 1122 );
+    Bar3RmwContainerContext rmwBar3( modelBar3_, 10 );
+    rmwBar3.m_rmwPoint.updateModel();
+    Cpl::System::Api::sleep(50); // Pause to allow other threads to run
+    queryBar3.issueQuery();
+    traceBar3_( queryBar3, "Bar3", "Read-Modify-Write - AFTER" );
+    REQUIRE( queryBar3.m_tuples_[0].m_count.get() == 0 + 2000 + 10 );
+    REQUIRE( queryBar3.m_tuples_[1].m_count.get() == 1122 + 3000 + 10 );
+    REQUIRE( queryBar3.m_tuples_[2].m_count.get() == 102 );
+    REQUIRE( queryBar3.m_tuples_[3].m_count.get() == 1122 + 1000 + 10 );
+    REQUIRE( queryBar3.isTupleInContainer(0) == false );
+    REQUIRE( queryBar3.isTupleInContainer(1) == true );
+    REQUIRE( queryBar3.isTupleInContainer(2) == false );
+    REQUIRE( queryBar3.isTupleInContainer(3) == false );
 
 
     // Stop viewers

@@ -368,6 +368,63 @@ public:
 };
 
 
+class Bar3RmwContainerContext
+{
+public:
+    ///
+    Rte::Point::Controller::RmwContainer<Tuple::Foo3,Bar3RmwContainerContext> m_rmwPoint;
+    ///
+    uint32_t m_adder;
+    /// 
+    unsigned m_sequence;
+
+public:
+    ///
+    Bar3RmwContainerContext( Point::ModelBar3& modelPoint, uint32_t adder )
+        :m_rmwPoint( *this, &Bar3RmwContainerContext::modifyItem, modelPoint, 3)
+        ,m_adder(adder)
+        ,m_sequence(1)
+            {
+            }
+
+
+
+public:
+    ///
+    int modifyItem(unsigned tupleIndex, Rte::Tuple::Api*& modifiedTuplePtr, bool& membershipChanged )
+        {
+        if ( tupleIndex == 3 )
+            {
+            membershipChanged = m_rmwPoint.removeItem();
+            m_rmwPoint.m_count.setInUse();
+            m_rmwPoint.m_count.set( m_rmwPoint.m_count.get() + m_adder + m_sequence++ * 1000 ); 
+            modifiedTuplePtr  = &m_rmwPoint;
+            return 0;
+            }
+    
+        if ( tupleIndex == 0 )
+            {
+            m_rmwPoint.m_count.setInUse();
+            m_rmwPoint.m_count.set( m_rmwPoint.m_count.get() + m_adder + + m_sequence++ * 1000 );
+            modifiedTuplePtr  = &m_rmwPoint;
+            return Rte::Point::Controller::RmwContainerClient::eNEXT;
+            }
+
+        if ( tupleIndex == 1 )
+            {                                      
+            membershipChanged = m_rmwPoint.addItem();
+            m_rmwPoint.m_count.setInUse();
+            m_rmwPoint.m_count.set( m_rmwPoint.m_count.get() + m_adder + + m_sequence++ * 1000 );
+            modifiedTuplePtr  = &m_rmwPoint;
+            return Rte::Point::Controller::RmwContainerClient::eDONE;
+            }
+
+        // Should NEVER get here!!!!
+        m_sequence++;
+        return 100;
+        }
+};
+
     
 ///////////////////////////////////////////////////////////////////
 
