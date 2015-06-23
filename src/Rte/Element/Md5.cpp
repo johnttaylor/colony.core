@@ -21,7 +21,7 @@ using namespace Rte::Element;
 #define SECT_   "Rte::Element"
 
 //////////////////////////////////
-Md5::Md5( bool inUse, bool validFlag )
+Md5::Md5( bool inUse, int8_t validFlag )
 :Base(DataType::MD5,inUse,validFlag)
     {
     }

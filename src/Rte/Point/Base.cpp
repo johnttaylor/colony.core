@@ -133,12 +133,12 @@ bool Base::compareAndCopy( Api& other, bool allElements, bool compareValues )
 
 
 ////////////////////////
-void Base::setAllValidFlagState( bool newState )
+void Base::setAllValidState( int8_t newState )
     {
     unsigned i;
     for(i=0; i<getNumTuples(); i++)
         {
-        getTuple(i).setAllValidFlagState( newState );
+        getTuple(i).setAllValidState( newState );
         }
     }
 

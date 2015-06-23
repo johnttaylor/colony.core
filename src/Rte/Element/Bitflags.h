@@ -63,8 +63,8 @@ protected:
 
 public:
     /// Constructor
-    BitFlags( bool inUse     = false,
-              bool validFlag = false
+    BitFlags( bool   inUse     = false,
+              int8_t validFlag = RTE_ELEMENT_API_STATE_INVALID
             );
 
 

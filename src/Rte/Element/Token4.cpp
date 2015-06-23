@@ -18,7 +18,7 @@ using namespace Rte::Element;
 //////////////////////////////////
 Rte::Element::Token4::Token4( const char*  initialValue,
                               bool         inUse,
-                              bool         validFlag
+                              int8_t       validFlag
                             )
 :Rte::Element::String<4>(Rte::Element::DataType::TOKEN4,initialValue,inUse,validFlag)
     {

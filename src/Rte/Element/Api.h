@@ -13,8 +13,23 @@
 /** @file */
 
 
+#include "colony_config.h"
 #include "Rte/Element/DataType.h"
 #include <stdlib.h>
+#include <stdint.h>
+
+
+/** This symbol provides the default 'Invalid' state value for an Element. The 
+    application is free define/apply its own meaning to the set of 
+    'invalid-values'. 
+ */
+#ifndef RTE_ELEMENT_API_STATE_INVALID
+#define RTE_ELEMENT_API_STATE_INVALID   1
+#endif
+
+/// This symbol defines the 'Valid' state value for an Element
+#define RTE_ELEMENT_API_STATE_VALID     0
+
 
 
 ///
@@ -33,17 +48,25 @@ public:
 
 
 public:
+    /** This method sets the valid/invalid state of the element. A Value of zero
+        indicates 'valid'; else ALL other values represent 'invalid'.  The 
+        application is free define/apply its own meaning to the set of 
+        'invalid-values' 
+     */
+    virtual void setValidState( int8_t newState ) = 0;
+
+    /// This method is used to mark the element's data as invalid
+    inline void setInvalid(void) { setValidState(RTE_ELEMENT_API_STATE_INVALID); }
+
+    /// This method is used to mark the element's data as valid
+    inline void setValid(void)   { setValidState(RTE_ELEMENT_API_STATE_VALID); }
+
     /// Returns true if element has a valid/known value
     virtual bool isValid(void) const = 0;
 
-    /// This method sets the valid/invalid state of the element
-    virtual void setValidFlagState( bool newState ) = 0;
+    /// Returns the Element's actual Valid/Invalid state value
+    virtual int8_t validState(void) const = 0;
 
-    /// This method is used to mark the element's data as invalid
-    inline void setInvalid(void) { setValidFlagState(false); }
-
-    /// This method is used to mark the element's data as valid
-    inline void setValid(void)   { setValidFlagState(true); }
 
 
 public:

@@ -19,7 +19,7 @@ using namespace Rte::Element;
 //////////////////////////////////
 Rte::Element::CoralAddr::CoralAddr( const char*  initialValue,
                                     bool         inUse,
-                                    bool         validFlag
+                                    int8_t       validFlag
                                   )
 //:Rte::Element::String<OPTION_CORAL_SZ_ADDRESS>(DataType::CORAL_ADDR,initialValue,inUse,validFlag)
 :Rte::Element::String<10>(DataType::CORAL_ADDR,initialValue,inUse,validFlag)

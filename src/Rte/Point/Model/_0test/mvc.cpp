@@ -242,7 +242,7 @@ TEST_CASE( "mvc", "[mvc]" )
     /// BAR2 Controller 
     Point::ControllerBar2 controllerBar2( modelBar2_ );
     controllerBar2.setAllInUseState(true);
-    controllerBar2.setAllValidFlagState(true);
+    controllerBar2.setAllValidState(RTE_ELEMENT_API_STATE_VALID);
     controllerBar2.m_foo1.m_name.set("charlie");
     controllerBar2.m_foo1.m_enabled.set(false);
     controllerBar2.m_foo1.m_count.set(42);
@@ -363,7 +363,7 @@ TEST_CASE( "mvc", "[mvc]" )
     controllerBar3.m_tuples_[idx].m_name.set("bob2");
     controllerBar3.m_tuples_[idx].m_enabled.set(true);
     controllerBar3.m_tuples_[idx].m_count.set(102);
-    controllerBar3.m_tuples_[idx].setAllValidFlagState(true);
+    controllerBar3.m_tuples_[idx].setAllValidState(RTE_ELEMENT_API_STATE_VALID);
     controllerBar3.m_tuples_[idx].setAllInUseState(true);
     controllerBar3.addItem(idx);
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
@@ -459,7 +459,7 @@ TEST_CASE( "mvc", "[mvc]" )
     controllerBar3.m_tuples_[idx].m_name.set("bob1");
     controllerBar3.m_tuples_[idx].m_enabled.set(true);
     controllerBar3.m_tuples_[idx].m_count.set(101);
-    controllerBar3.m_tuples_[idx].setAllValidFlagState(true);
+    controllerBar3.m_tuples_[idx].setAllValidState(RTE_ELEMENT_API_STATE_VALID);
     controllerBar3.m_tuples_[idx].setAllInUseState(true);
     controllerBar3.addItem(idx);
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
@@ -597,7 +597,7 @@ TEST_CASE( "mvc", "[mvc]" )
     /// BAR2 Controller: BY TUPLE: FOO1 
     Point::TupleFoo1ControllerBar2 ctrlBar2TupleFoo1( modelBar2_ );
     ctrlBar2TupleFoo1.setAllInUseState(true);
-    ctrlBar2TupleFoo1.setAllValidFlagState(true);
+    ctrlBar2TupleFoo1.setAllValidState(RTE_ELEMENT_API_STATE_VALID);
     ctrlBar2TupleFoo1.m_name.set("daryl");
     ctrlBar2TupleFoo1.m_enabled.set(true);
     ctrlBar2TupleFoo1.m_count.set(66);
@@ -636,7 +636,7 @@ TEST_CASE( "mvc", "[mvc]" )
     /// BAR2 Controller: BY TUPLE: FOO2 
     Point::TupleFoo2ControllerBar2 ctrlBar2TupleFoo2( modelBar2_ );
     ctrlBar2TupleFoo2.setAllInUseState(true);
-    ctrlBar2TupleFoo2.setAllValidFlagState(true);
+    ctrlBar2TupleFoo2.setAllValidState(RTE_ELEMENT_API_STATE_VALID);
     ctrlBar2TupleFoo2.m_enabled.set(true);
     ctrlBar2TupleFoo2.m_limit.set(67);
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
@@ -685,7 +685,7 @@ TEST_CASE( "mvc", "[mvc]" )
     ctrlBar3Tuple.m_name.set("bob4");
     ctrlBar3Tuple.m_enabled.set(true);
     ctrlBar3Tuple.m_count.set(112);
-    ctrlBar3Tuple.setAllValidFlagState(true);
+    ctrlBar3Tuple.setAllValidState(RTE_ELEMENT_API_STATE_VALID);
     ctrlBar3Tuple.setAllInUseState(true);
     ctrlBar3Tuple.add();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));

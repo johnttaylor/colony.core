@@ -29,7 +29,7 @@ public:
     /// Constructor
     CoralAddr( const char* initialValue = "",
                bool        inUse        = false,
-               bool        validFlag    = false
+               int8_t      validFlag    = RTE_ELEMENT_API_STATE_INVALID
              );
 };
 

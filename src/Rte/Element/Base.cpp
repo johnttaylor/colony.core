@@ -18,9 +18,9 @@ using namespace Rte::Element;
 
 
 ////////////////////////
-Base::Base( int   myDataType,
-            bool  inUse,
-            bool  validFlag
+Base::Base( int    myDataType,
+            bool   inUse,
+            int8_t validFlag
            )
 :m_myDataType(myDataType)
 ,m_valid(validFlag)
@@ -47,12 +47,18 @@ const DataType Base::getType(void) const
 
 bool Base::isValid(void) const
     {
-    return m_valid;
+    return m_valid == RTE_ELEMENT_API_STATE_VALID;
     }
 
-void Base::setValidFlagState( bool newState )
+void Base::setValidState( int8_t newState )
     {
     m_valid = newState;
+    }
+
+
+int8_t Base::validState(void) const
+    {
+    return m_valid;
     }
 
 

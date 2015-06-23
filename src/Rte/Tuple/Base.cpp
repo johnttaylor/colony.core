@@ -76,12 +76,12 @@ bool Base::isDifferent( Api& other ) const
 
 
 /////////////////
-void Base::setAllValidFlagState( bool newState ) 
+void Base::setAllValidState( int8_t newState ) 
     {
     unsigned i;
     for(i=0; i<getNumElements(); i++)
         {
-        getElement(i).setValidFlagState(newState);
+        getElement(i).setValidState(newState);
         }
     }
 
@@ -120,7 +120,7 @@ void Api::copy( Api& dst, const Api& src, const Api* inUseFilterPtr )
         // Only copy in-use elements (or all if specified)
         if ( !inUseFilterPtr || inUseFilterPtr->getElement(i).isInUse() )
             {
-            dst.getElement(i).setValidFlagState( src.getElement(i).isValid() );
+            dst.getElement(i).setValidState( src.getElement(i).validState() );
             dst.getElement(i).copyDataFrom( src.getElement(i) );
             }
         }

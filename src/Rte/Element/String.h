@@ -37,7 +37,7 @@ public:
     /// Constructor
     String( const char* initialValue = "",
             bool        inUse        = false,
-            bool        validFlag    = false
+            int8_t      validFlag    = RTE_ELEMENT_API_STATE_INVALID
           );
 
 
@@ -46,7 +46,7 @@ protected:
     String( int         specializeType,
             const char* initialValue = "",
             bool        inUse        = false,
-            bool        validFlag    = false
+            int8_t      validFlag    = RTE_ELEMENT_API_STATE_INVALID
           );
 
 public:
@@ -88,7 +88,7 @@ public:
 template<int S>
 Rte::Element::String<S>::String( const char*  initialValue,
                                  bool         inUse,
-                                 bool         validFlag
+                                 int8_t       validFlag
                                )
 :Base(Rte::Element::DataType::STRING,inUse,validFlag),
  m_data(initialValue)
@@ -99,7 +99,7 @@ template<int S>
 Rte::Element::String<S>::String( int          specializeType,
                                  const char*  initialValue,
                                  bool         inUse,
-                                 bool         validFlag
+                                 int8_t       validFlag
                                )
 :Base(specializeType,inUse,validFlag),
  m_data(initialValue)

@@ -63,7 +63,7 @@ public:
     bool isDifferent( Api& other ) const;
 
     /// See Rte::Tuple::Api
-    void setAllValidFlagState( bool newState );
+    void setAllValidState( int8_t newState );
 
     /// See Rte::Tuple::Api
     void setAllInUseState( bool newState );

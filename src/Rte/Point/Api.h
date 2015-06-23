@@ -57,7 +57,7 @@ public:
     /** Helper method that sets the valid state for ALL Elements in ALL 
         Tuples to the same state.
      */
-    virtual void setAllValidFlagState( bool newState ) = 0;
+    virtual void setAllValidState( int8_t newState ) = 0;
 
     /** Helper method that sets the in use state for ALL Elements in ALL
         Tuples to the same state.

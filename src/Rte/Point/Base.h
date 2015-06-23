@@ -46,7 +46,7 @@ public:
     bool compareAndCopy( Api& other, bool allElements=false, bool compareValues=true );
 
     /// See Rte::Point::Api
-    void setAllValidFlagState( bool newState );
+    void setAllValidState( int8_t newState );
 
     /// See Rte::Point::Api
     void setAllInUseState( bool newState );

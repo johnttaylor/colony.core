@@ -29,7 +29,7 @@ protected:
     DataType    m_myDataType;
 
     /// My valid state
-    bool        m_valid;
+    int8_t      m_valid;
 
     /// My in-use state
     bool        m_inUse;
@@ -37,9 +37,9 @@ protected:
 
 protected:
     /// Constructor
-    Base( int  myDataType,
-          bool inUse     = false,
-          bool validFlag = false
+    Base( int    myDataType,
+          bool   inUse     = false,
+          int8_t validFlag = RTE_ELEMENT_API_STATE_INVALID
         );
 
 
@@ -56,7 +56,10 @@ public:
     bool isValid(void) const;
 
     ///  See Rte::Element::Api
-    void setValidFlagState( bool newState );
+    void setValidState( int8_t newState );
+
+    ///  See Rte::Element::Api
+    int8_t validState(void) const;
 
     ///  See Rte::Element::Api
     bool isInUse(void) const;
