@@ -21,8 +21,8 @@ using namespace Rte::Element;
 
 
 //////////////////////////////////
-SeqNumber::SeqNumber( bool inUse, int8_t validFlag )
-:Base(DataType::SEQNUMBER, inUse, validFlag)
+SeqNumber::SeqNumber( bool inUse, int8_t validState )
+:Base(DataType::SEQNUMBER, inUse, validState)
 ,m_data(1) // Default value is 'perform normal copy'
     {
     }

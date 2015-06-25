@@ -36,7 +36,7 @@ public:
     /// Constructor
     Basic( ELEMTYPE initialValue = 0,
            bool     inUse        = false,
-           int8_t   validFlag    = RTE_ELEMENT_API_STATE_INVALID
+           int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
          );
 
 public:
@@ -117,9 +117,9 @@ typedef Basic<void*,DataType::VOIDPTR>         VoidPtr_T;
 template<class ELEMTYPE, int TYPEID>
 Rte::Element::Basic<ELEMTYPE,TYPEID>::Basic( ELEMTYPE initialValue,
                                              bool     inUse,
-                                             int8_t   validFlag
+                                             int8_t   validState
                                            )
-:Base(TYPEID,inUse,validFlag),
+:Base(TYPEID,inUse,validState),
  m_data(initialValue)
     {
     }

@@ -49,11 +49,6 @@ unsigned Base::startViewing( bool forceInitialUpdate, bool useValueForDifference
         result  = 1;
         m_state = eSTARTED;
 
-        // Set the viewer/client point to 'All Invalid' - this ensures that viewer/client
-        // point will be updated with meaningful value(s) from the model point (or the 
-        // default state of invalid is correct).
-        m_registerPayload.m_viewerPoint.setAllValidState(RTE_ELEMENT_API_STATE_INVALID);
-
         // Initialize my viewer to the current contents of the model point
         if ( forceInitialUpdate )
             {

@@ -20,10 +20,10 @@ using namespace Rte::Element;
 ////////////////////////
 Base::Base( int    myDataType,
             bool   inUse,
-            int8_t validFlag
+            int8_t validState
            )
 :m_myDataType(myDataType)
-,m_valid(validFlag)
+,m_valid(validState)
 ,m_inUse(inUse)
     {
     }

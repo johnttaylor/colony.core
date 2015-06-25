@@ -38,8 +38,8 @@ protected:
 protected:
     /// Constructor
     Base( int    myDataType,
-          bool   inUse     = false,
-          int8_t validFlag = RTE_ELEMENT_API_STATE_INVALID
+          bool   inUse      = false,
+          int8_t validState = RTE_ELEMENT_API_STATE_INVALID
         );
 
 

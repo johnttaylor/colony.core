@@ -40,7 +40,7 @@ public:
     Delta( ELEMTYPE  delta        = 0,
            ELEMTYPE  initialValue = 0,
            bool      inUse        = false,
-           int8_t    validFlag    = RTE_ELEMENT_API_STATE_INVALID
+           int8_t    validState   = RTE_ELEMENT_API_STATE_INVALID
          );
 
 
@@ -105,9 +105,9 @@ template<class ELEMTYPE, int TYPEID>
 Rte::Element::Delta<ELEMTYPE,TYPEID>::Delta( ELEMTYPE  delta,
                                              ELEMTYPE  initialValue,
                                              bool      inUse,
-                                             int8_t    validFlag
+                                             int8_t    validState
                                            )
-:Basic<ELEMTYPE,TYPEID>(initialValue,inUse,validFlag),
+:Basic<ELEMTYPE,TYPEID>(initialValue,inUse,validState),
  m_delta(delta)
     {
     }

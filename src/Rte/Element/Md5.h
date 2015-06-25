@@ -33,7 +33,7 @@ protected:
 public:
     /// Constructor
     Md5( bool   inUse      = false,
-         int8_t validFlag  = RTE_ELEMENT_API_STATE_INVALID
+         int8_t validState = RTE_ELEMENT_API_STATE_INVALID
        );
 
 

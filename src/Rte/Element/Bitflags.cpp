@@ -20,8 +20,8 @@ using namespace Rte::Element;
 
 
 //////////////////////////////////
-BitFlags::BitFlags( bool inUse, int8_t validFlag )
-:Base(Rte::Element::DataType::BITFLAGS,inUse,validFlag),
+BitFlags::BitFlags( bool inUse, int8_t validState )
+:Base(Rte::Element::DataType::BITFLAGS,inUse,validState),
  m_data(0) // Default value is 'perform normal copy'
     {
     }

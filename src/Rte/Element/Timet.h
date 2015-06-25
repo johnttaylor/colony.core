@@ -30,9 +30,9 @@ public:
     Time_t( time_t  delta        = 0,
             time_t  initialValue = 0,
             bool    inUse        = false,
-            int8_t  validFlag    = RTE_ELEMENT_API_STATE_INVALID
+            int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
           )
-        :Rte::Element::Delta<time_t,DataType::TIMET>(delta,initialValue,inUse,validFlag)
+        :Rte::Element::Delta<time_t,DataType::TIMET>(delta,initialValue,inUse,validState)
             {
             }
 };
