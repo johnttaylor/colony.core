@@ -37,5 +37,23 @@ public:
         {}
 };
 
+/** Concrete LIGHT WEIGHT Viewer Point: BAR3
+ */
+template <class CONTEXT>
+class LWViewerBar3: public Bar3Null,
+                    public Rte::Point::Viewer::Container<CONTEXT>
+{
+public:
+    /// Constructor
+    LWViewerBar3( CONTEXT&                                                                    context,
+                  typename Rte::Point::Viewer::Container<CONTEXT>::ChangeNotificationFunc_T   contextChangedCb,
+                  typename Rte::Point::Viewer::Container<CONTEXT>::StoppedNotificationFunc_T  contextStoppedCb,
+                  ModelBar3&                                                                  modelPoint,
+                  Cpl::Itc::PostApi&                                                          viewerMbox 
+                )
+    :Rte::Point::Viewer::Container<CONTEXT>::Container(*this, context, contextChangedCb, contextStoppedCb, modelPoint, viewerMbox)
+        {}
+};
+
 };
 #endif 

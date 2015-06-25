@@ -295,6 +295,156 @@ protected: // Cpl::Itc::Close/Open
 
 };
 
+class LWViewerContext: public Cpl::Itc::CloseSync
+{
+public: // Make public to simply testing
+    ///    
+    Point::LWViewerBar1<LWViewerContext>   m_bar1;
+    ///
+    Point::LWViewerBar3<LWViewerContext>   m_bar3;
+    ///
+    int                                m_openViewerCount;
+    ///
+    Cpl::Itc::CloseRequest::CloseMsg*  m_closeMsgPtr;
+    ///
+    const char*                        m_name;
+    ///
+    unsigned                           m_changed1Count;
+    ///
+    unsigned                           m_changed3Count;
+    ///
+    unsigned                           m_membershipChanged3Count;
+
+
+public:
+    ///
+    LWViewerContext( const char*          viewerName,
+                     Cpl::Itc::PostApi&   viewerMbox, 
+                     Point::ModelBar1&    modelBar1,
+                     Point::ModelBar3&    modelBar3,
+                     bool                 enableAllInUseBar1  = true,
+                     bool                 enableAllInUseBar3  = true
+                   )
+        :CloseSync(viewerMbox)
+        ,m_bar1(*this,
+                &LWViewerContext::bar1Changed,
+                &LWViewerContext::bar1Stopped,
+                modelBar1,
+                viewerMbox
+               )
+        ,m_bar3(*this,
+                &LWViewerContext::bar3Changed,
+                &LWViewerContext::bar3Stopped,
+                modelBar3,
+                viewerMbox
+               )
+        ,m_openViewerCount(0)
+        ,m_closeMsgPtr(0)
+        ,m_name(viewerName)
+        ,m_changed1Count(0)
+        ,m_changed3Count(0)
+        ,m_membershipChanged3Count(0)
+            {
+            if ( enableAllInUseBar1 )
+                {
+                m_bar1.setAllInUseState(true);
+                }
+            if ( enableAllInUseBar3 )
+                {
+                m_bar3.setAllInUseState(true);
+                }
+            }
+
+private:
+    ///
+    void viewerStopped(void)
+        {
+        if ( --m_openViewerCount == 0 )
+            {
+            if ( m_closeMsgPtr )
+                {
+                m_closeMsgPtr->returnToSender();
+                }
+            }
+        }
+
+protected:
+    ///
+    void bar1Changed(void)
+        {
+        m_changed1Count++;
+
+        Point::QueryBar1 queryResult( m_bar1.getModelPoint() );
+        queryResult.issueQuery();
+        m_bar1.copyQueryResultsFrom( queryResult );
+        
+CPL_SYSTEM_TRACE_MSG( SECT_, ( "V4 Viewer: SeqNum=%u, query.SeqNum=%u", m_bar1.m_tuple.getSequenceNumber(), queryResult.m_tuple.getSequenceNumber() ));
+
+        traceBar1_( queryResult, m_name, "LW-Viewer::Changed" );
+        }
+    ///
+    void bar1Stopped(void)
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "LW-Viewer(%s).Bar1 STOPPED", m_name ));
+        viewerStopped();
+        }
+
+
+    ///
+    void bar3Changed( bool membershipChanged )
+        {
+        m_changed3Count++;
+        
+        Point::QueryBar3 queryResult( m_bar3.getModelPoint() );
+        queryResult.issueQuery();
+        m_bar3.copyQueryResultsFrom( queryResult );
+
+        if ( !membershipChanged )
+            {
+            traceBar3_( queryResult, m_name, "LW-Viewer::Tuple Changed" );
+            }
+        else
+            {
+            m_membershipChanged3Count++;
+            traceBar3_( queryResult, m_name, "LW-Viewer::CONTAINER Changed" );
+            }
+        }
+
+    void bar3Stopped(void)
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "LW-Viewer(%s).Bar3 STOPPED", m_name ));
+        viewerStopped();
+        }
+
+
+protected: // Cpl::Itc::Close/Open
+    void request( Cpl::Itc::OpenRequest::OpenMsg& msg )
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "LWViewerContext::request( OpenMsg ): starting viewers" ));
+        m_openViewerCount += m_bar1.startViewing(true);
+//        m_openViewerCount += m_bar3.startViewing(true);
+        msg.returnToSender();
+        }
+
+    ///
+    void request( Cpl::Itc::CloseRequest::CloseMsg& msg )
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "LWViewerContext::request( CloseMsg ): stopping viewers" ));
+        if ( m_openViewerCount == 0 )
+            {
+            msg.returnToSender();
+            }
+        else
+            {
+            m_bar1.stopViewing();
+//            m_bar3.stopViewing();
+            m_closeMsgPtr = &msg;        
+            }
+        }
+
+};
+
+
 
 
 class Foo3TupleTraverserContext

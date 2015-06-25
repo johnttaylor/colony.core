@@ -32,9 +32,10 @@ void link_mvc(void) {}
 
 
 // Viewers
-ViewerContext v1_( "V1", viewerMailbox_, modelBar1_, modelBar2_, modelBar3_, true, false, true );
-ViewerContext v2_( "V2", viewerMailbox_, modelBar1_, modelBar2_, modelBar3_, true, true, false );
-ViewerContext v3_( "V3", viewerMailbox_, modelBar1_, modelBar2_, modelBar3_, true, false, false, false );  // Compare using seqnumber
+ViewerContext   v1_(   "V1", viewerMailbox_, modelBar1_, modelBar2_, modelBar3_, true, false, true );
+ViewerContext   v2_(   "V2", viewerMailbox_, modelBar1_, modelBar2_, modelBar3_, true, true, false );
+ViewerContext   v3_(   "V3", viewerMailbox_, modelBar1_, modelBar2_, modelBar3_, true, false, false, false );  // Compare using seqnumber
+LWViewerContext v4LW_( "V4", viewerMailbox_, modelBar1_, modelBar3_, true, true );
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +51,7 @@ TEST_CASE( "mvc", "[mvc]" )
     v1_.open();
     v2_.open();
     v3_.open();
+    v4LW_.open();
 
 
     // I cheat here and directly access my Viewer objects since (in theory) they only 'do something' when there is model change
@@ -914,6 +916,7 @@ TEST_CASE( "mvc", "[mvc]" )
     v1_.close();
     v2_.close();
     v3_.close();
+    v4LW_.close();
 
     // Shutdown threads
     viewerMailbox_.pleaseStop();

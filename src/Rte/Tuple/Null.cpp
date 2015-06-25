@@ -1,5 +1,3 @@
-#ifndef Point_Bar2_h_
-#define Point_Bar2_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -10,37 +8,41 @@
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
-/** @file */
 
-#include "Rte/Point/Basic.h"
-#include "Rte/Point/Model/_0test/Tuple/foo1.h"
-#include "Rte/Point/Model/_0test/Tuple/foo2.h"
+
+#include "Null.h"
+#include "Rte/Element/Basic.h"
+#include "Cpl/System/FatalError.h"
+
 
 
 ///
-namespace Point {
+using namespace Rte::Tuple;
 
 
-/** Concrete Point: BAR2
- */
-class Bar2: public Rte::Point::Basic<2>
-{
-public:
-    ///
-    Tuple::Foo1   m_foo1;
-    ///
-    Tuple::Foo2   m_foo2;
+/// Dummy Element
+static Rte::Element::Boolean_T  dummy_;
 
 
-public:
-    /// Constructor
-    Bar2( void )
-        {
-        registerTuple( 0, m_foo1 );
-        registerTuple( 1, m_foo2 );
-        }
+/////////////////////
+Null::Null( void )
+:Base()
+    {
+    }
 
-};
 
-};
-#endif 
+/////////////////
+unsigned Null::getNumElements( void ) const
+    {
+    return 0;
+    }
+
+
+Rte::Element::Api& Null::getElement( unsigned elementIdx ) const
+    {
+    Cpl::System::FatalError::logf( "Rte::Tuple::Null::getElement - out-of-range index (maxIdx=n/a, requestIdx=%u)", elementIdx );
+
+    // I WILL NEVER GET BECAUSE OF FATAL ERROR -->But I need to return something to keep the compiler happy!
+    return dummy_;
+    }
+

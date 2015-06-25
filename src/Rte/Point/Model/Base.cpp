@@ -315,8 +315,8 @@ void Base::request( QueryMsg& msg )
         {
         msg.getPayload().m_dstPoint.copyFrom( m_myPoint, &(msg.getPayload().m_dstPoint) );
 
-        // Update the Client's (i.e. the Querier's) Point sequence number to match the Model's Point sequence number
-        msg.getPayload().m_dstPoint.setSequenceNumber( m_myPoint.getSequenceNumber() );
+        // Update the Client's (i.e. the Querier's) Point sequence numbers to match the Model's Point sequence numbers
+        msg.getPayload().m_dstPoint.copyAllSequenceNumbersFrom( m_myPoint );
         }
 
     // Use the compare-n-copy method to set the 'is different' status/state of the client's Query Point

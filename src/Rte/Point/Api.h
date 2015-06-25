@@ -131,6 +131,15 @@ public:
 
 
 public:
+    /** This method sets the instance's Sequence numbers - BOTH the Point's
+        sequence number AND all of the Tuple's sequences - to the source
+        Point Sequence numbers.  This method is typically ONLY used when
+        updating a Light Weight Viewer with result of a Query operation.
+     */
+    virtual void copyAllSequenceNumbersFrom( Api& other ) = 0;
+
+
+public:
     /// Virtual destructor to make the compiler happy
     virtual ~Api(){}
 };

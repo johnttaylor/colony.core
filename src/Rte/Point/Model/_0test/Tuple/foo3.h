@@ -39,12 +39,12 @@ public: // Provide the domain application access to the Data
 
 public:
     /// Constructor
-    Foo3( void ):Rte::Tuple::Basic<4>( &m_inContainer_ )
+    Foo3( void )
         {
-        registerElement( m_name );
-        registerElement( m_enabled );
-        registerElement( m_count );
-        endRegistration();
+        registerElement( 0, m_inContainer_ );
+        registerElement( 1, m_name );
+        registerElement( 2, m_enabled );
+        registerElement( 3, m_count );
         }
 };
 

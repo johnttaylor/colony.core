@@ -34,9 +34,8 @@ public:
     /// Constructor
     Foo2( void )
         {
-        registerElement( m_enabled );
-        registerElement( m_limit );
-        endRegistration();
+        registerElement( 0, m_enabled );
+        registerElement( 1, m_limit );
         }
 };
 

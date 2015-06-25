@@ -1,5 +1,5 @@
-#ifndef Point_Bar2_h_
-#define Point_Bar2_h_
+#ifndef Rte_Tuple_Null_h_
+#define Rte_Tuple_Null_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -12,35 +12,38 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Rte/Point/Basic.h"
-#include "Rte/Point/Model/_0test/Tuple/foo1.h"
-#include "Rte/Point/Model/_0test/Tuple/foo2.h"
+
+#include "Rte/Tuple/Base.h"
+
 
 
 ///
-namespace Point {
+namespace Rte { namespace Tuple {
 
 
-/** Concrete Point: BAR2
+/** This class implements a Null Tuple.  A Null Tuple is a Tuple with zero
+    Elements.  A Null Tuple is typically only used to implement Light Weight
+    Viewers. 
  */
-class Bar2: public Rte::Point::Basic<2>
+class Null: public Base
 {
 public:
-    ///
-    Tuple::Foo1   m_foo1;
-    ///
-    Tuple::Foo2   m_foo2;
+    /// Constructor. 
+    Null( void );
 
 
-public:
-    /// Constructor
-    Bar2( void )
-        {
-        registerTuple( 0, m_foo1 );
-        registerTuple( 1, m_foo2 );
-        }
+public: 
+    /// See Rte::Tuple::Api
+    unsigned getNumElements(void) const;
+
+    /// See Rte::Tuple::Api
+    Rte::Element::Api& getElement( unsigned elementIdx ) const;
+
 
 };
 
+
+
+};      // end namespaces
 };
-#endif 
+#endif  // end header latch

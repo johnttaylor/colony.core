@@ -39,22 +39,16 @@ protected:
         Elements, the child class must pass a pointer to its 'membership
         Element'. 
      */
-    Basic( Rte::Element::Api* membershipElementPtr = 0 );
+    Basic(void);
 
 
 protected:
     /** This method attaches/registers the element into the array of elements.
         This method should ONLY be called in the constructor of the concrete
-        child class. Also, the endRegistration() method must be called once
-        all elements have been registered.
+        child class. 
      */
-    virtual void registerElement( Rte::Element::Api& element );
+    virtual void registerElement( unsigned elementIdx, Rte::Element::Api& element );
 
-    /** This method is used to information base class that ALL elements for
-        the Tuple have been registered.  This method should ONLY be called
-        in the constructor of the concrete child class.
-     */
-    virtual void endRegistration(void);
        
 
 public: 
@@ -72,7 +66,7 @@ public:
 //                  INLINE IMPLEMENTAION
 /////////////////////////////////////////////////////////////////////////////
 template<int N>
-Rte::Tuple::Basic<N>::Basic( Rte::Element::Api* membershipElementPtr )
+Rte::Tuple::Basic<N>::Basic( void )
 :Base()
     {
     // Initialize element array (for error trapping)
@@ -81,34 +75,22 @@ Rte::Tuple::Basic<N>::Basic( Rte::Element::Api* membershipElementPtr )
         {
         m_elementPtrs_[i] = 0;
         }
-
-    // Register the membership Element (when I am a Container Tuple)
-    if ( membershipElementPtr )
-        {
-        m_elementPtrs_[N-1] = membershipElementPtr;
-        }
     }
 
 
 /////////////////
 template<int N>
-void Rte::Tuple::Basic<N>::registerElement( Rte::Element::Api& element )
+void Rte::Tuple::Basic<N>::registerElement( unsigned elementIdx, Rte::Element::Api& element )
     {
-    // NOTE: I re-use the 'm_seqnum_' member variable for my array index when registering elements (since the array index is ONLY used during the constructor)
-    if ( m_seqnum_ >= N || m_elementPtrs_[m_seqnum_] != 0 )
+    if ( elementIdx >= N )
         {
         Cpl::System::FatalError::logf( "Rte::Tuple::Basic::registerElement - exceeded max number of elements (N=%u)", N );
         }
 
-    m_elementPtrs_[m_seqnum_++] = &element;
+    m_elementPtrs_[elementIdx] = &element;
     }
 
 
-template<int N>
-void Rte::Tuple::Basic<N>::endRegistration()
-    {
-    m_seqnum_ = 1;  // Set the sequence to '1', i.e. a valid number (which requires viewers to invalidate their sequence numbers)
-    }
     
 
 /////////////////

@@ -78,6 +78,9 @@ public:
     /// See Rte::Point::Api
     void invalidateAllTupleSequenceNumbers(void);
 
+    /// See Rte::Point::Api
+    void copyAllSequenceNumbersFrom( Api& other );
+
 };
 
 };      // end namespaces

@@ -44,7 +44,9 @@ public:
         only a change in value (as determined by each element in the
         Point) triggers a change notification.  If useValueForDifference
         is false, then all/any updates/writes to the Point will trigger a
-        change notification. 
+        change notification. NOTE: When the Viewer is a 'Light Weight'
+        Viewer the 'userValueForDifference' flag is ignore and the
+        comparision is ALWAYS done by sequence number.
 
         With respect to the composer - The context's method function
         'm_changedCb' is called when the Viewer Points is different from
@@ -85,6 +87,14 @@ public:
         unless you really know what you are doing!)
      */
     virtual Rte::Point::Api& getMyPoint(void) = 0;
+
+
+public:
+    /** This is a convience method that invokes the Point::copyAllSequenceNumbersFrom()
+        method on the Viewer's internal Point object.  Typically this is used
+        to update a Light Weight Viewer with the result of Query operation
+     */
+    inline void copyQueryResultsFrom( Rte::Point::Api& queryPoint ) { getMyPoint().copyAllSequenceNumbersFrom( queryPoint ); }
 
 
 public:

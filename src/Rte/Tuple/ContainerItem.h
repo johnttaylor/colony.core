@@ -26,7 +26,10 @@ namespace Rte { namespace Tuple {
 class ContainerItem
 {
 public:
-    ///
+    /** Track a Tuple's membership in a Container. Note: This is ONLY public to 
+        allow simply access by other Rte namespaces - the application should use 
+        the isInContainer() method
+     */
     Rte::Element::Boolean_T   m_inContainer_;
 
 protected:

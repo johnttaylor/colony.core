@@ -13,6 +13,7 @@
 /** @file */
 
 #include "Rte/Point/Container.h"
+#include "Rte/Tuple/NullItem.h"
 #include "Rte/Point/Model/_0test/Tuple/foo3.h"
 
 ///
@@ -29,6 +30,17 @@ public:
     Bar3( void ){}
 
 };
+
+/** Concrete Null Point: BAR3 (to only be used with Light Weight Viewers)
+ */
+class Bar3Null: public Rte::Point::Container<Rte::Tuple::NullItem,4>
+{
+public:
+    /// Constructor
+    Bar3Null( void ){}
+
+};
+
 
 };
 #endif 

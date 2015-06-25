@@ -10,15 +10,18 @@
 *----------------------------------------------------------------------------*/ 
 
 #include "Base.h"
+#include "Cpl/System/Trace.h"
 
 
 ///
 using namespace Rte::Tuple;
 
+#define SECT_   "Rte::Tuple"
+
 
 ///////////////////////
 Base::Base( void )
-:m_seqnum_(0)
+:m_seqnum_(1)           // Initial the sequence number something 'valid' (but this requires all viewers to invalidate their sequence numbers during construction)
 ,m_updated_(false)
     {
     }
@@ -113,15 +116,19 @@ void Api::copy( Api& dst, const Api& src, const Api* inUseFilterPtr )
     dst.setUpdatedState();
     dst.incrementSequenceNumber();
 
-    // DO the copy
-    unsigned i;
-    for(i=0; i < dst.getNumElements(); i++ )
+    // Skip copy if the source Tuple is a Null Tuple
+    if ( src.getNumElements() != 0 )
         {
-        // Only copy in-use elements (or all if specified)
-        if ( !inUseFilterPtr || inUseFilterPtr->getElement(i).isInUse() )
+        // DO the copy
+        unsigned i;
+        for(i=0; i < dst.getNumElements(); i++ )
             {
-            dst.getElement(i).setValidState( src.getElement(i).validState() );
-            dst.getElement(i).copyDataFrom( src.getElement(i) );
+            // Only copy in-use elements (or all if specified)
+            if ( !inUseFilterPtr || inUseFilterPtr->getElement(i).isInUse() )
+                {
+                dst.getElement(i).setValidState( src.getElement(i).validState() );
+                dst.getElement(i).copyDataFrom( src.getElement(i) );
+                }
             }
         }
     }
@@ -131,10 +138,11 @@ bool Api::compareAndCopy( Rte::Tuple::Api& srcTuple, Rte::Tuple::Api& dstTuple, 
     // Clear the 'destination tuple' (aka the tuple that might be updated) as not-updated
     dstTuple.clearUpdatedState();
 
-    // Compare by sequence numbers
+    // Compare by sequence numbers (OR force a sequence number comparsion if my destination Tuple is a Null Tuple)
     bool tupleIsDifferent = false;
-    if ( !compareValues )
+    if ( !compareValues || dstTuple.getNumElements() == 0 )
         {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Compare by SEQNUM! (dst.numElems=%u, src.numElems=%u, dst.seq=%u, src.seq=%u)", dstTuple.getNumElements(), srcTuple.getNumElements(), dstTuple.getSequenceNumber(), srcTuple.getSequenceNumber() ));
         if ( srcTuple.isDifferent( dstTuple ) )
             {
             tupleIsDifferent = true;
@@ -144,6 +152,8 @@ bool Api::compareAndCopy( Rte::Tuple::Api& srcTuple, Rte::Tuple::Api& dstTuple, 
     // Do the compare by actual VALUES
     else
         {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Compare by VALUE (dst.numElems=%u, src.numElems=%u, dst.seq=%u, src.seq=%u)", dstTuple.getNumElements(), srcTuple.getNumElements(), dstTuple.getSequenceNumber(), srcTuple.getSequenceNumber() ));
+
         unsigned i;
         for(i=0; i < srcTuple.getNumElements(); i++ )
             {

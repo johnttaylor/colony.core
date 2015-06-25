@@ -13,6 +13,7 @@
 /** @file */
 
 #include "Rte/Point/Basic.h"
+#include "Rte/Tuple/Null.h"
 #include "Rte/Point/Model/_0test/Tuple/foo1.h"
 
 ///
@@ -32,11 +33,29 @@ public:
     /// Constructor
     Bar1( void )
         {
-        registerTuple( m_tuple );
-        endRegistration();
+        registerTuple( 0, m_tuple );
         }
 
 };
+        
+
+/** Concrete Null Point: Bar1 (to only be used with Light Weight Viewers)
+ */
+class Bar1Null: public Rte::Point::Basic<1>
+{
+public:
+    /// 
+    Rte::Tuple::Null m_tuple;
+
+public:
+    /// Constructor
+    Bar1Null( void )
+        {
+        registerTuple( 0, m_tuple );
+        }
+
+};
+
 
 };
 #endif 

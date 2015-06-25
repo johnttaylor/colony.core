@@ -39,16 +39,10 @@ protected:
 protected:
     /** This method attaches/registers the Tuple into the array of Tuples.
         This method should ONLY be called in the constructor of the concrete
-        child class. Also, the endRegistration() method must be called once
-        all Tuples have been registered.
+        child class. 
      */
-    virtual void registerTuple( Rte::Tuple::Api& tuple );
+    virtual void registerTuple( unsigned tupleIdx, Rte::Tuple::Api& tuple );
 
-    /** This method is used to information base class that ALL Tuples for
-        the Point have been registered.  This method should ONLY be called
-        in the constructor of the concrete child class.
-     */
-    virtual void endRegistration(void);
 
 
 public: 
@@ -76,20 +70,14 @@ Rte::Point::Basic<N>::Basic( void )
 
 /////////////////
 template<int N>
-void Rte::Point::Basic<N>::registerTuple( Rte::Tuple::Api& tuple )
+void Rte::Point::Basic<N>::registerTuple( unsigned tupleIdx, Rte::Tuple::Api& tuple )
     {
-    if ( m_seqnum_ >= N )
+    if ( tupleIdx >= N )
         {
         Cpl::System::FatalError::logf( "Rte::Point::Basic::registerTuple - exceeded max number of tuples (N=%u)", N );
         }
 
-    m_tuplePtrs_[m_seqnum_++] = &tuple;
-    }
-
-template<int N>
-void Rte::Point::Basic<N>::endRegistration( void )
-    {
-    m_seqnum_ = 0;
+    m_tuplePtrs_[tupleIdx] = &tuple;
     }
 
 

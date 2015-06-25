@@ -76,6 +76,20 @@ void Base::invalidateAllTupleSequenceNumbers(void)
     }
 
 
+void Base::copyAllSequenceNumbersFrom( Api& other )
+    {
+    // Copy the Point's sequence number
+    setSequenceNumber( other.getSequenceNumber() );
+
+    // Copy the Tuples' sequence numbers
+    unsigned j;
+    for(j=0; j<getNumTuples(); j++)
+        {
+        getTuple(j).setSequenceNumber( other.getTuple(j).getSequenceNumber() );
+        }
+    }
+
+
 ////////////////////////
 void Base::copyFrom( Api& other, Api* inUseFilterP )
     {

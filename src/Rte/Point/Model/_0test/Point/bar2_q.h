@@ -27,7 +27,7 @@ class QueryBar2: public Bar2,
 {
 public:
     /// Constructor
-    QueryBar2( ModelBar2& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
+    QueryBar2( Rte::Point::Model::Api& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
         :Rte::Point::Query::Base(*this, modelPoint, copyOption )
             {
             }
@@ -42,7 +42,7 @@ class TupleFoo1QueryBar2: public Tuple::Foo1,
 {
 public:
     /// Constructor
-    TupleFoo1QueryBar2( ModelBar2& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
+    TupleFoo1QueryBar2( Rte::Point::Model::Api& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
         :Rte::Point::Query::Tuple(0, *this, modelPoint, copyOption)
             {
             }
