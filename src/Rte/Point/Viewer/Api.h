@@ -34,11 +34,6 @@ public:
         returns 0.  NOTE: If start is called multiple times in row
         (without a call stop) - the 'extra' start calls are ignored.
         
-        If 'forceInitialUpdate' is true, then the viewer is assumed
-        to be "out-of-date" and an update of the viewer is triggered
-        immediately (i.e. the change notification callback will be 
-        called).
-          
         The 'useValueForDifference' option determines how a change
         is determined.  If useValueForDifference is set to true than
         only a change in value (as determined by each element in the
@@ -48,12 +43,19 @@ public:
         Viewer the 'userValueForDifference' flag is ignore and the
         comparision is ALWAYS done by sequence number.
 
+        If 'forceInitialUpdate' is true, then the viewer is assumed
+        to be "out-of-date" and an update of the viewer is triggered
+        immediately (i.e. the change notification callback will be 
+        called). Note: If the Viewer Point does not 'match' the Model
+        Point a callback will be triggered upon the initial registration
+        with the Model. One can debate the usefullness of this flag.
+          
         With respect to the composer - The context's method function
         'm_changedCb' is called when the Viewer Points is different from
         the associated Model Point.  The underlying Viewer Point is
         updated to match the Model Point prior to the callback.   
      */
-    virtual unsigned startViewing( bool forceInitialUpdate = true, bool useValueForDifference = true ) = 0;
+    virtual unsigned startViewing( bool useValueForDifference = true, bool forceInitialUpdate = false ) = 0;
 
     /** This method is used to cancel change notifications for this 
         Viewer to its associate Model Point.  NOTE: If stop is called 

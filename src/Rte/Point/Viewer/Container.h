@@ -72,7 +72,7 @@ protected:
 
 public:
     /// See Rte::Point::Viewer::Api
-    unsigned startViewing( bool forceInitialUpdate = true, bool useValueForDifference = true );
+    unsigned startViewing( bool useValueForDifference = true, bool forceInitialUpdate = true );
 
 
 protected:
@@ -104,10 +104,10 @@ Rte::Point::Viewer::Container<CONTEXT>::Container( Rte::Point::Api&             
 
 /////////////////
 template <class CONTEXT>
-unsigned Rte::Point::Viewer::Container<CONTEXT>::startViewing( bool forceInitialUpdate, bool useValueForDifference )
+unsigned Rte::Point::Viewer::Container<CONTEXT>::startViewing( bool useValueForDifference , bool forceInitialUpdate )
     {
     getMyPoint().resetSequenceNumber();
-    return Base::startViewing(forceInitialUpdate, useValueForDifference);
+    return Base::startViewing(useValueForDifference, forceInitialUpdate );
     }
     
 template <class CONTEXT>

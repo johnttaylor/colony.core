@@ -270,9 +270,9 @@ protected: // Cpl::Itc::Close/Open
     void request( Cpl::Itc::OpenRequest::OpenMsg& msg )
         {
         CPL_SYSTEM_TRACE_MSG( SECT_, ( "ViewerContext::request( OpenMsg ): starting viewers" ));
-        m_openViewerCount += m_bar1.startViewing(true, m_useValueCompare1);
-        m_openViewerCount += m_bar2.startViewing(true, m_useValueCompare2);
-        m_openViewerCount += m_bar3.startViewing(true, m_useValueCompare3);
+        m_openViewerCount += m_bar1.startViewing( m_useValueCompare1, true );
+        m_openViewerCount += m_bar2.startViewing( m_useValueCompare2, true );
+        m_openViewerCount += m_bar3.startViewing( m_useValueCompare3, true );
         msg.returnToSender();
         }
 
@@ -378,7 +378,7 @@ protected:
         queryResult.issueQuery();
         m_bar1.copyQueryResultsFrom( queryResult );
         
-CPL_SYSTEM_TRACE_MSG( SECT_, ( "V4 Viewer: SeqNum=%u, query.SeqNum=%u", m_bar1.m_tuple.getSequenceNumber(), queryResult.m_tuple.getSequenceNumber() ));
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "V4 Viewer::Bar1 SeqNum=%u, query.SeqNum=%u, count=%u", m_bar1.m_tuple.getSequenceNumber(), queryResult.m_tuple.getSequenceNumber(), m_changed1Count ));
 
         traceBar1_( queryResult, m_name, "LW-Viewer::Changed" );
         }
@@ -399,6 +399,7 @@ CPL_SYSTEM_TRACE_MSG( SECT_, ( "V4 Viewer: SeqNum=%u, query.SeqNum=%u", m_bar1.m
         queryResult.issueQuery();
         m_bar3.copyQueryResultsFrom( queryResult );
 
+        
         if ( !membershipChanged )
             {
             traceBar3_( queryResult, m_name, "LW-Viewer::Tuple Changed" );
@@ -408,6 +409,8 @@ CPL_SYSTEM_TRACE_MSG( SECT_, ( "V4 Viewer: SeqNum=%u, query.SeqNum=%u", m_bar1.m
             m_membershipChanged3Count++;
             traceBar3_( queryResult, m_name, "LW-Viewer::CONTAINER Changed" );
             }
+
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "V4 Viewer::Bar3 count=%u, membershipCount=%u", m_changed3Count, m_membershipChanged3Count ));
         }
 
     void bar3Stopped(void)
@@ -421,8 +424,8 @@ protected: // Cpl::Itc::Close/Open
     void request( Cpl::Itc::OpenRequest::OpenMsg& msg )
         {
         CPL_SYSTEM_TRACE_MSG( SECT_, ( "LWViewerContext::request( OpenMsg ): starting viewers" ));
-        m_openViewerCount += m_bar1.startViewing(true);
-//        m_openViewerCount += m_bar3.startViewing(true);
+        m_openViewerCount += m_bar1.startViewing();
+        m_openViewerCount += m_bar3.startViewing();
         msg.returnToSender();
         }
 
@@ -437,7 +440,7 @@ protected: // Cpl::Itc::Close/Open
         else
             {
             m_bar1.stopViewing();
-//            m_bar3.stopViewing();
+            m_bar3.stopViewing();
             m_closeMsgPtr = &msg;        
             }
         }

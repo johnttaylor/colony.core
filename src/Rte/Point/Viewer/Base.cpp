@@ -37,7 +37,7 @@ Base::Base( Rte::Point::Api&        myPoint,
 
 
 /////////////////
-unsigned Base::startViewing( bool forceInitialUpdate, bool useValueForDifference )
+unsigned Base::startViewing( bool useValueForDifference, bool forceInitialUpdate )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::startViewing - (%p)", this ));
     unsigned result = 0;
