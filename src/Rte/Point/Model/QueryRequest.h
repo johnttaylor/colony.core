@@ -35,7 +35,7 @@ public:
     /// Query options
     enum Option_T { eCOPY,                       //!< Unconditional copy of Model Point
                     eCOMPARE_VALUES_AND_COPY,    //!< Only copy Tuples when the values are different
-                    eCOMPARE_SEQNUM_AND_COPY     //<! Only copy Tuples when their sequence numbers are different
+                    eCOMPARE_SEQNUM_AND_COPY     //!< Only copy Tuples when their sequence numbers are different
                   };
 
 public:

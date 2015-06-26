@@ -21,7 +21,7 @@ running on different physical targets).
 
 The Rte namespace is multi-threaded data driven paradigm that provides a
 Model-View-Controller (MVC) approach for Application components to interact with
-each pther. All application data that is shared across the Applicaiton
+each other. All application data that is shared across the Applicaiton
 components is owned by the Model.  Individual Application components can read
 (viewer) and/or write (controller) any of the data in the Model. Viewers can be
 asynchronous, i.e. event driven, or synchronous, i.e. queries.  Controllers are
@@ -60,6 +60,10 @@ or controllers to  read, write the data items.  Some terminology:
   a Model Point.  There can be many Controller Points writing a single Model 
   Point. Typically Controller Points are created on the stack. 
 
+- A 'Container Point' is Point that has N Tuples where all of the Tuples are
+  the same type, i.e. contain the same set of Elements.  A Container Point
+  can by used/viewed by the Application as an array of Tuples, or a list of 
+  Tuples.
 
 </pre>    
 @endhtmlonly
