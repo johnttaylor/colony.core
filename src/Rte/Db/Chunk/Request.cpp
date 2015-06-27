@@ -36,6 +36,7 @@ const char* Rte::Db::Chunk::resultToString( Result_T result )
         case eSUCCESS:        return "eSUCCESS";       
         case eEOF:            return "eEOF";           
         case eCORRUPT_DATA:   return "eCORRUPT_DATA";  
+        case eERR_OPEN:       return "eERR_OPEN";
         case eERR_FILEIO:     return "eERR_FILEIO";    
         case eERR_WRONG_FILE: return "eERR_WRONG_FILE";
         }            

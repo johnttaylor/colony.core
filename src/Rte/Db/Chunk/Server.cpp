@@ -11,10 +11,9 @@
 
 
 #include "Server.h"
-#include "eden/db/framing.h"
+#include "Rte/Db/Framing.h"
 #include "Cpl/System/FatalError.h"
 #include "Cpl/System/Trace.h"
-#include <new>
 #include <string.h>
 
 ////////
@@ -23,29 +22,29 @@ using namespace Rte::Db::Chunk;
 #define SECT_   "Rte::Db::Chunk"
 
 //////////////////////////////////
-Server::Server( Cpl::Checksum::Api32& crcApi, const char* dbFname, const char* dbSignature )
-:_crcApi(crcApi),
- _dbFname(dbFname),
- _dbSignature(dbSignature),
- _generation(0),
- _fdPtr(0)
+Server::Server( Media& dbfile, Cpl::Checksum::Api32& crcApi, const char* dbSignature )
+:m_db(dbfile)
+,m_crc(crcApi)
+,m_signature(dbSignature)
+,m_generation(0),
+,m_fdPtr(0)
     {
     }
 
+
 Server::~Server(void)
     {
-    if ( _fdPtr )
-        {
-        _fdPtr->~StdInputOutputFile();
-        _fdPtr = 0;
-        }
+    closeDB();
     }
+
+
 
 //////////////////////////////////
 void Server::request( ActionMsg& msg )
     {
     Request::ActionPayload& operation = msg.getPayload();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request: oper=%s", actionToString(operation.m_action)) );
+
     switch( operation.m_action )
         {
         case eOPENDB:
@@ -72,182 +71,172 @@ void Server::request( ActionMsg& msg )
     msg.returnToSender();
     }
 
+
 //////////////////////////////////
 void Server::openDB( Request::ActionPayload& operation )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::openDB") );
 
     // Nothing to do if already opened
-    if ( _fdPtr )
+    if ( m_fdPtr )
         {
+        return;  // Note: The default result code is eSUCCESS
+        }
+
+    // Open the database file
+    bool newfile  = false;
+    m_fdPtr       = m_db.openDatabase( newfile );
+    if ( !m_fdPtr )
+        {
+        // Failed to open -->return an error
+        operation.m_result = eERR_OPEN;
         return;
         }
 
-    // Check if the file exists
-    bool             newfile = false;
-    Jcl::StdFSEntry  db(_dbFname);   
-    if ( !db.exists() ) 
-        {
-        newfile = true;
-        }
-    
-    // More checks on the fname
-    if ( !newfile && (db.isDirectory() || !db.isWriteable() || !db.isReadable()) )
-        {
-        operation._result = _ERR_WRONG_FILE;
-        return;
-        }
-
-    // Open the DB file (is created if does not already exists)
-    _fdPtr = new(_memFd._byteMem) Jcl::StdInputOutputFile(db);
 
     // Increment the generation number every time the DB is opened
-    if ( ++_generation == 0 )
+    if ( ++m_generation == 0 )
         {
-        _generation = 1;   // The Chunk server's generation number is required to never be zero
+        m_generation = 1;   // The Chunk server's generation number is required to never be zero
         }
 
-    // Create signature if new file
+
+    // Sign the file when it is new
     if ( newfile )
         {
-        if ( !writeSignature(operation) )
+        if ( !writeSignature(operation) )   // Note: the writeSignature() method sets the operation's result code based on its success/failure
             {
-            // Close the file 
-            _fdPtr->~StdInputOutputFile();
-            _fdPtr = 0;
-            return;
+            // Failed to write the signature -->close the file 
+            closeDB();
             }
-
-        // Report empty file
-        operation._result = _EOF;
+        
+        // Signed succsefully -->but Report empty file since there are no data chunks.
+        else
+            {
+            operation.m_result = eEOF;
+            }
         }
 
-    // Verify Signature
-    else if ( !checkSignature(operation) )
+    // Existing db file: Verify Signature
+    else if ( !checkSignature(operation) )  // Note: the writeSignature() method sets the operation's result code based on its success/failure
         {
         // Close the file
-        _fdPtr->~StdInputOutputFile();
-        _fdPtr = 0;
+        closeDB();
         }
     }
 
-void Server::closeDB( Request::ActionPayload& operation )
+
+void Server::closeDB( void )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::closeDB") );
 
     // Nothing to do if already closed
-    if ( !_fdPtr )
+    if ( m_fdPtr )
         {
-        return;
+        m_db.closeDatabase();
+        m_fdPtr = 0;
         }
-
-    // Close the file
-    _fdPtr->~StdInputOutputFile();
-    _fdPtr = 0;
     }
+
 
 void Server::clearDB( Request::ActionPayload& operation )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::clearDB") );
 
-    bool dbOpened = false;
+    // Remember my current open/close state
+    void* alreadyOpened = m_fdPtr;
 
-    // Close the file if it is already opened
-    if ( _fdPtr )
+    // Make sure the db file is closed
+    closeDB();
+
+    // Delete the db file
+    if ( !m_db.deleteDatabase() )
         {
-        dbOpened = true;
-
-        // Close the file
-        _fdPtr->~StdInputOutputFile();
-        _fdPtr = 0;
-        }
-
-    // Delete the file
-    Jcl::StdFSEntry  db(_dbFname);   
-    if ( !db.remove() )
-        {
-        operation._result = _ERR_FILEIO;
+        operation.m_result = eERR_FILEIO;
         return;
         }
 
     // Re-open the file if it was previously opened
-    if ( dbOpened )
+    if ( alreadyOpened )
         {
         openDB( operation );
         }
     }
 
+
+//////////////////////////////////
 void Server::read( Request::ActionPayload& operation )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::read") );
 
     // Trap improper usage
-    if ( !_fdPtr )
+    if ( !m_fdPtr )
         {
-        Jcl::FatalError::logAndExit( "Rte::Db::Chunk::Server::read - db file NOT opened." );
+        Cpl::System::FatalError::logf( "Rte::Db::Chunk::Server::read - db file NOT opened." );
         }
 
     // Remember the start of the chunk in the file
-    operation._cHandle->_offset = _fdPtr->currentPos();
+    operation.m_handlePtr->m_offset = m_fdPtr->currentPos();
 
     // Get the chunk length
     int bytesRead = 0;
-    if ( !_fdPtr->read(&(operation._cHandle->_len), Eden::DB::_CLEN_SIZE, bytesRead) || (uint32_t)bytesRead != Eden::DB::_CLEN_SIZE )
+    if ( !m_fdPtr->read(&(operation.m_handlePtr->m_len), Rte::Db::eCLEN_SIZE, bytesRead) || (uint32_t)bytesRead != Rte::Db::eCLEN_SIZE )
         {
-        operation._result = _EOF;
-        CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::read - _EOF - failed to read Chunk Length (bytesRead=%d)", bytesRead) );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::read - eEOF - failed to read Chunk Length (bytesRead=%d)", bytesRead) );
+        operation.m_result = eEOF;
         return;
         }
-    if ( operation._cHandle->_len > operation._bufferMaxSize - Eden::DB::_CCRC_SIZE )
+    if ( operation.m_handlePtr->m_len > operation.m_bufferMaxSize - Rte::Db::eCCRC_SIZE )
         {
-        operation._result = _ERR_WRONG_FILE;
-        CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::read - _ERR_FILEIO -  Chunk Length greater than buffer (clen=%d, bufSize=%d", operation._cHandle->_len, operation._bufferMaxSize - Eden::DB::_CCRC_SIZE) );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::read - eERR_FILEIO -  Chunk Length greater than buffer (clen=%u, bufSize=%u)", operation.m_handlePtr->m_len, operation.m_bufferMaxSize - Rte::Db::eCCRC_SIZE) );
+        operation.m_result = eERR_WRONG_FILE;
         return;
         }
             
     // Get the chunk data and the CRC
-    if ( !_fdPtr->read(operation._buffer, operation._cHandle->_len+Eden::DB::_CCRC_SIZE, bytesRead) || (uint32_t)bytesRead != operation._cHandle->_len+Eden::DB::_CCRC_SIZE )
+    if ( !m_fdPtr->read(operation._buffer, operation.m_handlePtr->m_len + Rte::Db::eCCRC_SIZE, bytesRead) || (uint32_t)bytesRead != operation.m_handlePtr->m_len+Rte::Db::eCCRC_SIZE )
         {
-        operation._result = _ERR_FILEIO;
-        CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::read - _ERR_FILEIO -  Failed on read of data+crc (bytesRead=%d)", bytesRead) );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::read - eERR_FILEIO -  Failed on read of data+crc (bytesRead=%d)", bytesRead) );
+        operation.m_result = eERR_FILEIO;
         return;
         }
     
     // Check the CRC of the chunk
-    _crcApi.reset();
-    _crcApi.accumulate( &(operation._cHandle->_len), Eden::DB::_CLEN_SIZE );
-    _crcApi.accumulate( operation._buffer, operation._cHandle->_len+Eden::DB::_CCRC_SIZE );
-    if ( !_crcApi.isOkay() )
+    m_crc.reset();
+    m_crc.accumulate( &(operation.m_handlePtr->m_len), Rte::Db::eCLEN_SIZE );
+    m_crc.accumulate( operation._buffer, operation.m_handlePtr->m_len + Rte::Db::eCCRC_SIZE );
+    if ( !m_crc.isOkay() )
         {
-        operation._result = _CORRUPT_DATA;
+        operation.m_result = eCORRUPT_DATA;
         return;
         }
 
     // If I get here - the chunk was succesfully read.
     // Mark the chunk handle as "associated" with a chunk in the db file
-    operation._cHandle->_generation = _generation; 
+    operation.m_handlePtr->m_generation = m_generation; 
 
     // Trap if this is the last chunk in the file
-    if ( _fdPtr->isEof() )
+    if ( m_fdPtr->isEof() )
         {
-        operation._result = _EOF;
+        operation.m_result = eEOF;
         }
     }
+
 
 void Server::write( Request::ActionPayload& operation )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::write") );
 
     // Trap improper usage
-    if ( !_fdPtr )
+    if ( !m_fdPtr )
         {
-        Jcl::FatalError::logAndExit( "Rte::Db::Chunk::Server::write - db file NOT opened." );
+        Cpl::System::FatalError::logf( "Rte::Db::Chunk::Server::write - db file NOT opened." );
         }
 
     // Check if handle is of the correct DB generation
-    if ( operation._cHandle->_generation == _generation )
+    if ( operation.m_handlePtr->m_generation == m_generation )
         {
-        _fdPtr->setAbsolutePos( operation._cHandle->_offset );
+        m_fdPtr->setAbsolutePos( operation.m_handlePtr->m_offset );
         writeChunk( operation );
         }
 
@@ -255,13 +244,13 @@ void Server::write( Request::ActionPayload& operation )
     else 
         {
         // Append chunk to the end of the file
-        _fdPtr->setToEOF();
-        operation._cHandle->_offset = _fdPtr->currentPos();
-        operation._cHandle->_len    = operation._bufferLen;
+        m_fdPtr->setToEOF();
+        operation.m_handlePtr->m_offset = m_fdPtr->currentPos();
+        operation.m_handlePtr->m_len    = operation.m_bufferLen;
         if ( writeChunk(operation) )
             {
-            // Succesful in adding the chunk to the db file -->mark the handle as "assocaited"
-            operation._cHandle->_generation = _generation;
+            // Succesful in adding the chunk to the db file -->mark the handle as "associated"
+            operation.m_handlePtr->m_generation = m_generation;
             }
         }
     }
@@ -274,30 +263,30 @@ bool Server::writeChunk( Request::ActionPayload& operation )
 
     // Write Chunk Length
     int bytesWritten = 0;
-    if ( !_fdPtr->write(&(operation._cHandle->_len), Eden::DB::_CLEN_SIZE, bytesWritten) || bytesWritten != Eden::DB::_CLEN_SIZE )
+    if ( !m_fdPtr->write(&(operation.m_handlePtr->m_len), Rte::Db::eCLEN_SIZE, bytesWritten) || bytesWritten != Rte::Db::eCLEN_SIZE )
         {
-        operation._result = _ERR_FILEIO;
+        operation.m_result = eERR_FILEIO;
         return false;
         }
 
     // Write Chunk Data
-    if ( !_fdPtr->write(operation._buffer, operation._bufferLen, bytesWritten) || (uint32_t)bytesWritten != operation._bufferLen )
+    if ( !m_fdPtr->write(operation._buffer, operation.m_bufferLen, bytesWritten) || (uint32_t)bytesWritten != operation.m_bufferLen )
         {
-        operation._result = _ERR_FILEIO;
+        operation.m_result = eERR_FILEIO;
         return false;
         }
 
     // Calc CRC
     uint32_t crc;
-    _crcApi.reset();
-    _crcApi.accumulate( &(operation._cHandle->_len), Eden::DB::_CLEN_SIZE );
-    _crcApi.accumulate( operation._buffer,operation._bufferLen );
-    _crcApi.finalize(&crc);
+    m_crc.reset();
+    m_crc.accumulate( &(operation.m_handlePtr->m_len), Rte::Db::eCLEN_SIZE );
+    m_crc.accumulate( operation._buffer, operation.m_bufferLen );
+    m_crc.finalize(&crc);
 
     // Writ the CRC
-    if ( !_fdPtr->write(&crc, Eden::DB::_CCRC_SIZE, bytesWritten) || (uint32_t)bytesWritten != Eden::DB::_CCRC_SIZE )
+    if ( !m_fdPtr->write(&crc, Rte::Db::eCCRC_SIZE, bytesWritten) || (uint32_t)bytesWritten != Rte::Db::eCCRC_SIZE )
         {
-        operation._result = _ERR_FILEIO;
+        operation.m_result = eERR_FILEIO;
         return false;
         }
 
@@ -309,42 +298,41 @@ bool Server::writeSignature( Request::ActionPayload& operation )
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::writeSignature") );
 
     // Calculate chunk length for the signature
-    uint16_t nlen = strlen(_dbSignature);
-    uint32_t clen = Eden::DB::_NLEN_SIZE + nlen;
+    uint16_t nlen = strlen(m_signature);
+    uint32_t clen = Rte::Db::_NLEN_SIZE + nlen;
 
     // Write Chunk Length
     int bytesWritten = 0;
-    _fdPtr->setAbsolutePos( 0 );
-    if ( !_fdPtr->write(&clen, Eden::DB::_CLEN_SIZE, bytesWritten) || bytesWritten != Eden::DB::_CLEN_SIZE )
+    m_fdPtr->setAbsolutePos( 0 );
+    if ( !m_fdPtr->write(&clen, Rte::Db::eCLEN_SIZE, bytesWritten) || bytesWritten != Rte::Db::eCLEN_SIZE )
         {
-        operation._result = _ERR_FILEIO;
+        operation.m_result = eERR_FILEIO;
         return false;
         }
 
     // Write Chunk Data
-    if ( !_fdPtr->write(&nlen, Eden::DB::_NLEN_SIZE, bytesWritten) || bytesWritten != Eden::DB::_NLEN_SIZE )
+    if ( !m_fdPtr->write(&nlen, Rte::Db::_NLEN_SIZE, bytesWritten) || bytesWritten != Rte::Db::_NLEN_SIZE )
         {
-        operation._result = _ERR_FILEIO;
+        operation.m_result = eERR_FILEIO;
         return false;
         }
-    if ( !_fdPtr->write(_dbSignature, nlen, bytesWritten) || bytesWritten != nlen )
+    if ( !m_fdPtr->write(m_signature, nlen, bytesWritten) || bytesWritten != nlen )
         {
-        operation._result = _ERR_FILEIO;
+        operation.m_result = eERR_FILEIO;
         return false;
         }
 
-    // Calc CRC
-    uint32_t crc;
-    _crcApi.reset();
-    _crcApi.accumulate( &clen, Eden::DB::_CLEN_SIZE );
-    _crcApi.accumulate( &nlen, Eden::DB::_NLEN_SIZE );
-    _crcApi.accumulate( (void*)_dbSignature, nlen );
-    _crcApi.finalize(&crc);
+    // Calculate the CRC
+    m_crc.reset();
+    m_crc.accumulate( &clen, Rte::Db::eCLEN_SIZE );
+    m_crc.accumulate( &nlen, Rte::Db::_NLEN_SIZE );
+    m_crc.accumulate( (void*)m_signature, nlen );
+    uint32_t crc = m_crc.finalize();
 
-    // Writ the CRC
-    if ( !_fdPtr->write(&crc, Eden::DB::_CCRC_SIZE, bytesWritten) || bytesWritten != Eden::DB::_CCRC_SIZE )
+    // Write the CRC
+    if ( !m_fdPtr->write(&crc, Rte::Db::eCCRC_SIZE, bytesWritten) || bytesWritten != Rte::Db::eCCRC_SIZE )
         {
-        operation._result = _ERR_FILEIO;
+        operation.m_result = eERR_FILEIO;
         return false;
         }
 
@@ -358,55 +346,55 @@ bool Server::checkSignature( Request::ActionPayload& operation )
     // Get the chunk length
     uint32_t clen      = 0;
     int      bytesRead = 0;
-    _fdPtr->setAbsolutePos( 0 );
-    if ( !_fdPtr->read(&clen, Eden::DB::_CLEN_SIZE, bytesRead) || bytesRead != Eden::DB::_CLEN_SIZE )
+    m_fdPtr->setAbsolutePos( 0 );
+    if ( !m_fdPtr->read(&clen, Rte::Db::eCLEN_SIZE, bytesRead) || bytesRead != Rte::Db::eCLEN_SIZE )
         {
-        operation._result = _ERR_FILEIO;
+        operation.m_result = eERR_FILEIO;
         return false;
         }
-    if ( clen > operation._bufferMaxSize - Eden::DB::_CCRC_SIZE )
+    if ( clen > operation.m_bufferMaxSize - Rte::Db::eCCRC_SIZE )
         {
-        operation._result = _ERR_WRONG_FILE;
+        operation.m_result = eERR_WRONG_FILE;
         return false;
         }
             
     // Get the chunk data and the CRC
-    if ( !_fdPtr->read(operation._buffer, clen+Eden::DB::_CCRC_SIZE, bytesRead) || (uint32_t)bytesRead != clen+Eden::DB::_CCRC_SIZE )
+    if ( !m_fdPtr->read(operation._buffer, clen + Rte::Db::eCCRC_SIZE, bytesRead) || (uint32_t)bytesRead != clen+Rte::Db::eCCRC_SIZE )
         {
-        operation._result = _ERR_FILEIO;
+        operation.m_result = eERR_FILEIO;
         return false;
         }
     
     // Check the CRC of the chunk
-    _crcApi.reset();
-    _crcApi.accumulate( &clen, Eden::DB::_CLEN_SIZE );
-    _crcApi.accumulate( operation._buffer, clen+Eden::DB::_CCRC_SIZE );
-    if ( !_crcApi.isOkay() )
+    m_crc.reset();
+    m_crc.accumulate( &clen, Rte::Db::eCLEN_SIZE );
+    m_crc.accumulate( operation._buffer, clen + Rte::Db::eCCRC_SIZE );
+    if ( !m_crc.isOkay() )
         {
-        operation._result = _ERR_WRONG_FILE;
+        operation.m_result = eERR_WRONG_FILE;
         return false;
         }
 
     // Validate length fields before comparing the signature
     uint16_t nlen = 0;
-    memcpy( &nlen, operation._buffer, Eden::DB::_NLEN_SIZE );
-    if ( clen != (uint32_t)(nlen + Eden::DB::_NLEN_SIZE) || nlen != strlen(_dbSignature) )
+    memcpy( &nlen, operation._buffer, Rte::Db::_NLEN_SIZE );
+    if ( clen != (uint32_t)(nlen + Rte::Db::_NLEN_SIZE) || nlen != strlen(m_signature) )
         {
-        operation._result = _ERR_WRONG_FILE;
+        operation.m_result = eERR_WRONG_FILE;
         return false;
         }
 
     // Check the signature
-    if ( strncmp((const char*)(operation._buffer+Eden::DB::_NLEN_SIZE),_dbSignature,nlen) != 0 )
+    if ( strncmp((const char*)(operation._buffer + Rte::Db::_NLEN_SIZE), m_signature, nlen) != 0 )
         {
-        operation._result = _ERR_WRONG_FILE;
+        operation.m_result = eERR_WRONG_FILE;
         return false;
         }
 
     // Trap if this is the last chunk in the file
-    if ( _fdPtr->isEof() )
+    if ( m_fdPtr->isEof() )
         {
-        operation._result = _EOF;
+        operation.m_result = eEOF;
         }
 
     return true;

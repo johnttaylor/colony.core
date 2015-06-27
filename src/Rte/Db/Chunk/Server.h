@@ -30,47 +30,60 @@ namespace Rte { namespace Db { namespace Chunk {
 class Server: public Request
 {
 protected:
-    ///
-    Cpl::Checksum::Api32&            _crcApi;
-    ///
-    const char*                 _dbFname;
-    ///
-    const char*                 _dbSignature;
-    ///
-    uint32_t                    _generation;
-    ///
-    Jcl::StdInputOutputFile*    _fdPtr;
-    ///
-    Jcl::AlignedClass<Jcl::StdInputOutputFile>  _memFd;
+    /// Reference to the media storage of my database
+    Media                           m_db;
+
+    /// Reference to the specific CRC method to be use checksum the chunk data
+    Cpl::Checksum::Api32&           m_crc;
+
+    /// Signature (aka scheme) identifier of database
+    const char*                     m_signature;
+
+    /// Generation number of the database
+    uint32_t                        m_generation;
+
+    /// File descriptor of my database file
+    Cpl::Io::File::InputOutputApi*  m_fdPtr;
+
 
 public:
     /// Constructor
-    Server( Cpl::Checksum::Api32& crcApi, const char* dbFname, const char* dbSignature );
+    Server( Media& dbfile, Cpl::Checksum::Api32& crcApi, const char* dbSignature );
 
     /// Destructor
     virtual ~Server(void);
+
 
 public: 
     /// See Rte::Db::Chunk::Request
     void request( ActionMsg& msg );
     
+
 protected:
-    ///
+    /// Helper method that perform the: Open DB action
     virtual void openDB( Request::ActionPayload& action );
-    ///
-    virtual void closeDB( Request::ActionPayload& action );
-    ///
+
+    /// Helper method that perform the: Close DB action
+    virtual void closeDB();
+
+    /// Helper method that perform the: Clear DB action
     virtual void clearDB( Request::ActionPayload& action );
-    ///
+
+    /// Helper method that perform the: Read action
     virtual void read( Request::ActionPayload& action );
-    ///
+
+    /// Helper method that perform the: Write action
     virtual void write( Request::ActionPayload& action );
 
-    ///
+
+protected:
+    /// Helper method
     virtual bool writeChunk( Request::ActionPayload& action );
-    ///
+
+    /// Helper method
     virtual bool writeSignature( Request::ActionPayload& action );
-    ///
+
+    /// Helper method
     virtual bool checkSignature( Request::ActionPayload& action );
 
 
