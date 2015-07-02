@@ -31,7 +31,7 @@ class Server: public Request
 {
 protected:
     /// Reference to the media storage of my database
-    Media                           m_db;
+    Media&                          m_db;
 
     /// Reference to the specific CRC method to be use checksum the chunk data
     Cpl::Checksum::Api32&           m_crc;

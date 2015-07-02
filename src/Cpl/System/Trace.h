@@ -80,7 +80,7 @@ namespace Cpl { namespace System {
     CPL_SYSTEM_TRACEMSG() - This macro is for the programmer/application to 
                             generate formatted message that are outputed to the 
                             "trace media." The marco has printf() semantics.  
-                            The problem is that ANSI C++03does not directly 
+                            The problem is that ANSI C++03 does not directly 
                             support var_args in a macro - so you HAVE TO USE AN 
                             EXTRA SET OF '()'.
 

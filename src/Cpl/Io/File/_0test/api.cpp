@@ -331,8 +331,6 @@ TEST_CASE( "api", "[api]" )
     REQUIRE( Api::isWriteable( ".." ) );
     REQUIRE( Api::isWriteable( "testinput.txt" ) );
     REQUIRE( Api::isWriteable( "testinput.txtdd" ) == false );
-    REQUIRE( Api::size( "." ) == 0 );
-    REQUIRE( Api::size( "..") == 0 );
     REQUIRE( Api::size( "testinput.txt" ) == TESTINPUT_TXT_FILE_LENGTH  );
     time_t t1,t2,t3;
     t1 = Api::timeModified( "." );

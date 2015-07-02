@@ -16,7 +16,7 @@
 using namespace Rte::Db::Chunk;
 
 
-const char* Rte::Db::Chunk::actionToString( Action_T oper )
+const char* Request::actionToString( Action_T oper ) throw()
     {
     switch( oper )
         {                    
@@ -29,7 +29,7 @@ const char* Rte::Db::Chunk::actionToString( Action_T oper )
     return "unknown";
     }
 
-const char* Rte::Db::Chunk::resultToString( Result_T result )
+const char* Request::resultToString( Result_T result ) throw()
     {
     switch( result )
         {

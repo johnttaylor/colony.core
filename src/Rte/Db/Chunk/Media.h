@@ -51,7 +51,7 @@ public:
 public:
     /** This method is used to delete the associated database 'file'. The
         Chunk Layer is responsible for ONLY calling this method when the
-        database file is in the closed state. The method returns true if 
+        database file is in the CLOSED state. The method returns true if 
         successful; else false is returned.
      */
     virtual bool deleteDatabase() throw() = 0;

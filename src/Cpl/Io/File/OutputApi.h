@@ -27,7 +27,7 @@ namespace Cpl { namespace Io { namespace File {
           client must call isEof().
  */
 class OutputApi: public Cpl::Io::Output,
-                        Cpl::Io::File::ObjectApi
+                 virtual public Cpl::Io::File::ObjectApi
 {
 };
 

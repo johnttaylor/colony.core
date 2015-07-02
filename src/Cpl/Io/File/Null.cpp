@@ -12,7 +12,7 @@
 #include "Null.h"
 
 //
-using namespace Cpl::Io;
+using namespace Cpl::Io::File;
 
 
 
@@ -56,3 +56,36 @@ void Null::close()
     {
     m_opened = false;
     }
+
+
+//////////////////////
+bool Null::isEof()
+    {
+    return m_opened;
+    }
+
+unsigned long Null::length()
+    {
+    return 0L;
+    }
+
+unsigned long Null::currentPos()
+    {
+    return 0L;
+    }
+
+bool Null::setRelativePos( long deltaOffset )
+    {
+    return m_opened;
+    }
+
+bool Null::setAbsolutePos( unsigned long newoffset )
+    {
+    return m_opened;
+    }
+
+bool Null::setToEof()
+    {
+    return m_opened;
+    }
+

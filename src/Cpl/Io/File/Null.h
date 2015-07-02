@@ -1,5 +1,5 @@
-#ifndef Cpl_Io_Null_h_
-#define Cpl_Io_Null_h_
+#ifndef Cpl_Io_File_Null_h_
+#define Cpl_Io_File_Null_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -12,19 +12,19 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Cpl/Io/InputOutput.h"
+#include "Cpl/Io/File/InputOutputApi.h"
 
 
 ///
-namespace Cpl { namespace Io {
+namespace Cpl { namespace Io { namespace File {
 
 
-/** This concrete class implements a NULL InputOutput stream - that all of its
-    input operations return 'End-of-Stream' (i.e. return false) and all output 
-    is dropped in the preverbal bit-bucket and goes no where!  Note: The write() 
+/** This concrete class implements a NULL InputOutputApi File that all of its 
+    input operations return 'End-of-File' (i.e. return false) and all output is 
+    dropped in the preverbal bit-bucket and goes no where!  Note: The write() 
     methods always return true (i.e. no error).
  */
-class Null: public InputOutput
+class Null: public InputOutputApi
 {
 public:
     /// Constructor
@@ -36,7 +36,7 @@ public:
 
 public:
     /// Pull in overloaded methods from base class
-    using Cpl::Io::InputOutput::read;
+    using Cpl::Io::File::InputOutputApi::read;
 
     /// See Cpl::Io::Input
     bool read( void* buffer, int numBytes, int& bytesRead );
@@ -47,7 +47,7 @@ public:
 
 public:
     /// Pull in overloaded methods from base class
-    using Cpl::Io::InputOutput::write;
+    using Cpl::Io::File::InputOutputApi::write;
 
     /// See Cpl::Io::Output
     bool write( const void* buffer, int maxBytes, int& bytesWritten );
@@ -55,16 +55,38 @@ public:
     /// See Cpl::Io::Output
     void flush();
 
-    /// See Cpl::Io::Close. Note: Once closed() has been called, all of the write() method will return false;
+    /// See Cpl::Io::Close. Note: Once closed() has been called, all of the write() and ObjecApi methods will return false;
     void close();
+
+
+public:
+    /// See Cpl::Io::File::ObjectApi
+    bool isEof();
+    
+    /// See Cpl::Io::File::ObjectApi
+    unsigned long length();
+    
+    /// See Cpl::Io::File::ObjectApi
+    unsigned long currentPos();
+    
+    /// See Cpl::Io::File::ObjectApi
+    bool setRelativePos( long deltaOffset );
+    
+    /// See Cpl::Io::File::ObjectApi
+    bool setAbsolutePos( unsigned long newoffset );
+    
+    /// See Cpl::Io::File::ObjectApi
+    bool setToEof();
 
 
 protected:
     /// Track my opened/closed state
     bool m_opened;
 
+
 };
 
 };      // end namespaces
+};
 };
 #endif  // end header latch

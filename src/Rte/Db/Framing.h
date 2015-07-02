@@ -23,9 +23,9 @@ namespace Rte { namespace Db {
     <pre>
 
     Database
-    +---------+---------------+-----+---------+
-    | Chunk 1 | Chunk 2       | ... | Chunk N |
-    +---------+---------------+-----+---------+
+    +----------+---------------+-----+---------+
+    | Chunk 1* | Chunk 2       | ... | Chunk N |
+    +----------+---------------+-----+---------+
 
 
     An Individual Chunk: 
@@ -46,7 +46,7 @@ namespace Rte { namespace Db {
                             +----+----+----------------+----+
 
 
-    NOTE: The first Chunk is the database is reserved for storing
+   *NOTE: The first Chunk is the database is reserved for storing
           the database signature string.  The signature string idendifies
           individual databases as well as versioning their 'scheme'
 
@@ -62,6 +62,5 @@ enum Framing_T  { eCLEN_SIZE=sizeof(uint32_t),
 
 
 };      // end namespaces
-};
 };
 #endif  // end header latch

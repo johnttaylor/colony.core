@@ -1,5 +1,3 @@
-#ifndef Cpl_Io_File_InputOutputApi_h_
-#define Cpl_Io_File_InputOutputApi_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -10,32 +8,37 @@
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
-/** @file */ 
 
-#include "Cpl/Io/File/InputApi.h"
-#include "Cpl/Io/File/OutputApi.h"
+
+#include "Null.h"
 
 
 ///
-namespace Cpl { namespace Io { namespace File {
+using namespace Rte::Db::Chunk;
 
 
-/** This abstract class defines the interface for a Random Access Input 
-    Output File.
-
-    NOTE: All the read/write operations return 'false' if an error occured, 
-          this INCLUDES the end-of-file condition (which is error when dealing 
-          with streams). To differentiate between a true error and EOF, the 
-          client must call isEof().
- */
-class InputOutputApi: public Cpl::Io::File::InputApi,
-                      public Cpl::Io::File::OutputApi
-                          
-{
-};
+//////////////////////////////
+Null::Null()
+    {
+    }
 
 
-};      // end namespaces
-};
-};
-#endif  // end header latch
+//////////////////////////////
+Cpl::Io::File::InputOutputApi* Null::openDatabase( bool& newfile ) throw()
+    {
+    newfile = true;
+    return this;
+    }
+
+
+void Null::closeDatabase() throw()
+    {
+    }
+
+
+bool Null::deleteDatabase() throw()
+    {
+    return true;
+    }
+
+

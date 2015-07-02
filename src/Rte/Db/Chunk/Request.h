@@ -13,7 +13,7 @@
 /** @file */
 
 
-#include "Cpl/Itc/RequestMessage.h"
+#include "Cpl/Itc/ResponseMessage.h"
 #include "Cpl/Itc/SAP.h"
 #include "Rte/Db/Chunk/Handle.h"
 #include <stdint.h>
@@ -53,7 +53,7 @@ public:
                     eEOF,                 //!< EOF was reached
                     eCORRUPT_DATA,        //!< The chunk read did not pass its CRC check
                     eERR_FILEIO,          //!< A file operation failed and the operation was aborted
-                    eERR_OPEN,        //!< Unable to open the specified DB file
+                    eERR_OPEN,            //!< Unable to open the specified DB file
                     eERR_WRONG_FILE       //!< The specified DB file is NOT a DB file
                   };
 
@@ -86,7 +86,7 @@ public:
     public:
         /// Constructor: For eOPENDB, eCLOSEDB, and eCLEARDB actions
         ActionPayload( Action_T action,
-                       uint8_t  buffer,
+                       uint8_t* buffer,
                        uint32_t bufferMaxSize
                      )
             :m_action(action)
@@ -99,7 +99,7 @@ public:
 
         /// Constructor: For eREAD action
         ActionPayload( Action_T action,
-                       uint8_t  buffer,
+                       uint8_t* buffer,
                        uint32_t bufferMaxSize,
                        Handle&  clientChunkHandle
                      )
@@ -114,9 +114,9 @@ public:
 
         /// Constructor: For eWRITE action
         ActionPayload( Action_T action,
-                       Handle&  clientChunkHandle
-                       uint8_t  buffer,
-                       uint32_t bufferLen,
+                       Handle&  clientChunkHandle,
+                       uint8_t* buffer,
+                       uint32_t bufferLen
                      )
             :m_action(action)
             ,m_result(eSUCCESS)
@@ -125,6 +125,8 @@ public:
             ,m_bufferLen(bufferLen)
             ,m_handlePtr(&clientChunkHandle)
                 {}
+    };
+
 
     /// Message Type: Chunk Action
     typedef Cpl::Itc::RequestMessage<Request,ActionPayload> ActionMsg;
@@ -137,10 +139,10 @@ public:
 
 public:
     /// Helper method that converts a Action_T enum value to a string constant
-    static const char* actionToString( Action_T action ) const throw();
+    static const char* actionToString( Action_T action ) throw();
 
     /// Helper method that converta a Result_T enum value to a string constant
-    static const char* resultToString( Result_T result ) const throw();
+    static const char* resultToString( Result_T result ) throw();
 };
 
 

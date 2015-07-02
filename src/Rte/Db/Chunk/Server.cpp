@@ -26,7 +26,7 @@ Server::Server( Media& dbfile, Cpl::Checksum::Api32& crcApi, const char* dbSigna
 :m_db(dbfile)
 ,m_crc(crcApi)
 ,m_signature(dbSignature)
-,m_generation(0),
+,m_generation(0)
 ,m_fdPtr(0)
     {
     }
@@ -52,7 +52,7 @@ void Server::request( ActionMsg& msg )
             break;
 
         case eCLOSEDB:
-            closeDB(operation);
+            closeDB();
             break;
 
         case eREAD:
@@ -128,7 +128,12 @@ void Server::openDB( Request::ActionPayload& operation )
 
 void Server::closeDB( void )
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::closeDB") );
+    // NOTE: Do NOT Put any TRACE statement in this method.  This method is 
+    //       call by the destructor and if the server was statically
+    //       created - the TRACE method will fail because it uses a statically
+    //       allocated mutex -->and there IS NOT order on how static 
+    //       destructors are called, i.e. your program will crash (when running
+    //       on OS that dynamically runs executables).
 
     // Nothing to do if already closed
     if ( m_fdPtr )
@@ -194,7 +199,7 @@ void Server::read( Request::ActionPayload& operation )
         }
             
     // Get the chunk data and the CRC
-    if ( !m_fdPtr->read(operation._buffer, operation.m_handlePtr->m_len + Rte::Db::eCCRC_SIZE, bytesRead) || (uint32_t)bytesRead != operation.m_handlePtr->m_len+Rte::Db::eCCRC_SIZE )
+    if ( !m_fdPtr->read(operation.m_buffer, operation.m_handlePtr->m_len + Rte::Db::eCCRC_SIZE, bytesRead) || (uint32_t)bytesRead != operation.m_handlePtr->m_len+Rte::Db::eCCRC_SIZE )
         {
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::read - eERR_FILEIO -  Failed on read of data+crc (bytesRead=%d)", bytesRead) );
         operation.m_result = eERR_FILEIO;
@@ -204,7 +209,7 @@ void Server::read( Request::ActionPayload& operation )
     // Check the CRC of the chunk
     m_crc.reset();
     m_crc.accumulate( &(operation.m_handlePtr->m_len), Rte::Db::eCLEN_SIZE );
-    m_crc.accumulate( operation._buffer, operation.m_handlePtr->m_len + Rte::Db::eCCRC_SIZE );
+    m_crc.accumulate( operation.m_buffer, operation.m_handlePtr->m_len + Rte::Db::eCCRC_SIZE );
     if ( !m_crc.isOkay() )
         {
         operation.m_result = eCORRUPT_DATA;
@@ -244,7 +249,7 @@ void Server::write( Request::ActionPayload& operation )
     else 
         {
         // Append chunk to the end of the file
-        m_fdPtr->setToEOF();
+        m_fdPtr->setToEof();
         operation.m_handlePtr->m_offset = m_fdPtr->currentPos();
         operation.m_handlePtr->m_len    = operation.m_bufferLen;
         if ( writeChunk(operation) )
@@ -262,15 +267,14 @@ bool Server::writeChunk( Request::ActionPayload& operation )
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::writeChunk") );
 
     // Write Chunk Length
-    int bytesWritten = 0;
-    if ( !m_fdPtr->write(&(operation.m_handlePtr->m_len), Rte::Db::eCLEN_SIZE, bytesWritten) || bytesWritten != Rte::Db::eCLEN_SIZE )
+    if ( !m_fdPtr->write(&(operation.m_handlePtr->m_len), Rte::Db::eCLEN_SIZE) )
         {
         operation.m_result = eERR_FILEIO;
         return false;
         }
 
     // Write Chunk Data
-    if ( !m_fdPtr->write(operation._buffer, operation.m_bufferLen, bytesWritten) || (uint32_t)bytesWritten != operation.m_bufferLen )
+    if ( !m_fdPtr->write(operation.m_buffer, operation.m_bufferLen) )
         {
         operation.m_result = eERR_FILEIO;
         return false;
@@ -280,11 +284,11 @@ bool Server::writeChunk( Request::ActionPayload& operation )
     uint32_t crc;
     m_crc.reset();
     m_crc.accumulate( &(operation.m_handlePtr->m_len), Rte::Db::eCLEN_SIZE );
-    m_crc.accumulate( operation._buffer, operation.m_bufferLen );
+    m_crc.accumulate( operation.m_buffer, operation.m_bufferLen );
     m_crc.finalize(&crc);
 
     // Writ the CRC
-    if ( !m_fdPtr->write(&crc, Rte::Db::eCCRC_SIZE, bytesWritten) || (uint32_t)bytesWritten != Rte::Db::eCCRC_SIZE )
+    if ( !m_fdPtr->write(&crc, Rte::Db::eCCRC_SIZE) )
         {
         operation.m_result = eERR_FILEIO;
         return false;
@@ -298,25 +302,24 @@ bool Server::writeSignature( Request::ActionPayload& operation )
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::writeSignature") );
 
     // Calculate chunk length for the signature
-    uint16_t nlen = strlen(m_signature);
-    uint32_t clen = Rte::Db::_NLEN_SIZE + nlen;
+    uint16_t nlen = (uint16_t) strlen(m_signature);
+    uint32_t clen = Rte::Db::eNLEN_SIZE + nlen;
 
     // Write Chunk Length
-    int bytesWritten = 0;
     m_fdPtr->setAbsolutePos( 0 );
-    if ( !m_fdPtr->write(&clen, Rte::Db::eCLEN_SIZE, bytesWritten) || bytesWritten != Rte::Db::eCLEN_SIZE )
+    if ( !m_fdPtr->write(&clen, Rte::Db::eCLEN_SIZE) )
         {
         operation.m_result = eERR_FILEIO;
         return false;
         }
 
     // Write Chunk Data
-    if ( !m_fdPtr->write(&nlen, Rte::Db::_NLEN_SIZE, bytesWritten) || bytesWritten != Rte::Db::_NLEN_SIZE )
+    if ( !m_fdPtr->write(&nlen, Rte::Db::eNLEN_SIZE) )
         {
         operation.m_result = eERR_FILEIO;
         return false;
         }
-    if ( !m_fdPtr->write(m_signature, nlen, bytesWritten) || bytesWritten != nlen )
+    if ( !m_fdPtr->write(m_signature, nlen) )
         {
         operation.m_result = eERR_FILEIO;
         return false;
@@ -324,15 +327,15 @@ bool Server::writeSignature( Request::ActionPayload& operation )
 
     // Calculate the CRC
     m_crc.reset();
-    m_crc.accumulate( &clen, Rte::Db::eCLEN_SIZE );
-    m_crc.accumulate( &nlen, Rte::Db::_NLEN_SIZE );
+    m_crc.accumulate( &clen, Rte::Db::eCLEN_SIZE );                                         
+    m_crc.accumulate( &nlen, Rte::Db::eNLEN_SIZE );
     m_crc.accumulate( (void*)m_signature, nlen );
-    uint32_t crc = m_crc.finalize();
+    m_crc.finalize( operation.m_buffer );
 
     // Write the CRC
-    if ( !m_fdPtr->write(&crc, Rte::Db::eCCRC_SIZE, bytesWritten) || bytesWritten != Rte::Db::eCCRC_SIZE )
+    if ( !m_fdPtr->write(operation.m_buffer, Rte::Db::eCCRC_SIZE) )
         {
-        operation.m_result = eERR_FILEIO;
+        operation.m_result = eCORRUPT_DATA;
         return false;
         }
 
@@ -359,7 +362,7 @@ bool Server::checkSignature( Request::ActionPayload& operation )
         }
             
     // Get the chunk data and the CRC
-    if ( !m_fdPtr->read(operation._buffer, clen + Rte::Db::eCCRC_SIZE, bytesRead) || (uint32_t)bytesRead != clen+Rte::Db::eCCRC_SIZE )
+    if ( !m_fdPtr->read(operation.m_buffer, clen + Rte::Db::eCCRC_SIZE, bytesRead) || (uint32_t)bytesRead != clen+Rte::Db::eCCRC_SIZE )
         {
         operation.m_result = eERR_FILEIO;
         return false;
@@ -368,7 +371,7 @@ bool Server::checkSignature( Request::ActionPayload& operation )
     // Check the CRC of the chunk
     m_crc.reset();
     m_crc.accumulate( &clen, Rte::Db::eCLEN_SIZE );
-    m_crc.accumulate( operation._buffer, clen + Rte::Db::eCCRC_SIZE );
+    m_crc.accumulate( operation.m_buffer, clen + Rte::Db::eCCRC_SIZE );
     if ( !m_crc.isOkay() )
         {
         operation.m_result = eERR_WRONG_FILE;
@@ -377,15 +380,15 @@ bool Server::checkSignature( Request::ActionPayload& operation )
 
     // Validate length fields before comparing the signature
     uint16_t nlen = 0;
-    memcpy( &nlen, operation._buffer, Rte::Db::_NLEN_SIZE );
-    if ( clen != (uint32_t)(nlen + Rte::Db::_NLEN_SIZE) || nlen != strlen(m_signature) )
+    memcpy( &nlen, operation.m_buffer, Rte::Db::eNLEN_SIZE );
+    if ( clen != (uint32_t)(nlen + Rte::Db::eNLEN_SIZE) || nlen != strlen(m_signature) )
         {
         operation.m_result = eERR_WRONG_FILE;
         return false;
         }
 
     // Check the signature
-    if ( strncmp((const char*)(operation._buffer + Rte::Db::_NLEN_SIZE), m_signature, nlen) != 0 )
+    if ( strncmp((const char*)(operation.m_buffer + Rte::Db::eNLEN_SIZE), m_signature, nlen) != 0 )
         {
         operation.m_result = eERR_WRONG_FILE;
         return false;
