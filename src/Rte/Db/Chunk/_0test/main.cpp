@@ -21,6 +21,7 @@
 #include "Cpl/System/_testsupport/Shutdown_TS.h"
 #include "Rte/Db/Chunk/Server.h"
 #include "Rte/Db/Chunk/FileSystem.h"
+#include "Rte/Db/Chunk/Null.h"
 
 
 /// This method is used as part of 'forcing' this object to being actualled 
@@ -55,9 +56,15 @@ static uint8_t buffer_[MAX_BUF_SIZE_];
 
 static Cpl::Checksum::Crc32EthernetFast  chunkCrc_;
 static FileSystem                        dbMedia( DB_FNAME_ );
+static Null                              db2Media;
 static Server                            chunkServer_( dbMedia, chunkCrc_, "12346789" );
+static Server                            chunkServer2_( db2Media, chunkCrc_, "12346789" );
 static Handle                            chunkHandle1_;
 static Handle                            chunkHandle2_;
+static Handle                            chunkHandle1b_;
+static Handle                            chunkHandle2b_;
+static Handle                            chunkHandle1c_;
+static Handle                            chunkHandle2c_;
 
 static Cpl::Itc::MailboxServer           chunkMailbox_;
 
@@ -107,6 +114,10 @@ TEST_CASE( "chunk", "[chunk]" )
     // Delete the previous DB file (if it exists)
     Cpl::Io::File::Api::remove( DB_FNAME_ );
 
+
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "" ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Media:= " DB_FNAME_ ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "-------------------------------" ));
 
     // Clear the database
     {
@@ -199,7 +210,7 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Read 1st Record
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eREAD, buffer_, MAX_BUF_SIZE_, chunkHandle1_ );
+    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eREAD, buffer_, MAX_BUF_SIZE_, chunkHandle1b_ );
     Cpl::Itc::SyncReturnHandler            srh;
 	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
     chunkMailbox_.postSync( msg );
@@ -214,7 +225,7 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Read 2nd Record
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eREAD, buffer_, MAX_BUF_SIZE_, chunkHandle2_ );
+    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eREAD, buffer_, MAX_BUF_SIZE_, chunkHandle2b_ );
     Cpl::Itc::SyncReturnHandler            srh;
 	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
     chunkMailbox_.postSync( msg );
@@ -238,71 +249,92 @@ TEST_CASE( "chunk", "[chunk]" )
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
     }
 
+
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "" ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Media:= NULL" ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "-------------------------------" ));
+
+    // Clear the database
+    {
+    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eCLEARDB, buffer_, MAX_BUF_SIZE_ );
+    Cpl::Itc::SyncReturnHandler            srh;
+	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+    chunkMailbox_.postSync( msg );
+    dumpPayload(payload,"CLEAR DB");
+    REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
+    }
+
+    // Open the database
+    {
+    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eOPENDB, buffer_, MAX_BUF_SIZE_ );
+    Cpl::Itc::SyncReturnHandler            srh;
+	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+    chunkMailbox_.postSync( msg );
+    dumpPayload(payload,"OPEN DB");
+    REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eEOF );
+    }
+
+
+    // Read 1st Record
+    {
+    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eREAD, buffer_, MAX_BUF_SIZE_, chunkHandle1c_ );
+    Cpl::Itc::SyncReturnHandler            srh;
+	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+    chunkMailbox_.postSync( msg );
+    dumpPayload(payload,"READ (1st)");
+    REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eEOF );
+    REQUIRE( payload.m_handlePtr->m_generation == 0 );
+    }
+
+    // Read 2nd Record
+    {
+    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eREAD, buffer_, MAX_BUF_SIZE_, chunkHandle2c_ );
+    Cpl::Itc::SyncReturnHandler            srh;
+	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+    chunkMailbox_.postSync( msg );
+    dumpPayload(payload,"READ (2nd)");
+    REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eEOF );
+    REQUIRE( payload.m_handlePtr->m_generation == 0 );
+    }
+
+    // Write Record 1
+    {
+    memcpy( buffer_, record1_, sizeof(record1_) );
+    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eWRITE, chunkHandle1c_, buffer_, sizeof(record1_) );
+    Cpl::Itc::SyncReturnHandler            srh;
+	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+    chunkMailbox_.postSync( msg );
+    dumpPayload(payload,"WRITE", "REC1" );
+    REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
+    REQUIRE( payload.m_handlePtr->m_generation == 1 );
+    }
+
+    // Write Record 2
+    {
+    memcpy( buffer_, record2_, sizeof(record2_) );
+    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eWRITE, chunkHandle2c_, buffer_, sizeof(record2_) );
+    Cpl::Itc::SyncReturnHandler            srh;
+	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+    chunkMailbox_.postSync( msg );
+    dumpPayload(payload,"WRITE", "REC2" );
+    REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
+    REQUIRE( payload.m_handlePtr->m_generation == 1 );
+    }
+
+    // Close the database
+    {
+    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eCLOSEDB,buffer_,MAX_BUF_SIZE_);
+    Cpl::Itc::SyncReturnHandler            srh;
+	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+    chunkMailbox_.postSync( msg );
+    dumpPayload(payload,"CLOSE DB");
+    REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
+    }
+
     // Shutdown threads
     chunkMailbox_.pleaseStop();
     Cpl::System::Api::sleep(60); // allow time for threads to stop
     REQUIRE( chunkThreadPtr->isRunning() == false );
     Cpl::System::Thread::destroy( *chunkThreadPtr );
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
-
-
-
-
-
-#if 0
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Reading Lines..." ));
-    Input fd( "testinput.txt" );
-    Cpl::Io::LineReader reader(fd);
-    REQUIRE( fd.isOpened() );
-
-    Cpl::Text::FString<6> line;
-    REQUIRE( reader.available() == true );
-    reader.readln( line );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "line=[%s]", line.getString() ) );
-    REQUIRE( line == "line 1" );
-    REQUIRE( reader.readln( line ) );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "line=[%s]", line.getString() ) );
-    REQUIRE( line == "line 2" );
-    REQUIRE( reader.readln( line ) );
-    REQUIRE( fd.length() == TESTINPUT_TXT_FILE_LENGTH );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "line=[%s]", line.getString() ) );
-    line.removeTrailingSpaces();
-    REQUIRE( line.isEmpty() );
-    REQUIRE( reader.readln( line ) );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "line=[%s]", line.getString() ) );
-    REQUIRE( line == "line 4" );
-    REQUIRE( reader.readln( line ) );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "line=[%s]", line.getString() ) );
-    REQUIRE( line == "line 5" );
-    reader.close();
-    REQUIRE( fd.isOpened() == false );
-    REQUIRE( reader.readln( line ) == false );
-    REQUIRE( fd.read( line ) == false );
-
-    //     
-    Input fd2( "testinput.txt" );
-    REQUIRE( fd2.isOpened() );
-    char dummyChar = 29;
-    REQUIRE( fd2.setAbsolutePos( TESTINPUT_TEXT_HELLO_OFFEST ) );
-    REQUIRE( fd2.length() == TESTINPUT_TXT_FILE_LENGTH );
-    REQUIRE( fd2.read(dummyChar) == true );
-    REQUIRE( dummyChar == 'A' );
-
-    Cpl::Text::FString<10> buffer("bob");
-    REQUIRE( fd2.read(buffer) == true );
-    REQUIRE( buffer == "Hello Worl" );
-
-    char myBuffer[10] = { 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29 };
-    int  bytesRead    = 1;
-    REQUIRE( fd2.available() == true );
-    fd2.read( myBuffer, sizeof(myBuffer), bytesRead );
-    REQUIRE( bytesRead == 2 );
-    REQUIRE( myBuffer[0] == 'd' );
-    REQUIRE( myBuffer[1] == '.' );
-    REQUIRE( fd2.read( myBuffer, sizeof(myBuffer), bytesRead ) == false );
-
-    fd2.close(); 
-    REQUIRE( fd2.isOpened() == false );
-    REQUIRE( fd2.read(dummyChar) == false );
-#endif
     }
