@@ -148,8 +148,7 @@ Pos="3200 -17500">
 Pos="3367 -17700"
 Origin="2">
 <Text>evStop/<p/>
-requestDbClose();<p/>
-clearWriteQue();</Text>
+requestDbClose();</Text>
 </FreeText>
 </Anchor>
 </Segment>
@@ -208,7 +207,9 @@ Pos="1100 -9300">
 Pos="1200 -8200"
 Origin="4">
 <Text>evResponse/<p/>
-ackDbStopped();</Text>
+ackDbStopped();<p/>
+clearWriteQue();<p/>
+resetFsmHistory();</Text>
 </FreeText>
 </Anchor>
 </Segment>
@@ -230,7 +231,7 @@ Pos="19700 -3800">
 Pos="19951 -3097"
 Origin="4">
 <Text>evResponse[isDbError()]/<p/>
-reportError();<p/>
+reportFileReadError();<p/>
 nakOpenDone();<p/>
 inspectWriteQue();</Text>
 </FreeText>
@@ -341,7 +342,7 @@ Pos="17600 -10400">
 Pos="17864 -9102"
 Origin="4">
 <Text>evResponse[isDbBadData()]/<p/>
-reportError();<p/>
+reportDataCorruptError();<p/>
 nakOpenDone();<p/>
 requestDbClear();</Text>
 </FreeText>
@@ -401,7 +402,7 @@ Pos="22900 -16200">
 Pos="24151 -15600"
 Origin="3">
 <Text>[else]/<p/>
-reportError();<p/>
+reportFileWriteError();<p/>
 inspectWriteQue();</Text>
 </FreeText>
 </Anchor>

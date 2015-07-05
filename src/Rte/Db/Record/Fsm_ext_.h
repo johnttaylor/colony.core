@@ -28,7 +28,6 @@ enum FSM_EVENT_T {
     evVerified,
     evResponse,
     evDefault,
-    dbResponse,
     evStart,
     FSM_NO_MSG
 };

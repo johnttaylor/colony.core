@@ -17,8 +17,8 @@
 
 /* Include default headers (no header definition in UML state-chart provided) */
 /* Define a header comment in your statediagram.model to define own includes here. */
-#include "Fsm_ext.h"
-#include "Fsm.h"
+#include "Rte/Db/Record/Fsm_ext_.h"
+#include "Rte/Db/Record/Fsm_.h"
 
 namespace Rte { namespace Db { namespace Record  {
 
@@ -38,10 +38,10 @@ namespace Rte { namespace Db { namespace Record  {
 
     /* Event names */
     const char events[]=
-        "evWrite\0evStop\0evVerified\0evResponse\0evDefault\0dbResponse\0evStart\0NO_MSG\0";
+        "evWrite\0evStop\0evVerified\0evResponse\0evDefault\0evStart\0NO_MSG\0";
 
     const unsigned short evt_idx[]={
-        0,8,15,26,37,47,58,66};
+        0,8,15,26,37,47,55};
 
     const char* Fsm::getNameByState(unsigned short state) const {
         return states+state_idx[state];
@@ -243,23 +243,7 @@ namespace Rte { namespace Db { namespace Record  {
                             break; /* end of case WaitingToOpen  */
 
                             case Reading :
-                                if(msg==dbResponse){
-                                    if(isDbBadData()){
-                                        /* Transition from Reading  to ClearingDb */
-                                        evConsumed=1;
-
-                                        /* Action code for transition  */
-                                        reportError();
-                                        nakOpenDone();
-                                        requestDbClear();
-
-
-                                        /* adjust state variables  */
-                                        stateVarsCopy.stateVarOpening = ClearingDb;
-                                    }else{
-                                        /* Intentionally left blank */
-                                    } /*end of event selection */
-                                }else if(msg==evResponse){
+                                if(msg==evResponse){
                                     if(isDbEof()){
                                         /* Transition from Reading  to Verifying */
                                         evConsumed=1;
@@ -270,6 +254,18 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarOpening = Verifying;
+                                    }else if(isDbBadData()){
+                                        /* Transition from Reading  to ClearingDb */
+                                        evConsumed=1;
+
+                                        /* Action code for transition  */
+                                        reportDataCorruptError();
+                                        nakOpenDone();
+                                        requestDbClear();
+
+
+                                        /* adjust state variables  */
+                                        stateVarsCopy.stateVarOpening = ClearingDb;
                                     }else if(isDbSuccess()){
                                         /* Transition from Reading  to Reading  */
                                         evConsumed=1;
@@ -354,7 +350,7 @@ namespace Rte { namespace Db { namespace Record  {
                                 
 
                                     /* Action code for transition  */
-                                    reportError();
+                                    reportFileReadError();
                                     nakOpenDone();
                                     inspectWriteQue();
 
@@ -400,7 +396,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                 /* Action code for transition  */
                                 
-                                reportError();
+                                reportFileWriteError();
                                 inspectWriteQue();
 
                                 stateVarsCopy.stateVar = Active;/* Default in entry chain  */
@@ -440,7 +436,6 @@ namespace Rte { namespace Db { namespace Record  {
 
                         /* Action code for transition  */
                         requestDbClose();
-                        clearWriteQue();
 
 
                         /* adjust state variables  */
@@ -458,6 +453,8 @@ namespace Rte { namespace Db { namespace Record  {
 
                     /* Action code for transition  */
                     ackDbStopped();
+                    clearWriteQue();
+                    resetFsmHistory();
 
 
                     /* adjust state variables  */

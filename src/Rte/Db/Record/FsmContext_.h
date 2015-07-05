@@ -1,5 +1,5 @@
-#ifndef Rte_Db_Record_FsmContext_h_
-#define Rte_Db_Record_FsmContext_h_
+#ifndef Rte_Db_Record_FsmContext__h_
+#define Rte_Db_Record_FsmContext__h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -22,75 +22,84 @@ namespace Rte { namespace Db { namespace Record {
 
 
 /// Context (aka actions/guards) for my Finite State Machine
-class FsmContext
+class FsmContext_
 {
 public:
     /// Action
-    virtual void ackWrite() throw() = 0;
-
-    /// Action
-    virtual void consumeNoWrite() throw() = 0;
-
-    /// Action
-    virtual void requestDbClose() throw() = 0;
-
-    /// Action
-    virtual void reportError() throw() = 0;
-
-    /// Action
-    virtual void queWriteRequest() throw() = 0;
-
-    /// Action
-    virtual void ackRead() throw() = 0;
-
-    /// Action
-    virtual void clearWriteQue() throw() = 0;
-
-    /// Action
-    virtual void nakOpenDone() throw() = 0;
-
-    /// Action
-    virtual void requestDbOpen() throw() = 0;
-
-    /// Action
     virtual void ackDbStopped() throw() = 0;
-
-    /// Action
-    virtual void verifyOpen() throw() = 0;
 
     /// Action
     virtual void ackOpenDone() throw() = 0;
 
     /// Action
-    virtual void requestDbClear() throw() = 0;
+    virtual void ackRead() throw() = 0;
 
     /// Action
-    virtual void requestDbWrite() throw() = 0;
+    virtual void ackWrite() throw() = 0;
+
+    /// Action
+    virtual void clearWriteQue() throw() = 0;
+
+    /// Action
+    virtual void consumeNoWrite() throw() = 0;
 
     /// Action
     virtual void inspectWriteQue() throw() = 0;
 
     /// Action
+    virtual void nakOpenDone() throw() = 0;
+
+    /// Action
+    virtual void queWriteRequest() throw() = 0;
+
+    /// Action
+    virtual void reportDataCorruptError() throw() = 0;
+
+    /// Action
+    virtual void reportFileReadError() throw() = 0;
+
+    /// Action
+    virtual void reportFileWriteError() throw() = 0;
+
+    /// Action
+    virtual void requestDbClear() throw() = 0;
+
+    /// Action
+    virtual void requestDbClose() throw() = 0;
+
+    /// Action
+    virtual void requestDbOpen() throw() = 0;
+
+    /// Action
     virtual void requestDbRead() throw() = 0;
+
+    /// Action
+    virtual void requestDbWrite() throw() = 0;
+
+    /// Action
+    virtual void resetFsmHistory() throw() = 0;
+
+    /// Action
+    virtual void verifyOpen() throw() = 0;
 
 
 public:
-    /// Guard
-    virtual bool isDbEof() throw() = 0;
-
-    /// Guard
-    virtual bool isDbSuccess() throw() = 0;
-
     /// Guard
     virtual bool isDbBadData() throw() = 0;
 
     /// Guard
+    virtual bool isDbEof() throw() = 0;
+
+    /// Guard
     virtual bool isDbError() throw() = 0;
+
+    /// Guard
+    virtual bool isDbSuccess() throw() = 0;
 
 
 public:
     /// Virtual Destructor
-    virtual ~FsmContext(){}
+    virtual ~FsmContext_(){}
 
 };
 

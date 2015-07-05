@@ -31,17 +31,17 @@ remincross=true;
 nodesep=0.3;
 ranksep=.4;
 "Idle"->"defaultOpening"[labeldistance = 2.0, taillabel=<evStart / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>requestDbOpen();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterOpening];//Idle Opening
-"defaultActive"->"Stopping"[labeldistance=2.0, headlabel=<evStop / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>requestDbClose();<br ALIGN="LEFT"/>clearWriteQue(...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black ltail=clusterActive];//Active Stopping
+"defaultActive"->"Stopping"[labeldistance=2.0, headlabel=<evStop / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>requestDbClose();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black ltail=clusterActive];//Active Stopping
 "NoPersistence"->"NoPersistence"[label=<evWrite / <br ALIGN="LEFT"/>consumeNoWrite();<br ALIGN="LEFT"/>ackWrite();<br ALIGN="LEFT"/>in...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //NoPersistence NoPersistence
-"Stopping"->"Idle"[label=<evResponse / <br ALIGN="LEFT"/>ackDbStopped();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Stopping Idle
-"defaultOpening"->"defaultActive"[label=<evResponse<br ALIGN="LEFT"/>[isDbError()] / <br ALIGN="LEFT"/>reportError();<br ALIGN="LEFT"/>nakOpenDone();<br ALIGN="LEFT"/>in...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black];//Opening Active
+"Stopping"->"Idle"[label=<evResponse / <br ALIGN="LEFT"/>ackDbStopped();<br ALIGN="LEFT"/>clearWriteQue();...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Stopping Idle
+"defaultOpening"->"defaultActive"[label=<evResponse<br ALIGN="LEFT"/>[isDbError()] / <br ALIGN="LEFT"/>reportFileReadError();<br ALIGN="LEFT"/>nakOpenDo...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black];//Opening Active
 "WaitingToOpen"->"Reading "[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / requestDbRead();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingToOpen Reading 
 "defaultroot"->"Idle"[label=<  > style=dotted];
 "Reading "->"Reading "[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / ackRead();<br ALIGN="LEFT"/>requestDbRead();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  Reading 
-"Reading "->"ClearingDb"[label=<dbResponse<br ALIGN="LEFT"/>[isDbBadData()] / reportError();<br ALIGN="LEFT"/>nakOpenDone();<br ALIGN="LEFT"/>re...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  ClearingDb
+"Reading "->"ClearingDb"[label=<evResponse<br ALIGN="LEFT"/>[isDbBadData()] / reportDataCorruptError();<br ALIGN="LEFT"/>nakOpe...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  ClearingDb
 "Reading "->"Verifying"[label=<evResponse<br ALIGN="LEFT"/>[isDbEof()] / verifyOpen();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  Verifying
 "defaultActive"->"NoPersistence"[label=<  > style=dotted];
-"__C0"->"defaultActive"[labeldistance = 2.0, taillabel=<[else] / <br ALIGN="LEFT"/>reportError();<br ALIGN="LEFT"/>inspectWriteQue()...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive];//__C0 Active
+"__C0"->"defaultActive"[labeldistance = 2.0, taillabel=<[else] / <br ALIGN="LEFT"/>reportFileWriteError();<br ALIGN="LEFT"/>inspectW...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive];//__C0 Active
 "ClearingDb"->"Writeable"[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / inspectWriteQue();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //ClearingDb Writeable
 "WaitingToOpen"->"Writeable"[label=<evResponse<br ALIGN="LEFT"/>[isDbEof()] / ackOpenDone();<br ALIGN="LEFT"/>inspectWriteQue()...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingToOpen Writeable
 "Writeable"->"Writing"[label=<evWrite / <br ALIGN="LEFT"/>requestDbWrite();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Writeable Writing
@@ -69,12 +69,12 @@ label=<Opening(H)<br ALIGN="LEFT"/><br ALIGN="LEFT"/>>;
 \enddot
 */
 
-#include "Fsm_ext.h"
-#include "FsmContext.h"
+#include "Rte/Db/Record/Fsm_ext_.h"
+#include "Rte/Db/Record/FsmContext_.h"
 
 namespace Rte { namespace Db { namespace Record  {
 
-    class Fsm: public FsmContext
+    class Fsm: public FsmContext_
     {
         public:
             Fsm(void);
