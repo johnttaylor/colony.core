@@ -33,6 +33,7 @@ TypeValue="5"/>
 </dir>
 <dir n="Dependency" Bold="0"/>
 <dir n="Free Text" Size="10" Bold="0"/>
+<dir n="Note" Size="9" Bold="0"/>
 <dir n="State Diagram">
 <dir n="State" Bold="0">
 <dir n="Header" Bold="1"/>

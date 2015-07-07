@@ -11,25 +11,37 @@
 /** @file */
 
 /* Command line options: -p CADIFRA -doxygen -o Fsm -l cppx -Trace Fsm.cdd   */
-/* This file is generated from Fsm.cdd - do not edit manually  */
-/* Generated on:  version 3.6.9 */
+/* This file is generated from Fsm_trace - do not edit manually*/
+/* Generated on: version 3.6.9 */
 
 
-#ifndef __FSM_RTE_DB_RECORD_EXT_H__
-#define __FSM_RTE_DB_RECORD_EXT_H__
+#ifndef __FSM_TRACE_RTE_DB_RECORD_H__
+#define __FSM_TRACE_RTE_DB_RECORD_H__
 
-// Events which can be sent to the state-machine
+#include "Cpl/System/Trace.h"
+
+#define SECT_ "Rte::Db::Record::Fsm"
+
 
 namespace Rte { namespace Db { namespace Record  {
 
-enum FSM_EVENT_T {
-    evWrite=0U,
-    evStop,
-    evVerified,
-    evResponse,
-    evDefault,
-    evStart,
-    FSM_NO_MSG
+
+
+#define FsmTraceEvent(a) CPL_SYSTEM_TRACE_MSG( SECT_, ( "Old State=%s, Event=%s", getNameByState(getInnermostActiveState()), FsmTraceEvents[a] ));
+
+const char* const FsmTraceEvents[] = {
+    "evStart",
+    "evStop",
+    "evWrite",
+    "evResponse",
+    "",
+    "evVerified",
+    "evDefault",
+    "evResponse[isDbSuccess()]",
+    "evResponse[else]",
+    "evResponse[isDbError()]",
+    "evResponse[isDbBadData()]",
+    "evResponse[isDbEof()]"
 };
 
 

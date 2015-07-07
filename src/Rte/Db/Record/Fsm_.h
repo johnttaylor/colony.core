@@ -10,7 +10,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-/* Command line options: -p CADIFRA -doxygen -o Fsm -l cppx Fsm.cdd   */
+/* Command line options: -p CADIFRA -doxygen -o Fsm -l cppx -Trace Fsm.cdd   */
 /* This file is generated from Fsm.cdd - do not edit manually  */
 /* Generated on:  version 3.6.9 */
 

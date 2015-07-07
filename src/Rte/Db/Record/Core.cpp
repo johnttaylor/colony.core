@@ -27,17 +27,20 @@ Core::Core( uint8_t*                      recordLayerBuffer,
             Handler::Client&              setLayerHandler,
             Rte::Db::Chunk::Request::SAP& chunkSAP,
             Cpl::Itc::PostApi&            recordLayerMbox,
+            FSM_EVENT_T                   eventQueueMemory[],
+            unsigned                      eventQueueSize,
             Cpl::Log::Api&                eventLogger,
             ErrorClient*                  errorHandler
           )
 :m_buffer(recordLayerBuffer)
 ,m_bufSize(bufferSize)
-,m_setLayer(setLayer)
+,m_setLayer(setLayerHandler)
 ,m_chunkSAP(chunkSAP)
 ,m_myMbox(recordLayerMbox)
-,m_dbResult(Rte::Db::Chunk::_SUCCESS)
+,m_dbResult(Rte::Db::Chunk::Request::eSUCCESS)
 ,m_dbDataLen(0)
 ,m_recordPtr(0)
+,m_eventQueue(eventQueueSize, eventQueueMemory)
 ,m_logger(eventLogger)
 ,m_errHandlerPtr(errorHandler)
     {
@@ -50,13 +53,13 @@ Core::Core( uint8_t*                      recordLayerBuffer,
 void Core::start( void )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::start") );
-    processEvent( evStart ); 
+    sendEvent( evStart ); 
     }
 
 void Core::stop( void )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::stop") );
-    processEvent( evStop ); 
+    sendEvent( evStop ); 
     }
 
 
@@ -64,14 +67,14 @@ void Core::write( Api& recordToWrite )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::write") );
     m_writeRequests.put( recordToWrite );
-    processEvent( evWrite ); 
+    sendEvent( evWrite ); 
     }
 
 
 /////////////////////////////////
 void Core::response( ActionMsg& msg )
     {
-    Rte::Db::Chunk::Request::ActionPayload& payload = msg.getServerMsg().getPayload();
+    Rte::Db::Chunk::Request::ActionPayload& payload = msg.getRequestMsg().getPayload();
 
     m_dbResult  = payload.m_result;
     m_dbDataLen = 0;
@@ -80,8 +83,8 @@ void Core::response( ActionMsg& msg )
         m_dbDataLen = payload.m_handlePtr->m_len;
         }
 
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response: result=%s", Rte::Db::Chunk::resultToString(m_dbResult)) );
-    processEvent( evResponse ); 
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response: result=%s", Rte::Db::Chunk::Request::resultToString(m_dbResult)) );
+    sendEvent( evResponse ); 
     }
 
 
@@ -108,7 +111,7 @@ void Core::reportDataCorruptError() throw()
 
 void Core::reportFileWriteError() throw()
     {
-    const char* recname = m_recordPtr->getName()
+    const char* recname = m_recordPtr->getName();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::reportFileWriteError (rec=%s)", recname) );
     m_logger.warning( "Rte::Db::Record::Core::reportFileWriteError - DB File Write error (rec=%s)", recname  );
     if ( m_errHandlerPtr ) 
@@ -122,9 +125,9 @@ void Core::reportFileWriteError() throw()
 void Core::requestDbClose() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::requestDbClose") );
-    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload( Rte::Db::Chunk::eCLOSEDB, m_buffer, m_bufsize);
+    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload( Rte::Db::Chunk::Request::eCLOSEDB, m_buffer, m_bufSize);
     Rte::Db::Chunk::Response::ActionMsg*    rspmsg  = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::ActionMsg(*this, m_myMbox, m_chunkSAP, *payload);      
-    m_chunkSAP.post( rspmsg->getServerMsg() );
+    m_chunkSAP.post( rspmsg->getRequestMsg() );
     }
 
 void Core::requestDbOpen() throw()
@@ -135,25 +138,25 @@ void Core::requestDbOpen() throw()
         m_errHandlerPtr->databaseOpened();
         }
 
-    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload(Rte::Db::Chunk::eOPENDB, m_buffer, m_bufsize);
+    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload(Rte::Db::Chunk::Request::eOPENDB, m_buffer, m_bufSize);
     Rte::Db::Chunk::Response::ActionMsg*  rspmsg    = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::ActionMsg(*this, m_myMbox, m_chunkSAP, *payload);      
-    m_chunkSAP.post( rspmsg->getServerMsg() );
+    m_chunkSAP.post( rspmsg->getRequestMsg() );
     }
 
 void Core::requestDbClear() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::requestDbClear") );
-    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload(Rte::Db::Chunk::eCLEARDB, m_buffer, m_bufsize);
+    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload(Rte::Db::Chunk::Request::eCLEARDB, m_buffer, m_bufSize);
     Rte::Db::Chunk::Response::ActionMsg*    rspmsg  = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::ActionMsg(*this, m_myMbox, m_chunkSAP, *payload);      
-    m_chunkSAP.post( rspmsg->getServerMsg() );
+    m_chunkSAP.post( rspmsg->getRequestMsg() );
     }
 
 void Core::requestDbRead() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::requestDbRead") );
-    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload(Rte::Db::Chunk::eREAD, m_buffer, m_bufsize, m_chunkHandle);
+    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload(Rte::Db::Chunk::Request::eREAD, m_buffer, m_bufSize, m_chunkHandle);
     Rte::Db::Chunk::Response::ActionMsg*    rspmsg  = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::ActionMsg(*this, m_myMbox, m_chunkSAP, *payload);      
-    m_chunkSAP.post( rspmsg->getServerMsg() );
+    m_chunkSAP.post( rspmsg->getRequestMsg() );
     m_dbDataLen = 0;
     }
 
@@ -170,9 +173,9 @@ void Core::requestDbWrite() throw()
     plantRecName( m_recordPtr->getName() );
     uint32_t dataLen = m_recordPtr->fillWriteBuffer( extractDataPointer(), maxAllowedDataSize() );
         
-    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload(Rte::Db::Chunk::eWRITE, m_recordPtr->getChunkHandle(), m_buffer, calcRecordLen(dataLen));
+    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload(Rte::Db::Chunk::Request::eWRITE, m_recordPtr->getChunkHandle(), m_buffer, calcRecordLen(dataLen));
     Rte::Db::Chunk::Response::ActionMsg*    rspmsg  = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::ActionMsg(*this, m_myMbox, m_chunkSAP, *payload);      
-    m_chunkSAP.post( rspmsg->getServerMsg() );
+    m_chunkSAP.post( rspmsg->getRequestMsg() );
     }
 
 void Core::consumeNoWrite() throw()
@@ -247,7 +250,7 @@ void Core::inspectWriteQue() throw()
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::inspectWriteQue") );
     if ( m_writeRequests.first() )
         {
-        processEvent( evWrite ); 
+        sendEvent( evWrite ); 
         }
     }
 
@@ -271,11 +274,11 @@ void Core::verifyOpen() throw()
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::verifyOpen") );
     if ( m_setLayer.isCleanLoad() )
         {
-        processEvent( evVerified ); 
+        sendEvent( evVerified ); 
         }
     else
         {
-        processEvent( evDefault ); 
+        sendEvent( evDefault ); 
         }
     }
 
@@ -304,6 +307,21 @@ bool Core::isDbError() throw()
 
 
 /////////////////////////////////
+void Core::sendEvent( FSM_EVENT_T msg )
+    {
+    // Queue the event (and generate a FatalError if overflowing the event queue memory!)
+    if ( !m_eventQueue.add( msg ) )
+        {
+        Cpl::System::FatalError::logf( "Rtd::Db::Record::Core::sendEvent(): Overflowed ring buffer. Buffer size=%u", m_eventQueue.getMaxItems() ); 
+        }
+
+    // Drain the event queue.  Notes: Action CAN/WILL generate events so 'event buffer' is needed to ensure run-to-completion semantics for FSM processing 
+    while( m_eventQueue.remove(msg) )
+        {
+        processEvent(msg);
+        }
+    }
+
 const char* Core::extractRecName(void)
     {
     return (const char*)(m_buffer + Rte::Db::eNLEN_SIZE);
@@ -326,12 +344,12 @@ uint8_t* Core::extractDataPointer(void)
 
 uint32_t Core::maxAllowedDataSize(void)
     {
-    return m_bufsize - (Rte::Db::eNLEN_SIZE + extractRecNameLength());
+    return m_bufSize - (Rte::Db::eNLEN_SIZE + extractRecNameLength());
     }
 
 void Core::plantRecName( const char* recName )
     {
-    uint16_t nameLen = strlen(recName);
+    uint16_t nameLen = (uint16_t) strlen(recName);
     *((uint16_t*)m_buffer) = nameLen;
     memcpy( m_buffer + Rte::Db::eNLEN_SIZE, recName, nameLen );
     }

@@ -41,7 +41,7 @@ public:
                   unterminated array of characters with an array size
                   of nameLen.
          */
-        virtual Api* getRecordApi( const void* recName, uint16_t nameLen ) = 0;
+        virtual Api* getRecordApi( const char* recName, uint16_t nameLen ) = 0;
 
 
         /** Notification (to the upper layer) that all records have been 
@@ -67,9 +67,11 @@ public:
         
 
         /** Notification (to the upper layer) that the Record Handler is
-            stopped (i.e. asynchronous response to the stop() call).
+            stopped, i.e. the Record Handler/Layer has returned to the 
+            Idle state.  This method is the asynchronous response to the 
+            Handler::stop() call).
          */
-        virtual void notifyStopped();
+        virtual void notifyStopped() = 0;
 
 
     public:

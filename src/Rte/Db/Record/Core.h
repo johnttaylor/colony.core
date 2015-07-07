@@ -17,7 +17,9 @@
 #include "Rte/Db/Record/ErrorClient.h"
 #include "Rte/Db/Record/Fsm_.h"
 #include "Cpl/Container/SList.h"
+#include "Cpl/Container/RingBuffer.h"
 #include "Cpl/Memory/Aligned.h"
+#include "Cpl/Log/Loggers.h"
 #include <stdint.h>
 
 
@@ -62,6 +64,9 @@ private:
     /// Current Record
     Api*                                    m_recordPtr;
 
+    /// Event Queue (to ensure run-to-completion semantics for the FSM)
+    Cpl::Container::RingBuffer<FSM_EVENT_T> m_eventQueue;
+
     /// Logger (for unexpected events)
     Cpl::Log::Api&                          m_logger;
 
@@ -85,6 +90,8 @@ public:
           Handler::Client&              setLayerHandler,
           Rte::Db::Chunk::Request::SAP& chunkSAP,
           Cpl::Itc::PostApi&            recordLayerMbox,
+          FSM_EVENT_T                   eventQueueMemory[],
+          unsigned                      eventQueueSize,
           Cpl::Log::Api&                eventLogger  = Cpl::Log::Loggers::application(),
           ErrorClient*                  errorHandler = 0   // Optional
         );
@@ -181,6 +188,9 @@ protected:
 
 
 protected:
+    /// Helper
+    void        sendEvent( FSM_EVENT_T msg );
+
     /// Helper
     const char* extractRecName(void);
 
