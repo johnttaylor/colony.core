@@ -56,35 +56,37 @@ public:
 
 public: 
     /// See Rte::Db::Chunk::Request
-    void request( ActionMsg& msg );
+    void request( OpenDbMsg& msg );
     
+    /// See Rte::Db::Chunk::Request
+    void request( CloseDbMsg& msg );
+    
+    /// See Rte::Db::Chunk::Request
+    void request( ClearDbMsg& msg );
+    
+    /// See Rte::Db::Chunk::Request
+    void request( ReadMsg& msg );
+    
+    /// See Rte::Db::Chunk::Request
+    void request( WriteMsg& msg );
+
+
 
 protected:
-    /// Helper method that perform the: Open DB action
-    virtual void openDB( Request::ActionPayload& action );
+    /// Helper method
+    virtual void openDB( Request::Result_T& result, uint8_t* bufferPtr, uint32_t bufferMaxSize );
 
-    /// Helper method that perform the: Close DB action
+    /// Helper method
     virtual void closeDB();
 
-    /// Helper method that perform the: Clear DB action
-    virtual void clearDB( Request::ActionPayload& action );
-
-    /// Helper method that perform the: Read action
-    virtual void read( Request::ActionPayload& action );
-
-    /// Helper method that perform the: Write action
-    virtual void write( Request::ActionPayload& action );
-
-
-protected:
     /// Helper method
-    virtual bool writeChunk( Request::ActionPayload& action );
+    virtual bool writeChunk( Request::Result_T& result, uint8_t* bufferPtr, uint32_t bufferLen, Handle* handlePtr );
 
     /// Helper method
-    virtual bool writeSignature( Request::ActionPayload& action );
+    virtual bool writeSignature( Request::Result_T& result );
 
     /// Helper method
-    virtual bool checkSignature( Request::ActionPayload& action );
+    virtual bool checkSignature( Request::Result_T& result, uint8_t* bufferPtr, uint32_t bufferMaxSize );
 
 
 };

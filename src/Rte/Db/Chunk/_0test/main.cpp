@@ -71,11 +71,60 @@ static Cpl::Itc::MailboxServer           chunkMailbox_;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void dumpPayload( Rte::Db::Chunk::Request::ActionPayload& payload, const char* msg1, const char* msg2="" )
+void dumpPayload( Rte::Db::Chunk::Request::OpenDbPayload& payload, const char* msg1, const char* msg2="" )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, (""));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("# PAYLOAD: %s. %s", msg1, msg2 ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("#  action        = %s", Rte::Db::Chunk::Request::actionToString(payload.m_action) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("# OPEN PAYLOAD: %s. %s", msg1, msg2 ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("#  result        = %s", Rte::Db::Chunk::Request::resultToString(payload.m_result) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("#  bufferMaxSize = %u", payload.m_bufferMaxSize ));
+    }
+
+void dumpPayload( Rte::Db::Chunk::Request::CloseDbPayload& payload, const char* msg1, const char* msg2="" )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, (""));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("# CLOSE PAYLOAD: %s. %s", msg1, msg2 ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("#  result        = %s", Rte::Db::Chunk::Request::resultToString(payload.m_result) ));
+    }
+
+void dumpPayload( Rte::Db::Chunk::Request::ClearDbPayload& payload, const char* msg1, const char* msg2="" )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, (""));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("# CLEAR PAYLOAD: %s. %s", msg1, msg2 ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("#  result        = %s", Rte::Db::Chunk::Request::resultToString(payload.m_result) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("#  bufferMaxSize = %u", payload.m_bufferMaxSize ));
+    }
+
+void dumpPayload( Rte::Db::Chunk::Request::ReadPayload& payload, const char* msg1, const char* msg2="" )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, (""));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("# READ PAYLOAD: %s. %s", msg1, msg2 ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("#  result        = %s", Rte::Db::Chunk::Request::resultToString(payload.m_result) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("#  bufLen        = %u", payload.m_bufferLen ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("#  bufferMaxSize = %u", payload.m_bufferMaxSize ));
+    if ( payload.m_handlePtr == 0 )
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("#  handle        = <none>" ));
+        }
+    else
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("#  handle        = %p", payload.m_handlePtr ));
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("#  handle.offset = %lu", payload.m_handlePtr->m_offset ));
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("#  handle.len    = %lu", payload.m_handlePtr->m_len ));
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("#  handle.gen    = %lu", payload.m_handlePtr->m_generation ));
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("#  buffer[]      = " ));
+        unsigned  i;
+        for(i=0; i<payload.m_handlePtr->m_len; i++)
+            {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("%02X ", payload.m_buffer[i] ));
+            }
+        CPL_SYSTEM_TRACE_MSG( SECT_, (""));
+        }
+    }
+
+void dumpPayload( Rte::Db::Chunk::Request::WritePayload& payload, const char* msg1, const char* msg2="" )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, (""));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("# WRITE PAYLOAD: %s. %s", msg1, msg2 ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("#  result        = %s", Rte::Db::Chunk::Request::resultToString(payload.m_result) ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("#  bufLen        = %u", payload.m_bufferLen ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("#  bufferMaxSize = %u", payload.m_bufferMaxSize ));
@@ -100,7 +149,6 @@ void dumpPayload( Rte::Db::Chunk::Request::ActionPayload& payload, const char* m
     }
 
 
-
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "chunk", "[chunk]" )
     {
@@ -121,9 +169,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Clear the database
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eCLEARDB, buffer_, MAX_BUF_SIZE_ );
-    Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
+    Rte::Db::Chunk::Request::ClearDbPayload  payload( buffer_, MAX_BUF_SIZE_ );
+    Cpl::Itc::SyncReturnHandler              srh;
+	Rte::Db::Chunk::Request::ClearDbMsg      msg(chunkServer_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"CLEAR DB");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eERR_FILEIO );
@@ -131,9 +179,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Open the database
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eOPENDB, buffer_, MAX_BUF_SIZE_ );
-    Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
+    Rte::Db::Chunk::Request::OpenDbPayload   payload( buffer_, MAX_BUF_SIZE_ );
+    Cpl::Itc::SyncReturnHandler              srh;
+	Rte::Db::Chunk::Request::OpenDbMsg       msg(chunkServer_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"OPEN DB");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eEOF );
@@ -142,9 +190,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Read 1st Record
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eREAD, buffer_, MAX_BUF_SIZE_, chunkHandle1_ );
+    Rte::Db::Chunk::Request::ReadPayload   payload( buffer_, MAX_BUF_SIZE_, chunkHandle1_ );
     Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
+	Rte::Db::Chunk::Request::ReadMsg       msg(chunkServer_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"READ (1st)");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eEOF );
@@ -153,9 +201,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Read 2nd Record
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eREAD, buffer_, MAX_BUF_SIZE_, chunkHandle2_ );
+    Rte::Db::Chunk::Request::ReadPayload   payload( buffer_, MAX_BUF_SIZE_, chunkHandle2_ );
     Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
+	Rte::Db::Chunk::Request::ReadMsg       msg(chunkServer_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"READ (2nd)");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eEOF );
@@ -165,9 +213,9 @@ TEST_CASE( "chunk", "[chunk]" )
     // Write Record 1
     {
     memcpy( buffer_, record1_, sizeof(record1_) );
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eWRITE, chunkHandle1_, buffer_, sizeof(record1_) );
+    Rte::Db::Chunk::Request::WritePayload  payload( buffer_, sizeof(record1_), chunkHandle1_ );
     Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
+	Rte::Db::Chunk::Request::WriteMsg      msg(chunkServer_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"WRITE", "REC1" );
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
@@ -177,9 +225,9 @@ TEST_CASE( "chunk", "[chunk]" )
     // Write Record 2
     {
     memcpy( buffer_, record2_, sizeof(record2_) );
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eWRITE, chunkHandle2_, buffer_, sizeof(record2_) );
+    Rte::Db::Chunk::Request::WritePayload  payload( buffer_, sizeof(record2_), chunkHandle2_ );
     Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
+	Rte::Db::Chunk::Request::WriteMsg      msg(chunkServer_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"WRITE", "REC2" );
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
@@ -188,9 +236,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Close the database
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eCLOSEDB,buffer_,MAX_BUF_SIZE_);
-    Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
+    Rte::Db::Chunk::Request::CloseDbPayload  payload;
+    Cpl::Itc::SyncReturnHandler              srh;
+	Rte::Db::Chunk::Request::CloseDbMsg      msg(chunkServer_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"CLOSE DB");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
@@ -199,9 +247,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Open the database
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eOPENDB, buffer_, MAX_BUF_SIZE_ );
-    Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
+    Rte::Db::Chunk::Request::OpenDbPayload   payload( buffer_, MAX_BUF_SIZE_ );
+    Cpl::Itc::SyncReturnHandler              srh;
+	Rte::Db::Chunk::Request::OpenDbMsg       msg(chunkServer_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"OPEN DB");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
@@ -210,9 +258,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Read 1st Record
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eREAD, buffer_, MAX_BUF_SIZE_, chunkHandle1b_ );
+    Rte::Db::Chunk::Request::ReadPayload   payload( buffer_, MAX_BUF_SIZE_, chunkHandle1b_ );
     Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
+	Rte::Db::Chunk::Request::ReadMsg       msg(chunkServer_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"READ (1st)");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
@@ -225,9 +273,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Read 2nd Record
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eREAD, buffer_, MAX_BUF_SIZE_, chunkHandle2b_ );
+    Rte::Db::Chunk::Request::ReadPayload   payload( buffer_, MAX_BUF_SIZE_, chunkHandle2b_ );
     Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
+	Rte::Db::Chunk::Request::ReadMsg       msg(chunkServer_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"READ (2nd)");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
@@ -241,10 +289,10 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Close the database
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eCLOSEDB,buffer_,MAX_BUF_SIZE_);
-    Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer_, payload, srh);
-    chunkMailbox_.postSync( msg );
+    Rte::Db::Chunk::Request::CloseDbPayload  payload;
+    Cpl::Itc::SyncReturnHandler              srh;
+	Rte::Db::Chunk::Request::CloseDbMsg      msg(chunkServer_, payload, srh);
+    chunkMailbox_.postSync( msg );      
     dumpPayload(payload,"CLOSE DB");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
     }
@@ -256,9 +304,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Clear the database
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eCLEARDB, buffer_, MAX_BUF_SIZE_ );
-    Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+    Rte::Db::Chunk::Request::ClearDbPayload  payload( buffer_, MAX_BUF_SIZE_ );
+    Cpl::Itc::SyncReturnHandler              srh;
+	Rte::Db::Chunk::Request::ClearDbMsg      msg(chunkServer2_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"CLEAR DB");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
@@ -266,9 +314,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Open the database
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eOPENDB, buffer_, MAX_BUF_SIZE_ );
-    Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+    Rte::Db::Chunk::Request::OpenDbPayload   payload( buffer_, MAX_BUF_SIZE_ );
+    Cpl::Itc::SyncReturnHandler              srh;
+	Rte::Db::Chunk::Request::OpenDbMsg       msg(chunkServer2_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"OPEN DB");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eEOF );
@@ -277,9 +325,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Read 1st Record
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eREAD, buffer_, MAX_BUF_SIZE_, chunkHandle1c_ );
+    Rte::Db::Chunk::Request::ReadPayload   payload( buffer_, MAX_BUF_SIZE_, chunkHandle1c_ );
     Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+	Rte::Db::Chunk::Request::ReadMsg       msg(chunkServer2_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"READ (1st)");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eEOF );
@@ -288,9 +336,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Read 2nd Record
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eREAD, buffer_, MAX_BUF_SIZE_, chunkHandle2c_ );
+    Rte::Db::Chunk::Request::ReadPayload   payload( buffer_, MAX_BUF_SIZE_, chunkHandle2c_ );
     Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+	Rte::Db::Chunk::Request::ReadMsg       msg(chunkServer2_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"READ (2nd)");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eEOF );
@@ -300,9 +348,9 @@ TEST_CASE( "chunk", "[chunk]" )
     // Write Record 1
     {
     memcpy( buffer_, record1_, sizeof(record1_) );
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eWRITE, chunkHandle1c_, buffer_, sizeof(record1_) );
+    Rte::Db::Chunk::Request::WritePayload  payload( buffer_, sizeof(record1_), chunkHandle1c_ );
     Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+	Rte::Db::Chunk::Request::WriteMsg      msg(chunkServer2_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"WRITE", "REC1" );
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
@@ -312,9 +360,9 @@ TEST_CASE( "chunk", "[chunk]" )
     // Write Record 2
     {
     memcpy( buffer_, record2_, sizeof(record2_) );
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eWRITE, chunkHandle2c_, buffer_, sizeof(record2_) );
+    Rte::Db::Chunk::Request::WritePayload  payload( buffer_, sizeof(record2_), chunkHandle2c_ );
     Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+	Rte::Db::Chunk::Request::WriteMsg      msg(chunkServer2_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"WRITE", "REC2" );
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );
@@ -323,9 +371,9 @@ TEST_CASE( "chunk", "[chunk]" )
 
     // Close the database
     {
-    Rte::Db::Chunk::Request::ActionPayload payload( Rte::Db::Chunk::Request::eCLOSEDB,buffer_,MAX_BUF_SIZE_);
-    Cpl::Itc::SyncReturnHandler            srh;
-	Rte::Db::Chunk::Request::ActionMsg     msg(chunkServer2_, payload, srh);
+    Rte::Db::Chunk::Request::CloseDbPayload  payload;
+    Cpl::Itc::SyncReturnHandler              srh;
+	Rte::Db::Chunk::Request::CloseDbMsg      msg(chunkServer2_, payload, srh);
     chunkMailbox_.postSync( msg );
     dumpPayload(payload,"CLOSE DB");
     REQUIRE( payload.m_result == Rte::Db::Chunk::Request::eSUCCESS );

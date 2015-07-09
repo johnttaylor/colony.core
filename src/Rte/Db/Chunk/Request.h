@@ -35,17 +35,6 @@ public:
 
 
 public:
-    /** This enum defines the actions/operations that can a Chunk Server can 
-        perform.
-     */
-    enum Action_T { eOPENDB,      //!< Opens the database file
-                    eCLOSEDB,     //!< Closes the database file
-                    eREAD,        //!< Read the next chunk in the opened DB file
-                    eWRITE,       //!< Write the specified record/chunk to the opened DB file
-                    eCLEARDB,     //!< Delete the contents of the DB file (i.e. re-start with an empty file)
-                  };
-
-
     /** This enum defines the possible results code for the above 
         operations
      */
@@ -60,13 +49,94 @@ public:
 
 
 public:
-    /// Payload for Message: Chunk Action
-    class ActionPayload
+    /// Payload for Message: Open Database
+    class OpenDbPayload
     {
     public:
-        /// Chunk Action being request
-        Action_T    m_action;
+        /// Result/return code for the requested Action
+        Result_T    m_result;
 
+        /// The Client's/Caller's buffer to be used in the Action (Client is responsible for providing the Memory)
+        uint8_t*    m_buffer;
+
+        /// Maximize size, in bytes, of m_buffer
+        uint32_t    m_bufferMaxSize;
+    
+
+    public:
+        /// Constructor
+        OpenDbPayload( uint8_t* buffer,
+                       uint32_t bufferMaxSize
+                     )
+            :m_result(eSUCCESS)
+            ,m_buffer(buffer)
+            ,m_bufferMaxSize(bufferMaxSize)
+                {}
+
+    };
+
+    /// Message Type: Open Database
+    typedef Cpl::Itc::RequestMessage<Request,OpenDbPayload> OpenDbMsg;
+
+
+public:
+    /// Payload for Message: Close Database
+    class CloseDbPayload
+    {
+    public:
+        /// Result/return code for the requested Action
+        Result_T    m_result;
+    
+    public:
+        /// Constructor
+        CloseDbPayload()
+            :m_result(eSUCCESS)
+                {}
+    };
+
+    /// Message Type: Chunk Action
+    typedef Cpl::Itc::RequestMessage<Request,CloseDbPayload> CloseDbMsg;
+
+
+
+public:
+    /// Payload for Message: Clear Database
+    class ClearDbPayload
+    {
+    public:
+        /// Result/return code for the requested Action
+        Result_T    m_result;
+
+        /// The Client's/Caller's buffer to be used in the Action (Client is responsible for providing the Memory)
+        uint8_t*    m_buffer;
+
+        /// Maximize size, in bytes, of m_buffer
+        uint32_t    m_bufferMaxSize;
+    
+
+    public:
+        /// Constructor
+        ClearDbPayload( uint8_t* buffer,
+                        uint32_t bufferMaxSize
+                      )
+            :m_result(eSUCCESS)
+            ,m_buffer(buffer)
+            ,m_bufferMaxSize(bufferMaxSize)
+                {}
+
+    };
+
+    /// Message Type: Clear Database
+    typedef Cpl::Itc::RequestMessage<Request,ClearDbPayload> ClearDbMsg;
+
+
+
+
+public:
+    /// Payload for Message: Read
+    class ReadPayload
+    {
+    public:
         /// Result/return code for the requested Action
         Result_T    m_result;
 
@@ -76,7 +146,7 @@ public:
         /// Maximize size, in bytes, of m_buffer
         uint32_t    m_bufferMaxSize;
 
-        /// The length, in bytes, of the data stored/written to the buffer
+        /// The length, in bytes, of the data read into the buffer
         uint32_t    m_bufferLen;
 
         /// Pointer The Client's/Caller's Chunk Handle (not required for all Chunk actions)
@@ -84,63 +154,83 @@ public:
     
 
     public:
-        /// Constructor: For eOPENDB, eCLOSEDB, and eCLEARDB actions
-        ActionPayload( Action_T action,
-                       uint8_t* buffer,
-                       uint32_t bufferMaxSize
-                     )
-            :m_action(action)
-            ,m_result(eSUCCESS)
+        /// Constructor: 
+        ReadPayload( uint8_t* buffer,
+                     uint32_t bufferMaxSize,
+                     Handle&  clientChunkHandle
+                   )
+            :m_result(eSUCCESS)
             ,m_buffer(buffer)
             ,m_bufferMaxSize(bufferMaxSize)
             ,m_bufferLen(0)
-            ,m_handlePtr(0)
-                {}
-
-        /// Constructor: For eREAD action
-        ActionPayload( Action_T action,
-                       uint8_t* buffer,
-                       uint32_t bufferMaxSize,
-                       Handle&  clientChunkHandle
-                     )
-            :m_action(action)
-            ,m_result(eSUCCESS)
-            ,m_buffer(buffer)
-            ,m_bufferMaxSize(bufferMaxSize)
-            ,m_bufferLen(0)
-            ,m_handlePtr(&clientChunkHandle)
-                {}
-
-
-        /// Constructor: For eWRITE action
-        ActionPayload( Action_T action,
-                       Handle&  clientChunkHandle,
-                       uint8_t* buffer,
-                       uint32_t bufferLen
-                     )
-            :m_action(action)
-            ,m_result(eSUCCESS)
-            ,m_buffer(buffer)
-            ,m_bufferMaxSize(0)
-            ,m_bufferLen(bufferLen)
             ,m_handlePtr(&clientChunkHandle)
                 {}
     };
 
 
-    /// Message Type: Chunk Action
-    typedef Cpl::Itc::RequestMessage<Request,ActionPayload> ActionMsg;
+    /// Message Type: Read Action
+    typedef Cpl::Itc::RequestMessage<Request,ReadPayload> ReadMsg;
 
 
 public:
-    /// Request: Performa a Chunk Action
-    virtual void request( ActionMsg& msg ) = 0;
+    /// Payload for Message: Write
+    class WritePayload
+    {
+    public:
+        /// Result/return code for the requested Action
+        Result_T    m_result;
+
+        /// The Client's/Caller's buffer to be used in the Action (Client is responsible for providing the Memory)
+        uint8_t*    m_buffer;
+
+        /// Maximize size, in bytes, of m_buffer
+        uint32_t    m_bufferMaxSize;
+
+        /// The length, in bytes, of the data to be written to the buffer
+        uint32_t    m_bufferLen;
+
+        /// Pointer The Client's/Caller's Chunk Handle (not required for all Chunk actions)
+        Handle*     m_handlePtr;
     
 
-public:
-    /// Helper method that converts a Action_T enum value to a string constant
-    static const char* actionToString( Action_T action ) throw();
+    public:
+        /// Constructor: 
+        WritePayload( uint8_t* buffer,
+                      uint32_t dataLen,
+                      Handle&  clientChunkHandle
+                    )
+            :m_result(eSUCCESS)
+            ,m_buffer(buffer)
+            ,m_bufferMaxSize(0)
+            ,m_bufferLen(dataLen)
+            ,m_handlePtr(&clientChunkHandle)
+                {}
+    };
 
+
+    /// Message Type: Write Action
+    typedef Cpl::Itc::RequestMessage<Request,WritePayload> WriteMsg;
+
+
+
+public:
+    /// Request: Open Database
+    virtual void request( OpenDbMsg& msg ) = 0;
+    
+    /// Request: Close Database
+    virtual void request( CloseDbMsg& msg ) = 0;
+    
+    /// Request: Clear Database
+    virtual void request( ClearDbMsg& msg ) = 0;
+    
+    /// Request: Read action
+    virtual void request( ReadMsg& msg ) = 0;
+    
+    /// Request: Write action
+    virtual void request( WriteMsg& msg ) = 0;
+
+
+public:
     /// Helper method that converta a Result_T enum value to a string constant
     static const char* resultToString( Result_T result ) throw();
 };
@@ -154,15 +244,49 @@ public:
 class Response
 {
 public:
-    /// Response Message Type: Action response
+    /// Response Message Type: Open Database
     typedef Cpl::Itc::ResponseMessage<Response,
                                       Request,
-                                      Request::ActionPayload> ActionMsg;
+                                      Request::OpenDbPayload>  OpenDbMsg;
+    
+    /// Response Message Type: Close Database
+    typedef Cpl::Itc::ResponseMessage<Response,
+                                      Request,
+                                      Request::CloseDbPayload> CloseDbMsg;
+    
+    /// Response Message Type: Clear Database
+    typedef Cpl::Itc::ResponseMessage<Response,
+                                      Request,
+                                      Request::ClearDbPayload> ClearDbMsg;
+    
+    /// Response Message Type: Read Action
+    typedef Cpl::Itc::ResponseMessage<Response,
+                                      Request,
+                                      Request::ReadPayload>    ReadMsg;
+    
+    /// Response Message Type: Write Action
+    typedef Cpl::Itc::ResponseMessage<Response,
+                                      Request,
+                                      Request::WritePayload>   WriteMsg;
     
             
-    /// Response: Action response
-    virtual void response( ActionMsg& msg ) = 0;
 
+
+public:
+    /// Response: Open Database
+    virtual void response( OpenDbMsg& msg ) = 0;
+
+    /// Response: Close Database
+    virtual void response( CloseDbMsg& msg ) = 0;
+    
+    /// Response: Clear Database
+    virtual void response( ClearDbMsg& msg ) = 0;
+    
+    /// Response: Read action
+    virtual void response( ReadMsg& msg ) = 0;
+    
+    /// Response: Write action
+    virtual void response( WriteMsg& msg ) = 0;
     
 };
 

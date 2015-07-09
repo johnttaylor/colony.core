@@ -16,19 +16,6 @@
 using namespace Rte::Db::Chunk;
 
 
-const char* Request::actionToString( Action_T oper ) throw()
-    {
-    switch( oper )
-        {                    
-        case eOPENDB:  return "eOPENDB"; 
-        case eCLOSEDB: return "eCLOSEDB";
-        case eREAD:    return "eREAD";   
-        case eWRITE:   return "eWRITE";  
-        case eCLEARDB: return "eCLEARDB";
-        }            
-    return "unknown";
-    }
-
 const char* Request::resultToString( Result_T result ) throw()
     {
     switch( result )
