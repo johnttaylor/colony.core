@@ -39,10 +39,10 @@ namespace Rte { namespace Db { namespace Record  {
 
     /* Event names */
     const char events[]=
-        "evWrite\0evStop\0evVerified\0evResponse\0evDefault\0evStart\0NO_MSG\0";
+        "evWrite\0evStop\0evVerified\0evResponse\0evDefault\0evStopped\0evStart\0NO_MSG\0";
 
     const unsigned short evt_idx[]={
-        0,8,15,26,37,47,55};
+        0,8,15,26,37,47,57,65};
 
     const char* Fsm::getNameByState(unsigned short state) const {
         return states+state_idx[state];
@@ -467,7 +467,7 @@ namespace Rte { namespace Db { namespace Record  {
             break; /* end of case Active  */
 
             case Stopping:
-                if(msg==evResponse){
+                if(msg==evStopped){
                     /* Transition from Stopping to Idle */
                     evConsumed=1;
 

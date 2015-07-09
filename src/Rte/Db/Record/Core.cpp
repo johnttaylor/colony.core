@@ -27,8 +27,6 @@ Core::Core( uint8_t*                      recordLayerBuffer,
             Handler::Client&              setLayerHandler,
             Rte::Db::Chunk::Request::SAP& chunkSAP,
             Cpl::Itc::PostApi&            recordLayerMbox,
-            FSM_EVENT_T                   eventQueueMemory[],
-            unsigned                      eventQueueSize,
             Cpl::Log::Api&                eventLogger,
             ErrorClient*                  errorHandler
           )
@@ -40,9 +38,10 @@ Core::Core( uint8_t*                      recordLayerBuffer,
 ,m_dbResult(Rte::Db::Chunk::Request::eSUCCESS)
 ,m_dbDataLen(0)
 ,m_recordPtr(0)
-,m_eventQueue(eventQueueSize, eventQueueMemory)
+,m_queuedEvent(FSM_NO_MSG)
 ,m_logger(eventLogger)
 ,m_errHandlerPtr(errorHandler)
+,m_closeDbResponseMsg(*this, recordLayerMbox, chunkSAP, m_closeDbPayload)
     {
     // Initialize my FSM
     initialize();
@@ -72,18 +71,45 @@ void Core::write( Api& recordToWrite )
 
 
 /////////////////////////////////
-void Core::response( ActionMsg& msg )
+void Core::response( OpenDbMsg& msg )
     {
-    Rte::Db::Chunk::Request::ActionPayload& payload = msg.getRequestMsg().getPayload();
+    m_dbResult = msg.getRequestMsg().getPayload().m_result;
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( OpenDbMsg& msg ): result=%s", Rte::Db::Chunk::Request::resultToString(m_dbResult)) );
 
-    m_dbResult  = payload.m_result;
-    m_dbDataLen = 0;
-    if ( payload.m_handlePtr )
-        {
-        m_dbDataLen = payload.m_handlePtr->m_len;
-        }
+    sendEvent( evResponse ); 
+    }
 
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response: result=%s", Rte::Db::Chunk::Request::resultToString(m_dbResult)) );
+void Core::response( CloseDbMsg& msg )
+    {
+    m_dbResult = msg.getRequestMsg().getPayload().m_result;
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( CloseDbMsg& msg ): result=%s", Rte::Db::Chunk::Request::resultToString(m_dbResult)) );
+
+    sendEvent( evStopped ); 
+    }
+
+void Core::response( ClearDbMsg& msg )
+    {
+    m_dbResult = msg.getRequestMsg().getPayload().m_result;
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( ClearDbMsg& msg ): result=%s", Rte::Db::Chunk::Request::resultToString(m_dbResult)) );
+
+    sendEvent( evResponse ); 
+    }
+
+void Core::response( ReadMsg& msg )
+    {
+    m_dbResult  = msg.getRequestMsg().getPayload().m_result;
+    m_dbDataLen = msg.getRequestMsg().getPayload().m_handlePtr->m_len;
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( ReadMsg& msg ): result=%s, inLen=%ul", Rte::Db::Chunk::Request::resultToString(m_dbResult), m_dbDataLen));
+
+    sendEvent( evResponse ); 
+    }
+
+void Core::response( WriteMsg& msg )
+    {
+    m_dbResult  = msg.getRequestMsg().getPayload().m_result;
+    m_dbDataLen = msg.getRequestMsg().getPayload().m_handlePtr->m_len;
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( WriteMsg& msg ): result=%s, outLen=%ul", Rte::Db::Chunk::Request::resultToString(m_dbResult), m_dbDataLen) );
+
     sendEvent( evResponse ); 
     }
 
@@ -125,9 +151,7 @@ void Core::reportFileWriteError() throw()
 void Core::requestDbClose() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::requestDbClose") );
-    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload( Rte::Db::Chunk::Request::eCLOSEDB, m_buffer, m_bufSize);
-    Rte::Db::Chunk::Response::ActionMsg*    rspmsg  = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::ActionMsg(*this, m_myMbox, m_chunkSAP, *payload);      
-    m_chunkSAP.post( rspmsg->getRequestMsg() );
+    m_chunkSAP.post( m_closeDbResponseMsg.getRequestMsg() );
     }
 
 void Core::requestDbOpen() throw()
@@ -138,24 +162,24 @@ void Core::requestDbOpen() throw()
         m_errHandlerPtr->databaseOpened();
         }
 
-    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload(Rte::Db::Chunk::Request::eOPENDB, m_buffer, m_bufSize);
-    Rte::Db::Chunk::Response::ActionMsg*  rspmsg    = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::ActionMsg(*this, m_myMbox, m_chunkSAP, *payload);      
+    Rte::Db::Chunk::Request::OpenDbPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::OpenDbPayload(m_buffer, m_bufSize);
+    Rte::Db::Chunk::Response::OpenDbMsg*    rspmsg  = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::OpenDbMsg(*this, m_myMbox, m_chunkSAP, *payload);      
     m_chunkSAP.post( rspmsg->getRequestMsg() );
     }
 
 void Core::requestDbClear() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::requestDbClear") );
-    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload(Rte::Db::Chunk::Request::eCLEARDB, m_buffer, m_bufSize);
-    Rte::Db::Chunk::Response::ActionMsg*    rspmsg  = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::ActionMsg(*this, m_myMbox, m_chunkSAP, *payload);      
+    Rte::Db::Chunk::Request::ClearDbPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ClearDbPayload(m_buffer, m_bufSize);
+    Rte::Db::Chunk::Response::ClearDbMsg*    rspmsg  = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::ClearDbMsg(*this, m_myMbox, m_chunkSAP, *payload);      
     m_chunkSAP.post( rspmsg->getRequestMsg() );
     }
 
 void Core::requestDbRead() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::requestDbRead") );
-    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload(Rte::Db::Chunk::Request::eREAD, m_buffer, m_bufSize, m_chunkHandle);
-    Rte::Db::Chunk::Response::ActionMsg*    rspmsg  = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::ActionMsg(*this, m_myMbox, m_chunkSAP, *payload);      
+    Rte::Db::Chunk::Request::ReadPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ReadPayload(m_buffer, m_bufSize, m_chunkHandle);
+    Rte::Db::Chunk::Response::ReadMsg*    rspmsg  = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::ReadMsg(*this, m_myMbox, m_chunkSAP, *payload);      
     m_chunkSAP.post( rspmsg->getRequestMsg() );
     m_dbDataLen = 0;
     }
@@ -173,8 +197,8 @@ void Core::requestDbWrite() throw()
     plantRecName( m_recordPtr->getName() );
     uint32_t dataLen = m_recordPtr->fillWriteBuffer( extractDataPointer(), maxAllowedDataSize() );
         
-    Rte::Db::Chunk::Request::ActionPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ActionPayload(Rte::Db::Chunk::Request::eWRITE, m_recordPtr->getChunkHandle(), m_buffer, calcRecordLen(dataLen));
-    Rte::Db::Chunk::Response::ActionMsg*    rspmsg  = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::ActionMsg(*this, m_myMbox, m_chunkSAP, *payload);      
+    Rte::Db::Chunk::Request::WritePayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::WritePayload(m_buffer, calcRecordLen(dataLen), m_recordPtr->getChunkHandle());
+    Rte::Db::Chunk::Response::WriteMsg*    rspmsg  = new(m_memResponseMsg.m_byteMem)  Rte::Db::Chunk::Response::WriteMsg(*this, m_myMbox, m_chunkSAP, *payload);      
     m_chunkSAP.post( rspmsg->getRequestMsg() );
     }
 
@@ -250,7 +274,7 @@ void Core::inspectWriteQue() throw()
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::inspectWriteQue") );
     if ( m_writeRequests.first() )
         {
-        sendEvent( evWrite ); 
+        generateInternalEvent( evWrite ); 
         }
     }
 
@@ -274,11 +298,11 @@ void Core::verifyOpen() throw()
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::verifyOpen") );
     if ( m_setLayer.isCleanLoad() )
         {
-        sendEvent( evVerified ); 
+        generateInternalEvent( evVerified ); 
         }
     else
         {
-        sendEvent( evDefault ); 
+        generateInternalEvent( evDefault ); 
         }
     }
 
@@ -309,17 +333,24 @@ bool Core::isDbError() throw()
 /////////////////////////////////
 void Core::sendEvent( FSM_EVENT_T msg )
     {
-    // Queue the event (and generate a FatalError if overflowing the event queue memory!)
-    if ( !m_eventQueue.add( msg ) )
+    // I have an 'event queue' so that if an action generates an event the event 
+    // can be queued until current event finishes processing. The event queue
+    // really isn't a queue - just a single variable - since by design of the
+    // FSM at most only one event can be 'self generated' on any given event
+    // processing.
+    do 
         {
-        Cpl::System::FatalError::logf( "Rtd::Db::Record::Core::sendEvent(): Overflowed ring buffer. Buffer size=%u", m_eventQueue.getMaxItems() ); 
-        }
+        m_queuedEvent = FSM_NO_MSG;
+        if ( processEvent(msg) == 0 )
+            {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("Event IGNORED:= %s", getNameByEvent(msg)) );
+            }
+        } while( (msg=m_queuedEvent) != FSM_NO_MSG );
+    }
 
-    // Drain the event queue.  Notes: Action CAN/WILL generate events so 'event buffer' is needed to ensure run-to-completion semantics for FSM processing 
-    while( m_eventQueue.remove(msg) )
-        {
-        processEvent(msg);
-        }
+void Core::generateInternalEvent( FSM_EVENT_T msg )
+    {
+    m_queuedEvent = msg;
     }
 
 const char* Core::extractRecName(void)

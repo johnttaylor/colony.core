@@ -33,7 +33,7 @@ const char* const FsmTraceEvents[] = {
     "evStart",
     "evStop",
     "evWrite",
-    "evResponse",
+    "evStopped",
     "",
     "evVerified",
     "evDefault",

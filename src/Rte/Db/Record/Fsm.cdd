@@ -207,7 +207,7 @@ Pos="1100 -9300">
 <FreeText id="r30"
 Pos="1200 -8200"
 Origin="4">
-<Text>evResponse/<p/>
+<Text>evStopped/<p/>
 ackDbStopped();<p/>
 clearWriteQue();<p/>
 resetFsmHistory();</Text>

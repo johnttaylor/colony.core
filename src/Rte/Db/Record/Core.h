@@ -17,7 +17,6 @@
 #include "Rte/Db/Record/ErrorClient.h"
 #include "Rte/Db/Record/Fsm_.h"
 #include "Cpl/Container/SList.h"
-#include "Cpl/Container/RingBuffer.h"
 #include "Cpl/Memory/Aligned.h"
 #include "Cpl/Log/Loggers.h"
 #include <stdint.h>
@@ -65,7 +64,7 @@ private:
     Api*                                    m_recordPtr;
 
     /// Event Queue (to ensure run-to-completion semantics for the FSM)
-    Cpl::Container::RingBuffer<FSM_EVENT_T> m_eventQueue;
+    FSM_EVENT_T                             m_queuedEvent;
 
     /// Logger (for unexpected events)
     Cpl::Log::Api&                          m_logger;
@@ -76,11 +75,17 @@ private:
     /// Queued/pending Write requests
     Cpl::Container::SList<Api>              m_writeRequests;
 
-    /// Memmory for Chunk Layer ITC requests
-    Cpl::Memory::AlignedClass<Rte::Db::Chunk::Request::ActionPayload>   m_memPayload;
+    /// Close DB payload
+    Rte::Db::Chunk::Request::CloseDbPayload m_closeDbPayload;
+
+    /// Close DB msg  (I have a seperate closeDbMsg since it can be invoked asynchronously in relation to all other Chunk ITC messages)
+    Rte::Db::Chunk::Response::CloseDbMsg    m_closeDbResponseMsg;
+
+    /// Memmory for Chunk Layer ITC requests (use the 'largest' payload/msg)
+    Cpl::Memory::AlignedClass<Rte::Db::Chunk::Request::WritePayload>   m_memPayload;
 
     /// Memmory for Chunk Layer ITC requests
-    Cpl::Memory::AlignedClass<Rte::Db::Chunk::Response::ActionMsg>      m_memResponseMsg;
+    Cpl::Memory::AlignedClass<Rte::Db::Chunk::Response::WriteMsg>      m_memResponseMsg;
 
 
 public:
@@ -90,8 +95,6 @@ public:
           Handler::Client&              setLayerHandler,
           Rte::Db::Chunk::Request::SAP& chunkSAP,
           Cpl::Itc::PostApi&            recordLayerMbox,
-          FSM_EVENT_T                   eventQueueMemory[],
-          unsigned                      eventQueueSize,
           Cpl::Log::Api&                eventLogger  = Cpl::Log::Loggers::application(),
           ErrorClient*                  errorHandler = 0   // Optional
         );
@@ -110,7 +113,19 @@ public:
 
 protected:
     /// See Rte::Db::Chunk::Response
-    void response( ActionMsg& msg );
+    void response( OpenDbMsg& msg );
+
+    /// Response: Close Database
+    void response( CloseDbMsg& msg );
+    
+    /// Response: Clear Database
+    void response( ClearDbMsg& msg );
+    
+    /// Response: Read action
+    void response( ReadMsg& msg );
+    
+    /// Response: Write action
+    void response( WriteMsg& msg );
 
 
 protected:
@@ -190,6 +205,9 @@ protected:
 protected:
     /// Helper
     void        sendEvent( FSM_EVENT_T msg );
+
+    /// Helper
+    void        generateInternalEvent( FSM_EVENT_T msg );
 
     /// Helper
     const char* extractRecName(void);

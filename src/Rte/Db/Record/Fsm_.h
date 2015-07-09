@@ -33,7 +33,7 @@ ranksep=.4;
 "Idle"->"defaultOpening"[labeldistance = 2.0, taillabel=<evStart / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>requestDbOpen();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterOpening];//Idle Opening
 "defaultActive"->"Stopping"[labeldistance=2.0, headlabel=<evStop / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>requestDbClose();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black ltail=clusterActive];//Active Stopping
 "NoPersistence"->"NoPersistence"[label=<evWrite / <br ALIGN="LEFT"/>consumeNoWrite();<br ALIGN="LEFT"/>ackWrite();<br ALIGN="LEFT"/>in...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //NoPersistence NoPersistence
-"Stopping"->"Idle"[label=<evResponse / <br ALIGN="LEFT"/>ackDbStopped();<br ALIGN="LEFT"/>clearWriteQue();...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Stopping Idle
+"Stopping"->"Idle"[label=<evStopped / <br ALIGN="LEFT"/>ackDbStopped();<br ALIGN="LEFT"/>clearWriteQue();...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Stopping Idle
 "defaultOpening"->"defaultActive"[label=<evResponse<br ALIGN="LEFT"/>[isDbError()] / <br ALIGN="LEFT"/>reportFileReadError();<br ALIGN="LEFT"/>nakOpenDo...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black];//Opening Active
 "WaitingToOpen"->"Reading "[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / requestDbRead();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingToOpen Reading 
 "defaultroot"->"Idle"[label=<  > style=dotted];

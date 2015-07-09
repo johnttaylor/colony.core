@@ -41,7 +41,6 @@ using namespace Rte::Db::Record;
 #define SIGNATURE_          "12346789"
 
 #define RECORD_BUF_SIZE     100
-#define MAX_FSM_EVENTS_     4
 
 
 static Cpl::Checksum::Crc32EthernetFast  chunkCrc_;
@@ -51,7 +50,6 @@ static Rte::Db::Chunk::Server            chunkServer_( dbMedia, chunkCrc_, "1234
 static Cpl::Itc::MailboxServer           chunkMailbox_;
 static Cpl::Itc::MailboxServer           upperLayersMailbox_;
 
-static FSM_EVENT_T                       eventQueueMemory_[MAX_FSM_EVENTS_];
 static uint8_t                           buffer_[RECORD_BUF_SIZE];
 
 
@@ -139,7 +137,6 @@ public:
     int                                 m_count;
     Cpl::Itc::CloseRequest::CloseMsg*   m_pendingCloseMsgPtr;
     Core                                m_recordHandler;
-    FSM_EVENT_T                         m_eventQueueMemory[MAX_FSM_EVENTS_];
 
 
 public:
@@ -148,7 +145,7 @@ public:
         :Cpl::Itc::CloseSync(upperLayersMbox)
         ,m_count(0)
         ,m_pendingCloseMsgPtr(0)
-        ,m_recordHandler(buffer, bufsize, *this, chunkSAP, upperLayersMbox, m_eventQueueMemory, MAX_FSM_EVENTS_, Cpl::Log::Loggers::null(), errHandlerPtr )
+        ,m_recordHandler(buffer, bufsize, *this, chunkSAP, upperLayersMbox, Cpl::Log::Loggers::null(), errHandlerPtr )
             {
             }
 
@@ -293,7 +290,7 @@ TEST_CASE( "record", "[record]" )
     client.open();
 
     // Allow time for stuff to run
-    Cpl::System::Api::sleep( 100 );
+//    Cpl::System::Api::sleep( 100 );
 
 
     // Stop the Record/Set layers
