@@ -30,8 +30,8 @@ class ErrorClient
 public:
     /** This method reports that a 'File' error occured when trying to load
         the data from the database.  A file error can be a error in accessing
-        the non-volatle storage media or the file being read is not the 
-        specified DB file.
+        the non-volatle storage media or the file being read is not a valid 
+        DB file.
      */
     virtual void databaseFileOpenError( Rte::Db::Chunk::Request::Result_T errorCode ) = 0;
      
@@ -52,7 +52,7 @@ public:
      */
     virtual void databaseOpened( void ) = 0;
 
-    /** This method reports that the database has been closed, i.e. 'clear'
+    /** This method reports that the database has been closed, i.e. 'clears'
         any previously reported errors.
      */
     virtual void databaseClosed( void ) = 0;

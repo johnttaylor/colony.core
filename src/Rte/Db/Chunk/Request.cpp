@@ -20,12 +20,13 @@ const char* Request::resultToString( Result_T result ) throw()
     {
     switch( result )
         {
-        case eSUCCESS:        return "eSUCCESS";       
-        case eEOF:            return "eEOF";           
-        case eCORRUPT_DATA:   return "eCORRUPT_DATA";  
-        case eERR_OPEN:       return "eERR_OPEN";
-        case eERR_FILEIO:     return "eERR_FILEIO";    
-        case eERR_WRONG_FILE: return "eERR_WRONG_FILE";
+        case eSUCCESS:              return "eSUCCESS";       
+        case eEOF:                  return "eEOF";           
+        case eCORRUPT_DATA:         return "eCORRUPT_DATA";  
+        case eWRONG_SCHEMA:         return "eWRONG_SCHEMA";
+        case eERR_OPEN:             return "eERR_OPEN";
+        case eERR_FILEIO:           return "eERR_FILEIO";    
+        case eERR_NOT_A_DB_FILE:    return "eERR_NOT_A_DB_FILE";
         }            
     return "unknown";
     }

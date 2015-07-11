@@ -41,9 +41,10 @@ public:
     enum Result_T { eSUCCESS,             //!< Request operation succeeded
                     eEOF,                 //!< EOF was reached
                     eCORRUPT_DATA,        //!< The chunk read did not pass its CRC check
+                    eWRONG_SCHEMA,        //!< The specified DB file's signature (schema identifier) does not match the expected signature
                     eERR_FILEIO,          //!< A file operation failed and the operation was aborted
                     eERR_OPEN,            //!< Unable to open the specified DB file
-                    eERR_WRONG_FILE       //!< The specified DB file is NOT a DB file
+                    eERR_NOT_A_DB_FILE    //!< The specified DB file is NOT a DB file
                   };
 
 

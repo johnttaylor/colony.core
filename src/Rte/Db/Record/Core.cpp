@@ -251,6 +251,13 @@ void Core::nakOpenDone() throw()
     m_setLayer.notifyOpenFailed();
     }
 
+void Core::notifyIncompatible() throw()
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::notifyIncompatible") );
+    m_logger.warning( "Rte::Db::Record::Core::notifyIncompatible - Incompatible schema, DB closing..." );
+    m_setLayer.notifyIncompatible();
+    }
+
 void Core::ackDbStopped() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::ackDbStopped") );
@@ -302,7 +309,7 @@ void Core::verifyOpen() throw()
         }
     else
         {
-        generateInternalEvent( evDefault ); 
+        generateInternalEvent( evIncompleteLoad ); 
         }
     }
 
@@ -326,7 +333,12 @@ bool Core::isDbBadData() throw()
 
 bool Core::isDbError() throw()
     {
-    return m_dbResult == Rte::Db::Chunk::Request::eERR_FILEIO || m_dbResult == Rte::Db::Chunk::Request::eERR_WRONG_FILE || m_dbResult == Rte::Db::Chunk::Request::eERR_OPEN;
+    return m_dbResult == Rte::Db::Chunk::Request::eERR_FILEIO || m_dbResult == Rte::Db::Chunk::Request::eERR_NOT_A_DB_FILE || m_dbResult == Rte::Db::Chunk::Request::eERR_OPEN;
+    }
+
+bool Core::isNotCompatible() throw()
+    {
+    return m_dbResult == Rte::Db::Chunk::Request::eWRONG_SCHEMA;
     }
 
 
@@ -334,10 +346,10 @@ bool Core::isDbError() throw()
 void Core::sendEvent( FSM_EVENT_T msg )
     {
     // I have an 'event queue' so that if an action generates an event the event 
-    // can be queued until current event finishes processing. The event queue
-    // really isn't a queue - just a single variable - since by design of the
-    // FSM at most only one event can be 'self generated' on any given event
-    // processing.
+    // can be queued until current event finishes processing, i.e. enforce run-to-
+    // completion semantics on event processing. The event queue really isn't a 
+    // queue - just a single variable - since by design of the FSM at most only 
+    // one event can be 'self generated' on any given event processing.
     do 
         {
         m_queuedEvent = FSM_NO_MSG;

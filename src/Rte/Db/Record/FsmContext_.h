@@ -1,5 +1,5 @@
-#ifndef Rte_Db_Record_FsmContext__h_
-#define Rte_Db_Record_FsmContext__h_
+#ifndef Rte_Db_Record_FsmContext_x_h_
+#define Rte_Db_Record_FsmContext_x_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -50,6 +50,9 @@ public:
     virtual void nakOpenDone() throw() = 0;
 
     /// Action
+    virtual void notifyIncompatible() throw() = 0;
+
+    /// Action
     virtual void queWriteRequest() throw() = 0;
 
     /// Action
@@ -95,6 +98,9 @@ public:
 
     /// Guard
     virtual bool isDbSuccess() throw() = 0;
+
+    /// Guard
+    virtual bool isNotCompatible() throw() = 0;
 
 
 public:

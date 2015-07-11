@@ -39,10 +39,10 @@ namespace Rte { namespace Db { namespace Record  {
 
     /* Event names */
     const char events[]=
-        "evWrite\0evStop\0evVerified\0evResponse\0evDefault\0evStopped\0evStart\0NO_MSG\0";
+        "evWrite\0evStop\0evVerified\0evResponse\0evIncompleteLoad\0evStopped\0evStart\0NO_MSG\0";
 
     const unsigned short evt_idx[]={
-        0,8,15,26,37,47,57,65};
+        0,8,15,26,37,54,64,72};
 
     const char* Fsm::getNameByState(unsigned short state) const {
         return states+state_idx[state];
@@ -319,7 +319,7 @@ namespace Rte { namespace Db { namespace Record  {
                             break; /* end of case ClearingDb  */
 
                             case Verifying:
-                                if(msg==evDefault){
+                                if(msg==evIncompleteLoad){
                                     /* Transition from Verifying to ClearingDb */
                                     evConsumed=1;
 
@@ -445,7 +445,27 @@ namespace Rte { namespace Db { namespace Record  {
                 /* Check if event was already processed  */
                 if(evConsumed==0){
 
-                    if(msg==evStop){
+                    if(msg==evResponse){
+                        if(isNotCompatible()){
+                            /* Transition from Active to Stopping */
+                            evConsumed=1;
+                        
+                            if(stateVars.stateVarActive== Opening){
+                                
+                            }
+
+                            /* Action code for transition  */
+                            notifyIncompatible();
+                            requestDbClose();
+
+
+                            /* adjust state variables  */
+                            stateVarsCopy.stateVar = Stopping;
+                            FsmTraceEvent(12);
+                        }else{
+                            /* Intentionally left blank */
+                        } /*end of event selection */
+                    }else if(msg==evStop){
                         /* Transition from Active to Stopping */
                         evConsumed=1;
                         

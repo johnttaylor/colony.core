@@ -90,7 +90,7 @@ Size="2000 1000">
 <Text>Verifying</Text>
 </State>
 <InitialState id="r179"
-Pos="5900 -5700"/>
+Pos="5700 -6800"/>
 </State>
 <InitialState id="r89"
 Pos="16900 -1600"/>
@@ -275,26 +275,26 @@ Type="2"/>
 </Transition>
 
 <InitialState id="r52"
-Pos="2200 -5400"/>
+Pos="2500 -5000"/>
 
 <Transition id="r53">
 <End id="r54"
-Pos="2300 -5426.7949192431115"
+Pos="2600 -5026.7949192431124"
 State="r52"
 Type="1"/>
 <Segment id="r55"
 Oblique="1">
 <Anchor id="r78"
-Pos="2212.0943247730847 -4843.6309029245813">
+Pos="2424.1886495461699 -4619.4422533784127">
 <FreeText id="r84"
-Pos="2412 -4643"
+Pos="2624 -4419"
 Origin="4">
 <Text/>
 </FreeText>
 </Anchor>
 </Segment>
 <End id="r154"
-Pos="2100 -4100"
+Pos="2200 -4100"
 State="r4"
 Type="2"/>
 </Transition>
@@ -452,7 +452,7 @@ Type="1"/>
 <Anchor id="r109"
 Pos="8700 -10900">
 <FreeText id="r110"
-Pos="8558 -9197"
+Pos="8558 -9297"
 Origin="3">
 <Text>evResponse[isDbEof()]/<p/>
 ackOpenDone();<p/>
@@ -650,13 +650,13 @@ Type="2"/>
 
 <Transition id="r180">
 <End id="r181"
-Pos="6300 -5900"
+Pos="6073.2050807568876 -6900"
 State="r179"
 Type="1"/>
 <Segment id="r182"
 Oblique="1"/>
 <End id="r183"
-Pos="8000 -6300"
+Pos="8000 -6400"
 State="r8"
 Type="2"/>
 </Transition>
@@ -673,7 +673,7 @@ Pos="14479.124160564075 -9866.0093285356343">
 <FreeText id="r190"
 Pos="14179 -9666"
 Origin="4">
-<Text>evDefault/<p/>
+<Text>evIncompleteLoad/<p/>
 nakOpenDone();<p/>
 requestDbClear();</Text>
 </FreeText>
@@ -682,6 +682,33 @@ requestDbClear();</Text>
 <End id="r188"
 Pos="16800 -10600"
 State="r71"
+Type="2"/>
+</Transition>
+
+<Transition id="r193">
+<End id="r194"
+Pos="3900 -11300"
+State="r5"
+Type="1"/>
+<Segment id="r200">
+<Anchor id="r197"
+Pos="2668.3122847301952 -11300">
+<FreeText id="r198"
+Pos="1445 -11100"
+Origin="4">
+<Text>evResponse[isNotCompatible()]/<p/>
+notifyIncompatible();<p/>
+requestDbClose();</Text>
+</FreeText>
+</Anchor>
+</Segment>
+<Join id="r199"
+Pos="1900 -11300"/>
+<Segment id="r195"
+Oblique="1"/>
+<End id="r196"
+Pos="1900 -13500"
+State="r7"
 Type="2"/>
 </Transition>
 

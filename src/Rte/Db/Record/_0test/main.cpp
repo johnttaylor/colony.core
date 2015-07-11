@@ -194,6 +194,12 @@ public:
         }
 
     ///
+    void notifyIncompatible(void) 
+        {
+        CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::notifyIncompatible.count=%d", m_count));
+        }
+
+    ///
     bool isCleanLoad(void)
         {
         return m_count == 0;

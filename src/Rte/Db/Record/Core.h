@@ -154,6 +154,9 @@ protected:
     void nakOpenDone() throw();
 
     /// See Rte::Db::Record::FsmContext_
+    void notifyIncompatible() throw();
+
+    /// See Rte::Db::Record::FsmContext_
     void queWriteRequest() throw();
 
     /// See Rte::Db::Record::FsmContext_
@@ -200,6 +203,8 @@ protected:
     /// See Rte::Db::Record::FsmContext_
     bool isDbSuccess() throw();
 
+    /// See Rte::Db::Record::FsmContext_
+    bool isNotCompatible() throw();
 
 
 protected:

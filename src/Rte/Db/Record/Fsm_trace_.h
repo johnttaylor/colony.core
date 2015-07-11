@@ -36,12 +36,13 @@ const char* const FsmTraceEvents[] = {
     "evStopped",
     "",
     "evVerified",
-    "evDefault",
+    "evIncompleteLoad",
     "evResponse[isDbSuccess()]",
     "evResponse[else]",
     "evResponse[isDbError()]",
     "evResponse[isDbBadData()]",
-    "evResponse[isDbEof()]"
+    "evResponse[isDbEof()]",
+    "evResponse[isNotCompatible()]"
 };
 
 

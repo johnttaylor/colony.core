@@ -52,16 +52,28 @@ public:
 
         /** Notification (to the upper layer) that an error occurred during 
             the load of the records and loading process has been stopped/
-            aborted. It is the responsibility of the upper layer to default the 
-            application's records when this method is called.
+            aborted. The data in any of the record(s) succesfully opened are
+            still validate at this point.  It is the application's 
+            responsibility to decide what actions (if any) it needs to take 
+            for the record(s) that loaded succesfully.
          */
         virtual void notifyOpenFailed(void) = 0;
 
     
+        /** Notification (to the upper layer) that the DB file that was open
+            does NOT have a compatible schema identifier.  The Chunk layer will 
+            internally request to the close the DB when this happens. The upper 
+            layer will receive a notifyStopped() call once the DB has been 
+            succesfully closed.
+         */
+        virtual void notifyIncompatible(void) = 0;
+
+
         /** This method allows the upper layer to inform the Record layer
             if there was a clean/succesful load of all the records from
             non-volatile storage.  If this method returns false, then the
-            record layer will clear non-volatile storage.  
+            record layer will clear non-volatile storage (so that ALL of
+            records can be re-written 'cleanly'). 
          */
         virtual bool isCleanLoad(void) = 0;
         

@@ -117,7 +117,7 @@ void Server::request( ReadMsg& msg )
     if ( operation.m_handlePtr->m_len > operation.m_bufferMaxSize - Rte::Db::eCCRC_SIZE )
         {
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request( ReadMsg ) - eERR_FILEIO -  Chunk Length greater than buffer (clen=%u, bufSize=%u)", operation.m_handlePtr->m_len, operation.m_bufferMaxSize - Rte::Db::eCCRC_SIZE) );
-        operation.m_result = eERR_WRONG_FILE;
+        operation.m_result = eERR_NOT_A_DB_FILE;
         msg.returnToSender(); 
         return;
         }
@@ -357,7 +357,7 @@ bool Server::checkSignature( Request::Result_T& result, uint8_t* bufferPtr, uint
         }
     if ( clen > bufferMaxSize - Rte::Db::eCCRC_SIZE )
         {
-        result = eERR_WRONG_FILE;
+        result = eERR_NOT_A_DB_FILE;
         return false;
         }
             
@@ -374,7 +374,7 @@ bool Server::checkSignature( Request::Result_T& result, uint8_t* bufferPtr, uint
     m_crc.accumulate( bufferPtr, clen + Rte::Db::eCCRC_SIZE );
     if ( !m_crc.isOkay() )
         {
-        result = eERR_WRONG_FILE;
+        result = eERR_NOT_A_DB_FILE;
         return false;
         }
 
@@ -383,14 +383,14 @@ bool Server::checkSignature( Request::Result_T& result, uint8_t* bufferPtr, uint
     memcpy( &nlen, bufferPtr, Rte::Db::eNLEN_SIZE );
     if ( clen != (uint32_t)(nlen + Rte::Db::eNLEN_SIZE) || nlen != strlen(m_signature) )
         {
-        result = eERR_WRONG_FILE;
+        result = eWRONG_SCHEMA;
         return false;
         }
 
     // Check the signature
     if ( strncmp((const char*)(bufferPtr + Rte::Db::eNLEN_SIZE), m_signature, nlen) != 0 )
         {
-        result = eERR_WRONG_FILE;
+        result = eWRONG_SCHEMA;
         return false;
         }
 
@@ -402,3 +402,4 @@ bool Server::checkSignature( Request::Result_T& result, uint8_t* bufferPtr, uint
 
     return true;
     }
+

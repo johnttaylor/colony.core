@@ -27,7 +27,7 @@ enum FSM_EVENT_T {
     evStop,
     evVerified,
     evResponse,
-    evDefault,
+    evIncompleteLoad,
     evStopped,
     evStart,
     FSM_NO_MSG
