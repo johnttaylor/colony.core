@@ -19,11 +19,13 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/Io/File/Api.h"
+#include "Cpl/Io/File/Output.h"
 #include "Cpl/Container/SList.h"
 #include "Cpl/Container/Key.h"
 #include "Cpl/System/_testsupport/Shutdown_TS.h"
 #include "Rte/Db/Chunk/Server.h"
 #include "Rte/Db/Chunk/FileSystem.h"
+#include "Rte/Db/Chunk/Null.h"
 #include "Rte/Db/Record/Api.h"
 #include "Rte/Db/Record/Handler.h"
 #include "Rte/Db/Record/Core.h"
@@ -173,6 +175,7 @@ public:
     int                                 m_count;
     Cpl::Itc::CloseRequest::CloseMsg*   m_pendingCloseMsgPtr;
     Core                                m_recordHandler;
+    bool                                m_opened;
 
 public:
     unsigned m_countOpenComplete;
@@ -192,6 +195,7 @@ public:
         ,m_countOpenFailed(0)
         ,m_notifyIncompatible(0)
         ,m_countStopped(0)
+        ,m_opened(false)
             {
             }
 
@@ -257,11 +261,11 @@ public:
         }
 
     ///
-    void notifyOpenFailed(void) 
+    void notifyOpenedWithErrors(void) 
         {
         m_countOpenFailed++;
         issueWrites();
-        CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::notifyOpenFailed.count=%d", m_count));
+        CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::notifyOpenedWithErrors.count=%d", m_count));
         }
 
     ///
@@ -281,7 +285,12 @@ public:
     void notifyStopped(void)
         {
         m_countStopped++;
-        m_pendingCloseMsgPtr->returnToSender();
+        m_opened = false;
+        if ( m_pendingCloseMsgPtr )
+            {
+            m_pendingCloseMsgPtr->returnToSender();
+            m_pendingCloseMsgPtr = 0;
+            }
         }
 
 
@@ -289,7 +298,8 @@ public:
     ///
     void request( Cpl::Itc::OpenRequest::OpenMsg& msg )
         {
-        m_count = countSets();
+        m_count  = countSets();
+        m_opened = true;
         defaultSets();
         m_recordHandler.start();
         msg.returnToSender();
@@ -298,8 +308,16 @@ public:
     ///
     void request( Cpl::Itc::CloseRequest::CloseMsg& msg )
         {
-        m_recordHandler.stop();
-        m_pendingCloseMsgPtr = &msg;
+        // Do nothing if ALREADY in the stopped/idle state
+        if ( m_opened )
+            {
+            m_recordHandler.stop();
+            m_pendingCloseMsgPtr = &msg;
+            }
+        else
+            {
+            msg.returnToSender();
+            }
         }
 
     void request( TestWriteMsg& msg )
@@ -426,6 +444,22 @@ public:
 };
 
 
+class MyNullMedia: public Rte::Db::Chunk::Null
+{
+public:
+    /// Constructor
+    MyNullMedia(){}
+
+
+public:
+    /// See Rte::Db::Chunk::Media
+    Cpl::Io::File::InputOutputApi* openDatabase( bool& newfile ) throw()
+        {
+        return 0;
+        }
+};
+
+
 ////////////////////////////////////////////////////////////////////////////////
 #define DB_FNAME_               "myDbFile"
 #define SIGNATURE_              "12346789"
@@ -436,24 +470,39 @@ public:
 #define SET1_NAME_              "plum"
 #define SET2_NAME_              "apple"
 #define SET3_NAME_              "cherry"
+#define SET4_NAME_              "pineapple"
+#define SET5_NAME_              "tomato"
+#define SET6_NAME_              "peas"
 
 #define SET1_DEFAULT_VALUE_     0xAA
 #define SET2_DEFAULT_VALUE_     0x55
 #define SET3_DEFAULT_VALUE_     0x88
+#define SET4_DEFAULT_VALUE_     0xCC
+#define SET5_DEFAULT_VALUE_     0xEE
+#define SET6_DEFAULT_VALUE_     0xDD
 
 
 static Cpl::Checksum::Crc32EthernetFast  chunkCrc_;
 static Rte::Db::Chunk::FileSystem        dbMedia( DB_FNAME_ );
-static Rte::Db::Chunk::Server            chunkServer_( dbMedia, chunkCrc_, "12346789" );
+static Rte::Db::Chunk::FileSystem        db2Media( DB_FNAME_ );  // Use same file -->excersize incompatible use case
+static MyNullMedia                       dbNullMedia;
+static Rte::Db::Chunk::Server            chunkServer_(  dbMedia,     chunkCrc_, "12346789" );
+static Rte::Db::Chunk::Server            chunk2Server_( db2Media,    chunkCrc_, "123456789" );
+static Rte::Db::Chunk::Server            chunk3Server_( dbNullMedia, chunkCrc_, "12346789" );
 
 static Cpl::Itc::MailboxServer           chunkMailbox_;
 static Cpl::Itc::MailboxServer           upperLayersMailbox_;
 
 static uint8_t                           buffer_[RECORD_BUF_SIZE_];
+static uint8_t                           buffer2_[RECORD_BUF_SIZE_];
+static uint8_t                           buffer3_[RECORD_BUF_SIZE_];
 
 static uint8_t                           set1Buffer_[SET_BUF_SIZE_];
 static uint8_t                           set2Buffer_[SET_BUF_SIZE_];
 static uint8_t                           set3Buffer_[SET_BUF_SIZE_];
+static uint8_t                           set4Buffer_[SET_BUF_SIZE_];
+static uint8_t                           set5Buffer_[SET_BUF_SIZE_];
+static uint8_t                           set6Buffer_[SET_BUF_SIZE_];
 
 static ErrorReporter                     errorReporter_;
 
@@ -478,19 +527,21 @@ TEST_CASE( "record", "[record]" )
     MySet                        set1( SET1_NAME_, set1Buffer_, sizeof(set1Buffer_), SET1_DEFAULT_VALUE_, client.m_recordHandler );
     MySet                        set2( SET2_NAME_, set2Buffer_, sizeof(set2Buffer_), SET2_DEFAULT_VALUE_, client.m_recordHandler );
     MySet                        set3( SET3_NAME_, set3Buffer_, sizeof(set3Buffer_), SET3_DEFAULT_VALUE_, client.m_recordHandler );
+    MySet                        set4( SET4_NAME_, set4Buffer_, sizeof(set4Buffer_), SET4_DEFAULT_VALUE_, client.m_recordHandler );
     
 
     // Register my sets with the Set Handler
     MySetItem set1Item(set1);
     MySetItem set2Item(set2);
     MySetItem set3Item(set3);
+    MySetItem set4Item(set4);
     client.registerSet( set1Item );
     client.registerSet( set2Item );
     client.registerSet( set3Item );
 
     // TEST: Empty database
     client.open();
-    Cpl::System::Api::sleep( 500 );
+    Cpl::System::Api::sleep( 300 );
     client.close();
     Cpl::System::Api::sleep( 100 );
     
@@ -521,7 +572,7 @@ TEST_CASE( "record", "[record]" )
 
     // TEST: Populated database
     client.open();
-    Cpl::System::Api::sleep( 500 );
+    Cpl::System::Api::sleep( 300 );
     client.close();
     Cpl::System::Api::sleep( 100 );
     
@@ -551,13 +602,74 @@ TEST_CASE( "record", "[record]" )
     client.clearCounters();
 
 
+    // Create the Record + Set layers for SECOND Database file
+    Rte::Db::Chunk::Request::SAP chunk2SAP(chunk2Server_, chunkMailbox_ );
+    SetHandler                   client2( buffer2_, sizeof(buffer2_), chunk2SAP, upperLayersMailbox_, &errorReporter_ );    // Contains both the Record and Set Handlers
+    MySet                        set5( SET5_NAME_, set5Buffer_, sizeof(set5Buffer_), SET5_DEFAULT_VALUE_, client2.m_recordHandler );
+
+    // Register my sets with the Set Handler
+    MySetItem set5Item(set5);
+    client2.registerSet( set5Item );
+
+    // TEST: Incompatible database file
+    client2.open();
+    Cpl::System::Api::sleep( 300 );
+    client2.close();
+    Cpl::System::Api::sleep( 100 );
+    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
+    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
+    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_countOpened == 1 );
+    REQUIRE( errorReporter_.m_countClosed == 1 );
+    REQUIRE( client2.m_countOpenComplete == 0 );
+    REQUIRE( client2.m_countOpenFailed == 0 );
+    REQUIRE( client2.m_notifyIncompatible == 1 );
+    REQUIRE( client2.m_countStopped == 1 );
+    errorReporter_.clearCounters();
+    client2.clearCounters();
+
+
+    // Create the Record + Set layers for THRID Database file
+    Rte::Db::Chunk::Request::SAP chunk3SAP(chunk3Server_, chunkMailbox_ );
+    SetHandler                   client3( buffer3_, sizeof(buffer3_), chunk3SAP, upperLayersMailbox_, &errorReporter_ );    // Contains both the Record and Set Handlers
+    MySet                        set6( SET6_NAME_, set6Buffer_, sizeof(set6Buffer_), SET6_DEFAULT_VALUE_, client3.m_recordHandler );
+
+    // Register my sets with the Set Handler
+    MySetItem set6Item(set6);
+    client3.registerSet( set6Item );
+
+    // TEST: File error on open
+    client3.open();
+    Cpl::System::Api::sleep( 300 );
+    client3.close();
+    Cpl::System::Api::sleep( 100 );
+
+    REQUIRE( set6Buffer_[0] == SET6_DEFAULT_VALUE_ );
+    REQUIRE( set6Buffer_[1] == SET6_DEFAULT_VALUE_ );
+    REQUIRE( set6Buffer_[SET_BUF_SIZE_-2] == SET6_DEFAULT_VALUE_ );
+    REQUIRE( set6Buffer_[SET_BUF_SIZE_-1] == SET6_DEFAULT_VALUE_ );
+
+    REQUIRE( errorReporter_.m_errCountFileOpen == 1 );
+    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
+    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_countOpened == 1 );
+    REQUIRE( errorReporter_.m_countClosed == 1 );
+    REQUIRE( client3.m_countOpenComplete == 0 );
+    REQUIRE( client3.m_countOpenFailed == 1 );
+    REQUIRE( client3.m_notifyIncompatible == 0 );
+    REQUIRE( client3.m_countStopped == 1 );
+    errorReporter_.clearCounters();
+    client3.clearCounters();
+
+
+
     // TEST: Changed values
     client.open();
     Cpl::System::Api::sleep( 200 );    // Allow time for the DB to be read in BEFORE writting new values
 	client.testWrite( SET1_NAME_, 1 );
 	client.testWrite( SET2_NAME_, 2 );
 	client.testWrite( SET3_NAME_, 3 );
-    Cpl::System::Api::sleep( 500 );
+    Cpl::System::Api::sleep( 300 );
     client.close();
     Cpl::System::Api::sleep( 100 );
     
@@ -587,7 +699,7 @@ TEST_CASE( "record", "[record]" )
     client.clearCounters();
 
     client.open();
-    Cpl::System::Api::sleep( 500 );
+    Cpl::System::Api::sleep( 300 );
     client.close();
     Cpl::System::Api::sleep( 100 );
     
@@ -616,6 +728,151 @@ TEST_CASE( "record", "[record]" )
     errorReporter_.clearCounters();
     client.clearCounters();
 
+    // TEST: minor upgrade -->add new record
+    client.registerSet( set4Item );
+    client.open();
+    Cpl::System::Api::sleep( 300 );
+    client.close();
+    Cpl::System::Api::sleep( 100 );
+    
+    REQUIRE( set1Buffer_[0] == 1 );
+    REQUIRE( set1Buffer_[1] == 1 );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
+    REQUIRE( set2Buffer_[0] == 2 );
+    REQUIRE( set2Buffer_[1] == 2 );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
+    REQUIRE( set3Buffer_[0] == 3 );
+    REQUIRE( set3Buffer_[1] == 3 );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == 3 );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == 3 );
+    REQUIRE( set4Buffer_[0] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[1] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[SET_BUF_SIZE_-2] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[SET_BUF_SIZE_-1] == SET4_DEFAULT_VALUE_ );
+
+    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
+    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
+    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_countOpened == 1 );
+    REQUIRE( errorReporter_.m_countClosed == 1 );
+    REQUIRE( client.m_countOpenComplete == 0 );
+    REQUIRE( client.m_countOpenFailed == 1 );
+    REQUIRE( client.m_notifyIncompatible == 0 );
+    REQUIRE( client.m_countStopped == 1 );
+    errorReporter_.clearCounters();
+    client.clearCounters();
+
+    client.open();
+    Cpl::System::Api::sleep( 300 );
+    client.close();
+    Cpl::System::Api::sleep( 100 );
+    
+    REQUIRE( set1Buffer_[0] == 1 );
+    REQUIRE( set1Buffer_[1] == 1 );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
+    REQUIRE( set2Buffer_[0] == 2 );
+    REQUIRE( set2Buffer_[1] == 2 );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
+    REQUIRE( set3Buffer_[0] == 3 );
+    REQUIRE( set3Buffer_[1] == 3 );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == 3 );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == 3 );
+    REQUIRE( set4Buffer_[0] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[1] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[SET_BUF_SIZE_-2] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[SET_BUF_SIZE_-1] == SET4_DEFAULT_VALUE_ );
+
+    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
+    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
+    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_countOpened == 1 );
+    REQUIRE( errorReporter_.m_countClosed == 1 );
+    REQUIRE( client.m_countOpenComplete == 1 );
+    REQUIRE( client.m_countOpenFailed == 0 );
+    REQUIRE( client.m_notifyIncompatible == 0 );
+    REQUIRE( client.m_countStopped == 1 );
+    errorReporter_.clearCounters();
+    client.clearCounters();
+
+
+    // TEST: Corrupt a Record
+    Cpl::Io::File::Output dbfile( DB_FNAME_, false );
+    REQUIRE( dbfile.isOpened() );
+    REQUIRE( dbfile.setAbsolutePos( 0x50 ) );  // NOTE: Should be corrupting the CHERRY record
+    REQUIRE( dbfile.write( '*' ) );
+    dbfile.close();
+     
+    client.open();
+    Cpl::System::Api::sleep( 300 );
+    client.close();
+    Cpl::System::Api::sleep( 100 );
+    
+    REQUIRE( set1Buffer_[0] == 1 );
+    REQUIRE( set1Buffer_[1] == 1 );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
+    REQUIRE( set2Buffer_[0] == 2 );
+    REQUIRE( set2Buffer_[1] == 2 );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
+    REQUIRE( set3Buffer_[0] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[1] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[0] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[1] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[SET_BUF_SIZE_-2] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[SET_BUF_SIZE_-1] == SET4_DEFAULT_VALUE_ );
+
+    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
+    REQUIRE( errorReporter_.m_errCountCorruption == 1 );
+    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_countOpened == 1 );
+    REQUIRE( errorReporter_.m_countClosed == 1 );
+    REQUIRE( client.m_countOpenComplete == 0 );
+    REQUIRE( client.m_countOpenFailed == 1 );
+    REQUIRE( client.m_notifyIncompatible == 0 );
+    REQUIRE( client.m_countStopped == 1 );
+    errorReporter_.clearCounters();
+    client.clearCounters();
+
+    client.open();
+    Cpl::System::Api::sleep( 300 );
+    client.close();
+    Cpl::System::Api::sleep( 100 );
+    
+    REQUIRE( set1Buffer_[0] == 1 );
+    REQUIRE( set1Buffer_[1] == 1 );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
+    REQUIRE( set2Buffer_[0] == 2 );
+    REQUIRE( set2Buffer_[1] == 2 );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
+    REQUIRE( set3Buffer_[0] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[1] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[0] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[1] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[SET_BUF_SIZE_-2] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[SET_BUF_SIZE_-1] == SET4_DEFAULT_VALUE_ );
+
+    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
+    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
+    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_countOpened == 1 );
+    REQUIRE( errorReporter_.m_countClosed == 1 );
+    REQUIRE( client.m_countOpenComplete == 1 );
+    REQUIRE( client.m_countOpenFailed == 0 );
+    REQUIRE( client.m_notifyIncompatible == 0 );
+    REQUIRE( client.m_countStopped == 1 );
+    errorReporter_.clearCounters();
+    client.clearCounters();
 
     // Shutdown threads
     chunkMailbox_.pleaseStop();

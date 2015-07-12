@@ -426,7 +426,7 @@ Pos="12905.732697296844 -14931.726504309985">
 <FreeText id="r104"
 Pos="14607 -14131"
 Origin="3">
-<Text>evResponse[isDbSuccess()]/<p/>
+<Text>evResponse[!isDbError()]/<p/>
 inspectWriteQue();</Text>
 </FreeText>
 </Anchor>

@@ -42,7 +42,7 @@ ranksep=.4;
 "Reading "->"Verifying"[label=<evResponse<br ALIGN="LEFT"/>[isDbEof()] / verifyOpen();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  Verifying
 "defaultActive"->"NoPersistence"[label=<  > style=dotted];
 "Writing"->"defaultActive"[labeldistance = 2.0, taillabel=<evResponse<br ALIGN="LEFT"/>[!isDbSuccess()] / <br ALIGN="LEFT"/>reportFileWriteError();<br ALIGN="LEFT"/>inspectW...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive];//Writing Active
-"ClearingDb"->"Writeable"[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / inspectWriteQue();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //ClearingDb Writeable
+"ClearingDb"->"Writeable"[label=<evResponse<br ALIGN="LEFT"/>[!isDbError()] / inspectWriteQue();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //ClearingDb Writeable
 "WaitingToOpen"->"Writeable"[label=<evResponse<br ALIGN="LEFT"/>[isDbEof()] / ackOpenDone();<br ALIGN="LEFT"/>inspectWriteQue()...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingToOpen Writeable
 "Writeable"->"Writing"[label=<evWrite / <br ALIGN="LEFT"/>requestDbWrite();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Writeable Writing
 "Writing"->"Writeable"[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / ackWrite();<br ALIGN="LEFT"/>inspectWriteQue();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Writing Writeable

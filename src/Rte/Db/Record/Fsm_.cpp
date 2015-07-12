@@ -298,7 +298,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                             case ClearingDb:
                                 if(msg==evResponse){
-                                    if(isDbSuccess()){
+                                    if(!isDbError()){
                                         /* Transition from ClearingDb to Writeable */
                                         evConsumed=1;
 
@@ -309,7 +309,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarActive = Writeable;
-                                        FsmTraceEvent(8);
+                                        FsmTraceEvent(12);
                                     }else{
                                         /* Intentionally left blank */
                                     } /*end of event selection */
@@ -461,7 +461,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVar = Stopping;
-                            FsmTraceEvent(12);
+                            FsmTraceEvent(13);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */

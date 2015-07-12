@@ -261,7 +261,7 @@ void Core::ackOpenDone() throw()
 void Core::nakOpenDone() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::nakOpenDone") );
-    m_setLayer.notifyOpenFailed();
+    m_setLayer.notifyOpenedWithErrors();
     }
 
 void Core::notifyIncompatible() throw()

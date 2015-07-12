@@ -51,13 +51,20 @@ public:
 
 
         /** Notification (to the upper layer) that an error occurred during 
-            the load of the records and loading process has been stopped/
+            the LOAD of the records and loading process has been stopped/
             aborted. The data in any of the record(s) succesfully opened are
             still validate at this point.  It is the application's 
             responsibility to decide what actions (if any) it needs to take 
             for the record(s) that loaded succesfully.
+
+            NOTE: The database is in the OPENED state at this point.  For 
+                  example: for the use case of a new record has been added 
+                  to application (but the existing DB file does not contain
+                  the new record) - this method will be called.  At this point
+                  the application needs to add (i.e. write) the new record to 
+                  the opened DB.
          */
-        virtual void notifyOpenFailed(void) = 0;
+        virtual void notifyOpenedWithErrors(void) = 0;
 
     
         /** Notification (to the upper layer) that the DB file that was open
