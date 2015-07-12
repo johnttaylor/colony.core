@@ -52,6 +52,19 @@ Core::Core( uint8_t*                      recordLayerBuffer,
 void Core::start( void )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::start") );
+    
+    // Generate a Fatal Error if NOT in the Idel state
+    if ( getInnermostActiveState() != Idle )
+        {
+        Cpl::System::FatalError::logf( "Rte::Db::Record::Core::start().  Protocol error.  The FSM is NOT in the idle state (currentState=%s)", getNameByState(getInnermostActiveState()) );
+        }
+        
+    // WORKAROUND: Reset my FSM history on the start event because I can't reset 
+    //             it from a FSM action due to how the auto-generated code works
+    resetHistoryActive();
+    resetHistoryOpening();
+
+    // Send the start event
     sendEvent( evStart ); 
     }
 
@@ -99,7 +112,7 @@ void Core::response( ReadMsg& msg )
     {
     m_dbResult  = msg.getRequestMsg().getPayload().m_result;
     m_dbDataLen = msg.getRequestMsg().getPayload().m_handlePtr->m_len;
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( ReadMsg& msg ): result=%s, inLen=%ul", Rte::Db::Chunk::Request::resultToString(m_dbResult), m_dbDataLen));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( ReadMsg& msg ): result=%s, inLen=%lu", Rte::Db::Chunk::Request::resultToString(m_dbResult), m_dbDataLen));
 
     sendEvent( evResponse ); 
     }
@@ -108,7 +121,7 @@ void Core::response( WriteMsg& msg )
     {
     m_dbResult  = msg.getRequestMsg().getPayload().m_result;
     m_dbDataLen = msg.getRequestMsg().getPayload().m_handlePtr->m_len;
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( WriteMsg& msg ): result=%s, outLen=%ul", Rte::Db::Chunk::Request::resultToString(m_dbResult), m_dbDataLen) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( WriteMsg& msg ): result=%s, outLen=%lu", Rte::Db::Chunk::Request::resultToString(m_dbResult), m_dbDataLen) );
 
     sendEvent( evResponse ); 
     }
@@ -289,15 +302,6 @@ void Core::clearWriteQue() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::clearWriteQue") );
     m_writeRequests.clearTheList();
-    }
-
-
-
-
-void Core::resetFsmHistory() throw()
-    {
-    resetHistoryActive();
-    resetHistoryOpening();
     }
 
 void Core::verifyOpen() throw()

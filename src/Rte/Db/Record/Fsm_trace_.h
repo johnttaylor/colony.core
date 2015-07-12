@@ -37,11 +37,11 @@ const char* const FsmTraceEvents[] = {
     "",
     "evVerified",
     "evIncompleteLoad",
-    "evResponse[isDbSuccess()]",
-    "evResponse[else]",
     "evResponse[isDbError()]",
+    "evResponse[isDbSuccess()]",
     "evResponse[isDbBadData()]",
     "evResponse[isDbEof()]",
+    "evResponse[!isDbSuccess()]",
     "evResponse[isNotCompatible()]"
 };
 

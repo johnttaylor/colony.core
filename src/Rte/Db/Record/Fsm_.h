@@ -33,7 +33,7 @@ ranksep=.4;
 "Idle"->"defaultOpening"[labeldistance = 2.0, taillabel=<evStart / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>requestDbOpen();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterOpening];//Idle Opening
 "defaultActive"->"Stopping"[labeldistance=2.0, headlabel=<evStop / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>requestDbClose();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black ltail=clusterActive];//Active Stopping
 "NoPersistence"->"NoPersistence"[label=<evWrite / <br ALIGN="LEFT"/>consumeNoWrite();<br ALIGN="LEFT"/>ackWrite();<br ALIGN="LEFT"/>in...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //NoPersistence NoPersistence
-"Stopping"->"Idle"[label=<evStopped / <br ALIGN="LEFT"/>ackDbStopped();<br ALIGN="LEFT"/>clearWriteQue();...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Stopping Idle
+"Stopping"->"Idle"[label=<evStopped / <br ALIGN="LEFT"/>ackDbStopped();<br ALIGN="LEFT"/>clearWriteQue();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Stopping Idle
 "defaultOpening"->"defaultActive"[label=<evResponse<br ALIGN="LEFT"/>[isDbError()] / <br ALIGN="LEFT"/>reportFileReadError();<br ALIGN="LEFT"/>nakOpenDo...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black];//Opening Active
 "WaitingToOpen"->"Reading "[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / requestDbRead();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingToOpen Reading 
 "defaultroot"->"Idle"[label=<  > style=dotted];
@@ -41,12 +41,11 @@ ranksep=.4;
 "Reading "->"ClearingDb"[label=<evResponse<br ALIGN="LEFT"/>[isDbBadData()] / reportDataCorruptError();<br ALIGN="LEFT"/>nakOpe...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  ClearingDb
 "Reading "->"Verifying"[label=<evResponse<br ALIGN="LEFT"/>[isDbEof()] / verifyOpen();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  Verifying
 "defaultActive"->"NoPersistence"[label=<  > style=dotted];
-"__C0"->"defaultActive"[labeldistance = 2.0, taillabel=<[else] / <br ALIGN="LEFT"/>reportFileWriteError();<br ALIGN="LEFT"/>inspectW...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive];//__C0 Active
+"Writing"->"defaultActive"[labeldistance = 2.0, taillabel=<evResponse<br ALIGN="LEFT"/>[!isDbSuccess()] / <br ALIGN="LEFT"/>reportFileWriteError();<br ALIGN="LEFT"/>inspectW...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive];//Writing Active
 "ClearingDb"->"Writeable"[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / inspectWriteQue();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //ClearingDb Writeable
 "WaitingToOpen"->"Writeable"[label=<evResponse<br ALIGN="LEFT"/>[isDbEof()] / ackOpenDone();<br ALIGN="LEFT"/>inspectWriteQue()...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingToOpen Writeable
 "Writeable"->"Writing"[label=<evWrite / <br ALIGN="LEFT"/>requestDbWrite();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Writeable Writing
-"__C0"->"Writeable"[label=<[isDbSuccess()] / ackWrite();<br ALIGN="LEFT"/>inspectWriteQue();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //__C0 Writeable
-"Writing"->"__C0"[label=<evResponse<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Writing __C0
+"Writing"->"Writeable"[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / ackWrite();<br ALIGN="LEFT"/>inspectWriteQue();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Writing Writeable
 "Verifying"->"Writeable"[label=<evVerified / <br ALIGN="LEFT"/>ackOpenDone();<br ALIGN="LEFT"/>inspectWriteQue()...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Verifying Writeable
 "defaultOpening"->"defaultOpening"[label=<evWrite / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>queWriteRequest();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black];//Opening Opening
 "Idle"->"Idle"[label=<evWrite / <br ALIGN="LEFT"/>queWriteRequest();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Idle Idle
@@ -65,7 +64,6 @@ label=<Opening(H)<br ALIGN="LEFT"/><br ALIGN="LEFT"/>>;
 "defaultActive"[label=< >,shape=circle, fontsize=8, fixedsize=true, height=0.2, width=0.2, fillcolor=black, style=filled];
 "Writing"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Writing</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];};
 "Stopping"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Stopping</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"defaultroot"[label=< >,shape=circle, fontsize=8, fixedsize=true, height=0.2, width=0.2, fillcolor=black, style=filled];
-"__C0" [label=<  > shape=diamond, fixedsize=true, height=0.2, width=0.2, fontname=arial color=black];
 }
 \enddot
 */

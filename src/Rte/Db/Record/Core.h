@@ -184,9 +184,6 @@ protected:
     void requestDbWrite() throw();
 
     /// See Rte::Db::Record::FsmContext_
-    void resetFsmHistory() throw();
-
-    /// See Rte::Db::Record::FsmContext_
     void verifyOpen() throw();
 
 

@@ -19,7 +19,8 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/Io/File/Api.h"
-#include "Cpl/Container/DList.h"
+#include "Cpl/Container/SList.h"
+#include "Cpl/Container/Key.h"
 #include "Cpl/System/_testsupport/Shutdown_TS.h"
 #include "Rte/Db/Chunk/Server.h"
 #include "Rte/Db/Chunk/FileSystem.h"
@@ -36,35 +37,16 @@ void link_record(void) {}
 using namespace Rte::Db::Record;
 
 
-////////////////////////////////////////////////////////////////////////////////
-#define DB_FNAME_           "myDbFile"
-#define SIGNATURE_          "12346789"
-
-#define RECORD_BUF_SIZE     100
-
-
-static Cpl::Checksum::Crc32EthernetFast  chunkCrc_;
-static Rte::Db::Chunk::FileSystem        dbMedia( DB_FNAME_ );
-static Rte::Db::Chunk::Server            chunkServer_( dbMedia, chunkCrc_, "12346789" );
-
-static Cpl::Itc::MailboxServer           chunkMailbox_;
-static Cpl::Itc::MailboxServer           upperLayersMailbox_;
-
-static uint8_t                           buffer_[RECORD_BUF_SIZE];
-
-
 #define SECT_     "_0test"
 
 
 
-
-
 ////////////////////////////////////////////////////////////////////////////////
-class MySet: public Api
-{
+class MySet: public Api,
+             public Cpl::Container::KeyLiteralString
+{                               
 public:
     Rte::Db::Chunk::Handle  m_chunkHdl;
-    const char*             m_name;
     uint8_t*                m_dataPtr;
     uint32_t                m_datalen;
     Handler&                m_writer;
@@ -73,7 +55,7 @@ public:
 public:
     ///
     MySet( const char* name, uint8_t* dataPtr,  uint32_t dataLen, uint8_t defaultValue, Handler& writeApi )
-        :m_name(name)
+        :Cpl::Container::KeyLiteralString(name)
         ,m_dataPtr(dataPtr)
         ,m_datalen(dataLen)
         ,m_writer(writeApi)
@@ -82,8 +64,11 @@ public:
             }
 
 public:
+    const Cpl::Container::Key& getKey() const throw()   { return *this; }
+
+public:
     ///
-    const char* getName(void) const                     { return m_name; }
+    const char* getName(void) const                     { return getKeyValue(); }
     ///
     void setChunkHandle( Rte::Db::Chunk::Handle& src )  { m_chunkHdl = src; }
     ///
@@ -92,21 +77,22 @@ public:
     ///
     void notifyRead( void* srcBuffer, uint32_t dataLen )
         {
-        if ( dataLen >= m_datalen )
+        if ( dataLen > m_datalen )
             {
-            Cpl::System::FatalError::logf( "MySet::notifyRead - Buffer length Error." );
+            Cpl::System::FatalError::logf( "MySet::notifyRead - Buffer length Error, setLen=%lu, srcLen=%lu.", m_datalen, dataLen );
             }
 
         memcpy( m_dataPtr, srcBuffer, dataLen );
+        CPL_SYSTEM_TRACE_MSG(SECT_, ("MySet::notifyRead. inLen=%u, [0]=0x%x, [n-1]=0x%x", dataLen, m_dataPtr[0], m_dataPtr[m_datalen-1] ));
         }
 
     ///
     uint32_t fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
         {
-        CPL_SYSTEM_TRACE_MSG(SECT_, ("MySet::fillWriteBuffer"));
+        CPL_SYSTEM_TRACE_MSG(SECT_, ("MySet::fillWriteBuffer. [0]=0x%x, [n-1]=0x%x", m_dataPtr[0], m_dataPtr[m_datalen-1] ));
         if ( maxDataSize < m_datalen )
             {
-            Cpl::System::FatalError::logf( "MySet::fillWriteBuffer - Buffer length Error." );
+            Cpl::System::FatalError::logf( "MySet::fillWriteBuffer - Buffer length Error. setLen=%lu, dstMaxLen=%lu.", m_datalen, maxDataSize );
             }
 
         memcpy(dstBuffer, m_dataPtr, m_datalen);
@@ -127,16 +113,72 @@ public:
         }
 };
 
+///
+class MySetItem: public Cpl::Container::Item
+{
+public:
+    MySet&  m_set;
 
-/// 
+public:
+    MySetItem( MySet& set ): m_set(set){}
+
+public:
+    MySet& getSet() { return m_set; }
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+class TestWriteRequest
+{
+public:
+    /// SAP for this API
+    typedef Cpl::Itc::SAP<TestWriteRequest> SAP;
+
+public:
+    /// Payload for Message: Writing
+    class TestWritePayload
+    {
+    public:
+        ///
+        const char* m_setname;
+        ///
+        uint8_t     m_newvalue;
+
+    public:
+        ///
+        TestWritePayload(const char* setname, uint8_t newvalue):m_setname(setname),m_newvalue(newvalue){};
+    };
+
+    /// Message Type: Write
+    typedef Cpl::Itc::RequestMessage<TestWriteRequest,TestWritePayload> TestWriteMsg;
+    
+
+
+public:
+    /// Request: Write
+    virtual void request( TestWriteMsg& msg ) = 0;
+    
+};
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
 class SetHandler: public Handler::Client,
-                  public Cpl::Container::DList<MySet>,
-                  public Cpl::Itc::CloseSync
+                  public Cpl::Container::SList<MySetItem>,
+                  public Cpl::Itc::CloseSync,
+                  public TestWriteRequest
 {
 public:
     int                                 m_count;
     Cpl::Itc::CloseRequest::CloseMsg*   m_pendingCloseMsgPtr;
     Core                                m_recordHandler;
+
+public:
+    unsigned m_countOpenComplete;
+    unsigned m_countOpenFailed;
+    unsigned m_notifyIncompatible;
+    unsigned m_countStopped;
 
 
 public:
@@ -146,15 +188,37 @@ public:
         ,m_count(0)
         ,m_pendingCloseMsgPtr(0)
         ,m_recordHandler(buffer, bufsize, *this, chunkSAP, upperLayersMbox, Cpl::Log::Loggers::null(), errHandlerPtr )
+        ,m_countOpenComplete(0)
+        ,m_countOpenFailed(0)
+        ,m_notifyIncompatible(0)
+        ,m_countStopped(0)
             {
             }
 
 
 public:
     /// 
-    void registerSet( MySet& setToRegister )
+    void registerSet( MySetItem& setToRegister )
         {
         put( setToRegister );
+        }
+
+    /// 
+    void clearCounters()
+        {
+        m_countOpenComplete  = 0;
+        m_countOpenFailed    = 0;
+        m_notifyIncompatible = 0;
+        m_countStopped       = 0;
+        }
+
+    ///
+	void testWrite( const char* setname, uint8_t newValue ) throw()
+        {
+	    TestWritePayload              payload( setname, newValue );
+        Cpl::Itc::SyncReturnHandler   srh;
+        TestWriteMsg 	              msg(*this,payload,srh);
+        m_mbox.postSync(msg);
         }
 
 
@@ -162,26 +226,32 @@ public:
     ///
     Api* getRecordApi( const char* recName, uint16_t nameLen )
         {
-        MySet* itemPtr = first();
+        Cpl::Text::FString<16> recNameString;
+        recNameString.copyIn( recName, nameLen );
+
+        MySetItem* itemPtr = first();
         while( itemPtr )
             {
-            if ( strncmp( recName, itemPtr->getName(), nameLen ) == 0 )
+            MySet& set = itemPtr->getSet();
+
+            if ( strncmp( recName, set.getName(), nameLen ) == 0 )
                 {
-                CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::getRecordApi, name=%s, found=%p, old count=%d", recName, itemPtr, m_count));
+                CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::getRecordApi, name=%s, found=%p, old count=%d", recNameString(), &set, m_count));
                 m_count--;
-                return itemPtr;
+                return &set;
                 }
 
             itemPtr = next( *itemPtr );
             }
 
-        CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::getRecordApi, NO MATCH FOUND FOR: name=%s, old count=%d", recName, m_count));
+        CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::getRecordApi, NO MATCH FOUND FOR: name=%s, old count=%d", recNameString(), m_count));
         return 0;
         }
 
     ///
     void notifyOpenCompleted(void)
         {
+        m_countOpenComplete++;
         issueWrites();
         CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::notifyOpenCompleted. count=%d", m_count));
         }
@@ -189,6 +259,7 @@ public:
     ///
     void notifyOpenFailed(void) 
         {
+        m_countOpenFailed++;
         issueWrites();
         CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::notifyOpenFailed.count=%d", m_count));
         }
@@ -196,6 +267,7 @@ public:
     ///
     void notifyIncompatible(void) 
         {
+        m_notifyIncompatible++;
         CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::notifyIncompatible.count=%d", m_count));
         }
 
@@ -208,6 +280,7 @@ public:
     ///
     void notifyStopped(void)
         {
+        m_countStopped++;
         m_pendingCloseMsgPtr->returnToSender();
         }
 
@@ -216,7 +289,7 @@ public:
     ///
     void request( Cpl::Itc::OpenRequest::OpenMsg& msg )
         {
-        m_count = countSets();;
+        m_count = countSets();
         defaultSets();
         m_recordHandler.start();
         msg.returnToSender();
@@ -229,16 +302,41 @@ public:
         m_pendingCloseMsgPtr = &msg;
         }
 
+    void request( TestWriteMsg& msg )
+        {
+        const char* setName  = msg.getPayload().m_setname;
+        uint8_t     newvalue = msg.getPayload().m_newvalue;
+
+        MySetItem* itemPtr = first();
+        while( itemPtr )
+            {
+            MySet& set = itemPtr->getSet();
+
+            if ( strcmp( setName, set.getName()) == 0 )
+                {
+                memset(set.m_dataPtr, newvalue, set.m_datalen );
+                CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::TestWriteMsg, name=%s, newValue=%x, [0]=0x%x, [n-1]=0x%x", setName, newvalue, set.m_dataPtr[0], set.m_dataPtr[set.m_datalen-1] ));
+                m_recordHandler.write( set );
+                msg.returnToSender();
+                return;
+                }
+
+            itemPtr = next( *itemPtr );
+            }
+
+        CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::TestWriteMsg, NO MATCH FOUND FOR: name=%s", setName ));
+        msg.returnToSender();
+        }
 
 public:
     ///
     void issueWrites(void)
         {
         CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::issueWrites"));
-        MySet* itemPtr = first();
+        MySetItem* itemPtr = first();
         while( itemPtr )
             {
-            m_recordHandler.write( *itemPtr );
+            m_recordHandler.write( itemPtr->getSet() );
             itemPtr = next(*itemPtr);
             }
         }
@@ -247,10 +345,10 @@ public:
     void defaultSets(void)
         {
         CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::defaultSets"));
-        MySet* itemPtr = first();
+        MySetItem* itemPtr = first();
         while( itemPtr )
             {
-            itemPtr->defaultSet();
+            itemPtr->getSet().defaultSet();
             itemPtr = next(*itemPtr);
             }
         }
@@ -259,7 +357,7 @@ public:
     int countSets(void)
         {
         int count = 0;
-        MySet* itemPtr = first();
+        MySetItem* itemPtr = first();
         while( itemPtr )
             {
             count++;
@@ -272,6 +370,92 @@ public:
 };
 
 
+class ErrorReporter: public ErrorClient
+{
+public:
+    unsigned m_errCountFileOpen;
+    unsigned m_errCountCorruption;
+    unsigned m_errCountFileWrite;
+    unsigned m_countOpened;
+    unsigned m_countClosed;
+
+public:
+    ErrorReporter()
+        :m_errCountFileOpen(0)
+        ,m_errCountCorruption(0)
+        ,m_errCountFileWrite(0)
+        ,m_countOpened(0)
+        ,m_countClosed(0)
+            {}
+
+public:
+    void clearCounters()
+        {
+        m_errCountFileOpen   = 0;
+        m_errCountCorruption = 0;
+        m_errCountFileWrite  = 0;
+        m_countOpened        = 0;
+        m_countClosed        = 0;
+        }
+
+public:
+    void databaseFileOpenError( Rte::Db::Chunk::Request::Result_T errorCode )
+        {
+        m_errCountFileOpen++;
+        }
+
+    void databaseCorruptionError( void )
+        {
+        m_errCountCorruption++;
+        }
+
+    void databaseFileWriteError( const char* recordName )
+        {
+        m_errCountFileWrite++;
+        }
+
+    void databaseOpened( void )
+        {
+        m_countOpened++;
+        }
+
+    void databaseClosed( void )
+        {
+        m_countClosed++;
+        }
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+#define DB_FNAME_               "myDbFile"
+#define SIGNATURE_              "12346789"
+
+#define RECORD_BUF_SIZE_        100
+#define SET_BUF_SIZE_           10
+
+#define SET1_NAME_              "plum"
+#define SET2_NAME_              "apple"
+#define SET3_NAME_              "cherry"
+
+#define SET1_DEFAULT_VALUE_     0xAA
+#define SET2_DEFAULT_VALUE_     0x55
+#define SET3_DEFAULT_VALUE_     0x88
+
+
+static Cpl::Checksum::Crc32EthernetFast  chunkCrc_;
+static Rte::Db::Chunk::FileSystem        dbMedia( DB_FNAME_ );
+static Rte::Db::Chunk::Server            chunkServer_( dbMedia, chunkCrc_, "12346789" );
+
+static Cpl::Itc::MailboxServer           chunkMailbox_;
+static Cpl::Itc::MailboxServer           upperLayersMailbox_;
+
+static uint8_t                           buffer_[RECORD_BUF_SIZE_];
+
+static uint8_t                           set1Buffer_[SET_BUF_SIZE_];
+static uint8_t                           set2Buffer_[SET_BUF_SIZE_];
+static uint8_t                           set3Buffer_[SET_BUF_SIZE_];
+
+static ErrorReporter                     errorReporter_;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -290,18 +474,149 @@ TEST_CASE( "record", "[record]" )
 
     // Create the Record + Set layers
     Rte::Db::Chunk::Request::SAP chunkSAP(chunkServer_, chunkMailbox_ );
-    SetHandler                   client( buffer_, sizeof(buffer_), chunkSAP, upperLayersMailbox_ );    // Contains both the Record and Set Handlers
-
-    // Start the Record/Set layers
-    client.open();
-
-    // Allow time for stuff to run
-//    Cpl::System::Api::sleep( 100 );
-
-
-    // Stop the Record/Set layers
-    client.close();
+    SetHandler                   client( buffer_, sizeof(buffer_), chunkSAP, upperLayersMailbox_, &errorReporter_ );    // Contains both the Record and Set Handlers
+    MySet                        set1( SET1_NAME_, set1Buffer_, sizeof(set1Buffer_), SET1_DEFAULT_VALUE_, client.m_recordHandler );
+    MySet                        set2( SET2_NAME_, set2Buffer_, sizeof(set2Buffer_), SET2_DEFAULT_VALUE_, client.m_recordHandler );
+    MySet                        set3( SET3_NAME_, set3Buffer_, sizeof(set3Buffer_), SET3_DEFAULT_VALUE_, client.m_recordHandler );
     
+
+    // Register my sets with the Set Handler
+    MySetItem set1Item(set1);
+    MySetItem set2Item(set2);
+    MySetItem set3Item(set3);
+    client.registerSet( set1Item );
+    client.registerSet( set2Item );
+    client.registerSet( set3Item );
+
+    // TEST: Empty database
+    client.open();
+    Cpl::System::Api::sleep( 500 );
+    client.close();
+    Cpl::System::Api::sleep( 100 );
+    
+    REQUIRE( set1Buffer_[0] == SET1_DEFAULT_VALUE_ );
+    REQUIRE( set1Buffer_[1] == SET1_DEFAULT_VALUE_ );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == SET1_DEFAULT_VALUE_ );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == SET1_DEFAULT_VALUE_ );
+    REQUIRE( set2Buffer_[0] == SET2_DEFAULT_VALUE_ );
+    REQUIRE( set2Buffer_[1] == SET2_DEFAULT_VALUE_ );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == SET2_DEFAULT_VALUE_ );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == SET2_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[0] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[1] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == SET3_DEFAULT_VALUE_ );
+
+    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
+    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
+    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_countOpened == 1 );
+    REQUIRE( errorReporter_.m_countClosed == 1 );
+    REQUIRE( client.m_countOpenComplete == 1 );
+    REQUIRE( client.m_countOpenFailed == 0 );
+    REQUIRE( client.m_notifyIncompatible == 0 );
+    REQUIRE( client.m_countStopped == 1 );
+    errorReporter_.clearCounters();
+    client.clearCounters();
+
+    // TEST: Populated database
+    client.open();
+    Cpl::System::Api::sleep( 500 );
+    client.close();
+    Cpl::System::Api::sleep( 100 );
+    
+    REQUIRE( set1Buffer_[0] == SET1_DEFAULT_VALUE_ );
+    REQUIRE( set1Buffer_[1] == SET1_DEFAULT_VALUE_ );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == SET1_DEFAULT_VALUE_ );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == SET1_DEFAULT_VALUE_ );
+    REQUIRE( set2Buffer_[0] == SET2_DEFAULT_VALUE_ );
+    REQUIRE( set2Buffer_[1] == SET2_DEFAULT_VALUE_ );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == SET2_DEFAULT_VALUE_ );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == SET2_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[0] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[1] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == SET3_DEFAULT_VALUE_ );
+
+    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
+    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
+    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_countOpened == 1 );
+    REQUIRE( errorReporter_.m_countClosed == 1 );
+    REQUIRE( client.m_countOpenComplete == 1 );
+    REQUIRE( client.m_countOpenFailed == 0 );
+    REQUIRE( client.m_notifyIncompatible == 0 );
+    REQUIRE( client.m_countStopped == 1 );
+    errorReporter_.clearCounters();
+    client.clearCounters();
+
+
+    // TEST: Changed values
+    client.open();
+    Cpl::System::Api::sleep( 200 );    // Allow time for the DB to be read in BEFORE writting new values
+	client.testWrite( SET1_NAME_, 1 );
+	client.testWrite( SET2_NAME_, 2 );
+	client.testWrite( SET3_NAME_, 3 );
+    Cpl::System::Api::sleep( 500 );
+    client.close();
+    Cpl::System::Api::sleep( 100 );
+    
+    REQUIRE( set1Buffer_[0] == 1 );
+    REQUIRE( set1Buffer_[1] == 1 );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
+    REQUIRE( set2Buffer_[0] == 2 );
+    REQUIRE( set2Buffer_[1] == 2 );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
+    REQUIRE( set3Buffer_[0] == 3 );
+    REQUIRE( set3Buffer_[1] == 3 );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == 3 );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == 3 );
+
+    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
+    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
+    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_countOpened == 1 );
+    REQUIRE( errorReporter_.m_countClosed == 1 );
+    REQUIRE( client.m_countOpenComplete == 1 );
+    REQUIRE( client.m_countOpenFailed == 0 );
+    REQUIRE( client.m_notifyIncompatible == 0 );
+    REQUIRE( client.m_countStopped == 1 );
+    errorReporter_.clearCounters();
+    client.clearCounters();
+
+    client.open();
+    Cpl::System::Api::sleep( 500 );
+    client.close();
+    Cpl::System::Api::sleep( 100 );
+    
+    REQUIRE( set1Buffer_[0] == 1 );
+    REQUIRE( set1Buffer_[1] == 1 );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
+    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
+    REQUIRE( set2Buffer_[0] == 2 );
+    REQUIRE( set2Buffer_[1] == 2 );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
+    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
+    REQUIRE( set3Buffer_[0] == 3 );
+    REQUIRE( set3Buffer_[1] == 3 );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == 3 );
+    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == 3 );
+
+    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
+    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
+    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_countOpened == 1 );
+    REQUIRE( errorReporter_.m_countClosed == 1 );
+    REQUIRE( client.m_countOpenComplete == 1 );
+    REQUIRE( client.m_countOpenFailed == 0 );
+    REQUIRE( client.m_notifyIncompatible == 0 );
+    REQUIRE( client.m_countStopped == 1 );
+    errorReporter_.clearCounters();
+    client.clearCounters();
+
+
     // Shutdown threads
     chunkMailbox_.pleaseStop();
     upperLayersMailbox_.pleaseStop();

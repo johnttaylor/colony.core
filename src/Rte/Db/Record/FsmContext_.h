@@ -80,9 +80,6 @@ public:
     virtual void requestDbWrite() throw() = 0;
 
     /// Action
-    virtual void resetFsmHistory() throw() = 0;
-
-    /// Action
     virtual void verifyOpen() throw() = 0;
 
 

@@ -230,7 +230,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarActive = Writeable;
-                                        FsmTraceEvent(11);
+                                        FsmTraceEvent(10);
                                     }else if(isDbSuccess()){
                                         /* Transition from WaitingToOpen to Reading  */
                                         evConsumed=1;
@@ -241,7 +241,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarOpening = Reading ;
-                                        FsmTraceEvent(7);
+                                        FsmTraceEvent(8);
                                     }else{
                                         /* Intentionally left blank */
                                     } /*end of event selection */
@@ -262,7 +262,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarOpening = Verifying;
-                                        FsmTraceEvent(11);
+                                        FsmTraceEvent(10);
                                     }else if(isDbBadData()){
                                         /* Transition from Reading  to ClearingDb */
                                         evConsumed=1;
@@ -275,7 +275,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarOpening = ClearingDb;
-                                        FsmTraceEvent(10);
+                                        FsmTraceEvent(9);
                                     }else if(isDbSuccess()){
                                         /* Transition from Reading  to Reading  */
                                         evConsumed=1;
@@ -287,7 +287,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarOpening = Reading ;
-                                        FsmTraceEvent(7);
+                                        FsmTraceEvent(8);
                                     }else{
                                         /* Intentionally left blank */
                                     } /*end of event selection */
@@ -309,7 +309,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarActive = Writeable;
-                                        FsmTraceEvent(7);
+                                        FsmTraceEvent(8);
                                     }else{
                                         /* Intentionally left blank */
                                     } /*end of event selection */
@@ -371,7 +371,7 @@ namespace Rte { namespace Db { namespace Record  {
                                     stateVarsCopy.stateVar = Active;/* Default in entry chain  */
                                     stateVarsCopy.stateVarActive = NoPersistence;/* Default in entry chain  */
 
-                                    FsmTraceEvent(9);
+                                    FsmTraceEvent(7);
                                 }else{
                                     /* Intentionally left blank */
                                 } /*end of event selection */
@@ -398,28 +398,28 @@ namespace Rte { namespace Db { namespace Record  {
                                 evConsumed=1;
 
                                 /* Action code for transition  */
-                                
                                 ackWrite();
                                 inspectWriteQue();
 
 
                                 /* adjust state variables  */
                                 stateVarsCopy.stateVarActive = Writeable;
-                                FsmTraceEvent(7);
-                            }else{
+                                FsmTraceEvent(8);
+                            }else if(!isDbSuccess()){
                                 /* Transition from Writing to Active */
                                 evConsumed=1;
 
 
                                 /* Action code for transition  */
-                                
                                 reportFileWriteError();
                                 inspectWriteQue();
 
                                 stateVarsCopy.stateVar = Active;/* Default in entry chain  */
                                 stateVarsCopy.stateVarActive = NoPersistence;/* Default in entry chain  */
 
-                                FsmTraceEvent(8);
+                                FsmTraceEvent(11);
+                            }else{
+                                /* Intentionally left blank */
                             } /*end of event selection */
                         }else if(msg==evWrite){
                             /* Transition from Writing to Writing */
@@ -494,7 +494,6 @@ namespace Rte { namespace Db { namespace Record  {
                     /* Action code for transition  */
                     ackDbStopped();
                     clearWriteQue();
-                    resetFsmHistory();
 
 
                     /* adjust state variables  */
