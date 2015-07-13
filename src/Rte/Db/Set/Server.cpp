@@ -54,7 +54,7 @@ void Server::defaultAllSetsContent() throw()
 
 void Server::request( DefaultMsg& msg )
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request::DefaultDBMsg (opened=%d", m_opened ) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request::DefaultMsg (opened=%d", m_opened ) );
 
     // Ignore request if NOT opened, i.e. it would do anything anyway since all 
     // Sets are defaulted as part of the opening the DB sequence
@@ -150,7 +150,7 @@ void Server::notifySetStopped( LocalApi_& )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::setStopped") );
 
-    // Something is BAD if my set is stop and the Set Handler has NOT be requested to stop
+    // Something is BAD if my set is stopped and the Set Handler has NOT be requested to stop
     if ( !m_closeMsgPtr )
         {
         Cpl::System::FatalError::logf( "Rte::Db::Set::Server::notifySetStopped - Protocol error." );
@@ -187,8 +187,7 @@ void Server::notifySetStarted( LocalApi_& )
 void Server::registerSet( LocalApi_& set )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::registerSet") );
-
-    m_sets.put(&set);
+    m_sets.insert( set );
     }
 
 
