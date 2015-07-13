@@ -13,7 +13,7 @@
 /** @file */
 
 #include <stdint.h>
-#include "Cpl/Container/DictItem.h"
+#include "Cpl/Container/Item.h"
 
 
 
@@ -26,7 +26,7 @@ namespace Rte { namespace Db { namespace Record {
     interface provides the services and callback neccesary to read/write
     individual records.
  */
-class Api: public Cpl::Container::DictItem
+class Api: public Cpl::Container::Item
 {
 public:
     /// Returns the name of the record

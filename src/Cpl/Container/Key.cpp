@@ -43,3 +43,38 @@ const void* KeyLiteralString::getRawKey( unsigned* returnRawKeyLenPtr ) const
 
     return m_stringKeyPtr;    
     }
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+KeyStringBuffer::KeyStringBuffer( const char* startOfString, size_t lenOfStringInBytes )
+:m_stringKeyPtr(startOfString)
+,m_len(lenOfStringInBytes)
+    {
+    }
+
+int KeyStringBuffer::compareKey( const Key& key ) const
+    {
+    const char* otherPtr = (const char*) key.getRawKey();
+    if ( otherPtr )
+        {
+        if ( m_stringKeyPtr )
+            {
+            return strncmp(m_stringKeyPtr, otherPtr, m_len );
+            }
+        }        
+
+    return -1;
+    }
+
+
+const void* KeyStringBuffer::getRawKey( unsigned* returnRawKeyLenPtr ) const
+    {
+    if ( returnRawKeyLenPtr )
+        {
+        *returnRawKeyLenPtr = m_stringKeyPtr? m_len: 0;
+        }
+
+    return m_stringKeyPtr;    
+    }
+

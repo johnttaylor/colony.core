@@ -162,6 +162,39 @@ public: // Cpl::Container::Key
 };
 
 
+
+/** This class provides a 'Key' wrapper for a array of Character of length N,
+    i.e. a string that is NOT null terminated.
+ */
+class KeyStringBuffer: public Key
+{
+public:
+    /// Storage for the key
+    const char* m_stringKeyPtr;
+
+    /// Number of bytes in the buffer
+    size_t      m_len;
+
+public:
+    /// Constructor
+    KeyStringBuffer( const char* startOfString, size_t lenOfStringInBytes );
+
+
+public:
+    /** Returns the Key's content value. Note: The returned values is NOT
+        a null terminated string!
+     */
+    inline const char* getKeyValue(size_t& lenOfStringInBytes) const throw() { lenOfStringInBytes = m_len; return m_stringKeyPtr; }
+
+
+public: // Cpl::Container::Key
+    ///
+    int compareKey( const Key& key ) const;
+    ///
+    const void* getRawKey( unsigned* returnRawKeyLenPtr = 0 ) const;
+};
+
+
 /////////////////////////////////////////////////////////////////////////////
 //                  INLINE IMPLEMENTAION
 /////////////////////////////////////////////////////////////////////////////

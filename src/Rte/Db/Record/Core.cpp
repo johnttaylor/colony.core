@@ -24,7 +24,7 @@ using namespace Rte::Db::Record;
 /////////////////////////////////
 Core::Core( uint8_t*                      recordLayerBuffer,
             uint32_t                      bufferSize,
-            Handler::Client&              setLayerHandler,
+            Client&                       setLayerHandler,
             Rte::Db::Chunk::Request::SAP& chunkSAP,
             Cpl::Itc::PostApi&            recordLayerMbox,
             Cpl::Log::Api&                eventLogger,

@@ -14,6 +14,7 @@
 
 #include "Rte/Db/Chunk/Request.h"
 #include "Rte/Db/Record/Handler.h"
+#include "Rte/Db/Record/Client.h"
 #include "Rte/Db/Record/ErrorClient.h"
 #include "Rte/Db/Record/Fsm_.h"
 #include "Cpl/Container/SList.h"
@@ -43,7 +44,7 @@ private:
     uint32_t                                m_bufSize;
 
     /// Set Layer handler (i.e. my client/consumer)
-    Handler::Client&                        m_setLayer;
+    Client&                                 m_setLayer;
 
     /// SAP of the Chunk Layer/server
     Rte::Db::Chunk::Request::SAP&           m_chunkSAP;
@@ -92,7 +93,7 @@ public:
     /// Constructor
     Core( uint8_t*                      recordLayerBuffer,
           uint32_t                      bufferSize,
-          Handler::Client&              setLayerHandler,
+          Client&                       setLayerHandler,
           Rte::Db::Chunk::Request::SAP& chunkSAP,
           Cpl::Itc::PostApi&            recordLayerMbox,
           Cpl::Log::Api&                eventLogger  = Cpl::Log::Loggers::application(),

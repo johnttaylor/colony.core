@@ -21,7 +21,6 @@
 #include "Cpl/Io/File/Api.h"
 #include "Cpl/Io/File/Output.h"
 #include "Cpl/Container/SList.h"
-#include "Cpl/Container/Key.h"
 #include "Cpl/System/_testsupport/Shutdown_TS.h"
 #include "Rte/Db/Chunk/Server.h"
 #include "Rte/Db/Chunk/FileSystem.h"
@@ -44,11 +43,11 @@ using namespace Rte::Db::Record;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-class MySet: public Api,
-             public Cpl::Container::KeyLiteralString
+class MySet: public Api
 {                               
 public:
     Rte::Db::Chunk::Handle  m_chunkHdl;
+    const char*             m_name;
     uint8_t*                m_dataPtr;
     uint32_t                m_datalen;
     Handler&                m_writer;
@@ -57,7 +56,7 @@ public:
 public:
     ///
     MySet( const char* name, uint8_t* dataPtr,  uint32_t dataLen, uint8_t defaultValue, Handler& writeApi )
-        :Cpl::Container::KeyLiteralString(name)
+        :m_name(name)
         ,m_dataPtr(dataPtr)
         ,m_datalen(dataLen)
         ,m_writer(writeApi)
@@ -66,11 +65,8 @@ public:
             }
 
 public:
-    const Cpl::Container::Key& getKey() const throw()   { return *this; }
-
-public:
     ///
-    const char* getName(void) const                     { return getKeyValue(); }
+    const char* getName(void) const                     { return m_name; }
     ///
     void setChunkHandle( Rte::Db::Chunk::Handle& src )  { m_chunkHdl = src; }
     ///
@@ -166,7 +162,7 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////
-class SetHandler: public Handler::Client,
+class SetHandler: public Client,
                   public Cpl::Container::SList<MySetItem>,
                   public Cpl::Itc::CloseSync,
                   public TestWriteRequest

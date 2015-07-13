@@ -416,15 +416,15 @@ Type="2"/>
 
 <Transition id="r97">
 <End id="r98"
-Pos="17500 -12200"
+Pos="16800 -12200"
 State="r71"
 Type="1"/>
 <Segment id="r99"
 Oblique="1">
 <Anchor id="r103"
-Pos="12905.732697296844 -14931.726504309985">
+Pos="12640.325550255249 -14931.726504309985">
 <FreeText id="r104"
-Pos="14607 -14131"
+Pos="14342 -14131"
 Origin="3">
 <Text>evResponse[!isDbError()]/<p/>
 inspectWriteQue();</Text>
@@ -514,8 +514,32 @@ Type="2"/>
 
 <Note id="r127"
 Pos="3300 -400"
-Size="12100 1000">
-<Text>The FSM's history is reset by the 'Context' when the evStart event is received.  This is a workaround since I can't reset the FSM history from a state action. </Text>
+Size="11000 1300">
+<Text>The FSM's history is reset by the 'generator' of the evStart event.  This is a workaround since I can't reset the FSM history from a state action. </Text>
+<NoteConnector id="r128">
+<SourceEnd id="r129"
+Pos="7800 -1700"/>
+<Segment id="r130"
+Oblique="1"/>
+<End id="r131"
+Pos="6000 -3469"
+Party="r14"/>
+</NoteConnector>
+</Note>
+
+<Note id="r132"
+Pos="20100 -10500"
+Size="3300 3900">
+<Text>The evResponse[isNotCompatible()] case is not handled properly here --&gt;but since it is IMPOSSIBLE for that event/guard to happen at this point in the FSM --&gt;it is don't care</Text>
+<NoteConnector id="r133">
+<SourceEnd id="r201"
+Pos="21300 -14400"/>
+<Segment id="r202"
+Oblique="1"/>
+<End id="r203"
+Pos="21600 -17303"
+Party="r139"/>
+</NoteConnector>
 </Note>
 
 <Transition id="r141">

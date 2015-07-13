@@ -1,5 +1,5 @@
-#ifndef Rte_Db_Record_Handler_h_
-#define Rte_Db_Record_Handler_h_
+#ifndef Rte_Db_Set_Api_h_
+#define Rte_Db_Set_Api_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -12,37 +12,29 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Rte/Db/Record/Api.h"
 
 
 /// Namespace(s)
-namespace Rte { namespace Db { namespace Record { 
+namespace Rte { namespace Db { namespace Set { 
 
 
-/** This class defines the interface for Record Handler Interface.  The Record
-    Handler manages the loading of ALL records and processes the write requests
-    of individual records.
+/** This class is used by the Application to force a Set to set its data 
+    content (aka the Point data) to its default value. Note: The method(s) in
+    class are synchronous wrapper to ITC message requests, i.e. the method(s)
+    can be called from Application threads
  */
-class Handler
+class Api
 {
 public:
-    /// Starts the record layer handler
-    virtual void start(void) = 0;
+    /** This method is used to default the data contents of the Set to its
+        default value(s).
+     */
+    virtual void defaultSetContent() throw() = 0;
 
-    /// Stops the record layer handler
-    virtual void stop() = 0;
 
-
-public:
-    /// Initiate the write action (to non-volatile storage) for 'recordToWrite'
-    virtual void write( Api& recordToWrite ) = 0;
-
-     
 public:
     /// Virtual destructor to keep the compiler happy
-    virtual ~Handler(void){}
-
-
+    virtual ~Api(void){}
 };
 
 
