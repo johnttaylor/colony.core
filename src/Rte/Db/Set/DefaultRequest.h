@@ -1,5 +1,5 @@
-#ifndef Rte_Db_Set_Request_h_
-#define Rte_Db_Set_Request_h_
+#ifndef Rte_Db_Set_DefaultRequest_h_
+#define Rte_Db_Set_DefaultRequest_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -28,11 +28,11 @@ namespace Rte { namespace Db { namespace Set {
     the Set::Handler - then the entire DB is defaulted.  If the service
     provider is a Set - then just that set is defaulted.
  */
-class Request
+class DefaultRequest
 {
 public:
     /// SAP for this API
-    typedef Cpl::Itc::SAP<Request> SAP;
+    typedef Cpl::Itc::SAP<DefaultRequest> SAP;
 
 
 public:
@@ -46,7 +46,7 @@ public:
     };
 
     /// Message Type: Default the Set/All Sets
-    typedef Cpl::Itc::RequestMessage<Request,DefaultPayload> DefaultMsg;
+    typedef Cpl::Itc::RequestMessage<DefaultRequest,DefaultPayload> DefaultMsg;
 
 
 public:

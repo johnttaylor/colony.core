@@ -32,8 +32,10 @@ namespace Cpl { namespace Itc {
 class CloseApi
 {
 public:
-	/// Synchronously closes/cleans-up the called object.
-    virtual void close( void ) = 0;
+	/** Synchronously closes/cleans-up the called object. The method returns
+        if the close operation was successful.
+     */
+    virtual bool close( void ) = 0;
     
     
 public:

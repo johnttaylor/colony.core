@@ -32,7 +32,17 @@ public:
 
 public:
     /// Payload for Message: Open
-    class OpenPayload{};
+    class OpenPayload
+    {
+    public:
+        /// Pass/Fail result of the open request
+        bool m_success;
+
+    public:
+        /// Constructor
+        OpenPayload():m_success(true){}
+    };
+
     
     /// Message Type: Open
     typedef RequestMessage<OpenRequest,OpenPayload> OpenMsg;

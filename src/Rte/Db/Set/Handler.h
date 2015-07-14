@@ -13,6 +13,7 @@
 /** @file */
 
 #include "Cpl/Itc/CloseSync.h"
+#include "Rte/Db/Set/HealthRequest.h"
 
 
 /// Namespace(s)
@@ -23,9 +24,17 @@ namespace Rte { namespace Db { namespace Set {
     content (aka the Point data) to its default value. Note: The method(s) in
     class are synchronous wrapper to ITC message requests, i.e. the method(s)
     can be called from Application threads.
+
+    NOTE: The ITC open request will return false if the DB ends up in the 
+          'No Persistence' state during the opening process.
  */
 class Handler: public Cpl::Itc::CloseSync
-{
+{        
+public:
+    /// Returns the SAP to the Set/DB Health stats ITC interface
+    virtual HealtRequest::SAP&  getHealthSAP(void) = 0;
+    
+
 public:
     /** This method is used to default the data contents of ALL Set to their
         default value(s).

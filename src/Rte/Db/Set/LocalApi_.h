@@ -13,7 +13,7 @@
 /** @file */
 
 #include "Rte/Db/Record/Api.h"
-#include "Cpl/Container/DictItem.h"
+#include "Cpl/Container/MapItem.h"
 
 
 
@@ -25,7 +25,7 @@ namespace Rte { namespace Db { namespace Set {
     Set.  This interface is intended to implemented by the Application.  It is 
     the Set Handler and/or Set Layer the calls this interface.
  */
-class LocalApi_: public Cpl::Container::DictItem
+class LocalApi_: public Cpl::Container::MapItem
 {
 public:
     /** This method starts/initializes the Set.  A Set can be restartd after

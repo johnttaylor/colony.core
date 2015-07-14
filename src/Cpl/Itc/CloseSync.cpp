@@ -24,10 +24,11 @@ CloseSync::CloseSync(PostApi& myMbox)
 
 
 ///////////////////
-void CloseSync::close( void )
+bool CloseSync::close( void )
     {
 	ClosePayload        payload;
     SyncReturnHandler   srh;
     CloseMsg 	        msg(*this,payload,srh);
     m_mbox.postSync(msg);
+    return payload.m_success;
     }

@@ -32,7 +32,17 @@ public:
 
 public:
     /// Payload for Message: Open
-    class ClosePayload{};
+    class ClosePayload
+    {
+    public:
+        /// Pass/Fail result of the class request
+        bool m_success;
+
+    public:
+        /// Constructor
+        ClosePayload():m_success(true){}
+    };
+
     
     /// Message Type: Open
     typedef RequestMessage<CloseRequest,ClosePayload> CloseMsg;

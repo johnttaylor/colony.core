@@ -53,15 +53,6 @@ public:
 
 
 public:
-    /** This method is used to register a Set with the Set Layer
-        NOTE: ALL Sets should be register BEFORE the Set Layer is
-              started (i.e. before open() is called on the set
-              layer).
-     */
-    virtual void registerSet( LocalApi_& set ) = 0;
-
-     
-public:
     /// Virtual destructor to keep the compiler happy
     virtual ~LocalHandler_(void){}
 

@@ -53,7 +53,7 @@ void Core::start( void )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::start") );
     
-    // Generate a Fatal Error if NOT in the Idel state
+    // Generate a Fatal Error if NOT in the Idle state
     if ( getInnermostActiveState() != Idle )
         {
         Cpl::System::FatalError::logf( "Rte::Db::Record::Core::start().  Protocol error.  The FSM is NOT in the idle state (currentState=%s)", getNameByState(getInnermostActiveState()) );
@@ -128,13 +128,23 @@ void Core::response( WriteMsg& msg )
 
 
 /////////////////////////////////
+void Core::reportIncompatible() throw()
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::reportIncompatible") );
+    m_logger.warning( "Rte::Db::Record::Core::reportIncompatible - Incompatible schema" );
+    if ( m_errHandlerPtr ) 
+        {
+        m_errHandlerPtr->reportDbIncompatible();
+        }
+    }
+
 void Core::reportFileReadError() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::reportFileReadError") );
     m_logger.warning( "Rte::Db::Record::Core::reportFileReadError - DB File Read/Open error" );
     if ( m_errHandlerPtr ) 
         {
-        m_errHandlerPtr->databaseFileOpenError( m_dbResult );
+        m_errHandlerPtr->reportDbFileOpenError( m_dbResult );
         }
     }
 
@@ -144,7 +154,7 @@ void Core::reportDataCorruptError() throw()
     m_logger.warning( "Rte::Db::Record::Core::reportDataCorruptError - DB Corruption error" );
     if ( m_errHandlerPtr ) 
         {
-        m_errHandlerPtr->databaseCorruptionError();
+        m_errHandlerPtr->reportDbCorruptionError();
         }
     }
 
@@ -155,7 +165,7 @@ void Core::reportFileWriteError() throw()
     m_logger.warning( "Rte::Db::Record::Core::reportFileWriteError - DB File Write error (rec=%s)", recname  );
     if ( m_errHandlerPtr ) 
         {
-        m_errHandlerPtr->databaseFileWriteError( recname );
+        m_errHandlerPtr->reportDbFileWriteError( recname );
         }
     }
 
@@ -172,7 +182,7 @@ void Core::requestDbOpen() throw()
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::requestDbOpen") );
     if ( m_errHandlerPtr ) 
         {
-        m_errHandlerPtr->databaseOpened();
+        m_errHandlerPtr->reportDbOpened();
         }
 
     Rte::Db::Chunk::Request::OpenDbPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::OpenDbPayload(m_buffer, m_bufSize);
@@ -252,6 +262,13 @@ void Core::ackWrite() throw()
         }
     }
 
+void Core::nakWrite() throw()
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::nakWrite") );
+    m_setLayer.notifyWriteError();
+    }
+
+
 void Core::ackOpenDone() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::ackOpenDone") );
@@ -260,15 +277,29 @@ void Core::ackOpenDone() throw()
 
 void Core::nakOpenDone() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::nakOpenDone") );
-    m_setLayer.notifyOpenedWithErrors();
-    }
+    Client::OpenError_T status;
 
-void Core::notifyIncompatible() throw()
-    {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::notifyIncompatible") );
-    m_logger.warning( "Rte::Db::Record::Core::notifyIncompatible - Incompatible schema, DB closing..." );
-    m_setLayer.notifyIncompatible();
+    // Translate response code to my client open_error code
+    if ( m_dbResult == Rte::Db::Chunk::Request::eEOF )
+        {
+        status = Client::eMISSING_SETS;
+        }     
+    else if ( m_dbResult == Rte::Db::Chunk::Request::eCORRUPT_DATA )
+        {
+        status = Client::eCORRUPT_DATA;
+        }
+    else if ( m_dbResult == Rte::Db::Chunk::Request::eWRONG_SCHEMA )
+        {
+        status = Client::eERR_WRONG_SCHEMA;
+        }
+    else 
+        {
+        status = Client::eERR_MEDIA;
+        }
+
+
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::nakOpenDone. OpenError_T=%u", status ) );
+    m_setLayer.notifyOpenedWithErrors( status );
     }
 
 void Core::ackDbStopped() throw()
@@ -277,7 +308,7 @@ void Core::ackDbStopped() throw()
     m_setLayer.notifyStopped();
     if ( m_errHandlerPtr ) 
         {
-        m_errHandlerPtr->databaseClosed();
+        m_errHandlerPtr->reportDbClosed();
         }
     }
 

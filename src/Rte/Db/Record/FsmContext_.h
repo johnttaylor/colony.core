@@ -50,7 +50,7 @@ public:
     virtual void nakOpenDone() throw() = 0;
 
     /// Action
-    virtual void notifyIncompatible() throw() = 0;
+    virtual void nakWrite() throw() = 0;
 
     /// Action
     virtual void queWriteRequest() throw() = 0;
@@ -63,6 +63,9 @@ public:
 
     /// Action
     virtual void reportFileWriteError() throw() = 0;
+
+    /// Action
+    virtual void reportIncompatible() throw() = 0;
 
     /// Action
     virtual void requestDbClear() throw() = 0;

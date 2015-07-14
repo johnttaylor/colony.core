@@ -218,7 +218,22 @@ namespace Rte { namespace Db { namespace Record  {
 
                             case WaitingToOpen:
                                 if(msg==evResponse){
-                                    if(isDbEof()){
+                                    if(isNotCompatible()){
+                                        /* Transition from WaitingToOpen to Active */
+                                        evConsumed=1;
+
+
+
+                                        /* Action code for transition  */
+                                        reportIncompatible();
+                                        nakOpenDone();
+                                        inspectWriteQue();
+
+                                        stateVarsCopy.stateVar = Active;/* Default in entry chain  */
+                                        stateVarsCopy.stateVarActive = NoPersistence;/* Default in entry chain  */
+
+                                        FsmTraceEvent(13);
+                                    }else if(isDbEof()){
                                         /* Transition from WaitingToOpen to Writeable */
                                         evConsumed=1;
 
@@ -411,6 +426,7 @@ namespace Rte { namespace Db { namespace Record  {
 
 
                                 /* Action code for transition  */
+                                nakWrite();
                                 reportFileWriteError();
                                 inspectWriteQue();
 
@@ -445,27 +461,7 @@ namespace Rte { namespace Db { namespace Record  {
                 /* Check if event was already processed  */
                 if(evConsumed==0){
 
-                    if(msg==evResponse){
-                        if(isNotCompatible()){
-                            /* Transition from Active to Stopping */
-                            evConsumed=1;
-                        
-                            if(stateVars.stateVarActive== Opening){
-                                
-                            }
-
-                            /* Action code for transition  */
-                            notifyIncompatible();
-                            requestDbClose();
-
-
-                            /* adjust state variables  */
-                            stateVarsCopy.stateVar = Stopping;
-                            FsmTraceEvent(13);
-                        }else{
-                            /* Intentionally left blank */
-                        } /*end of event selection */
-                    }else if(msg==evStop){
+                    if(msg==evStop){
                         /* Transition from Active to Stopping */
                         evConsumed=1;
                         

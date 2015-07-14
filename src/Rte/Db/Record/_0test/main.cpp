@@ -176,8 +176,8 @@ public:
 public:
     unsigned m_countOpenComplete;
     unsigned m_countOpenFailed;
-    unsigned m_notifyIncompatible;
     unsigned m_countStopped;
+    unsigned m_countWriteError;
 
 
 public:
@@ -189,8 +189,8 @@ public:
         ,m_recordHandler(buffer, bufsize, *this, chunkSAP, upperLayersMbox, Cpl::Log::Loggers::null(), errHandlerPtr )
         ,m_countOpenComplete(0)
         ,m_countOpenFailed(0)
-        ,m_notifyIncompatible(0)
         ,m_countStopped(0)
+        ,m_countWriteError(0)
         ,m_opened(false)
             {
             }
@@ -208,8 +208,8 @@ public:
         {
         m_countOpenComplete  = 0;
         m_countOpenFailed    = 0;
-        m_notifyIncompatible = 0;
         m_countStopped       = 0;
+        m_countWriteError    = 0;
         }
 
     ///
@@ -257,24 +257,24 @@ public:
         }
 
     ///
-    void notifyOpenedWithErrors(void) 
+    void notifyOpenedWithErrors(Rte::Db::Record::Client::OpenError_T errorCode) 
         {
         m_countOpenFailed++;
         issueWrites();
-        CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::notifyOpenedWithErrors.count=%d", m_count));
-        }
-
-    ///
-    void notifyIncompatible(void) 
-        {
-        m_notifyIncompatible++;
-        CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::notifyIncompatible.count=%d", m_count));
+        CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::notifyOpenedWithErrors. Code=%d, count=%d", errorCode, m_count));
         }
 
     ///
     bool isCleanLoad(void)
         {
         return m_count == 0;
+        }
+
+    ///
+    void notifyWriteError(void)
+        {
+        m_countWriteError++;
+        CPL_SYSTEM_TRACE_MSG(SECT_, ("SetHandler::notifyWriteError.count=%d", m_countWriteError));
         }
 
     ///
@@ -390,6 +390,7 @@ public:
     unsigned m_errCountFileOpen;
     unsigned m_errCountCorruption;
     unsigned m_errCountFileWrite;
+    unsigned m_errCountIncompatible;
     unsigned m_countOpened;
     unsigned m_countClosed;
 
@@ -398,6 +399,7 @@ public:
         :m_errCountFileOpen(0)
         ,m_errCountCorruption(0)
         ,m_errCountFileWrite(0)
+        ,m_errCountIncompatible(0)
         ,m_countOpened(0)
         ,m_countClosed(0)
             {}
@@ -405,35 +407,41 @@ public:
 public:
     void clearCounters()
         {
-        m_errCountFileOpen   = 0;
-        m_errCountCorruption = 0;
-        m_errCountFileWrite  = 0;
-        m_countOpened        = 0;
-        m_countClosed        = 0;
+        m_errCountFileOpen     = 0;
+        m_errCountCorruption   = 0;
+        m_errCountFileWrite    = 0;
+        m_errCountIncompatible = 0;
+        m_countOpened          = 0;
+        m_countClosed          = 0;
         }
 
 public:
-    void databaseFileOpenError( Rte::Db::Chunk::Request::Result_T errorCode )
+    void reportDbFileOpenError( Rte::Db::Chunk::Request::Result_T errorCode )
         {
         m_errCountFileOpen++;
         }
 
-    void databaseCorruptionError( void )
+    void reportDbCorruptionError( void )
         {
         m_errCountCorruption++;
         }
 
-    void databaseFileWriteError( const char* recordName )
+    void reportDbFileWriteError( const char* recordName )
         {
         m_errCountFileWrite++;
         }
 
-    void databaseOpened( void )
+    void reportDbIncompatible( void )
+        {
+        m_errCountIncompatible++;
+        }
+
+    void reportDbOpened( void )
         {
         m_countOpened++;
         }
 
-    void databaseClosed( void )
+    void reportDbClosed( void )
         {
         m_countClosed++;
         }
@@ -557,12 +565,13 @@ TEST_CASE( "record", "[record]" )
     REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
     REQUIRE( errorReporter_.m_errCountCorruption == 0 );
     REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
     REQUIRE( errorReporter_.m_countOpened == 1 );
     REQUIRE( errorReporter_.m_countClosed == 1 );
     REQUIRE( client.m_countOpenComplete == 1 );
     REQUIRE( client.m_countOpenFailed == 0 );
-    REQUIRE( client.m_notifyIncompatible == 0 );
     REQUIRE( client.m_countStopped == 1 );
+    REQUIRE( client.m_countWriteError == 0 );
     errorReporter_.clearCounters();
     client.clearCounters();
 
@@ -588,12 +597,13 @@ TEST_CASE( "record", "[record]" )
     REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
     REQUIRE( errorReporter_.m_errCountCorruption == 0 );
     REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
     REQUIRE( errorReporter_.m_countOpened == 1 );
     REQUIRE( errorReporter_.m_countClosed == 1 );
     REQUIRE( client.m_countOpenComplete == 1 );
     REQUIRE( client.m_countOpenFailed == 0 );
-    REQUIRE( client.m_notifyIncompatible == 0 );
     REQUIRE( client.m_countStopped == 1 );
+    REQUIRE( client.m_countWriteError == 0 );
     errorReporter_.clearCounters();
     client.clearCounters();
 
@@ -615,12 +625,13 @@ TEST_CASE( "record", "[record]" )
     REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
     REQUIRE( errorReporter_.m_errCountCorruption == 0 );
     REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_errCountIncompatible == 1 );
     REQUIRE( errorReporter_.m_countOpened == 1 );
     REQUIRE( errorReporter_.m_countClosed == 1 );
     REQUIRE( client2.m_countOpenComplete == 0 );
-    REQUIRE( client2.m_countOpenFailed == 0 );
-    REQUIRE( client2.m_notifyIncompatible == 1 );
+    REQUIRE( client2.m_countOpenFailed == 1 );
     REQUIRE( client2.m_countStopped == 1 );
+    REQUIRE( client.m_countWriteError == 0 );
     errorReporter_.clearCounters();
     client2.clearCounters();
 
@@ -648,12 +659,13 @@ TEST_CASE( "record", "[record]" )
     REQUIRE( errorReporter_.m_errCountFileOpen == 1 );
     REQUIRE( errorReporter_.m_errCountCorruption == 0 );
     REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
     REQUIRE( errorReporter_.m_countOpened == 1 );
     REQUIRE( errorReporter_.m_countClosed == 1 );
     REQUIRE( client3.m_countOpenComplete == 0 );
     REQUIRE( client3.m_countOpenFailed == 1 );
-    REQUIRE( client3.m_notifyIncompatible == 0 );
     REQUIRE( client3.m_countStopped == 1 );
+    REQUIRE( client.m_countWriteError == 0 );
     errorReporter_.clearCounters();
     client3.clearCounters();
 
@@ -685,12 +697,13 @@ TEST_CASE( "record", "[record]" )
     REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
     REQUIRE( errorReporter_.m_errCountCorruption == 0 );
     REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
     REQUIRE( errorReporter_.m_countOpened == 1 );
     REQUIRE( errorReporter_.m_countClosed == 1 );
     REQUIRE( client.m_countOpenComplete == 1 );
     REQUIRE( client.m_countOpenFailed == 0 );
-    REQUIRE( client.m_notifyIncompatible == 0 );
     REQUIRE( client.m_countStopped == 1 );
+    REQUIRE( client.m_countWriteError == 0 );
     errorReporter_.clearCounters();
     client.clearCounters();
 
@@ -715,12 +728,13 @@ TEST_CASE( "record", "[record]" )
     REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
     REQUIRE( errorReporter_.m_errCountCorruption == 0 );
     REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
     REQUIRE( errorReporter_.m_countOpened == 1 );
     REQUIRE( errorReporter_.m_countClosed == 1 );
     REQUIRE( client.m_countOpenComplete == 1 );
     REQUIRE( client.m_countOpenFailed == 0 );
-    REQUIRE( client.m_notifyIncompatible == 0 );
     REQUIRE( client.m_countStopped == 1 );
+    REQUIRE( client.m_countWriteError == 0 );
     errorReporter_.clearCounters();
     client.clearCounters();
 
@@ -751,12 +765,13 @@ TEST_CASE( "record", "[record]" )
     REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
     REQUIRE( errorReporter_.m_errCountCorruption == 0 );
     REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
     REQUIRE( errorReporter_.m_countOpened == 1 );
     REQUIRE( errorReporter_.m_countClosed == 1 );
     REQUIRE( client.m_countOpenComplete == 0 );
     REQUIRE( client.m_countOpenFailed == 1 );
-    REQUIRE( client.m_notifyIncompatible == 0 );
     REQUIRE( client.m_countStopped == 1 );
+    REQUIRE( client.m_countWriteError == 0 );
     errorReporter_.clearCounters();
     client.clearCounters();
 
@@ -785,12 +800,13 @@ TEST_CASE( "record", "[record]" )
     REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
     REQUIRE( errorReporter_.m_errCountCorruption == 0 );
     REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
     REQUIRE( errorReporter_.m_countOpened == 1 );
     REQUIRE( errorReporter_.m_countClosed == 1 );
     REQUIRE( client.m_countOpenComplete == 1 );
     REQUIRE( client.m_countOpenFailed == 0 );
-    REQUIRE( client.m_notifyIncompatible == 0 );
     REQUIRE( client.m_countStopped == 1 );
+    REQUIRE( client.m_countWriteError == 0 );
     errorReporter_.clearCounters();
     client.clearCounters();
 
@@ -827,12 +843,13 @@ TEST_CASE( "record", "[record]" )
     REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
     REQUIRE( errorReporter_.m_errCountCorruption == 1 );
     REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
     REQUIRE( errorReporter_.m_countOpened == 1 );
     REQUIRE( errorReporter_.m_countClosed == 1 );
     REQUIRE( client.m_countOpenComplete == 0 );
     REQUIRE( client.m_countOpenFailed == 1 );
-    REQUIRE( client.m_notifyIncompatible == 0 );
     REQUIRE( client.m_countStopped == 1 );
+    REQUIRE( client.m_countWriteError == 0 );
     errorReporter_.clearCounters();
     client.clearCounters();
 
@@ -861,12 +878,13 @@ TEST_CASE( "record", "[record]" )
     REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
     REQUIRE( errorReporter_.m_errCountCorruption == 0 );
     REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
+    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
     REQUIRE( errorReporter_.m_countOpened == 1 );
     REQUIRE( errorReporter_.m_countClosed == 1 );
     REQUIRE( client.m_countOpenComplete == 1 );
     REQUIRE( client.m_countOpenFailed == 0 );
-    REQUIRE( client.m_notifyIncompatible == 0 );
     REQUIRE( client.m_countStopped == 1 );
+    REQUIRE( client.m_countWriteError == 0 );
     errorReporter_.clearCounters();
     client.clearCounters();
 

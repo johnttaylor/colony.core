@@ -41,7 +41,7 @@ ranksep=.4;
 "Reading "->"ClearingDb"[label=<evResponse<br ALIGN="LEFT"/>[isDbBadData()] / reportDataCorruptError();<br ALIGN="LEFT"/>nakOpe...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  ClearingDb
 "Reading "->"Verifying"[label=<evResponse<br ALIGN="LEFT"/>[isDbEof()] / verifyOpen();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  Verifying
 "defaultActive"->"NoPersistence"[label=<  > style=dotted];
-"Writing"->"defaultActive"[labeldistance = 2.0, taillabel=<evResponse<br ALIGN="LEFT"/>[!isDbSuccess()] / <br ALIGN="LEFT"/>reportFileWriteError();<br ALIGN="LEFT"/>inspectW...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive];//Writing Active
+"Writing"->"defaultActive"[labeldistance = 2.0, taillabel=<evResponse<br ALIGN="LEFT"/>[!isDbSuccess()] / <br ALIGN="LEFT"/>nakWrite();<br ALIGN="LEFT"/>reportFileWriteError...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive];//Writing Active
 "ClearingDb"->"Writeable"[label=<evResponse<br ALIGN="LEFT"/>[!isDbError()] / inspectWriteQue();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //ClearingDb Writeable
 "WaitingToOpen"->"Writeable"[label=<evResponse<br ALIGN="LEFT"/>[isDbEof()] / ackOpenDone();<br ALIGN="LEFT"/>inspectWriteQue()...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingToOpen Writeable
 "Writeable"->"Writing"[label=<evWrite / <br ALIGN="LEFT"/>requestDbWrite();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Writeable Writing
@@ -52,7 +52,7 @@ ranksep=.4;
 "Writing"->"Writing"[label=<evWrite / <br ALIGN="LEFT"/>queWriteRequest();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Writing Writing
 "defaultOpening"->"WaitingToOpen"[label=<  > style=dotted];
 "Verifying"->"ClearingDb"[label=<evIncompleteLoad / <br ALIGN="LEFT"/>nakOpenDone();<br ALIGN="LEFT"/>requestDbClear();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Verifying ClearingDb
-"defaultActive"->"Stopping"[labeldistance=2.0, headlabel=<evResponse<br ALIGN="LEFT"/>[isNotCompatible()] / <br ALIGN="LEFT"/>notifyIncompatible();<br ALIGN="LEFT"/>requestDbC...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black ltail=clusterActive];//Active Stopping
+"WaitingToOpen"->"defaultActive"[labeldistance = 2.0, taillabel=<evResponse<br ALIGN="LEFT"/>[isNotCompatible()] / <br ALIGN="LEFT"/>reportIncompatible();<br ALIGN="LEFT"/>nakOpenDon...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive];//WaitingToOpen Active
 "Idle"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Idle</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];subgraph "clusterActive"{fontname=arial; fontsize=8
 color=black; style="rounded";
 label=<Active<br ALIGN="LEFT"/><br ALIGN="LEFT"/>>;

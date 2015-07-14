@@ -21,8 +21,8 @@ namespace Rte { namespace Db { namespace Record {
 
 /** This class defines the interface for reporting errors encountered (when 
     reading and writing records to the database) to the Domain Application.
-    This interface is informational only, i.e. what (if anything) the
-    Domain Applicaiton does with information is NOT directly feedback to
+    This interface is informational only in the context that what (if anything) 
+    the Domain Applicaiton does with the information is NOT directly fed back to
     the Record Layer processing.
  */
 class ErrorClient
@@ -33,29 +33,36 @@ public:
         the non-volatle storage media or the file being read is not a valid 
         DB file.
      */
-    virtual void databaseFileOpenError( Rte::Db::Chunk::Request::Result_T errorCode ) = 0;
+    virtual void reportDbFileOpenError( Rte::Db::Chunk::Request::Result_T errorCode ) = 0;
      
     /** This method reports that at least one record in the database is/was
         corrupted.
      */
-    virtual void databaseCorruptionError( void ) = 0;
+    virtual void reportDbCorruptionError( void ) = 0;
 
     /** This method reports that a 'File' error occurred when trying to
         write a record to the database.
      */
-    virtual void databaseFileWriteError( const char* recordName ) = 0;
+    virtual void reportDbFileWriteError( const char* recordName ) = 0;
+
+    /** This method reports that the DB file that was open  does NOT have a 
+        compatible schema identifier. 
+     */
+    virtual void reportDbIncompatible(void) = 0;
+
+
 
 
 public:
     /** This method reports that the database has been (or attempted to be)
         opened.
      */
-    virtual void databaseOpened( void ) = 0;
+    virtual void reportDbOpened( void ) = 0;
 
     /** This method reports that the database has been closed, i.e. 'clears'
         any previously reported errors.
      */
-    virtual void databaseClosed( void ) = 0;
+    virtual void reportDbClosed( void ) = 0;
 
 
 public:

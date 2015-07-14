@@ -29,20 +29,45 @@ Server::Server( Rte::Db::Record::Handler&                              recordLay
                 Cpl::Container::Dictionary<Rte::Db::Set::LocalApi_>&   sets
               )
 :Cpl::Itc::CloseSync(setAndRecordLayersMbox)
+,m_healthSAP(*this, setAndRecordLayersMbox) 
 ,m_recordLayer(recordLayer)
 ,m_opened(false)
 ,m_conversion(false)
+,m_noPersistence(false)
 ,m_setCount(0)
 ,m_openCount(0)
 ,m_closeCount(0)
 ,m_openMsgPtr(0)
 ,m_closeMsgPtr(0)
 ,m_sets(sets)
+,m_status( HealthRequest::eCLOSED )
     {
     }
 
 
 ///////////////////////////////////////
+HealthRequest::SAP& Server::getHealthSAP(void)
+    {
+    return m_healthSAP;
+    }
+
+void Server::request( HealthMsg& msg )
+    {
+    // Return immediately if difference in ASSUMED status vs actual
+    if ( msg.getPayload().m_status != m_status )
+        {
+        msg.getPayload().m_status = m_status;
+        msg.returnToSender();
+        }
+
+    // Que notification request until there is change
+    else
+        {
+        m_pendingHealth.put( msg );
+        }
+    }
+
+
 void Server::defaultAllSetsContent() throw()
     {
     DefaultPayload                payload;
@@ -83,10 +108,12 @@ void Server::request( Cpl::Itc::OpenRequest::OpenMsg& msg )
         }
     
     // Housekeeping
-    m_conversion = false;
-    m_setCount   = 0;
-    m_openCount  = 0;
-    m_openMsgPtr = &msg;
+    m_noPersistence = false;
+    m_conversion    = false;
+    m_setCount      = 0;
+    m_openCount     = 0;
+    m_openMsgPtr    = &msg;
+    setNewHealthStatus( eOPENING );
 
     // Start all registered sets 
     Rte::Db::Set::LocalApi_* setPtr = m_sets.first();
@@ -178,16 +205,22 @@ void Server::notifySetStarted( LocalApi_& )
     if ( --m_openCount == 0 )
         {
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::notifySetStarted - Set Layer Started") );
+        
+        // Update my health (and mark the openMsg as failed when appropriate)    
+        if ( m_noPersistence == false )
+            {
+            setNewHealthStatus( HealthRequest::eOPENED );
+            }
+        else
+            {
+            m_openMsgPtr->getPayload().m_sucess = false;
+            }
+
+        // Return the OpenMsg now that ALL Sets are 'opened'
         m_openMsgPtr->returnToSender();
         m_openMsgPtr = 0;
         m_opened     = true;
         }
-    }
-
-void Server::registerSet( LocalApi_& set )
-    {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::registerSet") );
-    m_sets.insert( set );
     }
 
 
@@ -212,9 +245,12 @@ void Server::notifyOpenCompleted(void)
         setPtr->notifyLoadCompleted();
         setPtr = m_sets.next( *setPtr );
         }
+
+    // Set my Health
+    setNewHealthStatus( eRUNNING );
     }
 
-void Server::notifyOpenedWithErrors(void)
+void Server::notifyOpenedWithErrors( Rte::Db::Record::Client::OpenError_T errorCode )
     {
     LocalApi_* setPtr = m_sets.first();
     while( setPtr )
@@ -222,11 +258,20 @@ void Server::notifyOpenedWithErrors(void)
         setPtr->notifyLoadFailed();
         setPtr = m_sets.next( *setPtr );
         }
+
+    // Update my Health
+    updateHealthStatus( errorCode );
     }
 
 bool Server::isCleanLoad(void)
     {
     return m_setCount == 0 && !m_conversion;
+    }
+
+void Server::notifyWriteError(void)
+    {
+    m_noPersistence = true;
+    setNewHealthStatus( eNO_STORAGE_MEDIA_ERR );
     }
 
 void Server::notifyStopped()
@@ -238,14 +283,54 @@ void Server::notifyStopped()
         }
 
     // Return/complete my close request
+    setNewHealthStatus( eCLOSED );      // Return Health Request Msg BEFORE the close message -->this makes clean-up on the client easier.
     m_closeMsgPtr->returnToSender();
     m_closeMsgPtr = 0;
     m_opened      = false;
     }
 
 
-void Server::notifyIncompatible(void)
+/////////////////////////////////
+void Server::updateHealthStatus( Rte::Db::Record::Client::OpenError_T openErrorCode )
     {
-    // TODO:  Not sure what goes HERE!!!
+    if ( openErrorCode == eERR_MEDIA )
+        {
+        m_noPersistence = true;
+        setNewHealthStatus( eNO_STORAGE_WRONG_SCHEMA );
+        }
+    else if ( openErrorCode == eERR_MEDIA )
+        {
+        m_noPersistence = true;
+        setNewHealthStatus( eNO_STORAGE_MEDIA_ERR );
+        }
+    else
+        {
+        setNewHealthStatus( eRUNNING );
+        }
     }
+
+
+void Server::setNewHealthStatus( HealthRequest::Status_T newstatus )
+    {
+    // Update my status
+    m_status = newstatus;
+
+    // Generate change notification(s)
+    HealthMsg* ptr = m_pendingHealth.first();
+    while( ptr )
+        {
+        HealthMsg* nextPtr = m_pendingHealth.next( *ptr );
+
+        if ( ptr->getPayload().m_status != m_status )
+            {
+            m_pendingHealth.remove( *ptr );
+            ptr->getPayload().m_status = m_status;
+            ptr->returnToSender();
+            }
+
+        ptr = nextPtr;
+        }
+    }
+
+
 

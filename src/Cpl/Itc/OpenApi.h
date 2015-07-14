@@ -32,8 +32,10 @@ namespace Cpl { namespace Itc {
 class OpenApi
 {
 public:
-	/// Synchronously opens/intiailizes the called object.
-    virtual void open( void ) = 0;
+	/** Synchronously opens/intiailizes the called object. Returns true
+        if the open operation was successful
+     */
+    virtual bool open( void ) = 0;
     
     
 public:

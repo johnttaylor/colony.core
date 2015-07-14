@@ -24,10 +24,11 @@ OpenSync::OpenSync(PostApi& myMbox)
 
 
 ///////////////////
-void OpenSync::open( void )
+bool OpenSync::open( void )
     {
 	OpenPayload         payload;
     SyncReturnHandler   srh;
     OpenMsg 	        msg(*this,payload,srh);
     m_mbox.postSync(msg);
+    return payload.m_success;
     }

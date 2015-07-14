@@ -27,6 +27,14 @@ namespace Rte { namespace Db { namespace Record {
 class Client
 {
 public:
+    /// Possible Open errors
+    enum OpenError_T { eCORRUPT_DATA,       //!< At least one Record was corrupted
+                       eMISSING_SETS,       //!< The number of Record in the DB was less than expected (aka a minor upgrade)
+                       eERR_MEDIA,          //!< A File/Media error was encounter.  The DB is operating in the 'No Persistence' state
+                       eERR_WRONG_SCHEMA    //!< The specified DB file does not have a compatible schema.  The DB is operating in the 'No Persistence' state
+                     };
+
+public:
     /** Returns the Record API associated with 'recName'.  If no match
         is found for recName, then null is returned.
 
@@ -57,17 +65,7 @@ public:
               the application needs to add (i.e. write) the new record to 
               the opened DB.
      */
-    virtual void notifyOpenedWithErrors(void) = 0;
-
-
-    /** Notification (to the upper layer) that the DB file that was open
-        does NOT have a compatible schema identifier.  The Chunk layer will 
-        internally request to the close the DB when this happens. The upper 
-        layer will receive a notifyStopped() call once the DB has been 
-        succesfully closed.
-     */
-    virtual void notifyIncompatible(void) = 0;
-
+    virtual void notifyOpenedWithErrors( OpenError_T errorCode ) = 0;
 
     /** This method allows the upper layer to inform the Record layer
         if there was a clean/succesful load of all the records from
@@ -78,6 +76,14 @@ public:
     virtual bool isCleanLoad(void) = 0;
     
 
+    /** Notification (to the upper layer) that an error occurred while
+        attempting to write a record to the database.  If this happens
+        then future write will be attempted and the database operates
+        in its 'No Persistence' mode.
+     */
+    virtual void notifyWriteError(void) = 0;
+
+    
     /** Notification (to the upper layer) that the Record Handler is
         stopped, i.e. the Record Handler/Layer has returned to the 
         Idle state.  This method is the asynchronous response to the 

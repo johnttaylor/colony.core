@@ -90,7 +90,7 @@ Size="2000 1000">
 <Text>Verifying</Text>
 </State>
 <InitialState id="r179"
-Pos="5500 -7600"/>
+Pos="9500 -5300"/>
 </State>
 <InitialState id="r89"
 Pos="16700 -2700"/>
@@ -200,8 +200,8 @@ Type="1"/>
 <Anchor id="r29"
 Pos="900 -10100">
 <FreeText id="r30"
-Pos="1000 -9000"
-Origin="4">
+Pos="1200 -12503"
+Origin="1">
 <Text>evStopped/<p/>
 ackDbStopped();<p/>
 clearWriteQue();</Text>
@@ -269,19 +269,19 @@ Type="2"/>
 </Transition>
 
 <InitialState id="r52"
-Pos="2300 -5800"/>
+Pos="2300 -6000"/>
 
 <Transition id="r53">
 <End id="r54"
-Pos="2400 -5826.7949192431124"
+Pos="2400 -6026.7949192431124"
 State="r52"
 Type="1"/>
 <Segment id="r55"
 Oblique="1">
 <Anchor id="r78"
-Pos="2224.1886495461699 -5419.4422533784127">
+Pos="2224.1886495461704 -5531.5365781514984">
 <FreeText id="r84"
-Pos="2424 -5219"
+Pos="2424 -5331"
 Origin="4">
 <Text/>
 </FreeText>
@@ -397,6 +397,7 @@ Pos="22700 -17100">
 Pos="23651 -17303"
 Origin="2">
 <Text>evResponse[!isDbSuccess()]/<p/>
+nakWrite();<p/>
 reportFileWriteError();<p/>
 inspectWriteQue();</Text>
 </FreeText>
@@ -446,8 +447,8 @@ Type="1"/>
 <Anchor id="r109"
 Pos="8500 -11700">
 <FreeText id="r110"
-Pos="8358 -10097"
-Origin="3">
+Pos="8358 -11900"
+Origin="2">
 <Text>evResponse[isDbEof()]/<p/>
 ackOpenDone();<p/>
 inspectWriteQue();</Text>
@@ -653,13 +654,13 @@ Type="2"/>
 
 <Transition id="r180">
 <End id="r181"
-Pos="5873.2050807568876 -7700"
+Pos="9600 -5673.2050807568876"
 State="r179"
 Type="1"/>
 <Segment id="r182"
 Oblique="1"/>
 <End id="r183"
-Pos="7800 -7200"
+Pos="9100 -6600"
 State="r8"
 Type="2"/>
 </Transition>
@@ -690,28 +691,32 @@ Type="2"/>
 
 <Transition id="r193">
 <End id="r194"
-Pos="3700 -12100"
-State="r5"
+Pos="7800 -7100"
+State="r8"
 Type="1"/>
 <Segment id="r200">
 <Anchor id="r197"
-Pos="2468.3122847301952 -12100">
+Pos="2900 -7100">
 <FreeText id="r198"
-Pos="1245 -11900"
-Origin="4">
+Pos="2076 -8003"
+Origin="1">
 <Text>evResponse[isNotCompatible()]/<p/>
-notifyIncompatible();<p/>
-requestDbClose();</Text>
+reportIncompatible();<p/>
+nakOpenDone();<p/>
+inspectWriteQue();</Text>
 </FreeText>
 </Anchor>
 </Segment>
 <Join id="r199"
-Pos="1700 -12100"/>
-<Segment id="r195"
+Pos="2900 -7100"/>
+<Segment id="r205"
 Oblique="1"/>
+<Join id="r204"
+Pos="2900 -7700"/>
+<Segment id="r195"/>
 <End id="r196"
-Pos="1700 -14300"
-State="r7"
+Pos="3700 -7700"
+State="r5"
 Type="2"/>
 </Transition>
 

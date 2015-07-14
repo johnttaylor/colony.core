@@ -13,9 +13,12 @@
 /** @file */
 
 #include "Rte/Db/Set/Handler.h"
-#include "Rte/Db/Set/Request.h"
+#include "Rte/Db/Set/DefaultRequest.h"
+#include "Rte/Db/Set/HealthRequest.h"
 #include "Rte/Db/Record/Client.h"
 #include "Rte/Db/Set/LocalHandler_.h"
+#include "Cpl/Container/DList.h"
+#include "Cpl/Container/Map.h"
 
 
 /// Namespace(s)
@@ -25,52 +28,72 @@ namespace Rte { namespace Db { namespace Set {
 /** This class implements the Set Handler
  */
 class Server: public Handler,
-              public LocalHandler_,
-              public Request,
+              public HealthRequest,
+              public DefaultRequest,
               public Rte::Db::Record::Client
+              public LocalHandler_,
 {
 protected:
+    /// List of Clients monitor my health
+    Cpl::Container::DList<HealthMsg>    m_pendingHealth;
+
+    /// SAP for my Viewer ITC interface
+    HealthRequest::SAP                  m_healthSAP;
+
     /// Handle to the Record Layer
-    Rte::Db::Record::Handler&   m_recordLayer;
+    Rte::Db::Record::Handler&           m_recordLayer;
 
     /// My opened/closed state
-    bool                        m_opened;
+    bool                                m_opened;
 
     /// Remember if at least one set performed a 'conversion'
-    bool                        m_conversion;
+    bool                                m_conversion;
+
+    /// Remember if a 'no persistence' error occurred
+    bool                                m_noPersistence;
 
     /// Number of Sets that have NOT been succesfully initialized
-    unsigned                    m_setCount;
+    unsigned                            m_setCount;
 
     /// Number of started/opened Sets
-    unsigned                    m_openCount;
+    unsigned                            m_openCount;
 
     /// Number of stopped/closed Sets
-    unsigned                    m_closeCount;
-
+    unsigned                            m_closeCount;
+                                        
     /// Cache my Open Request message
-    OpenMsg*                    m_openMsgPtr;
+    OpenMsg*                            m_openMsgPtr;
 
     /// Cache my Close Request message
-    CloseMsg*                   m_closeMsgPtr;
+    CloseMsg*                           m_closeMsgPtr;
 
-    /// Hash table for quick look-up of Record names
-    Cpl::Container::Dictionary<Rte::Db::Set::LocalApi_>& m_sets;
+    /// Current Health
+    HealthRequest::Status_T             m_status;
+
+
+    /// Map containing reference to all Sets for assocaited DB instance
+    Cpl::Container::Map<Rte::Db::Set::LocalApi_>& m_sets;
 
 
 public:
     /// Constructor
-    Server( Rte::Db::Record::Handler&                              recordLayer,
-            Cpl::Itc::PostApi&                                     setAndRecordLayersMbox, 
-            Cpl::Container::Dictionary<Rte::Db::Set::LocalApi_>&   sets
+    Server( Rte::Db::Record::Handler&                       recordLayer,
+            Cpl::Itc::PostApi&                              setAndRecordLayersMbox, 
+            Cpl::Container::Map<Rte::Db::Set::LocalApi_>&   sets
           );
 
 
 public:
     /// See Rte::Db::Set::Handler
+    HealthRequest::SAP&  getHealthSAP(void);
+
+    /// See Rte::Db::Set::Handler
     void defaultAllSetsContent() throw();
 
-    /// See Rte::Db::Set::Request
+    /// See Rte::Db::Set::DefaultRequest
+    void request( HealthMsg& msg );
+
+    /// See Rte::Db::Set::DefaultRequest
     void request( DefaultMsg& msg );
 
     /// See Cpl::Itc::Open
@@ -78,6 +101,7 @@ public:
 
     /// See Cpl::Itc::Close
     void request( Cpl::Itc::CloseRequest::CloseMsg& msg );
+
 
 
 public:
@@ -96,9 +120,6 @@ public:
     /// See Rte::Db::Set::LocalHandler_
     void notifySetStarted( LocalApi_& set );
 
-    /// See Rte::Db::Set::LocalHandler_
-    void registerSet( LocalApi_& set );
-
 
 public:
     /// See Rte::Db::Record::Client
@@ -108,16 +129,25 @@ public:
     void notifyOpenCompleted(void);
 
     /// See Rte::Db::Record::Client
-    void notifyOpenedWithErrors(void);
-
-    /// See Rte::Db::Record::Client
-    void notifyIncompatible(void);
+    void notifyOpenedWithErrors( Rte::Db::Record::Client::OpenError_T errorCode );
 
     /// See Rte::Db::Record::Client
     bool isCleanLoad(void);
 
     /// See Rte::Db::Record::Client
+    void notifyWriteError(void);
+
+    /// See Rte::Db::Record::Client
     void notifyStopped();
+
+
+protected:
+    /// Helper
+    void updateHealthStatus( Rte::Db::Record::Client::OpenError_T openErrorCode );
+
+    /// Helper
+    void setNewHealthStatus( HealthRequest::Status_T newstatus );
+
 };
 
 

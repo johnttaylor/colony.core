@@ -39,7 +39,7 @@ public:
 
 public: 
 	/// See OpenApi
-	void open( void );
+	bool open( void );
 };
 
 

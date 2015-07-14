@@ -89,5 +89,5 @@ TEST_CASE( "mvc", "[mvc]" )
     Cpl::System::Thread::destroy( *t1 );
     Cpl::System::Thread::destroy( *t2 );
     Cpl::System::Thread::destroy( *t3 );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 ); // One error due to signalling the viewer's mailbox
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
     }

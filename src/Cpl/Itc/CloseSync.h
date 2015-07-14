@@ -37,7 +37,7 @@ public:
 
 public: 
 	/// See CloseSync
-	void close();
+	bool close();
 };
 
 

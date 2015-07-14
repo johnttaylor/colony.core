@@ -155,7 +155,7 @@ protected:
     void nakOpenDone() throw();
 
     /// See Rte::Db::Record::FsmContext_
-    void notifyIncompatible() throw();
+    void nakWrite() throw();
 
     /// See Rte::Db::Record::FsmContext_
     void queWriteRequest() throw();
@@ -169,6 +169,9 @@ protected:
     /// See Rte::Db::Record::FsmContext_
     void reportFileWriteError() throw();
 
+    /// See Rte::Db::Record::FsmContext_
+    void reportIncompatible() throw();
+    
     /// See Rte::Db::Record::FsmContext_
     void requestDbClear() throw();
 
