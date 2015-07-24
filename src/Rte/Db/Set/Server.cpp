@@ -1,5 +1,3 @@
-#ifndef Rte_Db_Set_Server_h_
-#define Rte_Db_Set_Server_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -10,11 +8,11 @@
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
-/** @file */
 
 #include "Server.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/System/FatalError.h"
+#include "Cpl/Itc/SyncReturnHandler.h"
 
 
 ///
@@ -24,9 +22,9 @@ using namespace Rte::Db::Set;
 
 
 ///////////////////////////////////////
-Server::Server( Rte::Db::Record::Handler&                              recordLayer,
-                Cpl::Itc::PostApi&                                     setAndRecordLayersMbox, 
-                Cpl::Container::Dictionary<Rte::Db::Set::LocalApi_>&   sets
+Server::Server( Rte::Db::Record::Handler&                      recordLayer,
+                Cpl::Itc::PostApi&                             setAndRecordLayersMbox, 
+                Cpl::Container::Map<Rte::Db::Set::ApiLocal>&   sets
               )
 :Cpl::Itc::CloseSync(setAndRecordLayersMbox)
 ,m_healthSAP(*this, setAndRecordLayersMbox) 
@@ -86,7 +84,7 @@ void Server::request( DefaultMsg& msg )
     if ( m_opened )
         {
         // Default ALL registered sets
-        Rte::Db::Set::LocalApi_* setPtr = m_sets.first();
+        Rte::Db::Set::ApiLocal* setPtr = m_sets.first();
         while( setPtr )
             {
             setPtr->defaultContent();
@@ -113,10 +111,10 @@ void Server::request( Cpl::Itc::OpenRequest::OpenMsg& msg )
     m_setCount      = 0;
     m_openCount     = 0;
     m_openMsgPtr    = &msg;
-    setNewHealthStatus( eOPENING );
+    setNewHealthStatus( HealthRequest::eOPENING );
 
     // Start all registered sets 
-    Rte::Db::Set::LocalApi_* setPtr = m_sets.first();
+    Rte::Db::Set::ApiLocal* setPtr = m_sets.first();
     while( setPtr )
         {
         m_openCount++;
@@ -144,7 +142,7 @@ void Server::request( Cpl::Itc::CloseRequest::CloseMsg& msg )
     m_closeMsgPtr = &msg;
 
     // Stop all registered Sets
-    Rte::Db::Set::LocalApi_* setPtr = m_sets.first();
+    Rte::Db::Set::ApiLocal* setPtr = m_sets.first();
     while( setPtr )
         {
         m_closeCount++;
@@ -155,25 +153,25 @@ void Server::request( Cpl::Itc::CloseRequest::CloseMsg& msg )
 
 
 /////////////////////////////////
-void Server::notifySetWaiting( LocalApi_& )
+void Server::notifySetWaiting( ApiLocal& )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::setWaiting") );
     m_setCount++;
     }
 
-void Server::notifySetInitialized( LocalApi_& )
+void Server::notifySetInitialized( ApiLocal& )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::setInitialized") );
     m_setCount--;
     }
 
-void Server::notifySetConverted( LocalApi_& )
+void Server::notifySetConverted( ApiLocal& )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::setConverted") );
     m_conversion = true;
     }
 
-void Server::notifySetStopped( LocalApi_& )
+void Server::notifySetStopped( ApiLocal& )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::setStopped") );
 
@@ -191,7 +189,7 @@ void Server::notifySetStopped( LocalApi_& )
         }
     }
     
-void Server::notifySetStarted( LocalApi_& )
+void Server::notifySetStarted( ApiLocal& )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::setStarted. openCount=%d", m_openCount) );
 
@@ -209,11 +207,11 @@ void Server::notifySetStarted( LocalApi_& )
         // Update my health (and mark the openMsg as failed when appropriate)    
         if ( m_noPersistence == false )
             {
-            setNewHealthStatus( HealthRequest::eOPENED );
+            setNewHealthStatus( HealthRequest::eRUNNING );
             }
         else
             {
-            m_openMsgPtr->getPayload().m_sucess = false;
+            m_openMsgPtr->getPayload().m_success = false;
             }
 
         // Return the OpenMsg now that ALL Sets are 'opened'
@@ -228,7 +226,7 @@ void Server::notifySetStarted( LocalApi_& )
 Rte::Db::Record::Api* Server::getRecordApi( const char* recName, uint16_t nameLen )
     {
     Cpl::Container::KeyStringBuffer recordNameKey( recName, nameLen );
-    LocalApi_*                      setPtr = m_sets.find( recordNameKey );
+    ApiLocal*                      setPtr = m_sets.find( recordNameKey );
     if ( !setPtr )
         {
         return 0;
@@ -239,20 +237,17 @@ Rte::Db::Record::Api* Server::getRecordApi( const char* recName, uint16_t nameLe
 
 void Server::notifyOpenCompleted(void)
     {
-    LocalApi_* setPtr = m_sets.first();
+    ApiLocal* setPtr = m_sets.first();
     while( setPtr )
         {
         setPtr->notifyLoadCompleted();
         setPtr = m_sets.next( *setPtr );
         }
-
-    // Set my Health
-    setNewHealthStatus( eRUNNING );
     }
 
 void Server::notifyOpenedWithErrors( Rte::Db::Record::Client::OpenError_T errorCode )
     {
-    LocalApi_* setPtr = m_sets.first();
+    ApiLocal* setPtr = m_sets.first();
     while( setPtr )
         {
         setPtr->notifyLoadFailed();
@@ -271,7 +266,7 @@ bool Server::isCleanLoad(void)
 void Server::notifyWriteError(void)
     {
     m_noPersistence = true;
-    setNewHealthStatus( eNO_STORAGE_MEDIA_ERR );
+    setNewHealthStatus( HealthRequest::eNO_STORAGE_MEDIA_ERR );
     }
 
 void Server::notifyStopped()
@@ -305,7 +300,7 @@ void Server::updateHealthStatus( Rte::Db::Record::Client::OpenError_T openErrorC
         }
     else
         {
-        setNewHealthStatus( eRUNNING );
+        Cpl::System::FatalError::logf( "Rte::Db::Set::Server::updateHealthStatus - unknown Open error from the Record Layer." );
         }
     }
 

@@ -181,7 +181,12 @@ void Base::request( UpdateMsg& msg )
 
     // Update the Point
     m_myPoint.copyFrom( msg.getPayload().m_srcPoint, &msg.getPayload().m_srcPoint );
+  
+    // Process any change notifications
     checkForNotifications();
+
+    // Update the Client's (i.e. the Controller's) Point sequence numbers to match the Model's Point sequence numbers (required for supporting Light Weight Viewers)
+    msg.getPayload().m_srcPoint.copyAllSequenceNumbersFrom( m_myPoint );
     msg.returnToSender();
     }
 
@@ -190,7 +195,7 @@ void Base::request( UpdateTupleMsg& msg )
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(UpdateTupleMsg) - (%p) srcTuple=%p, tupleIdx=%u", this, &(msg.getPayload().m_srcTuple), msg.getPayload().m_tupleIdx ));
 
     // Update the Tuple
-    Rte::Tuple::Api::copy( m_myPoint.getTuple(msg.getPayload().m_tupleIdx), msg.getPayload().m_srcTuple, &(msg.getPayload().m_srcTuple) );
+    Rte::Tuple::Api::copy( m_myPoint.getTuple( msg.getPayload().m_tupleIdx ), msg.getPayload().m_srcTuple, &(msg.getPayload().m_srcTuple) );
     
     // Detect membership updates (from the Controller)
     if ( msg.getPayload().m_membershipChanged )
@@ -200,6 +205,9 @@ void Base::request( UpdateTupleMsg& msg )
 
     // Process any change notifications
     checkForNotifications();
+  
+    // Update the Client's (i.e. the Controllers's) Tuple sequence number to match the Model's Tuple sequence number (required for supporting Light Weight Viewers)
+    msg.getPayload().m_srcTuple.setSequenceNumber( m_myPoint.getTuple( msg.getPayload().m_tupleIdx ).getSequenceNumber() );
     msg.returnToSender();
     }
 
@@ -211,14 +219,19 @@ void Base::request( RmwMsg& msg )
     msg.getPayload().m_clientPoint.copyFrom( m_myPoint, 0 ); // Force a read of ALL Tuples/Elements
 
     // DO: Modify
-    Rte::Point::Api* modifiedPoint = 0;
-    msg.getPayload().m_clientCb.modify( modifiedPoint );
+    Rte::Point::Api* modifiedPointPtr = 0;
+    msg.getPayload().m_clientCb.modify( modifiedPointPtr );
 
     // DO: Write (if any)
-    if ( modifiedPoint )
+    if ( modifiedPointPtr )
         {
-        m_myPoint.copyFrom( *modifiedPoint, modifiedPoint );
+        m_myPoint.copyFrom( *modifiedPointPtr, modifiedPointPtr );
+        
+        // Process any change notifications
         checkForNotifications();
+
+        // Update the Client's (i.e. the Controller's) Point sequence numbers to match the Model's Point sequence numbers (required for supporting Light Weight Viewers)
+        modifiedPointPtr->copyAllSequenceNumbersFrom( m_myPoint );
         }
 
     msg.returnToSender();
@@ -229,7 +242,7 @@ void Base::request( RmwContainerMsg& msg )
     {
     // Proceass ALL tuples items 
     bool     membershipChanged = false;
-    unsigned j = msg.getPayload().m_tupleIdx;
+    unsigned j                 = msg.getPayload().m_tupleIdx;
     for(;;)
         {
         // DO: Read
@@ -250,6 +263,9 @@ void Base::request( RmwContainerMsg& msg )
         if ( modifiedTuplePtr )
             {
             Rte::Tuple::Api::copy( m_myPoint.getTuple(j), *modifiedTuplePtr, modifiedTuplePtr );
+            
+            // Update the Client's (i.e. the Controllers's) Tuple sequence number to match the Model's Tuple sequence number (required for supporting Light Weight Viewers)
+            modifiedTuplePtr->setSequenceNumber( m_myPoint.getTuple(j).getSequenceNumber() );
             }
 
         // Auto increment the tuple index 

@@ -16,9 +16,11 @@
 #include "Rte/Db/Set/DefaultRequest.h"
 #include "Rte/Db/Set/HealthRequest.h"
 #include "Rte/Db/Record/Client.h"
-#include "Rte/Db/Set/LocalHandler_.h"
+#include "Rte/Db/Record/Handler.h"
+#include "Rte/Db/Set/HandlerLocal.h"
 #include "Cpl/Container/DList.h"
 #include "Cpl/Container/Map.h"
+#include "Cpl/Itc/CloseSync.h"
 
 
 /// Namespace(s)
@@ -26,12 +28,17 @@ namespace Rte { namespace Db { namespace Set {
 
 
 /** This class implements the Set Handler
+
+    NOTE: The ITC open request will return false if the DB ends up in the 
+          'No Persistence' state during the opening process.
+
  */
 class Server: public Handler,
+              public HandlerLocal,
               public HealthRequest,
               public DefaultRequest,
-              public Rte::Db::Record::Client
-              public LocalHandler_,
+              public Rte::Db::Record::Client,
+              public Cpl::Itc::CloseSync
 {
 protected:
     /// List of Clients monitor my health
@@ -72,14 +79,14 @@ protected:
 
 
     /// Map containing reference to all Sets for assocaited DB instance
-    Cpl::Container::Map<Rte::Db::Set::LocalApi_>& m_sets;
+    Cpl::Container::Map<Rte::Db::Set::ApiLocal>& m_sets;
 
 
 public:
     /// Constructor
-    Server( Rte::Db::Record::Handler&                       recordLayer,
-            Cpl::Itc::PostApi&                              setAndRecordLayersMbox, 
-            Cpl::Container::Map<Rte::Db::Set::LocalApi_>&   sets
+    Server( Rte::Db::Record::Handler&                      recordLayer,
+            Cpl::Itc::PostApi&                             setAndRecordLayersMbox, 
+            Cpl::Container::Map<Rte::Db::Set::ApiLocal>&   sets
           );
 
 
@@ -105,20 +112,20 @@ public:
 
 
 public:
-    /// See Rte::Db::Set::LocalHandler_
-    void notifySetWaiting( LocalApi_& set );
+    /// See Rte::Db::Set::HandlerLocal
+    void notifySetWaiting( ApiLocal& set );
 
-    /// See Rte::Db::Set::LocalHandler_
-    void notifySetInitialized( LocalApi_& set );
+    /// See Rte::Db::Set::HandlerLocal
+    void notifySetInitialized( ApiLocal& set );
 
-    /// See Rte::Db::Set::LocalHandler_
-    void notifySetConverted( LocalApi_& set );
+    /// See Rte::Db::Set::HandlerLocal
+    void notifySetConverted( ApiLocal& set );
 
-    /// See Rte::Db::Set::LocalHandler_
-    void notifySetStopped( LocalApi_& set );
+    /// See Rte::Db::Set::HandlerLocal
+    void notifySetStopped( ApiLocal& set );
 
-    /// See Rte::Db::Set::LocalHandler_
-    void notifySetStarted( LocalApi_& set );
+    /// See Rte::Db::Set::HandlerLocal
+    void notifySetStarted( ApiLocal& set );
 
 
 public:

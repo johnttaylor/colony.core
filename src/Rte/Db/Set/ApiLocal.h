@@ -1,5 +1,5 @@
-#ifndef Rte_Db_Set_LocalApi_x_h_
-#define Rte_Db_Set_LocalApi_x_h_
+#ifndef Rte_Db_Set_ApiLocal_h_
+#define Rte_Db_Set_ApiLocal_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -12,7 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Rte/Db/Record/Api.h"
+#include "Rte/Db/Record/Handler.h"
 #include "Cpl/Container/MapItem.h"
 
 
@@ -21,17 +21,19 @@
 namespace Rte { namespace Db { namespace Set { 
 
 
-/** This private to the namespace class defines the interface for an individual 
-    Set.  This interface is intended to implemented by the Application.  It is 
-    the Set Handler and/or Set Layer the calls this interface.
+/** This class defines the interface for an individual Set.  This interface is 
+    intended to implemented by the Application.  It is the Set Handler and/or 
+    Set Layer the calls this interface.  All of the methods in this class are 
+    intended to be call in the same thread as the Set Server, i.e. from the Set 
+    Layer thread.
  */
-class LocalApi_: public Cpl::Container::MapItem
+class ApiLocal: public Cpl::Container::MapItem
 {
 public:
     /** This method starts/initializes the Set.  A Set can be restartd after
         stop() is called
      */
-    virtual void start() throw() = 0;
+    virtual void start( Rte::Db::Record::Handler& recordLayer ) throw() = 0;
 
     /** This method stops the Set.
      */
@@ -59,7 +61,7 @@ public:
 
 public:
     /// Virtual destructor to keep the compiler happy
-    virtual ~LocalApi_(void){}
+    virtual ~ApiLocal(void){}
 };
 
 

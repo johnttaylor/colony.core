@@ -531,7 +531,7 @@ Party="r14"/>
 <Note id="r132"
 Pos="20100 -10500"
 Size="3300 3900">
-<Text>The evResponse[isNotCompatible()] case is not account for here --&gt;but since it is IMPOSSIBLE for that event/guard to happen at this point in the FSM --&gt;it is don't care</Text>
+<Text>The evResponse[isNotCompatible()] case is not handled properly here --&gt;but since it is IMPOSSIBLE for that event/guard to happen at this point in the FSM --&gt;it is don't care</Text>
 <NoteConnector id="r133">
 <SourceEnd id="r201"
 Pos="21300 -14400"/>

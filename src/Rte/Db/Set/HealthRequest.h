@@ -1,5 +1,5 @@
-#ifndef Rte_Db_Set_Health_h_
-#define Rte_Db_Set_Health_h_
+#ifndef Rte_Db_Set_HealthRequest_h_
+#define Rte_Db_Set_HealthRequest_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -13,7 +13,7 @@
 /** @file */
 
 
-#include "Cpl/Itc/RequestMessage.h"
+#include "Cpl/Itc/ResponseMessage.h"
 #include "Cpl/Itc/SAP.h"
 
 
@@ -29,7 +29,7 @@ class HealthRequest
 {
 public:
     /// SAP for this API
-    typedef Cpl::Itc::SAP<Health> SAP;
+    typedef Cpl::Itc::SAP<HealthRequest> SAP;
 
     /// Possible status states
     enum Status_T { eOPENING,                   //!< The DB is in the process of being opened
@@ -53,7 +53,7 @@ public:
     };
 
     /// Message Type: DB Status
-    typedef Cpl::Itc::RequestMessage<Health,HealthPayload> HealthMsg;
+    typedef Cpl::Itc::RequestMessage<HealthRequest,HealthPayload> HealthMsg;
 
 
 public:

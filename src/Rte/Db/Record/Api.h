@@ -14,6 +14,7 @@
 
 #include <stdint.h>
 #include "Cpl/Container/Item.h"
+#include "Rte/Db/Chunk/Handle.h"
 
 
 
