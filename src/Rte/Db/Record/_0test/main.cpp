@@ -73,15 +73,17 @@ public:
     Rte::Db::Chunk::Handle& getChunkHandle(void)        { return m_chunkHdl; }
 
     ///
-    void notifyRead( void* srcBuffer, uint32_t dataLen )
+    bool notifyRead( void* srcBuffer, uint32_t dataLen )
         {
         if ( dataLen > m_datalen )
             {
-            Cpl::System::FatalError::logf( "MySet::notifyRead - Buffer length Error, setLen=%lu, srcLen=%lu.", m_datalen, dataLen );
+            CPL_SYSTEM_TRACE_MSG(SECT_, ("MySet::notifyRead. Buffer length Error, setLen=%lu, srcLen=%lu.", m_datalen, dataLen) );
+            return false;
             }
 
         memcpy( m_dataPtr, srcBuffer, dataLen );
         CPL_SYSTEM_TRACE_MSG(SECT_, ("MySet::notifyRead. inLen=%u, [0]=0x%x, [n-1]=0x%x", dataLen, m_dataPtr[0], m_dataPtr[m_datalen-1] ));
+        return true;
         }
 
     ///

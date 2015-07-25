@@ -12,6 +12,9 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
+#include "Rte/Point/Viewer/Api.h"
+#include "Rte/Point/Controller/Api.h"
+#include "Rte/Point/Model/Api.h"
 
 
 /// Namespace(s)
@@ -25,11 +28,14 @@ namespace Rte { namespace Db { namespace Set {
 class ApiPoint
 {
 public:
+    /// Returns the reference to shared Point that is used by the Viewer and the Controller
+    virtual Rte::Point::Api& getMyPoint(void) = 0;
+
     /// Returns the reference to Concrete Set's viewer 
     virtual Rte::Point::Viewer::Api& getViewer() throw() = 0;
 
     /// Returns the reference to Concrete Set's controller 
-    virtual Rte::Point::Viewer::Api& getController() throw() = 0;
+    virtual Rte::Point::Controller::Api& getController() throw() = 0;
 
     /// Returns the reference to the Model Point being viewed/controlled
     virtual Rte::Point::Model::Api&  getModelPoint() throw() = 0;

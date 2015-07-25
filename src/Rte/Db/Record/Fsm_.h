@@ -37,7 +37,7 @@ ranksep=.4;
 "defaultOpening"->"defaultActive"[label=<evResponse<br ALIGN="LEFT"/>[isDbError()] / <br ALIGN="LEFT"/>reportFileReadError();<br ALIGN="LEFT"/>nakOpenDo...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black];//Opening Active
 "WaitingToOpen"->"Reading "[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / requestDbRead();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingToOpen Reading 
 "defaultroot"->"Idle"[label=<  > style=dotted];
-"Reading "->"Reading "[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / ackRead();<br ALIGN="LEFT"/>requestDbRead();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  Reading 
+"Reading "->"Reading "[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / ackRead();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  Reading 
 "Reading "->"ClearingDb"[label=<evResponse<br ALIGN="LEFT"/>[isDbBadData()] / reportDataCorruptError();<br ALIGN="LEFT"/>nakOpe...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  ClearingDb
 "Reading "->"Verifying"[label=<evResponse<br ALIGN="LEFT"/>[isDbEof()] / verifyOpen();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  Verifying
 "defaultActive"->"NoPersistence"[label=<  > style=dotted];
@@ -52,7 +52,7 @@ ranksep=.4;
 "Writing"->"Writing"[label=<evWrite / <br ALIGN="LEFT"/>queWriteRequest();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Writing Writing
 "defaultOpening"->"WaitingToOpen"[label=<  > style=dotted];
 "Verifying"->"ClearingDb"[label=<evIncompleteLoad / <br ALIGN="LEFT"/>nakOpenDone();<br ALIGN="LEFT"/>requestDbClear();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Verifying ClearingDb
-"WaitingToOpen"->"defaultActive"[labeldistance = 2.0, taillabel=<evResponse<br ALIGN="LEFT"/>[isNotCompatible()] / <br ALIGN="LEFT"/>reportIncompatible();<br ALIGN="LEFT"/>nakOpenDon...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive];//WaitingToOpen Active
+"defaultOpening"->"defaultActive"[label=<evResponse<br ALIGN="LEFT"/>[isNotCompatible()] / <br ALIGN="LEFT"/>reportIncompatible();<br ALIGN="LEFT"/>nakOpenDon...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black];//Opening Active
 "Idle"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Idle</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];subgraph "clusterActive"{fontname=arial; fontsize=8
 color=black; style="rounded";
 label=<Active<br ALIGN="LEFT"/><br ALIGN="LEFT"/>>;

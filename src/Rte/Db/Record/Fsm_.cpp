@@ -218,22 +218,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                             case WaitingToOpen:
                                 if(msg==evResponse){
-                                    if(isNotCompatible()){
-                                        /* Transition from WaitingToOpen to Active */
-                                        evConsumed=1;
-
-
-
-                                        /* Action code for transition  */
-                                        reportIncompatible();
-                                        nakOpenDone();
-                                        inspectWriteQue();
-
-                                        stateVarsCopy.stateVar = Active;/* Default in entry chain  */
-                                        stateVarsCopy.stateVarActive = NoPersistence;/* Default in entry chain  */
-
-                                        FsmTraceEvent(13);
-                                    }else if(isDbEof()){
+                                    if(isDbEof()){
                                         /* Transition from WaitingToOpen to Writeable */
                                         evConsumed=1;
 
@@ -297,7 +282,6 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* Action code for transition  */
                                         ackRead();
-                                        requestDbRead();
 
 
                                         /* adjust state variables  */
@@ -373,7 +357,21 @@ namespace Rte { namespace Db { namespace Record  {
                         if(evConsumed==0){
 
                             if(msg==evResponse){
-                                if(isDbError()){
+                                if(isNotCompatible()){
+                                    /* Transition from Opening to Active */
+                                    evConsumed=1;
+                                
+
+                                    /* Action code for transition  */
+                                    reportIncompatible();
+                                    nakOpenDone();
+                                    inspectWriteQue();
+
+                                    stateVarsCopy.stateVar = Active;/* Default in entry chain  */
+                                    stateVarsCopy.stateVarActive = NoPersistence;/* Default in entry chain  */
+
+                                    FsmTraceEvent(13);
+                                }else if(isDbError()){
                                     /* Transition from Opening to Active */
                                     evConsumed=1;
                                 

@@ -244,7 +244,23 @@ void Core::ackRead() throw()
     if ( recordP )
         {
         recordP->setChunkHandle( m_chunkHandle );
-        recordP->notifyRead( extractDataPointer(), calcDataLength() );
+        if ( recordP->notifyRead( extractDataPointer(), calcDataLength() ) )
+            {
+            // Succesfull read --> start the read of the next record
+            requestDbRead();
+            }
+
+        // Failed read!
+        else
+            {
+            // Log the failure
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::ackRead - Set layer read failed, i.e. incompatible DB") );
+            m_logger.warning( "Rte::Db::Record::Core::ackRead - Set layer read failed, i.e. incompatible DB" );
+
+            // Send myself an 'incompatible' event to transition to the NO-Persistence state
+            m_dbResult = Rte::Db::Chunk::Request::eWRONG_SCHEMA;
+            generateInternalEvent( evResponse ); 
+            }
         }
     }
 

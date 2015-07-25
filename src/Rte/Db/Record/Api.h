@@ -45,9 +45,13 @@ public:
         read from the non-volatile media.  The record data is 
         contained in 'srcBuffer'.  The owner of record is
         responsible for copying the content of recData into the
-        record's internal storage.
+        record's internal storage.  This method return true if
+        succesful (i.e the data available matches what the
+        record owner is expecting); else false is return.  A result
+        of false is treated/handled/acted-upon (by the Record Layer) 
+        as an incompatible Database.
      */
-    virtual void notifyRead( void* srcBuffer, uint32_t dataLen ) = 0;
+    virtual bool notifyRead( void* srcBuffer, uint32_t dataLen ) = 0;
 
 
 public:

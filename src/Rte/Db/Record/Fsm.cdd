@@ -216,14 +216,14 @@ Type="2"/>
 
 <Transition id="r33">
 <End id="r34"
-Pos="19500 -5200"
+Pos="18300 -5200"
 State="r44"
 Type="1"/>
 <Segment id="r35">
 <Anchor id="r37"
-Pos="19500 -4600">
+Pos="18300 -4600">
 <FreeText id="r38"
-Pos="19751 -3897"
+Pos="18551 -3897"
 Origin="4">
 <Text>evResponse[isDbError()]/<p/>
 reportFileReadError();<p/>
@@ -233,7 +233,7 @@ inspectWriteQue();</Text>
 </Anchor>
 </Segment>
 <Join id="r85"
-Pos="19500 -1600"/>
+Pos="18300 -1600"/>
 <Segment id="r88"/>
 <Join id="r87"
 Pos="17000 -1600"/>
@@ -308,8 +308,7 @@ Pos="19200 -6600">
 Pos="19500 -6797"
 Origin="4">
 <Text>evResponse[isDbSuccess()]/<p/>
-ackRead();<p/>
-requestDbRead();</Text>
+ackRead();</Text>
 </FreeText>
 </Anchor>
 </Segment>
@@ -334,7 +333,7 @@ Type="1"/>
 <Anchor id="r76"
 Pos="17400 -11200">
 <FreeText id="r77"
-Pos="17664 -9902"
+Pos="17564 -10102"
 Origin="4">
 <Text>evResponse[isDbBadData()]/<p/>
 reportDataCorruptError();<p/>
@@ -691,8 +690,8 @@ Type="2"/>
 
 <Transition id="r193">
 <End id="r194"
-Pos="7800 -7100"
-State="r8"
+Pos="4800 -7100"
+State="r44"
 Type="1"/>
 <Segment id="r200">
 <Anchor id="r197"
@@ -719,5 +718,20 @@ Pos="3700 -7700"
 State="r5"
 Type="2"/>
 </Transition>
+
+<Note id="r206"
+Pos="19700 -100"
+Size="6100 1300">
+<Text>The ackRead action internally calls requestDbRead when there are no client read errors.</Text>
+<NoteConnector id="r207">
+<SourceEnd id="r208"
+Pos="23400 -1400"/>
+<Segment id="r209"
+Oblique="1"/>
+<End id="r210"
+Pos="22000 -6066"
+Party="r70"/>
+</NoteConnector>
+</Note>
 
 </c:Diagram>

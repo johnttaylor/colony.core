@@ -108,7 +108,7 @@ Type="2"/>
 </Transition>
 
 <State id="r7"
-Pos="100 -13300"
+Pos="1100 -11600"
 Size="2000 1000">
 <Text>Stopping</Text>
 </State>
@@ -116,7 +116,7 @@ Size="2000 1000">
 <Note id="r13"
 Pos="5300 -400"
 Size="8600 1000">
-<Text>Method names that start with 'tell' are calls from the Set instance to the Set Handler</Text>
+<Text>Action names that start with 'tell' are calls from the Set instance to the Set Handler</Text>
 </Note>
 
 <Transition id="r14">
@@ -136,10 +136,10 @@ tellStopped();</Text>
 </Anchor>
 </Segment>
 <Join id="r206"
-Pos="1800 -6400"/>
+Pos="2100 -6400"/>
 <Segment id="r207"/>
 <End id="r208"
-Pos="1800 -4900"
+Pos="2100 -4900"
 State="r4"
 Type="2"/>
 </Transition>
@@ -168,14 +168,14 @@ Type="2"/>
 
 <Transition id="r23">
 <End id="r48"
-Pos="900 -13300"
+Pos="1500 -11600"
 State="r7"
 Type="1"/>
 <Segment id="r47">
 <Anchor id="r29"
-Pos="900 -10100">
+Pos="1500 -10100">
 <FreeText id="r30"
-Pos="1200 -9234"
+Pos="1800 -9234"
 Origin="4">
 <Text>evDisconnected/<p/>
 tellStopped();</Text>
@@ -183,7 +183,7 @@ tellStopped();</Text>
 </Anchor>
 </Segment>
 <End id="r28"
-Pos="900 -4900"
+Pos="1500 -4900"
 State="r4"
 Type="2"/>
 </Transition>
@@ -323,62 +323,65 @@ Type="2"/>
 </Transition>
 
 <State id="r70"
-Pos="22200 -15400"
+Pos="2700 -16600"
 Size="2900 1000">
 <Text>Disconnecting</Text>
 </State>
 
 <Transition id="r71">
 <End id="r72"
-Pos="24400 -16400"
+Pos="2700 -17200"
 State="r70"
 Type="1"/>
-<Segment id="r73"/>
-<Join id="r74"
-Pos="24400 -18900"/>
 <Segment id="r75">
 <Anchor id="r187"
-Pos="2300 -18900">
+Pos="2700 -17200">
 <FreeText id="r188"
-Pos="2690 -16100"
+Pos="2090 -17000"
 Origin="3">
 <Text>evStop/</Text>
 </FreeText>
 </Anchor>
 </Segment>
 <Join id="r78"
-Pos="1400 -18900"/>
+Pos="800 -17200"/>
 <Segment id="r84"/>
 <End id="r186"
-Pos="1400 -14300"
-State="r7"
+Pos="800 -14200"
+State="r236"
 Type="2"/>
 </Transition>
 
+<State id="r73"
+Pos="2700 -13400"
+Size="3100 1000">
+<Text>WritingDefaults</Text>
+</State>
+
 <State id="r76"
-Pos="5000 -11400"
+Pos="10500 -11200"
 Size="14700 6800"
 Large="1">
 <Text>Active </Text>
 <State id="r113"
-Pos="16900 -12700"
+Pos="22400 -12500"
 Size="2000 1000">
 <Text>Clean</Text>
 </State>
 <State id="r114"
-Pos="8500 -12700"
+Pos="14000 -12500"
 Size="2800 1000">
 <Text>DelayingWrite</Text>
 </State>
 <InitialState id="r115"
-Pos="16000 -11700"/>
+Pos="21500 -11500"/>
 <State id="r134"
-Pos="13500 -16400"
+Pos="19000 -16200"
 Size="2000 1000">
 <Text>Writing</Text>
 </State>
 <State id="r141"
-Pos="14200 -14800"
+Pos="19700 -14600"
 Size="800 700">
 <Text>&lt;&gt;</Text>
 </State>
@@ -416,15 +419,15 @@ Type="2"/>
 </Transition>
 
 <Transition id="r88">
-<End id="r94"
-Pos="14100 -8700"
+<End id="r74"
+Pos="14000 -8700"
 State="r193"
 Type="1"/>
 <Segment id="r95">
 <Anchor id="r97"
-Pos="14100 -9500">
+Pos="14000 -9500">
 <FreeText id="r98"
-Pos="14300 -9000"
+Pos="14200 -9000"
 Origin="1">
 <Text>[isLoadGood()]/<p/>
 connectToModel();<p/>
@@ -434,7 +437,7 @@ tellStartCompleted();</Text>
 </Anchor>
 </Segment>
 <End id="r96"
-Pos="14100 -11400"
+Pos="14000 -11200"
 State="r76"
 Type="2"/>
 </Transition>
@@ -461,7 +464,7 @@ Type="1"/>
 <Anchor id="r102"
 Pos="21800 -8500">
 <FreeText id="r103"
-Pos="21516 -8800"
+Pos="21616 -8500"
 Origin="2">
 <Text>evWriteDone/<p/>
 connectToModel();<p/>
@@ -470,26 +473,44 @@ tellStartCompleted();</Text>
 </FreeText>
 </Anchor>
 </Segment>
-<Join id="r104"
-Pos="21800 -12500"/>
-<Segment id="r105"/>
 <End id="r106"
-Pos="19700 -12500"
+Pos="21800 -11200"
 State="r76"
+Type="2"/>
+</Transition>
+
+<Transition id="r104">
+<End id="r238"
+Pos="2700 -13900"
+State="r73"
+Type="1"/>
+<Segment id="r237">
+<Anchor id="r190"
+Pos="1200 -13900">
+<FreeText id="r221"
+Pos="1200 -14134"
+Origin="1">
+<Text>evStop/</Text>
+</FreeText>
+</Anchor>
+</Segment>
+<End id="r105"
+Pos="1100 -13900"
+State="r236"
 Type="2"/>
 </Transition>
 
 <Transition id="r107">
 <End id="r108"
-Pos="5000 -13800"
+Pos="10500 -12100"
 State="r76"
 Type="1"/>
 <Segment id="r109">
 <Anchor id="r111"
-Pos="4100 -13800">
+Pos="4100 -12100">
 <FreeText id="r112"
-Pos="4728 -13000"
-Origin="3">
+Pos="4200 -12000"
+Origin="4">
 <Text>evStop/<p/>
 disconnectFromModel();<p/>
 stopTimer();</Text>
@@ -497,21 +518,21 @@ stopTimer();</Text>
 </Anchor>
 </Segment>
 <End id="r110"
-Pos="2100 -13800"
+Pos="3100 -12100"
 State="r7"
 Type="2"/>
 </Transition>
 
 <Transition id="r116">
 <End id="r117"
-Pos="16900 -13100"
+Pos="22400 -12900"
 State="r113"
 Type="1"/>
 <Segment id="r118">
 <Anchor id="r120"
-Pos="12400 -13100">
+Pos="17900 -12900">
 <FreeText id="r121"
-Pos="11800 -12800"
+Pos="17300 -12600"
 Origin="4">
 <Text>evDataModified/<p/>
 startTimer();</Text>
@@ -519,54 +540,54 @@ startTimer();</Text>
 </Anchor>
 </Segment>
 <End id="r119"
-Pos="11300 -13100"
+Pos="16800 -12900"
 State="r114"
 Type="2"/>
 </Transition>
 
 <Transition id="r122">
 <End id="r123"
-Pos="9300 -12700"
+Pos="14800 -12500"
 State="r114"
 Type="1"/>
 <Segment id="r124"/>
 <Join id="r125"
-Pos="9300 -12300"/>
+Pos="14800 -12100"/>
 <Segment id="r126"/>
 <Join id="r127"
-Pos="7300 -12300"/>
+Pos="12800 -12100"/>
 <Segment id="r128"/>
 <Join id="r129"
-Pos="7300 -13200"/>
+Pos="12800 -13000"/>
 <Segment id="r130">
 <Anchor id="r132"
-Pos="7800 -13200">
+Pos="13300 -13000">
 <FreeText id="r133"
-Pos="7600 -12200"
+Pos="13100 -12000"
 Origin="4">
 <Text>evDataModified/</Text>
 </FreeText>
 </Anchor>
 </Segment>
 <End id="r131"
-Pos="8500 -13200"
+Pos="14000 -13000"
 State="r114"
 Type="2"/>
 </Transition>
 
 <Transition id="r135">
 <End id="r136"
-Pos="9700 -13700"
+Pos="15200 -13500"
 State="r114"
 Type="1"/>
 <Segment id="r178"/>
 <Join id="r177"
-Pos="9700 -17200"/>
+Pos="15200 -17000"/>
 <Segment id="r137">
 <Anchor id="r139"
-Pos="10447.082010371532 -17200">
+Pos="15947.082010371532 -17000">
 <FreeText id="r140"
-Pos="10648 -17098"
+Pos="16148 -16898"
 Origin="4">
 <Text>evTimerExpired/<p/>
 issueWrite();<p/>
@@ -575,66 +596,66 @@ markClean();</Text>
 </Anchor>
 </Segment>
 <End id="r138"
-Pos="13500 -17200"
+Pos="19000 -17000"
 State="r134"
 Type="2"/>
 </Transition>
 
 <Transition id="r142">
 <End id="r143"
-Pos="14600 -16400"
+Pos="20100 -16200"
 State="r134"
 Type="1"/>
 <Segment id="r144">
 <Anchor id="r145"
-Pos="14600 -16300">
+Pos="20100 -16100">
 <FreeText id="r146"
-Pos="14900 -16066"
+Pos="20400 -15866"
 Origin="4">
 <Text>evWriteDone/</Text>
 </FreeText>
 </Anchor>
 </Segment>
 <End id="r176"
-Pos="14600 -15500"
+Pos="20100 -15300"
 State="r141"
 Type="2"/>
 </Transition>
 
 <Transition id="r147">
 <End id="r148"
-Pos="15000 -15200"
+Pos="20500 -15000"
 State="r141"
 Type="1"/>
 <Segment id="r149"/>
 <Join id="r150"
-Pos="18100 -15200"/>
+Pos="23600 -15000"/>
 <Segment id="r151">
 <Anchor id="r153"
-Pos="18100 -15100">
+Pos="23600 -14900">
 <FreeText id="r155"
-Pos="16148 -15066"
+Pos="21648 -14866"
 Origin="3">
 <Text>[else]/</Text>
 </FreeText>
 </Anchor>
 </Segment>
 <End id="r152"
-Pos="18100 -13700"
+Pos="23600 -13500"
 State="r113"
 Type="2"/>
 </Transition>
 
 <Transition id="r156">
 <End id="r157"
-Pos="14200 -15200"
+Pos="19700 -15000"
 State="r141"
 Type="1"/>
 <Segment id="r158">
 <Anchor id="r162"
-Pos="11100 -15200">
+Pos="16600 -15000">
 <FreeText id="r163"
-Pos="12400 -15100"
+Pos="17900 -14900"
 Origin="4">
 <Text>[isDirty()]/<p/>
 startTimer();</Text>
@@ -642,30 +663,30 @@ startTimer();</Text>
 </Anchor>
 </Segment>
 <Join id="r159"
-Pos="10600 -15200"/>
+Pos="16100 -15000"/>
 <Segment id="r160"/>
 <End id="r161"
-Pos="10600 -13700"
+Pos="16100 -13500"
 State="r114"
 Type="2"/>
 </Transition>
 
 <Transition id="r164">
 <End id="r165"
-Pos="15000 -17400"
+Pos="20500 -17200"
 State="r134"
 Type="1"/>
 <Segment id="r166"/>
 <Join id="r167"
-Pos="15000 -17800"/>
+Pos="20500 -17600"/>
 <Segment id="r168"/>
 <Join id="r169"
-Pos="16400 -17800"/>
+Pos="21900 -17600"/>
 <Segment id="r170">
 <Anchor id="r174"
-Pos="16400 -17300">
+Pos="21900 -17100">
 <FreeText id="r175"
-Pos="16800 -17000"
+Pos="22300 -16800"
 Origin="1">
 <Text>evDataModified/<p/>
 markDirty();</Text>
@@ -673,64 +694,61 @@ markDirty();</Text>
 </Anchor>
 </Segment>
 <Join id="r171"
-Pos="16400 -16900"/>
+Pos="21900 -16700"/>
 <Segment id="r172"/>
 <End id="r173"
-Pos="15500 -16900"
+Pos="21000 -16700"
 State="r134"
 Type="2"/>
 </Transition>
 
 <Transition id="r179">
 <End id="r180"
-Pos="16373.205080756888 -12000"
+Pos="21873.205080756888 -11800"
 State="r115"
 Type="1"/>
 <Segment id="r181"
 Oblique="1"/>
 <End id="r182"
-Pos="17100 -12700"
+Pos="22600 -12500"
 State="r113"
 Type="2"/>
 </Transition>
 
 <Transition id="r183">
 <End id="r184"
-Pos="19700 -15900"
+Pos="10500 -17200"
 State="r76"
 Type="1"/>
 <Segment id="r185">
 <Anchor id="r191"
-Pos="20700 -15900">
+Pos="9000 -17200">
 <FreeText id="r192"
-Pos="20000 -16734"
-Origin="1">
+Pos="10128 -17334"
+Origin="2">
 <Text>evDefaultContent/<p/>
 disconnectFromModel();<p/>
 stopTimer();</Text>
 </FreeText>
 </Anchor>
 </Segment>
-<End id="r190"
-Pos="22200 -15900"
+<End id="r94"
+Pos="5600 -17200"
 State="r70"
 Type="2"/>
 </Transition>
 
 <Transition id="r189">
 <End id="r219"
-Pos="24400 -15400"
+Pos="3400 -16600"
 State="r70"
 Type="1"/>
-<Segment id="r220"/>
-<Join id="r221"
-Pos="24400 -3800"/>
-<Segment id="r222">
+<Segment id="r220">
 <Anchor id="r224"
-Pos="23900 -3800">
+Pos="3400 -14700">
 <FreeText id="r225"
-Pos="24446 -13303"
-Origin="2">
+Pos="3741 -15103"
+Origin="1">
 <Text>evDisconnected/<p/>
 defaultSetContents();<p/>
 issueWrite();</Text>
@@ -738,8 +756,8 @@ issueWrite();</Text>
 </Anchor>
 </Segment>
 <End id="r223"
-Pos="22400 -3800"
-State="r31"
+Pos="3400 -14400"
+State="r73"
 Type="2"/>
 </Transition>
 
@@ -795,19 +813,69 @@ State="r31"
 Type="2"/>
 </Transition>
 
+<Transition id="r222">
+<End id="r231"
+Pos="5800 -13900"
+State="r73"
+Type="1"/>
+<Segment id="r232">
+<Anchor id="r234"
+Pos="9300 -13900">
+<FreeText id="r235"
+Pos="10151 -14003"
+Origin="2">
+<Text>evWriteDone/<p/>
+connectToModel();<p/>
+markClean();</Text>
+</FreeText>
+</Anchor>
+</Segment>
+<End id="r233"
+Pos="10500 -13900"
+State="r76"
+Type="2"/>
+</Transition>
+
 <Note id="r226"
-Pos="23400 -100"
-Size="2500 2800">
-<Text>This state is required because a common Point is shared for the Controller and Viewer</Text>
+Pos="0 -18400"
+Size="6900 1000">
+<Text>These states are required because a common Point is shared for the Controller and Viewer</Text>
 <NoteConnector id="r227">
 <SourceEnd id="r228"
-Pos="25100 -2900"/>
+Pos="1900 -18400"/>
 <Segment id="r229"
 Oblique="1"/>
 <End id="r230"
-Pos="24700 -15400"
+Pos="2900 -17600"
 Party="r70"/>
 </NoteConnector>
+<NoteConnector id="r243">
+<SourceEnd id="r244"
+Pos="1900 -18400"/>
+<Segment id="r245"
+Oblique="1"/>
+<End id="r246"
+Pos="2800 -14373.205080756888"
+Party="r73"/>
+</NoteConnector>
 </Note>
+
+<State id="r236"
+Pos="600 -13500"
+Size="500 700">
+<Text>()</Text>
+</State>
+
+<Transition id="r239">
+<End id="r240"
+Pos="800 -13500"
+State="r236"
+Type="1"/>
+<Segment id="r241"/>
+<End id="r242"
+Pos="800 -4900"
+State="r4"
+Type="2"/>
+</Transition>
 
 </c:Diagram>

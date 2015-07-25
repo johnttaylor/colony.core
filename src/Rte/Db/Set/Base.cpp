@@ -67,7 +67,7 @@ void Base::defaultSetContent() throw()
 
 void Base::request( DefaultMsg& msg )
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::request( DefaultMsg& )") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::request( DefaultMsg& ) [%s]", m_name()) );
     defaultContent();
     msg.returnToSender();
     }
@@ -75,16 +75,106 @@ void Base::request( DefaultMsg& msg )
 
 /////////////////////////////////////////
 const char* Base::getName(void) const
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::getName() [%s]", m_name()) );
+    return m_name;
+    }
+
 void Base::setChunkHandle( Rte::Db::Chunk::Handle& src )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::setChunkHandle() [%s]", m_name()) );
+    m_chunkHdl = src;
+    }
+
 Rte::Db::Chunk::Handle& Base::getChunkHandle(void)
-void Base::notifyRead( void* srcBuffer, uint32_t dataLen )
-uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::getChunkHandle() [%s]", m_name()) );
+    return m_chunkHdl;
+    }
+
 void Base::notifyWriteDone(void)
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyWriteDone() [%s]", m_name()) );
+    sendEvent( evWriteDone );
+    }
+
+void Base::notifyRead( void* srcBuffer, uint32_t dataLen )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. inlen=%ul", m_name(), dataLen) );
+
+    // De-serialize the raw record data one Tuple at a time
+    uint8_t*        srcPtr = (uint8_t*)srcBuffer;
+    Rte::Point::Api point  = getMyPoint();
+    int             j;
+    for(j=0; j<point.getNumTuples(); j++)
+        {
+        // In theory this is the case of 'appending' new Tuples to an existing Record/Set/Point
+        if ( dataLen == 0 )
+            {
+            m_missingTuples = true;
+            m_logger.warning( "Rte::Db::Set::Base::notifyRead[%s] - Minor upgrade to Set (raw record missing %d tuple(s))", m_name(), point.getNumTuples() - j );
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. Minor upgrade to Set (raw record missing %d tuple(s))", m_name(), point.getNumTuples() - j ));
+            break;
+            }
+
+        // De-serialize the raw record Tuple one Element at a time
+        Rte::Tuple::Api& tuple = point.getTuple(j);
+        int              i;
+        for(i=0; i < tuple.getNumElements(); i++ )
+            {
+            Rte::Element::Api& element  = tuple.getElement(i);
+            uint32_t           elemSize = element.externalSize();
+            if ( elemSize > dataLen )
+                {
+                Cpl::System::FatalError::logf( "Rte::Db::Set::Base::notifyRead[%s] - Buffer length Error.", m_name() );
+                }
+            element.importElement( srcPtr );
+            srcPtr  += elemSize;
+            dataLen -= elemSize;                
+            }
+        }
+
+    sendEvent( evReadDone );
+    }
+
+
+uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. maxDataSize=%ul", m_name(), maxDataSize) );
+
+    // Serialize my point's data (one tuple at a time)
+    Rte::Point::Api point     = getMyPoint();
+    uint8_t*        dstPtr    = (uint8_t*)dstBuffer;
+    uint32_t        filledLen = 0;
+    int             j;
+    for(j=0; j<point.getNumTuples(); j++)
+        {
+        // Serialize the Tuple one Element at a time
+        Rte::Tuple::Api& tuple = point.getTuple(j);
+        int              i;
+        for(i=0; i < tuple.getNumElements(); i++ )
+            {
+            Rte::Element::Api& element  = tuple.getElement(i);
+            uint32_t           elemSize = element.externalSize();
+            if ( filledLen + elemSize > maxDataSize )
+                {
+                Cpl::System::FatalError::logf( "Rte::Db::Set::Base::fillWriteBuffer[%s] - Buffer length Error.", m_name() );
+                }
+            element.exportElement( dstPtr );
+            dstPtr    += elemSize;
+            filledLen += elemSize;
+            }
+        }
+
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. filledLen=%ul", m_name(), filledLen) );
+    return filledLen;
+    }
+
 
 /////////////////////////////////////////
 void Base::start( Rte::Db::Record::Handler& recordLayer ) throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::start") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::start [%s]", m_name()) );
 
     m_recLayerPtr   = recordLayer;
     m_missingTuples = false;
@@ -94,13 +184,13 @@ void Base::start( Rte::Db::Record::Handler& recordLayer ) throw()
 
 void Base::stop() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::stop") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::stop [%s]", m_name()) );
     sendEvent( evStart );
     }
 
 void Base::notifyLoadCompleted(void)
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyLoadCompleted") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyLoadCompleted [%s]", m_name()) );
 
     m_loadIsGood = true;
     sendEvent( evLoadDone );
@@ -108,7 +198,7 @@ void Base::notifyLoadCompleted(void)
 
 void Base::notifyLoadFailed(void)
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyLoadFailed") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyLoadFailed [%s]", m_name()) );
 
     m_loadIsGood = false;
     sendEvent( evDefaultContent );
@@ -116,13 +206,13 @@ void Base::notifyLoadFailed(void)
 
 void Base::defaultContent() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::defaultContent") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::defaultContent [%s]", m_name()) );
     sendEvent( evStart );
     }
 
 Rte::Db::Record::Api& Base::getRecord() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::getRecord") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::getRecord [%s]", m_name()) );
     return *this;
     }
 
@@ -130,13 +220,13 @@ Rte::Db::Record::Api& Base::getRecord() throw()
 /////////////////////////////////////////
 void  Base::pointChanged( void )
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::pointChanged") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::pointChanged [%s]", m_name()) );
     sendEvent( evDataModified );
     }
 
 void  Base::viewerStopped( void )
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::viewerStopped") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::viewerStopped [%s]", m_name()) );
     sendEvent( evDisconnected );
     }
 
@@ -144,7 +234,7 @@ void  Base::viewerStopped( void )
 /////////////////////////////////////////
 void Base::connectToModel() throw()  
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::connectToModel") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::connectToModel [%s]", m_name()) );
 
     getController().updateModel();
     getViewer().startViewing( true, false ); // args:= use values for change detection, NO initial read (of the model point) 
@@ -152,23 +242,23 @@ void Base::connectToModel() throw()
 
 void Base::defaultSetContents() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::defaultSetContents") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::defaultSetContents [%s]", m_name()) );
     defaultSet();
     }
 
 void Base::disconnectFromModel() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::disconnectFromModel") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::disconnectFromModel [%s]", m_name()) );
     getViewer().stopViewing();
     }
 
 void Base::issueWrite() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::issueWrite") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::issueWrite [%s]", m_name()) );
 
     if ( !m_recLayerPtr )
         {
-        Cpl::System::FatalError::log( "Rte::Db::Set::Base::issueWrite - Protocol Error (no record layer reference)." );
+        Cpl::System::FatalError::log( "Rte::Db::Set::Base::issueWrite - Protocol Error (no record layer reference). Name=%s", m_name() );
         }
 
     m_recLayerPtr->write( *this );
@@ -176,19 +266,19 @@ void Base::issueWrite() throw()
 
 void Base::markClean() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::markClean") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::markClean [%s]", m_name()) );
     m_dirty = false; 
     }
 
 void Base::markDirty() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::markDirty") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::markDirty [%s]", m_name()) );
     m_dirty = true; 
     }
 
 void Base::startTimer() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::startTimer") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::startTimer [%s]", m_name()) );
 
     // Generate an internal event if there is NO write delay
     if ( m_writeDelay == 0 )
@@ -205,31 +295,31 @@ void Base::startTimer() throw()
 
 void Base::stopTimer() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::stopTimer") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::stopTimer [%s]", m_name()) );
     m_timer.stop();
     }
 
 void Base::tellInitialized() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellInitialized") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellInitialized [%s]", m_name()) );
     m_setHandler.notifySetInitialized( *this );
     }
 
 void Base::tellStartCompleted() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellStartCompleted") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellStartCompleted [%s]", m_name()) );
     m_setHandler.notifySetStarted( *this );
     }
 
 void Base::tellStarting() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellStarting") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellStarting [%s]", m_name()) );
     m_setHandler.notifyStarting( *this );
     }
 
 void Base::tellStopped() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellStopped") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellStopped [%s]", m_name()) );
     m_setHandler.notifyStopped( *this );
     }
 
@@ -265,7 +355,7 @@ void Base::sendEvent( FSM_EVENT_T msg )
         m_queuedEvent = FSM_NO_MSG;
         if ( processEvent(msg) == 0 )
             {
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("Event IGNORED:= %s", getNameByEvent(msg)) );
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("Event IGNORED:= %s [%s]", getNameByEvent(msg), m_name()) );
             }
         } while( (msg=m_queuedEvent) != FSM_NO_MSG );
     }

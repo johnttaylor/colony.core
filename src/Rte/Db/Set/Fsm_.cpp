@@ -32,10 +32,10 @@ namespace Rte { namespace Db { namespace Set  {
 
     /* State names */
     const char states[]=
-        "Clean\0DelayingWrite\0Writing\0WaitingOnRead\0Initialized\0WritingRecord\0ReadDefaulting\0Idle\0Starting\0Stopping\0Disconnecting\0Active \0";
+        "Clean\0DelayingWrite\0Writing\0WaitingOnRead\0Initialized\0WritingRecord\0ReadDefaulting\0Idle\0Starting\0Stopping\0Disconnecting\0WritingDefaults\0Active \0";
 
     const unsigned short state_idx[]={
-        0,6,20,28,42,54,68,83,88,97,106,120,128};
+        0,6,20,28,42,54,68,83,88,97,106,120,136,144};
 
     /* Event names */
     const char events[]=
@@ -76,6 +76,7 @@ namespace Rte { namespace Db { namespace Set  {
     bool Fsm::isInStarting(void) const {return(((stateVars.stateVar== Starting)) ? (true) : (false));}
     bool Fsm::isInStopping(void) const {return(((stateVars.stateVar== Stopping)) ? (true) : (false));}
     bool Fsm::isInDisconnecting(void) const {return(((stateVars.stateVar== Disconnecting)) ? (true) : (false));}
+    bool Fsm::isInWritingDefaults(void) const {return(((stateVars.stateVar== WritingDefaults)) ? (true) : (false));}
     bool Fsm::isInActive (void) const {return(((stateVars.stateVar== Active )) ? (true) : (false));}
 
     // Helper to get id of innermost active state
@@ -95,6 +96,8 @@ namespace Rte { namespace Db { namespace Set  {
             return DelayingWrite;
         }else if(isInClean()){
             return Clean;
+        }else if(isInWritingDefaults()){
+            return WritingDefaults;
         }else if(isInDisconnecting()){
             return Disconnecting;
         }else if(isInStopping()){
@@ -357,7 +360,7 @@ namespace Rte { namespace Db { namespace Set  {
 
             case Disconnecting:
                 if(msg==evDisconnected){
-                    /* Transition from Disconnecting to WritingRecord */
+                    /* Transition from Disconnecting to WritingDefaults */
                     evConsumed=1;
 
                     /* Action code for transition  */
@@ -365,23 +368,47 @@ namespace Rte { namespace Db { namespace Set  {
                     issueWrite();
 
 
-
                     /* adjust state variables  */
-                    stateVarsCopy.stateVar = Starting;
-                    stateVarsCopy.stateVarStarting = WritingRecord;
+                    stateVarsCopy.stateVar = WritingDefaults;
                     FsmTraceEvent(3);
                 }else if(msg==evStop){
-                    /* Transition from Disconnecting to Stopping */
+                    /* Transition from Disconnecting to Idle */
                     evConsumed=1;
 
 
                     /* adjust state variables  */
-                    stateVarsCopy.stateVar = Stopping;
+                    stateVarsCopy.stateVar = Idle;
                     FsmTraceEvent(1);
                 }else{
                     /* Intentionally left blank */
                 } /*end of event selection */
             break; /* end of case Disconnecting  */
+
+            case WritingDefaults:
+                if(msg==evStop){
+                    /* Transition from WritingDefaults to Idle */
+                    evConsumed=1;
+
+
+                    /* adjust state variables  */
+                    stateVarsCopy.stateVar = Idle;
+                    FsmTraceEvent(1);
+                }else if(msg==evWriteDone){
+                    /* Transition from WritingDefaults to Active  */
+                    evConsumed=1;
+
+                    /* Action code for transition  */
+                    connectToModel();
+                    markClean();
+
+                    stateVarsCopy.stateVar = Active ;/* Default in entry chain  */
+                    stateVarsCopy.stateVarActive  = Clean;/* Default in entry chain  */
+
+                    FsmTraceEvent(6);
+                }else{
+                    /* Intentionally left blank */
+                } /*end of event selection */
+            break; /* end of case WritingDefaults  */
 
             case Active :
 
