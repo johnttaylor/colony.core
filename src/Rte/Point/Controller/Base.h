@@ -25,7 +25,7 @@ namespace Rte { namespace Point { namespace Controller {
 class Base: public Api
 {
 protected:
-    /// Destination to where to stoe the query results
+    /// Destination to where to write to data to
     Rte::Point::Api&         m_myPoint;
 
     /// The Model Point to read the data from (aka the source)

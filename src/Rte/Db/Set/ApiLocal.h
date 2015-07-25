@@ -22,7 +22,7 @@ namespace Rte { namespace Db { namespace Set {
 
 
 /** This class defines the interface for an individual Set.  This interface is 
-    intended to implemented by the Application.  It is the Set Handler and/or 
+    intended to implemented by the Set Layer.  It is the Set Handler and/or 
     Set Layer the calls this interface.  All of the methods in this class are 
     intended to be call in the same thread as the Set Server, i.e. from the Set 
     Layer thread.
