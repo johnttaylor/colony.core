@@ -34,14 +34,15 @@ ranksep=.4;
 "defaultStarting"->"Idle"[labeldistance=2.0, headlabel=<evStop / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>tellStopped();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black ltail=clusterStarting];//Starting Idle
 "WaitingOnRead"->"Initialized"[label=<evReadDone / <br ALIGN="LEFT"/>tellInitialized();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingOnRead Initialized
 "Stopping"->"Idle"[label=<evDisconnected / <br ALIGN="LEFT"/>tellStopped();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Stopping Idle
-"WaitingOnRead"->"WritingRecord"[label=<evLoadDone / <br ALIGN="LEFT"/>issueWrite();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingOnRead WritingRecord
+"WaitingOnRead"->"WritingRecord"[label=<evLoadDone / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>issueWrite();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingOnRead WritingRecord
 "WaitingOnRead"->"ReadDefaulting"[label=<evDefaultContent<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingOnRead ReadDefaulting
-"ReadDefaulting"->"Initialized"[label=<evReadDone / <br ALIGN="LEFT"/>defaultSetContents();<br ALIGN="LEFT"/>tellInitia...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //ReadDefaulting Initialized
+"ReadDefaulting"->"Defaulting"[label=<evReadDone / <br ALIGN="LEFT"/>tellInitialized();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //ReadDefaulting Defaulting
 "defaultroot"->"Idle"[label=<  > style=dotted];
-"ReadDefaulting"->"WritingRecord"[label=<evLoadDone / <br ALIGN="LEFT"/>issueWrite();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //ReadDefaulting WritingRecord
+"Defaulting"->"WritingRecord"[label=<evLoadDone / <br ALIGN="LEFT"/>defaultSetContents();<br ALIGN="LEFT"/>issueWrite...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Defaulting WritingRecord
 "__C0"->"WritingRecord"[label=<[else] / issueWrite();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //__C0 WritingRecord
 "Disconnecting"->"Idle"[label=<evStop<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Disconnecting Idle
-"Initialized"->"Initialized"[label=<evDefaultContent / <br ALIGN="LEFT"/>defaultSetContents(x);<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Initialized Initialized
+"Initialized"->"Defaulting"[label=<evDefault<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Initialized Defaulting
+"ReadDefaulting"->"WritingRecord"[label=<evLoadDone / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>issueWrite();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //ReadDefaulting WritingRecord
 "__C0"->"defaultActive "[labeldistance = 2.0, taillabel=<[isLoadGood()] / <br ALIGN="LEFT"/>connectToModel();<br ALIGN="LEFT"/>markClean();<br ALIGN="LEFT"/>t...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive ];//__C0 Active 
 "defaultStarting"->"WaitingOnRead"[label=<  > style=dotted];
 "WritingRecord"->"defaultActive "[labeldistance = 2.0, taillabel=<evWriteDone / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>connectToModel();<br ALIGN="LEFT"/>markClean();<br ALIGN="LEFT"/>t...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive ];//WritingRecord Active 
@@ -58,13 +59,14 @@ ranksep=.4;
 "defaultActive "->"Disconnecting"[labeldistance=2.0, headlabel=<evDefaultContent / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>disconnectFromModel();<br ALIGN="LEFT"/>stopTimer...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black ltail=clusterActive ];//Active  Disconnecting
 "Disconnecting"->"WritingDefaults"[label=<evDisconnected / <br ALIGN="LEFT"/>defaultSetContents();<br ALIGN="LEFT"/>issueWrite...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Disconnecting WritingDefaults
 "Initialized"->"__C0"[label=<evLoadDone<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Initialized __C0
-"WritingRecord"->"WritingRecord"[label=<evDefaultContent / <br ALIGN="LEFT"/>defaultSetContents();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WritingRecord WritingRecord
+"WritingRecord"->"WriteDefaulting"[label=<evDefault<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WritingRecord WriteDefaulting
 "WritingDefaults"->"defaultActive "[labeldistance = 2.0, taillabel=<evWriteDone / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>connectToModel();<br ALIGN="LEFT"/>markClean();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive ];//WritingDefaults Active 
+"WriteDefaulting"->"WritingRecord"[label=<evWriteDone / <br ALIGN="LEFT"/>defaultSetContents();<br ALIGN="LEFT"/>issueWrite...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WriteDefaulting WritingRecord
 "Idle"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Idle</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];subgraph "clusterStarting"{fontname=arial; fontsize=8
 color=black; style="rounded";
 label=<Starting<br ALIGN="LEFT"/><br ALIGN="LEFT"/>>;
-"WaitingOnRead"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>WaitingOnRead</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"Initialized"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Initialized</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"WritingRecord"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>WritingRecord</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"ReadDefaulting"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>ReadDefaulting</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"defaultStarting"[label=< >,shape=circle, fontsize=8, fixedsize=true, height=0.2, width=0.2, fillcolor=black, style=filled];
-};
+"WaitingOnRead"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>WaitingOnRead</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"Initialized"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Initialized</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"WritingRecord"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>WritingRecord</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"ReadDefaulting"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>ReadDefaulting</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"Defaulting"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Defaulting</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"defaultStarting"[label=< >,shape=circle, fontsize=8, fixedsize=true, height=0.2, width=0.2, fillcolor=black, style=filled];
+"WriteDefaulting"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>WriteDefaulting</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];};
 "Stopping"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Stopping</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"defaultroot"[label=< >,shape=circle, fontsize=8, fixedsize=true, height=0.2, width=0.2, fillcolor=black, style=filled];
 "Disconnecting"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Disconnecting</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"WritingDefaults"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>WritingDefaults</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];subgraph "clusterActive "{fontname=arial; fontsize=8
 color=black; style="rounded";
@@ -101,10 +103,12 @@ namespace Rte { namespace Db { namespace Set  {
             bool isInWriting(void) const;
             bool isInWaitingOnRead(void) const;
             bool isInInitialized(void) const;
+            bool isInWriteDefaulting(void) const;
             bool isInWritingRecord(void) const;
             bool isInReadDefaulting(void) const;
             bool isInIdle(void) const;
             bool isInStarting(void) const;
+            bool isInDefaulting(void) const;
             bool isInStopping(void) const;
             bool isInDisconnecting(void) const;
             bool isInWritingDefaults(void) const;
@@ -127,10 +131,12 @@ namespace Rte { namespace Db { namespace Set  {
                 Writing,
                 WaitingOnRead,
                 Initialized,
+                WriteDefaulting,
                 WritingRecord,
                 ReadDefaulting,
                 Idle,
                 Starting,
+                Defaulting,
                 Stopping,
                 Disconnecting,
                 WritingDefaults,

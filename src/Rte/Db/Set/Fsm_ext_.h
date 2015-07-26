@@ -28,6 +28,7 @@ enum FSM_EVENT_T {
     evDataModified,
     evReadDone,
     evTimerExpired,
+    evDefault,
     evLoadDone,
     evWriteDone,
     evStart,

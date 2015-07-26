@@ -36,6 +36,7 @@ const char* const FsmTraceEvents[] = {
     "evDisconnected",
     "evLoadDone",
     "evDefaultContent",
+    "evDefault",
     "evWriteDone",
     "evDataModified",
     "evTimerExpired",

@@ -50,29 +50,39 @@ Size="2000 1000">
 </State>
 
 <State id="r5"
-Pos="5000 -2200"
-Size="18000 8400"
+Pos="5000 -1800"
+Size="20900 8800"
 Large="1">
 <Text>Starting</Text>
 <State id="r16"
-Pos="6500 -3400"
+Pos="5700 -3400"
 Size="3100 1000">
 <Text>WaitingOnRead</Text>
 </State>
 <State id="r20"
-Pos="6400 -6800"
+Pos="5600 -6800"
 Size="2000 1000">
 <Text>Initialized</Text>
 </State>
 <State id="r31"
 Pos="19200 -3400"
-Size="3200 1000">
+Size="2900 1000">
 <Text>WritingRecord</Text>
 </State>
 <State id="r38"
-Pos="12500 -4900"
+Pos="9600 -4800"
 Size="3100 1000">
 <Text>ReadDefaulting</Text>
+</State>
+<State id="r60"
+Pos="17300 -6700"
+Size="2100 1000">
+<Text>Defaulting</Text>
+</State>
+<State id="r85"
+Pos="15300 -3200"
+Size="500 800">
+<Text>()</Text>
 </State>
 <InitialState id="r89"
 Pos="8700 -2400"/>
@@ -80,6 +90,11 @@ Pos="8700 -2400"/>
 Pos="13700 -8000"
 Size="700 700">
 <Text>&lt;&gt;</Text>
+</State>
+<State id="r216"
+Pos="22400 -6300"
+Size="3100 1000">
+<Text>WriteDefaulting</Text>
 </State>
 </State>
 
@@ -146,14 +161,14 @@ Type="2"/>
 
 <Transition id="r21">
 <End id="r22"
-Pos="7400 -4400"
+Pos="6600 -4400"
 State="r16"
 Type="1"/>
 <Segment id="r24">
 <Anchor id="r26"
-Pos="7400 -4800">
+Pos="6600 -4800">
 <FreeText id="r27"
-Pos="7600 -4700"
+Pos="6900 -5300"
 Origin="1">
 <Text>evReadDone/<p/>
 tellInitialized();</Text>
@@ -161,7 +176,7 @@ tellInitialized();</Text>
 </Anchor>
 </Segment>
 <End id="r25"
-Pos="7400 -6800"
+Pos="6600 -6800"
 State="r20"
 Type="2"/>
 </Transition>
@@ -190,69 +205,67 @@ Type="2"/>
 
 <Transition id="r32">
 <End id="r33"
-Pos="9600 -3800"
+Pos="8800 -3600"
 State="r16"
 Type="1"/>
 <Segment id="r34">
 <Anchor id="r36"
-Pos="16900 -3800">
+Pos="13700 -3600">
 <FreeText id="r37"
-Pos="15092 -3500"
-Origin="3">
-<Text>evLoadDone/<p/>
-issueWrite();</Text>
+Pos="12800 -3400"
+Origin="4">
+<Text>evLoadDone/</Text>
 </FreeText>
 </Anchor>
 </Segment>
 <End id="r35"
-Pos="19200 -3800"
-State="r31"
+Pos="15300 -3600"
+State="r85"
 Type="2"/>
 </Transition>
 
 <Transition id="r39">
 <End id="r40"
-Pos="9573.2050807568885 -4300"
+Pos="8773.2050807568885 -4300"
 State="r16"
 Type="1"/>
 <Segment id="r41"
 Oblique="1">
 <Anchor id="r43"
-Pos="11331.114956661457 -4780.5010052044718">
+Pos="9269.7998179997194 -4780.5010052044709">
 <FreeText id="r44"
-Pos="11531 -4580"
+Pos="8870 -4480"
 Origin="4">
 <Text>evDefaultContent/</Text>
 </FreeText>
 </Anchor>
 </Segment>
 <End id="r42"
-Pos="12500 -5100"
+Pos="9600 -5100"
 State="r38"
 Type="2"/>
 </Transition>
 
 <Transition id="r45">
 <End id="r46"
-Pos="12500 -5600"
+Pos="12700 -5400"
 State="r38"
 Type="1"/>
 <Segment id="r49"
 Oblique="1">
 <Anchor id="r50"
-Pos="12500 -5600">
+Pos="12700 -5400">
 <FreeText id="r51"
-Pos="13432 -6269"
-Origin="2">
+Pos="12900 -6069"
+Origin="1">
 <Text>evReadDone/<p/>
-defaultSetContents();<p/>
 tellInitialized();</Text>
 </FreeText>
 </Anchor>
 </Segment>
 <End id="r56"
-Pos="8400 -7100"
-State="r20"
+Pos="17300 -6900"
+State="r60"
 Type="2"/>
 </Transition>
 
@@ -274,22 +287,25 @@ Type="2"/>
 
 <Transition id="r57">
 <End id="r58"
-Pos="15600 -5200"
-State="r38"
+Pos="18000 -6700"
+State="r60"
 Type="1"/>
-<Segment id="r59"
-Oblique="1">
+<Segment id="r252">
 <Anchor id="r61"
-Pos="17964.49704142012 -4543.1952662721887">
+Pos="18000 -4938.7692307692269">
 <FreeText id="r62"
-Pos="17564 -4643"
-Origin="3">
+Pos="17899 -4507"
+Origin="2">
 <Text>evLoadDone/<p/>
+defaultSetContents();<p/>
 issueWrite();</Text>
 </FreeText>
 </Anchor>
 </Segment>
-<End id="r60"
+<Join id="r251"
+Pos="18000 -4200"/>
+<Segment id="r59"/>
+<End id="r250"
 Pos="19200 -4200"
 State="r31"
 Type="2"/>
@@ -297,27 +313,25 @@ Type="2"/>
 
 <Transition id="r64">
 <End id="r66"
-Pos="14400 -8200"
+Pos="14400 -8300"
 State="r193"
 Type="1"/>
-<Segment id="r69"
-Oblique="1">
+<Segment id="r69">
 <Anchor id="r63"
-Pos="18094.40635788229 -8200">
+Pos="20100 -8300">
 <FreeText id="r67"
-Pos="16618 -8100"
-Origin="3">
+Pos="16624 -8469"
+Origin="2">
 <Text>[else]/<p/>
 issueWrite();</Text>
 </FreeText>
 </Anchor>
 </Segment>
 <Join id="r68"
-Pos="18200 -8200"/>
-<Segment id="r65"
-Oblique="1"/>
+Pos="20100 -8300"/>
+<Segment id="r65"/>
 <End id="r194"
-Pos="19600 -4400"
+Pos="20100 -4400"
 State="r31"
 Type="2"/>
 </Transition>
@@ -388,33 +402,45 @@ Size="800 700">
 </State>
 
 <Transition id="r77">
-<End id="r205"
-Pos="6400 -7400"
+<End id="r79"
+Pos="7600 -7400"
 State="r20"
 Type="1"/>
-<Segment id="r204"/>
-<Join id="r203"
-Pos="6000 -7400"/>
-<Segment id="r79"/>
-<Join id="r80"
-Pos="6000 -8600"/>
-<Segment id="r81"/>
-<Join id="r82"
-Pos="7000 -8600"/>
-<Segment id="r83">
-<Anchor id="r86"
-Pos="7000 -8600">
-<FreeText id="r87"
-Pos="8205 -8900"
-Origin="2">
-<Text>evDefaultContent/<p/>
-defaultSetContents(x);</Text>
+<Segment id="r80">
+<Anchor id="r82"
+Pos="11100 -7400">
+<FreeText id="r83"
+Pos="9832 -7300"
+Origin="3">
+<Text>evDefault/</Text>
 </FreeText>
 </Anchor>
 </Segment>
-<End id="r85"
-Pos="7000 -7800"
-State="r20"
+<End id="r81"
+Pos="17300 -7400"
+State="r60"
+Type="2"/>
+</Transition>
+
+<Transition id="r86">
+<End id="r87"
+Pos="12700 -5000"
+State="r38"
+Type="1"/>
+<Segment id="r203"
+Oblique="1">
+<Anchor id="r205"
+Pos="14183.199983685454 -4378.8932778489961">
+<FreeText id="r209"
+Pos="14383 -4179"
+Origin="3">
+<Text>evLoadDone/</Text>
+</FreeText>
+</Anchor>
+</Segment>
+<End id="r204"
+Pos="15326.794919243112 -3900"
+State="r85"
 Type="2"/>
 </Transition>
 
@@ -427,8 +453,8 @@ Type="1"/>
 <Anchor id="r97"
 Pos="14000 -9500">
 <FreeText id="r98"
-Pos="14200 -9000"
-Origin="1">
+Pos="13816 -8900"
+Origin="2">
 <Text>[isLoadGood()]/<p/>
 connectToModel();<p/>
 markClean();<p/>
@@ -450,21 +476,21 @@ Type="1"/>
 <Segment id="r92"
 Oblique="1"/>
 <End id="r93"
-Pos="8700 -3400"
+Pos="7900 -3400"
 State="r16"
 Type="2"/>
 </Transition>
 
 <Transition id="r99">
 <End id="r100"
-Pos="21800 -4400"
+Pos="20900 -4400"
 State="r31"
 Type="1"/>
 <Segment id="r101">
 <Anchor id="r102"
-Pos="21800 -8500">
+Pos="20900 -8500">
 <FreeText id="r103"
-Pos="21616 -8500"
+Pos="20716 -9000"
 Origin="2">
 <Text>evWriteDone/<p/>
 connectToModel();<p/>
@@ -474,7 +500,7 @@ tellStartCompleted();</Text>
 </Anchor>
 </Segment>
 <End id="r106"
-Pos="21800 -11200"
+Pos="20900 -11200"
 State="r76"
 Type="2"/>
 </Transition>
@@ -763,18 +789,18 @@ Type="2"/>
 
 <Transition id="r195">
 <End id="r196"
-Pos="7900 -7800"
+Pos="6600 -7800"
 State="r20"
 Type="1"/>
 <Segment id="r197"/>
 <Join id="r198"
-Pos="7900 -8300"/>
+Pos="6600 -8300"/>
 <Segment id="r199">
 <Anchor id="r201"
 Pos="11700 -8300">
 <FreeText id="r202"
-Pos="10800 -8434"
-Origin="1">
+Pos="7992 -8434"
+Origin="2">
 <Text>evLoadDone/</Text>
 </FreeText>
 </Anchor>
@@ -785,31 +811,49 @@ State="r193"
 Type="2"/>
 </Transition>
 
-<Transition id="r209">
-<End id="r210"
-Pos="20700 -3400"
-State="r31"
+<Transition id="r210">
+<End id="r211"
+Pos="15800 -3700"
+State="r85"
 Type="1"/>
-<Segment id="r211"/>
-<Join id="r212"
-Pos="20700 -2900"/>
-<Segment id="r213">
-<Anchor id="r217"
-Pos="20800 -2900">
-<FreeText id="r218"
-Pos="20546 -3200"
+<Segment id="r212">
+<Anchor id="r214"
+Pos="17700 -3700">
+<FreeText id="r215"
+Pos="18084 -3700"
 Origin="3">
-<Text>evDefaultContent/<p/>
-defaultSetContents();</Text>
+<Text>/<p/>
+issueWrite();</Text>
 </FreeText>
 </Anchor>
 </Segment>
-<Join id="r214"
-Pos="21400 -2900"/>
-<Segment id="r215"/>
-<End id="r216"
-Pos="21400 -3400"
+<End id="r213"
+Pos="19200 -3700"
 State="r31"
+Type="2"/>
+</Transition>
+
+<Transition id="r217">
+<End id="r218"
+Pos="21700 -4400"
+State="r31"
+Type="1"/>
+<Segment id="r247">
+<Anchor id="r248"
+Pos="21700 -4400">
+<FreeText id="r249"
+Pos="21700 -7434"
+Origin="1">
+<Text>evDefault/</Text>
+</FreeText>
+</Anchor>
+</Segment>
+<Join id="r258"
+Pos="21700 -6900"/>
+<Segment id="r259"/>
+<End id="r260"
+Pos="22400 -6900"
+State="r216"
 Type="2"/>
 </Transition>
 
@@ -875,6 +919,35 @@ Type="1"/>
 <End id="r242"
 Pos="800 -4900"
 State="r4"
+Type="2"/>
+</Transition>
+
+<Transition id="r253">
+<End id="r254"
+Pos="22700 -6300"
+State="r216"
+Type="1"/>
+<Segment id="r255">
+<Anchor id="r256"
+Pos="22700 -6200">
+<FreeText id="r257"
+Pos="22800 -4700"
+Origin="4">
+<Text>evWriteDone/<p/>
+defaultSetContents();<p/>
+issueWrite();</Text>
+</FreeText>
+</Anchor>
+</Segment>
+<Join id="r261"
+Pos="22700 -2500"/>
+<Segment id="r262"/>
+<Join id="r263"
+Pos="21700 -2500"/>
+<Segment id="r264"/>
+<End id="r265"
+Pos="21700 -3400"
+State="r31"
 Type="2"/>
 </Transition>
 

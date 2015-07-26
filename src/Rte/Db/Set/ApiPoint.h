@@ -44,7 +44,7 @@ public:
         Note: The method does NOT update the Model Point - just the Controller
               Point's local memory
      */
-    virtual defaultSet( void ) throw() = 0;
+    virtual void defaultSet( void ) throw() = 0;
 
 
 public:

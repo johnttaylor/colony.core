@@ -16,9 +16,13 @@
 #include "Rte/Db/Set/ApiLocal.h"
 #include "Rte/Db/Set/ApiPoint.h"
 #include "Rte/Db/Set/Fsm_.h"
-#include "Rte/Db/Record/Api.h"
+#include "Rte/Db/Set/DefaultRequest.h"
+#include "Rte/Db/Set/HandlerLocal.h"
+#include "Rte/Db/Record/Handler.h"
 #include "Rte/Db/Chunk/Handle.h"
+#include "Cpl/Container/Map.h"
 #include "Cpl/Timer/Local.h"
+#include "Cpl/Log/Loggers.h"
 #include <stdint.h>
 
 
@@ -34,7 +38,7 @@ namespace Rte { namespace Db { namespace Set {
 class Base: public Api,
             public ApiLocal,
             public ApiPoint,
-            public Fsm_,
+            public Fsm,
             public DefaultRequest,
             public Rte::Db::Record::Api
 {
@@ -49,7 +53,7 @@ private:
     HandlerLocal&                       m_setHandler;
 
     /// Handle to the Record Layer
-    Rte::Db::Record::Handler&           m_recLayerPtr;
+    Rte::Db::Record::Handler*           m_recLayerPtr;
 
     /// Timer for my FSM
     Cpl::Timer::Local<Base>             m_timer;
@@ -91,7 +95,7 @@ public:
 
 public:
     /// Cpl::Container::MapItem
-    const Key& getKey() const throw();
+    const Cpl::Container::Key& getKey() const throw();
 
 
 public: 
@@ -113,7 +117,7 @@ public:
     Rte::Db::Chunk::Handle& getChunkHandle(void);
 
     /// See Rte::Db::Record::Api
-    void notifyRead( void* srcBuffer, uint32_t dataLen );
+    bool notifyRead( void* srcBuffer, uint32_t dataLen );
 
     /// See Rte::Db::Record::Api
     uint32_t fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize );

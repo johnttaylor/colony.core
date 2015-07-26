@@ -10,6 +10,7 @@
 *----------------------------------------------------------------------------*/
 
 #include "Base.h"
+#include "Cpl/Itc/SyncReturnHandler.h"
 #include "Cpl/System/Trace.h"
 
 #define SECT_   "Rte::Db::Set"
@@ -27,11 +28,11 @@ Base::Base( Cpl::Container::Map<ApiLocal>  mySetList,
             Cpl::Itc::PostApi&             setLayerMbox,
             Cpl::Timer::CounterSource&     timingSource,  
             Cpl::Log::Api&                 eventLogger
-          );
+          )
 :m_mbox(setLayerMbox)
 ,m_setHandler(setHandler)
 ,m_recLayerPtr(0) 
-,m_timer(timingSource, *this, Base::timerExpired) 
+,m_timer(timingSource, *this, &Base::timerExpired) 
 ,m_writeDelay(delayWriteTimeInMsec)
 ,m_name(name)
 ,m_logger(eventLogger)
@@ -44,13 +45,13 @@ Base::Base( Cpl::Container::Map<ApiLocal>  mySetList,
     mySetList.insert( *this );
 
     // Initialize my FSM
-    initialize();
+    Fsm::initialize();
     }
 
 
 
 /////////////////////////////////////////
-const Key& Base::getKey() const throw()
+const Cpl::Container::Key& Base::getKey() const throw()
     {
     return m_name;
     }
@@ -98,14 +99,15 @@ void Base::notifyWriteDone(void)
     sendEvent( evWriteDone );
     }
 
-void Base::notifyRead( void* srcBuffer, uint32_t dataLen )
+bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. inlen=%ul", m_name(), dataLen) );
 
     // De-serialize the raw record data one Tuple at a time
-    uint8_t*        srcPtr = (uint8_t*)srcBuffer;
-    Rte::Point::Api point  = getMyPoint();
-    int             j;
+    bool             result = true;
+    uint8_t*         srcPtr = (uint8_t*)srcBuffer;
+    Rte::Point::Api& point  = getMyPoint();
+    unsigned         j;
     for(j=0; j<point.getNumTuples(); j++)
         {
         // In theory this is the case of 'appending' new Tuples to an existing Record/Set/Point
@@ -119,22 +121,36 @@ void Base::notifyRead( void* srcBuffer, uint32_t dataLen )
 
         // De-serialize the raw record Tuple one Element at a time
         Rte::Tuple::Api& tuple = point.getTuple(j);
-        int              i;
+        unsigned         i;
         for(i=0; i < tuple.getNumElements(); i++ )
             {
             Rte::Element::Api& element  = tuple.getElement(i);
             uint32_t           elemSize = element.externalSize();
             if ( elemSize > dataLen )
                 {
-                Cpl::System::FatalError::logf( "Rte::Db::Set::Base::notifyRead[%s] - Buffer length Error.", m_name() );
+                result = false;
+                m_logger.warning( "Rte::Db::Set::Base::notifyRead[%s] - Bad record - missing Element Data", m_name() );
+                CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. Bad record - missing Element Data (element len=%ul, remaining len=%ul)", m_name(), elemSize, dataLen ));
+                break;
                 }
+
             element.importElement( srcPtr );
             srcPtr  += elemSize;
             dataLen -= elemSize;                
             }
         }
 
-    sendEvent( evReadDone );
+    // Kick my FSM based on the results of the read
+    if ( result )
+        {
+        sendEvent( evReadDone );
+        }
+    else
+        {
+        sendEvent( evDefaultContent );
+        }
+
+    return result;
     }
 
 
@@ -143,15 +159,15 @@ uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. maxDataSize=%ul", m_name(), maxDataSize) );
 
     // Serialize my point's data (one tuple at a time)
-    Rte::Point::Api point     = getMyPoint();
-    uint8_t*        dstPtr    = (uint8_t*)dstBuffer;
-    uint32_t        filledLen = 0;
-    int             j;
+    Rte::Point::Api& point     = getMyPoint();
+    uint8_t*         dstPtr    = (uint8_t*)dstBuffer;
+    uint32_t         filledLen = 0;
+    unsigned         j;
     for(j=0; j<point.getNumTuples(); j++)
         {
         // Serialize the Tuple one Element at a time
         Rte::Tuple::Api& tuple = point.getTuple(j);
-        int              i;
+        unsigned         i;
         for(i=0; i < tuple.getNumElements(); i++ )
             {
             Rte::Element::Api& element  = tuple.getElement(i);
@@ -176,7 +192,7 @@ void Base::start( Rte::Db::Record::Handler& recordLayer ) throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::start [%s]", m_name()) );
 
-    m_recLayerPtr   = recordLayer;
+    m_recLayerPtr   = &recordLayer;
     m_missingTuples = false;
     m_loadIsGood    = false;
     sendEvent( evStart );
@@ -258,7 +274,7 @@ void Base::issueWrite() throw()
 
     if ( !m_recLayerPtr )
         {
-        Cpl::System::FatalError::log( "Rte::Db::Set::Base::issueWrite - Protocol Error (no record layer reference). Name=%s", m_name() );
+        Cpl::System::FatalError::logf( "Rte::Db::Set::Base::issueWrite - Protocol Error (no record layer reference). Name=%s", m_name() );
         }
 
     m_recLayerPtr->write( *this );
@@ -301,8 +317,16 @@ void Base::stopTimer() throw()
 
 void Base::tellInitialized() throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellInitialized [%s]", m_name()) );
-    m_setHandler.notifySetInitialized( *this );
+    if ( !m_missingTuples )
+        {
+        m_setHandler.notifySetInitialized( *this );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellInitialized [%s] -->good load", m_name()) );
+        }
+    else
+        {
+        m_setHandler.notifySetConverted( *this );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellInitialized [%s] -->missing tuples, aka auto minor upgrade", m_name()) );
+        }
     }
 
 void Base::tellStartCompleted() throw()
@@ -314,13 +338,13 @@ void Base::tellStartCompleted() throw()
 void Base::tellStarting() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellStarting [%s]", m_name()) );
-    m_setHandler.notifyStarting( *this );
+    m_setHandler.notifySetWaiting( *this );
     }
 
 void Base::tellStopped() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellStopped [%s]", m_name()) );
-    m_setHandler.notifyStopped( *this );
+    m_setHandler.notifySetStopped( *this );
     }
 
 
