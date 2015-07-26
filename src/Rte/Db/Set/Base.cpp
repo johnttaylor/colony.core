@@ -46,6 +46,9 @@ Base::Base( Cpl::Container::Map<ApiLocal>  mySetList,
 
     // Initialize my FSM
     Fsm::initialize();
+
+    // Set all of my Point's 'in-use' flags to true (since we will be reading/writing all tuples)
+    getMyPoint().setAllInUseState(true);
     }
 
 
