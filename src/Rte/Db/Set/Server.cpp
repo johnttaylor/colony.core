@@ -37,8 +37,8 @@ Server::Server( Rte::Db::Record::Handler&                      recordLayer,
 ,m_closeCount(0)
 ,m_openMsgPtr(0)
 ,m_closeMsgPtr(0)
-,m_sets(sets)
 ,m_status( HealthRequest::eCLOSED )
+,m_sets(sets)
     {
     }
 

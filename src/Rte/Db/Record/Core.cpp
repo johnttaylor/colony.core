@@ -30,7 +30,8 @@ Core::Core( uint8_t*                      recordLayerBuffer,
             Cpl::Log::Api&                eventLogger,
             ErrorClient*                  errorHandler
           )
-:m_buffer(recordLayerBuffer)
+:Cpl::Type::FsmEventQueue<Fsm, FSM_EVENT_T>( *this, &Fsm::processEvent )
+,m_buffer(recordLayerBuffer)
 ,m_bufSize(bufferSize)
 ,m_setLayer(setLayerHandler)
 ,m_chunkSAP(chunkSAP)
@@ -65,21 +66,32 @@ void Core::start( void )
     resetHistoryOpening();
 
     // Send the start event
-    sendEvent( evStart ); 
+    generateEvent( evStart ); 
     }
 
 void Core::stop( void )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::stop") );
-    sendEvent( evStop ); 
+    generateEvent( evStop ); 
     }
 
 
 void Core::write( Api& recordToWrite )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::write") );
+
+    void* notEmpty = m_writeRequests.first();
     m_writeRequests.put( recordToWrite );
-    sendEvent( evWrite ); 
+
+    // The nominal path is for the inspectWriteQue() action to generate ALL of the
+    // evWrite events so that my FsmEventQueue does NOT have to be unbounded in 
+    // size (i.e. dependent on the number Sets in the application).  However, this
+    // paradimg breaks down when the FSM is in the 'Writeable' state -->hence the
+    // following hack.
+    if ( !notEmpty && getInnermostActiveState() == Writeable )
+        {
+        generateEvent( evWrite );   
+        }
     }
 
 
@@ -89,7 +101,7 @@ void Core::response( OpenDbMsg& msg )
     m_dbResult = msg.getRequestMsg().getPayload().m_result;
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( OpenDbMsg& msg ): result=%s", Rte::Db::Chunk::Request::resultToString(m_dbResult)) );
 
-    sendEvent( evResponse ); 
+    generateEvent( evResponse ); 
     }
 
 void Core::response( CloseDbMsg& msg )
@@ -97,7 +109,7 @@ void Core::response( CloseDbMsg& msg )
     m_dbResult = msg.getRequestMsg().getPayload().m_result;
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( CloseDbMsg& msg ): result=%s", Rte::Db::Chunk::Request::resultToString(m_dbResult)) );
 
-    sendEvent( evStopped ); 
+    generateEvent( evStopped ); 
     }
 
 void Core::response( ClearDbMsg& msg )
@@ -105,7 +117,7 @@ void Core::response( ClearDbMsg& msg )
     m_dbResult = msg.getRequestMsg().getPayload().m_result;
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( ClearDbMsg& msg ): result=%s", Rte::Db::Chunk::Request::resultToString(m_dbResult)) );
 
-    sendEvent( evResponse ); 
+    generateEvent( evResponse ); 
     }
 
 void Core::response( ReadMsg& msg )
@@ -114,7 +126,7 @@ void Core::response( ReadMsg& msg )
     m_dbDataLen = msg.getRequestMsg().getPayload().m_handlePtr->m_len;
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( ReadMsg& msg ): result=%s, inLen=%lu", Rte::Db::Chunk::Request::resultToString(m_dbResult), m_dbDataLen));
 
-    sendEvent( evResponse ); 
+    generateEvent( evResponse ); 
     }
 
 void Core::response( WriteMsg& msg )
@@ -123,7 +135,7 @@ void Core::response( WriteMsg& msg )
     m_dbDataLen = msg.getRequestMsg().getPayload().m_handlePtr->m_len;
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::response( WriteMsg& msg ): result=%s, outLen=%lu", Rte::Db::Chunk::Request::resultToString(m_dbResult), m_dbDataLen) );
 
-    sendEvent( evResponse ); 
+    generateEvent( evResponse ); 
     }
 
 
@@ -259,7 +271,7 @@ void Core::ackRead() throw()
 
             // Send myself an 'incompatible' event to transition to the NO-Persistence state
             m_dbResult = Rte::Db::Chunk::Request::eWRONG_SCHEMA;
-            generateInternalEvent( evResponse ); 
+            generateEvent( evResponse ); 
             }
         }
     }
@@ -282,6 +294,7 @@ void Core::nakWrite() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::nakWrite") );
     m_setLayer.notifyWriteError();
+    m_recordPtr = 0;
     }
 
 
@@ -328,20 +341,20 @@ void Core::ackDbStopped() throw()
         }
     }
 
-
-
 void Core::queWriteRequest() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::queWriteRequest") );
-    // I do nothing since I ALWAYS queues the incoming write requests
+    // Nothing needed!
     }
 
 void Core::inspectWriteQue() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::inspectWriteQue") );
-    if ( m_writeRequests.first() )
+    
+    // Generate a write event if NOT a write an progress AND there is at least one queued write request
+    if ( m_recordPtr == 0 && m_writeRequests.first() )
         {
-        generateInternalEvent( evWrite ); 
+        generateEvent( evWrite ); 
         }
     }
 
@@ -349,6 +362,7 @@ void Core::clearWriteQue() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::clearWriteQue") );
     m_writeRequests.clearTheList();
+    m_recordPtr = 0;
     }
 
 void Core::verifyOpen() throw()
@@ -356,11 +370,11 @@ void Core::verifyOpen() throw()
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Core::verifyOpen") );
     if ( m_setLayer.isCleanLoad() )
         {
-        generateInternalEvent( evVerified ); 
+        generateEvent( evVerified ); 
         }
     else
         {
-        generateInternalEvent( evIncompleteLoad ); 
+        generateEvent( evIncompleteLoad ); 
         }
     }
 
@@ -394,28 +408,6 @@ bool Core::isNotCompatible() throw()
 
 
 /////////////////////////////////
-void Core::sendEvent( FSM_EVENT_T msg )
-    {
-    // I have an 'event queue' so that if an action generates an event the event 
-    // can be queued until current event finishes processing, i.e. enforce run-to-
-    // completion semantics on event processing. The event queue really isn't a 
-    // queue - just a single variable - since by design of the FSM at most only 
-    // one event can be 'self generated' on any given event processing.
-    do 
-        {
-        m_queuedEvent = FSM_NO_MSG;
-        if ( processEvent(msg) == 0 )
-            {
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("Event IGNORED:= %s", getNameByEvent(msg)) );
-            }
-        } while( (msg=m_queuedEvent) != FSM_NO_MSG );
-    }
-
-void Core::generateInternalEvent( FSM_EVENT_T msg )
-    {
-    m_queuedEvent = msg;
-    }
-
 const char* Core::extractRecName(void)
     {
     return (const char*)(m_buffer + Rte::Db::eNLEN_SIZE);

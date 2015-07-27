@@ -21,7 +21,7 @@ using namespace Rte::Db::Set;
 
 
 /////////////////////////////////////////
-Base::Base( Cpl::Container::Map<ApiLocal>  mySetList,
+Base::Base( Cpl::Container::Map<ApiLocal>& mySetList,
             HandlerLocal&                  setHandler, 
             unsigned long                  delayWriteTimeInMsec,
             const char*                    name,
@@ -46,9 +46,6 @@ Base::Base( Cpl::Container::Map<ApiLocal>  mySetList,
 
     // Initialize my FSM
     Fsm::initialize();
-
-    // Set all of my Point's 'in-use' flags to true (since we will be reading/writing all tuples)
-    getMyPoint().setAllInUseState(true);
     }
 
 
@@ -109,7 +106,7 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
     // De-serialize the raw record data one Tuple at a time
     bool             result = true;
     uint8_t*         srcPtr = (uint8_t*)srcBuffer;
-    Rte::Point::Api& point  = getMyPoint();
+    Rte::Point::Api& point  = getPoint();
     unsigned         j;
     for(j=0; j<point.getNumTuples(); j++)
         {
@@ -162,7 +159,7 @@ uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. maxDataSize=%ul", m_name(), maxDataSize) );
 
     // Serialize my point's data (one tuple at a time)
-    Rte::Point::Api& point     = getMyPoint();
+    Rte::Point::Api& point     = getPoint();
     uint8_t*         dstPtr    = (uint8_t*)dstBuffer;
     uint32_t         filledLen = 0;
     unsigned         j;
@@ -204,7 +201,7 @@ void Base::start( Rte::Db::Record::Handler& recordLayer ) throw()
 void Base::stop() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::stop [%s]", m_name()) );
-    sendEvent( evStart );
+    sendEvent( evStop );
     }
 
 void Base::notifyLoadCompleted(void)
@@ -220,33 +217,19 @@ void Base::notifyLoadFailed(void)
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyLoadFailed [%s]", m_name()) );
 
     m_loadIsGood = false;
-    sendEvent( evDefaultContent );
+    sendEvent( evLoadDone );
     }
 
 void Base::defaultContent() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::defaultContent [%s]", m_name()) );
-    sendEvent( evStart );
+    sendEvent( evDefaultContent );
     }
 
 Rte::Db::Record::Api& Base::getRecord() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::getRecord [%s]", m_name()) );
     return *this;
-    }
-
-
-/////////////////////////////////////////
-void  Base::pointChanged( void )
-    {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::pointChanged [%s]", m_name()) );
-    sendEvent( evDataModified );
-    }
-
-void  Base::viewerStopped( void )
-    {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::viewerStopped [%s]", m_name()) );
-    sendEvent( evDisconnected );
     }
 
 
@@ -263,6 +246,7 @@ void Base::defaultSetContents() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::defaultSetContents [%s]", m_name()) );
     defaultSet();
+    getController().updateModel();
     }
 
 void Base::disconnectFromModel() throw()

@@ -87,6 +87,11 @@ void Rte::Tuple::Basic<N>::registerElement( unsigned elementIdx, Rte::Element::A
         Cpl::System::FatalError::logf( "Rte::Tuple::Basic::registerElement - exceeded max number of elements (N=%u)", N );
         }
 
+    if ( m_elementPtrs_[elementIdx] != 0 )
+        {
+        Cpl::System::FatalError::logf( "Rte::Tuple::Basic::registerElement - duplicate register at index %u", elementIdx );
+        }
+
     m_elementPtrs_[elementIdx] = &element;
     }
 

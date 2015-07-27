@@ -77,6 +77,11 @@ void Rte::Point::Basic<N>::registerTuple( unsigned tupleIdx, Rte::Tuple::Api& tu
         Cpl::System::FatalError::logf( "Rte::Point::Basic::registerTuple - exceeded max number of tuples (N=%u)", N );
         }
 
+    if ( m_tuplePtrs_[tupleIdx] != 0 )
+        {
+        Cpl::System::FatalError::logf( "Rte::Point::Basic::registerTuple - duplicate register at index %u", tupleIdx );
+        }
+
     m_tuplePtrs_[tupleIdx] = &tuple;
     }
 

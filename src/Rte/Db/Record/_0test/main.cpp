@@ -709,11 +709,13 @@ TEST_CASE( "record", "[record]" )
     errorReporter_.clearCounters();
     client.clearCounters();
 
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "BEFORE open" ));
     client.open();
     Cpl::System::Api::sleep( 300 );
     client.close();
     Cpl::System::Api::sleep( 100 );
     
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "AFTER close" ));
     REQUIRE( set1Buffer_[0] == 1 );
     REQUIRE( set1Buffer_[1] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );

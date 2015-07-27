@@ -38,7 +38,7 @@ public:
     PointBar1( void )
         {
         registerTuple( 0, m_fields1 );
-        registerTuple( 0, m_fields2 );
+        registerTuple( 1, m_fields2 );
         }
 
 };
@@ -76,7 +76,10 @@ class ModelBar2: public PointBar2,
 {
 public:
     /// Constructor
-    ModelBar2( Cpl::Itc::PostApi& myMbox ):Rte::Point::Model::Base(*this,myMbox){}
+    ModelBar2( Cpl::Itc::PostApi& myMbox )
+        :Rte::Point::Model::Base(*this,myMbox)
+            {
+            }
 };
 
 
@@ -135,7 +138,7 @@ public:
 /** Concrete Viewer Point: BAR2
  */
 template <class CONTEXT>
-class ViewerBar2: public Bar2,
+class ViewerBar2: public PointBar2,
                   public Rte::Point::Viewer::Container<CONTEXT>
 {
 public:

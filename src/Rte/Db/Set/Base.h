@@ -42,7 +42,7 @@ class Base: public Api,
             public DefaultRequest,
             public Rte::Db::Record::Api
 {
-private:
+protected:
     /// Chunk handle (i.e. contains details about where my data is stored in the DB file)
     Rte::Db::Chunk::Handle              m_chunkHdl;
 
@@ -83,13 +83,13 @@ private:
 
 public:
     /// Constructor
-    Base( Cpl::Container::Map<ApiLocal> mySetList,
-          HandlerLocal&                 setHandler, 
-          unsigned long                 delayWriteTimeInMsec,
-          const char*                   name,
-          Cpl::Itc::PostApi&            setLayerMbox,
-          Cpl::Timer::CounterSource&    timingSource,  
-          Cpl::Log::Api&                eventLogger = Cpl::Log::Loggers::application()
+    Base( Cpl::Container::Map<ApiLocal>& mySetList,
+          HandlerLocal&                  setHandler, 
+          unsigned long                  delayWriteTimeInMsec,
+          const char*                    name,
+          Cpl::Itc::PostApi&             setLayerMbox,
+          Cpl::Timer::CounterSource&     timingSource,  
+          Cpl::Log::Api&                 eventLogger = Cpl::Log::Loggers::application()
         );
 
 
@@ -144,14 +144,6 @@ public:
 
     /// See Rte::Db::Set::ApiLocal
     Rte::Db::Record::Api& getRecord() throw();
-
-
-protected:
-    /// Helper (call back for viewer)
-    void  pointChanged( void );
-
-    /// Helper (call back for viewer)
-    void  viewerStopped( void );
 
 
 protected:

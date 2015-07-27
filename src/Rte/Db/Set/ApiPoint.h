@@ -29,7 +29,7 @@ class ApiPoint
 {
 public:
     /// Returns the reference to shared Point that is used by the Viewer and the Controller
-    virtual Rte::Point::Api& getMyPoint(void) = 0;
+    virtual Rte::Point::Api& getPoint(void) throw() = 0;
 
     /// Returns the reference to Concrete Set's viewer 
     virtual Rte::Point::Viewer::Api& getViewer() throw() = 0;

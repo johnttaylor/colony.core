@@ -5,7 +5,7 @@
 #include "Catch/catch.hpp"
 
 // External references
-extern void link_record(void);
+extern void link_set(void);
 
 
 int main( int argc, char* const argv[] )

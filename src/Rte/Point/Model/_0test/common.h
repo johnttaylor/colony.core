@@ -602,6 +602,30 @@ static Cpl::Itc::MailboxServer viewerMailbox_;
 static  Point::ModelBar1 modelBar1_(modelMailbox_);
 static  Point::ModelBar2 modelBar2_(modelMailbox_);
 static  Point::ModelBar3 modelBar3_(modelMailbox_);
+                                                                 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

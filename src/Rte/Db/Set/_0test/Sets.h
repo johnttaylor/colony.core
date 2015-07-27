@@ -12,7 +12,8 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
-#include "Rte/Db/Set/Base.h"
+#include "Rte/Db/Set/ReaderWriter.h"
+#include "Rte/Db/Set/ContainerReaderWriter.h"
 #include "Points.h"
 
 
@@ -20,54 +21,39 @@
 /** Concrete Set: BAR1
  */
 class SetBar1: public PointBar1,
-               public Rte::Point::Controller::Base,
-               public Rte::Point::Viewer::Composer<Rte::Db::Set::Base>,
-               public Rte::Db::Set::Base
+               public Rte::Db::Set::ReaderWriter
 {
 public:
     /// Constructor
-    SetBar1( Cpl::Container::Map<ApiLocal> mySetList,
-             ModelBar1&                    modelPoint,
-             Cpl::Itc::PostApi&            setLayerMbox, 
-             Cpl::Timer::CounterSource&    timingSource,
-             unsigned long                 delayWriteTimeInMsec = 0,    // Default is: no delay
-             Cpl::Log::Api&                eventLogger = Cpl::Log::Loggers::application()
+    SetBar1( Cpl::Container::Map<ApiLocal>& mySetList,
+             ModelBar1&                     modelPoint,
+             Cpl::Itc::PostApi&             setLayerMbox, 
+             Cpl::Timer::CounterSource&     timingSource,
+             Rte::Db::Set::HandlerLocal&    setHandler, 
+             unsigned long                  delayWriteTimeInMsec = 0,    // Default is: no delay
+             Cpl::Log::Api&                 eventLogger = Cpl::Log::Loggers::application()
            )
-    :Rte::Point::Controller::Base( *this, 
-                                   modelPoint
-                                 )
-    ,Rte::Point::Viewer::Composer<Rte::Db::Set::Base>::Composer( *this, 
-                                                                 *this, 
-                                                                 &Rte::Db::Set::Base::pointChanged, 
-                                                                 &Rte::Db::Set::Base::viewerStopped, 
-                                                                 modelPoint, 
-                                                                 setLayerMbox
-                                                               )
-    ,Rte::Db::Set::Base( setList, 
-                         delayWriteTimeInMsec, 
-                         "SetBar1", 
-                         setLayerMbox, 
-                         timingSource, 
-                         eventLogger 
-                       )
+    :Rte::Db::Set::ReaderWriter( "SetBar1",
+                                 *this,
+                                 mySetList, 
+                                 modelPoint,
+                                 setLayerMbox, 
+                                 timingSource, 
+                                 setHandler,
+                                 delayWriteTimeInMsec, 
+                                 eventLogger 
+                               )
         {
         }
 
 
+
 public: /// See Rte::Db::Set::ApiPoint
-    ///
-    Rte::Point::Api& getMyPoint(void)                       { return *this; }
-    ///
-    Rte::Point::Viewer::Api& getViewer() throw()            { return *this; }
-    ///
-    Rte::Point::Controller::Api& getController() throw()    { return *this; }
-    ///
-    Rte::Point::Model::Api&  getModelPoint() throw()        { return getModelPoint(); }
     ///
     void defaultSet( void ) throw()
         {
         // Default ALL tuples/elements to the VALID state 
-        Rte::Point::Api::setAllValidState( RTE_ELEMENT_API_STATE_VALID );
+        PointBar1::setAllValidState( RTE_ELEMENT_API_STATE_VALID );
 
         // Default Tuple1
         m_fields1.m_flag.set( true );
@@ -87,65 +73,38 @@ public: /// See Rte::Db::Set::ApiPoint
 /** Concrete Set: BAR2
  */
 class SetBar2: public PointBar2,
-               public Rte::Point::Controller::Base,
-               public Rte::Point::Viewer::Container<Rte::Db::Set::Base>,
-               public Rte::Db::Set::Base
+               public Rte::Db::Set::ContainerReaderWriter
 {
 public:
     /// Constructor
-    SetBar2( Cpl::Container::Map<ApiLocal> mySetList,
-             ModelBar1&                    modelPoint,
-             Cpl::Itc::PostApi&            setLayerMbox, 
-             Cpl::Timer::CounterSource&    timingSource,
-             unsigned long                 delayWriteTimeInMsec = 0,    // Default is: no delay
-             Cpl::Log::Api&                eventLogger = Cpl::Log::Loggers::application()
+    SetBar2( Cpl::Container::Map<ApiLocal>& mySetList,
+             ModelBar2&                     modelPoint,
+             Cpl::Itc::PostApi&             setLayerMbox, 
+             Cpl::Timer::CounterSource&     timingSource,
+             Rte::Db::Set::HandlerLocal&    setHandler, 
+             unsigned long                  delayWriteTimeInMsec = 0,    // Default is: no delay
+             Cpl::Log::Api&                 eventLogger = Cpl::Log::Loggers::application()
            )
-    :Rte::Point::Controller::Base( *this, 
-                                   modelPoint
-                                 )
-    ,Rte::Point::Viewer::Composer<Rte::Db::Set::Base>::Container( *this, 
-                                                                  *this, 
-                                                                  &Rte::Db::Set::Base::pointChanged, 
-                                                                  &Rte::Db::Set::Base::viewerStopped, 
-                                                                  modelPoint, 
-                                                                  setLayerMbox
-                                                                )
-    ,Rte::Db::Set::Base( setList, 
-                         delayWriteTimeInMsec, 
-                         "SetBar2", 
-                         setLayerMbox, 
-                         timingSource, 
-                         eventLogger 
-                       )
+    :Rte::Db::Set::ContainerReaderWriter( "SetBar2",
+                                          *this,
+                                          mySetList, 
+                                          modelPoint,
+                                          setLayerMbox, 
+                                          timingSource, 
+                                          setHandler,
+                                          delayWriteTimeInMsec, 
+                                          eventLogger 
+                                        )
         {
         }
 
 
 public: /// See Rte::Db::Set::ApiPoint
     ///
-    Rte::Point::Api& getMyPoint(void)                       { return *this; }
-    ///
-    Rte::Point::Viewer::Api& getViewer() throw()            { return *this; }
-    ///
-    Rte::Point::Controller::Api& getController() throw()    { return *this; }
-    ///
-    Rte::Point::Model::Api&  getModelPoint() throw()        { return getModelPoint(); }
-    ///
     void defaultSet( void ) throw()
         {
         // Default ALL elements (in ALL tuples) to INVALID
-        Rte::Point::Api::setAllValidState( RTE_ELEMENT_API_STATE_INVALID );
-
-        // Default All tuples
-        unsigned i;
-        for(i=0; i<4; i++)
-            {
-            m_tuples_[i].m_flag.set( true );
-            m_tuples_[i].m_text.set( "<name>" );
-            m_tuples_[i].m_data.set( 10*(i+1) );
-            controllerBar3.addItem(idx);
-
-            }
+        PointBar2::setAllValidState( RTE_ELEMENT_API_STATE_INVALID );
 
         // Default to only 1 (of 4) Tuples being 'valid/existing'
         removeItem(0);
