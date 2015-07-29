@@ -16,11 +16,10 @@
 #include "Rte/Db/Record/Handler.h"
 #include "Rte/Db/Record/Client.h"
 #include "Rte/Db/Record/ErrorClient.h"
-#include "Rte/Db/Record/Fsm_.h"
+#include "Rte/Db/Record/FsmEventQueue_.h"
 #include "Cpl/Container/SList.h"
 #include "Cpl/Memory/Aligned.h"
 #include "Cpl/Log/Loggers.h"
-#include "Cpl/Type/FsmEventQueue.h"
 #include <stdint.h>
 
 
@@ -35,8 +34,7 @@ namespace Rte { namespace Db { namespace Record {
  */
 class Core: public Rte::Db::Chunk::Response,
             public Handler,
-            public Fsm,
-            public Cpl::Type::FsmEventQueue<Fsm, FSM_EVENT_T>
+            public FsmEventQueue_
 
 {
 private:

@@ -30,8 +30,7 @@ Core::Core( uint8_t*                      recordLayerBuffer,
             Cpl::Log::Api&                eventLogger,
             ErrorClient*                  errorHandler
           )
-:Cpl::Type::FsmEventQueue<Fsm, FSM_EVENT_T>( *this, &Fsm::processEvent )
-,m_buffer(recordLayerBuffer)
+:m_buffer(recordLayerBuffer)
 ,m_bufSize(bufferSize)
 ,m_setLayer(setLayerHandler)
 ,m_chunkSAP(chunkSAP)
