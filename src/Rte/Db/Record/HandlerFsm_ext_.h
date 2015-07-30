@@ -10,19 +10,19 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-/* Command line options: -p CADIFRA -doxygen -o Fsm -l cppx -Trace Fsm.cdd   */
-/* This file is generated from Fsm.cdd - do not edit manually  */
+/* Command line options: -p CADIFRA -doxygen -o HandlerFsm -l cppx -Trace HandlerFsm.cdd   */
+/* This file is generated from HandlerFsm.cdd - do not edit manually  */
 /* Generated on:  version 3.6.9 */
 
 
-#ifndef __FSM_RTE_DB_RECORD_EXT_H__
-#define __FSM_RTE_DB_RECORD_EXT_H__
+#ifndef __HANDLERFSM_RTE_DB_RECORD_EXT_H__
+#define __HANDLERFSM_RTE_DB_RECORD_EXT_H__
 
 // Events which can be sent to the state-machine
 
 namespace Rte { namespace Db { namespace Record  {
 
-enum FSM_EVENT_T {
+enum HANDLERFSM_EVENT_T {
     evWrite=0U,
     evStop,
     evVerified,
@@ -30,7 +30,7 @@ enum FSM_EVENT_T {
     evIncompleteLoad,
     evStopped,
     evStart,
-    FSM_NO_MSG
+    HANDLERFSM_NO_MSG
 };
 
 

@@ -12,65 +12,25 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include <stdint.h>
-#include "Cpl/Container/Item.h"
-#include "Rte/Db/Chunk/Handle.h"
-
 
 
 /// Namespace(s)
 namespace Rte { namespace Db { namespace Record { 
 
 
-/** This class defines the interface for an individual Record.  This interface
-    is intended to implemented by the upper layer (aka the Set Layer). The
-    interface provides the services and callback neccesary to read/write
-    individual records.
+/** This class is used by the Application to force a Record to set its data 
+    content (aka the Point data) to its default value. Note: The method(s) in
+    class are synchronous wrapper to ITC message requests, i.e. the method(s)
+    can be called from Application threads
  */
-class Api: public Cpl::Container::Item
+class Api
 {
 public:
-    /// Returns the name of the record
-    virtual const char* getName(void) const = 0;
-
-    /// This method is used to set the contents of the record's chunk handle
-    virtual void setChunkHandle( Rte::Db::Chunk::Handle& src ) = 0;
-
-    /// Returns the record's chunk handle
-    virtual Rte::Db::Chunk::Handle& getChunkHandle(void) = 0;
-
-
-public:
-    /** Provides the notification that the record data has been
-        read from the non-volatile media.  The record data is 
-        contained in 'srcBuffer'.  The owner of record is
-        responsible for copying the content of recData into the
-        record's internal storage.  This method return true if
-        succesful (i.e the data available matches what the
-        record owner is expecting); else false is return.  A result
-        of false is treated/handled/acted-upon (by the Record Layer) 
-        as an incompatible Database.
+    /** This method is used to default the data contents of the Record to its
+        default value(s).
      */
-    virtual bool notifyRead( void* srcBuffer, uint32_t dataLen ) = 0;
+    virtual void defaultRecordContent() throw() = 0;
 
-
-public:
-    /** This method is a request to owner of the record to copy the
-        record's internal storage into dstBuffer.  On return from this 
-        method, the Record layer will complete the process of writing the 
-        contents in recData to non-volatile media.  The amount of data 
-        (in bytes) can not exceed the 'maxDataSize' parameter.  The method 
-        returns the number of bytes in data copied into dstBuffer.
-     */
-    virtual uint32_t fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize ) = 0;
-
-
-    /** Provides a notification that the last write action has completed
-        successful or unsuccessfully.  No success/fail information is provided
-        since there is no action needed (or could be taken) by an individiual
-        Set if the write failed.
-     */
-    virtual void notifyWriteDone(void) = 0;
      
 public:
     /// Virtual destructor to keep the compiler happy

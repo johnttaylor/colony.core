@@ -1,5 +1,5 @@
-#ifndef Rte_Db_Record_FsmEventQueue_x_h_
-#define Rte_Db_Record_FsmEventQueue_x_h_
+#ifndef Rte_Db_Record_HandlerFsmEventQueue_x_h_
+#define Rte_Db_Record_HandlerFsmEventQueue_x_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -17,7 +17,7 @@
 /* This file is auto-generated DO NOT MANUALLY EDIT this file! */
 
 
-#include "Rte/Db/Record/Fsm_.h"
+#include "Rte/Db/Record/HandlerFsm_.h"
 #include "Cpl/Container/RingBuffer.h"
 
 
@@ -26,7 +26,7 @@ namespace Rte { namespace Db { namespace Record {
 
 
 /// Event Queue for FSM events.
-class FsmEventQueue_: public Fsm, public Cpl::Container::RingBuffer<FSM_EVENT_T>
+class HandlerFsmEventQueue_: public HandlerFsm, public Cpl::Container::RingBuffer<FSM_EVENT_T>
 {
 private:
     /// Memory for Event queue
@@ -37,7 +37,7 @@ private:
 
 public:
     /// Constructor
-    FsmEventQueue_();
+    HandlerFsmEventQueue_();
 
 public:
     /// This method properly queues and process event messages

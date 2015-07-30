@@ -15,29 +15,29 @@
 /* This file is auto-generated DO NOT MANUALLY EDIT this file! */
 
 
-#include "FsmEventQueue_.h"
+#include "HandlerFsmEventQueue_.h"
 #include "Cpl/System/FatalError.h"
 #include "Cpl/System/Trace.h"
 
-#define SECT_ "Rte::Db::Record::Fsm"
+#define SECT_ "Rte::Db::Record::HandlerFsm"
 
 /// Namespace(s)
 namespace Rte { namespace Db { namespace Record { 
 
 
-FsmEventQueue_::FsmEventQueue_()
+HandlerFsmEventQueue_::HandlerFsmEventQueue_()
 :Cpl::Container::RingBuffer<FSM_EVENT_T>( 4, m_eventQueMemory )
 ,m_processingFsmEvent(false)
     {
     }
 
 
-void FsmEventQueue_::generateEvent( FSM_EVENT_T msg )
+void HandlerFsmEventQueue_::generateEvent( FSM_EVENT_T msg )
     {
     // Queue my event
     if ( !add( msg ) )
         {
-        Cpl::System::FatalError::logf( "Rte::Db::Record::FsmEventQueue_: - Buffer Overflow!" );
+        Cpl::System::FatalError::logf( "Rte::Db::Record::HandlerFsmEventQueue_: - Buffer Overflow!" );
         }
 
     // Protect against in-thread 'feedback loops' that can potentially generate events

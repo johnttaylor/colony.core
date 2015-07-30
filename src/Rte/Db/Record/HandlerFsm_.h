@@ -10,15 +10,15 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-/* Command line options: -p CADIFRA -doxygen -o Fsm -l cppx -Trace Fsm.cdd   */
-/* This file is generated from Fsm.cdd - do not edit manually  */
+/* Command line options: -p CADIFRA -doxygen -o HandlerFsm -l cppx -Trace HandlerFsm.cdd   */
+/* This file is generated from HandlerFsm.cdd - do not edit manually  */
 /* Generated on:  version 3.6.9 */
 
 
-#ifndef __FSM_RTE_DB_RECORD_H__
-#define __FSM_RTE_DB_RECORD_H__
+#ifndef __HANDLERFSM_RTE_DB_RECORD_H__
+#define __HANDLERFSM_RTE_DB_RECORD_H__
 
-/** \class Rte::Db::Record::Fsm
+/** \class Rte::Db::Record::HandlerFsm
 Here is the graph that shows the state machine this class implements
 \dot
 digraph G {
@@ -68,17 +68,17 @@ label=<Opening(H)<br ALIGN="LEFT"/><br ALIGN="LEFT"/>>;
 \enddot
 */
 
-#include "Rte/Db/Record/Fsm_ext_.h"
-#include "Rte/Db/Record/FsmContext_.h"
+#include "Rte/Db/Record/HandlerFsm_ext_.h"
+#include "Rte/Db/Record/HandlerFsmContext_.h"
 
 namespace Rte { namespace Db { namespace Record  {
 
-    class Fsm: public FsmContext_
+    class HandlerFsm: public HandlerFsmContext_
     {
         public:
-            Fsm(void);
+            HandlerFsm(void);
 
-            int processEvent(FSM_EVENT_T msg);
+            int processEvent(HANDLERFSM_EVENT_T msg);
 
             void initialize();
 
@@ -108,7 +108,7 @@ namespace Rte { namespace Db { namespace Record  {
             const char* getNameByState(unsigned short state) const;
 
             // Returns the event as string
-            const char* getNameByEvent(FSM_EVENT_T evt) const;
+            const char* getNameByEvent(HANDLERFSM_EVENT_T evt) const;
 
             enum States{
                 Verifying,
@@ -148,4 +148,4 @@ namespace Rte { namespace Db { namespace Record  {
 };};}; //namespace Rte { namespace Db { namespace Record 
 
 
-#endif // __FSM_RTE_DB_RECORD_H__
+#endif // __HANDLERFSM_RTE_DB_RECORD_H__

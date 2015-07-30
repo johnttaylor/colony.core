@@ -1,5 +1,5 @@
-#ifndef Rte_Db_Record_FsmContext_x_h_
-#define Rte_Db_Record_FsmContext_x_h_
+#ifndef Rte_Db_Record_HandlerFsmContext_x_h_
+#define Rte_Db_Record_HandlerFsmContext_x_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -22,7 +22,7 @@ namespace Rte { namespace Db { namespace Record {
 
 
 /// Context (aka actions/guards) for my Finite State Machine
-class FsmContext_
+class HandlerFsmContext_
 {
 public:
     /// Action
@@ -105,7 +105,7 @@ public:
 
 public:
     /// Virtual Destructor
-    virtual ~FsmContext_(){}
+    virtual ~HandlerFsmContext_(){}
 
 };
 

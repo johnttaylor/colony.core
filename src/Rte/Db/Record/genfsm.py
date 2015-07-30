@@ -18,7 +18,7 @@ from other import genfsm_base
 
 # Generate FSM#1, where [1]:= Diagram name, [2]:= Namespace(s).
 sys.argv.append('-d 4')
-sys.argv.append('Fsm')
+sys.argv.append('HandlerFsm')
 sys.argv.append('Rte::Db::Record')
 genfsm_base.run( sys.argv )
 

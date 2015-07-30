@@ -12,32 +12,37 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Rte/Db/Record/Api.h"
+#include "Rte/Db/Record/HealthRequest.h"
+#include "Cpl/Itc/CloseSync.h"
 
 
 /// Namespace(s)
 namespace Rte { namespace Db { namespace Record { 
 
 
-/** This class defines the interface for Record Handler Interface.  The Record
-    Handler manages the loading of ALL records and processes the write requests
-    of individual records.
+/** This class defines the interface for the Application to interact with the 
+    Record Handler Interface.  The Record Handler manages the loading of ALL 
+    records and processes the write requests of individual records.  Note: The 
+    method(s) in class are synchronous wrapper to ITC message requests, i.e. the 
+    method(s) can be called from Application threads.
+
+    NOTE: The ITC open request will return false if the DB ends up in the 
+          'No Persistence' state during the opening process.
  */
-class Handler
-{
+class Handler: public Cpl::Itc::CloseSync
+{        
 public:
-    /// Starts the record layer handler
-    virtual void start(void) = 0;
-
-    /// Stops the record layer handler
-    virtual void stop() = 0;
-
+    /// Returns the SAP to the Record/DB Health stats ITC interface
+    virtual HealthRequest::SAP&  getHealthSAP(void) = 0;
+    
 
 public:
-    /// Initiate the write action (to non-volatile storage) for 'recordToWrite'
-    virtual void write( Api& recordToWrite ) = 0;
+    /** This method is used to default the data contents of ALL Records to their
+        default value(s).
+     */
+    virtual void defaultAllRecordsContent() throw() = 0;
 
-     
+
 public:
     /// Virtual destructor to keep the compiler happy
     virtual ~Handler(void){}

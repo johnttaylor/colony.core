@@ -10,20 +10,20 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-/* Command line options: -p CADIFRA -doxygen -o Fsm -l cppx -Trace Fsm.cdd   */
-/* This file is generated from Fsm.cdd - do not edit manually  */
+/* Command line options: -p CADIFRA -doxygen -o HandlerFsm -l cppx -Trace HandlerFsm.cdd   */
+/* This file is generated from HandlerFsm.cdd - do not edit manually  */
 /* Generated on:  version 3.6.9 */
 
 
 /* Include default headers (no header definition in UML state-chart provided) */
 /* Define a header comment in your statediagram.model to define own includes here. */
-#include "Rte/Db/Record/Fsm_ext_.h"
-#include "Rte/Db/Record/Fsm_.h"
-#include "Rte/Db/Record/Fsm_trace_.h"
+#include "Rte/Db/Record/HandlerFsm_ext_.h"
+#include "Rte/Db/Record/HandlerFsm_.h"
+#include "Rte/Db/Record/HandlerFsm_trace_.h"
 
 namespace Rte { namespace Db { namespace Record  {
 
-    Fsm::Fsm(void)
+    HandlerFsm::HandlerFsm(void)
     {
         m_initialized=0U;
     }
@@ -44,42 +44,42 @@ namespace Rte { namespace Db { namespace Record  {
     const unsigned short evt_idx[]={
         0,8,15,26,37,54,64,72};
 
-    const char* Fsm::getNameByState(unsigned short state) const {
+    const char* HandlerFsm::getNameByState(unsigned short state) const {
         return states+state_idx[state];
     }
 
-    const char* Fsm::getNameByEvent(FSM_EVENT_T evt) const {
+    const char* HandlerFsm::getNameByEvent(HANDLERFSM_EVENT_T evt) const {
         return events+evt_idx[evt];
     }
 
 
     // Helper(s) to reset history
-    void Fsm::resetHistoryActive(void){
+    void HandlerFsm::resetHistoryActive(void){
         stateVars.stateVarActive=NoPersistence;
     }
 
-    void Fsm::resetHistoryOpening(void){
+    void HandlerFsm::resetHistoryOpening(void){
         stateVars.stateVarOpening=WaitingToOpen;
     }
 
 
     // Helper(s) to find out if the machine is in a certain state
 
-    bool Fsm::isInVerifying(void) const {return(((stateVars.stateVarOpening== Verifying)&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
-    bool Fsm::isInNoPersistence(void) const {return(((stateVars.stateVarActive== NoPersistence)&&(stateVars.stateVar== Active)) ? (true) : (false));}
-    bool Fsm::isInReading (void) const {return(((stateVars.stateVarOpening== Reading )&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
-    bool Fsm::isInIdle(void) const {return(((stateVars.stateVar== Idle)) ? (true) : (false));}
-    bool Fsm::isInOpening(void) const {return(((stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
-    bool Fsm::isInActive(void) const {return(((stateVars.stateVar== Active)) ? (true) : (false));}
-    bool Fsm::isInWriteable(void) const {return(((stateVars.stateVarActive== Writeable)&&(stateVars.stateVar== Active)) ? (true) : (false));}
-    bool Fsm::isInStopping(void) const {return(((stateVars.stateVar== Stopping)) ? (true) : (false));}
-    bool Fsm::isInClearingDb(void) const {return(((stateVars.stateVarOpening== ClearingDb)&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
-    bool Fsm::isInWaitingToOpen(void) const {return(((stateVars.stateVarOpening== WaitingToOpen)&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
-    bool Fsm::isInWriting(void) const {return(((stateVars.stateVarActive== Writing)&&(stateVars.stateVar== Active)) ? (true) : (false));}
+    bool HandlerFsm::isInVerifying(void) const {return(((stateVars.stateVarOpening== Verifying)&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
+    bool HandlerFsm::isInNoPersistence(void) const {return(((stateVars.stateVarActive== NoPersistence)&&(stateVars.stateVar== Active)) ? (true) : (false));}
+    bool HandlerFsm::isInReading (void) const {return(((stateVars.stateVarOpening== Reading )&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
+    bool HandlerFsm::isInIdle(void) const {return(((stateVars.stateVar== Idle)) ? (true) : (false));}
+    bool HandlerFsm::isInOpening(void) const {return(((stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
+    bool HandlerFsm::isInActive(void) const {return(((stateVars.stateVar== Active)) ? (true) : (false));}
+    bool HandlerFsm::isInWriteable(void) const {return(((stateVars.stateVarActive== Writeable)&&(stateVars.stateVar== Active)) ? (true) : (false));}
+    bool HandlerFsm::isInStopping(void) const {return(((stateVars.stateVar== Stopping)) ? (true) : (false));}
+    bool HandlerFsm::isInClearingDb(void) const {return(((stateVars.stateVarOpening== ClearingDb)&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
+    bool HandlerFsm::isInWaitingToOpen(void) const {return(((stateVars.stateVarOpening== WaitingToOpen)&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
+    bool HandlerFsm::isInWriting(void) const {return(((stateVars.stateVarActive== Writing)&&(stateVars.stateVar== Active)) ? (true) : (false));}
 
     // Helper to get id of innermost active state
 
-    unsigned short Fsm::getInnermostActiveState(void) const {
+    unsigned short HandlerFsm::getInnermostActiveState(void) const {
         if(isInWaitingToOpen()){
             return WaitingToOpen;
         }else if(isInClearingDb()){
@@ -103,7 +103,7 @@ namespace Rte { namespace Db { namespace Record  {
         }
     }
     // Initialize method. Must be called once to init the machine
-    void Fsm::initialize(){
+    void HandlerFsm::initialize(){
         //call on entry code of default states
         if(m_initialized==0U){
             m_initialized=1U;
@@ -128,7 +128,7 @@ namespace Rte { namespace Db { namespace Record  {
     }
 
     // State machine event handler
-    int Fsm::processEvent(FSM_EVENT_T msg){
+    int HandlerFsm::processEvent(HANDLERFSM_EVENT_T msg){
 
         int evConsumed = 0U;
 
@@ -155,7 +155,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                     /* adjust state variables  */
                     stateVarsCopy.stateVar = Active;
-                    FsmTraceEvent(0);
+                    HandlerFsmTraceEvent(0);
                 }else if(msg==evWrite){
                     /* Transition from Idle to Idle */
                     evConsumed=1;
@@ -166,7 +166,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                     /* adjust state variables  */
                     stateVarsCopy.stateVar = Idle;
-                    FsmTraceEvent(2);
+                    HandlerFsmTraceEvent(2);
                 }else{
                     /* Intentionally left blank */
                 } /*end of event selection */
@@ -187,7 +187,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarActive = Writing;
-                            FsmTraceEvent(2);
+                            HandlerFsmTraceEvent(2);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */
@@ -206,7 +206,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarActive = NoPersistence;
-                            FsmTraceEvent(2);
+                            HandlerFsmTraceEvent(2);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */
@@ -230,7 +230,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarActive = Writeable;
-                                        FsmTraceEvent(10);
+                                        HandlerFsmTraceEvent(10);
                                     }else if(isDbSuccess()){
                                         /* Transition from WaitingToOpen to Reading  */
                                         evConsumed=1;
@@ -241,7 +241,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarOpening = Reading ;
-                                        FsmTraceEvent(8);
+                                        HandlerFsmTraceEvent(8);
                                     }else{
                                         /* Intentionally left blank */
                                     } /*end of event selection */
@@ -262,7 +262,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarOpening = Verifying;
-                                        FsmTraceEvent(10);
+                                        HandlerFsmTraceEvent(10);
                                     }else if(isDbBadData()){
                                         /* Transition from Reading  to ClearingDb */
                                         evConsumed=1;
@@ -275,7 +275,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarOpening = ClearingDb;
-                                        FsmTraceEvent(9);
+                                        HandlerFsmTraceEvent(9);
                                     }else if(isDbSuccess()){
                                         /* Transition from Reading  to Reading  */
                                         evConsumed=1;
@@ -286,7 +286,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarOpening = Reading ;
-                                        FsmTraceEvent(8);
+                                        HandlerFsmTraceEvent(8);
                                     }else{
                                         /* Intentionally left blank */
                                     } /*end of event selection */
@@ -308,7 +308,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarActive = Writeable;
-                                        FsmTraceEvent(12);
+                                        HandlerFsmTraceEvent(12);
                                     }else{
                                         /* Intentionally left blank */
                                     } /*end of event selection */
@@ -329,7 +329,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                     /* adjust state variables  */
                                     stateVarsCopy.stateVarOpening = ClearingDb;
-                                    FsmTraceEvent(6);
+                                    HandlerFsmTraceEvent(6);
                                 }else if(msg==evVerified){
                                     /* Transition from Verifying to Writeable */
                                     evConsumed=1;
@@ -342,7 +342,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                     /* adjust state variables  */
                                     stateVarsCopy.stateVarActive = Writeable;
-                                    FsmTraceEvent(5);
+                                    HandlerFsmTraceEvent(5);
                                 }else{
                                     /* Intentionally left blank */
                                 } /*end of event selection */
@@ -370,7 +370,7 @@ namespace Rte { namespace Db { namespace Record  {
                                     stateVarsCopy.stateVar = Active;/* Default in entry chain  */
                                     stateVarsCopy.stateVarActive = NoPersistence;/* Default in entry chain  */
 
-                                    FsmTraceEvent(13);
+                                    HandlerFsmTraceEvent(13);
                                 }else if(isDbError()){
                                     /* Transition from Opening to Active */
                                     evConsumed=1;
@@ -384,7 +384,7 @@ namespace Rte { namespace Db { namespace Record  {
                                     stateVarsCopy.stateVar = Active;/* Default in entry chain  */
                                     stateVarsCopy.stateVarActive = NoPersistence;/* Default in entry chain  */
 
-                                    FsmTraceEvent(7);
+                                    HandlerFsmTraceEvent(7);
                                 }else{
                                     /* Intentionally left blank */
                                 } /*end of event selection */
@@ -397,7 +397,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                 stateVarsCopy.stateVarActive = Opening;/* entry chain  */
 
-                                FsmTraceEvent(2);
+                                HandlerFsmTraceEvent(2);
                             }else{
                                 /* Intentionally left blank */
                             } /*end of event selection */
@@ -417,7 +417,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                 /* adjust state variables  */
                                 stateVarsCopy.stateVarActive = Writeable;
-                                FsmTraceEvent(8);
+                                HandlerFsmTraceEvent(8);
                             }else if(!isDbSuccess()){
                                 /* Transition from Writing to Active */
                                 evConsumed=1;
@@ -431,7 +431,7 @@ namespace Rte { namespace Db { namespace Record  {
                                 stateVarsCopy.stateVar = Active;/* Default in entry chain  */
                                 stateVarsCopy.stateVarActive = NoPersistence;/* Default in entry chain  */
 
-                                FsmTraceEvent(11);
+                                HandlerFsmTraceEvent(11);
                             }else{
                                 /* Intentionally left blank */
                             } /*end of event selection */
@@ -445,7 +445,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarActive = Writing;
-                            FsmTraceEvent(2);
+                            HandlerFsmTraceEvent(2);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */
@@ -473,7 +473,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                         /* adjust state variables  */
                         stateVarsCopy.stateVar = Stopping;
-                        FsmTraceEvent(1);
+                        HandlerFsmTraceEvent(1);
                     }else{
                         /* Intentionally left blank */
                     } /*end of event selection */
@@ -492,7 +492,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                     /* adjust state variables  */
                     stateVarsCopy.stateVar = Idle;
-                    FsmTraceEvent(3);
+                    HandlerFsmTraceEvent(3);
                 }else{
                     /* Intentionally left blank */
                 } /*end of event selection */
