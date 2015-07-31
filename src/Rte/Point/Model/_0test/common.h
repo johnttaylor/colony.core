@@ -60,25 +60,25 @@ static const char* v2t_( int8_t valid_state )
 static void traceFoo1_( Tuple::Foo1& tuple, const char* name, const char* msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo1: %s", name, msg ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s",  tuple.m_name.get(), v2t_(tuple.m_name.isValid()), b2t_(tuple.m_name.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s", tuple.m_enabled.get(), v2t_(tuple.m_enabled.isValid()), b2t_(tuple.m_enabled.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%s",   tuple.m_count.get(), v2t_(tuple.m_count.isValid()), b2t_(tuple.m_count.isInUse()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s",  tuple.m_name.get(), v2t_(tuple.m_name.validState()), b2t_(tuple.m_name.isInUse())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s", tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%s",   tuple.m_count.get(), v2t_(tuple.m_count.validState()), b2t_(tuple.m_count.isInUse()) ));
     }
 
 static void traceFoo2_( Tuple::Foo2& tuple, const char* name, const char* msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo2: %s", name, msg ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s", tuple.m_enabled.get(), v2t_(tuple.m_enabled.isValid()), b2t_(tuple.m_enabled.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _limit:=%d. valid=%s, inUse=%s",   tuple.m_limit.get(), v2t_(tuple.m_limit.isValid()), b2t_(tuple.m_limit.isInUse()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s", tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _limit:=%d. valid=%s, inUse=%s",   tuple.m_limit.get(), v2t_(tuple.m_limit.validState()), b2t_(tuple.m_limit.isInUse()) ));
     }
 
 static void traceFoo3_( Tuple::Foo3& tuple, const char* name, const char* msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo3: %s", name, msg ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _inContainer_:=%s. valid=%s, inUse=%s",    b2t_(tuple.m_inContainer_.get()), v2t_(tuple.m_inContainer_.isValid()), b2t_(tuple.m_inContainer_.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s",          tuple.m_name.get(), v2t_(tuple.m_name.isValid()), b2t_(tuple.m_name.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s",         tuple.m_enabled.get(), v2t_(tuple.m_enabled.isValid()), b2t_(tuple.m_enabled.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%s",           tuple.m_count.get(), v2t_(tuple.m_count.isValid()), b2t_(tuple.m_count.isInUse()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _inContainer_:=%s. valid=%s, inUse=%s",    b2t_(tuple.isInContainer()), v2t_(tuple.m_inContainer_.validState()), b2t_(tuple.m_inContainer_.isInUse())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s",          tuple.m_name.get(), v2t_(tuple.m_name.validState()), b2t_(tuple.m_name.isInUse())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s",         tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%s",           tuple.m_count.get(), v2t_(tuple.m_count.validState()), b2t_(tuple.m_count.isInUse()) ));
     }
 
 

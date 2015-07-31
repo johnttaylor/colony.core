@@ -27,7 +27,8 @@ namespace Rte { namespace Point { namespace Model {
 class Base: public Api,
             public Rte::Point::Model::ViewerRequest,
             public Rte::Point::Model::ControllerRequest,
-            public Rte::Point::Model::QueryRequest
+            public Rte::Point::Model::QueryRequest,
+            public Rte::Point::Model::DefaultRequest
 {
 protected:
     /// The actual Point data
@@ -45,13 +46,28 @@ protected:
     /// SAP for my Query ITC interface
     Rte::Point::Model::QueryRequest::SAP        m_querySAP;
 
+    /// SAP for my Default ITC interface
+    Rte::Point::Model::DefaultRequest::SAP      m_defaultSAP;
 
 protected:
     ///
     Base( Rte::Point::Api& myPoint, Cpl::Itc::PostApi& myMbox );
 
 
+protected:
+    /** This method is intended to be overridden by the Application to supply
+        the Application specific default values for the Model Point.  If the 
+        Application does NOT override this method - then when the Model Point
+        is 'defaulted' all of its Tuples/Elements are set to the INVALID state
+        (and the actual values are indeterminate).
+     */
+    virtual void defaultMe( void );
+
+
 public:
+    /// See Rte::Point::Model::Api
+    void defaultContents( void );
+
     /// See Rte::Point::Model::Api
     void update( Rte::Point::Api& controllerPoint );
 
@@ -77,45 +93,53 @@ public:
 
 
 public:
-    /// See Rte::Point::Model::Api
+    /// See Rte::Point::Model::ViewerRequest
     void pollViewer( ViewerRequest::RegisterMsg& viewerToPoll );
 
 
 public:
-    /// See Rte::Point::Model::Api
+    /// See Rte::Point::Model::DefautlRequest
+    void request( DefaultMsg& msg );
+
+
+public:
+    /// See Rte::Point::Model::ViewerRequest
     void request( RegisterMsg& msg );
 
-    /// See Rte::Point::Model::Api
+    /// See Rte::Point::Model::ViewerRequest
     void request( CancelMsg& msg );
 
-    /// See Rte::Point::Model::Api
+    /// See Rte::Point::Model::ViewerRequest
     void request( PollMsg& msg );
 
 
 public:
-    /// See Rte::Point::Model::Api
+    /// See Rte::Point::Model::ControllerRequest
     void request( UpdateMsg& msg );
 
-    /// See Rte::Point::Model::Api
+    /// See Rte::Point::Model::ControllerRequest
     void request( UpdateTupleMsg& msg ); 
 
-    /// See Rte::Point::Model::Api
+    /// See Rte::Point::Model::ControllerRequest
     void request( RmwMsg& msg );
     
-    /// See Rte::Point::Model::Api
+    /// See Rte::Point::Model::ControllerRequest
     void request( RmwContainerMsg& msg );
 
 
 public:
-    /// See Rte::Point::Model::Api
+    /// See Rte::Point::Model::QueryRequest
     void request( QueryMsg& msg );
 
-    /// See Rte::Point::Model::Api
+    /// See Rte::Point::Model::QueryRequest
     void request( QueryTupleMsg& msg );
 
 
 
 public: 
+    /// See Rte::Point::Model::Api
+    Rte::Point::Model::DefaultRequest::SAP&    getDefaultSAP(void);
+
     /// See Rte::Point::Model::Api
     Rte::Point::Model::ViewerRequest::SAP&     getViewerSAP(void);
 

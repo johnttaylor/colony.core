@@ -30,6 +30,15 @@ public:
         :Rte::Point::Model::Base(*this, myMbox)
             {
             }
+
+    /// Default values
+    void defaultMe(void)
+        {
+        m_myPoint.setAllValidState( RTE_ELEMENT_API_STATE_VALID );
+        m_tuple.m_name.set( "default" );
+        m_tuple.m_enabled.set( false );
+        m_tuple.m_count.set( 666 );
+        }
 };
 
 

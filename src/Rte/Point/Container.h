@@ -139,7 +139,7 @@ bool Rte::Point::Container<TUPLE,N>::isTupleInContainer( unsigned tupleIdx ) con
         Cpl::System::FatalError::logf( "Rte::Point::Container::isTupleInContainer - out-of-range index (maxIdx=%u, requestIdx=%u)", N, tupleIdx );
         }
 
-    return m_tuples_[tupleIdx].m_inContainer_.get() == true;
+    return m_tuples_[tupleIdx].isInContainer() == true;
     }
 
 template<class TUPLE, int N>
@@ -147,7 +147,7 @@ int Rte::Point::Container<TUPLE,N>::nextTuple( unsigned startIdx ) const
     {
     while( startIdx < N )
         {
-        if ( m_tuples_[startIdx].m_inContainer_.get() == true )
+        if ( m_tuples_[startIdx].isInContainer() == true )
             {
             return startIdx;
             }
@@ -163,7 +163,7 @@ int Rte::Point::Container<TUPLE,N>::nextEmptyTuple( unsigned startIdx ) const
     {
     while( startIdx < N )
         {
-        if ( m_tuples_[startIdx].m_inContainer_.get() == false )
+        if ( m_tuples_[startIdx].isInContainer() == false )
             {
             return startIdx;
             }

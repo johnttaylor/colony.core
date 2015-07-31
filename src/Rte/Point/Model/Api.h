@@ -15,6 +15,7 @@
 #include "Rte/Point/Model/ViewerRequest.h"
 #include "Rte/Point/Model/ControllerRequest.h"
 #include "Rte/Point/Model/QueryRequest.h"
+#include "Rte/Point/Model/DefaultRequest.h"
 
 
 ///
@@ -22,10 +23,24 @@ namespace Rte { namespace Point { namespace Model {
 
 
 /** This class defines the interface for the base operations of
-    Model Point contained in the Model Model
+    Model Point contained in the Model 
  */
 class Api
 {
+public:
+    /** This method updates cause the Model Point's data to be changed/updated
+        to its 'default values' as defined by the application. 
+         
+        NOTE: This method is never called directly by the RTE engine, i.e. it 
+              is the Application responsiblity to call this method (if at all).  
+              There is one EXCEPTION to this rule - it is when the Rte::Db engine 
+              initializes Records from non-volatile storage.  Each Record has an 
+              associated Model Point and as part of the Db start-up process this 
+              method is called on all of the associated Model Points.
+    */
+    virtual void defaultContents( void ) = 0;
+
+    
 public:
     /** This method synchronously updates the Model Point
      */
@@ -70,6 +85,9 @@ public:
     
 
 public:
+    /// Returns the SAP to the default ITC interface
+    virtual Rte::Point::Model::DefaultRequest::SAP&     getDefaultSAP(void) = 0;
+
     /// Returns the SAP to the viewer ITC interface
     virtual Rte::Point::Model::ViewerRequest::SAP&      getViewerSAP(void) = 0;
 

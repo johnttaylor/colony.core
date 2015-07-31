@@ -25,6 +25,7 @@ Base::Base( Rte::Point::Api& myPoint, Cpl::Itc::PostApi& myMbox )
 ,m_viewerSAP(*this,myMbox)
 ,m_controllerSAP(*this,myMbox)
 ,m_querySAP(*this,myMbox)
+,m_defaultSAP(*this,myMbox)
     {
     }
 
@@ -50,6 +51,21 @@ Base::getQuerySAP(void)
     return m_querySAP;
     }
 
+Rte::Point::Model::DefaultRequest::SAP& 
+Base::getDefaultSAP(void)
+    {
+    return m_defaultSAP;
+    }
+
+
+///////////////////
+void Base::defaultContents() throw()
+    {
+    DefaultPayload                payload;
+    Cpl::Itc::SyncReturnHandler   srh;
+    DefaultMsg                    msg(*this,payload,srh);
+    m_defaultSAP.postSync(msg);
+    }
 
 
 ///////////////////
@@ -115,6 +131,34 @@ void Base::pollViewer( ViewerRequest::RegisterMsg& viewerToPoll )
     Cpl::Itc::SyncReturnHandler   srh;
     PollMsg                       msg(*this,payload,srh);
     m_viewerSAP.postSync(msg);
+    }
+
+
+///////////////////
+void Base::request( DefaultMsg& msg )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(DefaultMsg) - (%p)", this ));
+
+    // The default default is to mark all Tuples/Elements INVALID
+    m_myPoint.setAllValidState( RTE_ELEMENT_API_STATE_INVALID );
+
+    // Call the Application supplied default method for this set 
+    defaultMe();
+
+    // Increment the Point's sequence number, i.e. force a membership change (which in theory if I am a Container Point sorta of by defintion defaulting the Point is membership change)
+    m_myPoint.incrementSequenceNumber();
+
+    // Process any change notifications
+    checkForNotifications();
+
+    // Return the ITC message
+    msg.returnToSender();
+    }
+
+
+void Base::defaultMe( void )
+    {
+    // Do nothing
     }
 
 

@@ -16,9 +16,15 @@ sys.path.append( NQBP_BIN )
 # Find the Package & Workspace root
 from other import genfsm_base
 
-# Generate FSM#1, where [1]:= Diagram name, [2]:= Namespace(s).
+# Generate FSM#1
 sys.argv.append('-d 4')
 sys.argv.append('HandlerFsm')
 sys.argv.append('Rte::Db::Record')
 genfsm_base.run( sys.argv )
 
+
+# Generate FSM#2
+sys.argv[1] = '-d 4'
+sys.argv[2] = 'Fsm'
+sys.argv[3] = 'Rte::Db::Record'
+genfsm_base.run( sys.argv )
