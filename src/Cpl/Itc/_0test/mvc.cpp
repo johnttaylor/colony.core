@@ -53,7 +53,7 @@ TEST_CASE( "mvc", "[mvc]" )
     Cpl::System::Thread* t2 = Cpl::System::Thread::create( modelMbox,  "Model" );
     Cpl::System::Thread* t3 = Cpl::System::Thread::create( masterRun,  "MASTER" );
 
-    // Test default signal behavior (i.e. generate an error)
+    // Test default signal behavior 
     Cpl::System::Api::sleep(50);
     viewerMbox.signal();
 

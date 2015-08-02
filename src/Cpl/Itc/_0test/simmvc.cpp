@@ -50,7 +50,7 @@ TEST_CASE( "simmvc", "[simmvc]" )
     Cpl::System::Thread* t3 = Cpl::System::Thread::create( masterRun,  "MASTER" );
     Cpl::System::Api::sleep( 50 ); // Allow time for threads to actually spin-up
 
-    // Test the default signal handler (should throw a fatal error)
+    // Test the default signal handler 
     viewerMbox.signal();
 
     // Validate result of each sequence
@@ -89,5 +89,5 @@ TEST_CASE( "simmvc", "[simmvc]" )
     Cpl::System::Thread::destroy( *t1 );
     Cpl::System::Thread::destroy( *t2 );
     Cpl::System::Thread::destroy( *t3 );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 ); // One error due to invalid mailbox.signal() call
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
     }

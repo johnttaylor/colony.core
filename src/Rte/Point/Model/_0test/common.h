@@ -57,10 +57,23 @@ static const char* v2t_( int8_t valid_state )
     return validstring;
     }
 
+static const char* n2s_( const char* elementValue, bool isValid )
+    {
+    if ( isValid )
+        {
+        return elementValue;
+        }
+    else
+        {
+        return "<???>";
+        }
+    }
+
+
 static void traceFoo1_( Tuple::Foo1& tuple, const char* name, const char* msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo1: %s", name, msg ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s",  tuple.m_name.get(), v2t_(tuple.m_name.validState()), b2t_(tuple.m_name.isInUse())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s",  n2s_(tuple.m_name.get(), tuple.m_name.isValid()), v2t_(tuple.m_name.validState()), b2t_(tuple.m_name.isInUse())  ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s", tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse())  ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%s",   tuple.m_count.get(), v2t_(tuple.m_count.validState()), b2t_(tuple.m_count.isInUse()) ));
     }
@@ -76,7 +89,7 @@ static void traceFoo3_( Tuple::Foo3& tuple, const char* name, const char* msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo3: %s", name, msg ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _inContainer_:=%s. valid=%s, inUse=%s",    b2t_(tuple.isInContainer()), v2t_(tuple.m_inContainer_.validState()), b2t_(tuple.m_inContainer_.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s",          tuple.m_name.get(), v2t_(tuple.m_name.validState()), b2t_(tuple.m_name.isInUse())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s",          n2s_(tuple.m_name.get(), tuple.m_name.isValid()), v2t_(tuple.m_name.validState()), b2t_(tuple.m_name.isInUse())  ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s",         tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse())  ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%s",           tuple.m_count.get(), v2t_(tuple.m_count.validState()), b2t_(tuple.m_count.isInUse()) ));
     }
@@ -373,6 +386,7 @@ protected:
     void bar1Changed(void)
         {
         m_changed1Count++;
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "LW-Viewer(%s).Bar1 Changed", m_name ));
 
         Point::QueryBar1 queryResult( m_bar1.getModelPoint() );
         queryResult.issueQuery();
@@ -395,6 +409,7 @@ protected:
         {
         m_changed3Count++;
         
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "LW-Viewer(%s).Bar3 Changed", m_name ));
         Point::QueryBar3 queryResult( m_bar3.getModelPoint() );
         queryResult.issueQuery();
         m_bar3.copyQueryResultsFrom( queryResult );

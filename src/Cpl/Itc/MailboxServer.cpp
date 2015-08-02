@@ -123,13 +123,7 @@ void MailboxServer::pleaseStop()
     m_flock.unlock();
 
     // Signal myself incase the thread is blocked waiting for the 'next message'
-    signal();
-    }
-
-
-void MailboxServer::setThreadOfExecution_( Cpl::System::Thread* myThreadPtr )
-    {
-    m_myThreadPtr = myThreadPtr;
+    m_sema.signal();
     }
 
 

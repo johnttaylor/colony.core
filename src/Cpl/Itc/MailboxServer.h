@@ -77,9 +77,6 @@ protected:
     /// See Cpl::System::Runnable
     void appRun();
 
-    /// See Cpl::System::Runnable
-    void setThreadOfExecution_( Cpl::System::Thread* myThreadPtr );
-
 
 protected:
     /** This initialization function is called before the server

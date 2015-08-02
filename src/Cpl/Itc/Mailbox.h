@@ -14,7 +14,7 @@
 
 #include "colony_config.h"
 #include "Cpl/Itc/PostApi.h"
-#include "Cpl/System/Signable.h"
+#include "Cpl/System/Semaphore.h"
 #include "Cpl/System/FastLock.h"
 #include "Cpl/Container/SList.h"
 
@@ -87,16 +87,16 @@ public:
 
 protected:
     /// Mutex used to protect my list
-    Cpl::System::FastLock m_flock;
+    Cpl::System::FastLock   m_flock;
 
-    /// Keep track of who (aka which thread the mailbbox is ruuning in) the mailbox waits on
-    Cpl::System::Signable* m_myThreadPtr;
+    /// Semaphore associated with the mailbox (note: the Thread semaphore is used for managing syncrhonous ITC calls)
+    Cpl::System::Semaphore  m_sema;
 
     /// Timeout period for waiting on the next message
-    unsigned long   m_timeout;
+    unsigned long           m_timeout;
 
     /// Keep track of when the mailbox is waiting for the next message
-    bool            m_waiting;
+    bool                    m_waiting;
 
     /** The value of this variable is set to true by the Signaled
         interface, when the mailbox is signaled and there is no
@@ -106,7 +106,7 @@ protected:
         waiter to return from the waitNext function with a null
         message pointer.
      */
-    bool            m_signaled;
+    bool                    m_signaled;
 
 };
 

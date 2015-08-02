@@ -33,10 +33,9 @@ using namespace Cpl::Itc;
 **/
 
 Mailbox::Mailbox( unsigned long timeOutPeriodInMsec )
-:m_myThreadPtr(0),
- m_timeout(timeOutPeriodInMsec),
- m_waiting(false),
- m_signaled(false)
+:m_timeout(timeOutPeriodInMsec)
+,m_waiting(false)
+,m_signaled(false)
     {
     }
 
@@ -56,7 +55,7 @@ void Mailbox::post(Message& msg) throw()
     // Only signal myself if the mailbox is current blocked waiting for a next message
     if ( waiting ) 
         {
-        m_myThreadPtr->signal();
+        m_sema.signal();
         }
     }
 
@@ -71,12 +70,6 @@ Message* Mailbox::waitNext( bool& wasTimeout ) throw()
     {
     Message* msgPtr;
     wasTimeout = false;
-
-    // Initialize which thread I am the mailbox for (I only need to do this ONCE)
-    if ( m_myThreadPtr == 0 )
-        {
-        m_myThreadPtr = &Cpl::System::Thread::getCurrent();
-        }
 
     for(;;)
         {
@@ -108,7 +101,7 @@ Message* Mailbox::waitNext( bool& wasTimeout ) throw()
         if ( m_timeout )
             {
             // Note: For Simulation: the timedWait() call if it blocks - does so waiting on the next tick - so no Application Wait() call is needed    
-            if ( !Cpl::System::Thread::timedWait( m_timeout ) )
+            if ( !m_sema.timedWait( m_timeout ) )
                 {
                 // Change my waiting status to: NOT waiting
                 m_flock.lock();
@@ -123,7 +116,7 @@ Message* Mailbox::waitNext( bool& wasTimeout ) throw()
             {
             // For Simulation: Since this call can block 'past a tick boundary', I need a call Appliation Wait()
             CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT();
-            Cpl::System::Thread::wait();
+            m_sema.wait();
             }
         }
 
@@ -149,7 +142,7 @@ int Mailbox::signal(void) throw()
     // Wake myself up (if I was waiting for a next-message)
     if( waiting ) 
         {
-        result = m_myThreadPtr->signal();
+        result = m_sema.signal();
         }
 
     return result;
@@ -172,7 +165,7 @@ int Mailbox::su_signal(void) throw()
     // Wake myself up (if I was waiting for a next-message)
     if( waiting ) 
         {
-        result = m_myThreadPtr->su_signal();
+        result = m_sema.su_signal();
         }
 
     return result;
