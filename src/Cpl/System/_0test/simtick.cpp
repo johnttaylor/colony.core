@@ -412,7 +412,7 @@ TEST_CASE( "basic", "[basic]" )
 
     // Shutdown timer thread
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Shutting down timer thread..." ));
-    timerThreadPtr->pleaseStop();
+    timerRun.pleaseStop();
     while( timerThreadPtr->isRunning() )
         {
         if ( !SimTick::advance(1) )

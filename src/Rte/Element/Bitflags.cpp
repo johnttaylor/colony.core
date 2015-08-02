@@ -9,7 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "bitflags.h"
+#include "Bitflags.h"
 #include <memory.h>
 
 ///
