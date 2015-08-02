@@ -65,7 +65,7 @@ static const char* n2s_( const char* elementValue, bool isValid )
         }
     else
         {
-        return "<???>";
+        return "<?>";
         }
     }
 
