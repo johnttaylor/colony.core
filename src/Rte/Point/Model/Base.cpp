@@ -135,9 +135,9 @@ void Base::pollViewer( ViewerRequest::RegisterMsg& viewerToPoll )
 
 
 ///////////////////
-void Base::request( DefaultMsg& msg )
+void Base::defaultContentsNonThreadSafe( void ) throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(DefaultMsg) - (%p)", this ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::defaultContentsNonThreadSafe() - (%p)", this ));
 
     // The default default is to mark all Tuples/Elements INVALID
     m_myPoint.setAllValidState( RTE_ELEMENT_API_STATE_INVALID );
@@ -150,8 +150,12 @@ void Base::request( DefaultMsg& msg )
 
     // Process any change notifications
     checkForNotifications();
+    }
 
-    // Return the ITC message
+void Base::request( DefaultMsg& msg )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(DefaultMsg) - (%p)", this ));
+    defaultContentsNonThreadSafe();
     msg.returnToSender();
     }
 

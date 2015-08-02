@@ -23,8 +23,6 @@ Base::Base( Rte::Point::Api&                          myPoint,
 ,m_modelPoint(modelPoint)
 ,m_copyOption(copyOption)
     {
-    // Default to querying EVERYTHING
-    m_myPoint.setAllInUseState(true);
     }
 
 

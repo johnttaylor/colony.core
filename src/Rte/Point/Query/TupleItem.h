@@ -128,8 +128,6 @@ Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::TupleItem( Rte::Point::Model::Api&
 ,m_tupleIdx(tupleIndex)
 ,m_copyOption(copyOption)
     {
-    // Default to querying EVERYTHING
-    setAllInUseState(true);
     }
 
 /////////////////

@@ -58,7 +58,9 @@ class RwmFoo3ControllerBar3: public Rte::Point::Controller::RmwContainer<Tuple::
 {
 public:
     /// Constructor. A child class must be create that implements Rte::Point::Controller::RmwClient::modify()
-    RwmFoo3ControllerBar3( CONTEXT& context, ModifyFunc_T modifyCallback, ModelBar3& modelPoint )
+    RwmFoo3ControllerBar3( CONTEXT&                                                                          context, 
+                           typename Rte::Point::Controller::RmwContainer<Tuple::Foo3, CONTEXT>::ModifyFunc_T modifyCallback, 
+                           ModelBar3&                                                                        modelPoint )
         :Rte::Point::Controller::RmwContainer<Tuple::Foo3, CONTEXT>(context, modifyCallback, modelPoint )
             {}
 };

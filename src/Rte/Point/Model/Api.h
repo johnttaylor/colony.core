@@ -38,9 +38,15 @@ public:
               associated Model Point and as part of the Db start-up process this 
               method is called on all of the associated Model Points.
     */
-    virtual void defaultContents( void ) = 0;
+    virtual void defaultContents( void ) throw() = 0;
 
-    
+    /** This is non-thread safe version (i.e. can only be called from the 
+        'Model' thread) of defaultContents().  Typically the Application 
+        SHOULD NEVER call this method.
+     */
+    virtual void defaultContentsNonThreadSafe( void ) throw() = 0;
+
+
 public:
     /** This method synchronously updates the Model Point
      */

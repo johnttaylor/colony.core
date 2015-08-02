@@ -128,18 +128,18 @@ void Rte::Point::Controller::RmwContainer<TUPLE, CONTEXT>::setStartingTupleIndex
 template <class TUPLE, class CONTEXT>
 bool Rte::Point::Controller::RmwContainer<TUPLE, CONTEXT>::addItem( void )
     {
-    m_inContainer_.set(true);
-    m_inContainer_.setValid();
-    m_inContainer_.setInUse();
+    this->m_inContainer_.set(true);
+    this->m_inContainer_.setValid();
+    this->m_inContainer_.setInUse();
     return true;
     }
     
 template <class TUPLE, class CONTEXT>
 bool Rte::Point::Controller::RmwContainer<TUPLE, CONTEXT>::removeItem( void )
     {
-    m_inContainer_.set(false);
-    m_inContainer_.setValid();
-    m_inContainer_.setInUse();
+    this->m_inContainer_.set(false);
+    this->m_inContainer_.setValid();
+    this->m_inContainer_.setInUse();
     return true;
     }
     

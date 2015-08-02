@@ -59,7 +59,9 @@ class RwmControllerBar1: public Point::Bar1,
 {
 public:
     /// Constructor. A child class must be create that implements Rte::Point::Controller::RmwClient::modify()
-    RwmControllerBar1( CONTEXT& context, ModifyFunc_T modifyCallback, ModelBar1& modelPoint )
+    RwmControllerBar1( CONTEXT&                                                            context, 
+                       typename Rte::Point::Controller::RmwComposer<CONTEXT>::ModifyFunc_T modifyCallback, 
+                       ModelBar1&                                                          modelPoint )
         :Rte::Point::Controller::RmwComposer<CONTEXT>(*this, context, modifyCallback, modelPoint )
             {}
 };

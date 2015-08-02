@@ -142,7 +142,7 @@ bool Api::compareAndCopy( Rte::Tuple::Api& srcTuple, Rte::Tuple::Api& dstTuple, 
     bool tupleIsDifferent = false;
     if ( !compareValues || dstTuple.getNumElements() == 0 )
         {
-        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Compare by SEQNUM! (dst.numElems=%u, src.numElems=%u, dst.seq=%u, src.seq=%u)", dstTuple.getNumElements(), srcTuple.getNumElements(), dstTuple.getSequenceNumber(), srcTuple.getSequenceNumber() ));
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Compare by SEQNUM (dst.numElems=%u, src.numElems=%u, dst.seq=%u, src.seq=%u)", dstTuple.getNumElements(), srcTuple.getNumElements(), dstTuple.getSequenceNumber(), srcTuple.getSequenceNumber() ));
         if ( srcTuple.isDifferent( dstTuple ) )
             {
             tupleIsDifferent = true;

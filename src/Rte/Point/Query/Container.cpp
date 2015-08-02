@@ -25,7 +25,6 @@ Container::Container( Rte::Point::ContainerApi&                 myPoint,
 ,m_modelPoint(modelPoint)
 ,m_copyOption(copyOption)
     {
-    m_myPoint.setAllInUseState(true);
     }
 
 

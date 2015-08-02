@@ -66,7 +66,10 @@ protected:
 
 public:
     /// See Rte::Point::Model::Api
-    void defaultContents( void );
+    void defaultContents( void ) throw();
+
+    /// See Rte::Point::Model::Api
+    void defaultContentsNonThreadSafe( void ) throw();
 
     /// See Rte::Point::Model::Api
     void update( Rte::Point::Api& controllerPoint );

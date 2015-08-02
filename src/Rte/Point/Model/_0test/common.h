@@ -472,7 +472,9 @@ public:
         ,m_startIdx(0xFF)                
         ,m_lastIdx(0xFF)
         ,m_tupleWalker( modelPoint, *this, &Foo3TupleTraverserContext::item )
-            {}
+            {
+            m_tupleWalker.setAllInUseState(true);
+            }
 
 public:
     ///

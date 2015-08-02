@@ -31,6 +31,8 @@ public:
     QueryBar3( Rte::Point::Model::Api& modelPoint )
         :Rte::Point::Query::Container(*this, modelPoint)
             {
+            // Default to querying EVERYTHING
+            setAllInUseState(true);
             }
 
 };
@@ -46,6 +48,8 @@ public:
     TupleFoo3QueryBar3( Rte::Point::Model::Api& modelPoint, unsigned tupleIndex, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
         :Rte::Point::Query::Tuple(tupleIndex, *this, modelPoint, copyOption )
             {
+            // Default to querying EVERYTHING
+            setAllInUseState(true);
             }
 
 };
@@ -66,6 +70,7 @@ public:
         :m_tupleWalker( modelPoint, *this, &MyContext::walkFoo3, copyOption )
             {
             ....
+            m_tupleWalker.setAllInUseState(true);
             m_tupleWalker.issueQuery();
             ...
             }

@@ -27,8 +27,6 @@ Tuple::Tuple( unsigned                                  tupleIndex,
 ,m_tupleIdx(tupleIndex)
 ,m_copyOption(copyOption)
     {
-    // Default to querying EVERYTHING
-    m_myTuple.setAllInUseState(true);
     }
 
 

@@ -30,6 +30,8 @@ public:
     QueryBar1( Rte::Point::Model::Api& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
         :Rte::Point::Query::Base(*this, modelPoint, copyOption)
             {
+            // Default to querying EVERYTHING
+            setAllInUseState(true);
             }
 
 };
@@ -45,6 +47,8 @@ public:
     TupleFoo1QueryBar1( Rte::Point::Model::Api& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY  )
         :Rte::Point::Query::Tuple(0, *this, modelPoint, copyOption)
             {
+            // Default to querying EVERYTHING
+            setAllInUseState(true);
             }
 
 };
