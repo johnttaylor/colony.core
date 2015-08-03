@@ -13,6 +13,7 @@
 #include "Cpl/System/FatalError.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/Log/Api.h"
+#include "Cpl/Itc/SyncReturnHandler.h"
 #include "Rte/Db/Framing.h"
 #include <string.h>
 #include <new>
@@ -29,9 +30,8 @@ Server::Server( uint8_t*                       recordLayerBuffer,
                 Cpl::Container::Map<ApiLocal>& recordList,
                 Cpl::Log::Api&                 eventLogger
               )
-:Cpl::Itc::CloseSync(recordLayerMbox)
+:Handler(recordLayerMbox)
 ,m_healthSAP(*this, recordLayerMbox) 
-,m_recordLayer(recordLayer)
 ,m_conversion(false)
 ,m_recordCount(0)
 ,m_openCount(0)
@@ -90,13 +90,13 @@ void Server::defaultAllRecordsContent() throw()
 
 void Server::request( DefaultMsg& msg )
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request::DefaultMsg (opened=%d", m_opened ) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request::DefaultMsg" ));
 
     // Ignore request if NOT opened, i.e. it would do anything anyway since all 
-    // Sets are defaulted as part of the opening the DB sequence
-    if ( m_opened )
+    // Records are defaulted as part of the opening the DB sequence
+    if ( getInnermostActiveState() != Idle &&  getInnermostActiveState() != Stopping )
         {
-        // Default ALL registered sets
+        // Default ALL registered records
         ApiLocal* recordPtr = m_records.first();
         while( recordPtr )
             {
@@ -144,7 +144,7 @@ void Server::request( Cpl::Itc::OpenRequest::OpenMsg& msg )
     resetHistoryOpening();
 
     // Send the start event
-    generateEvent( evStart ); 
+    generateEvent( HandlerFsm_evStart ); 
     }
 
 void Server::request( Cpl::Itc::CloseRequest::CloseMsg& msg )
@@ -160,8 +160,10 @@ void Server::request( Cpl::Itc::CloseRequest::CloseMsg& msg )
     // Housekeeping
     m_closeCount  = 0;
     m_closeMsgPtr = &msg;
+    setNewHealthStatus( HealthRequest::eCLOSING );
 
-    // Stop all registered Sets
+
+    // Stop all registered Records
     Rte::Db::Record::ApiLocal* recordPtr = m_records.first();
     while( recordPtr )
         {
@@ -186,30 +188,30 @@ void Server::write( ApiLocalWriter& recordToWrite )
     // following hack.
     if ( !notEmpty && getInnermostActiveState() == Writeable )
         {
-        generateEvent( evWrite );   
+        generateEvent( HandlerFsm_evWrite );   
         }
     }
 
 
-void Server::notifyRecordWaiting( ApiLocal& )
+void Server::notifyRecordWaiting( void )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::notifyRecordWaiting") );
     m_recordCount++;
     }
 
-void Server::notifyRecordInitialized( ApiLocal& )
+void Server::notifyRecordInitialized( void )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::notifyRecordInitialized") );
     m_recordCount--;
     }
 
-void Server::notifyRecordConverted( ApiLocal& )
+void Server::notifyRecordConverted( void )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::notifyRecordConverted") );
     m_conversion = true;
     }
 
-void Server::notifyRecordStopped( ApiLocal& )
+void Server::notifyRecordStopped( void )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::notifyRecordStopped") );
 
@@ -223,11 +225,11 @@ void Server::notifyRecordStopped( ApiLocal& )
     if ( --m_closeCount == 0 )
         {
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::recordStopped - Record Layer Stopped") );
-        generateEvent( evStop ); 
+        generateEvent( HandlerFsm_evStop ); 
         }
     }
     
-void Server::notifyRecordStarted( ApiLocal& )
+void Server::notifyRecordStarted( void )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::notifyRecordStarted. openCount=%d", m_openCount) );
 
@@ -266,7 +268,7 @@ void Server::response( OpenDbMsg& msg )
     m_dbResult = msg.getRequestMsg().getPayload().m_result;
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( OpenDbMsg& msg ): result=%s", Rte::Db::Chunk::Request::resultToString(m_dbResult)) );
 
-    generateEvent( evResponse ); 
+    generateEvent( HandlerFsm_evResponse ); 
     }
 
 void Server::response( CloseDbMsg& msg )
@@ -274,7 +276,7 @@ void Server::response( CloseDbMsg& msg )
     m_dbResult = msg.getRequestMsg().getPayload().m_result;
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( CloseDbMsg& msg ): result=%s", Rte::Db::Chunk::Request::resultToString(m_dbResult)) );
 
-    generateEvent( evStopped ); 
+    generateEvent( HandlerFsm_evStop ); 
     }
 
 void Server::response( ClearDbMsg& msg )
@@ -282,7 +284,7 @@ void Server::response( ClearDbMsg& msg )
     m_dbResult = msg.getRequestMsg().getPayload().m_result;
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( ClearDbMsg& msg ): result=%s", Rte::Db::Chunk::Request::resultToString(m_dbResult)) );
 
-    generateEvent( evResponse ); 
+    generateEvent( HandlerFsm_evResponse ); 
     }
 
 void Server::response( ReadMsg& msg )
@@ -291,7 +293,7 @@ void Server::response( ReadMsg& msg )
     m_dbDataLen = msg.getRequestMsg().getPayload().m_handlePtr->m_len;
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( ReadMsg& msg ): result=%s, inLen=%lu", Rte::Db::Chunk::Request::resultToString(m_dbResult), m_dbDataLen));
 
-    generateEvent( evResponse ); 
+    generateEvent( HandlerFsm_evResponse ); 
     }
 
 void Server::response( WriteMsg& msg )
@@ -300,7 +302,7 @@ void Server::response( WriteMsg& msg )
     m_dbDataLen = msg.getRequestMsg().getPayload().m_handlePtr->m_len;
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( WriteMsg& msg ): result=%s, outLen=%lu", Rte::Db::Chunk::Request::resultToString(m_dbResult), m_dbDataLen) );
 
-    generateEvent( evResponse ); 
+    generateEvent( HandlerFsm_evResponse ); 
     }
 
 
@@ -330,7 +332,18 @@ void Server::reportFileWriteError() throw()
     const char* recname = m_writerPtr->getName();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportFileWriteError (rec=%s)", recname) );
     m_logger.warning( "Rte::Db::Record::Server::reportFileWriteError - DB File Write error (rec=%s)", recname  );
-    m_tempStatus = HealthRequest::eNO_STORAGE_MEDIA_ERR;
+
+    // Delay reporting media error is I am the processing of 'opening'
+    if ( m_status == HealthRequest::eOPENING )
+        { 
+        m_tempStatus = HealthRequest::eNO_STORAGE_MEDIA_ERR;
+        }
+
+    // Report the media error immediately if the DB is currently in the 'running' state
+    else if ( m_status == HealthRequest::eRUNNING )
+        { 
+        setNewHealthStatus( HealthRequest::eNO_STORAGE_MEDIA_ERR );
+        }
     }
 
 
@@ -418,7 +431,7 @@ void Server::ackRead() throw()
 
             // Send myself an 'incompatible' event to transition to the NO-Persistence state
             m_dbResult = Rte::Db::Chunk::Request::eWRONG_SCHEMA;
-            generateEvent( evResponse ); 
+            generateEvent( HandlerFsm_evResponse ); 
             }
         }
     }
@@ -499,7 +512,7 @@ void Server::inspectWriteQue() throw()
     // Generate a write event if there is NOT a write an progress AND there is at least one queued write request
     if ( m_writerPtr == 0 && m_writeRequests.first() )
         {
-        generateEvent( evWrite ); 
+        generateEvent( HandlerFsm_evWrite ); 
         }
     }
 
@@ -515,11 +528,11 @@ void Server::verifyOpen() throw()
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::verifyOpen") );
     if ( m_recordCount == 0 && !m_conversion )
         {
-        generateEvent( evVerified ); 
+        generateEvent( HandlerFsm_evVerified ); 
         }
     else
         {
-        generateEvent( evIncompleteLoad ); 
+        generateEvent( HandlerFsm_evIncompleteLoad ); 
         }
     }
 

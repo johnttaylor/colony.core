@@ -5,6 +5,12 @@ src/Rte/Db/Record
 src/Rte/Db/Record/_0test
 
 # supporting infrastructure
+src/Rte/Element
+src/Rte/Tuple
+src/Rte/Point
+src/Rte/Point/Model
+src/Rte/Point/Viewer
+src/Rte/Point/Controller
 src/Rte/Db/Chunk
 src/Cpl/Container
 src/Cpl/Log

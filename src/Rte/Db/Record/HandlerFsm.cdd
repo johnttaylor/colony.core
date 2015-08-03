@@ -77,7 +77,7 @@ Size="3100 1000">
 <State id="r31"
 Pos="16000 -6600"
 Size="2000 1000">
-<Text>Reading </Text>
+<Text>Reading</Text>
 </State>
 <State id="r71"
 Pos="16600 -11200"

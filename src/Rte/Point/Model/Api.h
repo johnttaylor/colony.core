@@ -44,7 +44,7 @@ public:
         'Model' thread) of defaultContents().  Typically the Application 
         SHOULD NEVER call this method.
      */
-    virtual void defaultContentsNonThreadSafe( void ) throw() = 0;
+    virtual void defaultContents_nonThreadSafe( void ) throw() = 0;
 
 
 public:
@@ -102,6 +102,24 @@ public:
 
     /// Returns the SAP to the query ITC interface
     virtual Rte::Point::Model::QueryRequest::SAP&       getQuerySAP(void) = 0;
+
+
+public:
+    /** This method returns the Model Point's internal Point.  This method is 
+        typically ONLY used internally by the Rte Engine and should NOT be 
+        called by the Application. This method is non-thread safe (i.e. 
+        can only be called from the 'Model' thread) of defaultContents(). 
+     */
+    virtual Rte::Point::Api& getMyPoint_nonThreadSafe(void) throw() = 0;
+    
+    /** This method 'touches' and/or marks the Model Point's internal Point
+        as have been updated/modified.  This method is typically ONLY used 
+        internally by the Rte Engine and should NOT be called by the 
+        Application.. This method is non-thread safe (i.e. can only be called 
+        from the 'Model' thread) of defaultContents(). 
+     */
+    virtual void touch_nonThreadSafe( void ) throw() = 0;
+
 
 
 public: 

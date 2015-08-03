@@ -76,10 +76,11 @@ public:
     void response( CancelMsg& msg );
 
 
-protected: // Helper methods
-    ///
+protected: 
+    /// Helper methods
     virtual void modelHasChanged( void ) = 0;
-    ///
+
+    /// Helper methods
     virtual void viewerHasStopped( void ) = 0;
 };
 

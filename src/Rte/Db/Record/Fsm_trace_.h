@@ -30,20 +30,19 @@ namespace Rte { namespace Db { namespace Record  {
 #define FsmTraceEvent(a) CPL_SYSTEM_TRACE_MSG( SECT_, ( "Old State=%s, Event=%s", getNameByState(getInnermostActiveState()), FsmTraceEvents[a] ));
 
 const char* const FsmTraceEvents[] = {
-    "evStart",
-    "evStop",
-    "evReadDone",
-    "evDisconnected",
-    "evLoadDone",
-    "evDefaultContent",
-    "evDefault",
-    "evWriteDone",
-    "evDataModified",
-    "evTimerExpired",
-    "evLoadDone[isLoadGood()]",
-    "evLoadDone[else]",
-    "evWriteDone[isDirty()]",
-    "evWriteDone[else]"
+    "Fsm_evStart",
+    "Fsm_evStop",
+    "Fsm_evReadDone",
+    "Fsm_evDisconnected",
+    "Fsm_evLoadDone",
+    "Fsm_evDefault",
+    "Fsm_evWriteDone",
+    "Fsm_evDataModified",
+    "Fsm_evTimerExpired",
+    "Fsm_evLoadDone[isLoadGood()]",
+    "Fsm_evLoadDone[else]",
+    "Fsm_evWriteDone[isDirty()]",
+    "Fsm_evWriteDone[else]"
 };
 
 

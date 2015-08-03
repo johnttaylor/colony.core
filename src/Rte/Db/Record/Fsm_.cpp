@@ -39,10 +39,10 @@ namespace Rte { namespace Db { namespace Record  {
 
     /* Event names */
     const char events[]=
-        "evDefaultContent\0evStop\0evDataModified\0evReadDone\0evTimerExpired\0evDefault\0evLoadDone\0evWriteDone\0evStart\0evDisconnected\0NO_MSG\0";
+        "Fsm_evStop\0Fsm_evDataModified\0Fsm_evReadDone\0Fsm_evTimerExpired\0Fsm_evDefault\0Fsm_evLoadDone\0Fsm_evWriteDone\0Fsm_evStart\0Fsm_evDisconnected\0NO_MSG\0";
 
     const unsigned short evt_idx[]={
-        0,17,24,39,50,65,75,86,98,106,121};
+        0,11,30,45,64,78,93,109,121,140};
 
     const char* Fsm::getNameByState(unsigned short state) const {
         return states+state_idx[state];
@@ -149,7 +149,7 @@ namespace Rte { namespace Db { namespace Record  {
         switch (stateVars.stateVar) {
 
             case Idle:
-                if(msg==evStart){
+                if(msg==Fsm_evStart){
                     /* Transition from Idle to Starting */
                     evConsumed=1;
 
@@ -171,7 +171,7 @@ namespace Rte { namespace Db { namespace Record  {
                 switch (stateVars.stateVarStarting) {
 
                     case WaitingOnRead:
-                        if(msg==evDefaultContent){
+                        if(msg==Fsm_evDefault){
                             /* Transition from WaitingOnRead to ReadDefaulting */
                             evConsumed=1;
 
@@ -179,7 +179,7 @@ namespace Rte { namespace Db { namespace Record  {
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = ReadDefaulting;
                             FsmTraceEvent(5);
-                        }else if(msg==evLoadDone){
+                        }else if(msg==Fsm_evLoadDone){
                             /* Transition from WaitingOnRead to WritingRecord */
                             evConsumed=1;
 
@@ -191,7 +191,7 @@ namespace Rte { namespace Db { namespace Record  {
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = WritingRecord;
                             FsmTraceEvent(4);
-                        }else if(msg==evReadDone){
+                        }else if(msg==Fsm_evReadDone){
                             /* Transition from WaitingOnRead to Initialized */
                             evConsumed=1;
 
@@ -208,15 +208,15 @@ namespace Rte { namespace Db { namespace Record  {
                     break; /* end of case WaitingOnRead  */
 
                     case Initialized:
-                        if(msg==evDefault){
+                        if(msg==Fsm_evDefault){
                             /* Transition from Initialized to Defaulting */
                             evConsumed=1;
 
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = Defaulting;
-                            FsmTraceEvent(6);
-                        }else if(msg==evLoadDone){
+                            FsmTraceEvent(5);
+                        }else if(msg==Fsm_evLoadDone){
                             if(isLoadGood()){
                                 /* Transition from Initialized to Active */
                                 evConsumed=1;
@@ -232,7 +232,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                 /* adjust state variables  */
                                 stateVarsCopy.stateVarStarting = WaitingOnRead;
-                                FsmTraceEvent(10);
+                                FsmTraceEvent(9);
                             }else{
                                 /* Transition from Initialized to WritingRecord */
                                 evConsumed=1;
@@ -244,7 +244,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                 /* adjust state variables  */
                                 stateVarsCopy.stateVarStarting = WritingRecord;
-                                FsmTraceEvent(11);
+                                FsmTraceEvent(10);
                             } /*end of event selection */
                         }else{
                             /* Intentionally left blank */
@@ -252,15 +252,15 @@ namespace Rte { namespace Db { namespace Record  {
                     break; /* end of case Initialized  */
 
                     case WritingRecord:
-                        if(msg==evDefault){
+                        if(msg==Fsm_evDefault){
                             /* Transition from WritingRecord to WriteDefaulting */
                             evConsumed=1;
 
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = WriteDefaulting;
-                            FsmTraceEvent(6);
-                        }else if(msg==evWriteDone){
+                            FsmTraceEvent(5);
+                        }else if(msg==Fsm_evWriteDone){
                             /* Transition from WritingRecord to Active */
                             evConsumed=1;
 
@@ -274,14 +274,14 @@ namespace Rte { namespace Db { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = WaitingOnRead;
-                            FsmTraceEvent(7);
+                            FsmTraceEvent(6);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */
                     break; /* end of case WritingRecord  */
 
                     case ReadDefaulting:
-                        if(msg==evLoadDone){
+                        if(msg==Fsm_evLoadDone){
                             /* Transition from ReadDefaulting to WritingRecord */
                             evConsumed=1;
 
@@ -293,7 +293,7 @@ namespace Rte { namespace Db { namespace Record  {
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = WritingRecord;
                             FsmTraceEvent(4);
-                        }else if(msg==evReadDone){
+                        }else if(msg==Fsm_evReadDone){
                             /* Transition from ReadDefaulting to Defaulting */
                             evConsumed=1;
 
@@ -310,7 +310,7 @@ namespace Rte { namespace Db { namespace Record  {
                     break; /* end of case ReadDefaulting  */
 
                     case Defaulting:
-                        if(msg==evLoadDone){
+                        if(msg==Fsm_evLoadDone){
                             /* Transition from Defaulting to WritingRecord */
                             evConsumed=1;
 
@@ -328,7 +328,7 @@ namespace Rte { namespace Db { namespace Record  {
                     break; /* end of case Defaulting  */
 
                     case WriteDefaulting:
-                        if(msg==evWriteDone){
+                        if(msg==Fsm_evWriteDone){
                             /* Transition from WriteDefaulting to WritingRecord */
                             evConsumed=1;
 
@@ -339,7 +339,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = WritingRecord;
-                            FsmTraceEvent(7);
+                            FsmTraceEvent(6);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */
@@ -353,7 +353,7 @@ namespace Rte { namespace Db { namespace Record  {
                 /* Check if event was already processed  */
                 if(evConsumed==0){
 
-                    if(msg==evStop){
+                    if(msg==Fsm_evStop){
                         /* Transition from Starting to Idle */
                         evConsumed=1;
                         
@@ -371,7 +371,7 @@ namespace Rte { namespace Db { namespace Record  {
             break; /* end of case Starting  */
 
             case Stopping:
-                if(msg==evDisconnected){
+                if(msg==Fsm_evDisconnected){
                     /* Transition from Stopping to Idle */
                     evConsumed=1;
 
@@ -392,7 +392,7 @@ namespace Rte { namespace Db { namespace Record  {
                 switch (stateVars.stateVarActive) {
 
                     case Clean:
-                        if(msg==evDataModified){
+                        if(msg==Fsm_evDataModified){
                             /* Transition from Clean to DelayingWrite */
                             evConsumed=1;
 
@@ -402,22 +402,22 @@ namespace Rte { namespace Db { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarActive = DelayingWrite;
-                            FsmTraceEvent(8);
+                            FsmTraceEvent(7);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */
                     break; /* end of case Clean  */
 
                     case DelayingWrite:
-                        if(msg==evDataModified){
+                        if(msg==Fsm_evDataModified){
                             /* Transition from DelayingWrite to DelayingWrite */
                             evConsumed=1;
 
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarActive = DelayingWrite;
-                            FsmTraceEvent(8);
-                        }else if(msg==evTimerExpired){
+                            FsmTraceEvent(7);
+                        }else if(msg==Fsm_evTimerExpired){
                             /* Transition from DelayingWrite to Writing */
                             evConsumed=1;
 
@@ -428,14 +428,14 @@ namespace Rte { namespace Db { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarActive = Writing;
-                            FsmTraceEvent(9);
+                            FsmTraceEvent(8);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */
                     break; /* end of case DelayingWrite  */
 
                     case Writing:
-                        if(msg==evDataModified){
+                        if(msg==Fsm_evDataModified){
                             /* Transition from Writing to Writing */
                             evConsumed=1;
 
@@ -445,8 +445,8 @@ namespace Rte { namespace Db { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarActive = Writing;
-                            FsmTraceEvent(8);
-                        }else if(msg==evWriteDone){
+                            FsmTraceEvent(7);
+                        }else if(msg==Fsm_evWriteDone){
                             if(isDirty()){
                                 /* Transition from Writing to DelayingWrite */
                                 evConsumed=1;
@@ -458,7 +458,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                 /* adjust state variables  */
                                 stateVarsCopy.stateVarActive = DelayingWrite;
-                                FsmTraceEvent(12);
+                                FsmTraceEvent(11);
                             }else{
                                 /* Transition from Writing to Clean */
                                 evConsumed=1;
@@ -466,7 +466,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                 /* adjust state variables  */
                                 stateVarsCopy.stateVarActive = Clean;
-                                FsmTraceEvent(13);
+                                FsmTraceEvent(12);
                             } /*end of event selection */
                         }else{
                             /* Intentionally left blank */
@@ -481,7 +481,7 @@ namespace Rte { namespace Db { namespace Record  {
                 /* Check if event was already processed  */
                 if(evConsumed==0){
 
-                    if(msg==evDefault){
+                    if(msg==Fsm_evDefault){
                         /* Transition from Active to Active */
                         evConsumed=1;
                         
@@ -490,8 +490,8 @@ namespace Rte { namespace Db { namespace Record  {
 
                         stateVarsCopy.stateVar = Active;/* entry chain  */
 
-                        FsmTraceEvent(6);
-                    }else if(msg==evStop){
+                        FsmTraceEvent(5);
+                    }else if(msg==Fsm_evStop){
                         /* Transition from Active to Stopping */
                         evConsumed=1;
                         

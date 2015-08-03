@@ -30,7 +30,11 @@ namespace Rte { namespace Db { namespace Record {
           'No Persistence' state during the opening process.
  */
 class Handler: public Cpl::Itc::CloseSync
-{        
+{       
+public:
+    /// Constructor
+    Handler( Cpl::Itc::PostApi& myMbox );
+
 public:
     /// Returns the SAP to the Record/DB Health stats ITC interface
     virtual HealthRequest::SAP&  getHealthSAP(void) = 0;

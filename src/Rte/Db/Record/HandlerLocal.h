@@ -12,7 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Rte/Db/Record/ApiLocal.h"
+#include "Rte/Db/Record/ApiLocalWriter.h"
 
 
 /// Namespace(s)
@@ -30,28 +30,28 @@ public:
     /** Informs the handler that the set is waiting to be loaded/
         initialized from its associated DB record
      */
-    virtual void notifyRecordWaiting( ApiLocal& set ) = 0;
+    virtual void notifyRecordWaiting( void) = 0;
 
     /** Informs the handler that the set has been succesfully loaded/
         initialized
      */
-    virtual void notifyRecordInitialized( ApiLocal& set ) = 0;
+    virtual void notifyRecordInitialized( void) = 0;
 
     /** Informs the handler that the set has been succesfully loaded/
         initialized - but raw data from the DB's record had to be 
         converted (i.e. an upgrade or downgrade occurred on the set)
      */
-    virtual void notifyRecordConverted( ApiLocal& set ) = 0;
+    virtual void notifyRecordConverted( void) = 0;
 
     /** This informs the handler that the set has been succesfully
         stopped.
      */
-    virtual void notifyRecordStopped( ApiLocal& set ) = 0;
+    virtual void notifyRecordStopped( void) = 0;
 
     /** This informs the handler that the set has been succesfully
         started.
      */
-    virtual void notifyRecordStarted( ApiLocal& set ) = 0;
+    virtual void notifyRecordStarted( void) = 0;
 
 
 public:

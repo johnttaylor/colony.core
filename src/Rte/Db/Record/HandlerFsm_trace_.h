@@ -27,23 +27,23 @@ namespace Rte { namespace Db { namespace Record  {
 
 
 
-#define HandlerFsmTraceEvent(a) CPL_SYSTEM_TRACE_MSG( SECT_, ( "Old State=%s, Event=%s", getNameByState(getInnermostActiveState()), FsmTraceEvents[a] ));
+#define HandlerFsmTraceEvent(a) CPL_SYSTEM_TRACE_MSG( SECT_, ( "Old State=%s, Event=%s", getNameByState(getInnermostActiveState()), HandlerFsmTraceEvents[a] ));
 
 const char* const HandlerFsmTraceEvents[] = {
-    "evStart",
-    "evStop",
-    "evWrite",
-    "evStopped",
+    "HandlerFsm_evStart",
+    "HandlerFsm_evStop",
+    "HandlerFsm_evWrite",
+    "HandlerFsm_HandlerFsm_evStopped",
     "",
-    "evVerified",
-    "evIncompleteLoad",
-    "evResponse[isDbError()]",
-    "evResponse[isDbSuccess()]",
-    "evResponse[isDbBadData()]",
-    "evResponse[isDbEof()]",
-    "evResponse[!isDbSuccess()]",
-    "evResponse[!isDbError()]",
-    "evResponse[isNotCompatible()]"
+    "HandlerFsm_evVerified",
+    "HandlerFsm_evIncompleteLoad",
+    "HandlerFsm_evResponse[isDbError()]",
+    "HandlerFsm_evResponse[isDbSuccess()]",
+    "HandlerFsm_evResponse[isDbBadData()]",
+    "HandlerFsm_evResponse[isDbEof()]",
+    "HandlerFsm_evResponse[!isDbSuccess()]",
+    "HandlerFsm_evResponse[!isDbError()]",
+    "HandlerFsm_evResponse[isNotCompatible()]"
 };
 
 

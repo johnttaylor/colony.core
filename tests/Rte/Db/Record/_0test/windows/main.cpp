@@ -24,6 +24,7 @@ int main( int argc, char* const argv[] )
     CPL_SYSTEM_TRACE_ENABLE_SECTION("Rte::Db::Chunk");
     CPL_SYSTEM_TRACE_ENABLE_SECTION("Rte::Db::Record");
     CPL_SYSTEM_TRACE_ENABLE_SECTION("Rte::Db::Record::Fsm");
+    CPL_SYSTEM_TRACE_ENABLE_SECTION("Rte::Db::Record::HandlerFsm");
     CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eBRIEF );
 
     // Run the test(s)

@@ -23,16 +23,15 @@
 namespace Rte { namespace Db { namespace Record  {
 
 enum FSM_EVENT_T {
-    evDefaultContent=0U,
-    evStop,
-    evDataModified,
-    evReadDone,
-    evTimerExpired,
-    evDefault,
-    evLoadDone,
-    evWriteDone,
-    evStart,
-    evDisconnected,
+    Fsm_evStop=0U,
+    Fsm_evDataModified,
+    Fsm_evReadDone,
+    Fsm_evTimerExpired,
+    Fsm_evDefault,
+    Fsm_evLoadDone,
+    Fsm_evWriteDone,
+    Fsm_evStart,
+    Fsm_evDisconnected,
     FSM_NO_MSG
 };
 

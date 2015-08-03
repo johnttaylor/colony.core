@@ -13,8 +13,12 @@
 /** @file */
 
 #include "Rte/Db/Chunk/Request.h"
+#include "Rte/Db/Record/ApiLocal.h"
 #include "Rte/Db/Record/Handler.h"
 #include "Rte/Db/Record/HandlerFsmEventQueue_.h"
+#include "Rte/Db/Record/HealthRequest.h"
+#include "Rte/Db/Record/DefaultRequest.h"
+#include "Cpl/Container/DList.h"
 #include "Cpl/Container/SList.h"
 #include "Cpl/Container/Map.h"
 #include "Cpl/Memory/Aligned.h"
@@ -34,7 +38,9 @@ namespace Rte { namespace Db { namespace Record {
 class Server: public Rte::Db::Chunk::Response,
               public Handler,
               public HandlerLocal,
-              public HandlerFsmEventQueue_
+              public HandlerFsmEventQueue_,
+              public HealthRequest,
+              public DefaultRequest
 
 {
 private:
@@ -146,19 +152,19 @@ public:
 
 public:
     /// See Rte::Db::Record::HandlerLocal
-    void notifyRecordWaiting( ApiLocal& set );
+    void notifyRecordWaiting( void );
 
     /// See Rte::Db::Record::HandlerLocal
-    void notifyRecordInitialized( ApiLocal& set );
+    void notifyRecordInitialized( void );
 
     /// See Rte::Db::Record::HandlerLocal
-    void notifyRecordConverted( ApiLocal& set );
+    void notifyRecordConverted( void );
 
     /// See Rte::Db::Record::HandlerLocal
-    void notifyRecordStopped( ApiLocal& set );
+    void notifyRecordStopped( void );
 
     /// See Rte::Db::Record::HandlerLocal
-    void notifyRecordStarted( ApiLocal& set );
+    void notifyRecordStarted( void );
 
     /// See Rte::Db::Record::HandlerLocal
     void write( ApiLocalWriter& recordToWrite );

@@ -26,13 +26,13 @@ namespace Rte { namespace Db { namespace Record {
 
 
 HandlerFsmEventQueue_::HandlerFsmEventQueue_()
-:Cpl::Container::RingBuffer<FSM_EVENT_T>( 4, m_eventQueMemory )
+:Cpl::Container::RingBuffer<HANDLERFSM_EVENT_T>( 4, m_eventQueMemory )
 ,m_processingFsmEvent(false)
     {
     }
 
 
-void HandlerFsmEventQueue_::generateEvent( FSM_EVENT_T msg )
+void HandlerFsmEventQueue_::generateEvent( HANDLERFSM_EVENT_T msg )
     {
     // Queue my event
     if ( !add( msg ) )

@@ -35,7 +35,7 @@ ranksep=.4;
 "WaitingOnRead"->"Initialized"[label=<evReadDone / <br ALIGN="LEFT"/>tellInitialized();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingOnRead Initialized
 "Stopping"->"Idle"[label=<evDisconnected / <br ALIGN="LEFT"/>tellStopped();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Stopping Idle
 "WaitingOnRead"->"WritingRecord"[label=<evLoadDone / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>issueWrite();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingOnRead WritingRecord
-"WaitingOnRead"->"ReadDefaulting"[label=<evDefaultContent<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingOnRead ReadDefaulting
+"WaitingOnRead"->"ReadDefaulting"[label=<evDefault<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingOnRead ReadDefaulting
 "ReadDefaulting"->"Defaulting"[label=<evReadDone / <br ALIGN="LEFT"/>tellInitialized();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //ReadDefaulting Defaulting
 "defaultroot"->"Idle"[label=<  > style=dotted];
 "Defaulting"->"WritingRecord"[label=<evLoadDone / <br ALIGN="LEFT"/>defaultData();<br ALIGN="LEFT"/>issueWrite();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Defaulting WritingRecord

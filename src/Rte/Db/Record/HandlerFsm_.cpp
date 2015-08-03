@@ -32,17 +32,17 @@ namespace Rte { namespace Db { namespace Record  {
 
     /* State names */
     const char states[]=
-        "Verifying\0NoPersistence\0Reading \0Idle\0Opening\0Active\0Writeable\0Stopping\0ClearingDb\0WaitingToOpen\0Writing\0";
+        "Verifying\0NoPersistence\0Reading\0Idle\0Opening\0Active\0Writeable\0Stopping\0ClearingDb\0WaitingToOpen\0Writing\0";
 
     const unsigned short state_idx[]={
-        0,10,24,33,38,46,53,63,72,83,97,105};
+        0,10,24,32,37,45,52,62,71,82,96,104};
 
     /* Event names */
     const char events[]=
-        "evWrite\0evStop\0evVerified\0evResponse\0evIncompleteLoad\0evStopped\0evStart\0NO_MSG\0";
+        "HandlerFsm_evWrite\0HandlerFsm_evStop\0HandlerFsm_evVerified\0HandlerFsm_evResponse\0HandlerFsm_evIncompleteLoad\0HandlerFsm_HandlerFsm_evStopped\0HandlerFsm_evStart\0NO_MSG\0";
 
     const unsigned short evt_idx[]={
-        0,8,15,26,37,54,64,72};
+        0,19,37,59,81,109,130,149};
 
     const char* HandlerFsm::getNameByState(unsigned short state) const {
         return states+state_idx[state];
@@ -67,7 +67,7 @@ namespace Rte { namespace Db { namespace Record  {
 
     bool HandlerFsm::isInVerifying(void) const {return(((stateVars.stateVarOpening== Verifying)&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
     bool HandlerFsm::isInNoPersistence(void) const {return(((stateVars.stateVarActive== NoPersistence)&&(stateVars.stateVar== Active)) ? (true) : (false));}
-    bool HandlerFsm::isInReading (void) const {return(((stateVars.stateVarOpening== Reading )&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
+    bool HandlerFsm::isInReading(void) const {return(((stateVars.stateVarOpening== Reading)&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
     bool HandlerFsm::isInIdle(void) const {return(((stateVars.stateVar== Idle)) ? (true) : (false));}
     bool HandlerFsm::isInOpening(void) const {return(((stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
     bool HandlerFsm::isInActive(void) const {return(((stateVars.stateVar== Active)) ? (true) : (false));}
@@ -84,8 +84,8 @@ namespace Rte { namespace Db { namespace Record  {
             return WaitingToOpen;
         }else if(isInClearingDb()){
             return ClearingDb;
-        }else if(isInReading ()){
-            return Reading ;
+        }else if(isInReading()){
+            return Reading;
         }else if(isInVerifying()){
             return Verifying;
         }else if(isInWriting()){
@@ -143,7 +143,7 @@ namespace Rte { namespace Db { namespace Record  {
         switch (stateVars.stateVar) {
 
             case Idle:
-                if(msg==evStart){
+                if(msg==HandlerFsm_evStart){
                     /* Transition from Idle to Opening */
                     evConsumed=1;
 
@@ -156,7 +156,7 @@ namespace Rte { namespace Db { namespace Record  {
                     /* adjust state variables  */
                     stateVarsCopy.stateVar = Active;
                     HandlerFsmTraceEvent(0);
-                }else if(msg==evWrite){
+                }else if(msg==HandlerFsm_evWrite){
                     /* Transition from Idle to Idle */
                     evConsumed=1;
 
@@ -177,7 +177,7 @@ namespace Rte { namespace Db { namespace Record  {
                 switch (stateVars.stateVarActive) {
 
                     case Writeable:
-                        if(msg==evWrite){
+                        if(msg==HandlerFsm_evWrite){
                             /* Transition from Writeable to Writing */
                             evConsumed=1;
 
@@ -194,7 +194,7 @@ namespace Rte { namespace Db { namespace Record  {
                     break; /* end of case Writeable  */
 
                     case NoPersistence:
-                        if(msg==evWrite){
+                        if(msg==HandlerFsm_evWrite){
                             /* Transition from NoPersistence to NoPersistence */
                             evConsumed=1;
 
@@ -217,7 +217,7 @@ namespace Rte { namespace Db { namespace Record  {
                         switch (stateVars.stateVarOpening) {
 
                             case WaitingToOpen:
-                                if(msg==evResponse){
+                                if(msg==HandlerFsm_evResponse){
                                     if(isDbEof()){
                                         /* Transition from WaitingToOpen to Writeable */
                                         evConsumed=1;
@@ -232,7 +232,7 @@ namespace Rte { namespace Db { namespace Record  {
                                         stateVarsCopy.stateVarActive = Writeable;
                                         HandlerFsmTraceEvent(10);
                                     }else if(isDbSuccess()){
-                                        /* Transition from WaitingToOpen to Reading  */
+                                        /* Transition from WaitingToOpen to Reading */
                                         evConsumed=1;
 
                                         /* Action code for transition  */
@@ -240,7 +240,7 @@ namespace Rte { namespace Db { namespace Record  {
 
 
                                         /* adjust state variables  */
-                                        stateVarsCopy.stateVarOpening = Reading ;
+                                        stateVarsCopy.stateVarOpening = Reading;
                                         HandlerFsmTraceEvent(8);
                                     }else{
                                         /* Intentionally left blank */
@@ -250,10 +250,10 @@ namespace Rte { namespace Db { namespace Record  {
                                 } /*end of event selection */
                             break; /* end of case WaitingToOpen  */
 
-                            case Reading :
-                                if(msg==evResponse){
+                            case Reading:
+                                if(msg==HandlerFsm_evResponse){
                                     if(isDbEof()){
-                                        /* Transition from Reading  to Verifying */
+                                        /* Transition from Reading to Verifying */
                                         evConsumed=1;
 
                                         /* Action code for transition  */
@@ -264,7 +264,7 @@ namespace Rte { namespace Db { namespace Record  {
                                         stateVarsCopy.stateVarOpening = Verifying;
                                         HandlerFsmTraceEvent(10);
                                     }else if(isDbBadData()){
-                                        /* Transition from Reading  to ClearingDb */
+                                        /* Transition from Reading to ClearingDb */
                                         evConsumed=1;
 
                                         /* Action code for transition  */
@@ -277,7 +277,7 @@ namespace Rte { namespace Db { namespace Record  {
                                         stateVarsCopy.stateVarOpening = ClearingDb;
                                         HandlerFsmTraceEvent(9);
                                     }else if(isDbSuccess()){
-                                        /* Transition from Reading  to Reading  */
+                                        /* Transition from Reading to Reading */
                                         evConsumed=1;
 
                                         /* Action code for transition  */
@@ -285,7 +285,7 @@ namespace Rte { namespace Db { namespace Record  {
 
 
                                         /* adjust state variables  */
-                                        stateVarsCopy.stateVarOpening = Reading ;
+                                        stateVarsCopy.stateVarOpening = Reading;
                                         HandlerFsmTraceEvent(8);
                                     }else{
                                         /* Intentionally left blank */
@@ -293,10 +293,10 @@ namespace Rte { namespace Db { namespace Record  {
                                 }else{
                                     /* Intentionally left blank */
                                 } /*end of event selection */
-                            break; /* end of case Reading   */
+                            break; /* end of case Reading  */
 
                             case ClearingDb:
-                                if(msg==evResponse){
+                                if(msg==HandlerFsm_evResponse){
                                     if(!isDbError()){
                                         /* Transition from ClearingDb to Writeable */
                                         evConsumed=1;
@@ -318,7 +318,7 @@ namespace Rte { namespace Db { namespace Record  {
                             break; /* end of case ClearingDb  */
 
                             case Verifying:
-                                if(msg==evIncompleteLoad){
+                                if(msg==HandlerFsm_evIncompleteLoad){
                                     /* Transition from Verifying to ClearingDb */
                                     evConsumed=1;
 
@@ -330,7 +330,7 @@ namespace Rte { namespace Db { namespace Record  {
                                     /* adjust state variables  */
                                     stateVarsCopy.stateVarOpening = ClearingDb;
                                     HandlerFsmTraceEvent(6);
-                                }else if(msg==evVerified){
+                                }else if(msg==HandlerFsm_evVerified){
                                     /* Transition from Verifying to Writeable */
                                     evConsumed=1;
 
@@ -356,7 +356,7 @@ namespace Rte { namespace Db { namespace Record  {
                         /* Check if event was already processed  */
                         if(evConsumed==0){
 
-                            if(msg==evResponse){
+                            if(msg==HandlerFsm_evResponse){
                                 if(isNotCompatible()){
                                     /* Transition from Opening to Active */
                                     evConsumed=1;
@@ -388,7 +388,7 @@ namespace Rte { namespace Db { namespace Record  {
                                 }else{
                                     /* Intentionally left blank */
                                 } /*end of event selection */
-                            }else if(msg==evWrite){
+                            }else if(msg==HandlerFsm_evWrite){
                                 /* Transition from Opening to Opening */
                                 evConsumed=1;
                                 
@@ -405,7 +405,7 @@ namespace Rte { namespace Db { namespace Record  {
                     break; /* end of case Opening  */
 
                     case Writing:
-                        if(msg==evResponse){
+                        if(msg==HandlerFsm_evResponse){
                             if(isDbSuccess()){
                                 /* Transition from Writing to Writeable */
                                 evConsumed=1;
@@ -435,7 +435,7 @@ namespace Rte { namespace Db { namespace Record  {
                             }else{
                                 /* Intentionally left blank */
                             } /*end of event selection */
-                        }else if(msg==evWrite){
+                        }else if(msg==HandlerFsm_evWrite){
                             /* Transition from Writing to Writing */
                             evConsumed=1;
 
@@ -459,7 +459,7 @@ namespace Rte { namespace Db { namespace Record  {
                 /* Check if event was already processed  */
                 if(evConsumed==0){
 
-                    if(msg==evStop){
+                    if(msg==HandlerFsm_evStop){
                         /* Transition from Active to Stopping */
                         evConsumed=1;
                         
@@ -481,7 +481,7 @@ namespace Rte { namespace Db { namespace Record  {
             break; /* end of case Active  */
 
             case Stopping:
-                if(msg==evStopped){
+                if(msg==HandlerFsm_HandlerFsm_evStopped){
                     /* Transition from Stopping to Idle */
                     evConsumed=1;
 

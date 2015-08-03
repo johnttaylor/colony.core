@@ -22,11 +22,7 @@ namespace Rte { namespace Db { namespace Record {
 
 
 /** This abstact class define message types and payloads for a set of
-    ITC services. This interface will can default the ENTIRE database
-    OR it can default an individual record - what is default is determined
-    by the actual service provider (i.e. if the the service provider is
-    the Record::Handler - then the entire DB is defaulted.  If the service
-    provider is a Record - then just that record is defaulted.
+    ITC services. This interface will default the ENTIRE database.
  */
 class DefaultRequest
 {

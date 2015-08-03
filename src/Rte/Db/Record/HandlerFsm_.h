@@ -35,11 +35,11 @@ ranksep=.4;
 "NoPersistence"->"NoPersistence"[label=<evWrite / <br ALIGN="LEFT"/>consumeNoWrite();<br ALIGN="LEFT"/>ackWrite();<br ALIGN="LEFT"/>in...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //NoPersistence NoPersistence
 "Stopping"->"Idle"[label=<evStopped / <br ALIGN="LEFT"/>ackDbStopped();<br ALIGN="LEFT"/>clearWriteQue();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Stopping Idle
 "defaultOpening"->"defaultActive"[label=<evResponse<br ALIGN="LEFT"/>[isDbError()] / <br ALIGN="LEFT"/>reportFileReadError();<br ALIGN="LEFT"/>nakOpenDo...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black];//Opening Active
-"WaitingToOpen"->"Reading "[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / requestDbRead();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingToOpen Reading 
+"WaitingToOpen"->"Reading"[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / requestDbRead();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingToOpen Reading
 "defaultroot"->"Idle"[label=<  > style=dotted];
-"Reading "->"Reading "[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / ackRead();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  Reading 
-"Reading "->"ClearingDb"[label=<evResponse<br ALIGN="LEFT"/>[isDbBadData()] / reportDataCorruptError();<br ALIGN="LEFT"/>nakOpe...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  ClearingDb
-"Reading "->"Verifying"[label=<evResponse<br ALIGN="LEFT"/>[isDbEof()] / verifyOpen();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading  Verifying
+"Reading"->"Reading"[label=<evResponse<br ALIGN="LEFT"/>[isDbSuccess()] / ackRead();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading Reading
+"Reading"->"ClearingDb"[label=<evResponse<br ALIGN="LEFT"/>[isDbBadData()] / reportDataCorruptError();<br ALIGN="LEFT"/>nakOpe...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading ClearingDb
+"Reading"->"Verifying"[label=<evResponse<br ALIGN="LEFT"/>[isDbEof()] / verifyOpen();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Reading Verifying
 "defaultActive"->"NoPersistence"[label=<  > style=dotted];
 "Writing"->"defaultActive"[labeldistance = 2.0, taillabel=<evResponse<br ALIGN="LEFT"/>[!isDbSuccess()] / <br ALIGN="LEFT"/>nakWrite();<br ALIGN="LEFT"/>reportFileWriteError...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive];//Writing Active
 "ClearingDb"->"Writeable"[label=<evResponse<br ALIGN="LEFT"/>[!isDbError()] / inspectWriteQue();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //ClearingDb Writeable
@@ -59,7 +59,7 @@ label=<Active<br ALIGN="LEFT"/><br ALIGN="LEFT"/>>;
 "Writeable"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Writeable</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"NoPersistence"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>NoPersistence</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];subgraph "clusterOpening"{fontname=arial; fontsize=8
 color=black; style="rounded";
 label=<Opening(H)<br ALIGN="LEFT"/><br ALIGN="LEFT"/>>;
-"WaitingToOpen"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>WaitingToOpen</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"Reading "[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Reading </B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"ClearingDb"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>ClearingDb</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"Verifying"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Verifying</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"defaultOpening"[label=<(H)>,shape=circle, fontsize=8, height=0.2, width=0.2,fixedsize=true, fontname=arial, fontcolor=white,fillcolor=black, style=filled];
+"WaitingToOpen"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>WaitingToOpen</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"Reading"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Reading</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"ClearingDb"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>ClearingDb</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"Verifying"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Verifying</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"defaultOpening"[label=<(H)>,shape=circle, fontsize=8, height=0.2, width=0.2,fixedsize=true, fontname=arial, fontcolor=white,fillcolor=black, style=filled];
 };
 "defaultActive"[label=< >,shape=circle, fontsize=8, fixedsize=true, height=0.2, width=0.2, fillcolor=black, style=filled];
 "Writing"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Writing</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];};
@@ -89,7 +89,7 @@ namespace Rte { namespace Db { namespace Record  {
             // Helper(s) to find out if the machine is in a certain state
             bool isInVerifying(void) const;
             bool isInNoPersistence(void) const;
-            bool isInReading (void) const;
+            bool isInReading(void) const;
             bool isInIdle(void) const;
             bool isInOpening(void) const;
             bool isInActive(void) const;
@@ -113,7 +113,7 @@ namespace Rte { namespace Db { namespace Record  {
             enum States{
                 Verifying,
                 NoPersistence,
-                Reading ,
+                Reading,
                 Idle,
                 Opening,
                 Active,

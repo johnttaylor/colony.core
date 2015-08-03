@@ -69,7 +69,15 @@ public:
     void defaultContents( void ) throw();
 
     /// See Rte::Point::Model::Api
-    void defaultContentsNonThreadSafe( void ) throw();
+    void defaultContents_nonThreadSafe( void ) throw();
+
+    /// See Rte::Point::Model::Api
+    Rte::Point::Api& getMyPoint_nonThreadSafe(void) throw();
+
+    /// See Rte::Point::Model::Api
+    void touch_nonThreadSafe( void ) throw();
+
+
 
     /// See Rte::Point::Model::Api
     void update( Rte::Point::Api& controllerPoint );

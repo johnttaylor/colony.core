@@ -26,11 +26,11 @@ namespace Rte { namespace Db { namespace Record {
 
 
 /// Event Queue for FSM events.
-class HandlerFsmEventQueue_: public HandlerFsm, public Cpl::Container::RingBuffer<FSM_EVENT_T>
+class HandlerFsmEventQueue_: public HandlerFsm, public Cpl::Container::RingBuffer<HANDLERFSM_EVENT_T>
 {
 private:
     /// Memory for Event queue
-    FSM_EVENT_T m_eventQueMemory[4];
+    HANDLERFSM_EVENT_T m_eventQueMemory[4];
 
     /// Flag for tracking re-entrant events
     bool        m_processingFsmEvent;
@@ -41,7 +41,7 @@ public:
 
 public:
     /// This method properly queues and process event messages
-    void generateEvent( FSM_EVENT_T msg );
+    void generateEvent( HANDLERFSM_EVENT_T msg );
 };
 
 };};};  /// end namespace(s)

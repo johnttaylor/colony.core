@@ -23,13 +23,13 @@
 namespace Rte { namespace Db { namespace Record  {
 
 enum HANDLERFSM_EVENT_T {
-    evWrite=0U,
-    evStop,
-    evVerified,
-    evResponse,
-    evIncompleteLoad,
-    evStopped,
-    evStart,
+    HandlerFsm_evWrite=0U,
+    HandlerFsm_evStop,
+    HandlerFsm_evVerified,
+    HandlerFsm_evResponse,
+    HandlerFsm_evIncompleteLoad,
+    HandlerFsm_HandlerFsm_evStopped,
+    HandlerFsm_evStart,
     HANDLERFSM_NO_MSG
 };
 

@@ -135,9 +135,9 @@ void Base::pollViewer( ViewerRequest::RegisterMsg& viewerToPoll )
 
 
 ///////////////////
-void Base::defaultContentsNonThreadSafe( void ) throw()
+void Base::defaultContents_nonThreadSafe( void ) throw()
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::defaultContentsNonThreadSafe() - (%p)", this ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::defaultContents_nonThreadSafe() - (%p)", this ));
 
     // The default default is to mark all Tuples/Elements INVALID
     m_myPoint.setAllValidState( RTE_ELEMENT_API_STATE_INVALID );
@@ -145,17 +145,40 @@ void Base::defaultContentsNonThreadSafe( void ) throw()
     // Call the Application supplied default method for this set 
     defaultMe();
 
-    // Increment the Point's sequence number, i.e. force a membership change (which in theory if I am a Container Point sorta of by defintion defaulting the Point is membership change)
-    m_myPoint.incrementSequenceNumber();
+    // Mark the point as modified/updated
+    touch_nonThreadSafe();
 
     // Process any change notifications
     checkForNotifications();
     }
 
+
+Rte::Point::Api& Base::getMyPoint_nonThreadSafe( void ) throw()
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::getMyPoint_nonThreadSafe() - (%p)", this ));
+    return m_myPoint;
+    }
+    
+
+void Base::touch_nonThreadSafe( void ) throw()
+    {
+    // Increment the Tuples sequence numbers
+    unsigned j;
+    for(j=0; j<m_myPoint.getNumTuples(); j++)
+        {
+        m_myPoint.getTuple(j).setUpdatedState();
+        m_myPoint.getTuple(j).incrementSequenceNumber();
+        }
+
+    // Increment the Point's sequence number, i.e. force a membership change (which in theory if I am a Container Point sorta of by defintion defaulting the Point is membership change)
+    m_myPoint.incrementSequenceNumber();
+    }
+
+
 void Base::request( DefaultMsg& msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(DefaultMsg) - (%p)", this ));
-    defaultContentsNonThreadSafe();
+    defaultContents_nonThreadSafe();
     msg.returnToSender();
     }
 

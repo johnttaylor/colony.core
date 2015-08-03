@@ -36,6 +36,7 @@ public:
                     eRUNNING,                   //!< The DB is opened and functional
                     eNO_STORAGE_MEDIA_ERR,      //!< The DB is opened BUT not storing anything to persistence storage because there an error with the media 
                     eNO_STORAGE_WRONG_SCHEMA,   //!< The DB is opened BUT not storing anything to persistance storage because of 'major' schema mismatch
+                    eCLOSING,                   //!< The DB is in the process of being closed
                     eCLOSED                     //!< The DB is in the closed state.
                   };
 
