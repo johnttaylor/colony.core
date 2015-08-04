@@ -39,7 +39,7 @@ namespace Rte { namespace Db { namespace Record  {
 
     /* Event names */
     const char events[]=
-        "HandlerFsm_evWrite\0HandlerFsm_evStop\0HandlerFsm_evVerified\0HandlerFsm_evResponse\0HandlerFsm_evIncompleteLoad\0HandlerFsm_HandlerFsm_evStopped\0HandlerFsm_evStart\0NO_MSG\0";
+        "HandlerFsm_evWrite\0HandlerFsm_evStop\0HandlerFsm_evVerified\0HandlerFsm_evResponse\0HandlerFsm_evIncompleteLoad\0HandlerFsm_evStopped\0HandlerFsm_evStart\0NO_MSG\0";
 
     const unsigned short evt_idx[]={
         0,19,37,59,81,109,130,149};
@@ -119,7 +119,6 @@ namespace Rte { namespace Db { namespace Record  {
 
         // Copy state variables back
         stateVars = stateVarsCopy;
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "New State=%s", getNameByState(getInnermostActiveState()) ));
 
         }
 
@@ -481,7 +480,7 @@ namespace Rte { namespace Db { namespace Record  {
             break; /* end of case Active  */
 
             case Stopping:
-                if(msg==HandlerFsm_HandlerFsm_evStopped){
+                if(msg==HandlerFsm_evStopped){
                     /* Transition from Stopping to Idle */
                     evConsumed=1;
 

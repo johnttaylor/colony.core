@@ -200,7 +200,7 @@ Type="1"/>
 <Anchor id="r29"
 Pos="900 -10100">
 <FreeText id="r30"
-Pos="1200 -12503"
+Pos="900 -12503"
 Origin="1">
 <Text>evStopped/<p/>
 ackDbStopped();<p/>

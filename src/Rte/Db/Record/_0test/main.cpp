@@ -110,13 +110,48 @@ TEST_CASE( "record", "[record]" )
     Cpl::Io::File::Api::remove( DB_FNAME_ );
 
     
+    // 
     // TEST: Empty database
+    //
+
+    // Default empty DB to application defaults
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Opening empty DB file..." ));
     recordLayer_.open();
     Cpl::System::Api::sleep( 300 );
     recordLayer_.close();
     Cpl::System::Api::sleep( 100 );
     
+    // Re-open the DB and Verify defaults
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Verifying initial defaults..." ));
+    recordLayer_.open();
+    Cpl::System::Api::sleep( 300 );
+    QueryBar1 query1(modelBar1_);
+    QueryBar2 query2(modelBar2_);
+    query1.issueQuery();
+    REQUIRE( query1.m_fields1.m_text1.isValid() == REC_BAR1_TUP1_DEFAULT_VALID_T1 );
+
+    recordLayer_.close();
+    Cpl::System::Api::sleep( 100 );
+
 #if 0
+#define REC_BAR1_TUP1_DEFAULT_T1            "1"
+#define REC_BAR1_TUP1_DEFAULT_T3            "<3>"
+#define REC_BAR1_TUP1_DEFAULT_T8            "n/a"
+#define REC_BAR1_TUP2_DEFAULT_T10           "<my label>"
+#define REC_BAR1_TUP1_DEFAULT_VALID_T1      true
+#define REC_BAR1_TUP1_DEFAULT_VALID_T3      true
+#define REC_BAR1_TUP1_DEFAULT_VALID_T8      false
+#define REC_BAR1_TUP2_DEFAULT_VALID_T10     true
+
+#define REC_BAR2_TUP2_DEFAULT_T3            "333"
+#define REC_BAR2_TUP2_DEFAULT_T5            "<55>"
+#define REC_BAR1_TUP2_DEFAULT_VALID_T3      true
+#define REC_BAR1_TUP2_DEFAULT_VALID_T5      true
+#define REC_BAR1_TUP2_DEFAULT_INCONTAINER   true
+#define REC_BAR1_TUP0_DEFAULT_INCONTAINER   false
+#define REC_BAR1_TUP1_DEFAULT_INCONTAINER   false
+#define REC_BAR1_TUP2_DEFAULT_INCONTAINER   false
+
     REQUIRE( set1Buffer_[0] == SET1_DEFAULT_VALUE_ );
     REQUIRE( set1Buffer_[1] == SET1_DEFAULT_VALUE_ );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == SET1_DEFAULT_VALUE_ );

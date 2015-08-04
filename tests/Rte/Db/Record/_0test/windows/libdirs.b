@@ -9,6 +9,7 @@ src/Rte/Element
 src/Rte/Tuple
 src/Rte/Point
 src/Rte/Point/Model
+src/Rte/Point/Query
 src/Rte/Point/Viewer
 src/Rte/Point/Controller
 src/Rte/Db/Chunk

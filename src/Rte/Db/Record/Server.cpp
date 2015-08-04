@@ -276,7 +276,7 @@ void Server::response( CloseDbMsg& msg )
     m_dbResult = msg.getRequestMsg().getPayload().m_result;
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( CloseDbMsg& msg ): result=%s", Rte::Db::Chunk::Request::resultToString(m_dbResult)) );
 
-    generateEvent( HandlerFsm_evStop ); 
+    generateEvent( HandlerFsm_evStopped ); 
     }
 
 void Server::response( ClearDbMsg& msg )
@@ -388,8 +388,9 @@ void Server::requestDbWrite() throw()
         Cpl::System::FatalError::logf( "Rte::Db::Record::Server::requestDbWrite - Protocol Error." );
         }
 
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::requestDbWrite - writing recordName=%s", m_writerPtr->getName()) );
-    plantRecName( m_writerPtr->getName() );
+    const char* recName = m_writerPtr->getName();
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::requestDbWrite - writing recordName=%s", recName) );
+    plantRecName( recName );
     uint32_t dataLen = m_writerPtr->fillWriteBuffer( extractDataPointer(), maxAllowedDataSize() );
         
     Rte::Db::Chunk::Request::WritePayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::WritePayload(m_buffer, calcRecordLen(dataLen), m_writerPtr->getChunkHandle());
@@ -413,7 +414,21 @@ void Server::ackRead() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackRead") );
     ApiLocal* recordPtr = findRecordApi( extractRecName(), extractRecNameLength() );
-    if ( recordPtr )
+
+    // Failed record name look-up
+    if ( !recordPtr )
+        {
+        // Log the failure
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackRead - Unknown Record Name=%s, i.e. incompatible DB",extractRecName() ) );
+        m_logger.warning( "Rte::Db::Record::Server::ackRead - Unknown Record Name=%s, i.e. incompatible DB", extractRecName() );
+
+        // Send myself an 'incompatible' event to transition to the NO-Persistence state
+        m_dbResult = Rte::Db::Chunk::Request::eWRONG_SCHEMA;
+        generateEvent( HandlerFsm_evResponse ); 
+        }
+    
+    // Read raw chunk data into the Record's Point
+    else
         {
         recordPtr->setChunkHandle( m_chunkHandle );
         if ( recordPtr->notifyRead( extractDataPointer(), calcDataLength() ) )

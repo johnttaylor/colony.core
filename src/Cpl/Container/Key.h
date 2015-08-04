@@ -127,44 +127,10 @@ typedef KeyPlainType<int64_t>             KeyInteger64_T;
 typedef KeyPlainType<uint64_t>            KeyUinteger64_T;
 
 
-/** This class provides a 'Key' wrapper for a C string literal.  Keys
-    of this type can used to compare against other KeyLiteralString
-    or Items that use a Cpl::Text::String as their key. 
- */
-class KeyLiteralString: public Key
-{
-public:
-    /// Storage for the key
-    const char* const m_stringKeyPtr;
-
-public:
-    /// Constructor
-    KeyLiteralString( const char* string ):m_stringKeyPtr(string){}
-
-
-public:
-    /// Returns the Key's content value
-    inline const char* getKeyValue(void) const throw() { return m_stringKeyPtr; }
-
-    /// Cast to read-only character string pointer.
-    inline operator const char* () const  { return m_stringKeyPtr; }
-
-    /// Returns a Read-only pointer to the "raw" (short-hand for getKeyValue())
-    inline const char* operator()() const { return m_stringKeyPtr; }
-
-
-
-public: // Cpl::Container::Key
-    ///
-    int compareKey( const Key& key ) const;
-    ///
-    const void* getRawKey( unsigned* returnRawKeyLenPtr = 0 ) const;
-};
-
-
-
 /** This class provides a 'Key' wrapper for a array of Character of length N,
-    i.e. a string that is NOT null terminated.
+    i.e. a string that is NOT null terminated.  Keys of this type can used to 
+    compare against other KeyStringBuffer, KeyLiteralString, or Items that use 
+    a Cpl::Text::String as their key
  */
 class KeyStringBuffer: public Key
 {
@@ -193,6 +159,32 @@ public: // Cpl::Container::Key
     ///
     const void* getRawKey( unsigned* returnRawKeyLenPtr = 0 ) const;
 };
+
+
+/** This class provides a 'Key' wrapper for a C string literal.  Keys
+    of this type can used to compare against other KeyLiteralString,
+    KeyStringBuffer, or Items that use a Cpl::Text::String as their key. 
+ */
+class KeyLiteralString: public KeyStringBuffer
+{
+public:
+    /// Constructor
+    KeyLiteralString( const char* string ):KeyStringBuffer(string, strlen(string)){}
+
+
+public:
+    /// Returns the Key's content value
+    inline const char* getKeyValue(void) const throw() { return m_stringKeyPtr; }
+
+    /// Cast to read-only character string pointer.
+    inline operator const char* () const  { return m_stringKeyPtr; }
+
+    /// Returns a Read-only pointer to the "raw" (short-hand for getKeyValue())
+    inline const char* operator()() const { return m_stringKeyPtr; }
+
+};
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////

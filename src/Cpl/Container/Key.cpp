@@ -19,34 +19,6 @@ using namespace Cpl::Container;
 
 
 /////////////////////////////////////////////////////////////////////////////
-int KeyLiteralString::compareKey( const Key& key ) const
-    {
-    const char* otherPtr = (const char*) key.getRawKey();
-    if ( otherPtr )
-        {
-        if ( m_stringKeyPtr )
-            {
-            return strcmp(m_stringKeyPtr, otherPtr );
-            }
-        }        
-
-    return -1;
-    }
-
-
-const void* KeyLiteralString::getRawKey( unsigned* returnRawKeyLenPtr ) const
-    {
-    if ( returnRawKeyLenPtr )
-        {
-        *returnRawKeyLenPtr = m_stringKeyPtr? strlen(m_stringKeyPtr): 0;
-        }
-
-    return m_stringKeyPtr;    
-    }
-
-
-
-/////////////////////////////////////////////////////////////////////////////
 KeyStringBuffer::KeyStringBuffer( const char* startOfString, size_t lenOfStringInBytes )
 :m_stringKeyPtr(startOfString)
 ,m_len(lenOfStringInBytes)
@@ -55,12 +27,18 @@ KeyStringBuffer::KeyStringBuffer( const char* startOfString, size_t lenOfStringI
 
 int KeyStringBuffer::compareKey( const Key& key ) const
     {
-    const char* otherPtr = (const char*) key.getRawKey();
+    unsigned    otherLen = 0;
+    const char* otherPtr = (const char*) key.getRawKey( &otherLen );
     if ( otherPtr )
         {
         if ( m_stringKeyPtr )
             {
-            return strncmp(m_stringKeyPtr, otherPtr, m_len );
+            int comparision = strncmp( m_stringKeyPtr, otherPtr, m_len );
+
+            if ( comparision == 0 && m_len != otherLen ) 
+                {
+                return m_len - (int) otherLen;
+                }
             }
         }        
 

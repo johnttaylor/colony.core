@@ -53,7 +53,7 @@ protected:
 
 public: 
     /// See Rte::Point::Viewer::Api
-    unsigned startViewing( bool useValueForDifference = true, bool forceInitialUpdate = true );
+    unsigned startViewing( bool useValueForDifference = true, bool forceInitialUpdate = true, bool skipInitializeSequenceNumbers = false );
 
     /// See Rte::Point::Viewer::Api
     bool stopViewing( void );

@@ -108,7 +108,7 @@ public:
 
 public: 
     /// See Rte::Db::Record::ApiLocal
-    void start( Rte::Db::Record::HandlerLocal& recordLayer ) throw();
+    void start( HandlerLocal& recordLayer ) throw();
 
     /// See Rte::Db::Record::ApiLocal
     void stop() throw();

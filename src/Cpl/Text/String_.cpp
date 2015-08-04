@@ -491,15 +491,23 @@ String_::getBuffer( int& maxAllowedLength )
 ////////////////////////////////////
 int String_::compareKey( const Key& key ) const
     {
-    const char* otherPtr = (const char*) key.getRawKey();
+    unsigned    otherLen = 0;
+    const char* otherPtr = (const char*) key.getRawKey( &otherLen );
     if ( otherPtr )
         {
-        return strcmp(m_strPtr, otherPtr);
-        }
-        
+        int myLen       = strlen( m_strPtr );
+        int comparision = strncmp( m_strPtr, otherPtr, myLen );
+
+        if ( comparision == 0 && myLen != otherLen ) 
+            {
+            return myLen - (int) otherLen;
+            }
+
+        return comparision;
+        }        
+
     return -1;
     }
-
 
 const void* String_::getRawKey( unsigned* returnRawKeyLenPtr ) const
     {

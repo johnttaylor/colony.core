@@ -15,6 +15,24 @@
 #include "Rte/Db/Record/Base.h"
 #include "Points.h"
 
+// Magic constants for testing
+#define REC_BAR1_TUP1_DEFAULT_T1            "1"
+#define REC_BAR1_TUP1_DEFAULT_T3            "<3>"
+#define REC_BAR1_TUP1_DEFAULT_T8            "n/a"
+#define REC_BAR1_TUP2_DEFAULT_T10           "<my label>"
+#define REC_BAR1_TUP1_DEFAULT_VALID_T1      true
+#define REC_BAR1_TUP1_DEFAULT_VALID_T3      true
+#define REC_BAR1_TUP1_DEFAULT_VALID_T8      false
+#define REC_BAR1_TUP2_DEFAULT_VALID_T10     true
+
+#define REC_BAR2_TUP2_DEFAULT_T3            "333"
+#define REC_BAR2_TUP2_DEFAULT_T5            "<55>"
+#define REC_BAR1_TUP2_DEFAULT_VALID_T3      true
+#define REC_BAR1_TUP2_DEFAULT_VALID_T5      true
+#define REC_BAR1_TUP2_DEFAULT_INCONTAINER   true
+#define REC_BAR1_TUP0_DEFAULT_INCONTAINER   false
+#define REC_BAR1_TUP1_DEFAULT_INCONTAINER   false
+#define REC_BAR1_TUP3_DEFAULT_INCONTAINER   false
 
 
 /** Concrete Record: BAR1
@@ -56,16 +74,13 @@ public:
         setAllValidState( RTE_ELEMENT_API_STATE_VALID );
 
         // Default Tuple1
-        m_fields1.m_flag.set( true );
-        m_fields1.m_text.set( "<description>" );
-        m_fields1.m_data1.set( 0 );
-        m_fields1.m_data2.setInvalid();  // Example of optional Element
-        m_fields1.m_enum.set( 2 );
+        m_fields1.m_text1.set( REC_BAR1_TUP1_DEFAULT_T1 );
+        m_fields1.m_text3.set( REC_BAR1_TUP1_DEFAULT_T3 );
+        m_fields1.m_text8.setInvalid();  // Example of optional Element
     
         // Default Tuple2
-        m_fields2.m_text.set( "<label>" );
+        m_fields2.m_text10.set( REC_BAR1_TUP2_DEFAULT_T10 );
         }
-
 };
 
 
@@ -111,9 +126,8 @@ public:
         // Default to only 1 (of 4) Tuples being 'valid/existing'
         addTuple(2);
         m_tuples_[2].setAllValidState(RTE_ELEMENT_API_STATE_VALID);
-        m_tuples_[2].m_flag.set( true );
-        m_tuples_[2].m_text.set( "<name>" );
-        m_tuples_[2].m_data.set( 23 );
+        m_tuples_[2].m_text3.set( REC_BAR2_TUP2_DEFAULT_T3 );
+        m_tuples_[2].m_text5.set( REC_BAR2_TUP2_DEFAULT_T5 );
         }
 
 };

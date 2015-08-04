@@ -36,7 +36,7 @@ Base::Base( Rte::Point::Api&        myPoint,
 
 
 /////////////////
-unsigned Base::startViewing( bool useValueForDifference, bool forceInitialUpdate )
+unsigned Base::startViewing( bool useValueForDifference, bool forceInitialUpdate, bool skipInitializeSequenceNumbers )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::startViewing - (%p)", this ));
     unsigned result = 0;
@@ -47,7 +47,10 @@ unsigned Base::startViewing( bool useValueForDifference, bool forceInitialUpdate
         // Set my state to STARTED
         result  = 1;
         m_state = eSTARTED;
-        m_registerPayload.m_viewerPoint.invalidateAllTupleSequenceNumbers();
+        if ( !skipInitializeSequenceNumbers )
+            {
+            m_registerPayload.m_viewerPoint.invalidateAllTupleSequenceNumbers();
+            }
 
         // Initialize my viewer to the current contents of the model point
         if ( forceInitialUpdate )

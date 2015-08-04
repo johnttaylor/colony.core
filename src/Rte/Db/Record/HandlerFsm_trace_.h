@@ -33,7 +33,7 @@ const char* const HandlerFsmTraceEvents[] = {
     "HandlerFsm_evStart",
     "HandlerFsm_evStop",
     "HandlerFsm_evWrite",
-    "HandlerFsm_HandlerFsm_evStopped",
+    "HandlerFsm_evStopped",
     "",
     "HandlerFsm_evVerified",
     "HandlerFsm_evIncompleteLoad",

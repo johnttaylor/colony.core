@@ -125,7 +125,6 @@ namespace Rte { namespace Db { namespace Record  {
 
         // Copy state variables back
         stateVars = stateVarsCopy;
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "New State=%s", getNameByState(getInnermostActiveState()) ));
 
         }
 

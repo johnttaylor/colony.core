@@ -28,7 +28,7 @@ enum HANDLERFSM_EVENT_T {
     HandlerFsm_evVerified,
     HandlerFsm_evResponse,
     HandlerFsm_evIncompleteLoad,
-    HandlerFsm_HandlerFsm_evStopped,
+    HandlerFsm_evStopped,
     HandlerFsm_evStart,
     HANDLERFSM_NO_MSG
 };

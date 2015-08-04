@@ -17,6 +17,8 @@
 #include "Rte/Point/Model/Base.h"
 #include "Rte/Point/Controller/Base.h"
 #include "Rte/Point/Controller/Container.h"
+#include "Rte/Point/Query/Base.h"
+#include "Rte/Point/Query/Container.h"
 #include "Rte/Point/Viewer/Composer.h"
 #include "Rte/Point/Viewer/Container.h"
 #include "Rte/Tuple/Null.h"
@@ -145,6 +147,41 @@ public:
     ControllerBar2( ModelBar2& modelPoint )
         :Rte::Point::Controller::Container(*this, modelPoint)
             {
+            }
+
+};
+
+
+/*------------------------- QUERY POINTS ------------------------------------*/
+/** Concrete Query Point: BAR1
+ */
+class QueryBar1: public PointBar1,
+                 public Rte::Point::Query::Base
+{
+public:
+    /// Constructor
+    QueryBar1( Rte::Point::Model::Api& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
+        :Rte::Point::Query::Base(*this, modelPoint, copyOption)
+            {
+            // Default to querying EVERYTHING
+            setAllInUseState(true);
+            }
+
+};
+
+
+/** Concrete Query Point: BAR2
+ */
+class QueryBar2: public PointBar2,
+                 public Rte::Point::Query::Container
+{
+public:
+    /// Constructor
+    QueryBar2( Rte::Point::Model::Api& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
+        :Rte::Point::Query::Container(*this, modelPoint, copyOption)
+            {
+            // Default to querying EVERYTHING
+            setAllInUseState(true);
             }
 
 };

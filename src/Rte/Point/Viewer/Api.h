@@ -49,13 +49,19 @@ public:
         called). Note: If the Viewer Point does not 'match' the Model
         Point a callback will be triggered upon the initial registration
         with the Model. One can debate the usefullness of this flag.
-          
+        
+        If 'skipInitializeSequenceNumbers' is false, then the viewer
+        does initialize its Point's sequence number(s) to 'unknown' - 
+        which is almost ALWAYS the desired/correct behavior.  Only set
+        this argument to true if you have previously explicitly set your
+        Viewer's sequence numbers.
+
         With respect to the composer - The context's method function
         'm_changedCb' is called when the Viewer Points is different from
         the associated Model Point.  The underlying Viewer Point is
         updated to match the Model Point prior to the callback.   
      */
-    virtual unsigned startViewing( bool useValueForDifference = true, bool forceInitialUpdate = false ) = 0;
+    virtual unsigned startViewing( bool useValueForDifference = true, bool forceInitialUpdate = false, bool skipInitializeSequenceNumbers = false ) = 0;
 
     /** This method is used to cancel change notifications for this 
         Viewer to its associate Model Point.  NOTE: If stop is called 

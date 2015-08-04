@@ -20,56 +20,47 @@
 
 /** Concrete Tuple: FOO1
  */
-class TupleFoo1: public Rte::Tuple::Basic<5>
+class TupleFoo1: public Rte::Tuple::Basic<3>
 {
 public: // Provide the domain application access to the Data
     ///
-    Rte::Element::Boolean_T       m_flag;
+    Rte::Element::String<1>       m_text1;
     ///
-    Rte::Element::String<32>      m_text;
+    Rte::Element::String<3>       m_text3;
     ///
-    Rte::Element::Uinteger16_T    m_data1;
-    ///
-    Rte::Element::Uinteger16_T    m_data2;
-    ///
-    Rte::Element::Uinteger8_T     m_enum;
+    Rte::Element::String<8>       m_text8;
 
 public:
     /// Constructor
     TupleFoo1( void )
         {
-        registerElement( 0, m_flag );
-        registerElement( 1, m_text );
-        registerElement( 2, m_data1 );
-        registerElement( 3, m_data2 );
-        registerElement( 4, m_enum );
+        registerElement( 0, m_text1 );
+        registerElement( 1, m_text3 );
+        registerElement( 2, m_text8 );
         }
 };
 
 
 /** Concrete Tuple: FOO2 (to be used in Point Container)
  */
-class TupleFoo2: public Rte::Tuple::Basic<4>,
+class TupleFoo2: public Rte::Tuple::Basic<3>,
                  public Rte::Tuple::ContainerItem
               
             
 {
 public: // Provide the domain application access to the Data
     ///
-    Rte::Element::String<10>      m_text;
+    Rte::Element::String<3>      m_text3;
     ///
-    Rte::Element::Boolean_T       m_flag;
-    ///
-    Rte::Element::Uinteger32_T    m_data;
+    Rte::Element::String<5>      m_text5;
 
 public:
     /// Constructor
     TupleFoo2( void )
         {
         registerElement( 0, m_inContainer_ );
-        registerElement( 1, m_text );
-        registerElement( 2, m_flag );
-        registerElement( 3, m_data );
+        registerElement( 1, m_text3 );
+        registerElement( 2, m_text5 );
         }
 };
 
@@ -80,13 +71,13 @@ class TupleFoo3: public Rte::Tuple::Basic<1>
 {
 public: // Provide the domain application access to the Data
     ///
-    Rte::Element::String<10>      m_text;
+    Rte::Element::String<10>    m_text10;
 
 public:
     /// Constructor
     TupleFoo3( void )
         {
-        registerElement( 0, m_text );
+        registerElement( 0, m_text10 );
         }
 };
 

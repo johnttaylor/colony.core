@@ -78,7 +78,7 @@ void Base::notifyWriteDone(void)
 
 uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. maxDataSize=%ul", m_name(), maxDataSize) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. maxDataSize=%lu", m_name(), maxDataSize) );
 
     // Serialize my point's data (one tuple at a time)
     Rte::Point::Api& point     = getModelPoint().getMyPoint_nonThreadSafe();
@@ -104,13 +104,13 @@ uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
             }
         }
 
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. filledLen=%ul", m_name(), filledLen) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. filledLen=%lu", m_name(), filledLen) );
     return filledLen;
     }
 
 
 /////////////////////////////////////////
-void Base::start( Rte::Db::Record::HandlerLocal& recordLayer ) throw()
+void Base::start( HandlerLocal& recordLayer ) throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::start [%s]", m_name()) );
 
@@ -156,7 +156,7 @@ Rte::Db::Chunk::Handle& Base::getChunkHandle(void)
 
 bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. inlen=%ul", m_name(), dataLen) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. inlen=%lu", m_name(), dataLen) );
 
     // De-serialize the raw record data one Tuple at a time
     bool             result = true;
@@ -185,7 +185,7 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
                 {
                 result = false;
                 m_logger.warning( "Rte::Db::Record::Base::notifyRead[%s] - Bad record - missing Element Data", m_name() );
-                CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. Bad record - missing Element Data (element len=%ul, remaining len=%ul)", m_name(), elemSize, dataLen ));
+                CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. Bad record - missing Element Data (element len=%lu, remaining len=%lu)", m_name(), elemSize, dataLen ));
                 break;
                 }
 
@@ -197,6 +197,7 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
 
     // Mark the model point as have being updated
     getModelPoint().touch_nonThreadSafe();
+    getMyPoint().copyAllSequenceNumbersFrom( point );
 
     // Kick my FSM based on the results of the read
     if ( result )
@@ -231,7 +232,7 @@ void Base::connectToModel() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::connectToModel [%s]", m_name()) );
 
-    startViewing( false, false ); // args:= use sequence numbers for change detection, NO initial read (of the model point) 
+    startViewing( false, false, true ); // args:= use sequence numbers for change detection, NO initial read (of the model point), SKIP initialization the sequence numbers 
     }
 
 void Base::defaultData() throw()
@@ -322,7 +323,6 @@ void Base::tellStartCompleted() throw()
         }
 
     m_recLayerPtr->notifyRecordStarted();
-    m_recLayerPtr = 0;
     }
 
 void Base::tellStarting() throw()
@@ -345,6 +345,7 @@ void Base::tellStopped() throw()
         }
 
     m_recLayerPtr->notifyRecordStopped();
+    m_recLayerPtr = 0;
     }
 
 
