@@ -493,20 +493,7 @@ int String_::compareKey( const Key& key ) const
     {
     unsigned    otherLen = 0;
     const char* otherPtr = (const char*) key.getRawKey( &otherLen );
-    if ( otherPtr )
-        {
-        int myLen       = strlen( m_strPtr );
-        int comparision = strncmp( m_strPtr, otherPtr, myLen );
-
-        if ( comparision == 0 && myLen != otherLen ) 
-            {
-            return myLen - (int) otherLen;
-            }
-
-        return comparision;
-        }        
-
-    return -1;
+    return Cpl::Container::KeyStringBuffer::compare( m_strPtr, strlen( m_strPtr ), otherPtr, otherLen );
     }
 
 const void* String_::getRawKey( unsigned* returnRawKeyLenPtr ) const

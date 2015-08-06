@@ -37,12 +37,13 @@ public:
                     eNO_STORAGE_MEDIA_ERR,      //!< The DB is opened BUT not storing anything to persistence storage because there an error with the media 
                     eNO_STORAGE_WRONG_SCHEMA,   //!< The DB is opened BUT not storing anything to persistance storage because of 'major' schema mismatch
                     eCLOSING,                   //!< The DB is in the process of being closed
-                    eCLOSED                     //!< The DB is in the closed state.
+                    eCLOSED,                    //!< The DB is in the closed state.
+                    eUNKNOWN                    //!< Unknown status.  This state is typically used by the Monitor for its initial/assumed state
                   };
 
 public:
     /// Payload for Message: Reports the DB's current status
-    class HealthPayload
+    class RegisterPayload
     {
     public:
         /// Current DB status
@@ -50,16 +51,53 @@ public:
 
     public:
         /// Constructor. 
-        HealthPayload( Status_T assumedStatus = eRUNNING ):m_status(assumedStatus){}
+        RegisterPayload( Status_T assumedStatus = eRUNNING ):m_status(assumedStatus){}
     };
 
     /// Message Type: DB Status
-    typedef Cpl::Itc::RequestMessage<HealthRequest,HealthPayload> HealthMsg;
+    typedef Cpl::Itc::RequestMessage<HealthRequest,RegisterPayload> RegisterMsg;
+
 
 
 public:
-    /// Request: for DB's health
-    virtual void request( HealthMsg& msg ) = 0;
+    /// Payload for Message: Detaches/un-register for Health Notification
+    class CancelPayload
+    {
+    public:
+        /** This member refers an RegisterMsg request that needs to be 
+            unregistered  and/or detached.  If the specified message request is
+            still  pending, the server will release it reference to the
+            RegisterMsg  request (but not call returntoSender() on it), then the
+            server will return the Cancel message.  If the RegisterMsg is not
+            pending, or is in-transmit back to the client, the response of
+            CancelMsg is guarantied to arrive AFTER the in-transmit (or last
+            valid change notification) because the message queues are FIFOs,
+            i.e. if the client received the Cancel message response,  the server
+            no longer has any references to the client's Register messages.
+         */
+        RegisterMsg& m_msgToCancel;
+
+
+    public:
+        /// Constructor
+        CancelPayload( RegisterMsg& msgToCancel )
+            :m_msgToCancel(msgToCancel)
+                {}
+    };
+
+    /** Message Type: Cancel health notification.  The message can ONLY be used
+        asynchronously
+     */
+    typedef Cpl::Itc::RequestMessage<HealthRequest,CancelPayload> CancelMsg;
+    
+
+
+public:
+    /// Request: Register for DB's health
+    virtual void request( RegisterMsg& msg ) = 0;
+    
+    /// Request: Cancel registration for DB's health
+    virtual void request( CancelMsg& msg ) = 0;
     
 };
 
@@ -74,12 +112,21 @@ public:
     /// Response Message Type: Health change notification
     typedef Cpl::Itc::ResponseMessage<HealthResponse,
                                       HealthRequest,
-                                      HealthRequest::HealthPayload> HealthMsg;
+                                      HealthRequest::RegisterPayload> RegisterMsg;
+    
+public:
+    /// Response Message Type: Cancel Health change notification
+    typedef Cpl::Itc::ResponseMessage<HealthResponse,
+                                      HealthRequest,
+                                      HealthRequest::CancelPayload> CancelMsg;
     
             
 public:
     /// Response: Health Change Notification response
-    virtual void response( HealthMsg& msg ) = 0;
+    virtual void response( RegisterMsg& msg ) = 0;
+
+    /// Response: Cancel Health Change Notification response
+    virtual void response( CancelMsg& msg ) = 0;
 };
 
 

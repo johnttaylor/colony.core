@@ -25,14 +25,29 @@
 #define REC_BAR1_TUP1_DEFAULT_VALID_T8      false
 #define REC_BAR1_TUP2_DEFAULT_VALID_T10     true
 
+#define REC_BAR2_TUP0_DEFAULT_INCONTAINER   false
+#define REC_BAR2_TUP0_DEFAULT_T3            "n/a"
+#define REC_BAR2_TUP0_DEFAULT_T5            "n/a"
+#define REC_BAR2_TUP0_DEFAULT_VALID_T3      false
+#define REC_BAR2_TUP0_DEFAULT_VALID_T5      false
+
+#define REC_BAR2_TUP1_DEFAULT_INCONTAINER   false
+#define REC_BAR2_TUP1_DEFAULT_T3            "n/a"
+#define REC_BAR2_TUP1_DEFAULT_T5            "n/a"
+#define REC_BAR2_TUP1_DEFAULT_VALID_T3      false
+#define REC_BAR2_TUP1_DEFAULT_VALID_T5      false
+
+#define REC_BAR2_TUP2_DEFAULT_INCONTAINER   true
 #define REC_BAR2_TUP2_DEFAULT_T3            "333"
-#define REC_BAR2_TUP2_DEFAULT_T5            "<55>"
-#define REC_BAR1_TUP2_DEFAULT_VALID_T3      true
-#define REC_BAR1_TUP2_DEFAULT_VALID_T5      true
-#define REC_BAR1_TUP2_DEFAULT_INCONTAINER   true
-#define REC_BAR1_TUP0_DEFAULT_INCONTAINER   false
-#define REC_BAR1_TUP1_DEFAULT_INCONTAINER   false
-#define REC_BAR1_TUP3_DEFAULT_INCONTAINER   false
+#define REC_BAR2_TUP2_DEFAULT_T5            "<555>"
+#define REC_BAR2_TUP2_DEFAULT_VALID_T3      true
+#define REC_BAR2_TUP2_DEFAULT_VALID_T5      true
+
+#define REC_BAR2_TUP3_DEFAULT_INCONTAINER   false
+#define REC_BAR2_TUP3_DEFAULT_T3            "n/a"
+#define REC_BAR2_TUP3_DEFAULT_T5            "n/a"
+#define REC_BAR2_TUP3_DEFAULT_VALID_T3      false
+#define REC_BAR2_TUP3_DEFAULT_VALID_T5      false
 
 
 /** Concrete Record: BAR1

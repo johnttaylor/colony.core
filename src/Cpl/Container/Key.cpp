@@ -29,20 +29,7 @@ int KeyStringBuffer::compareKey( const Key& key ) const
     {
     unsigned    otherLen = 0;
     const char* otherPtr = (const char*) key.getRawKey( &otherLen );
-    if ( otherPtr )
-        {
-        if ( m_stringKeyPtr )
-            {
-            int comparision = strncmp( m_stringKeyPtr, otherPtr, m_len );
-
-            if ( comparision == 0 && m_len != otherLen ) 
-                {
-                return m_len - (int) otherLen;
-                }
-            }
-        }        
-
-    return -1;
+    return compare( m_stringKeyPtr, m_len, otherPtr, otherLen );
     }
 
 
@@ -56,3 +43,23 @@ const void* KeyStringBuffer::getRawKey( unsigned* returnRawKeyLenPtr ) const
     return m_stringKeyPtr;    
     }
 
+int KeyStringBuffer::compare( const char* myString, unsigned myLen, const char* otherString, unsigned otherLen )
+    {
+    if ( otherString )
+        {
+        if ( myString )
+            {
+            unsigned cmpLen      = myLen > otherLen? otherLen: myLen;
+            int      comparision = strncmp( myString, otherString, cmpLen );
+
+            if ( comparision == 0 && myLen != otherLen ) 
+                {
+                return myLen - (int) otherLen;
+                }
+
+			return comparision;
+            }
+        }        
+
+    return -1;
+    }

@@ -62,8 +62,10 @@ HealthRequest::SAP& Server::getHealthSAP(void)
     return m_healthSAP;
     }
 
-void Server::request( HealthMsg& msg )
+void Server::request( RegisterMsg& msg )
     {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Server::request(RegisterMsg) - (%p) msgToRegister=%p", this, &msg ));
+
     // Return immediately if there is a difference in ASSUMED status vs actual
     if ( msg.getPayload().m_status != m_status )
         {
@@ -78,6 +80,19 @@ void Server::request( HealthMsg& msg )
         }
     }
 
+void Server::request( CancelMsg& msg ) 
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Server::request(CancelMsg) - (%p) msgToCancel=%p", this, &(msg.getPayload().m_msgToCancel) ));
+
+    // Remove the pending change notification if there is one
+    // NOTE: I intentionally do NOT return a pending Register message, but
+    //       simply drop my reference to it.  This is to maintain the
+    //       sematics that when the client's response() method for the
+    //       Register Message is called - it is due to a change and ONLY a 
+    //       change in state of the Health.
+    m_pendingHealth.remove( msg.getPayload().m_msgToCancel );
+    msg.returnToSender();
+    }
 
 void Server::defaultAllRecordsContent() throw()
     {
@@ -419,8 +434,8 @@ void Server::ackRead() throw()
     if ( !recordPtr )
         {
         // Log the failure
-        CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackRead - Unknown Record Name=%s, i.e. incompatible DB",extractRecName() ) );
-        m_logger.warning( "Rte::Db::Record::Server::ackRead - Unknown Record Name=%s, i.e. incompatible DB", extractRecName() );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackRead - Unknown Record Name=%.*s, i.e. incompatible DB",extractRecNameLength(), extractRecName() ) );
+        m_logger.warning( "Rte::Db::Record::Server::ackRead - Unknown Record Name=%.*s, i.e. incompatible DB", extractRecNameLength(), extractRecName() );
 
         // Send myself an 'incompatible' event to transition to the NO-Persistence state
         m_dbResult = Rte::Db::Chunk::Request::eWRONG_SCHEMA;
@@ -601,8 +616,7 @@ uint8_t* Server::extractDataPointer(void)
     return m_buffer + Rte::Db::eNLEN_SIZE + extractRecNameLength();
     }
 
-uint32_t Server::maxAllowedDataSize(void)
-    {
+uint32_t Server::maxAllowedDataSize(void)                                                                               {
     return m_bufSize - (Rte::Db::eNLEN_SIZE + extractRecNameLength());
     }
 
@@ -626,10 +640,10 @@ void Server::setNewHealthStatus( HealthRequest::Status_T newstatus )
     m_status = newstatus;
 
     // Generate change notification(s)
-    HealthMsg* ptr = m_pendingHealth.first();
+    RegisterMsg* ptr = m_pendingHealth.first();
     while( ptr )
         {
-        HealthMsg* nextPtr = m_pendingHealth.next( *ptr );
+        RegisterMsg* nextPtr = m_pendingHealth.next( *ptr );
 
         if ( ptr->getPayload().m_status != m_status )
             {

@@ -42,8 +42,68 @@ using namespace Rte::Db::Record;
 #define SECT_     "_0test"
 
 
+///////////////////////////////////
+static const char* b2t_( bool flag )
+    {
+    return flag? "TRUE": "false";
+    }
+
+static const char* v2t_( int8_t valid_state )
+    {
+    static Cpl::Text::FString<4> validstring;
+   
+    validstring = valid_state;
+    if ( valid_state == RTE_ELEMENT_API_STATE_VALID )
+        {
+        validstring = "YES";
+        }
+
+    return validstring;
+    }
 
 
+static const char* n2s_( const char* elementValue, bool isValid )
+    {
+    if ( isValid )
+        {
+        return elementValue;
+        }
+    else
+        {
+        return "?invalid?";
+        }
+    }
+
+static void display_bar1_( PointBar1 point, const char* msg )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "== %s", msg ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "   t1.f1 = [%s]", n2s_( point.m_fields1.m_text1.get(),  point.m_fields1.m_text1.isValid()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "   t1.f3 = [%s]", n2s_( point.m_fields1.m_text3.get(),  point.m_fields1.m_text3.isValid()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "   t1.f8 = [%s]", n2s_( point.m_fields1.m_text8.get(),  point.m_fields1.m_text8.isValid()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "   t2.f10= [%s]", n2s_( point.m_fields2.m_text10.get(), point.m_fields2.m_text10.isValid()) ));
+    }
+
+static void display_TupleFoo2_( TupleFoo2 tuple, unsigned idx )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "   index: %u", idx ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "     in_container_ = %s", b2t_( tuple.isInContainer() ) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "     f3 = [%s]", n2s_( tuple.m_text3.get(),  tuple.m_text3.isValid()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "     f5 = [%s]", n2s_( tuple.m_text5.get(),  tuple.m_text5.isValid()) ));
+    }
+
+
+static void display_bar2_( PointBar2 point, const char* msg )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "== %s", msg ));
+    unsigned i;
+    for(i=0; i<point.getNumTuples(); i++)
+        {                    
+        display_TupleFoo2_( point[i], i );
+        }
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////
 class MyNullMedia: public Rte::Db::Chunk::Null
 {
 public:
@@ -59,6 +119,159 @@ public:
         }
 };
 
+
+
+////////////////////////////////////////////
+class HealthMonitor: public Cpl::Itc::CloseSync,
+                     public HealthResponse
+{
+public: // Make public to simply testing
+    ///
+    HealthRequest::RegisterPayload      m_healthRegisterPayload;
+    ///
+    HealthResponse::RegisterMsg         m_healthRegisterMsg;
+    ///
+    HealthRequest::CancelPayload        m_healthCancelPayload;
+    ///
+    HealthResponse::CancelMsg           m_healthCancelMsg;
+    ///
+    HealthRequest::SAP&                 m_healthSAP;
+    ///
+    Cpl::Itc::CloseRequest::CloseMsg*   m_closeMsgPtr;
+    ///
+    HealthRequest::Status_T             m_status;
+    ///
+    unsigned                            m_openingCount;
+    ///
+    unsigned                            m_runningCount;
+    ///
+    unsigned                            m_errMediaCount;
+    ///
+    unsigned                            m_errSchemaCount;
+    ///
+    unsigned                            m_closingCount;
+    ///
+    unsigned                            m_closedCount;
+    ///
+    bool                                m_ownHealthMsg;
+                                                                                   
+
+public:
+    ///
+    HealthMonitor( Cpl::Itc::PostApi& healthMbox, HealthRequest::SAP& recordHandleSAP )
+        :CloseSync(healthMbox)
+        ,m_healthRegisterPayload( HealthRequest::eUNKNOWN )
+        ,m_healthRegisterMsg( *this, healthMbox, recordHandleSAP, m_healthRegisterPayload )
+        ,m_healthCancelPayload( m_healthRegisterMsg.getRequestMsg() )
+        ,m_healthCancelMsg( *this, healthMbox, recordHandleSAP, m_healthCancelPayload )
+        ,m_healthSAP( recordHandleSAP )
+        ,m_closeMsgPtr(0)
+        ,m_status(HealthRequest::eUNKNOWN)
+        ,m_openingCount(0)
+        ,m_runningCount(0)
+        ,m_errMediaCount(0)
+        ,m_errSchemaCount(0)
+        ,m_closingCount(0)
+        ,m_closedCount(0)
+        ,m_ownHealthMsg(true)
+            {
+            }
+
+
+protected: // Cpl::Itc::Close/Open
+    void request( Cpl::Itc::OpenRequest::OpenMsg& msg )
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "HealthMonitor::request( OpenMsg ): starting health monitoring..." ));
+        m_status         = HealthRequest::eUNKNOWN;
+        m_openingCount   = 0;       
+        m_runningCount   = 0;       
+        m_errMediaCount  = 0;       
+        m_errSchemaCount = 0;       
+        m_closingCount   = 0;       
+        m_closedCount    = 0;     
+        m_ownHealthMsg   = false;
+
+        m_healthRegisterPayload.m_status = m_status;
+        m_healthSAP.post( m_healthRegisterMsg.getRequestMsg() );  // Register for health notification
+        msg.returnToSender();
+        }
+
+    ///
+    void request( Cpl::Itc::CloseRequest::CloseMsg& msg )
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "HealthMonitor::request( CloseMsg ): stopping health monitoring..." ));
+        if ( m_ownHealthMsg )
+            {
+            msg.returnToSender();
+            }
+        else
+            {
+            m_closeMsgPtr = &msg;        
+            m_healthSAP.post( m_healthCancelMsg.getRequestMsg() );  // Cancel for health notification
+            }
+        }
+
+protected:
+    /// 
+    void response( CancelMsg& msg )
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "HealthMonitor::response( CancelMsg ): health monitoring STOPPED." ));
+        
+        m_ownHealthMsg = true;
+        if ( m_closeMsgPtr )
+            {
+            m_closeMsgPtr->returnToSender();
+            m_closeMsgPtr = 0;
+            }
+        }
+
+    ///
+    void response( RegisterMsg& msg )
+        {
+        const char* statusString = 0;
+        switch ( msg.getPayload().m_status )
+            {
+            case HealthRequest::eOPENING: 
+                statusString = "eOPENING";
+                m_openingCount++;
+                break;
+
+            case HealthRequest::eRUNNING: 
+                statusString = "eRUNNING";
+                m_runningCount++;
+                break;
+
+            case HealthRequest::eNO_STORAGE_MEDIA_ERR: 
+                statusString = "eNO_STORAGE_MEDIA_ERR";
+                m_openingCount++;
+                break;
+
+            case HealthRequest::eNO_STORAGE_WRONG_SCHEMA: 
+                statusString = "eNO_STORAGE_WRONG_SCHEMA";
+                m_errSchemaCount++;
+                break;
+
+            case HealthRequest::eCLOSING: 
+                statusString = "eCLOSING";
+                m_closingCount++;
+                break;
+
+            case HealthRequest::eCLOSED: 
+                statusString = "eCLOSED";
+                m_closedCount++;
+                break;
+
+            default:
+                statusString = "****** Oops - unexpectd value!";
+                break;
+            }
+
+        
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "HealthMonitor::response( RegisterMsg ): Health Notification = %s", statusString ));
+        m_healthSAP.post( m_healthRegisterMsg.getRequestMsg() );  // Register for health notification
+        }
+
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 #define DB_FNAME_               "myDbFile"
@@ -77,6 +290,7 @@ static Rte::Db::Chunk::Server            chunk3Server_( dbNullMedia, chunkCrc_, 
 
 static Cpl::Itc::MailboxServer           chunkMailbox_;
 static Cpl::Itc::MailboxServer           recordLayerMbox_;
+static Cpl::Itc::MailboxServer           monitorMbox_;
 
 static Rte::Db::Chunk::Request::SAP      chunk1SAP_(chunkServer_, chunkMailbox_ );
  
@@ -95,15 +309,21 @@ static RecordBar2 modelBar2_( recordList_, recordLayerMbox_, recordLayerMbox_ );
 static Rte::Db::Record::Server recordLayer_( buffer_, sizeof(buffer_), chunk1SAP_, recordLayerMbox_, recordList_ );
 
 
+
+
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "record", "[record]" )
     {
     CPL_SYSTEM_TRACE_FUNC( SECT_ );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
+    // Create Monitor
+    HealthMonitor  myMonitor( monitorMbox_, recordLayer_.getHealthSAP() );
+
     // Create Threads
     Cpl::System::Thread* chunkThreadPtr       = Cpl::System::Thread::create( chunkMailbox_,     "CHUNK-LAYER" );
-    Cpl::System::Thread* upperLayersThreadPtr = Cpl::System::Thread::create( recordLayerMbox_,  "RECORD-LAYER" );
+    Cpl::System::Thread* recordLayerThreadPtr = Cpl::System::Thread::create( recordLayerMbox_,  "RECORD-LAYER" );
+    Cpl::System::Thread* monitorThreadPtr     = Cpl::System::Thread::create( monitorMbox_,      "monitor" );
 
 
     // Delete the previous DB file (if it exists)
@@ -116,6 +336,7 @@ TEST_CASE( "record", "[record]" )
 
     // Default empty DB to application defaults
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Opening empty DB file..." ));
+    myMonitor.open();
     recordLayer_.open();
     Cpl::System::Api::sleep( 300 );
     recordLayer_.close();
@@ -126,41 +347,72 @@ TEST_CASE( "record", "[record]" )
     recordLayer_.open();
     Cpl::System::Api::sleep( 300 );
     QueryBar1 query1(modelBar1_);
-    QueryBar2 query2(modelBar2_);
     query1.issueQuery();
-    REQUIRE( query1.m_fields1.m_text1.isValid() == REC_BAR1_TUP1_DEFAULT_VALID_T1 );
+    display_bar1_( query1, "Query Bar1: Verify initial defaults" );
+    REQUIRE( query1.m_fields1.m_text1.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T1 );
+    REQUIRE( query1.m_fields1.m_text3.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T3 );
+    REQUIRE( query1.m_fields1.m_text8.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T8 );
+    REQUIRE( query1.m_fields2.m_text10.isValid() == REC_BAR1_TUP2_DEFAULT_VALID_T10 );
+    if ( query1.m_fields1.m_text1.isValid() )  { REQUIRE( query1.m_fields1.m_text1.getString()  == REC_BAR1_TUP1_DEFAULT_T1 ); }
+    if ( query1.m_fields1.m_text3.isValid() )  { REQUIRE( query1.m_fields1.m_text3.getString()  == REC_BAR1_TUP1_DEFAULT_T3 ); }
+    if ( query1.m_fields1.m_text8.isValid() )  { REQUIRE( query1.m_fields1.m_text8.getString()  == REC_BAR1_TUP1_DEFAULT_T8 ); }
+    if ( query1.m_fields2.m_text10.isValid() ) { REQUIRE( query1.m_fields2.m_text10.getString() == REC_BAR1_TUP2_DEFAULT_T10 ); }
+
+    QueryBar2 query2(modelBar2_);
+    query2.issueQuery();
+    display_bar2_( query2, "Query Bar2: Verify initial defaults" );
+    REQUIRE( query2[0].isInContainer() == REC_BAR2_TUP0_DEFAULT_INCONTAINER );
+    if ( query2[0].isInContainer() )
+        {
+        REQUIRE( query2[0].m_text3.isValid() == REC_BAR2_TUP0_DEFAULT_VALID_T3 );
+        REQUIRE( query2[0].m_text5.isValid() == REC_BAR2_TUP0_DEFAULT_VALID_T5 );
+        if ( query2[0].m_text3.isValid() ) { REQUIRE( query2[0].m_text3.getString() == REC_BAR2_TUP0_DEFAULT_T3 ); }
+        if ( query2[0].m_text5.isValid() ) { REQUIRE( query2[0].m_text5.getString() == REC_BAR2_TUP0_DEFAULT_T5 ); }
+        }
+    REQUIRE( query2[1].isInContainer() == REC_BAR2_TUP1_DEFAULT_INCONTAINER );
+    if ( query2[1].isInContainer() )
+        {
+        REQUIRE( query2[1].m_text3.isValid() == REC_BAR2_TUP1_DEFAULT_VALID_T3 );
+        REQUIRE( query2[1].m_text5.isValid() == REC_BAR2_TUP1_DEFAULT_VALID_T5 );
+        if ( query2[1].m_text3.isValid() ) { REQUIRE( query2[1].m_text3.getString() == REC_BAR2_TUP1_DEFAULT_T3 ); }
+        if ( query2[1].m_text5.isValid() ) { REQUIRE( query2[1].m_text5.getString() == REC_BAR2_TUP1_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2[2].isInContainer() == REC_BAR2_TUP2_DEFAULT_INCONTAINER );
+    if ( query2[2].isInContainer() )
+        {
+        REQUIRE( query2[2].m_text3.isValid() == REC_BAR2_TUP2_DEFAULT_VALID_T3 );
+        REQUIRE( query2[2].m_text5.isValid() == REC_BAR2_TUP2_DEFAULT_VALID_T5 );
+        if ( query2[2].m_text3.isValid() ) { REQUIRE( query2[2].m_text3.getString() == REC_BAR2_TUP2_DEFAULT_T3 ); }
+        if ( query2[2].m_text5.isValid() ) { REQUIRE( query2[2].m_text5.getString() == REC_BAR2_TUP2_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2[3].isInContainer() == REC_BAR2_TUP3_DEFAULT_INCONTAINER );
+    if ( query2[3].isInContainer() )
+        {
+        REQUIRE( query2[3].m_text3.isValid() == REC_BAR2_TUP3_DEFAULT_VALID_T3 );
+        REQUIRE( query2[3].m_text5.isValid() == REC_BAR2_TUP3_DEFAULT_VALID_T5 );
+        if ( query2[3].m_text3.isValid() ) { REQUIRE( query2[3].m_text3.getString() == REC_BAR2_TUP3_DEFAULT_T3 ); }
+        if ( query2[3].m_text5.isValid() ) { REQUIRE( query2[3].m_text5.getString() == REC_BAR2_TUP3_DEFAULT_T5 ); }
+        }
+
 
     recordLayer_.close();
     Cpl::System::Api::sleep( 100 );
+    myMonitor.close();
+
 
 #if 0
-#define REC_BAR1_TUP1_DEFAULT_T1            "1"
-#define REC_BAR1_TUP1_DEFAULT_T3            "<3>"
-#define REC_BAR1_TUP1_DEFAULT_T8            "n/a"
-#define REC_BAR1_TUP2_DEFAULT_T10           "<my label>"
-#define REC_BAR1_TUP1_DEFAULT_VALID_T1      true
-#define REC_BAR1_TUP1_DEFAULT_VALID_T3      true
-#define REC_BAR1_TUP1_DEFAULT_VALID_T8      false
-#define REC_BAR1_TUP2_DEFAULT_VALID_T10     true
 
-#define REC_BAR2_TUP2_DEFAULT_T3            "333"
-#define REC_BAR2_TUP2_DEFAULT_T5            "<55>"
-#define REC_BAR1_TUP2_DEFAULT_VALID_T3      true
-#define REC_BAR1_TUP2_DEFAULT_VALID_T5      true
-#define REC_BAR1_TUP2_DEFAULT_INCONTAINER   true
-#define REC_BAR1_TUP0_DEFAULT_INCONTAINER   false
-#define REC_BAR1_TUP1_DEFAULT_INCONTAINER   false
-#define REC_BAR1_TUP2_DEFAULT_INCONTAINER   false
-
-    REQUIRE( set1Buffer_[0] == SET1_DEFAULT_VALUE_ );
+    REQUIRE( set1Buffer_[3] == SET1_DEFAULT_VALUE_ );
     REQUIRE( set1Buffer_[1] == SET1_DEFAULT_VALUE_ );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == SET1_DEFAULT_VALUE_ );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == SET1_DEFAULT_VALUE_ );
-    REQUIRE( set2Buffer_[0] == SET2_DEFAULT_VALUE_ );
+    REQUIRE( set2Buffer_[3] == SET2_DEFAULT_VALUE_ );
     REQUIRE( set2Buffer_[1] == SET2_DEFAULT_VALUE_ );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == SET2_DEFAULT_VALUE_ );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == SET2_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[0] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[3] == SET3_DEFAULT_VALUE_ );
     REQUIRE( set3Buffer_[1] == SET3_DEFAULT_VALUE_ );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == SET3_DEFAULT_VALUE_ );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == SET3_DEFAULT_VALUE_ );
@@ -184,15 +436,15 @@ TEST_CASE( "record", "[record]" )
     client.close();
     Cpl::System::Api::sleep( 100 );
     
-    REQUIRE( set1Buffer_[0] == SET1_DEFAULT_VALUE_ );
+    REQUIRE( set1Buffer_[3] == SET1_DEFAULT_VALUE_ );
     REQUIRE( set1Buffer_[1] == SET1_DEFAULT_VALUE_ );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == SET1_DEFAULT_VALUE_ );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == SET1_DEFAULT_VALUE_ );
-    REQUIRE( set2Buffer_[0] == SET2_DEFAULT_VALUE_ );
+    REQUIRE( set2Buffer_[3] == SET2_DEFAULT_VALUE_ );
     REQUIRE( set2Buffer_[1] == SET2_DEFAULT_VALUE_ );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == SET2_DEFAULT_VALUE_ );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == SET2_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[0] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[3] == SET3_DEFAULT_VALUE_ );
     REQUIRE( set3Buffer_[1] == SET3_DEFAULT_VALUE_ );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == SET3_DEFAULT_VALUE_ );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == SET3_DEFAULT_VALUE_ );
@@ -254,7 +506,7 @@ TEST_CASE( "record", "[record]" )
     client3.close();
     Cpl::System::Api::sleep( 100 );
 
-    REQUIRE( set6Buffer_[0] == SET6_DEFAULT_VALUE_ );
+    REQUIRE( set6Buffer_[3] == SET6_DEFAULT_VALUE_ );
     REQUIRE( set6Buffer_[1] == SET6_DEFAULT_VALUE_ );
     REQUIRE( set6Buffer_[SET_BUF_SIZE_-2] == SET6_DEFAULT_VALUE_ );
     REQUIRE( set6Buffer_[SET_BUF_SIZE_-1] == SET6_DEFAULT_VALUE_ );
@@ -284,15 +536,15 @@ TEST_CASE( "record", "[record]" )
     client.close();
     Cpl::System::Api::sleep( 100 );
     
-    REQUIRE( set1Buffer_[0] == 1 );
+    REQUIRE( set1Buffer_[3] == 1 );
     REQUIRE( set1Buffer_[1] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
-    REQUIRE( set2Buffer_[0] == 2 );
+    REQUIRE( set2Buffer_[3] == 2 );
     REQUIRE( set2Buffer_[1] == 2 );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
-    REQUIRE( set3Buffer_[0] == 3 );
+    REQUIRE( set3Buffer_[3] == 3 );
     REQUIRE( set3Buffer_[1] == 3 );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == 3 );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == 3 );
@@ -317,15 +569,15 @@ TEST_CASE( "record", "[record]" )
     Cpl::System::Api::sleep( 100 );
     
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "AFTER close" ));
-    REQUIRE( set1Buffer_[0] == 1 );
+    REQUIRE( set1Buffer_[3] == 1 );
     REQUIRE( set1Buffer_[1] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
-    REQUIRE( set2Buffer_[0] == 2 );
+    REQUIRE( set2Buffer_[3] == 2 );
     REQUIRE( set2Buffer_[1] == 2 );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
-    REQUIRE( set3Buffer_[0] == 3 );
+    REQUIRE( set3Buffer_[3] == 3 );
     REQUIRE( set3Buffer_[1] == 3 );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == 3 );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == 3 );
@@ -350,19 +602,19 @@ TEST_CASE( "record", "[record]" )
     client.close();
     Cpl::System::Api::sleep( 100 );
     
-    REQUIRE( set1Buffer_[0] == 1 );
+    REQUIRE( set1Buffer_[3] == 1 );
     REQUIRE( set1Buffer_[1] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
-    REQUIRE( set2Buffer_[0] == 2 );
+    REQUIRE( set2Buffer_[3] == 2 );
     REQUIRE( set2Buffer_[1] == 2 );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
-    REQUIRE( set3Buffer_[0] == 3 );
+    REQUIRE( set3Buffer_[3] == 3 );
     REQUIRE( set3Buffer_[1] == 3 );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == 3 );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == 3 );
-    REQUIRE( set4Buffer_[0] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[3] == SET4_DEFAULT_VALUE_ );
     REQUIRE( set4Buffer_[1] == SET4_DEFAULT_VALUE_ );
     REQUIRE( set4Buffer_[SET_BUF_SIZE_-2] == SET4_DEFAULT_VALUE_ );
     REQUIRE( set4Buffer_[SET_BUF_SIZE_-1] == SET4_DEFAULT_VALUE_ );
@@ -385,19 +637,19 @@ TEST_CASE( "record", "[record]" )
     client.close();
     Cpl::System::Api::sleep( 100 );
     
-    REQUIRE( set1Buffer_[0] == 1 );
+    REQUIRE( set1Buffer_[3] == 1 );
     REQUIRE( set1Buffer_[1] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
-    REQUIRE( set2Buffer_[0] == 2 );
+    REQUIRE( set2Buffer_[3] == 2 );
     REQUIRE( set2Buffer_[1] == 2 );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
-    REQUIRE( set3Buffer_[0] == 3 );
+    REQUIRE( set3Buffer_[3] == 3 );
     REQUIRE( set3Buffer_[1] == 3 );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == 3 );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == 3 );
-    REQUIRE( set4Buffer_[0] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[3] == SET4_DEFAULT_VALUE_ );
     REQUIRE( set4Buffer_[1] == SET4_DEFAULT_VALUE_ );
     REQUIRE( set4Buffer_[SET_BUF_SIZE_-2] == SET4_DEFAULT_VALUE_ );
     REQUIRE( set4Buffer_[SET_BUF_SIZE_-1] == SET4_DEFAULT_VALUE_ );
@@ -428,19 +680,19 @@ TEST_CASE( "record", "[record]" )
     client.close();
     Cpl::System::Api::sleep( 100 );
     
-    REQUIRE( set1Buffer_[0] == 1 );
+    REQUIRE( set1Buffer_[3] == 1 );
     REQUIRE( set1Buffer_[1] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
-    REQUIRE( set2Buffer_[0] == 2 );
+    REQUIRE( set2Buffer_[3] == 2 );
     REQUIRE( set2Buffer_[1] == 2 );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
-    REQUIRE( set3Buffer_[0] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[3] == SET3_DEFAULT_VALUE_ );
     REQUIRE( set3Buffer_[1] == SET3_DEFAULT_VALUE_ );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == SET3_DEFAULT_VALUE_ );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[0] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[3] == SET4_DEFAULT_VALUE_ );
     REQUIRE( set4Buffer_[1] == SET4_DEFAULT_VALUE_ );
     REQUIRE( set4Buffer_[SET_BUF_SIZE_-2] == SET4_DEFAULT_VALUE_ );
     REQUIRE( set4Buffer_[SET_BUF_SIZE_-1] == SET4_DEFAULT_VALUE_ );
@@ -463,19 +715,19 @@ TEST_CASE( "record", "[record]" )
     client.close();
     Cpl::System::Api::sleep( 100 );
     
-    REQUIRE( set1Buffer_[0] == 1 );
+    REQUIRE( set1Buffer_[3] == 1 );
     REQUIRE( set1Buffer_[1] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
     REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
-    REQUIRE( set2Buffer_[0] == 2 );
+    REQUIRE( set2Buffer_[3] == 2 );
     REQUIRE( set2Buffer_[1] == 2 );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
     REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
-    REQUIRE( set3Buffer_[0] == SET3_DEFAULT_VALUE_ );
+    REQUIRE( set3Buffer_[3] == SET3_DEFAULT_VALUE_ );
     REQUIRE( set3Buffer_[1] == SET3_DEFAULT_VALUE_ );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == SET3_DEFAULT_VALUE_ );
     REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[0] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( set4Buffer_[3] == SET4_DEFAULT_VALUE_ );
     REQUIRE( set4Buffer_[1] == SET4_DEFAULT_VALUE_ );
     REQUIRE( set4Buffer_[SET_BUF_SIZE_-2] == SET4_DEFAULT_VALUE_ );
     REQUIRE( set4Buffer_[SET_BUF_SIZE_-1] == SET4_DEFAULT_VALUE_ );
@@ -497,10 +749,13 @@ TEST_CASE( "record", "[record]" )
     // Shutdown threads
     chunkMailbox_.pleaseStop();
     recordLayerMbox_.pleaseStop();
+    monitorMbox_.pleaseStop();
     Cpl::System::Api::sleep(100);       // allow time for threads to stop
     REQUIRE( chunkThreadPtr->isRunning() == false );
-    REQUIRE( upperLayersThreadPtr->isRunning() == false );
+    REQUIRE( recordLayerThreadPtr->isRunning() == false );
+    REQUIRE( monitorThreadPtr->isRunning() == false );
     Cpl::System::Thread::destroy( *chunkThreadPtr );
-    Cpl::System::Thread::destroy( *upperLayersThreadPtr );
+    Cpl::System::Thread::destroy( *recordLayerThreadPtr );
+    Cpl::System::Thread::destroy( *monitorThreadPtr );
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
     }

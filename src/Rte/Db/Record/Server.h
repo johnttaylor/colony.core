@@ -45,7 +45,7 @@ class Server: public Rte::Db::Chunk::Response,
 {
 private:
     /// List of Clients monitor my health
-    Cpl::Container::DList<HealthMsg>        m_pendingHealth;
+    Cpl::Container::DList<RegisterMsg>      m_pendingHealth;
 
     /// SAP for my Viewer ITC interface
     HealthRequest::SAP                      m_healthSAP;
@@ -138,7 +138,10 @@ public:
     void defaultAllRecordsContent() throw();
 
     /// See Rte::Db::Record::HealthRequest
-    void request( HealthMsg& msg );
+    void request( RegisterMsg& msg );
+
+    /// See Rte::Db::Record::HealthRequest
+    void request( CancelMsg& msg );
 
     /// See Rte::Db::Record::DefaultRequest
     void request( DefaultMsg& msg );

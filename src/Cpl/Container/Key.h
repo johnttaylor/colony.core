@@ -152,6 +152,11 @@ public:
      */
     inline const char* getKeyValue(size_t& lenOfStringInBytes) const throw() { lenOfStringInBytes = m_len; return m_stringKeyPtr; }
 
+public:
+    /** Generic compare function for strings and string buffers
+     */
+    static int compare( const char* myString, unsigned myLen, const char* otherString, unsigned otherLen );
+
 
 public: // Cpl::Container::Key
     ///
