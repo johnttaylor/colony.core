@@ -229,7 +229,8 @@ protected:
     void response( RegisterMsg& msg )
         {
         const char* statusString = 0;
-        switch ( msg.getPayload().m_status )
+        m_status = msg.getPayload().m_status;
+        switch ( m_status )
             {
             case HealthRequest::eOPENING: 
                 statusString = "eOPENING";
@@ -243,7 +244,7 @@ protected:
 
             case HealthRequest::eNO_STORAGE_MEDIA_ERR: 
                 statusString = "eNO_STORAGE_MEDIA_ERR";
-                m_openingCount++;
+                m_errMediaCount++;
                 break;
 
             case HealthRequest::eNO_STORAGE_WRONG_SCHEMA: 
@@ -337,15 +338,18 @@ TEST_CASE( "record", "[record]" )
     // Default empty DB to application defaults
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Opening empty DB file..." ));
     myMonitor.open();
-    recordLayer_.open();
+    REQUIRE( recordLayer_.open() );
     Cpl::System::Api::sleep( 300 );
+    REQUIRE( myMonitor.m_status == HealthRequest::eRUNNING );
     recordLayer_.close();
     Cpl::System::Api::sleep( 100 );
+    REQUIRE( myMonitor.m_status == HealthRequest::eCLOSED );
     
     // Re-open the DB and Verify defaults
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Verifying initial defaults..." ));
-    recordLayer_.open();
+    REQUIRE( recordLayer_.open() );
     Cpl::System::Api::sleep( 300 );
+    REQUIRE( myMonitor.m_status == HealthRequest::eRUNNING );
     QueryBar1 query1(modelBar1_);
     query1.issueQuery();
     display_bar1_( query1, "Query Bar1: Verify initial defaults" );
@@ -399,8 +403,114 @@ TEST_CASE( "record", "[record]" )
 
     recordLayer_.close();
     Cpl::System::Api::sleep( 100 );
+    REQUIRE( myMonitor.m_status == HealthRequest::eCLOSED );
+    REQUIRE( myMonitor.m_openingCount == 2 );
+    REQUIRE( myMonitor.m_runningCount == 2 );
+    REQUIRE( myMonitor.m_errMediaCount == 0 );
+    REQUIRE( myMonitor.m_errSchemaCount == 0 );
+    REQUIRE( myMonitor.m_closingCount == 2 );
+    REQUIRE( myMonitor.m_closedCount == 3 );
     myMonitor.close();
 
+
+    //
+    // Test: Write to the DB
+    //
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Opening defaulted DB file..." ));
+    myMonitor.open();
+    REQUIRE( recordLayer_.open() );
+    Cpl::System::Api::sleep( 300 );
+    REQUIRE( myMonitor.m_status == HealthRequest::eRUNNING );
+
+    ControllerBar1 writerBar1( modelBar1_ );
+    writerBar1.setAllInUseState(false);
+    writerBar1.m_fields1.m_text1.setInUse();
+    writerBar1.m_fields1.m_text1.setValid();
+    writerBar1.m_fields1.m_text1.set( "*" );
+    writerBar1.m_fields2.m_text10.setInUse();
+    writerBar1.m_fields2.m_text10.setValid();
+    writerBar1.m_fields2.m_text10.set( "bobs not here" );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating ModelBar1...."));
+    writerBar1.updateModel();
+    ControllerBar2 writerBar2( modelBar2_ );
+    int idx = 0;
+    writerBar2.m_tuples_[idx].setAllInUseState(true);
+    writerBar2.m_tuples_[idx].setAllValidState(RTE_ELEMENT_API_STATE_VALID);
+    writerBar2.m_tuples_[idx].m_text3.set( "123" );
+    writerBar2.m_tuples_[idx].m_text5.set( "abcd" );
+    writerBar2.addItem(idx);
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating ModelBar2...."));
+    writerBar2.updateModel();
+
+    Cpl::System::Api::sleep( 300 ); // Allow time for other threads to run
+    recordLayer_.close();
+    Cpl::System::Api::sleep( 100 );
+    REQUIRE( myMonitor.m_status == HealthRequest::eCLOSED );
+
+    // Re-open the DB and Verify new values
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Verifying written values..." ));
+    REQUIRE( recordLayer_.open() );
+    Cpl::System::Api::sleep( 300 );
+    REQUIRE( myMonitor.m_status == HealthRequest::eRUNNING );
+    query1.issueQuery();
+    display_bar1_( query1, "Query Bar1: Verify updated values..." );
+    REQUIRE( query1.m_fields1.m_text1.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T1 );
+    REQUIRE( query1.m_fields1.m_text3.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T3 );
+    REQUIRE( query1.m_fields1.m_text8.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T8 );
+    REQUIRE( query1.m_fields2.m_text10.isValid() == REC_BAR1_TUP2_DEFAULT_VALID_T10 );
+    if ( query1.m_fields1.m_text1.isValid() )  { REQUIRE( query1.m_fields1.m_text1.getString()  == "*" ); }
+    if ( query1.m_fields1.m_text3.isValid() )  { REQUIRE( query1.m_fields1.m_text3.getString()  == REC_BAR1_TUP1_DEFAULT_T3 ); }
+    if ( query1.m_fields1.m_text8.isValid() )  { REQUIRE( query1.m_fields1.m_text8.getString()  == REC_BAR1_TUP1_DEFAULT_T8 ); }
+    if ( query1.m_fields2.m_text10.isValid() ) { REQUIRE( query1.m_fields2.m_text10.getString() == "bobs not h" ); }
+
+    query2.issueQuery();
+    display_bar2_( query2, "Query Bar2: Verify updated values" );
+    REQUIRE( query2[0].isInContainer() == true );
+    if ( query2[0].isInContainer() )
+        {
+        REQUIRE( query2[0].m_text3.isValid() == true );
+        REQUIRE( query2[0].m_text5.isValid() == true );
+        if ( query2[0].m_text3.isValid() ) { REQUIRE( query2[0].m_text3.getString() == "123" ); }
+        if ( query2[0].m_text5.isValid() ) { REQUIRE( query2[0].m_text5.getString() == "abcd" ); }
+        }
+    REQUIRE( query2[1].isInContainer() == REC_BAR2_TUP1_DEFAULT_INCONTAINER );
+    if ( query2[1].isInContainer() )
+        {
+        REQUIRE( query2[1].m_text3.isValid() == REC_BAR2_TUP1_DEFAULT_VALID_T3 );
+        REQUIRE( query2[1].m_text5.isValid() == REC_BAR2_TUP1_DEFAULT_VALID_T5 );
+        if ( query2[1].m_text3.isValid() ) { REQUIRE( query2[1].m_text3.getString() == REC_BAR2_TUP1_DEFAULT_T3 ); }
+        if ( query2[1].m_text5.isValid() ) { REQUIRE( query2[1].m_text5.getString() == REC_BAR2_TUP1_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2[2].isInContainer() == REC_BAR2_TUP2_DEFAULT_INCONTAINER );
+    if ( query2[2].isInContainer() )
+        {
+        REQUIRE( query2[2].m_text3.isValid() == REC_BAR2_TUP2_DEFAULT_VALID_T3 );
+        REQUIRE( query2[2].m_text5.isValid() == REC_BAR2_TUP2_DEFAULT_VALID_T5 );
+        if ( query2[2].m_text3.isValid() ) { REQUIRE( query2[2].m_text3.getString() == REC_BAR2_TUP2_DEFAULT_T3 ); }
+        if ( query2[2].m_text5.isValid() ) { REQUIRE( query2[2].m_text5.getString() == REC_BAR2_TUP2_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2[3].isInContainer() == REC_BAR2_TUP3_DEFAULT_INCONTAINER );
+    if ( query2[3].isInContainer() )
+        {
+        REQUIRE( query2[3].m_text3.isValid() == REC_BAR2_TUP3_DEFAULT_VALID_T3 );
+        REQUIRE( query2[3].m_text5.isValid() == REC_BAR2_TUP3_DEFAULT_VALID_T5 );
+        if ( query2[3].m_text3.isValid() ) { REQUIRE( query2[3].m_text3.getString() == REC_BAR2_TUP3_DEFAULT_T3 ); }
+        if ( query2[3].m_text5.isValid() ) { REQUIRE( query2[3].m_text5.getString() == REC_BAR2_TUP3_DEFAULT_T5 ); }
+        }
+
+
+    recordLayer_.close();
+    Cpl::System::Api::sleep( 100 );
+    REQUIRE( myMonitor.m_status == HealthRequest::eCLOSED );
+    REQUIRE( myMonitor.m_openingCount == 2 );
+    REQUIRE( myMonitor.m_runningCount == 2 );
+    REQUIRE( myMonitor.m_errMediaCount == 0 );
+    REQUIRE( myMonitor.m_errSchemaCount == 0 );
+    REQUIRE( myMonitor.m_closingCount == 2 );
+    REQUIRE( myMonitor.m_closedCount == 3 );
+    myMonitor.close();
 
 #if 0
 
