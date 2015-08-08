@@ -102,6 +102,16 @@ static void display_bar2_( PointBar2 point, const char* msg )
         }
     }
 
+static void display_bar2ext_( PointBar2Ext point, const char* msg )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "== %s", msg ));
+    unsigned i;
+    for(i=0; i<point.getNumTuples(); i++)
+        {                    
+        display_TupleFoo2_( point[i], i );
+        }
+    }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 class MyNullMedia: public Rte::Db::Chunk::Null
@@ -145,6 +155,10 @@ public: // Make public to simply testing
     ///
     unsigned                            m_runningCount;
     ///
+    unsigned                            m_runningUpgradeCount;
+    ///
+    unsigned                            m_runningCorruptCount;
+    ///
     unsigned                            m_errMediaCount;
     ///
     unsigned                            m_errSchemaCount;
@@ -169,6 +183,8 @@ public:
         ,m_status(HealthRequest::eUNKNOWN)
         ,m_openingCount(0)
         ,m_runningCount(0)
+        ,m_runningUpgradeCount(0)
+        ,m_runningCorruptCount(0)
         ,m_errMediaCount(0)
         ,m_errSchemaCount(0)
         ,m_closingCount(0)
@@ -182,14 +198,16 @@ protected: // Cpl::Itc::Close/Open
     void request( Cpl::Itc::OpenRequest::OpenMsg& msg )
         {
         CPL_SYSTEM_TRACE_MSG( SECT_, ( "HealthMonitor::request( OpenMsg ): starting health monitoring..." ));
-        m_status         = HealthRequest::eUNKNOWN;
-        m_openingCount   = 0;       
-        m_runningCount   = 0;       
-        m_errMediaCount  = 0;       
-        m_errSchemaCount = 0;       
-        m_closingCount   = 0;       
-        m_closedCount    = 0;     
-        m_ownHealthMsg   = false;
+        m_status              = HealthRequest::eUNKNOWN;
+        m_openingCount        = 0;       
+        m_runningCount        = 0;  
+        m_runningUpgradeCount = 0;   
+        m_runningCorruptCount = 0;  
+        m_errMediaCount       = 0;       
+        m_errSchemaCount      = 0;       
+        m_closingCount        = 0;       
+        m_closedCount         = 0;     
+        m_ownHealthMsg        = false;
 
         m_healthRegisterPayload.m_status = m_status;
         m_healthSAP.post( m_healthRegisterMsg.getRequestMsg() );  // Register for health notification
@@ -242,9 +260,19 @@ protected:
                 m_runningCount++;
                 break;
 
+            case HealthRequest::eRUNNING_MINOR_UPGRADE: 
+                statusString = "eRUNNING_MINOR_UPGRADE";
+                m_runningUpgradeCount++;
+                break;
+
             case HealthRequest::eNO_STORAGE_MEDIA_ERR: 
                 statusString = "eNO_STORAGE_MEDIA_ERR";
                 m_errMediaCount++;
+                break;
+
+            case HealthRequest::eRUNNING_CORRUPTED_INPUT: 
+                statusString = "eRUNNING_CORRUPTED_INPUT";
+                m_runningCorruptCount++;
                 break;
 
             case HealthRequest::eNO_STORAGE_WRONG_SCHEMA: 
@@ -294,20 +322,36 @@ static Cpl::Itc::MailboxServer           recordLayerMbox_;
 static Cpl::Itc::MailboxServer           monitorMbox_;
 
 static Rte::Db::Chunk::Request::SAP      chunk1SAP_(chunkServer_, chunkMailbox_ );
+static Rte::Db::Chunk::Request::SAP      chunk2SAP_(chunk2Server_, chunkMailbox_ );
+static Rte::Db::Chunk::Request::SAP      chunk3SAP_(chunk3Server_, chunkMailbox_ );
  
 static uint8_t                           buffer_[RECORD_BUF_SIZE_];
 static uint8_t                           buffer2_[RECORD_BUF_SIZE_];
 static uint8_t                           buffer3_[RECORD_BUF_SIZE_];
 
 static Cpl::Container::Map<ApiLocal>     recordList_( "ignore_this_arg" ); // Use 'static' constructor
+static Cpl::Container::Map<ApiLocal>     recordList2_( "ignore_this_arg" ); // Use 'static' constructor
+static Cpl::Container::Map<ApiLocal>     recordList3_( "ignore_this_arg" ); // Use 'static' constructor
+static Cpl::Container::Map<ApiLocal>     recordList4_( "ignore_this_arg" ); // Use 'static' constructor
 
 // Create Records (which also creates their associate Model Point)
 static RecordBar1 modelBar1_( recordList_, recordLayerMbox_, recordLayerMbox_ );
 static RecordBar2 modelBar2_( recordList_, recordLayerMbox_, recordLayerMbox_ );
 
+static RecordBar1 modelBar1a_( recordList2_, recordLayerMbox_, recordLayerMbox_ );
+static RecordBar2 modelBar2a_( recordList2_, recordLayerMbox_, recordLayerMbox_ );
+
+static RecordBar1 modelBar1b_( recordList3_, recordLayerMbox_, recordLayerMbox_ );
+static RecordBar2 modelBar2b_( recordList3_, recordLayerMbox_, recordLayerMbox_ );
+            
+static RecordBar1    modelBar1Ext_( recordList4_, recordLayerMbox_, recordLayerMbox_ );
+static RecordBar2Ext modelBar2Ext_( recordList4_, recordLayerMbox_, recordLayerMbox_ );
             
 // Create Record Server/Layer
 static Rte::Db::Record::Server recordLayer_( buffer_, sizeof(buffer_), chunk1SAP_, recordLayerMbox_, recordList_ );
+static Rte::Db::Record::Server recordLayer2_( buffer2_, sizeof(buffer2_), chunk2SAP_, recordLayerMbox_, recordList2_ );
+static Rte::Db::Record::Server recordLayer3_( buffer3_, sizeof(buffer3_), chunk3SAP_, recordLayerMbox_, recordList3_ );
+static Rte::Db::Record::Server recordLayer4_( buffer_, sizeof(buffer_), chunk1SAP_, recordLayerMbox_, recordList4_ );
 
 
 
@@ -318,8 +362,11 @@ TEST_CASE( "record", "[record]" )
     CPL_SYSTEM_TRACE_FUNC( SECT_ );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
-    // Create Monitor
+    // Create Monitors
     HealthMonitor  myMonitor( monitorMbox_, recordLayer_.getHealthSAP() );
+    HealthMonitor  myMonitor2( monitorMbox_, recordLayer2_.getHealthSAP() );
+    HealthMonitor  myMonitor3( monitorMbox_, recordLayer3_.getHealthSAP() );
+    HealthMonitor  myMonitor4( monitorMbox_, recordLayer4_.getHealthSAP() );
 
     // Create Threads
     Cpl::System::Thread* chunkThreadPtr       = Cpl::System::Thread::create( chunkMailbox_,     "CHUNK-LAYER" );
@@ -336,7 +383,7 @@ TEST_CASE( "record", "[record]" )
     //
 
     // Default empty DB to application defaults
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Opening empty DB file..." ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "################### Opening empty DB file..." ));
     myMonitor.open();
     REQUIRE( recordLayer_.open() );
     Cpl::System::Api::sleep( 300 );
@@ -406,6 +453,8 @@ TEST_CASE( "record", "[record]" )
     REQUIRE( myMonitor.m_status == HealthRequest::eCLOSED );
     REQUIRE( myMonitor.m_openingCount == 2 );
     REQUIRE( myMonitor.m_runningCount == 2 );
+    REQUIRE( myMonitor.m_runningUpgradeCount == 0 );
+    REQUIRE( myMonitor.m_runningCorruptCount == 0 );
     REQUIRE( myMonitor.m_errMediaCount == 0 );
     REQUIRE( myMonitor.m_errSchemaCount == 0 );
     REQUIRE( myMonitor.m_closingCount == 2 );
@@ -416,7 +465,8 @@ TEST_CASE( "record", "[record]" )
     //
     // Test: Write to the DB
     //
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Opening defaulted DB file..." ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "" ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "################### Opening defaulted DB file..." ));
     myMonitor.open();
     REQUIRE( recordLayer_.open() );
     Cpl::System::Api::sleep( 300 );
@@ -506,355 +556,481 @@ TEST_CASE( "record", "[record]" )
     REQUIRE( myMonitor.m_status == HealthRequest::eCLOSED );
     REQUIRE( myMonitor.m_openingCount == 2 );
     REQUIRE( myMonitor.m_runningCount == 2 );
+    REQUIRE( myMonitor.m_runningUpgradeCount == 0 );
+    REQUIRE( myMonitor.m_runningCorruptCount == 0 );
     REQUIRE( myMonitor.m_errMediaCount == 0 );
     REQUIRE( myMonitor.m_errSchemaCount == 0 );
     REQUIRE( myMonitor.m_closingCount == 2 );
     REQUIRE( myMonitor.m_closedCount == 3 );
     myMonitor.close();
 
-#if 0
 
-    REQUIRE( set1Buffer_[3] == SET1_DEFAULT_VALUE_ );
-    REQUIRE( set1Buffer_[1] == SET1_DEFAULT_VALUE_ );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == SET1_DEFAULT_VALUE_ );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == SET1_DEFAULT_VALUE_ );
-    REQUIRE( set2Buffer_[3] == SET2_DEFAULT_VALUE_ );
-    REQUIRE( set2Buffer_[1] == SET2_DEFAULT_VALUE_ );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == SET2_DEFAULT_VALUE_ );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == SET2_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[3] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[1] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == SET3_DEFAULT_VALUE_ );
-
-    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
-    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
-    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
-    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
-    REQUIRE( errorReporter_.m_countOpened == 1 );
-    REQUIRE( errorReporter_.m_countClosed == 1 );
-    REQUIRE( client.m_countOpenComplete == 1 );
-    REQUIRE( client.m_countOpenFailed == 0 );
-    REQUIRE( client.m_countStopped == 1 );
-    REQUIRE( client.m_countWriteError == 0 );
-    errorReporter_.clearCounters();
-    client.clearCounters();
-
-    // TEST: Populated database
-    client.open();
+    //
+    // Test: Incompatible database file
+    //
+    // Default empty DB to application defaults
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "" ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "################### Opening incompatible DB file..." ));
+    myMonitor2.open();
+    REQUIRE( recordLayer2_.open() == false );
     Cpl::System::Api::sleep( 300 );
-    client.close();
+    REQUIRE( myMonitor2.m_status == HealthRequest::eNO_STORAGE_WRONG_SCHEMA );
+
+    QueryBar1 query1a(modelBar1a_);
+    query1a.issueQuery();
+    display_bar1_( query1a, "Query Bar1: Verify initial defaults" );
+    REQUIRE( query1a.m_fields1.m_text1.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T1 );
+    REQUIRE( query1a.m_fields1.m_text3.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T3 );
+    REQUIRE( query1a.m_fields1.m_text8.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T8 );
+    REQUIRE( query1a.m_fields2.m_text10.isValid() == REC_BAR1_TUP2_DEFAULT_VALID_T10 );
+    if ( query1a.m_fields1.m_text1.isValid() )  { REQUIRE( query1a.m_fields1.m_text1.getString()  == REC_BAR1_TUP1_DEFAULT_T1 ); }
+    if ( query1a.m_fields1.m_text3.isValid() )  { REQUIRE( query1a.m_fields1.m_text3.getString()  == REC_BAR1_TUP1_DEFAULT_T3 ); }
+    if ( query1a.m_fields1.m_text8.isValid() )  { REQUIRE( query1a.m_fields1.m_text8.getString()  == REC_BAR1_TUP1_DEFAULT_T8 ); }
+    if ( query1a.m_fields2.m_text10.isValid() ) { REQUIRE( query1a.m_fields2.m_text10.getString() == REC_BAR1_TUP2_DEFAULT_T10 ); }
+
+    QueryBar2 query2a(modelBar2a_);
+    query2a.issueQuery();
+    display_bar2_( query2a, "Query Bar2: Verify initial defaults" );
+    REQUIRE( query2a[0].isInContainer() == REC_BAR2_TUP0_DEFAULT_INCONTAINER );
+    if ( query2a[0].isInContainer() )
+        {
+        REQUIRE( query2a[0].m_text3.isValid() == REC_BAR2_TUP0_DEFAULT_VALID_T3 );
+        REQUIRE( query2a[0].m_text5.isValid() == REC_BAR2_TUP0_DEFAULT_VALID_T5 );
+        if ( query2a[0].m_text3.isValid() ) { REQUIRE( query2a[0].m_text3.getString() == REC_BAR2_TUP0_DEFAULT_T3 ); }
+        if ( query2a[0].m_text5.isValid() ) { REQUIRE( query2a[0].m_text5.getString() == REC_BAR2_TUP0_DEFAULT_T5 ); }
+        }
+    REQUIRE( query2a[1].isInContainer() == REC_BAR2_TUP1_DEFAULT_INCONTAINER );
+    if ( query2a[1].isInContainer() )
+        {
+        REQUIRE( query2a[1].m_text3.isValid() == REC_BAR2_TUP1_DEFAULT_VALID_T3 );
+        REQUIRE( query2a[1].m_text5.isValid() == REC_BAR2_TUP1_DEFAULT_VALID_T5 );
+        if ( query2a[1].m_text3.isValid() ) { REQUIRE( query2a[1].m_text3.getString() == REC_BAR2_TUP1_DEFAULT_T3 ); }
+        if ( query2a[1].m_text5.isValid() ) { REQUIRE( query2a[1].m_text5.getString() == REC_BAR2_TUP1_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2a[2].isInContainer() == REC_BAR2_TUP2_DEFAULT_INCONTAINER );
+    if ( query2a[2].isInContainer() )
+        {
+        REQUIRE( query2a[2].m_text3.isValid() == REC_BAR2_TUP2_DEFAULT_VALID_T3 );
+        REQUIRE( query2a[2].m_text5.isValid() == REC_BAR2_TUP2_DEFAULT_VALID_T5 );
+        if ( query2a[2].m_text3.isValid() ) { REQUIRE( query2a[2].m_text3.getString() == REC_BAR2_TUP2_DEFAULT_T3 ); }
+        if ( query2a[2].m_text5.isValid() ) { REQUIRE( query2a[2].m_text5.getString() == REC_BAR2_TUP2_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2a[3].isInContainer() == REC_BAR2_TUP3_DEFAULT_INCONTAINER );
+    if ( query2a[3].isInContainer() )
+        {
+        REQUIRE( query2a[3].m_text3.isValid() == REC_BAR2_TUP3_DEFAULT_VALID_T3 );
+        REQUIRE( query2a[3].m_text5.isValid() == REC_BAR2_TUP3_DEFAULT_VALID_T5 );
+        if ( query2a[3].m_text3.isValid() ) { REQUIRE( query2a[3].m_text3.getString() == REC_BAR2_TUP3_DEFAULT_T3 ); }
+        if ( query2a[3].m_text5.isValid() ) { REQUIRE( query2a[3].m_text5.getString() == REC_BAR2_TUP3_DEFAULT_T5 ); }
+        }
+
+    recordLayer2_.close();
     Cpl::System::Api::sleep( 100 );
+    REQUIRE( myMonitor2.m_status == HealthRequest::eCLOSED );
     
-    REQUIRE( set1Buffer_[3] == SET1_DEFAULT_VALUE_ );
-    REQUIRE( set1Buffer_[1] == SET1_DEFAULT_VALUE_ );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == SET1_DEFAULT_VALUE_ );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == SET1_DEFAULT_VALUE_ );
-    REQUIRE( set2Buffer_[3] == SET2_DEFAULT_VALUE_ );
-    REQUIRE( set2Buffer_[1] == SET2_DEFAULT_VALUE_ );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == SET2_DEFAULT_VALUE_ );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == SET2_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[3] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[1] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == SET3_DEFAULT_VALUE_ );
-
-    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
-    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
-    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
-    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
-    REQUIRE( errorReporter_.m_countOpened == 1 );
-    REQUIRE( errorReporter_.m_countClosed == 1 );
-    REQUIRE( client.m_countOpenComplete == 1 );
-    REQUIRE( client.m_countOpenFailed == 0 );
-    REQUIRE( client.m_countStopped == 1 );
-    REQUIRE( client.m_countWriteError == 0 );
-    errorReporter_.clearCounters();
-    client.clearCounters();
-
-
-    // Create the Record + Set layers for SECOND Database file
-    Rte::Db::Chunk::Request::SAP chunk2SAP(chunk2Server_, chunkMailbox_ );
-    SetHandler                   client2( buffer2_, sizeof(buffer2_), chunk2SAP, recordLayerMbox_, &errorReporter_ );    // Contains both the Record and Set Handlers
-    MySet                        set5( SET5_NAME_, set5Buffer_, sizeof(set5Buffer_), SET5_DEFAULT_VALUE_, client2.m_recordHandler );
-
-    // Register my sets with the Set Handler
-    MySetItem set5Item(set5);
-    client2.registerSet( set5Item );
-
-    // TEST: Incompatible database file
-    client2.open();
+    // Re-open the DB and Verify that the original DB was NOT updated
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Verifying that the DB was not modified..." ));
+    REQUIRE( recordLayer2_.open() == false );
     Cpl::System::Api::sleep( 300 );
-    client2.close();
+    REQUIRE( myMonitor2.m_status == HealthRequest::eNO_STORAGE_WRONG_SCHEMA );
+
+
+    recordLayer2_.close();
     Cpl::System::Api::sleep( 100 );
-    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
-    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
-    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
-    REQUIRE( errorReporter_.m_errCountIncompatible == 1 );
-    REQUIRE( errorReporter_.m_countOpened == 1 );
-    REQUIRE( errorReporter_.m_countClosed == 1 );
-    REQUIRE( client2.m_countOpenComplete == 0 );
-    REQUIRE( client2.m_countOpenFailed == 1 );
-    REQUIRE( client2.m_countStopped == 1 );
-    REQUIRE( client.m_countWriteError == 0 );
-    errorReporter_.clearCounters();
-    client2.clearCounters();
+    REQUIRE( myMonitor2.m_status == HealthRequest::eCLOSED );
+    REQUIRE( myMonitor2.m_openingCount == 2 );
+    REQUIRE( myMonitor2.m_runningCount == 0 );
+    REQUIRE( myMonitor2.m_runningUpgradeCount == 0 );
+    REQUIRE( myMonitor2.m_runningCorruptCount == 0 );
+    REQUIRE( myMonitor2.m_errMediaCount == 0 );
+    REQUIRE( myMonitor2.m_errSchemaCount == 2 );
+    REQUIRE( myMonitor2.m_closingCount == 2 );
+    REQUIRE( myMonitor2.m_closedCount == 3 );
+    myMonitor2.close();
 
 
-    // Create the Record + Set layers for THRID Database file
-    Rte::Db::Chunk::Request::SAP chunk3SAP(chunk3Server_, chunkMailbox_ );
-    SetHandler                   client3( buffer3_, sizeof(buffer3_), chunk3SAP, recordLayerMbox_, &errorReporter_ );    // Contains both the Record and Set Handlers
-    MySet                        set6( SET6_NAME_, set6Buffer_, sizeof(set6Buffer_), SET6_DEFAULT_VALUE_, client3.m_recordHandler );
-
-    // Register my sets with the Set Handler
-    MySetItem set6Item(set6);
-    client3.registerSet( set6Item );
-
-    // TEST: File error on open
-    client3.open();
+    //
+    // Test: File error on open
+    //
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "" ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "################### Opening DB file - with Null Media, aka file open error test..." ));
+    myMonitor3.open();
+    REQUIRE( recordLayer3_.open() == false );
     Cpl::System::Api::sleep( 300 );
-    client3.close();
+    REQUIRE( myMonitor3.m_status == HealthRequest::eNO_STORAGE_MEDIA_ERR );
+
+    QueryBar1 query1b(modelBar1b_);
+    query1b.issueQuery();
+    display_bar1_( query1b, "Query Bar1: Verify initial defaults" );
+    REQUIRE( query1b.m_fields1.m_text1.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T1 );
+    REQUIRE( query1b.m_fields1.m_text3.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T3 );
+    REQUIRE( query1b.m_fields1.m_text8.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T8 );
+    REQUIRE( query1b.m_fields2.m_text10.isValid() == REC_BAR1_TUP2_DEFAULT_VALID_T10 );
+    if ( query1b.m_fields1.m_text1.isValid() )  { REQUIRE( query1b.m_fields1.m_text1.getString()  == REC_BAR1_TUP1_DEFAULT_T1 ); }
+    if ( query1b.m_fields1.m_text3.isValid() )  { REQUIRE( query1b.m_fields1.m_text3.getString()  == REC_BAR1_TUP1_DEFAULT_T3 ); }
+    if ( query1b.m_fields1.m_text8.isValid() )  { REQUIRE( query1b.m_fields1.m_text8.getString()  == REC_BAR1_TUP1_DEFAULT_T8 ); }
+    if ( query1b.m_fields2.m_text10.isValid() ) { REQUIRE( query1b.m_fields2.m_text10.getString() == REC_BAR1_TUP2_DEFAULT_T10 ); }
+
+    QueryBar2 query2b(modelBar2b_);
+    query2b.issueQuery();
+    display_bar2_( query2b, "Query Bar2: Verify initial defaults" );
+    REQUIRE( query2b[0].isInContainer() == REC_BAR2_TUP0_DEFAULT_INCONTAINER );
+    if ( query2b[0].isInContainer() )
+        {
+        REQUIRE( query2b[0].m_text3.isValid() == REC_BAR2_TUP0_DEFAULT_VALID_T3 );
+        REQUIRE( query2b[0].m_text5.isValid() == REC_BAR2_TUP0_DEFAULT_VALID_T5 );
+        if ( query2b[0].m_text3.isValid() ) { REQUIRE( query2b[0].m_text3.getString() == REC_BAR2_TUP0_DEFAULT_T3 ); }
+        if ( query2b[0].m_text5.isValid() ) { REQUIRE( query2b[0].m_text5.getString() == REC_BAR2_TUP0_DEFAULT_T5 ); }
+        }
+    REQUIRE( query2b[1].isInContainer() == REC_BAR2_TUP1_DEFAULT_INCONTAINER );
+    if ( query2b[1].isInContainer() )
+        {
+        REQUIRE( query2b[1].m_text3.isValid() == REC_BAR2_TUP1_DEFAULT_VALID_T3 );
+        REQUIRE( query2b[1].m_text5.isValid() == REC_BAR2_TUP1_DEFAULT_VALID_T5 );
+        if ( query2b[1].m_text3.isValid() ) { REQUIRE( query2b[1].m_text3.getString() == REC_BAR2_TUP1_DEFAULT_T3 ); }
+        if ( query2b[1].m_text5.isValid() ) { REQUIRE( query2b[1].m_text5.getString() == REC_BAR2_TUP1_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2b[2].isInContainer() == REC_BAR2_TUP2_DEFAULT_INCONTAINER );
+    if ( query2b[2].isInContainer() )
+        {
+        REQUIRE( query2b[2].m_text3.isValid() == REC_BAR2_TUP2_DEFAULT_VALID_T3 );
+        REQUIRE( query2b[2].m_text5.isValid() == REC_BAR2_TUP2_DEFAULT_VALID_T5 );
+        if ( query2b[2].m_text3.isValid() ) { REQUIRE( query2b[2].m_text3.getString() == REC_BAR2_TUP2_DEFAULT_T3 ); }
+        if ( query2b[2].m_text5.isValid() ) { REQUIRE( query2b[2].m_text5.getString() == REC_BAR2_TUP2_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2b[3].isInContainer() == REC_BAR2_TUP3_DEFAULT_INCONTAINER );
+    if ( query2b[3].isInContainer() )
+        {
+        REQUIRE( query2b[3].m_text3.isValid() == REC_BAR2_TUP3_DEFAULT_VALID_T3 );
+        REQUIRE( query2b[3].m_text5.isValid() == REC_BAR2_TUP3_DEFAULT_VALID_T5 );
+        if ( query2b[3].m_text3.isValid() ) { REQUIRE( query2b[3].m_text3.getString() == REC_BAR2_TUP3_DEFAULT_T3 ); }
+        if ( query2b[3].m_text5.isValid() ) { REQUIRE( query2b[3].m_text5.getString() == REC_BAR2_TUP3_DEFAULT_T5 ); }
+        }
+
+    recordLayer3_.close();
     Cpl::System::Api::sleep( 100 );
-
-    REQUIRE( set6Buffer_[3] == SET6_DEFAULT_VALUE_ );
-    REQUIRE( set6Buffer_[1] == SET6_DEFAULT_VALUE_ );
-    REQUIRE( set6Buffer_[SET_BUF_SIZE_-2] == SET6_DEFAULT_VALUE_ );
-    REQUIRE( set6Buffer_[SET_BUF_SIZE_-1] == SET6_DEFAULT_VALUE_ );
-
-    REQUIRE( errorReporter_.m_errCountFileOpen == 1 );
-    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
-    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
-    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
-    REQUIRE( errorReporter_.m_countOpened == 1 );
-    REQUIRE( errorReporter_.m_countClosed == 1 );
-    REQUIRE( client3.m_countOpenComplete == 0 );
-    REQUIRE( client3.m_countOpenFailed == 1 );
-    REQUIRE( client3.m_countStopped == 1 );
-    REQUIRE( client.m_countWriteError == 0 );
-    errorReporter_.clearCounters();
-    client3.clearCounters();
+    REQUIRE( myMonitor3.m_status == HealthRequest::eCLOSED );
+    REQUIRE( myMonitor3.m_openingCount == 1 );
+    REQUIRE( myMonitor3.m_runningCount == 0 );
+    REQUIRE( myMonitor3.m_runningUpgradeCount == 0 );
+    REQUIRE( myMonitor3.m_runningCorruptCount == 0 );
+    REQUIRE( myMonitor3.m_errMediaCount == 1 );
+    REQUIRE( myMonitor3.m_errSchemaCount == 0 );
+    REQUIRE( myMonitor3.m_closingCount == 1 );
+    REQUIRE( myMonitor3.m_closedCount == 2 );
+    myMonitor3.close();
 
 
-
-    // TEST: Changed values
-    client.open();
-    Cpl::System::Api::sleep( 200 );    // Allow time for the DB to be read in BEFORE writting new values
-	client.testWrite( SET1_NAME_, 1 );
-	client.testWrite( SET2_NAME_, 2 );
-	client.testWrite( SET3_NAME_, 3 );
+    //
+    // Test: Minor upgrade
+    //
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "" ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "################### Opening DB file - minor upgrade (adding 2 tuples to Bar2)..." ));
+    myMonitor4.open();
+    REQUIRE( recordLayer4_.open() );
     Cpl::System::Api::sleep( 300 );
-    client.close();
+    REQUIRE( myMonitor4.m_status == HealthRequest::eRUNNING_MINOR_UPGRADE );
+    recordLayer4_.close();
     Cpl::System::Api::sleep( 100 );
+
+    // Re-open the DB and Verify new values
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Verifying written values..." ));
+    REQUIRE( recordLayer4_.open() );
+    Cpl::System::Api::sleep( 300 );
+    REQUIRE( myMonitor4.m_status == HealthRequest::eRUNNING );
+
+    QueryBar1 query1Ext(modelBar1Ext_);
+    query1Ext.issueQuery();
+    display_bar1_( query1Ext, "Query Bar1: Verify values..." );
+    REQUIRE( query1Ext.m_fields1.m_text1.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T1 );
+    REQUIRE( query1Ext.m_fields1.m_text3.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T3 );
+    REQUIRE( query1Ext.m_fields1.m_text8.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T8 );
+    REQUIRE( query1Ext.m_fields2.m_text10.isValid() == REC_BAR1_TUP2_DEFAULT_VALID_T10 );
+    if ( query1Ext.m_fields1.m_text1.isValid() )  { REQUIRE( query1Ext.m_fields1.m_text1.getString()  == "*" ); }
+    if ( query1Ext.m_fields1.m_text3.isValid() )  { REQUIRE( query1Ext.m_fields1.m_text3.getString()  == REC_BAR1_TUP1_DEFAULT_T3 ); }
+    if ( query1Ext.m_fields1.m_text8.isValid() )  { REQUIRE( query1Ext.m_fields1.m_text8.getString()  == REC_BAR1_TUP1_DEFAULT_T8 ); }
+    if ( query1Ext.m_fields2.m_text10.isValid() ) { REQUIRE( query1Ext.m_fields2.m_text10.getString() == "bobs not h" ); }
+
     
-    REQUIRE( set1Buffer_[3] == 1 );
-    REQUIRE( set1Buffer_[1] == 1 );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
-    REQUIRE( set2Buffer_[3] == 2 );
-    REQUIRE( set2Buffer_[1] == 2 );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
-    REQUIRE( set3Buffer_[3] == 3 );
-    REQUIRE( set3Buffer_[1] == 3 );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == 3 );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == 3 );
+    QueryBar2Ext query2Ext(modelBar2Ext_);
+    query2Ext.issueQuery();
+    display_bar2ext_( query2Ext, "Query Bar2: Verify values" );
+    REQUIRE( query2Ext[0].isInContainer() == true );
+    if ( query2Ext[0].isInContainer() )
+        {
+        REQUIRE( query2Ext[0].m_text3.isValid() == true );
+        REQUIRE( query2Ext[0].m_text5.isValid() == true );
+        if ( query2Ext[0].m_text3.isValid() ) { REQUIRE( query2Ext[0].m_text3.getString() == "123" ); }
+        if ( query2Ext[0].m_text5.isValid() ) { REQUIRE( query2Ext[0].m_text5.getString() == "abcd" ); }
+        }
+    REQUIRE( query2Ext[1].isInContainer() == REC_BAR2_TUP1_DEFAULT_INCONTAINER );
+    if ( query2Ext[1].isInContainer() )
+        {
+        REQUIRE( query2Ext[1].m_text3.isValid() == REC_BAR2_TUP1_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[1].m_text5.isValid() == REC_BAR2_TUP1_DEFAULT_VALID_T5 );
+        if ( query2Ext[1].m_text3.isValid() ) { REQUIRE( query2Ext[1].m_text3.getString() == REC_BAR2_TUP1_DEFAULT_T3 ); }
+        if ( query2Ext[1].m_text5.isValid() ) { REQUIRE( query2Ext[1].m_text5.getString() == REC_BAR2_TUP1_DEFAULT_T5 ); }
+        }
 
-    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
-    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
-    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
-    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
-    REQUIRE( errorReporter_.m_countOpened == 1 );
-    REQUIRE( errorReporter_.m_countClosed == 1 );
-    REQUIRE( client.m_countOpenComplete == 1 );
-    REQUIRE( client.m_countOpenFailed == 0 );
-    REQUIRE( client.m_countStopped == 1 );
-    REQUIRE( client.m_countWriteError == 0 );
-    errorReporter_.clearCounters();
-    client.clearCounters();
+    REQUIRE( query2Ext[2].isInContainer() == REC_BAR2_TUP2_DEFAULT_INCONTAINER );
+    if ( query2Ext[2].isInContainer() )
+        {
+        REQUIRE( query2Ext[2].m_text3.isValid() == REC_BAR2_TUP2_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[2].m_text5.isValid() == REC_BAR2_TUP2_DEFAULT_VALID_T5 );
+        if ( query2Ext[2].m_text3.isValid() ) { REQUIRE( query2Ext[2].m_text3.getString() == REC_BAR2_TUP2_DEFAULT_T3 ); }
+        if ( query2Ext[2].m_text5.isValid() ) { REQUIRE( query2Ext[2].m_text5.getString() == REC_BAR2_TUP2_DEFAULT_T5 ); }
+        }
 
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "BEFORE open" ));
-    client.open();
-    Cpl::System::Api::sleep( 300 );
-    client.close();
+    REQUIRE( query2Ext[3].isInContainer() == REC_BAR2_TUP3_DEFAULT_INCONTAINER );
+    if ( query2Ext[3].isInContainer() )
+        {
+        REQUIRE( query2Ext[3].m_text3.isValid() == REC_BAR2_TUP3_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[3].m_text5.isValid() == REC_BAR2_TUP3_DEFAULT_VALID_T5 );
+        if ( query2Ext[3].m_text3.isValid() ) { REQUIRE( query2Ext[3].m_text3.getString() == REC_BAR2_TUP3_DEFAULT_T3 ); }
+        if ( query2Ext[3].m_text5.isValid() ) { REQUIRE( query2Ext[3].m_text5.getString() == REC_BAR2_TUP3_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2Ext[4].isInContainer() == REC_BAR2EXT_TUP4_DEFAULT_INCONTAINER );
+    if ( query2Ext[4].isInContainer() )
+        {
+        REQUIRE( query2Ext[4].m_text3.isValid() == REC_BAR2EXT_TUP4_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[4].m_text5.isValid() == REC_BAR2EXT_TUP4_DEFAULT_VALID_T5 );
+        if ( query2Ext[4].m_text3.isValid() ) { REQUIRE( query2Ext[4].m_text3.getString() == REC_BAR2EXT_TUP4_DEFAULT_T3 ); }
+        if ( query2Ext[4].m_text5.isValid() ) { REQUIRE( query2Ext[4].m_text5.getString() == REC_BAR2EXT_TUP4_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2Ext[5].isInContainer() == REC_BAR2EXT_TUP5_DEFAULT_INCONTAINER );
+    if ( query2Ext[5].isInContainer() )
+        {
+        REQUIRE( query2Ext[5].m_text3.isValid() == REC_BAR2EXT_TUP5_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[5].m_text5.isValid() == REC_BAR2EXT_TUP5_DEFAULT_VALID_T5 );
+        if ( query2Ext[5].m_text3.isValid() ) { REQUIRE( query2Ext[5].m_text3.getString() == REC_BAR2EXT_TUP5_DEFAULT_T3 ); }
+        if ( query2Ext[5].m_text5.isValid() ) { REQUIRE( query2Ext[5].m_text5.getString() == REC_BAR2EXT_TUP5_DEFAULT_T5 ); }
+        }
+
+    recordLayer4_.close();
     Cpl::System::Api::sleep( 100 );
-    
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "AFTER close" ));
-    REQUIRE( set1Buffer_[3] == 1 );
-    REQUIRE( set1Buffer_[1] == 1 );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
-    REQUIRE( set2Buffer_[3] == 2 );
-    REQUIRE( set2Buffer_[1] == 2 );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
-    REQUIRE( set3Buffer_[3] == 3 );
-    REQUIRE( set3Buffer_[1] == 3 );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == 3 );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == 3 );
-
-    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
-    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
-    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
-    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
-    REQUIRE( errorReporter_.m_countOpened == 1 );
-    REQUIRE( errorReporter_.m_countClosed == 1 );
-    REQUIRE( client.m_countOpenComplete == 1 );
-    REQUIRE( client.m_countOpenFailed == 0 );
-    REQUIRE( client.m_countStopped == 1 );
-    REQUIRE( client.m_countWriteError == 0 );
-    errorReporter_.clearCounters();
-    client.clearCounters();
-
-    // TEST: minor upgrade -->add new record
-    client.registerSet( set4Item );
-    client.open();
-    Cpl::System::Api::sleep( 300 );
-    client.close();
-    Cpl::System::Api::sleep( 100 );
-    
-    REQUIRE( set1Buffer_[3] == 1 );
-    REQUIRE( set1Buffer_[1] == 1 );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
-    REQUIRE( set2Buffer_[3] == 2 );
-    REQUIRE( set2Buffer_[1] == 2 );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
-    REQUIRE( set3Buffer_[3] == 3 );
-    REQUIRE( set3Buffer_[1] == 3 );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == 3 );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == 3 );
-    REQUIRE( set4Buffer_[3] == SET4_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[1] == SET4_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[SET_BUF_SIZE_-2] == SET4_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[SET_BUF_SIZE_-1] == SET4_DEFAULT_VALUE_ );
-
-    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
-    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
-    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
-    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
-    REQUIRE( errorReporter_.m_countOpened == 1 );
-    REQUIRE( errorReporter_.m_countClosed == 1 );
-    REQUIRE( client.m_countOpenComplete == 0 );
-    REQUIRE( client.m_countOpenFailed == 1 );
-    REQUIRE( client.m_countStopped == 1 );
-    REQUIRE( client.m_countWriteError == 0 );
-    errorReporter_.clearCounters();
-    client.clearCounters();
-
-    client.open();
-    Cpl::System::Api::sleep( 300 );
-    client.close();
-    Cpl::System::Api::sleep( 100 );
-    
-    REQUIRE( set1Buffer_[3] == 1 );
-    REQUIRE( set1Buffer_[1] == 1 );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
-    REQUIRE( set2Buffer_[3] == 2 );
-    REQUIRE( set2Buffer_[1] == 2 );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
-    REQUIRE( set3Buffer_[3] == 3 );
-    REQUIRE( set3Buffer_[1] == 3 );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == 3 );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == 3 );
-    REQUIRE( set4Buffer_[3] == SET4_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[1] == SET4_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[SET_BUF_SIZE_-2] == SET4_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[SET_BUF_SIZE_-1] == SET4_DEFAULT_VALUE_ );
-
-    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
-    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
-    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
-    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
-    REQUIRE( errorReporter_.m_countOpened == 1 );
-    REQUIRE( errorReporter_.m_countClosed == 1 );
-    REQUIRE( client.m_countOpenComplete == 1 );
-    REQUIRE( client.m_countOpenFailed == 0 );
-    REQUIRE( client.m_countStopped == 1 );
-    REQUIRE( client.m_countWriteError == 0 );
-    errorReporter_.clearCounters();
-    client.clearCounters();
+    REQUIRE( myMonitor4.m_status == HealthRequest::eCLOSED );
+    REQUIRE( myMonitor4.m_openingCount == 2 );
+    REQUIRE( myMonitor4.m_runningCount == 1 );
+    REQUIRE( myMonitor4.m_runningUpgradeCount == 1 );
+    REQUIRE( myMonitor4.m_runningCorruptCount == 0 );
+    REQUIRE( myMonitor4.m_errMediaCount == 0 );
+    REQUIRE( myMonitor4.m_errSchemaCount == 0 );
+    REQUIRE( myMonitor4.m_closingCount == 2 );
+    REQUIRE( myMonitor4.m_closedCount == 3 );
+    myMonitor4.close();
 
 
+    //
     // TEST: Corrupt a Record
+    //
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "" ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "################### Testing corrupt DB file..." ));
     Cpl::Io::File::Output dbfile( DB_FNAME_, false );
     REQUIRE( dbfile.isOpened() );
-    REQUIRE( dbfile.setAbsolutePos( 0x50 ) );  // NOTE: Should be corrupting the CHERRY record
+    REQUIRE( dbfile.setAbsolutePos( 0x50 ) );  // NOTE: Should be corrupting the BAR2Ext record
     REQUIRE( dbfile.write( '*' ) );
     dbfile.close();
      
-    client.open();
+    myMonitor4.open();
+    REQUIRE( recordLayer4_.open() );
     Cpl::System::Api::sleep( 300 );
-    client.close();
+    REQUIRE( myMonitor4.m_status == HealthRequest::eRUNNING_CORRUPTED_INPUT );
+    recordLayer4_.close();
     Cpl::System::Api::sleep( 100 );
-    
-    REQUIRE( set1Buffer_[3] == 1 );
-    REQUIRE( set1Buffer_[1] == 1 );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
-    REQUIRE( set2Buffer_[3] == 2 );
-    REQUIRE( set2Buffer_[1] == 2 );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
-    REQUIRE( set3Buffer_[3] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[1] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[3] == SET4_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[1] == SET4_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[SET_BUF_SIZE_-2] == SET4_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[SET_BUF_SIZE_-1] == SET4_DEFAULT_VALUE_ );
 
-    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
-    REQUIRE( errorReporter_.m_errCountCorruption == 1 );
-    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
-    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
-    REQUIRE( errorReporter_.m_countOpened == 1 );
-    REQUIRE( errorReporter_.m_countClosed == 1 );
-    REQUIRE( client.m_countOpenComplete == 0 );
-    REQUIRE( client.m_countOpenFailed == 1 );
-    REQUIRE( client.m_countStopped == 1 );
-    REQUIRE( client.m_countWriteError == 0 );
-    errorReporter_.clearCounters();
-    client.clearCounters();
-
-    client.open();
+    // Re-open the DB and Verify new values
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Verifying written values..." ));
+    REQUIRE( recordLayer4_.open() );
     Cpl::System::Api::sleep( 300 );
-    client.close();
-    Cpl::System::Api::sleep( 100 );
-    
-    REQUIRE( set1Buffer_[3] == 1 );
-    REQUIRE( set1Buffer_[1] == 1 );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-2] == 1 );
-    REQUIRE( set1Buffer_[SET_BUF_SIZE_-1] == 1 );
-    REQUIRE( set2Buffer_[3] == 2 );
-    REQUIRE( set2Buffer_[1] == 2 );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-2] == 2 );
-    REQUIRE( set2Buffer_[SET_BUF_SIZE_-1] == 2 );
-    REQUIRE( set3Buffer_[3] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[1] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-2] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set3Buffer_[SET_BUF_SIZE_-1] == SET3_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[3] == SET4_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[1] == SET4_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[SET_BUF_SIZE_-2] == SET4_DEFAULT_VALUE_ );
-    REQUIRE( set4Buffer_[SET_BUF_SIZE_-1] == SET4_DEFAULT_VALUE_ );
+    REQUIRE( myMonitor4.m_status == HealthRequest::eRUNNING );
 
-    REQUIRE( errorReporter_.m_errCountFileOpen == 0 );
-    REQUIRE( errorReporter_.m_errCountCorruption == 0 );
-    REQUIRE( errorReporter_.m_errCountFileWrite == 0 );
-    REQUIRE( errorReporter_.m_errCountIncompatible == 0 );
-    REQUIRE( errorReporter_.m_countOpened == 1 );
-    REQUIRE( errorReporter_.m_countClosed == 1 );
-    REQUIRE( client.m_countOpenComplete == 1 );
-    REQUIRE( client.m_countOpenFailed == 0 );
-    REQUIRE( client.m_countStopped == 1 );
-    REQUIRE( client.m_countWriteError == 0 );
-    errorReporter_.clearCounters();
-    client.clearCounters();
-#endif
+    query1Ext.issueQuery();
+    display_bar1_( query1Ext, "Query Bar1: Verify values..." );
+    REQUIRE( query1Ext.m_fields1.m_text1.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T1 );
+    REQUIRE( query1Ext.m_fields1.m_text3.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T3 );
+    REQUIRE( query1Ext.m_fields1.m_text8.isValid()  == REC_BAR1_TUP1_DEFAULT_VALID_T8 );
+    REQUIRE( query1Ext.m_fields2.m_text10.isValid() == REC_BAR1_TUP2_DEFAULT_VALID_T10 );
+    if ( query1Ext.m_fields1.m_text1.isValid() )  { REQUIRE( query1Ext.m_fields1.m_text1.getString()  == "*" ); }
+    if ( query1Ext.m_fields1.m_text3.isValid() )  { REQUIRE( query1Ext.m_fields1.m_text3.getString()  == REC_BAR1_TUP1_DEFAULT_T3 ); }
+    if ( query1Ext.m_fields1.m_text8.isValid() )  { REQUIRE( query1Ext.m_fields1.m_text8.getString()  == REC_BAR1_TUP1_DEFAULT_T8 ); }
+    if ( query1Ext.m_fields2.m_text10.isValid() ) { REQUIRE( query1Ext.m_fields2.m_text10.getString() == "bobs not h" ); }
+
+    
+    query2Ext.issueQuery();
+    display_bar2ext_( query2Ext, "Query Bar2: Verify values" );
+    REQUIRE( query2Ext[0].isInContainer() == REC_BAR2EXT_TUP0_DEFAULT_INCONTAINER );
+    if ( query2Ext[0].isInContainer() )
+        {
+        REQUIRE( query2Ext[0].m_text3.isValid() == REC_BAR2EXT_TUP0_DEFAULT_VALID_T3);
+        REQUIRE( query2Ext[0].m_text5.isValid() == REC_BAR2EXT_TUP0_DEFAULT_VALID_T5);
+        if ( query2Ext[0].m_text3.isValid() ) { REQUIRE( query2Ext[0].m_text3.getString() == REC_BAR2EXT_TUP0_DEFAULT_T3 ); }
+        if ( query2Ext[0].m_text5.isValid() ) { REQUIRE( query2Ext[0].m_text5.getString() == REC_BAR2EXT_TUP0_DEFAULT_T5 ); }
+        }
+    REQUIRE( query2Ext[1].isInContainer() == REC_BAR2EXT_TUP1_DEFAULT_INCONTAINER );
+    if ( query2Ext[1].isInContainer() )
+        {
+        REQUIRE( query2Ext[1].m_text3.isValid() == REC_BAR2EXT_TUP1_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[1].m_text5.isValid() == REC_BAR2EXT_TUP1_DEFAULT_VALID_T5 );
+        if ( query2Ext[1].m_text3.isValid() ) { REQUIRE( query2Ext[1].m_text3.getString() == REC_BAR2EXT_TUP1_DEFAULT_T3 ); }
+        if ( query2Ext[1].m_text5.isValid() ) { REQUIRE( query2Ext[1].m_text5.getString() == REC_BAR2EXT_TUP1_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2Ext[2].isInContainer() == REC_BAR2EXT_TUP2_DEFAULT_INCONTAINER );
+    if ( query2Ext[2].isInContainer() )
+        {
+        REQUIRE( query2Ext[2].m_text3.isValid() == REC_BAR2EXT_TUP2_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[2].m_text5.isValid() == REC_BAR2EXT_TUP2_DEFAULT_VALID_T5 );
+        if ( query2Ext[2].m_text3.isValid() ) { REQUIRE( query2Ext[2].m_text3.getString() == REC_BAR2EXT_TUP2_DEFAULT_T3 ); }
+        if ( query2Ext[2].m_text5.isValid() ) { REQUIRE( query2Ext[2].m_text5.getString() == REC_BAR2EXT_TUP2_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2Ext[3].isInContainer() == REC_BAR2EXT_TUP3_DEFAULT_INCONTAINER );
+    if ( query2Ext[3].isInContainer() )
+        {
+        REQUIRE( query2Ext[3].m_text3.isValid() == REC_BAR2EXT_TUP3_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[3].m_text5.isValid() == REC_BAR2EXT_TUP3_DEFAULT_VALID_T5 );
+        if ( query2Ext[3].m_text3.isValid() ) { REQUIRE( query2Ext[3].m_text3.getString() == REC_BAR2EXT_TUP3_DEFAULT_T3 ); }
+        if ( query2Ext[3].m_text5.isValid() ) { REQUIRE( query2Ext[3].m_text5.getString() == REC_BAR2EXT_TUP3_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2Ext[4].isInContainer() == REC_BAR2EXT_TUP4_DEFAULT_INCONTAINER );
+    if ( query2Ext[4].isInContainer() )
+        {
+        REQUIRE( query2Ext[4].m_text3.isValid() == REC_BAR2EXT_TUP4_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[4].m_text5.isValid() == REC_BAR2EXT_TUP4_DEFAULT_VALID_T5 );
+        if ( query2Ext[4].m_text3.isValid() ) { REQUIRE( query2Ext[4].m_text3.getString() == REC_BAR2EXT_TUP4_DEFAULT_T3 ); }
+        if ( query2Ext[4].m_text5.isValid() ) { REQUIRE( query2Ext[4].m_text5.getString() == REC_BAR2EXT_TUP4_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2Ext[5].isInContainer() == REC_BAR2EXT_TUP5_DEFAULT_INCONTAINER );
+    if ( query2Ext[5].isInContainer() )
+        {
+        REQUIRE( query2Ext[5].m_text3.isValid() == REC_BAR2EXT_TUP5_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[5].m_text5.isValid() == REC_BAR2EXT_TUP5_DEFAULT_VALID_T5 );
+        if ( query2Ext[5].m_text3.isValid() ) { REQUIRE( query2Ext[5].m_text3.getString() == REC_BAR2EXT_TUP5_DEFAULT_T3 ); }
+        if ( query2Ext[5].m_text5.isValid() ) { REQUIRE( query2Ext[5].m_text5.getString() == REC_BAR2EXT_TUP5_DEFAULT_T5 ); }
+        }
+
+    recordLayer4_.close();
+    Cpl::System::Api::sleep( 100 );
+    REQUIRE( myMonitor4.m_status == HealthRequest::eCLOSED );
+    REQUIRE( myMonitor4.m_openingCount == 2 );
+    REQUIRE( myMonitor4.m_runningCount == 1 );
+    REQUIRE( myMonitor4.m_runningUpgradeCount == 0 );
+    REQUIRE( myMonitor4.m_runningCorruptCount == 1 );
+    REQUIRE( myMonitor4.m_errMediaCount == 0 );
+    REQUIRE( myMonitor4.m_errSchemaCount == 0 );
+    REQUIRE( myMonitor4.m_closingCount == 2 );
+    REQUIRE( myMonitor4.m_closedCount == 3 );
+    myMonitor4.close();
+
+
+    //
+    // Test: Minor upgrade - purge a record
+    //
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "" ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "################### Opening DB file - minor upgrade - purging Bar1..." ));
+    recordList4_.remove( modelBar1Ext_.getKey() );
+    myMonitor4.open();
+    REQUIRE( recordLayer4_.open() );
+    Cpl::System::Api::sleep( 300 );
+    REQUIRE( myMonitor4.m_status == HealthRequest::eRUNNING_MINOR_UPGRADE );
+
+    ControllerBar2Ext writerBar2Ext( modelBar2Ext_ );
+    idx = 1;
+    writerBar2Ext.m_tuples_[idx].setAllInUseState(true);
+    writerBar2Ext.m_tuples_[idx].setAllValidState(RTE_ELEMENT_API_STATE_VALID);
+    writerBar2Ext.m_tuples_[idx].m_text3.set( "223" );
+    writerBar2Ext.m_tuples_[idx].m_text5.set( "xyz" );
+    writerBar2Ext.addItem(idx);
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating ModelBar2Ext...."));
+    writerBar2Ext.updateModel();
+    Cpl::System::Api::sleep( 300 );
+
+    recordLayer4_.close();
+    Cpl::System::Api::sleep( 100 );
+
+    // Re-open the DB and Verify new values
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Verifying written values..." ));
+    REQUIRE( recordLayer4_.open() );
+    Cpl::System::Api::sleep( 300 );
+    REQUIRE( myMonitor4.m_status == HealthRequest::eRUNNING );
+
+    query2Ext.issueQuery();
+    display_bar2ext_( query2Ext, "Query Bar2: Verify values" );
+    REQUIRE( query2Ext[0].isInContainer() == REC_BAR2EXT_TUP0_DEFAULT_INCONTAINER );
+    if ( query2Ext[0].isInContainer() )
+        {
+        REQUIRE( query2Ext[0].m_text3.isValid() == REC_BAR2EXT_TUP0_DEFAULT_VALID_T3);
+        REQUIRE( query2Ext[0].m_text5.isValid() == REC_BAR2EXT_TUP0_DEFAULT_VALID_T5);
+        if ( query2Ext[0].m_text3.isValid() ) { REQUIRE( query2Ext[0].m_text3.getString() == REC_BAR2EXT_TUP0_DEFAULT_T3 ); }
+        if ( query2Ext[0].m_text5.isValid() ) { REQUIRE( query2Ext[0].m_text5.getString() == REC_BAR2EXT_TUP0_DEFAULT_T5 ); }
+        }
+    REQUIRE( query2Ext[1].isInContainer() == true );
+    if ( query2Ext[1].isInContainer() )
+        {
+        REQUIRE( query2Ext[1].m_text3.isValid() == true );
+        REQUIRE( query2Ext[1].m_text5.isValid() == true );
+        if ( query2Ext[1].m_text3.isValid() ) { REQUIRE( query2Ext[1].m_text3.getString() == "223" ); }
+        if ( query2Ext[1].m_text5.isValid() ) { REQUIRE( query2Ext[1].m_text5.getString() == "xyz" ); }
+        }
+
+    REQUIRE( query2Ext[2].isInContainer() == REC_BAR2EXT_TUP2_DEFAULT_INCONTAINER );
+    if ( query2Ext[2].isInContainer() )
+        {
+        REQUIRE( query2Ext[2].m_text3.isValid() == REC_BAR2EXT_TUP2_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[2].m_text5.isValid() == REC_BAR2EXT_TUP2_DEFAULT_VALID_T5 );
+        if ( query2Ext[2].m_text3.isValid() ) { REQUIRE( query2Ext[2].m_text3.getString() == REC_BAR2EXT_TUP2_DEFAULT_T3 ); }
+        if ( query2Ext[2].m_text5.isValid() ) { REQUIRE( query2Ext[2].m_text5.getString() == REC_BAR2EXT_TUP2_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2Ext[3].isInContainer() == REC_BAR2EXT_TUP3_DEFAULT_INCONTAINER );
+    if ( query2Ext[3].isInContainer() )
+        {
+        REQUIRE( query2Ext[3].m_text3.isValid() == REC_BAR2EXT_TUP3_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[3].m_text5.isValid() == REC_BAR2EXT_TUP3_DEFAULT_VALID_T5 );
+        if ( query2Ext[3].m_text3.isValid() ) { REQUIRE( query2Ext[3].m_text3.getString() == REC_BAR2EXT_TUP3_DEFAULT_T3 ); }
+        if ( query2Ext[3].m_text5.isValid() ) { REQUIRE( query2Ext[3].m_text5.getString() == REC_BAR2EXT_TUP3_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2Ext[4].isInContainer() == REC_BAR2EXT_TUP4_DEFAULT_INCONTAINER );
+    if ( query2Ext[4].isInContainer() )
+        {
+        REQUIRE( query2Ext[4].m_text3.isValid() == REC_BAR2EXT_TUP4_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[4].m_text5.isValid() == REC_BAR2EXT_TUP4_DEFAULT_VALID_T5 );
+        if ( query2Ext[4].m_text3.isValid() ) { REQUIRE( query2Ext[4].m_text3.getString() == REC_BAR2EXT_TUP4_DEFAULT_T3 ); }
+        if ( query2Ext[4].m_text5.isValid() ) { REQUIRE( query2Ext[4].m_text5.getString() == REC_BAR2EXT_TUP4_DEFAULT_T5 ); }
+        }
+
+    REQUIRE( query2Ext[5].isInContainer() == REC_BAR2EXT_TUP5_DEFAULT_INCONTAINER );
+    if ( query2Ext[5].isInContainer() )
+        {
+        REQUIRE( query2Ext[5].m_text3.isValid() == REC_BAR2EXT_TUP5_DEFAULT_VALID_T3 );
+        REQUIRE( query2Ext[5].m_text5.isValid() == REC_BAR2EXT_TUP5_DEFAULT_VALID_T5 );
+        if ( query2Ext[5].m_text3.isValid() ) { REQUIRE( query2Ext[5].m_text3.getString() == REC_BAR2EXT_TUP5_DEFAULT_T3 ); }
+        if ( query2Ext[5].m_text5.isValid() ) { REQUIRE( query2Ext[5].m_text5.getString() == REC_BAR2EXT_TUP5_DEFAULT_T5 ); }
+        }
+
+    recordLayer4_.close();
+    Cpl::System::Api::sleep( 100 );
+    REQUIRE( myMonitor4.m_status == HealthRequest::eCLOSED );
+    REQUIRE( myMonitor4.m_openingCount == 2 );
+    REQUIRE( myMonitor4.m_runningCount == 1 );
+    REQUIRE( myMonitor4.m_runningUpgradeCount == 1 );
+    REQUIRE( myMonitor4.m_runningCorruptCount == 0 );
+    REQUIRE( myMonitor4.m_errMediaCount == 0 );
+    REQUIRE( myMonitor4.m_errSchemaCount == 0 );
+    REQUIRE( myMonitor4.m_closingCount == 2 );
+    REQUIRE( myMonitor4.m_closedCount == 3 );
+    myMonitor4.close();
+
+
 
     // Shutdown threads
     chunkMailbox_.pleaseStop();

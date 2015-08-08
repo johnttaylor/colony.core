@@ -322,6 +322,7 @@ namespace Rte { namespace Db { namespace Record  {
                                     evConsumed=1;
 
                                     /* Action code for transition  */
+                                    reportMinorUpgrade();
                                     nakOpenDone();
                                     requestDbClear();
 

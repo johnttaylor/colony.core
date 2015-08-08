@@ -64,10 +64,10 @@ const char* Base::getName(void) const
     return m_name;
     }
 
-void Base::setChunkHandle( Rte::Db::Chunk::Handle& src )
+Rte::Db::Chunk::Handle& Base::getChunkHandle(void)
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::setChunkHandle() [%s]", m_name()) );
-    m_chunkHdl = src;
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::getChunkHandle() [%s]", m_name()) );
+    return m_chunkHdl;
     }
 
 void Base::notifyWriteDone(void)
@@ -148,10 +148,10 @@ void Base::notifyLoadFailed(void)
     generateEvent( Fsm_evLoadDone );
     }
 
-Rte::Db::Chunk::Handle& Base::getChunkHandle(void)
+void Base::setChunkHandle( Rte::Db::Chunk::Handle& src )
     {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::getChunkHandle() [%s]", m_name()) );
-    return m_chunkHdl;
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::setChunkHandle() [%s]", m_name()) );
+    m_chunkHdl = src;
     }
 
 bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )

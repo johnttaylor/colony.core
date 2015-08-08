@@ -333,7 +333,7 @@ Type="1"/>
 <Anchor id="r76"
 Pos="17400 -11200">
 <FreeText id="r77"
-Pos="17564 -10102"
+Pos="17564 -9602"
 Origin="4">
 <Text>evResponse[isDbBadData()]/<p/>
 reportDataCorruptError();<p/>
@@ -674,9 +674,10 @@ Oblique="1">
 <Anchor id="r189"
 Pos="14279.124160564075 -10666.009328535634">
 <FreeText id="r190"
-Pos="13979 -10466"
+Pos="13679 -10566"
 Origin="4">
 <Text>evIncompleteLoad/<p/>
+reportMinorUpgrade();<p/>
 nakOpenDone();<p/>
 requestDbClear();</Text>
 </FreeText>

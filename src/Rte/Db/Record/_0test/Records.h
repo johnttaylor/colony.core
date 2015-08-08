@@ -49,6 +49,43 @@
 #define REC_BAR2_TUP3_DEFAULT_VALID_T3      false
 #define REC_BAR2_TUP3_DEFAULT_VALID_T5      false
 
+#define REC_BAR2EXT_TUP0_DEFAULT_INCONTAINER   true
+#define REC_BAR2EXT_TUP0_DEFAULT_T3            "111"
+#define REC_BAR2EXT_TUP0_DEFAULT_T5            "*5*5*"
+#define REC_BAR2EXT_TUP0_DEFAULT_VALID_T3      true
+#define REC_BAR2EXT_TUP0_DEFAULT_VALID_T5      true
+
+#define REC_BAR2EXT_TUP1_DEFAULT_INCONTAINER   false
+#define REC_BAR2EXT_TUP1_DEFAULT_T3            "n/a"
+#define REC_BAR2EXT_TUP1_DEFAULT_T5            "n/a"
+#define REC_BAR2EXT_TUP1_DEFAULT_VALID_T3      false
+#define REC_BAR2EXT_TUP1_DEFAULT_VALID_T5      false
+
+#define REC_BAR2EXT_TUP2_DEFAULT_INCONTAINER   false
+#define REC_BAR2EXT_TUP2_DEFAULT_T3            "n/a"
+#define REC_BAR2EXT_TUP2_DEFAULT_T5            "n/a"
+#define REC_BAR2EXT_TUP2_DEFAULT_VALID_T3      false
+#define REC_BAR2EXT_TUP2_DEFAULT_VALID_T5      false
+
+#define REC_BAR2EXT_TUP3_DEFAULT_INCONTAINER   false
+#define REC_BAR2EXT_TUP3_DEFAULT_T3            "n/a"
+#define REC_BAR2EXT_TUP3_DEFAULT_T5            "n/a"
+#define REC_BAR2EXT_TUP3_DEFAULT_VALID_T3      false
+#define REC_BAR2EXT_TUP3_DEFAULT_VALID_T5      false
+
+#define REC_BAR2EXT_TUP4_DEFAULT_INCONTAINER   false
+#define REC_BAR2EXT_TUP4_DEFAULT_T3            "n/a"
+#define REC_BAR2EXT_TUP4_DEFAULT_T5            "n/a"
+#define REC_BAR2EXT_TUP4_DEFAULT_VALID_T3      false
+#define REC_BAR2EXT_TUP4_DEFAULT_VALID_T5      false
+
+#define REC_BAR2EXT_TUP5_DEFAULT_INCONTAINER   true
+#define REC_BAR2EXT_TUP5_DEFAULT_T3            "66."
+#define REC_BAR2EXT_TUP5_DEFAULT_T5            "5a5a5"
+#define REC_BAR2EXT_TUP5_DEFAULT_VALID_T3      true
+#define REC_BAR2EXT_TUP5_DEFAULT_VALID_T5      true
+
+
 
 /** Concrete Record: BAR1
  */
@@ -143,6 +180,57 @@ public:
         m_tuples_[2].setAllValidState(RTE_ELEMENT_API_STATE_VALID);
         m_tuples_[2].m_text3.set( REC_BAR2_TUP2_DEFAULT_T3 );
         m_tuples_[2].m_text5.set( REC_BAR2_TUP2_DEFAULT_T5 );
+        }
+
+};
+
+/** Concrete Record: BAR2Ext
+ */
+class RecordBar2Ext: public ModelBar2Ext,
+                     public Rte::Db::Record::Base
+
+{
+public:
+    ///
+    PointBar2ExtNull   m_nullPoint4Viewer;
+
+public:
+    /// Constructor
+    RecordBar2Ext( Cpl::Container::Map<ApiLocal>& myRecordList,
+                   Cpl::Itc::PostApi&             recordLayerMbox, 
+                   Cpl::Timer::CounterSource&     timingSource,
+                   unsigned long                  delayWriteTimeInMsec = 0,    // Default is: no delay
+                   Cpl::Log::Api&                 eventLogger = Cpl::Log::Loggers::application()
+                 )
+    :ModelBar2Ext(recordLayerMbox)
+    ,Rte::Db::Record::Base( m_nullPoint4Viewer,
+                            *this,
+                            myRecordList, 
+                            delayWriteTimeInMsec, 
+                            "RecordBar2",
+                            recordLayerMbox, 
+                            timingSource, 
+                            eventLogger 
+                          )
+        {
+        }
+
+
+public: 
+    /// See Rte::Point::Model::Api
+    void defaultMe( void ) throw()
+        {
+        // Note: The model point starts out with all Tuples/elements being INVALID
+
+        // Default to only 2 (of 6) Tuples being 'valid/existing'
+        addTuple(0);
+        m_tuples_[0].setAllValidState(RTE_ELEMENT_API_STATE_VALID);
+        m_tuples_[0].m_text3.set( REC_BAR2EXT_TUP0_DEFAULT_T3 );
+        m_tuples_[0].m_text5.set( REC_BAR2EXT_TUP0_DEFAULT_T5 );
+        addTuple(5);
+        m_tuples_[5].setAllValidState(RTE_ELEMENT_API_STATE_VALID);
+        m_tuples_[5].m_text3.set( REC_BAR2EXT_TUP5_DEFAULT_T3 );
+        m_tuples_[5].m_text5.set( REC_BAR2EXT_TUP5_DEFAULT_T5 );
         }
 
 };

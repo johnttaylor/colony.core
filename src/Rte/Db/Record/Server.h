@@ -232,6 +232,10 @@ protected:
 
     /// See Rte::Db::Record::HandlerFsmContext_
     void reportIncompatible() throw();
+
+    /// See Rte::Db::Record::HandlerFsmContext_
+    void reportMinorUpgrade() throw();
+
     
     /// See Rte::Db::Record::HandlerFsmContext_
     void requestDbClear() throw();

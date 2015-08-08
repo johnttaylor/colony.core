@@ -266,7 +266,12 @@ void Server::notifyRecordStarted( void )
             }
         else
             {
-            m_openMsgPtr->getPayload().m_success = false;
+            // Set error result to the open request if in 'Non-Perstistance' mode
+            if ( m_tempStatus == HealthRequest::eNO_STORAGE_MEDIA_ERR || m_tempStatus == HealthRequest::eNO_STORAGE_WRONG_SCHEMA )
+                {
+                m_openMsgPtr->getPayload().m_success = false;
+                }
+
             setNewHealthStatus( m_tempStatus );
             }
 
@@ -340,6 +345,7 @@ void Server::reportDataCorruptError() throw()
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportDataCorruptError") );
     m_logger.warning( "Rte::Db::Record::Server::reportDataCorruptError - DB Corruption error - defaulting one or more record(s)" );
+    m_tempStatus = HealthRequest::eRUNNING_CORRUPTED_INPUT;
     }
 
 void Server::reportFileWriteError() throw()
@@ -359,6 +365,13 @@ void Server::reportFileWriteError() throw()
         { 
         setNewHealthStatus( HealthRequest::eNO_STORAGE_MEDIA_ERR );
         }
+    }
+
+void Server::reportMinorUpgrade() throw()
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportMinorUpgrade") );
+    m_logger.warning( "Rte::Db::Record::Server::reportMinorUpgrade - one or more Records where automatically upgraded." );
+    m_tempStatus = HealthRequest::eRUNNING_MINOR_UPGRADE;
     }
 
 
@@ -434,12 +447,12 @@ void Server::ackRead() throw()
     if ( !recordPtr )
         {
         // Log the failure
-        CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackRead - Unknown Record Name=%.*s, i.e. incompatible DB",extractRecNameLength(), extractRecName() ) );
-        m_logger.warning( "Rte::Db::Record::Server::ackRead - Unknown Record Name=%.*s, i.e. incompatible DB", extractRecNameLength(), extractRecName() );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackRead - Unknown Record Name=%.*s. Record will be purged", extractRecNameLength(), extractRecName() ) );
+        m_logger.warning( "Rte::Db::Record::Server::ackRead - Unknown Record Name=%.*s. Record will be purged", extractRecNameLength(), extractRecName() );
 
-        // Send myself an 'incompatible' event to transition to the NO-Persistence state
-        m_dbResult = Rte::Db::Chunk::Request::eWRONG_SCHEMA;
-        generateEvent( HandlerFsm_evResponse ); 
+        // Read the next record
+        m_conversion = true;
+        requestDbRead();
         }
     
     // Read raw chunk data into the Record's Point
@@ -456,10 +469,10 @@ void Server::ackRead() throw()
         else
             {
             // Log the failure
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackRead - Record read failed, i.e. incompatible DB") );
-            m_logger.warning( "Rte::Db::Record::Server::ackRead - Record read failed, i.e. incompatible DB" );
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackRead - Record read failed (%.*s), i.e. an incompatible DB", extractRecNameLength(), extractRecName()) );
+            m_logger.warning( "Rte::Db::Record::Server::ackRead - Record read failed(%.*s), i.e. an incompatible DB", extractRecNameLength(), extractRecName() );
 
-            // Send myself an 'incompatible' event to transition to the NO-Persistence state
+            // Send myself an 'bad-data' event to transition to the Non-Peristance State
             m_dbResult = Rte::Db::Chunk::Request::eWRONG_SCHEMA;
             generateEvent( HandlerFsm_evResponse ); 
             }

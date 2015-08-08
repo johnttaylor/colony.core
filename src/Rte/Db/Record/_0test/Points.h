@@ -78,7 +78,6 @@ public:
 
 };
 
-
 /** Concrete Point: Null Point for BAR2 (Container Point that hold 4 instances of the Foo2 tuple)
  */
 class PointBar2Null: public Rte::Point::Container<Rte::Tuple::NullItem,4>
@@ -86,6 +85,27 @@ class PointBar2Null: public Rte::Point::Container<Rte::Tuple::NullItem,4>
 public:
     /// Constructor
     PointBar2Null( void ){}
+
+};
+
+
+/** Concrete Point: BAR2Ext (Container Point that hold 6 instances of the Foo2 tuple)
+ */
+class PointBar2Ext: public Rte::Point::Container<TupleFoo2,6>
+{
+public:
+    /// Constructor
+    PointBar2Ext( void ){}
+
+};
+
+/** Concrete Point: Null Point for BAR2Ext (Container Point that hold 6 instances of the Foo2 tuple)
+ */
+class PointBar2ExtNull: public Rte::Point::Container<Rte::Tuple::NullItem,6>
+{
+public:
+    /// Constructor
+    PointBar2ExtNull( void ){}
 
 };
 
@@ -120,6 +140,19 @@ public:
 };
 
 
+/** Concrete Model Point: BAR2Ext
+ */
+class ModelBar2Ext: public PointBar2Ext,
+                    public Rte::Point::Model::Base
+{
+public:
+    /// Constructor
+    ModelBar2Ext( Cpl::Itc::PostApi& myMbox )
+        :Rte::Point::Model::Base(*this,myMbox)
+            {
+            }
+};
+
 
 /*------------------------- CONTROLLER POINTS -------------------------------*/
 /** Concrete Controller Point: BAR1
@@ -152,6 +185,20 @@ public:
 };
 
 
+/** Concrete Controller Point: BAR2Ext
+ */
+class ControllerBar2Ext: public PointBar2Ext,
+                         public Rte::Point::Controller::Container
+{
+public:
+    /// Constructor
+    ControllerBar2Ext( ModelBar2Ext& modelPoint )
+        :Rte::Point::Controller::Container(*this, modelPoint)
+            {
+            }
+
+};
+
 /*------------------------- QUERY POINTS ------------------------------------*/
 /** Concrete Query Point: BAR1
  */
@@ -160,7 +207,7 @@ class QueryBar1: public PointBar1,
 {
 public:
     /// Constructor
-    QueryBar1( Rte::Point::Model::Api& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
+    QueryBar1( ModelBar1& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
         :Rte::Point::Query::Base(*this, modelPoint, copyOption)
             {
             // Default to querying EVERYTHING
@@ -177,7 +224,24 @@ class QueryBar2: public PointBar2,
 {
 public:
     /// Constructor
-    QueryBar2( Rte::Point::Model::Api& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
+    QueryBar2( ModelBar2& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
+        :Rte::Point::Query::Container(*this, modelPoint, copyOption)
+            {
+            // Default to querying EVERYTHING
+            setAllInUseState(true);
+            }
+
+};
+
+
+/** Concrete Query Point: BAR2Ext
+ */
+class QueryBar2Ext: public PointBar2Ext,
+                    public Rte::Point::Query::Container
+{
+public:
+    /// Constructor
+    QueryBar2Ext( ModelBar2Ext& modelPoint, Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY )
         :Rte::Point::Query::Container(*this, modelPoint, copyOption)
             {
             // Default to querying EVERYTHING
@@ -259,6 +323,44 @@ public:
                     ModelBar2&                                                                  modelPoint,
                     Cpl::Itc::PostApi&                                                          viewerMbox 
                   )
+    :Rte::Point::Viewer::Container<CONTEXT>::Container(*this, context, contextChangedCb, contextStoppedCb, modelPoint, viewerMbox)
+        {}
+};
+
+
+/** Concrete Viewer Point: BAR2Ext
+ */
+template <class CONTEXT>
+class ViewerBar2Ext: public PointBar2Ext,
+                     public Rte::Point::Viewer::Container<CONTEXT>
+{
+public:
+    /// Constructor
+    ViewerBar2Ext( CONTEXT&                                                                    context,
+                   typename Rte::Point::Viewer::Container<CONTEXT>::ChangeNotificationFunc_T   contextChangedCb,
+                   typename Rte::Point::Viewer::Container<CONTEXT>::StoppedNotificationFunc_T  contextStoppedCb,
+                   ModelBar2Ext&                                                               modelPoint,
+                   Cpl::Itc::PostApi&                                                          viewerMbox 
+                 )
+    :Rte::Point::Viewer::Container<CONTEXT>::Container(*this, context, contextChangedCb, contextStoppedCb, modelPoint, viewerMbox)
+        {}
+};
+
+
+/** Concrete LIGHT WEIGHT Viewer Point: BAR2Ext
+ */
+template <class CONTEXT>
+class LiteViewerBar2Ext: public PointBar2ExtNull,
+                         public Rte::Point::Viewer::Container<CONTEXT>
+{
+public:
+    /// Constructor
+    LiteViewerBar2Ext( CONTEXT&                                                                    context,
+                       typename Rte::Point::Viewer::Container<CONTEXT>::ChangeNotificationFunc_T   contextChangedCb,
+                       typename Rte::Point::Viewer::Container<CONTEXT>::StoppedNotificationFunc_T  contextStoppedCb,
+                       ModelBar2Ext&                                                               modelPoint,
+                       Cpl::Itc::PostApi&                                                          viewerMbox 
+                     )
     :Rte::Point::Viewer::Container<CONTEXT>::Container(*this, context, contextChangedCb, contextStoppedCb, modelPoint, viewerMbox)
         {}
 };

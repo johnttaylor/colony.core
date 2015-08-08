@@ -51,7 +51,7 @@ ranksep=.4;
 "Idle"->"Idle"[label=<evWrite / <br ALIGN="LEFT"/>queWriteRequest();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Idle Idle
 "Writing"->"Writing"[label=<evWrite / <br ALIGN="LEFT"/>queWriteRequest();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Writing Writing
 "defaultOpening"->"WaitingToOpen"[label=<  > style=dotted];
-"Verifying"->"ClearingDb"[label=<evIncompleteLoad / <br ALIGN="LEFT"/>nakOpenDone();<br ALIGN="LEFT"/>requestDbClear();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Verifying ClearingDb
+"Verifying"->"ClearingDb"[label=<evIncompleteLoad / <br ALIGN="LEFT"/>reportMinorUpgrade();<br ALIGN="LEFT"/>nakOpenDon...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Verifying ClearingDb
 "defaultOpening"->"defaultActive"[label=<evResponse<br ALIGN="LEFT"/>[isNotCompatible()] / <br ALIGN="LEFT"/>reportIncompatible();<br ALIGN="LEFT"/>nakOpenDon...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black];//Opening Active
 "Idle"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Idle</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];subgraph "clusterActive"{fontname=arial; fontsize=8
 color=black; style="rounded";

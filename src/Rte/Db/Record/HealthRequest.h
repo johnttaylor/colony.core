@@ -34,6 +34,8 @@ public:
     /// Possible status states
     enum Status_T { eOPENING,                   //!< The DB is in the process of being opened
                     eRUNNING,                   //!< The DB is opened and functional
+                    eRUNNING_MINOR_UPGRADE,     //!< The DB is opened and functional BUT an 'automatic' minor upgrade was performed during the open process
+                    eRUNNING_CORRUPTED_INPUT,   //!< The DB is opened and functional BUT one or more records where corrupt and one or more records were defaulted (records succesfully read before the corruption was detected are NOT defaulted)
                     eNO_STORAGE_MEDIA_ERR,      //!< The DB is opened BUT not storing anything to persistence storage because there an error with the media 
                     eNO_STORAGE_WRONG_SCHEMA,   //!< The DB is opened BUT not storing anything to persistance storage because of 'major' schema mismatch
                     eCLOSING,                   //!< The DB is in the process of being closed

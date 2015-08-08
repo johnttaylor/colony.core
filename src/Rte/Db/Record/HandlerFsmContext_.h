@@ -68,6 +68,9 @@ public:
     virtual void reportIncompatible() throw() = 0;
 
     /// Action
+    virtual void reportMinorUpgrade() throw() = 0;
+
+    /// Action
     virtual void requestDbClear() throw() = 0;
 
     /// Action
