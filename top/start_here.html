@@ -5335,8 +5335,8 @@ html .solidborders td {  border: 1px solid black; }</pre>
 <div modified="20150224045718270" title="$:/state/toc/Contents-Coding Standards--242358753">
 <pre>open</pre>
 </div>
-<div modified="20141024050725103" title="$:/state/toc/Contents-Design Patterns--242358753">
-<pre>close</pre>
+<div modified="20150809034223232" title="$:/state/toc/Contents-Design Patterns--242358753">
+<pre>open</pre>
 </div>
 <div modified="20141016041226295" title="$:/state/toc/Contents-Intro--242358753">
 <pre>close</pre>
@@ -5344,7 +5344,7 @@ html .solidborders td {  border: 1px solid black; }</pre>
 <div modified="20141011172627069" title="$:/state/toc/Contents-Intro--966365951">
 <pre>open</pre>
 </div>
-<div list="[[Naming Conventions]] Maker [[Design Patterns]] [[Late Config (LConfig)]] Overview" title="$:/StoryList">
+<div list="Overview" title="$:/StoryList">
 <pre></pre>
 </div>
 <div created="20141011164829984" modified="20150221151547115" title="$:/temp/advancedsearch">
@@ -5467,7 +5467,7 @@ html .solidborders td {  border: 1px solid black; }</pre>
 |John Taylor |john.t.taylor@gmail.com|principal author |
 </pre>
 </div>
-<div created="20141021014317835" modified="20150215030315203" tags="Contents Standards" title="Coding Standards">
+<div created="20141021014317835" modified="20150809043627670" tags="Contents Standards" title="Coding Standards">
 <pre>!!!Colony.Core adheres to the following coding standard (a recommended [[Outcast|http://integerfox.com/outcast]] coding standard).  
 
 * [[John's Coding Standard|http://integerfox.com/outcast/documentation/codingstandard.htm]]
@@ -5489,8 +5489,10 @@ The following are additional coding standards.
 |extraheight|k
 |Type |Description |h
 | Rule |All header includes in header files shall be relative to the package's top level `src/` directory, e.g `#include &quot;Cpl/Container/Item.h&quot;`. The only exception is when using the [[LConfig|Late Config (LConfig)]] or [[LHeader|Late Header (LHeader)]] patterns. |
-| Rule |All source files, i.e. non `.h` files, shall follow the same rules as header files with respect to `#include` statements, but an exception is made to allow including header files in the same directory be name only - no relative path is required for this specific use case. |
+| Rule |All source files, i.e. ''non'' `.h` files, shall follow the same rules as header files with respect to `#include` statements, but an exception is made to allow including header files in the same directory be name only - no relative path is required for this specific use case. |
 | Rule |The following header files are reserved names and cannot be used in the general code - they are used for [[LConfig|Late Config (LConfig)]] design pattern within the Colony.* packages:  `colony_config.h` - Used for project specific preprocessor directives and/or symbol overrides;  `colony_map.h` - Used for providing project specific platform functions. |
+| Rule |Source code shall be organized such that the directory structure reflects the dependencies of the contained source code. The dependency for directories is that a sub-directory is dependent on its parent directory.  For example: given the the two directories: `Foo/` and `Bar/` such that the files in `Bar/` are dependent on `Foo/` (i.e. files in `Bar/` implement interfaces defined in `Foo/`), the directory structure would be `src/Foo` and `src/Foo/Bar`.  //Note: Also see the [[Naming Conventions]] for the rules of naming directories after namespaces.//  |
+| Rule |Header includes shall not directly reference sub-directories.  Because the directory structure is used to reflect dependencies (see above) then a `#include` of a header file in a direct sub-directory creates/is-a-indication of a circular dependency.  For example: given the directory structure of `src/Foo/` and `src/Foo/Bar/`. It is a ''coding standard violation'' for a header file in the `src/Foo/` directory to have `#include &quot;Foo/Bar/SomeFile.h` |
 | Rule |All C/C++ source code shall be based on/compliant with the [[C++03 ISO/IEC standard|http://en.wikipedia.org/wiki/C%2B%2B03]] with the exceptions listed below.  ''//Note://'' all code is required to compile without errors and run correctly when using a  [[C++11 ISO/IEC standard|http://en.wikipedia.org/wiki/C%2B%2B11]] compiler.   |
 | Rule |''C++03 extension:'' assumes that `&lt;stdint.h&gt;` header file is available as defined per [[C99|http://en.wikipedia.org/wiki/C99]] and/or C++11. ''//Note://'' Any file that includes `&lt;stdint.h&gt;` shall also include `colony_map.h` header file.  This allows platforms that do not have `&lt;stdint.h&gt;` to provide the missing type definitions. |
 | Rule |''C++03 extension:'' assumes that `long long` integer (and its variants) are available (as defined per [[C99|http://en.wikipedia.org/wiki/C99]] and/or C++11. ''//Note://'' Any file that uses `long long` shall also include `colony_map.h` header file.  This allows platforms that do not have `long long` to provide the missing type definitions. |
@@ -5513,10 +5515,10 @@ The following are additional coding standards.
 &lt;/ul&gt;
 &lt;/h2&gt;</pre>
 </div>
-<div created="20141024035411241" modified="20141025164817609" tags="[[Design Patterns]] Standards" title="Late Config (LConfig)">
-<pre>The //Late Config// or ''LConfig'' pattern is a special case of the [[LHeader]] pattern.  The LConfig pattern provides for project specific header file(s) that contains preprocessor directives, symbol definitions, etc. that configure and/or customized the default behavior of the source code based on the needs of a project.  
+<div created="20141024035411241" modified="20150809040623837" tags="[[Design Patterns]] Standards" title="Late Config (LConfig)">
+<pre>The //Late Config// or ''LConfig'' pattern is a special case of the [[LHeader|Late Header (LHeader)]] pattern.  The LConfig pattern provides for project specific header file(s) that contains preprocessor directives, symbol definitions, etc. that configure and/or customized the default behavior of the source code based on the needs of a project.  
 
-The LConfig pattern uses globally unique header file name(s) to when specifying the //partial// header include in the [[LHeader]] pattern.  Obviously the LConfig pattern imposes a file/directory naming constraints on the source code package as well as consumers of the source code package.
+The LConfig pattern uses globally unique header file name(s) to when specifying the //partial// header include in the [[LHeader|Late Header (LHeader)]] pattern.  Obviously the LConfig pattern imposes a file/directory naming constraints on the source code package as well as consumers of the source code package.
 
 !!Example:
 The example below is from the APLMT layer of  [[XMK|http://integerfox.com/xmk/index.html]].  The following code uses a globally unique header file - `aplcfg.h` to allows individual applications/projects override the default setting for how many open file descriptors are supported/allocated/allowed.  In this case the `aplcfg.h` header is assumed to be located in the top level build directory of an individual project.
@@ -5600,8 +5602,10 @@ __''//Table-of-Contents//''__
 |&lt;p style=&quot;margin-bottom:0px; margin-top:0px;&quot;&gt;[img[logo.gif]] &lt;/p&gt;|
 |&lt;p style=&quot;margin-bottom:0px; margin-top:0px; font-size:1.3em&quot;&gt;//{{$:/SiteSubtitle}}// &lt;/p&gt; |</pre>
 </div>
-<div created="20140726150234197" creator="JohnTaylor" modified="20150223041628842" modifier="JohnTaylor" tags="Contents" title="Licensing">
-<pre>The license [[file|http://integerfox.com/colony.core/license.txt]] can be found in the &lt;code&gt;top/&lt;/code&gt; directory of the package.
+<div created="20140726150234197" creator="JohnTaylor" modified="20150809034700770" modifier="JohnTaylor" tags="Contents" title="Licensing">
+<pre>The majority of the source code is licensed with the BSD type licensing described below.  However, there is some the 3rd-party source code embedded withing the Package.  In these cases - the license information will be contained within the individual files.  ''Note:'' All 3rd-party source code has &quot;free as in beer&quot; type of licensing.
+
+The license [[file|http://integerfox.com/colony.core/license.txt]] can be found in the &lt;code&gt;top/&lt;/code&gt; directory of the package.
 
 &lt;div align=&quot;center&quot;&gt;&lt;iframe src=&quot;./license.txt&quot; frameborder=&quot;0&quot; width=&quot;100%&quot; height=&quot;800&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;</pre>
 </div>

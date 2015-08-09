@@ -1,0 +1,25 @@
+/*! \mainpage Colony.* 
+
+\section References
+@htmlonly
+<p>The introduction for Colony.Core can be found online at: 
+   <a href="http://www.integerfox.com/colony.core" target="_blank">www.integerfox.com/colony.core</a>.
+   The introduction can also be found locally at <code>colony.core/top/start_here.html</code>
+</p>
+<p>Colony.Core is an "Outcast" Package.  An overview to Outcast can be found online at: 
+   <a href="http://www.integerfox.com/outcast" target="_blank">www.integerfox.com/outcast</a>.
+</p>
+<p>The default build engine for Colony.Core is NQBP. An overview to NQBP can be found online at: 
+   <a href="http://www.integerfox.com/nqbp" target="_blank">www.integerfox.com/nqbp</a>.
+</p>
+@endhtmlonly
+
+
+\section Naming Conventions
+@htmlonly
+@endhtmlonly
+
+
+*/ 
+
+  
