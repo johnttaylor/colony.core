@@ -12,8 +12,38 @@ Usage: doxygen
 """
 
 import subprocess
+import re
 
+#------------------------------------------------------------------------------
+def filter_warnings( output ):
+    at_least_one = False
+    lines = output.splitlines()
+    for line in lines:
+        # Filter auto generated FSM code
+        if ( re.search( "^.*Fsm_.h", line ) or re.search( "^.*Fsm_ext_.h", line ) or re.search( "^.*Fsm_trace_.h", line )):
+            continue
+            
+        # Filter
+        if ( re.search( r"src/Cpl/Text/Frame/LineDecoder.h:.*warning: Found unknown command.*\\r", line ) ):
+            continue
+ 
+        # Filter
+        if ( re.search( 'src/Cpl/TShell/Dac/Cmd/Command.h:.*warning: Unsupported xml/html tag <esc> found', line ) ):
+            continue
+            
+        # Passed ALL filters
+        print line
+        at_least_one = True
 
+    # Display the results of the filtering
+    if ( at_least_one == False ):
+        print "    All warnings are known warnings -->so you are good!"
+        print
+        exit(0)
+    else:
+        print
+        exit(1)
+        
 #------------------------------------------------------------------------------
 print "Running doxygen..."     
 
@@ -29,8 +59,6 @@ if ( p.returncode != 0 ):
 if ( " warning: " in r[1] ):
     print
     print "*** Doxygen had one or more warnings! ***"
-    print
-    print r[1]
-    exit(1)
+    filter_warnings( r[1] )
     
 print "Completed without warnings or errors."

@@ -48,7 +48,7 @@ namespace Rte { namespace Element {
 class BitFlags: public Base
 {
 public:
-    ///
+    /// Bit Operators and/or masks
     enum { eUSABLE_BITS_MASK = 0x1FFFFFFF,  // Mask for the 'usable' bits
            eNO_UPDATE        = 0xFFFFFFFF,  // Write value to perform a 'NOP' when updating the model
            eOPER_SET_BITS    = 0x80000000,  // Set bit operator 
@@ -57,7 +57,7 @@ public:
          };
 
 protected:
-    ///
+    /// Storage for the bit flags
     uint32_t m_data;
 
 

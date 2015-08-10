@@ -238,6 +238,10 @@ public:
                                 command in the Output stream.
         @param outputLock       Mutex to be used for ensuring the atomic output
                                 of the commands.
+        @param cmdBufferPtr     Point to command buffer (that caches commands)
+                                that is used to supporting looping.  If the
+                                pointer is 0, then looping will not be
+                                enabled
         @param maxBufferCmds    Number of commands that can be stored in the
                                 'command buffer'
         @param commentChar      The comment character used to indicate that the
@@ -252,7 +256,7 @@ public:
         @param argTerminator    The command terminator character.
         @param eventLogger      The event logger to be used.
      */
-    Processor( Cpl::Container::Map<Command>&    commands,
+    Processor( Cpl::Container::Map<Command>&     commands,
                ActiveVariablesApi&               variables,
                Cpl::Text::Frame::Decoder&        deframer,
                Cpl::Text::Frame::StreamEncoder&  framer,

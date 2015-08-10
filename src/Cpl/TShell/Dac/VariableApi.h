@@ -87,7 +87,7 @@ public:
 
 
 public:
-    /// Overload the Cast-to-Container::Key as a short-cut to getKey()
+    /// Overload the Cast to Cpl::Container::Key as a short-cut to getKey()
     inline operator const Cpl::Container::Key& () const { return getKey(); }
 
 

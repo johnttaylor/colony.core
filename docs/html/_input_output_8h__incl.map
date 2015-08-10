@@ -1,9 +1,0 @@
-<map id="InputOutput.h" name="InputOutput.h">
-<area shape="rect" id="node2" href="$_input_8h.html" title="Cpl/Io/Input.h" alt="" coords="186,80,285,107"/>
-<area shape="rect" id="node14" href="$_output_8h.html" title="Cpl/Io/Output.h" alt="" coords="309,80,418,107"/>
-<area shape="rect" id="node3" href="$_string_8h.html" title="Cpl/Text/String.h" alt="" coords="304,155,423,181"/>
-<area shape="rect" id="node12" href="$_close_8h.html" title="Cpl/Io/Close.h" alt="" coords="177,155,280,181"/>
-<area shape="rect" id="node6" href="$_key_8h.html" title="Cpl/Container/Key.h" alt="" coords="170,229,309,256"/>
-<area shape="rect" id="node7" href="$_fatal_error_8h.html" title="Cpl/System/FatalError.h" alt="" coords="133,304,295,331"/>
-<area shape="rect" id="node13" href="$_item_8h.html" title="Cpl/Container/Item.h" alt="" coords="5,229,145,256"/>
-</map>

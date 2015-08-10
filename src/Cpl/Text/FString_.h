@@ -34,9 +34,10 @@ namespace Cpl { namespace Text {
 class FString_: public String_
 {
 protected:
-    ///
+    /// Maximum length of the internal string (not including the null terminator)
     int m_internalMaxlen;
-    ///
+
+    /// Empty string that is used to return a 'string' when my internal string is not valid
     static char m_noMemory[1];
 
 protected:
@@ -66,13 +67,16 @@ protected:
 
 
 public:
-    ///
+    /// see Cpl::Text::String
     void copyIn(const char* string, int n);
-    ///
+
+    /// see Cpl::Text::String
     void appendTo(const char* string, int n);
-    ///
+
+    /// see Cpl::Text::String
     void insertAt(int insertOffset, const char* stringToInsert);
-    ///
+
+    /// see Cpl::Text::String
     int maxLength() const;
 
 

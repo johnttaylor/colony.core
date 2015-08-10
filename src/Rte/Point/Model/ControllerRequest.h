@@ -41,7 +41,7 @@ public:
         Rte::Point::Api& m_srcPoint;
 
     public:
-        ///
+        /// Constructor
         UpdatePayload( Rte::Point::Api& controllerPoint )
             :m_srcPoint(controllerPoint)
                 {}
@@ -66,7 +66,7 @@ public:
         bool               m_membershipChanged;
 
     public:
-        ///
+        /// Constructor
         UpdateTuplePayload( Rte::Tuple::Api& controllerTuple, unsigned tupleIdx, bool membershipChanged=false )
             :m_srcTuple(controllerTuple)
             ,m_tupleIdx(tupleIdx)

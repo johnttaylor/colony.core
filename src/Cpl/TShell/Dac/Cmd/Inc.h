@@ -17,11 +17,13 @@
                                                  
 
 
-/* RULER
+/** Usage
                                       "         1         2         3         4         5         6         7         8"
                                       "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLDACMD_USAGE_INC_     "inc <var> [<amount>]" 
+
+/// Detailed Help text
 #ifndef CPLTSHELLDACMD_DETAIL_INC_
 #define CPLTSHELLDACMD_DETAIL_INC_    "  Increments the contents of <var> by 1.  An optional <amount> to increment the\n" \
                                       "  variable can be provided. Note: <amount> is an 'etext' argument (see the Set\n" \

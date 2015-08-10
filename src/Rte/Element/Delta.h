@@ -31,7 +31,7 @@ template<class ELEMTYPE, int TYPEID>
 class Delta: public Basic<ELEMTYPE,TYPEID>
 {
 protected:
-    ///
+    /// cache the minimum delta required for a change
     ELEMTYPE    m_delta;
 
 

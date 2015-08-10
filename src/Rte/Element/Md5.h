@@ -26,7 +26,7 @@ namespace Rte { namespace Element {
 class Md5: public Base
 {
 protected:
-    ///
+    /// Storage for the MD5 checksum
     Cpl::Checksum::ApiMd5::Digest_T m_data;
 
 

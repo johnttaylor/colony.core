@@ -51,7 +51,7 @@ public:
 
 
     public:
-        ///
+        /// Constructor
         QueryPayload( Rte::Point::Api& queryPoint, Option_T copyOption =eCOPY )
             :m_dstPoint(queryPoint)
             ,m_copyOption(copyOption)
@@ -81,7 +81,7 @@ public:
 
 
     public:
-        ///
+        /// Constructor
         QueryTuplePayload( Rte::Tuple::Api& queryTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* callbackPtr = 0, Option_T copyOption =eCOPY )
             :m_dstTuple(queryTuple)
             ,m_tupleIdx(tupleIdx) 

@@ -33,7 +33,7 @@ protected:
 
 
 protected:
-    ///
+    /// Constructor
     Base( Rte::Point::Api& myPoint, Rte::Point::Model::Api& modelPoint );
 
 

@@ -28,14 +28,16 @@
 
 
 
-///
+/// C++11 Mapping
 #define Cpl_System_Thread_NativeHdl_T_MAP       std::thread::native_handle_type
-///
+
+/// C++11 Mapping
 #define Cpl_System_Mutex_T_MAP                  std::recursive_mutex
-///
+
+/// C++11 Mapping
 #define Cpl_System_FastLock_T_MAP               std::mutex // Not sure if this is faster than a recursive_mutex -->but its worth a try
 
-///
+/// No native Semaphore in C++11 -->so build one out of a condition variable
 typedef struct Cpl_System_Cpp11_Sema_Tag
 {
     ///
@@ -46,14 +48,16 @@ typedef struct Cpl_System_Cpp11_Sema_Tag
     unsigned                m_count;
 } Cpl_System_Cpp11_Sema_T;
 
-///
+
+/// C++11 Mapping
 #define Cpl_System_Sema_T_MAP                   Cpl_System_Cpp11_Sema_T
 
-///
+
+/// C++11 Mapping
 #define Cpl_System_TlsKey_T_MAP                 int
 
 
-/// 
+/// C++11 Mapping
 #ifndef CPL_SYSTEM_SHELL_SUPPORTED_x_MAP
 #define CPL_SYSTEM_SHELL_SUPPORTED_x_MAP        0   // Default to NOT supported (since this requires knowledge of the native OS)
 #endif 
@@ -64,17 +68,23 @@ typedef struct Cpl_System_Cpp11_Sema_Tag
 #endif
 
 
-// 
-// Thread Priorites
-//
+/// Thread Priorites
 #define CPL_SYSTEM_THREAD_PRIORITY_HIGHEST_MAP      0
+
+/// Thread Priorites
 #define CPL_SYSTEM_THREAD_PRIORITY_NORMAL_MAP       0
+
+/// Thread Priorites
 #define CPL_SYSTEM_THREAD_PRIORITY_LOWEST_MAP       0
+
+/// Thread Priorites
 #define CPL_SYSTEM_THREAD_PRIORITY_RAISE_MAP        0
+
+/// Thread Priorites
 #define CPL_SYSTEM_THREAD_PRIORITY_LOWER_MAP        0
 
 
-// Hack because Microsoft's VC12 only HAS PARTIAL support for thread_local
+/// Hack because Microsoft's VC12 only HAS PARTIAL support for thread_local
 #if _MSC_VER >= 1800
 #define  thread_local __declspec(thread)
 #endif

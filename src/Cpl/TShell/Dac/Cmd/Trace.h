@@ -16,7 +16,7 @@
 #include "Cpl/TShell/Dac/Cmd/Command.h"
 
 
-/* RULER
+/** Usage
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
@@ -26,6 +26,7 @@
                                       "trace level (none|brief|info|verbose|max)\n" \
                                       "trace here|revert"
 
+/// Detailed Help text
 #ifndef CPLTSHELLDACMD_DETAIL_TRACE_
 #define CPLTSHELLDACMD_DETAIL_TRACE_  "  Enables/Disables the Cpl::System::Trace engine and manages the section',\n" \
                                       "  information level, and thread filter options.  See the Cpl::System::Trace\n" \

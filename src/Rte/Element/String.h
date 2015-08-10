@@ -29,7 +29,7 @@ template<int S>
 class String: public Base
 {
 protected:
-    ///
+    /// Storage for the string
     Cpl::Text::FString<S>   m_data;
 
 

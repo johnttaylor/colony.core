@@ -16,11 +16,13 @@
 #include "Cpl/TShell/Dac/Cmd/Command.h"
 
 
-/* RULER
+/** Usage
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLDACMD_USAGE_EXE_   "exe <etext>"
+
+/// Detailed Help text
 #ifndef CPLTSHELLDACMD_DETAIL_EXE_
 #define CPLTSHELLDACMD_DETAIL_EXE_  "  Attemps to executes the contents of expanded <etext> text. See the Set command\n" \
                                     "  for additional details about 'etext' arguments."

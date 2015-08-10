@@ -1,9 +1,0 @@
-<map id="Transmitter.h" name="Transmitter.h">
-<area shape="rect" id="node2" href="$_driver_2_uart_2_hal_8h.html" title="Cpl/Driver/Uart/Hal.h" alt="" coords="205,80,343,107"/>
-<area shape="rect" id="node5" href="$_ring_buffer_8h.html" title="Cpl/Container/RingBuffer.h" alt="" coords="5,80,180,107"/>
-<area shape="rect" id="node6" href="$_thread_8h.html" title="Cpl/System/Thread.h" alt="" coords="443,80,587,107"/>
-<area shape="rect" id="node7" href="$_runnable_8h.html" title="Cpl/System/Runnable.h" alt="" coords="331,155,489,181"/>
-<area shape="rect" id="node8" href="$_signable_8h.html" title="Cpl/System/Signable.h" alt="" coords="514,155,669,181"/>
-<area shape="rect" id="node10" href="$_traverser_8h.html" title="Cpl/Type/Traverser.h" alt="" coords="693,155,833,181"/>
-<area shape="rect" id="node9" href="$_item_8h.html" title="Cpl/Container/Item.h" alt="" coords="521,229,661,256"/>
-</map>

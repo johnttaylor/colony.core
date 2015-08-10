@@ -17,12 +17,13 @@
 #include "Cpl/TShell/Dac/Processor.h"
 
                                                  
-/* RULER
+/** Usage
                                       "         1         2         3         4         5         6         7         8"
                                       "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLDACMD_USAGE_LOOP_    "loop WHILE [<op1> <test> <op2> [AND|OR <op3> <test> <op4>]]...\n" \
                                       "loop UNTIL [<op1> <test> <op2> [AND|OR <op3> <test> <op4>]]..."
+/// Detailed Help text
 #ifndef CPLTSHELLDACMD_DETAIL_LOOP_
 #define CPLTSHELLDACMD_DETAIL_LOOP_   "  Provides a looping construct. When 'UNTIL' is encounter, the previous\n" \
                                       "  command(s) are replayed starting with 'WHILE'.  An optional expression can be\n" \

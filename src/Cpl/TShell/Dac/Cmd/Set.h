@@ -16,11 +16,13 @@
 #include "Cpl/TShell/Dac/Cmd/Command.h"
 
 
-/* RULER
+/** Usage
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLDACMD_USAGE_SET_   "set [<varname> [<etext>]]"
+
+/// Detailed Help text
 #ifndef CPLTSHELLDACMD_DETAIL_SET_
 #define CPLTSHELLDACMD_DETAIL_SET_  "  Updates the contents of the variable <varname> to the expanded <etext>. If\n" \
                                     "  only the <varname> argument is provided, then the variable is removed from the\n" \

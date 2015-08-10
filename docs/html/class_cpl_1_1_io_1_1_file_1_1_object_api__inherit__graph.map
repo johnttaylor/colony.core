@@ -1,8 +1,0 @@
-<map id="Cpl::Io::File::ObjectApi" name="Cpl::Io::File::ObjectApi">
-<area shape="rect" id="node2" href="$class_cpl_1_1_io_1_1_file_1_1_input_api.html" title="Cpl::Io::File::InputApi" alt="" coords="87,80,229,107"/>
-<area shape="rect" id="node6" href="$class_cpl_1_1_io_1_1_file_1_1_output_api.html" title="Cpl::Io::File::OutputApi" alt="" coords="254,80,409,107"/>
-<area shape="rect" id="node3" href="$class_cpl_1_1_io_1_1_file_1_1_input.html" title="Cpl::Io::File::Input" alt="" coords="5,155,129,181"/>
-<area shape="rect" id="node4" href="$class_cpl_1_1_io_1_1_file_1_1_input_output_api.html" title="Cpl::Io::File::InputOutputApi" alt="" coords="153,155,336,181"/>
-<area shape="rect" id="node5" href="$class_cpl_1_1_io_1_1_file_1_1_input_output.html" title="Cpl::Io::File::InputOutput" alt="" coords="163,229,326,256"/>
-<area shape="rect" id="node7" href="$class_cpl_1_1_io_1_1_file_1_1_output.html" title="Cpl::Io::File::Output" alt="" coords="360,155,495,181"/>
-</map>

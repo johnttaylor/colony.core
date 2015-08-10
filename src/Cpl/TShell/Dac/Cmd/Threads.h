@@ -19,12 +19,13 @@
 
 
 
-/* RULER
+/** Usage
                                         "         1         2         3         4         5         6         7         8"
                                         "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLDACMD_USAGE_THREADS_   "threads"
 
+/// Detailed Help text
 #ifndef CPLTSHELLDACMD_DETAIL_THREADS_
 #define CPLTSHELLDACMD_DETAIL_THREADS_  "  Displays the list of threads."
 

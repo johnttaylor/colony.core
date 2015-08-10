@@ -23,19 +23,19 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-///
+/// Win32 Mapping
 #define Cpl_System_Thread_NativeHdl_T_MAP       HANDLE  
 
-///
+/// Win32 Mapping
 #define Cpl_System_Mutex_T_MAP                  CRITICAL_SECTION
 
-///
+/// Win32 Mapping
 #define Cpl_System_Sema_T_MAP                   HANDLE
 
-///
+/// Win32 Mapping
 #define Cpl_System_TlsKey_T_MAP                 DWORD
 
-///
+/// Win32 Mapping
 #define Cpl_System_FastLock_T_MAP               CRITICAL_SECTION
 
 /// Allow the application to adjust the Spin Count used for the FastLock
@@ -44,30 +44,36 @@
 #endif
 
 
-/// 
+/// Win32 Mapping
 #define CPL_SYSTEM_SHELL_NULL_DEVICE_x_MAP      "NUL"
 
-/// 
+/// Win32 Mapping
 #define CPL_SYSTEM_SHELL_SUPPORTED_x_MAP        1
 
 
-///
+/// Win32 Mapping
 #define CPL_IO_NEW_LINE_NATIVE_MAP              "\015\012"
 
-///
+/// Win32 Mapping
 #define CPL_IO_FILE_NATIVE_DIR_SEP_MAP          '\\'
 
-///
+/// Win32 Mapping
 #define CPL_IO_FILE_MAX_NAME_MAP                _MAX_PATH
 
 
-// 
-// Thread Priorites
-//
+/// Thread Priorites
 #define CPL_SYSTEM_THREAD_PRIORITY_HIGHEST_MAP      15
+
+/// Thread Priorites
 #define CPL_SYSTEM_THREAD_PRIORITY_NORMAL_MAP       0
+
+/// Thread Priorites
 #define CPL_SYSTEM_THREAD_PRIORITY_LOWEST_MAP       -15
+
+/// Thread Priorites
 #define CPL_SYSTEM_THREAD_PRIORITY_RAISE_MAP        (+1)
+
+/// Thread Priorites
 #define CPL_SYSTEM_THREAD_PRIORITY_LOWER_MAP        (-1)
 
 

@@ -50,7 +50,7 @@ protected:
     Rte::Point::Model::DefaultRequest::SAP      m_defaultSAP;
 
 protected:
-    ///
+    /// Constructor
     Base( Rte::Point::Api& myPoint, Cpl::Itc::PostApi& myMbox );
 
 

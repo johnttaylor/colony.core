@@ -1,7 +1,0 @@
-<map id="Cpl::Driver::Uart::Stream::Receiver" name="Cpl::Driver::Uart::Stream::Receiver">
-<area shape="rect" id="node2" href="$class_cpl_1_1_system_1_1_thread.html" title="Cpl::System::Thread" alt="" coords="13,193,155,219"/>
-<area shape="rect" id="node3" href="$class_cpl_1_1_system_1_1_signable.html" title="Cpl::System::Signable" alt="" coords="5,89,157,115"/>
-<area shape="rect" id="node4" href="$class_cpl_1_1_container_1_1_item.html" title="Cpl::Container::Item" alt="" coords="13,5,150,32"/>
-<area shape="rect" id="node5" href="$class_cpl_1_1_container_1_1_ring_buffer.html" title="Cpl::Container::RingBuffer\l\&lt; uint8_t \&gt;" alt="" coords="181,185,352,227"/>
-<area shape="rect" id="node6" href="$class_cpl_1_1_container_1_1_ring_buffer.html" title="Cpl::Container::RingBuffer\l\&lt; ITEM \&gt;" alt="" coords="181,81,352,123"/>
-</map>

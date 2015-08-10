@@ -15,11 +15,13 @@
 #include "colony_config.h"
 #include "Cpl/TShell/Dac/Cmd/Command.h"
 
-/* RULER
+/** Usage
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLDACMD_USAGE_BYE_   "bye [app [<exitcode>]]"
+
+/// Detailed Help text
 #ifndef CPLTSHELLDACMD_DETAIL_BYE_
 #define CPLTSHELLDACMD_DETAIL_BYE_  "  Requests the DAC shell to exit. If the optional argument 'app' is specified\n" \
                                     "  then the application is exited with the specifed <exitcode>. The default\n" \

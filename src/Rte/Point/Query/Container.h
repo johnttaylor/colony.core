@@ -39,7 +39,7 @@ protected:
 
 
 protected:
-    ///
+    /// Constructor
     Container( Rte::Point::ContainerApi&                 myPoint, 
                Rte::Point::Model::Api&                   modelPoint,  
                Rte::Point::Model::QueryRequest::Option_T copyOption = Rte::Point::Model::QueryRequest::eCOPY

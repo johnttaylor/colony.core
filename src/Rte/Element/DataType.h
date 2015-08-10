@@ -101,7 +101,11 @@ public:
         }
     
 public:
-    ///
+    /** Not equals comparsion.  Note: The Application should avoid 'equals' 
+        comparision as this leads to testing for ALL types - which breaks
+        down when new types are added.  However, checking for "this is not
+        me" does scale when new types are added - hence the isNotEqual method
+     */
     inline bool isNotEqual( DataType x ) const 
         { 
         return m_dataTypeId != x.m_dataTypeId; 

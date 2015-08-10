@@ -16,11 +16,13 @@
 #include "Cpl/TShell/Dac/Cmd/Command.h"
 
 
-/* RULER
+/** Usage
                                          "         1         2         3         4         5         6         7         8"
                                          "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLDACMD_USAGE_TOKENIZE_   "tokenize *|<dqe> <etext> <var1> <idx1> [<var2> <idx2>]..."
+
+/// Detailed Help text
 #ifndef CPLTSHELLDACMD_DETAIL_TOKENIZE_
 #define CPLTSHELLDACMD_DETAIL_TOKENIZE_  "  Tokenizes the contents of <etext> and stores the token(s) in specified <varN>\n" \
                                          "  variables based on the associated <idxN> arugments - which is a zero based\n" \

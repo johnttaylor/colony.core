@@ -33,7 +33,7 @@ namespace Rte { namespace Element {
 class SeqNumber: public Base
 {
 protected:
-    ///
+    /// Storage for the sequence number
     int32_t m_data;
 
 public:

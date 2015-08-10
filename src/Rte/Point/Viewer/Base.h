@@ -29,17 +29,23 @@ class Base: public Api,
 protected:
     /// Possible states
     enum State_t { eSTOPPED, eSTARTED, eSTOPPING };
-    ///
+
+    /// Current state of the Viewer
     State_t                                             m_state;
-    ///
+
+    /// The Model Point that is being viewer
     Rte::Point::Model::Api&                             m_modelPoint;
-    ///
+
+    /// ITC Payload for the change notification
     Rte::Point::Model::ViewerRequest::RegisterPayload   m_registerPayload;
-    ///
+
+    /// ITC Request & Response Message for the change notification
     Rte::Point::Model::ViewerResponse::RegisterMsg      m_registerMsg;
-    ///
+
+    /// ITC Payload for canceling change notification
     Rte::Point::Model::ViewerRequest::CancelPayload     m_cancelPayload;
-    ///
+
+    /// ITC Request & Response Mesage for canceling the chance notification
     Rte::Point::Model::ViewerResponse::CancelMsg        m_cancelMsg;
 
 

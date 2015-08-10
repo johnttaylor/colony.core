@@ -1,9 +1,0 @@
-<map id="Cpl::System::Signable" name="Cpl::System::Signable">
-<area shape="rect" id="node3" href="$class_cpl_1_1_itc_1_1_mailbox.html" title="Cpl::Itc::Mailbox" alt="" coords="23,155,139,181"/>
-<area shape="rect" id="node5" href="$class_cpl_1_1_system_1_1_semaphore.html" title="Cpl::System::Semaphore" alt="" coords="164,155,332,181"/>
-<area shape="rect" id="node6" href="$class_cpl_1_1_system_1_1_thread.html" title="Cpl::System::Thread" alt="" coords="356,155,497,181"/>
-<area shape="rect" id="node2" href="$class_cpl_1_1_container_1_1_item.html" title="Cpl::Container::Item" alt="" coords="179,5,317,32"/>
-<area shape="rect" id="node4" href="$class_cpl_1_1_itc_1_1_mailbox_server.html" title="Cpl::Itc::MailboxServer" alt="" coords="5,237,157,263"/>
-<area shape="rect" id="node7" href="$class_cpl_1_1_system_1_1_cpp11_1_1_thread.html" title="Cpl::System::Cpp11\l::Thread" alt="" coords="276,229,415,271"/>
-<area shape="rect" id="node8" href="$class_cpl_1_1_system_1_1_win32_1_1_thread.html" title="Cpl::System::Win32\l::Thread" alt="" coords="439,229,577,271"/>
-</map>

@@ -1,9 +1,0 @@
-<map id="Cpl::System::Win32::Thread" name="Cpl::System::Win32::Thread">
-<area shape="rect" id="node2" href="$class_cpl_1_1_system_1_1_thread.html" title="Cpl::System::Thread" alt="" coords="453,5,595,32"/>
-<area shape="rect" id="node3" href="$class_cpl_1_1_system_1_1_signable.html" title="Cpl::System::Signable" alt="" coords="195,28,347,55"/>
-<area shape="rect" id="node8" href="$class_cpl_1_1_system_1_1_semaphore.html" title="Cpl::System::Semaphore" alt="" coords="440,56,608,83"/>
-<area shape="rect" id="node4" href="$class_cpl_1_1_container_1_1_item.html" title="Cpl::Container::Item" alt="" coords="5,28,143,55"/>
-<area shape="rect" id="node5" href="$class_cpl_1_1_text_1_1_f_string.html" title="Cpl::Text::FString\l\&lt; 64 \&gt;" alt="" coords="462,107,586,149"/>
-<area shape="rect" id="node7" href="$class_cpl_1_1_text_1_1_f_string.html" title="Cpl::Text::FString\&lt; S \&gt;" alt="" coords="192,129,349,156"/>
-<area shape="rect" id="node9" href="$class_cpl_1_1_system_1_1_runnable.html" title="Cpl::System::Runnable" alt="" coords="446,173,602,200"/>
-</map>

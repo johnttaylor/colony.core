@@ -1,7 +1,0 @@
-<map id="Cpl::Memory::Allocator" name="Cpl::Memory::Allocator">
-<area shape="rect" id="node3" href="$class_cpl_1_1_memory_1_1_h_pool.html" title="Cpl::Memory::HPool\&lt; T \&gt;" alt="" coords="396,5,567,32"/>
-<area shape="rect" id="node4" href="$class_cpl_1_1_memory_1_1_s_pool.html" title="Cpl::Memory::SPool\l\&lt; T, N \&gt;" alt="" coords="412,57,551,98"/>
-<area shape="rect" id="node5" href="$class_cpl_1_1_memory_1_1_s_pool.html" title="Cpl::Memory::SPool\l\&lt; Cpl::Io::Socket::InputOutput, N \&gt;" alt="" coords="725,90,949,131"/>
-<area shape="rect" id="node2" href="$class_cpl_1_1_container_1_1_item.html" title="Cpl::Container::Item" alt="" coords="5,64,143,91"/>
-<area shape="rect" id="node6" href="$class_cpl_1_1_io_1_1_socket_1_1_stream_pool.html" title="Cpl::Io::Socket::StreamPool\&lt; N \&gt;" alt="" coords="999,97,1216,124"/>
-</map>

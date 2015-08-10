@@ -23,7 +23,7 @@
 #define OPTION_CPL_TSHELL_DAC_CMD_TRY_IFELSE_NEST_LEVELS    4
 #endif
 
-/* RULER
+/** Usage
                                       "         1         2         3         4         5         6         7         8"
                                       "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
@@ -31,6 +31,7 @@
                                       "try ELSE\n" \
                                       "try ELIF <op1> <test> <op2> [AND|OR <op3> <test> <op4>]...\n" \
                                       "try ENDIF"
+/// Detailed Help text
 #ifndef CPLTSHELLDACMD_DETAIL_TRY_
 #define CPLTSHELLDACMD_DETAIL_TRY_    "  Provides an if/else construct.  Valid <test> operations are: '=', '!=', '<',\n" \
                                       "  '>', '>=', and '<='.  The operands (e.g. <op1>) are 'etext' arguments (see the\n" \
