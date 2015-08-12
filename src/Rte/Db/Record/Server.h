@@ -208,6 +208,9 @@ protected:
 
     /// See Rte::Db::Record::HandlerFsmContext_
     void consumeNoWrite() throw();
+    
+    /// See Rte::Db::Record::HandlerFsmContext_
+    void defaultAllRecords() throw();
 
     /// See Rte::Db::Record::HandlerFsmContext_
     void inspectWriteQue() throw();

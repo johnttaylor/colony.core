@@ -5,9 +5,16 @@
 #ifdef BUILD_VARIANT_WIN32
 #include "Cpl/System/Win32/mappings_.h"
 #endif
+
 #ifdef BUILD_VARIANT_CPP11
+
+#include <stdlib.h>
+#define CPL_IO_FILE_NATIVE_DIR_SEP_MAP          '\\'
+#define CPL_IO_FILE_MAX_NAME_MAP                _MAX_PATH
+
 #include "Cpl/System/Cpp11/mappings_.h"
 #endif
+
 
 // strapi mapping
 #include "Cpl/Text/_mappings/vc12/strapi.h"

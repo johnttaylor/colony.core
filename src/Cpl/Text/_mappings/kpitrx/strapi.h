@@ -23,6 +23,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <string.h>
+
+
 #define HAVE_CPL_TEXT_STRCASECMP
 #define HAVE_CPL_TEXT_STRNCASECMP
 #define HAVE_CPL_TEXT_STRUPR

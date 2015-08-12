@@ -109,15 +109,9 @@ void Server::request( DefaultMsg& msg )
 
     // Ignore request if NOT opened, i.e. it would do anything anyway since all 
     // Records are defaulted as part of the opening the DB sequence
-    if ( getInnermostActiveState() != Idle &&  getInnermostActiveState() != Stopping )
+    if ( getInnermostActiveState() != Idle && getInnermostActiveState() != Stopping )
         {
-        // Default ALL registered records
-        ApiLocal* recordPtr = m_records.first();
-        while( recordPtr )
-            {
-            recordPtr->defaultContent();
-            recordPtr = m_records.next( *recordPtr );
-            }
+        defaultAllRecords();
         }
 
     msg.returnToSender();
@@ -490,6 +484,17 @@ void Server::ackWrite() throw()
     else
         {
         Cpl::System::FatalError::logf( "Rte::Db::Record::Server::ackWrite - Protocol Error." );
+        }
+    }
+
+void Server::defaultAllRecords() throw()
+    {
+    // Default ALL registered records
+    ApiLocal* recordPtr = m_records.first();
+    while( recordPtr )
+        {
+        recordPtr->defaultContent();
+        recordPtr = m_records.next( *recordPtr );
         }
     }
 

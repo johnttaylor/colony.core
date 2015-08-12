@@ -3,6 +3,7 @@
  
 # Core Platform
 src/Cpl/System/Cpp11
+src/Cpl/System/Cpp11/_fatalerror
 src/Cpl/System/_ansi
 src/Cpl/System/_testsupport
 src/Cpl/Io

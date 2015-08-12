@@ -44,6 +44,9 @@ public:
     virtual void consumeNoWrite() throw() = 0;
 
     /// Action
+    virtual void defaultAllRecords() throw() = 0;
+
+    /// Action
     virtual void inspectWriteQue() throw() = 0;
 
     /// Action

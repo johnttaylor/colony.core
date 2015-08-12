@@ -5,14 +5,7 @@ src/Driver/Uart/Stream/_0test
 src/Driver/Uart/Stream
 
 # supporting infrastructure
-//colony.freertos/src/Cpl/System/FreeRTOS
-//colony.freertos/src/Cpl/System/FreeRTOS/_fatalerror
-src/Cpl/System
-src/Cpl/Container
-src/Cpl/Text
-src/Cpl/Io
-
-
+/top/libdirs/platform_freertos_default_realtime_libdirs.b
 
 # BSP
 //colony.bsp.renesas.rx/top/libdirs/yrdkr62n_gnurx_libdirs.b

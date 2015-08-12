@@ -702,6 +702,7 @@ Pos="2076 -8003"
 Origin="1">
 <Text>evResponse[isNotCompatible()]/<p/>
 reportIncompatible();<p/>
+defaultAllRecords();<p/>
 nakOpenDone();<p/>
 inspectWriteQue();</Text>
 </FreeText>

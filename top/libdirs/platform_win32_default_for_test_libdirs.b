@@ -3,6 +3,7 @@
  
 # Core Platform
 src/Cpl/System/Win32
+src/Cpl/System/Win32/_fatalerror
 src/Cpl/System/_ansi
 src/Cpl/System/_testsupport
 src/Cpl/Io

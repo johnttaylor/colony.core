@@ -364,6 +364,7 @@ namespace Rte { namespace Db { namespace Record  {
 
                                     /* Action code for transition  */
                                     reportIncompatible();
+                                    defaultAllRecords();
                                     nakOpenDone();
                                     inspectWriteQue();
 
