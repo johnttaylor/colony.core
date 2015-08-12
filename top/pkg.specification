@@ -10,6 +10,7 @@ email = John.T.Taylor@gmail.com
 url = www.integerfox.com/colony.core
 
 [immediate_deps]
+colony.bsp\\0.0.0
 
 [weak_deps]
 catch\\1.0.53
