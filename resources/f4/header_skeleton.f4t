@@ -11,7 +11,7 @@ $_SUBSCRIPT, copyright.f4t, copyright_holder, '/** @file */'
 
 
 /// Namespaces
-namespace $namespaces>+ { namespace$ {
+namespace $namespaces>+ { namespace $ {
 
 
 /** This class does blah.....
