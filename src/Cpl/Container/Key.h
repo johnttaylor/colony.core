@@ -14,6 +14,7 @@
 
 #include "Cpl/System/FatalError.h"
 #include <stdint.h>
+#include <string.h>
 #include "colony_map.h"
 
 
