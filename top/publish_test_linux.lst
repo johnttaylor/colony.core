@@ -1,0 +1,2 @@
+# Run my Linux based AUT projects
+-v --dir _0test --d2 linux --match a.out --m2 a.py

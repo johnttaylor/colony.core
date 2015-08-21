@@ -1,20 +1,20 @@
 # Test App
-//colony.core/src/Cpl/Timer/_0test/hw_basic
+src/Cpl/Timer/_0test/hw_basic
 
 # Unit under test
 
 # supporting infrastructure
-//colony.core/src/Cpl/Itc
-//colony.core/src/Cpl/System
-//colony.core/src/Cpl/System/_trace
-//colony.core/src/Cpl/Container
-//colony.core/src/Cpl/Text
-//colony.core/src/Cpl/Io
-//colony.core/src/Cpl/Timer
+src/Cpl/Itc
+src/Cpl/System
+src/Cpl/System/_trace
+src/Cpl/Container
+src/Cpl/Text
+src/Cpl/Io
+src/Cpl/Timer
 
 # drivers
-//colony.core/src/Cpl/Io/Serial/Renesas/Rx62n
-//colony.core/src/Driver/Uart/Stream
+src/Cpl/Io/Serial/Renesas/Rx62n
+src/Driver/Uart/Stream
 
 
 # BSP

@@ -3,7 +3,10 @@
 Package specific script that 'tests' the package content as part of the 
 publish process.  
 
-Usage: test <pkgroot>
+Usage: test <pkgroot> [<host>]
+
+Notes:
+    o Default host is "windows" 
 
 Returns: If all of the test(s) are succesful, then the script returns '0'; else
          a non-zero value is returned.
@@ -26,9 +29,13 @@ def _use_outcast():
     if ( len(sys.argv) < 2 ):
         exit( "ERROR: Missing <pkgroot> command argument" )
 
+    # Trap host option
+    publish = "publish_test.lst"
+    if ( len(sys.argv) > 2 ):
+        publish = "publish_test_linux.lst"
 
     # Build arguments for the bob-the-builder
-    testlist  = os.path.join( sys.argv[1], "top",   "publish_test.lst" )
+    testlist  = os.path.join( sys.argv[1], "top", publish )
     path      = os.path.join( sys.argv[1], "tests" )
     cmd       = "chuck.py -v --path {} --file {}".format(path, testlist)
 
