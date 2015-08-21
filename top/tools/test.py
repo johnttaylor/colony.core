@@ -31,7 +31,7 @@ def _use_outcast():
 
     # Trap host option
     publish = "publish_test.lst"
-    if ( len(sys.argv) > 2 ):
+    if ( len(sys.argv) > 2 and sys.argv[2] == 'linux' ):
         publish = "publish_test_linux.lst"
 
     # Build arguments for the bob-the-builder
