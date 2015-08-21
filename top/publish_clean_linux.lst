@@ -1,2 +1,2 @@
 # Projects/Tests to clean
-build -v here --clean-all
+build -v linux --clean-all
