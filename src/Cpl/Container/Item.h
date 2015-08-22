@@ -42,6 +42,12 @@ protected:
     /// Constructor
     Item():m_nextPtr_(0),m_inListPtr_(0){}
 
+    /** Constructor used ONLY with the child class MapItem: -->special 
+        constructor to allow a Map to be statically allocated.  Only the Map 
+        itself should ever use this constructor -->not intended for Items in a 
+        Map
+     */
+    Item( const char* ignoreThisParameter_usedToCreateAUniqueConstructor ){}
 
 
 public:
@@ -90,6 +96,13 @@ public:
 protected:
     /// Constructor
     ExtendedItem():m_prevPtr_(0){}
+
+    /** Constructor used ONLY with the child class MapItem: -->special 
+        constructor to allow a Map to be statically allocated.  Only the Map 
+        itself should ever use this constructor -->not intended for Items in a 
+        Map
+     */
+    ExtendedItem( const char* ignoreThisParameter_usedToCreateAUniqueConstructor ):Item(ignoreThisParameter_usedToCreateAUniqueConstructor) {}
 
 };
 

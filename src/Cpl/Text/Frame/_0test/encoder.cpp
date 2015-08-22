@@ -61,7 +61,7 @@ TEST_CASE( "encode", "[encode]" )
     Cpl::Io::File::Output outfd( OUTFILE_NAME_ );
 
     {
-    StreamEncoder encoder( outfd, SOF_, EOF_, ESC_ );
+    StreamEncoder encoder( &outfd, SOF_, EOF_, ESC_ );
 
     REQUIRE( encoder.startFrame() );
     REQUIRE( encoder.output( "hello world") );
@@ -81,7 +81,7 @@ TEST_CASE( "encode", "[encode]" )
 
 
     {
-    StreamEncoder encoder( outfd, SOF_, EOF_, ESC_, false );
+    StreamEncoder encoder( &outfd, SOF_, EOF_, ESC_, false );
 
     REQUIRE( encoder.startFrame() );
     REQUIRE( encoder.output( "hello world") );

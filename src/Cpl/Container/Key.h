@@ -175,7 +175,7 @@ class KeyLiteralString: public KeyStringBuffer
 {
 public:
     /// Constructor
-    KeyLiteralString( const char* string ):KeyStringBuffer(string, strlen(string)){}
+    KeyLiteralString( const char* string ):KeyStringBuffer(string, string?strlen(string):0){}
 
 
 public:

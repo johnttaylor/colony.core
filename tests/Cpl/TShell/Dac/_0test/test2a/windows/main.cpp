@@ -8,7 +8,7 @@
 extern void shell_test2( Cpl::Io::Socket::Listener& listener );
                                                 
 
-Cpl::Container::Map<Cpl::TShell::Dac::Command>  cmdlist;
+Cpl::Container::Map<Cpl::TShell::Dac::Command>  cmdlist("ignore_this_parameter-used to invoke the static constructor" );
 Cpl::TShell::Dac::Cmd::Threads                  threadsCmd_( cmdlist );
 
 

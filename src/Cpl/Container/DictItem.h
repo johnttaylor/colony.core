@@ -51,7 +51,7 @@ protected:
         itself should ever use this constructor -->not intended for Items in a 
         Map
      */
-    DictItem( const char* ignoreThisParameter_usedToCreateAUniqueConstructor ){}
+    DictItem( const char* ignoreThisParameter_usedToCreateAUniqueConstructor ):ExtendedItem(ignoreThisParameter_usedToCreateAUniqueConstructor){}
 
 
     // Allow the Hash table access to me

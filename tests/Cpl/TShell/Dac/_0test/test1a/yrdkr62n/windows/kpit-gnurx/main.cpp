@@ -13,7 +13,7 @@ static Cpl::Io::Serial::Renesas::Rx62n::InputOutput<256,32> fd_( BSP_DB9_CONSOLE
 // External references
 extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 
-Cpl::Container::Map<Cpl::TShell::Dac::Command>  cmdlist;
+Cpl::Container::Map<Cpl::TShell::Dac::Command>  cmdlist("ignore_this_parameter-used to invoke the static constructor" );
 Cpl::TShell::Dac::Cmd::FreeRTOS::Threads        threadsCmd_( cmdlist );
 
 
