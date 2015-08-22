@@ -12,7 +12,7 @@ import subprocess
 #------------------------------------------------------------------------------
 def run_test( root, subdir ):
     utils.push_dir( subdir )
-    src = os.path.join( root, 'xpkgs', 'colony.core', 'src', 'Cpl', 'Io', 'Stdio', '_0test', 'testinput.txt' )
+    src = os.path.join( root, 'colony.core', 'src', 'Cpl', 'Io', 'Stdio', '_0test', 'testinput.txt' )
     print "Running unit test dir: {} ...".format( subdir )
     p = subprocess.Popen( 'cat {}| b.out'.format(src), shell=True )
     p.communicate()
