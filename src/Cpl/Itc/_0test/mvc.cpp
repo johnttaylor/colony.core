@@ -81,7 +81,7 @@ TEST_CASE( "mvc", "[mvc]" )
     // Shutdown threads
     viewerMbox.pleaseStop();
     modelMbox.pleaseStop();
-    Cpl::System::Api::sleep(50); // allow time for threads to stop
+    Cpl::System::Api::sleep(100); // allow time for threads to stop
     REQUIRE( t1->isRunning() == false );
     REQUIRE( t2->isRunning() == false );
     REQUIRE( t3->isRunning() == false );
