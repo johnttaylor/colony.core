@@ -57,8 +57,8 @@ struct struct2_T
 
 static SPool<struct2_T, NUM_POOL5>       pool5_s2;
 static HPool<struct2_T>                  pool6_s2(NUM_POOL6);
-static SPool<struct1_T, NUM_POOL7>       pool7_s1;
-static HPool<struct1_T>                  pool8_s1(NUM_POOL8);
+static SPool<struct1_T, NUM_POOL7>       pool7_s1(true);
+static HPool<struct1_T>                  pool8_s1(NUM_POOL8, true);
 
 static struct1_T* cache_s1[50];
 static struct2_T* cache_s2[50];
@@ -69,8 +69,8 @@ TEST_CASE( "basic", "[basic]" )
     {
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
-    SPool<struct1_T, NUM_POOL1>   pool1_s1;
-    HPool<struct1_T>              pool2_s1(NUM_POOL2);
+    SPool<struct1_T, NUM_POOL1>   pool1_s1(true);
+    HPool<struct1_T>              pool2_s1(NUM_POOL2, true);
     SPool<struct2_T, NUM_POOL3>   pool3_s2;
     HPool<struct2_T>              pool4_s2(NUM_POOL4);
 
@@ -141,7 +141,7 @@ TEST_CASE( "basic", "[basic]" )
         }
     s2Ptr = (struct2_T*) pool3_s2.allocate( sizeof(struct2_T) );
     REQUIRE( s2Ptr == 0 );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
 
     // release test
     for(i=0; i<NUM_POOL3; i++)
@@ -151,7 +151,7 @@ TEST_CASE( "basic", "[basic]" )
     pool3_s2.release( cache_s2[0] );
     s2Ptr = (struct2_T*) pool3_s2.allocate( sizeof(struct2_T) );
     REQUIRE( s2Ptr != 0 );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
 
 
 //
@@ -167,7 +167,7 @@ TEST_CASE( "basic", "[basic]" )
         }
     s2Ptr = (struct2_T*) pool4_s2.allocate( sizeof(struct2_T) );
     REQUIRE( s2Ptr == 0 );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
 
     // release test
     for(i=0; i<NUM_POOL4; i++)
@@ -177,7 +177,7 @@ TEST_CASE( "basic", "[basic]" )
     pool4_s2.release( cache_s2[0] );
     s2Ptr = (struct2_T*) pool4_s2.allocate( sizeof(struct2_T) );
     REQUIRE( s2Ptr != 0 );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
 
 
 //
@@ -245,7 +245,7 @@ TEST_CASE( "basic", "[basic]" )
         }
     s1Ptr = (struct1_T*) pool7_s1.allocate( sizeof(struct1_T) );
     REQUIRE( s1Ptr == 0 );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
 
     // release test
     for(i=0; i<NUM_POOL7; i++)
@@ -255,7 +255,7 @@ TEST_CASE( "basic", "[basic]" )
     pool7_s1.release( cache_s1[0] );
     s1Ptr = (struct1_T*) pool7_s1.allocate( sizeof(struct1_T) );
     REQUIRE( s1Ptr != 0 );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
 
 //
 
@@ -270,7 +270,7 @@ TEST_CASE( "basic", "[basic]" )
         }
     s1Ptr = (struct1_T*) pool8_s1.allocate( sizeof(struct1_T) );
     REQUIRE( s1Ptr == 0 );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
 
     // release test
     for(i=0; i<NUM_POOL8; i++)
@@ -280,7 +280,7 @@ TEST_CASE( "basic", "[basic]" )
     pool8_s1.release( cache_s1[0] );
     s1Ptr = (struct1_T*) pool8_s1.allocate( sizeof(struct1_T) );
     REQUIRE( s1Ptr != 0 );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
 
 
 //
