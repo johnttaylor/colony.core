@@ -3,6 +3,7 @@
 #
 
 src/Cpl/System/Posix
+src/Cpl/System/Posix/_fatalerror
 src/Cpl/System/_ansi
 src/Cpl/System/_trace
 src/Cpl/System/_trace/_stdout

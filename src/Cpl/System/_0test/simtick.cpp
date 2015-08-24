@@ -226,7 +226,7 @@ public:
 
         // What till the the test harness is ready for the next test
         m_sema.wait();
-        Api::sleep(1); // Allow time for the semaphore to signalled more than once.
+        Api::sleep(30); // Allow time for the semaphore to signalled more than once.
 
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Semaphore Time wait test2 (no timeout)...") );
         start = ElaspedTime::milliseconds();
