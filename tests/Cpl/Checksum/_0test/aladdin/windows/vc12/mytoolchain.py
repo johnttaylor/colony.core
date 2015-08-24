@@ -38,6 +38,8 @@ FINAL_OUTPUT_NAME = 'b.exe'
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
 base_release.cflags = '/W3 /WX /EHsc'  # /EHsc enables exceptions
+base_release.firstobjs  = r'..\src\Cpl\Checksum\_0test\aladdin\*.obj '
+
 
 # Set project specific 'optimzed' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
@@ -61,12 +63,13 @@ debug_cpp11    = BuildValues()
 
 # Set 'base' options
 base_cpp11.cflags     = '/W3 /WX /EHsc'  # /EHsc enables exceptions
+base_cpp11.firstobjs  = r'..\src\Cpl\Checksum\_0test\aladdin\*.obj '
 
 # Set 'Optimized' options
 optimzed_cpp11.cflags = '/O2'
 
 # Set project specific 'debug' options
-#debug_cpp11.cflags = '/D "_MY_APP_DEBUG_SWITCH_"'
+debug_cpp11.cflags = '/D "_MY_APP_DEBUG_SWITCH_"'
 
 
 #-------------------------------------------------

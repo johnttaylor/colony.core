@@ -14,7 +14,12 @@ Cpl::Io::Stdio::StdIn                           infd_;
 Cpl::Io::Stdio::StdOut                          outfd_;
 
 Cpl::Container::Map<Cpl::TShell::Dac::Command>  cmdlist("ignore_this_parameter-used to invoke the static constructor" );
+// HACK: to reuse a common test file
+#ifndef BUILD_VARIANT_CPP11
 Cpl::TShell::Dac::Cmd::Win32::Threads           threadsCmd_( cmdlist );
+#else
+Cpl::TShell::Dac::Cmd::Threads                  threadsCmd_( cmdlist );
+#endif
 
 
 int main( int argc, char* const argv[] )
