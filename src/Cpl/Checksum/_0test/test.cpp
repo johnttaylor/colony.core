@@ -154,5 +154,5 @@ TEST_CASE( "Checksums", "[chksum]" )
             }
         }
     
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

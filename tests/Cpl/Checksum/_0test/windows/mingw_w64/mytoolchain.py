@@ -37,8 +37,8 @@ FINAL_OUTPUT_NAME = 'a.exe'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags    = '-std=c++03 -Wall -Werror -x c++ -Wl,-static-libgcc -Wl,-static-libstdc++ -fprofile-arcs -ftest-coverage'
-base_release.linkflags = '-fprofile-arcs'
+base_release.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++ -Wl,-static-libgcc -Wl,-static-libstdc++ -fprofile-arcs -ftest-coverage'
+base_release.linkflags = '-m32 -fprofile-arcs'
 base_release.linklibs  = '-lgcov'
 
 # Set project specific 'optimzed' options
@@ -63,13 +63,32 @@ optimzed_cpp11 = BuildValues()
 debug_cpp11    = BuildValues()
 
 # Set 'base' options
-base_cpp11.cflags     = '-std=c++11 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
-base_cpp11.linkflags  = '-fprofile-arcs'
+base_cpp11.cflags     = '-m32 -std=c++11 -Wall -Werror -x c++ -Wl,-static-libgcc -Wl,-static-libstdc++ -fprofile-arcs -ftest-coverage'
+base_cpp11.linkflags  = '-m32 -fprofile-arcs'
 base_cpp11.linklibs   = '-lgcov'
 
 # Set 'Optimized' options
 optimzed_cpp11.cflags = '-O3'
 
+
+#
+# For build config/variant: "win64"
+# (note: uses same internal toolchain options as the 'Release' variant,
+#        only the 'User' options will/are different)
+#
+
+# Construct option structs
+base_win64     = BuildValues()
+optimzed_win64 = BuildValues()
+debug_win64    = BuildValues()
+
+# Set 'base' options
+base_win64.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++ -Wl,-static-libgcc -Wl,-static-libstdc++ -fprofile-arcs -ftest-coverage'
+base_win64.linkflags  = '-m64 -fprofile-arcs'
+base_win64.linklibs   = '-lgcov'
+
+# Set 'Optimized' options
+optimzed_cpp11.cflags = '-O3'
 
 #-------------------------------------------------
 # ONLY edit this section if you are ADDING options
@@ -88,11 +107,17 @@ cpp11_opts = { 'user_base':base_cpp11,
                'user_debug':debug_cpp11
              }
   
+# Add new dictionary of for new build configuraiton options
+win64_opts = { 'user_base':base_win64,
+               'user_optimized':optimzed_win64,
+               'user_debug':debug_win64
+             }
                
         
 # Add new variant option dictionary to # dictionary of 
 # build varaints
 build_variants = { 'win32':release_opts,
+                   'win64':win64_opts,
                    'cpp11':cpp11_opts,
                  }    
 
