@@ -99,7 +99,7 @@ TEST_CASE( "basic", "[basic]" )
     REQUIRE( buffer == "Hello Worl" );
     REQUIRE( outfd.write( myBuffer, sizeof(myBuffer) ) );
     REQUIRE( outfd.write( myBuffer, sizeof(myBuffer), bytesWritten ) );
-    REQUIRE( bytesWritten == sizeof(myBuffer) );
+    REQUIRE( (size_t)bytesWritten == sizeof(myBuffer) );
 
     outfd.flush(); 
     outfd.close(); 
@@ -143,5 +143,5 @@ TEST_CASE( "basic", "[basic]" )
     REQUIRE( out4fd.write("should fail because closed\n") == false );
     REQUIRE( out3fd.write("should fail because closed\n") == false );
 
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

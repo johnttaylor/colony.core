@@ -150,7 +150,7 @@ TEST_CASE( "atob", "[atob]" )
         unsigned long long value;
 
         bool result = a2ull( value, "123" );
-        REQUIRE( value == 123 );
+        REQUIRE( value == 123u );
         REQUIRE( result == true );
         result = a2ull( value, strPtr, 10, 0, &endPtr );
         REQUIRE( value == (unsigned long long) -123 );
@@ -221,5 +221,5 @@ TEST_CASE( "atob", "[atob]" )
         REQUIRE( result == false );
         }
 
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

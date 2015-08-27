@@ -43,6 +43,10 @@ utils.set_pkg_and_wrkspace_roots(__file__)
 # MAIN ENTRY POINT....
 #
 
+if ( os.path.isdir( '_win64' ) ):
+    run_test( my_globals.NQBP_WORK_ROOT(), '_win64' )
+    print
+
 if ( os.path.isdir( '_win32' ) ):
     run_test( my_globals.NQBP_WORK_ROOT(), '_win32' )
     print

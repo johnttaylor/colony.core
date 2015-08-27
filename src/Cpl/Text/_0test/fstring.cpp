@@ -215,5 +215,5 @@ TEST_CASE( "FString", "[fstring]" )
         s11 += (unsigned long long) 9100000000000;
         REQUIRE( s11 == "****9100" );
         }
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

@@ -1029,5 +1029,5 @@ TEST_CASE( "record", "[record]" )
     Cpl::System::Thread::destroy( *chunkThreadPtr );
     Cpl::System::Thread::destroy( *recordLayerThreadPtr );
     Cpl::System::Thread::destroy( *monitorThreadPtr );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

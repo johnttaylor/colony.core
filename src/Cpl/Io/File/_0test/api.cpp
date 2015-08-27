@@ -577,5 +577,5 @@ TEST_CASE( "api", "[api]" )
     name = Api::getStandard( TEST_PATH9 );
     REQUIRE( name == TEST_PATH9 );
 
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

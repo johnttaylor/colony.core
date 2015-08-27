@@ -384,5 +384,5 @@ TEST_CASE( "chunk", "[chunk]" )
     Cpl::System::Api::sleep(60); // allow time for threads to stop
     REQUIRE( chunkThreadPtr->isRunning() == false );
     Cpl::System::Thread::destroy( *chunkThreadPtr );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

@@ -314,5 +314,5 @@ TEST_CASE( "basic", "[basic]" )
     REQUIRE( cherryRun.m_delta4 < 50 );
     
     Api::sleep(50); // Allow time for the Cherry thread to self terminate
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

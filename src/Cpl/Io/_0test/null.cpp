@@ -87,7 +87,7 @@ TEST_CASE( "null", "[null]" )
     REQUIRE( buffer == "Hello Worl" );
     REQUIRE( fd.write( myBuffer, sizeof(myBuffer) ) );
     REQUIRE( fd.write( myBuffer, sizeof(myBuffer), bytesWritten ) );
-    REQUIRE( bytesWritten == sizeof(myBuffer) );
+    REQUIRE( (size_t)bytesWritten == sizeof(myBuffer) );
     fd.flush(); 
     fd.close(); 
     REQUIRE( fd.write( buffer ) == false ); // Fails because close() was called!
@@ -112,11 +112,11 @@ TEST_CASE( "null", "[null]" )
 
     // Should generate fatal errors
     inlist.put( cherry );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1u );
     outlist.put( apple );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1u );
     iolist.put( orange );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1u );
 
     // Empty the list
     REQUIRE( inlist.get() != 0 );
@@ -173,5 +173,5 @@ TEST_CASE( "null", "[null]" )
     REQUIRE( many.write( "[Should fail!]" ) == false );
 
 
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

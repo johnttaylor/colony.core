@@ -233,5 +233,5 @@ TEST_CASE( "STACK: Validate member functions", "[stack]" )
         }
 
     
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

@@ -118,5 +118,5 @@ TEST_CASE( "format", "[format]" )
         REQUIRE( result == false );
         }
 
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

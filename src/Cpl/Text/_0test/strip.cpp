@@ -74,5 +74,5 @@ TEST_CASE( "strip", "[strip]" )
         REQUIRE( strcmp(ptr,"") == 0 );
         }
 
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

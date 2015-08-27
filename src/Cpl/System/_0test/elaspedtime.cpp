@@ -106,5 +106,5 @@ TEST_CASE( "elaspedtime", "[elaspedtime]" )
         REQUIRE( secs <= precision.m_seconds );
         }
 
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

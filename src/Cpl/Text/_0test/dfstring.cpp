@@ -266,5 +266,5 @@ TEST_CASE( "DFString", "[dfstring]" )
         REQUIRE( s2 == "" );
         }
 
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

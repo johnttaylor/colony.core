@@ -61,5 +61,5 @@ TEST_CASE( "compile test", "[compile]" )
     nvmLogger.verbose( "Verbose: Nvm Logger=%p", &nvmLogger );
 
 
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

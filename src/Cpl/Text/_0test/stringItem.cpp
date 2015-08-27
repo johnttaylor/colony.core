@@ -64,7 +64,7 @@ TEST_CASE( "StringItem", "[stringItem]" )
         foo.insert(item);
         bar.insert(item);
 
-        REQUIRE( Shutdown_TS::getAndClearCounter() == 1 );
+        REQUIRE( Shutdown_TS::getAndClearCounter() == 1u );
         }
 
 
@@ -478,5 +478,5 @@ TEST_CASE( "StringItem", "[stringItem]" )
         REQUIRE( dst.first() == 0 );
         }
 
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

@@ -118,7 +118,7 @@ TEST_CASE( "DICTIONARY: Validate member functions", "[dict]" )
         foo.insert(item);
         bar.insert(item);
 
-        REQUIRE( Shutdown_TS::getAndClearCounter() == 1 );
+        REQUIRE( Shutdown_TS::getAndClearCounter() == 1u );
         }
 
     SECTION( "User supplied hash function" )
@@ -419,5 +419,5 @@ TEST_CASE( "DICTIONARY: Validate member functions", "[dict]" )
         }
 
         
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

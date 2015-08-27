@@ -94,7 +94,7 @@ TEST_CASE( "DLIST: Validate member functions", "[dlist]" )
         foo.put(item);
         bar.put(item);
 
-        REQUIRE( Shutdown_TS::getAndClearCounter() == 1 );
+        REQUIRE( Shutdown_TS::getAndClearCounter() == 1u );
         }
 
     SECTION( "Validate static Constructor" )
@@ -357,5 +357,5 @@ TEST_CASE( "DLIST: Validate member functions", "[dlist]" )
         }
 
         
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

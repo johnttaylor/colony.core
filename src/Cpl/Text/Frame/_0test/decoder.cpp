@@ -99,7 +99,7 @@ TEST_CASE( "decode", "[decode]" )
     REQUIRE( instring == ".~;sef" );
 
     infd.close();
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }
 
 

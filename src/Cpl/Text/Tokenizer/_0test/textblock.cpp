@@ -575,7 +575,7 @@ TEST_CASE( "textblock", "[textblock]" )
         }
 
 
-   REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+   REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }
 
 

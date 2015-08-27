@@ -274,6 +274,6 @@ TEST_CASE( "loopback", "[loopback]" )
     Cpl::System::Thread::destroy( *t2 );
     Cpl::System::Thread::destroy( *t3 );
     Cpl::System::Thread::destroy( *t4 );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 ); 
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u ); 
     }
 

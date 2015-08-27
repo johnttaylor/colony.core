@@ -180,11 +180,11 @@ TEST_CASE( "encode2", "[encode2]" )
     REQUIRE( instring == "A~~;;.Z" );
 
     REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) == false );
-    REQUIRE( fsize == 0 );
+    REQUIRE( fsize == 0u );
     infd.close();
     }
 
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }
 
 

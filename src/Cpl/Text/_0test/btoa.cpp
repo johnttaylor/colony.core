@@ -136,5 +136,5 @@ TEST_CASE( "btoa", "[btoa]" )
         REQUIRE( strcmp(buffer,"0050") == 0 );
         }
 
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

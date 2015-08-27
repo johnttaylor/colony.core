@@ -77,5 +77,5 @@ TEST_CASE( "shell", "[shell]" )
     REQUIRE( Shell::execute( MY_BAD_COMMAND, false, false ) != ANSWER_EXECUTE_NOT_BAD_CMD );
     REQUIRE( Shell::execute( MY_BAD_COMMAND, true, false ) != ANSWER_EXECUTE_NOT_BAD_CMD );
 
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

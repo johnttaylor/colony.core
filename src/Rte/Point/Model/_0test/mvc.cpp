@@ -1006,5 +1006,5 @@ TEST_CASE( "mvc", "[mvc]" )
 
     Cpl::System::Thread::destroy( *modelThreadPtr );
     Cpl::System::Thread::destroy( *viewerThreadPtr );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

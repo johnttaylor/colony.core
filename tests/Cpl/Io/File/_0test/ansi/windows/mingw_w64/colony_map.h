@@ -1,12 +1,6 @@
 #ifndef COLONY_MAP_H_
 #define COLONY_MAP_H_
 
-// Cpl::System mappings
-#ifdef BUILD_VARIANT_WIN32
-#include "Cpl/System/Win32/mappings_.h"
-#endif
-
-
 #ifdef BUILD_VARIANT_CPP11
 
 #include <stdlib.h>
@@ -15,7 +9,9 @@
 
 #include "Cpl/System/Cpp11/mappings_.h"
 
-#endif // end CPP11
+#else
+#include "Cpl/System/Win32/mappings_.h"
+#endif
 
 
 // strapi mapping

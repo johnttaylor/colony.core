@@ -89,5 +89,5 @@ TEST_CASE( "simmvc", "[simmvc]" )
     Cpl::System::Thread::destroy( *t1 );
     Cpl::System::Thread::destroy( *t2 );
     Cpl::System::Thread::destroy( *t3 );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

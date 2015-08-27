@@ -272,7 +272,7 @@ TEST_CASE( "basic", "[basic]" )
         REQUIRE( token.isEmpty() );
         }
 
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }
 
 

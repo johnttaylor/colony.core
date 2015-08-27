@@ -150,5 +150,5 @@ TEST_CASE( "timer", "[timer]" )
     Cpl::System::Thread::destroy( *t3 );
     Cpl::System::Thread::destroy( *t10);
 
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

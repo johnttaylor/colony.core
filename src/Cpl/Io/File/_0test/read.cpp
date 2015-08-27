@@ -107,5 +107,5 @@ TEST_CASE( "read", "[read]" )
     REQUIRE( fd2.isOpened() == false );
     REQUIRE( fd2.read(dummyChar) == false );
 
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

@@ -75,7 +75,7 @@ TEST_CASE( "linedecoder", "[linedecoder]" )
     REQUIRE( instring == " just kidding  " );
 
     infd.close();
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }
 
 

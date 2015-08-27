@@ -209,5 +209,5 @@ TEST_CASE( "RINGBUFFER: Validate member functions", "[ringbuffer]" )
         }
 
     
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

@@ -57,7 +57,7 @@ TEST_CASE( "write", "[write]" )
     REQUIRE( fd.write( myBuffer, sizeof(myBuffer) ) );
     for(size_t i=0; i<sizeof(myBuffer); i++) { sum += myBuffer[i]; }
     REQUIRE( fd.write( myBuffer, sizeof(myBuffer), bytesWritten ) );
-    REQUIRE( bytesWritten == sizeof(myBuffer) );
+    REQUIRE( (size_t)bytesWritten == sizeof(myBuffer) );
     for(int i=0; i<bytesWritten; i++) { sum += myBuffer[i]; }
 
     fd.flush(); 
@@ -105,5 +105,5 @@ TEST_CASE( "write", "[write]" )
     reader.close();
     REQUIRE( infd2.isOpened() == false );
 
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

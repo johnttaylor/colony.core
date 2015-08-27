@@ -358,6 +358,6 @@ TEST_CASE( "String", "[string]" )
 
         }
 
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }
 

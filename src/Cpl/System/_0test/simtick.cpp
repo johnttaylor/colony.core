@@ -441,5 +441,5 @@ TEST_CASE( "basic", "[basic]" )
     REQUIRE( cherryRun.m_delta4 >= 333 );
     REQUIRE( cherryRun.m_delta5 <  50 );
     
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

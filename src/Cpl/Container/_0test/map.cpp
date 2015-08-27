@@ -126,7 +126,7 @@ TEST_CASE( "MAP: Validate member functions", "[map]" )
         foo.insert(item);
         bar.insert(item);
 
-        REQUIRE( Shutdown_TS::getAndClearCounter() == 1 );
+        REQUIRE( Shutdown_TS::getAndClearCounter() == 1u );
         }
 
     SECTION( "Validate static Constructor" )
@@ -167,7 +167,7 @@ TEST_CASE( "MAP: Validate member functions", "[map]" )
 
         // Sneak in test for bogus keys
         ptr2 = staticmap_.find( cherry );
-        REQUIRE( Shutdown_TS::getAndClearCounter() >= 1 ); // Note: Since the behavior is undefined when FatalError::logf() returns -->I will hit more than one fatal error, how many more is somewhat 'random'
+        REQUIRE( Shutdown_TS::getAndClearCounter() >= 1u ); // Note: Since the behavior is undefined when FatalError::logf() returns -->I will hit more than one fatal error, how many more is somewhat 'random'
         }
 
     SECTION( "Basic" )
@@ -469,5 +469,5 @@ TEST_CASE( "MAP: Validate member functions", "[map]" )
         }
 
         
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     }

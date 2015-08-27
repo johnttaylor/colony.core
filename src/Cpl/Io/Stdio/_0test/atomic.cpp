@@ -139,5 +139,5 @@ TEST_CASE( "atomic", "[atomic]" )
     Cpl::System::Thread::destroy( *cherryThreadPtr );
     
     
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
     }

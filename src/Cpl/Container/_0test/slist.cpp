@@ -91,7 +91,7 @@ TEST_CASE( "SLIST: Validate member functions", "[slist]" )
         foo.put(item);
         bar.put(item);
 
-        REQUIRE( Shutdown_TS::getAndClearCounter() == 1 );
+        REQUIRE( Shutdown_TS::getAndClearCounter() == 1u );
         }
 
     SECTION( "Validate static Constructor" )
@@ -296,6 +296,6 @@ TEST_CASE( "SLIST: Validate member functions", "[slist]" )
         REQUIRE( list.remove( pear ) == true );
         }
     
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0 );
+    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
     
     }
