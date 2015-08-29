@@ -36,23 +36,36 @@ ViewerContext   v2_(   "V2", viewerMailbox_, modelBar1_, modelBar2_, modelBar3_,
 ViewerContext   v3_(   "V3", viewerMailbox_, modelBar1_, modelBar2_, modelBar3_, true, false, false, false );  // Compare using seqnumber
 LWViewerContext v4LW_( "V4", viewerMailbox_, modelBar1_, modelBar3_, true, true );
 
+Cpl::System::Thread* modelThreadPtr  = 0;
+Cpl::System::Thread* viewerThreadPtr = 0;
+static unsigned testcount_ = 3;
+
+static void init_()
+    {
+    static bool first = true;
+
+    if ( first )
+        {
+        first = false;
+
+        modelThreadPtr  = Cpl::System::Thread::create( modelMailbox_,  "MODEL" );
+        viewerThreadPtr = Cpl::System::Thread::create( viewerMailbox_,  "Viewer" );
+
+        // Start viewers
+        v1_.open();
+        v2_.open();
+        v3_.open();
+        v4LW_.open();
+        Cpl::System::Api::sleep(250); // Pause to allow other threads to run
+        }
+    }
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "mvc", "[mvc]" )
     {
     CPL_SYSTEM_TRACE_FUNC( SECT_ );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
-
-    Cpl::System::Thread* modelThreadPtr  = Cpl::System::Thread::create( modelMailbox_,  "MODEL" );
-    Cpl::System::Thread* viewerThreadPtr = Cpl::System::Thread::create( viewerMailbox_,  "Viewer" );
-
-    // Start viewers
-    v1_.open();
-    v2_.open();
-    v3_.open();
-    v4LW_.open();
-    Cpl::System::Api::sleep(250); // Pause to allow other threads to run
-
+    init_();
 
     // I cheat here and directly access my Viewer objects since (in theory) they only 'do something' when there is model change
     // CHECK FOR: initial state
@@ -342,6 +355,35 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v2_.m_bar2.m_foo2.m_limit.isValid() == true );
 
 
+    // CLEAN-UP AND END TESTS
+    if ( --testcount_ == 0 )
+        {
+        // Stop viewers
+        v1_.close();
+        v2_.close();
+        v3_.close();
+        v4LW_.close();
+
+        // Shutdown threads
+        viewerMailbox_.pleaseStop();
+        modelMailbox_.pleaseStop();
+        Cpl::System::Api::sleep(250); // allow time for threads to stop
+        REQUIRE( modelThreadPtr->isRunning() == false );
+        REQUIRE( viewerThreadPtr->isRunning() == false );
+
+        Cpl::System::Thread::destroy( *modelThreadPtr );
+        Cpl::System::Thread::destroy( *viewerThreadPtr );
+        REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+        }
+    }
+
+
+TEST_CASE( "mvc2", "[mvc2]" )
+    {
+    CPL_SYSTEM_TRACE_FUNC( SECT_ );
+    Cpl::System::Shutdown_TS::clearAndUseCounter();
+    init_();
+
     // BAR3 Query
     Point::QueryBar3 queryBar3( modelBar3_ );
     queryBar3.issueQuery();
@@ -563,16 +605,23 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( v1_.m_bar3.isTupleInContainer(3) == false );
 
     // Get my Compare-n-Copy queries current
+    Point::QueryBar1 query2Bar1( modelBar1_, Rte::Point::Model::QueryRequest::eCOMPARE_VALUES_AND_COPY );
+    Point::QueryBar1 query3Bar1( modelBar1_, Rte::Point::Model::QueryRequest::eCOMPARE_SEQNUM_AND_COPY );
     query2Bar1.issueQuery();
     query3Bar1.issueQuery();
    
     // FOO1 Controller -->Test compare by value
+    Point::ControllerBar1 controllerBar1( modelBar1_ );
+    controllerBar1.setAllValidState( RTE_ELEMENT_API_STATE_VALID );
     controllerBar1.setAllInUseState(false);
     controllerBar1.m_tuple.m_enabled.setInUse();
     controllerBar1.m_tuple.m_enabled.set(true);
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
+
     controllerBar1.updateModel();
     Cpl::System::Api::sleep(250); // Pause to allow other threads to run
+ 
+    Point::QueryBar1 queryBar1( modelBar1_ );
     queryBar1.issueQuery();
     traceBar1_( queryBar1, "Bar1", "Query - after update of 'm_enabled' #2" );
     REQUIRE( queryBar1.m_tuple.m_name.isValid() == true );
@@ -609,6 +658,34 @@ TEST_CASE( "mvc", "[mvc]" )
     traceBar1_( query3Bar1, "Bar1", "Query::Compare & Copy#2: - after update of 'm_enabled' #2" );
     REQUIRE( query3Bar1.m_tuple.isUpdated() == true );
 
+    // CLEAN-UP AND END TESTS
+    if ( --testcount_ == 0 )
+        {
+        // Stop viewers
+        v1_.close();
+        v2_.close();
+        v3_.close();
+        v4LW_.close();
+
+        // Shutdown threads
+        viewerMailbox_.pleaseStop();
+        modelMailbox_.pleaseStop();
+        Cpl::System::Api::sleep(250); // allow time for threads to stop
+        REQUIRE( modelThreadPtr->isRunning() == false );
+        REQUIRE( viewerThreadPtr->isRunning() == false );
+
+        Cpl::System::Thread::destroy( *modelThreadPtr );
+        Cpl::System::Thread::destroy( *viewerThreadPtr );
+        REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+        }
+    }
+
+
+TEST_CASE( "mvc3", "[mvc3]" )
+    {
+    CPL_SYSTEM_TRACE_FUNC( SECT_ );
+    Cpl::System::Shutdown_TS::clearAndUseCounter();
+    init_();
 
     /// BAR2 Controller: BY TUPLE: FOO1 
     Point::TupleFoo1ControllerBar2 ctrlBar2TupleFoo1( modelBar2_ );
@@ -620,6 +697,8 @@ TEST_CASE( "mvc", "[mvc]" )
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model...."));
     ctrlBar2TupleFoo1.updateModel();
     Cpl::System::Api::sleep(250); // Pause to allow other threads to run
+    
+    Point::QueryBar2 queryBar2( modelBar2_ );
     queryBar2.setAllInUseState(true);
     queryBar2.issueQuery();
     traceBar2_( queryBar2, "Bar2", "Query - after TupleFoo1 controller write" );
@@ -694,7 +773,7 @@ TEST_CASE( "mvc", "[mvc]" )
 
 
     /// FOO3 Controller: BY TUPLE 
-    idx = 3;
+    unsigned idx = 3;
     Point::TupleItemControllerBar3 ctrlBar3Tuple( idx, modelBar3_ );
     ctrlBar3Tuple.m_name.set("bob4");
     ctrlBar3Tuple.m_enabled.set(true);
@@ -706,6 +785,7 @@ TEST_CASE( "mvc", "[mvc]" )
     ctrlBar3Tuple.updateModel();
     Cpl::System::Api::sleep(250); // Pause to allow other threads to run
 
+    Point::QueryBar3 queryBar3( modelBar3_ );
     queryBar3.setAllInUseState(true);
     queryBar3.issueQuery();
     traceBar3_( queryBar3, "Bar3", "Query - after add of tuple idx: 3 (BY TUPLE)" );
@@ -890,6 +970,7 @@ TEST_CASE( "mvc", "[mvc]" )
 
     
     // Test: Read-Modify-Controller
+    Point::QueryBar1 queryBar1( modelBar1_ );
     queryBar1.issueQuery();
     traceBar1_( queryBar1, "Bar1", "Read-Modify-Write - BEFORE" );
     REQUIRE( queryBar1.m_tuple.m_name.getString() == "bob" );
@@ -991,20 +1072,24 @@ TEST_CASE( "mvc", "[mvc]" )
         REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == false );
         }
 
-    // Stop viewers
-    v1_.close();
-    v2_.close();
-    v3_.close();
-    v4LW_.close();
+    // CLEAN-UP AND END TESTS
+    if ( --testcount_ == 0 )
+        {
+        // Stop viewers
+        v1_.close();
+        v2_.close();
+        v3_.close();
+        v4LW_.close();
 
-    // Shutdown threads
-    viewerMailbox_.pleaseStop();
-    modelMailbox_.pleaseStop();
-    Cpl::System::Api::sleep(250); // allow time for threads to stop
-    REQUIRE( modelThreadPtr->isRunning() == false );
-    REQUIRE( viewerThreadPtr->isRunning() == false );
+        // Shutdown threads
+        viewerMailbox_.pleaseStop();
+        modelMailbox_.pleaseStop();
+        Cpl::System::Api::sleep(250); // allow time for threads to stop
+        REQUIRE( modelThreadPtr->isRunning() == false );
+        REQUIRE( viewerThreadPtr->isRunning() == false );
 
-    Cpl::System::Thread::destroy( *modelThreadPtr );
-    Cpl::System::Thread::destroy( *viewerThreadPtr );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+        Cpl::System::Thread::destroy( *modelThreadPtr );
+        Cpl::System::Thread::destroy( *viewerThreadPtr );
+        REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+        }
     }
