@@ -1,0 +1,228 @@
+PACKAGE DOMAIN=1 NAME=3 (Files)
+//============================================================================
+// Fundamental Primitives for access's the ALA's internal file system.  With 
+// respect to this package, a 'file system' is collection of file(s) that are 
+// accessible by RACs - its is not necessarily an actual file system.  That 
+// said, some ALA (that have a true underlying file system) in addtion to 
+// providing access to their application root directory, also provide limited 
+// access to their host device's file system.
+// NOTES:
+// 1) The directory seperator is the unix forward slash ('/').
+// 2) The root direcotry is specified by '.', i.e. the root directory is 
+//    equavelent to a command line current working directory (that can not
+//    be changed).
+// 3) The root directory for each FUNIT is application and/or FUNIT instance
+//    specific.
+// 4) Relative path notation of '..' for referencing a parent directory is 
+//    not allowed anywhere in a path.
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//                      FUNCTIONAL UNITS
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FUNIT NAME=1 (ReadFile)  GNERATION=1
+//============================================================================
+// Provides a RAC will the ability to retreive a file the ALA's file system
+
+  LOCAL REGISTER 1 (Status)  WRITE=X READ=X EVENT=ONWRITE.*
+  //--------------------------------------------------------------------------
+  // Reports the status of the last file command, i.e. the success/fail of
+  // the open and read file commands.
+  
+    succesful  BOOL -RV RST=X
+    // If the 'last' file command issue via this FUNIT was successful this
+    // field will be set to true, else false.
+  END
+      
+  LOCAL REGISTER 2 (Open)  WRITE=OPER+ READ=X EVENT=NEVER
+  //--------------------------------------------------------------------------
+  // This register is to open a file stored by the ALA that the RAC can then 
+  // retreive/read its content.  Writing to this register will first close any 
+  // previously opened file. 
+
+    name  TEXT w-V SZ=$ RST=X
+    // The name of the file to open.  The file name must include parent 
+    // path information (if there is any).  The path is relative to  
+    // this FUNIT instance's root directory.  The application can close the 
+    // file at any time by issuing a write with no argument, i.e. use empty 
+    // field notation for this field.
+  END
+
+  LOCAL REGISTER 3 (Read)  WRITE=X READ=OPER+ EVENT=NEVER
+  //--------------------------------------------------------------------------
+  // This register returns the next N bytes of the currently opened file 
+  // specified by Register 1.  The file is automatically closed when the last 
+  // byte of data is 'read' from this register. Note: If any type of File 
+  // error occurs while 'reading' the file, the file is automacially closed.  
+
+    block  TEXT -RP SZ=$ RST=X
+    // Returns the next N bytes of the file opened by Register 2.  The data
+    // is returned as encoded ASCII HEX (i.e. two ASCII characters for each 
+    // raw binary byte). A internal file pointer/offset is maintained such 
+    // that when the file is opened, it is set to zero.  Every subsequent read 
+    // of this register increments the file pointer/offset by N.  On the last 
+    // 'read' when EOF is reached the number of data bytes return can be less 
+    // than N.  
+    // Notes: 
+    // 1) The number of data bytes ('N') is defined in terms of raw binary 
+    //    bytes - not the number of ASCII characters.
+    // 2) When EOF is reached, no error is generated.  An error will be 
+    //    generated on any subsequent reads.
+  END
+END
+
+
+FUNIT NAME=2 (WriteFile)  GENERATION=1
+//============================================================================
+// Provides a RAC will the ability to write a file to the ALA's file system
+
+  LOCAL REGISTER 1 (Status)  WRITE=X READ=X EVENT=ONWRITE.*
+  //--------------------------------------------------------------------------
+  // Reports the status of the last file command, i.e. the success/fail of
+  // the open and write file commands.
+  
+    succesful  BOOL -RV RST=X
+    // If the 'last' file command issue via this FUNIT was successful this
+    // field will be set to true, else false.
+  END
+      
+  LOCAL REGISTER 2 (Open)  WRITE=SUPR+ READ=X EVENT=NEVER
+  //--------------------------------------------------------------------------
+  // This register is to open a file for writing. If there is error (such a 
+  // bad file name, etc.) the command will fail (XCMD).  Writing to this 
+  // register will first close any previously opened file.
+
+    name  TEXT W-V SZ=$ RST=X
+    // Opens and creates a file (if the file does not already exist).  The 
+    // file name must include parent path information (if there is any).  The 
+    // path is relative to this FUNIT instance's root directory.  
+
+    truncate  BOOL w-V RST=X
+    // If this field is true then the file is truncated when it is opened, 
+    // (i.e. will open and erase the contents of an existing file). If the 
+    // field is false and the file specified by 'name' currently exists then
+    // the file will be opened and any data written to Register 3 will be 
+    // appended to the file.  The field defaults to false if not explicitly 
+    // set by the write command.
+  END
+
+  LOCAL REGISTER 3 (Write)  WRITE=SUPR+ READ=X EVENT=NEVER
+  //--------------------------------------------------------------------------
+  // This register is used to write data to the file opened by Register 2. 
+  // Note: If any type of File error occurs while 'writing' the file, the file 
+  // is automacially closed.  
+
+    block  TEXT w-P SZ=% RST=X
+    // Appends N bytes of the file opened by Register 1.  The data being 
+    // written is encoded as ASCII HEX (i.e. two ASCII characters for each 
+    // raw binary byte). A internal file pointer/offset is maintained such 
+    // that when the file is opened, it is set to zero.  Every subsequent 
+    // write of this register increments the file pointer/offset by N. The 
+    // number of bytes written each time can vary.  However, writing zero 
+    // bytes (i.e. empty field notation) closes the file. Note: The number of 
+    // data bytes ('N') is defined in terms of raw binary bytes - not the 
+    // number of ASCII characters.
+  END
+END
+
+
+FUNIT NAME=3 (ReadDirectory)  GENERATION=1
+//============================================================================
+// Provides directory listing(s) of the ALA's file system and other 'read'
+// operations on individual file system entries.
+
+  LOCAL REGISTER 1 (Status)  WRITE=X READ=X EVENT=ONWRITE.*
+  //--------------------------------------------------------------------------
+  // Reports the status of the last file command, i.e. the success/fail of
+  // the ls, md5, etc. file commands.
+  
+    succesful  BOOL -RV RST=X
+    // If the 'last' file command issue via this FUNIT was successful this
+    // field will be set to true, else false.
+  END
+      
+  LOCAL REGISTER 2 (Directory)  WRITE=OPER+ READ=X EVENT=NEVER
+  //--------------------------------------------------------------------------
+    name  TEXT W-V SZ=$ RST=X
+    // The name of the directory that Register 2 reports the content of.  The 
+    // directory name must include parent path information (if there is any).
+    // The path is relative to this FUNIT instance's root directory. 
+  END
+
+
+  LOCAL REGISTER 3 (List)  WRITE=X READ=X EVENT=ONWRITE.2
+  //--------------------------------------------------------------------------
+    _eol  BOOL -RV
+    // Returns true on last entry in the list; else false
+
+    isFile  BOOL -RP RST=X
+    // This field is true if the entry in the file system is a file,
+    // else the entry is a directory.
+
+    timestamp  TEXT -RV SZ=19 RST=X
+    // The date/time stamp of the file 'name'. 
+    // The format is: "YYYY/MM/DD-HH:MM:SS"
+
+    name  TEXT WRV SZ=$ RST=X
+    // Name of the entry in the directory.  Note: the name does NOT contain 
+    // any path information.
+
+    size  UINT32 -RP LV=* UV=* RST=X
+    // File size in bytes
+  END
+
+  LOCAL REGISTER 4 (MD5Sum)  WRITE=OPER+ READ=X EVENT=ONWRITE.ME
+  //--------------------------------------------------------------------------
+  // This register will calculate the MD5 Checksum of a specified file. 
+
+    name  TEXT WRV SZ=$ RST=X
+    // Name of the file to calcuate the MD5 Checksum for.  The file name must 
+    // include parent path information (if there is any).  The path is 
+    // relative to this FUNIT instance's root directory.
+
+    sum  TEXT -RP SZ=32 RST=X
+    // The calculated MD5 Checksum for the file: 'name'
+
+    byteCount  UINT32 -RP LV=* UV=* RST=X
+    // Total number of bytes in the file
+  END
+END
+
+FUNIT NAME=4 (WriteDirectory)  GENERATION=1
+//============================================================================
+// Provides a RAC with the ability to create directories within the ALA's
+// file system and other write operations on file system entries
+
+  LOCAL REGISTER 1 (Status)  WRITE=X READ=X EVENT=ONWRITE.*
+  //--------------------------------------------------------------------------
+  // Reports the status of the last file command, i.e. the success/fail of
+  // the mkidr and rm commands to this register.
+  
+    succesful  BOOL -RV RST=X
+    // If the 'last' file command issue via this FUNIT was successful this
+    // field will be set to true, else false.
+  END
+      
+  LOCAL REGISTER 2 (Make)  WRITE=SUPR+ READ=X EVENT=NEVER
+  //--------------------------------------------------------------------------
+  // This register will create a directory in the ALA's file system
+
+    name  TEXT W-V SZ=$ RST=X
+    // The name of the new directory to be created. The directory name must 
+    // include parent path information (if there is any).  The path is 
+    // relative to this FUNIT instance's root directory.  Note: ONLY LEAF 
+    // directories can be created, i.e. all parent and/or intermediate 
+    // directories MUST exists or this command will fail.
+  END
+
+  LOCAL REGISTER 3 (Remove)  WRITE=SUPR+ READ=X EVENT=NEVER
+  //--------------------------------------------------------------------------
+  // This register will delete a directory and or a file.
+
+    name  TEXT W-V SZ=$ RST=X
+    // The name of the file or directory to be deleted. The name must 
+    // include parent path information (if there is any).  The path is 
+    // relative to this FUNIT instance's root directory.  Note: A directory
+    // must be empty before it can be deleted.
+  END
+END

@@ -43,7 +43,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 " />
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
-<title>IntegerFox — Colony Core</title>
+<title>IntegerFox — Colony Core::Coral</title>
 <!--~~ This is a Tiddlywiki file. The points of interest in the file are marked with this pattern ~~--><!--~~ Raw markup ~~-->
 
 </head>
@@ -169,6 +169,12 @@ Error message and password prompt
 
 <li>$:/_toggle-view-button</li>
 
+<li>$:/config/Navigation/openLinkFromInsideRiver</li>
+
+<li>$:/config/Navigation/openLinkFromOutsideRiver</li>
+
+<li>$:/config/Navigation/UpdateAddressBar</li>
+
 <li>$:/config/Tiddlers/TitleLinks</li>
 
 <li>$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/clone</li>
@@ -201,6 +207,8 @@ Error message and password prompt
 
 <li>$:/SiteTitle</li>
 
+<li>$:/state/showeditpreview</li>
+
 <li>$:/state/sidebar</li>
 
 <li>$:/state/tab--1963855381</li>
@@ -211,15 +219,25 @@ Error message and password prompt
 
 <li>$:/state/tab-1749438307</li>
 
+<li>$:/state/tab/sidebar--2063883831</li>
+
 <li>$:/state/tabs/controlpanel/toolbars-1345989671</li>
 
 <li>$:/state/toc/Contents-Coding Standards--242358753</li>
 
+<li>$:/state/toc/Contents-CORAL--242358753</li>
+
 <li>$:/state/toc/Contents-Design Patterns--242358753</li>
+
+<li>$:/state/toc/Contents-Functional Unit--242358753</li>
+
+<li>$:/state/toc/Contents-Register--242358753</li>
 
 <li>$:/StoryList</li>
 
 <li>$:/temp/info-plugin</li>
+
+<li>$:/temp/NewTagName</li>
 
 <li>$:/theme</li>
 
@@ -243,37 +261,45 @@ Error message and password prompt
 
 <li>Acknowledgements</li>
 
-<li>Coding Standards</li>
+<li>Command/Event Syntax</li>
 
-<li>Design Patterns</li>
+<li>Commands</li>
 
-<li>Late Config (LConfig)</li>
+<li>CORAL</li>
 
-<li>Late Header (LHeader)</li>
+<li>Data Field</li>
+
+<li>Data Field Types</li>
+
+<li>Domain</li>
+
+<li>Domain Registration</li>
+
+<li>Functional Unit</li>
+
+<li>FUNIT Definitions</li>
+
+<li>FUNIT File Format</li>
 
 <li>LeftMenu</li>
 
 <li>LeftTitle</li>
 
-<li>Licensing</li>
-
-<li>Maker</li>
-
-<li>Naming Conventions</li>
+<li>Named Type</li>
 
 <li>Overview</li>
 
-<li>Remaining core interfaces.....</li>
+<li>Packages</li>
 
-<li>Source File 'Headers'</li>
+<li>Register</li>
 
-<li>Source Reference</li>
+<li>Security Model</li>
+
+<li>Semantics</li>
+
+<li>Token</li>
 
 <li>TopButtons</li>
-
-<li>Unit Testing</li>
-
-<li>Unit Testing Conventions</li>
 
 </ul>
 </p>
@@ -616,6 +642,15 @@ html .solidborders td {  border: 1px solid black; }</pre>
 &lt;/$button&gt;
 &lt;/$reveal&gt;
 </pre>
+</div>
+<div modified="20150831023935062" title="$:/config/Navigation/openLinkFromInsideRiver">
+<pre>top</pre>
+</div>
+<div modified="20150831023936554" title="$:/config/Navigation/openLinkFromOutsideRiver">
+<pre>top</pre>
+</div>
+<div modified="20150831024007735" title="$:/config/Navigation/UpdateAddressBar">
+<pre>permalink</pre>
 </div>
 <div modified="20150831000432566" title="$:/config/Tiddlers/TitleLinks">
 <pre>yes</pre>
@@ -6439,72 +6474,7 @@ html .solidborders td {  border: 1px solid black; }</pre>
 <div status="complete" title="$:/Import">
 <pre>The following tiddlers were imported:
 
-# [[$:/_images/list-all-button]]
-# [[$:/_images/list-recent-button]]
-# [[$:/_images/list-tags-button]]
-# [[$:/_images/search-button]]
-# [[$:/_images/sidebar-button]]
-# [[$:/_leftmenu-TOCtree-sliders]]
-# [[$:/_list-all-button]]
-# [[$:/_list-recent-button]]
-# [[$:/_list-standard-tags]]
-# [[$:/_list-tags]]
-# [[$:/_list-tags-button]]
-# [[$:/_search-button]]
-# [[$:/_settings]]
-# [[$:/_settings-help]]
-# [[$:/_sidebar-button]]
-# [[$:/_stylesheet/dirtree]]
-# [[$:/_stylesheet/leftmenu-hide]]
-# [[$:/_stylesheet/leftmenu-show]]
-# [[$:/_stylesheet/settings]]
-# [[$:/_StyleSheet/table-alternating-green-rows]]
-# [[$:/_StyleSheet/table-extraheight]]
-# [[$:/_StyleSheet/table-noborders]]
-# [[$:/_StyleSheet/table-solidborders]]
-# [[$:/_stylesheets/scrollable-leftmenu]]
-# [[$:/_SystemTags]]
-# [[$:/_toggle-view-button]]
-# [[$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/clone]]
-# [[$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/close-others]]
-# [[$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/more-tiddler-actions]]
-# [[$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/permalink]]
-# [[$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/permaview]]
-# [[$:/core/ui/AdvancedSearch/Standard]]
-# [[$:/core/ui/SideBarLists]]
-# [[$:/core/ui/TopBar/menu]]
-# [[$:/DefaultTiddlers]]
-# [[$:/Import]]
-# [[$:/isEncrypted]]
-# [[$:/palette]]
-# [[$:/SiteSubtitle]]
-# [[$:/SiteTitle]]
-# [[$:/theme]]
-# [[$:/themes/tiddlywiki/snowwhite]]
-# [[$:/themes/tiddlywiki/vanilla]]
-# [[$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint]]
-# [[$:/themes/tiddlywiki/vanilla/metrics/storyright]]
-# [[$:/themes/tiddlywiki/vanilla/metrics/storytop]]
-# [[$:/themes/tiddlywiki/vanilla/metrics/storywidth]]
-# [[$:/themes/tiddlywiki/vanilla/metrics/tiddlerwidth]]
-# [[$:/view]]
-# [[Acknowledgements]]
-# [[Coding Standards]]
-# [[Design Patterns]]
-# [[Late Config (LConfig)]]
-# [[Late Header (LHeader)]]
-# [[LeftMenu]]
-# [[LeftTitle]]
-# [[Licensing]]
-# [[Maker]]
-# [[Naming Conventions]]
-# [[Overview]]
-# [[Remaining core interfaces.....]]
-# [[Source File 'Headers']]
-# [[Source Reference]]
-# [[TopButtons]]
-# [[Unit Testing]]
-# [[Unit Testing Conventions]]</pre>
+# [[Overview]]</pre>
 </div>
 <div title="$:/isEncrypted">
 <pre>no</pre>
@@ -6512,37 +6482,52 @@ html .solidborders td {  border: 1px solid black; }</pre>
 <div modified="20150831000351829" title="$:/palette">
 <pre>$:/palettes/Blanca</pre>
 </div>
-<div created="20141012050151103" modified="20141020030630542" title="$:/SiteSubtitle">
-<pre>Colony Core</pre>
+<div created="20141012050151103" modified="20150831010751071" title="$:/SiteSubtitle">
+<pre>Colony Core::Coral</pre>
 </div>
 <div created="20141012050132607" modified="20141012050136651" title="$:/SiteTitle">
 <pre>IntegerFox</pre>
 </div>
+<div modified="20150831011245903" title="$:/state/showeditpreview">
+<pre>yes</pre>
+</div>
 <div modified="20150831000652864" title="$:/state/sidebar">
 <pre>no</pre>
 </div>
-<div modified="20150831000532213" title="$:/state/tab--1963855381">
-<pre>$:/themes/tiddlywiki/vanilla/themetweaks</pre>
+<div modified="20150831023607783" title="$:/state/tab--1963855381">
+<pre>$:/core/ui/ControlPanel/Palette</pre>
 </div>
-<div modified="20150831000205613" title="$:/state/tab--2112689675">
-<pre>$:/core/ui/ControlPanel/Advanced</pre>
+<div modified="20150831023614041" title="$:/state/tab--2112689675">
+<pre>$:/core/ui/ControlPanel/Basics</pre>
 </div>
 <div modified="20150831000215252" title="$:/state/tab--959111941">
 <pre>$:/core/ui/ControlPanel/EditorTypes</pre>
 </div>
-<div modified="20150831000454153" title="$:/state/tab-1749438307">
-<pre>$:/core/ui/ControlPanel/Appearance</pre>
+<div modified="20150831023621470" title="$:/state/tab-1749438307">
+<pre>$:/core/ui/ControlPanel/Settings</pre>
 </div>
-<div modified="20150831000528831" title="$:/state/tabs/controlpanel/toolbars-1345989671">
-<pre>$:/core/ui/ControlPanel/Toolbars/EditToolbar</pre>
+<div modified="20150831011011343" title="$:/state/tab/sidebar--2063883831">
+<pre>$:/core/ui/SideBar/Tools</pre>
 </div>
-<div modified="20150831000658465" title="$:/state/toc/Contents-Coding Standards--242358753">
+<div modified="20150831011034068" title="$:/state/tabs/controlpanel/toolbars-1345989671">
+<pre>$:/core/ui/ControlPanel/Toolbars/PageControls</pre>
+</div>
+<div modified="20150831010836185" title="$:/state/toc/Contents-Coding Standards--242358753">
+<pre>open</pre>
+</div>
+<div modified="20150831023702951" title="$:/state/toc/Contents-CORAL--242358753">
+<pre>open</pre>
+</div>
+<div modified="20150831010837537" title="$:/state/toc/Contents-Design Patterns--242358753">
+<pre>open</pre>
+</div>
+<div modified="20150831015749126" title="$:/state/toc/Contents-Functional Unit--242358753">
 <pre>close</pre>
 </div>
-<div modified="20150831000659653" title="$:/state/toc/Contents-Design Patterns--242358753">
+<div modified="20150831015354345" title="$:/state/toc/Contents-Register--242358753">
 <pre>close</pre>
 </div>
-<div list="$:/core/ui/MoreSideBar/All [[Remaining core interfaces.....]] Overview" title="$:/StoryList">
+<div list="[[Command/Event Syntax]] Overview Commands [[Functional Unit]] $:/ControlPanel" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -6558,6 +6543,9 @@ html .solidborders td {  border: 1px solid black; }</pre>
         }
     }
 }</pre>
+</div>
+<div created="20150831012333616" modified="20150831015602509" title="$:/temp/NewTagName">
+<pre></pre>
 </div>
 <div modified="20150831000511684" title="$:/theme">
 <pre>$:/themes/tiddlywiki/snowwhite</pre>
@@ -6695,126 +6683,259 @@ html .solidborders td {  border: 1px solid black; }</pre>
 |John Taylor |john.t.taylor@gmail.com|principal author |
 </pre>
 </div>
-<div created="20141021014317835" modified="20150809043627670" tags="Contents Standards" title="Coding Standards">
-<pre>!!!Colony.Core adheres to the following coding standard (a recommended [[Outcast|http://integerfox.com/outcast]] coding standard).  
+<div created="20150831012226260" modified="20150831023055989" tags="CORAL" title="Command/Event Syntax">
+<pre>```
 
-* [[John's Coding Standard|http://integerfox.com/outcast/documentation/codingstandard.htm]]
-* Naming conventions can be found [[here|Naming Conventions]].
+Command String Format                   
+    .&lt;verb&gt;@&lt;addr&gt;([&lt;args&gt;]);
 
+    Examples:
+        .write@_root:1(&quot;bob&quot;,&quot;mypasswd&quot;,ADMN,&quot;Bob's EMS&quot;,,);
+        .write@zone2:1( ,75!, : ); // Forces 2nd field, invalidates 3rd field
+        .write@xyz:2( forced string! );
+        .monitor@relay12:1();
+        .reset@_root();
 
+Event String Format                   
+    ^&lt;event&gt;@&lt;addr&gt;(&lt;parms&gt;);
 
-The following is a list of modifications to the above coding standard. These modifications take precedence over the above standard.
+    Examples:
+        ^data@_root:1(&quot;bob&quot;,,ADMN,&quot;Bob's EMS&quot;,T,23);
+        ^data@zone2:1( &quot;My Zone&quot;, 75!, : ); 
+        ^data@xyz:2( &quot;forced string&quot;! );
+        ^data@3543.A2:1(T,-32.90,0xA3,&quot;quoted string: \&quot;Hello World\&quot;&quot;);
+        ^data@_2.324:3(T);
 
+General Format:
+    verb        := { &lt;alpha&gt; [&lt;alphanum&gt;]* }
+    event       := { &lt;alpha&gt; [&lt;alphanum&gt;]* }
+    alpha       := { any alphabetic character }
+    alphanum    := { any alphabetic or numeric character }
+    addr        := { [&lt;adom&gt;] &lt;general&gt; }
+                     Note: When the &lt;adom&gt; field is omitted than the address is 
+                     consider to be an application specific address.
+    adom        := { { '_' } | &lt;domain&gt; }
+                     Note: the '_' is short hand notation for the '1 (Std)' domain
+    domain      := { &lt;num&gt;&lt;aspeical&gt; where the numeric value is the containing domain ID }
+    general     := { &lt;alpha&gt; [atext]* [:&lt;num&gt;*] }
+    atext       := { {&lt;alphanum&gt;|&lt;aspecial&gt; }
+    aspecial    := { any of the following 3 characters: -_. }
+    num         := { any numeric character }
+    args        := { &lt;argtext&gt;[&lt;status&gt;] [,&lt;argtext&gt;[&lt;status&gt;]* }
+    parms       := { &lt;argtext&gt; [,&lt;argtext&gt;]*}
+    argtext     := { &lt;data&gt; | textstr }
+    data        := { any printable character except for the following 6 
+                     characters: ,)&quot;\:! }
+    textstr     := { &quot;&lt;text&gt;&quot; }
+    text        := { {&lt;chr&gt;|&lt;esc&gt;)* }
+    chr         := { Any printable character except for the following 2 
+                     characters: &quot;\ }
+    esc         := { Two character sequence that 'escapes' the second character.  
+                     Allowed sequences: \&quot; and \\ }
+    status      := { { '!' } | { :[&lt;sval&gt;] } }
+                   Notes: The '!' indicates/invokes a forced status.
+                          When the ':' field is present, the argument value is 
+                          consider to be in non-valid state. 
 
-|extraheight|k
-| ID | Type |Change/Description|h
-| 2.* | Rule |All 2.* rules shall be followed. |
-| 3.1.3| Rule |Required to use [[Doxygen|http://www.doxygen.org/]] for documenting ''public'' (to the namespace) header files. In addition, Doxygen is required to run ''without'' any warnings. |
-| 3.3 | Rule |Tabs stops will be set to ''4'' and ''spaces'' shall be used instead of tabs. |
+    sval        := { any numeric value ranging from 1 to 254.  When 
+                     &lt;sval&gt; is not specified its value is considered be 1 }
 
-The following are additional coding standards.
+```</pre>
+</div>
+<div created="20150831012412961" modified="20150831023849813" tags="CORAL" title="Commands">
+<pre>* ''write'' - modifies the content of the specified address
+** Takes zero or more arguments.  The meaning and order of the arugments //matches// the meaning and order of the individual data fields
+** When  issuing a write command the [[RAC|Remote Access Client]] must specify arguments for all //write-required// data fields.  Data fields that are identified as //write-optional// or //not-writable// may be skipped by using [[Empty Field]] notation
+** The write() command can only be issued when addressing an individual [[Register]] within a [[FUNIT|Functional Unit]].
+*** An error will be generated if an attempt is made to write [[FUNIT|Functional Unit]] address
+** An error will be generated if an attempt is made to write a non-writable address
+* ''reset'' - resets the content of the specified address
+** Takes no arguments.
+*** The exception to the rule above is when the reset() command is used to reset an individual array index.  For this use case, a single argument, ''_index'', is specified that identifies which array index to reset.
+** The reset() command can be issued against individual registers and/or entire [[FUNITs|Functional Unit]].
+** An error will be generated if an attempt is made to reset a non-resettable address
+* ''read'' - reads the content of the specified address
+** Takes no arguments
+** The read() command can be issued against individual registers and/or entire [[FUNITs|Functional Unit]].
+** An error will be generated if an attempt is made to read a non-readable address
+* ''monitor'' - subscribes for change notification
+** Takes no arguments
+** The monitor() command can be issued against individual registers and/or entire [[FUNITs|Functional Unit]].
+** An error will be generated if an attempt is made to monitor a non-monitorable address
+* ''ignore'' - cancel the change notification subscription
+** Takes no arguments
+** The ignore() command can be issued against individual registers and/or entire [[FUNITs|Functional Unit]].
+</pre>
+</div>
+<div created="20150831011217721" modified="20150831023441929" tags="Contents" title="CORAL">
+<pre>!!__''C''__ommon __''O''__pen __''R''__egister __''A''__synchronous __''L''__anguage
 
-|extraheight|k
-|Type |Description |h
-| Rule |All header includes in header files shall be relative to the package's top level `src/` directory, e.g `#include &quot;Cpl/Container/Item.h&quot;`. The only exception is when using the [[LConfig|Late Config (LConfig)]] or [[LHeader|Late Header (LHeader)]] patterns. |
-| Rule |All source files, i.e. ''non'' `.h` files, shall follow the same rules as header files with respect to `#include` statements, but an exception is made to allow including header files in the same directory be name only - no relative path is required for this specific use case. |
-| Rule |The following header files are reserved names and cannot be used in the general code - they are used for [[LConfig|Late Config (LConfig)]] design pattern within the Colony.* packages:  `colony_config.h` - Used for project specific preprocessor directives and/or symbol overrides;  `colony_map.h` - Used for providing project specific platform functions. |
-| Rule |Source code shall be organized such that the directory structure reflects the dependencies of the contained source code. The dependency for directories is that a sub-directory is dependent on its parent directory.  For example: given the the two directories: `Foo/` and `Bar/` such that the files in `Bar/` are dependent on `Foo/` (i.e. files in `Bar/` implement interfaces defined in `Foo/`), the directory structure would be `src/Foo` and `src/Foo/Bar`.  //Note: Also see the [[Naming Conventions]] for the rules of naming directories after namespaces.//  |
-| Rule |Header includes shall not directly reference sub-directories.  Because the directory structure is used to reflect dependencies (see above) then a `#include` of a header file in a direct sub-directory creates/is-a-indication of a circular dependency.  For example: given the directory structure of `src/Foo/` and `src/Foo/Bar/`. It is a ''coding standard violation'' for a header file in the `src/Foo/` directory to have `#include &quot;Foo/Bar/SomeFile.h` |
-| Rule |All C/C++ source code shall be based on/compliant with the [[C++03 ISO/IEC standard|http://en.wikipedia.org/wiki/C%2B%2B03]] with the exceptions listed below.  ''//Note://'' all code is required to compile without errors and run correctly when using a  [[C++11 ISO/IEC standard|http://en.wikipedia.org/wiki/C%2B%2B11]] compiler.   |
-| Rule |''C++03 extension:'' assumes that `&lt;stdint.h&gt;` header file is available as defined per [[C99|http://en.wikipedia.org/wiki/C99]] and/or C++11. ''//Note://'' Any file that includes `&lt;stdint.h&gt;` shall also include `colony_map.h` header file.  This allows platforms that do not have `&lt;stdint.h&gt;` to provide the missing type definitions. |
-| Rule |''C++03 extension:'' assumes that `long long` integer (and its variants) are available (as defined per [[C99|http://en.wikipedia.org/wiki/C99]] and/or C++11. ''//Note://'' Any file that uses `long long` shall also include `colony_map.h` header file.  This allows platforms that do not have `long long` to provide the missing type definitions. |
-| Rule |A flat memory space/model is assumed/required.  In addition a single memory bus model is assumed/required, i.e. code and data share the same address space.  |
-| Rule |No assumption shall be made about the number bits in an `long` variable, i.e. all code shall compile and run successfully even when compiling for 64bit targets.  |
-| Rule |''All'' code shall have unit test code.  See [[Unit Testing]] for additional details on definition/requirements for unit testing |
+CORAL is the protocol and/or command language used to communicate between a [[Remote Application Client]] (RAC) and [[Autonomous Local Application]] (ALA).  CORAL has the following characteristic and/or requirements
+
+# Text based. All data is encoded in printable ASCII text (i.e. a proper subset of [[UTF-8|https://en.wikipedia.org/wiki/UTF-8]])
+# Requires a session oriented, reliable communication transport mechanism, such as TCP/IP sockets
+# Client/Server architecture.  The ALA acts a the server and can support many concurrent clients.  
+## Clients issue commands, the server generates events asynchronously.  ''There are no command/response semantics''</pre>
+</div>
+<div created="20150831014141795" modified="20150831015337400" tags="Register" title="Data Field">
+<pre>A data field is contained with a [[Register]] and represents a single unit of data.  Each data field is described by  [[a primitive data type|Data Field Types]]. Data fields within are register are access/identified in CORAL commands/events by the order the appear in the [[FUNIT|Functional Unit]] / Register definition, i.e. the third data field defined in a [[Register]] is the third command argument and/or third event parameter.  Data fields analogous to individual fields within a C data structure. 
+
+!!Properties/Characteristics of a Data field
+
+* Has [[a primitive data type|Data Field Types]].
+* Has limits associated with the value/primitive data type.  The limits can be defined as part of the FUNIT/Register definition and/or defined by the ALA implementing the FUNIT/Register.
+** The Numeric types - INTx, UINTx, REALx - have an inclusive lower bound (LV) and inclusive upper bound (UV).
+** The TEXT type has a maximum number of character (SZ).  The limit does ''not'' include any escape characters - only actual data.
+* Each field has a reset value (RST).  The field's content is set to the reset value when the register, FUNIT, or ALA is reset.
+** The reset value can be specified as //undefined// (X), i.e. no guarantied value when a reset occurs.
+* Each field has one and only one of the following //write// properties
+** //''Not Writable''//
+** //''Write Required''//. The data field is always updated when write operation is performed on the register, i.e. the [[Empty Field]] notation is ''not'' allowed
+** //''Write Optional''//.  The [[Empty Field]] notation can be be used to ''not'' modify the data field's value when a write operation is performed.
+* Each field has one and only one of the following //read// properties
+** //''Not Readable''//
+** //''Readable''//
+* Each field has one and only one of the following scope properties
+** //''Persistent''//.  The contents of the data field is persistent across restarts/power-cycling of the [[ALA|Autonomous Local Application]].  If a reset command is issued on the register or the FUNIT containing the register, the contents of the data field(s) will be reset.  Note: On the initial/virgin start of the ALA, a reset is issued on all FUNITs and/or registers contained in the ALA.
+** //''Volatile''//.  The contents of the data field are lost when the register, FUNIT, or ALA are reset.
+** //''Constant''//.  The contents of the data field never change, i.e. the contents are determined at compile time of the ALA.</pre>
+</div>
+<div created="20150831014430369" modified="20150831015010929" tags="Register" title="Data Field Types">
+<pre>The following are the allowed primitive data types used when defining [[Data Fields|Data Field]] within [[Register]] in a [[Functional Unit]]
+
+|!Type|!Description|h
+|greenaltrows|k
+|INTx|Signed integer.  //x// is the binary size, in bits, of the integer.  //x//={8,16,32,64}|
+|UINTx|Unsigned integer.  //x// is the binary size, in bits, of the integer, i.e. //x//={8,16,32,64}|
+|REALx|Floating point.  //x// is the binary size, in bits, of the real number. //x//={32,64},  where //REAL32// is IEEE-754 single precision and //REAL64// is IEEE-754 double precision|
+|TEXT|A text string. Text strings are enclosed in double quotes and can contain any printable character including double quotes - an //esthe cape// character is used to encode double quote charcters (and the escape character) in side a text string.  The escape character is: '\' character.  The sequence of character \&quot; is decoded as a single double quote, and \\ is decoded as single backslash|
+|BOOL|Boolean.  A BOOL can have two values {T,F}|
+|TOKEN`&lt;type&gt;` |Enumeration.  A TOKEN has finite set of values as defined by `type`.  Token values are encoded as 1 to 4 alpha numeric characters, e.g. The set of values for TOKEN&lt;1-1-A&gt; is {USER, SUPR, ADMN}|
+|ADDR`&lt;type&gt;`|[[Functional Unit]] Address.  Addresses have types, as defined by `type`, e.g. ADDR&lt;1-2-5&gt; is an address to only Functional Units of type 1-2-5.  The format ADDR&lt;*&gt; can be used to address to any Functional Unit (aka a void pointer)|
+|VOID|No type.  The VOID type is only valid for write-only registers and that the value passed (if any) in the write command is ignored/meaningless.|</pre>
+</div>
+<div created="20150831012553148" modified="20150831012911598" tags="CORAL" title="Domain">
+<pre>A domain name is the top level of all named types ([[FunctionalUnit]]s, and [[Token]]s).  Every domain is defined and regulated by a single owner.  The owner can be an individual, company, committee, etc.  The only restriction is all domains must be registered with the SW-Eden project.  Registration is free.  See DomainRegistration for more details
+
+List of Reserved addresses by domain
+
+* [[1 (Std) addresses |file:./definitions/1.Std.adr]]
 
 
 
 </pre>
 </div>
-<div created="20141024032508563" modified="20141124195153896" tags="Contents" title="Design Patterns">
-<pre>!!!The following is list of design patterns used in the Colon.* packages:
+<div created="20150831012839810" modified="20150831012900841" tags="CORAL" title="Domain Registration">
+<pre>How to register....
 
-!!Patterns
-&lt;h2&gt;
-&lt;ul&gt;
-&lt;$list filter=&quot;[tag[Design Patterns]sort[title]]&quot;&gt;&lt;li&gt;&lt;$link&gt;&lt;$view field=&quot;title&quot;/&gt;&lt;/$link&gt;&lt;/li&gt;
-&lt;/$list&gt;
-&lt;/ul&gt;
-&lt;/h2&gt;</pre>
-</div>
-<div created="20141024035411241" modified="20150809040623837" tags="[[Design Patterns]] Standards" title="Late Config (LConfig)">
-<pre>The //Late Config// or ''LConfig'' pattern is a special case of the [[LHeader|Late Header (LHeader)]] pattern.  The LConfig pattern provides for project specific header file(s) that contains preprocessor directives, symbol definitions, etc. that configure and/or customized the default behavior of the source code based on the needs of a project.  
-
-The LConfig pattern uses globally unique header file name(s) to when specifying the //partial// header include in the [[LHeader|Late Header (LHeader)]] pattern.  Obviously the LConfig pattern imposes a file/directory naming constraints on the source code package as well as consumers of the source code package.
-
-!!Example:
-The example below is from the APLMT layer of  [[XMK|http://integerfox.com/xmk/index.html]].  The following code uses a globally unique header file - `aplcfg.h` to allows individual applications/projects override the default setting for how many open file descriptors are supported/allocated/allowed.  In this case the `aplcfg.h` header is assumed to be located in the top level build directory of an individual project.
-
-                  
-Snippet from `src/aplmt/fd/fdapi.h`
-
-```
-#include &quot;aplcfg.h&quot;                 /* For: Application configuration */
-#include &quot;apl/types/types.h&quot;        /* For: basic types */
-
-...
-
-/*-------------- MACROS/CONSTANTS ------------------------------------------*/
-/** Default number of open'd file descriptors */
-#ifndef OPTION_APLMT_FD_MAX_FILE_DESCRIPTORS
-#define OPTION_APLMT_FD_MAX_FILE_DESCRIPTORS    8
-#endif
-
-```
-
-The max number of file descriptors can be changed to 16 by placing the following line in the application's `aplcfg.h` file:
-
-&gt;`#define OPTION_APLMT_FD_MAX_FILE_DESCRIPTORS    16`
+Currently registered [[Domain]]s
+&lt;html&gt;&lt;div align=&quot;center&quot;&gt;&lt;iframe src=&quot;file:./definitions/domains.lst&quot; frameborder=&quot;0&quot; width=&quot;100%&quot; height=600&gt;&lt;/iframe&gt;&lt;/div&gt;&lt;/html&gt;
 </pre>
 </div>
-<div created="20141024032831414" modified="20141025165639483" tags="[[Design Patterns]] Standards" title="Late Header (LHeader)">
-<pre>The //Late Header// or ''LHeader'' pattern defers which header file(s) are actually included till compile time.  By deferring till compile time which specific header file(s) actually get included, a module’s source code files will have no direct dependency on the indirectly referenced header file(s), which in turn makes the module source code files more re-usable.  One use of the LHeaderpattern is to  create compiler and/or platform independent code without using `#ifdef / #else` constructs in the source code file(s) for each different compiler/platform that the source code is compiled for.
+<div created="20150831015139150" modified="20150831015458797" tags="Contents" title="Functional Unit">
+<pre>Functional Units (FUNIT) are the //addressable// entities and/or objects in the [[CORAL]] protocol.  A FUNIT consists of one or more registers and each FUNIT is identified by a [[Named Type]].  [[ALAs|Autonomous Local Application]] contains many instances of FUNIT types and/or many instance of a single FUNIT type, where each FUNIT has a unique address within the [[ALA|Autonomous Local Application]].  A FUNIT is analogous to a C++ class.
 
-The LHeader pattern use the compiler's header file search path to determine/select which header file(s) get included at run time.  At //edit time// the author of the source code writes a //partial// `#include` statement that does ''not'' resolve to a header file that is in the //normal// header directories/paths.  One way to do this is give a partial path in the actual `#include`.  The tricky part is to ensure that whatever scheme is used here - is that it does ''not'' to reference a header file (or potentially multiple header files) before the project specific customization of the header file search path.
+!!Properties/Characteristics of a FUNIT
 
-The second set of the LHeader pattern is to customize the header file search file ''per'' project (aka modify the project's makefile) to resolve the above //partial// `#include` statements to the desired file(s).  The Apl layers of the [[eXtreme Minimal Kernel|http://integerfox.com/xmk/index.html]] project use the LHeader pattern for their platform independent interfaces. 
+* Contain one or more [[Registers|Register]]. 
+* Each FUNIT definition is identified by a [[Named Type]]
+* Each //instance// of FUNIT has an [[Address]]
+* A [[RAC|Remote Access Client]] can performed the following operations on a FUNIT
+** //''read''// - read the content of all of the FUNIT's registers
+** //''monitor''// - subscribe for change notification from all of the registers in the FUNIT
+** //''ignore''// - cancel the change notification subscription for all of the registers in the FUNIT
+** //''reset''// - reset the contents of all of the FUNIT's registers
 
-!!Example:
-The example below is from the APLMT layer of  [[XMK|http://integerfox.com/xmk/index.html]].  The following code defines a symbol `AplmtMutexHdl` which is mapped to yet to be defined preprocessor symbol `PLATFORM_APLMT_MUTEX_HDL_T`  This symbol is ultimately mapped to a concrete type that is specific to the target platform at compile time using the LHeader pattern.    
+!!FUNIT version control
 
-                  
-Snippet from `src/aplmt/os/mutexapi.h`
+* FUNITs can be viewed as a //contract// that can ''only'' be extended, but were ''no'' functionality/behavior can be removed.
+** i.e. once a FUNT has been //released// the only changes that can be made are to add new register(s).
+** If more extensive changes are required, a new FUNIT must be created
+* Each FUNIT has generation (or version) number.  
+** Generation 0 is used to indicate a FUNIT under development
+** The first binding release of a FUNIT always Generation 1
+** Any change (after the initial release) to FUNIT, its Generation number must be incremented</pre>
+</div>
+<div created="20150831015516810" modified="20150831015604304" tags="[[Functional Unit]]" title="FUNIT Definitions">
+<pre>Package definition files for all [[Functional Units|Functional Unit]] in the //Std// [[Domain]].
 
+*[[1-1 (Std-Coral) |file:./definitions/1-1.Std-Coral.pkg]]
+*[[1-2 (Std-Alarms) |file:./definitions/1-2.Std-Alarms.pkg]]
+*[[1-3 (Std-Files) |file:./definitions/1-3.Std-Files.pkg]]
+*[[1-4 (Std-ClientMessaging) |file:./definitions/1-4.Std-ClientMessaging.pkg]]</pre>
+</div>
+<div created="20150831015617333" modified="20150831015642633" tags="[[Functional Unit]]" title="FUNIT File Format">
+<pre>```
+Format for Function Unit Definition File
+------------------------
+PACKAGE DOMAIN=&lt;val&gt; NAME=&lt;nname&gt; (&lt;ntext&gt;)
+    &lt;token&gt;*    
+    --------------
+    TOKEN NAME=&lt;val&gt; (&lt;ntext&gt;)
+        &lt;sym&gt; (ntext)
+    END
+
+    &lt;funit&gt;*
+    --------------
+    FUNIT NAME=&lt;val&gt; (&lt;ntext&gt;) GENERATION=&lt;val&gt;
+        {&lt;reg&gt;|&lt;lreg&gt;|&lt;areg&gt;}*
+
+        &lt;reg&gt;
+        -----------------
+        &lt;rtype&gt; REGISTER=&lt;val&gt; (&lt;ntext&gt;) RESET=&lt;rst&gt;[&lt;op&gt;] WRITE=&lt;rw&gt;[&lt;op&gt;] READ=&lt;rr&gt;[&lt;op&gt;] EVENT=&lt;re&gt;
+            &lt;datafld&gt;*
+            -----------------
+            &lt;ntext&gt; &lt;dtype&gt; &lt;attr&gt; [&lt;bounds&gt;] RST=&lt;reset&gt;
+        END
+
+        &lt;lreg&gt;
+        -----------------
+        &lt;rtype&gt; LISTREG=&lt;val&gt; (&lt;ntext&gt;) SZ=&lt;val&gt;|$ RESET=&lt;rst&gt;[&lt;op&gt;] WRITE=X READ=&lt;rr&gt;[&lt;op&gt;] EVENT=&lt;re&gt;
+            _eol BOOL -RV
+            &lt;datafld&gt;*
+            -----------------
+            &lt;ntext&gt; &lt;dtype&gt; &lt;lattr&gt; [&lt;bounds&gt;]
+        END
+
+        &lt;areg&gt;
+        -----------------
+        &lt;rtype&gt; ARRAYREG=&lt;val&gt; (&lt;ntext&gt;) SZ=&lt;val&gt;|$ RESET=&lt;rst&gt;[&lt;op&gt;] WRITE=&lt;rw&gt;[&lt;op&gt;] READ=&lt;rr&gt;[&lt;op&gt;] EVENT=&lt;re&gt;
+            _index UINT32 -RP
+            &lt;datafld&gt;*
+            -----------------
+            &lt;ntext&gt; &lt;dtype&gt; &lt;attr&gt; [&lt;bounds&gt;]
+        END
+    END
+END
+
+General Format:
+---------------
+    nname       := &lt;val&gt;[-&lt;val&gt;]*
+    ntext       := &lt;alphanum&gt; [&lt;alphanum&gt;]*
+    dtype       := CORAL data types (INTx,UINTx,REALx,BOOL,TOKEN&lt;T..&gt;,ADDR&lt;..&gt;,VOID}
+    attr        := &lt;w&gt;&lt;r&gt;&lt;s&gt;
+    lattr       := -&lt;r&gt;&lt;s&gt;
+    w           := { W|w|- } // W=write required, w=write optional, -=not writable
+    r           := { R|- }   // R=readable, -=not readable
+    s           := { P|V|C } // P=persistent, V=volatile, C=constant
+    bounds      := &lt;nbound&gt;|&lt;sbound&gt;
+    nbound      := LV=&lt;num&gt;|&lt;special&gt; UV=&lt;num&gt;|&lt;special&gt;
+    num         := numeric constant (integer or real)
+    sbound      := SZ=&lt;val&gt;|&lt;special&gt;
+    special     := { *|$ }     // *=no bound, $=domain app defined    
+    reset       := &lt;dval&gt;|$|X  // $=domain app defined, X=undefined/none
+    dval        := constant based on dtype (numeric, string, bool, token, addr)
+    val         := unsigned integer greater than zero 
+    alpha       := any alphabetic character 
+    alphanum    := any alphabetic or numeric character 
+    rtype       := { GLOBAL|LOCAL }
+    rst         := { GUES|USER|OPER|ADMN|X } // X:= Reset has no effect
+    rw          := { GUES|USER|OPER|ADMN|X } // X:= Not writable
+    rr          := { GUES|USER|OPER|ADMN|X } // X:= Not readable
+    op          := { + } // Domain application can require a higher privilege level   
+    re          := { ONREAD|ONCHANGE|NEVER|ONWRITE.ME|ONWRITE.&lt;val&gt;|ONWRITE.*}
 ```
-
-/*-------------- TYPES -----------------------------------------------------*/
-/** Handle to a mutex */
-#define AplmtMutexHdl                       PLATFORM_APLMT_MUTEX_HDL_T
-
-...
-
-/*-------------- INLINE PLATFORM IMPLEMENTATION ----------------------------*/
-#include &quot;platform/mutexapi.h&quot;       
-```
-
-The header file below (`src/aplmt/os/win32/mutex.h`) is where the APLMT layer resolves/sets the actual type for  the Mutex Handle type for the Windows platform/OS.
-
-Snippet from `src/aplmt/os/win32/mutex.h`
-
-```
-/*-------------- TYPES -----------------------------------------------------*/
-#define PLATFORM_APLMT_MUTEX_HDL_T                      HANDLE
-
-```
-
-When a project using the APLMT layer is being built for a Windows target, the following directory is added to the project's header file search path (note:` %root%` is the root of the source tree).
-
-&gt; `-I%root%\src\aplmt\platmappings\win32\userapp\`
-
-The directory above contains a sub-directory and a file `platform\mutexapi.h` which (among other items) contains a `#include` to `src/aplmt/os/win32/mutex.h`. 
-
-Note: In this example there is an //extra// header include (`%root%\src\aplmt\platmappings\win32\userapp\` --&gt; `src/aplmt/os/win32/mutex.h`) - this is done for maintainance reasons - and is not part-of/required by the LHeader pattern,</pre>
+</pre>
 </div>
 <div created="20141012031702770" modified="20141019031650552" title="LeftMenu">
 <pre>---
@@ -6830,109 +6951,141 @@ __''//Table-of-Contents//''__
 |&lt;p style=&quot;margin-bottom:0px; margin-top:0px;&quot;&gt;[img[logo.gif]] &lt;/p&gt;|
 |&lt;p style=&quot;margin-bottom:0px; margin-top:0px; font-size:1.3em&quot;&gt;//{{$:/SiteSubtitle}}// &lt;/p&gt; |</pre>
 </div>
-<div created="20140726150234197" creator="JohnTaylor" modified="20150809034700770" modifier="JohnTaylor" tags="Contents" title="Licensing">
-<pre>The majority of the source code is licensed with the BSD type licensing described below.  However, there is some the 3rd-party source code embedded withing the Package.  In these cases - the license information will be contained within the individual files.  ''Note:'' All 3rd-party source code has &quot;free as in beer&quot; type of licensing.
+<div created="20150831012928542" modified="20150831015349055" tags="CORAL Register" title="Named Type">
+<pre>A //named type// in CORAL is a formal type identifier and an associated text name. The type identifier and text name are functionally synonymous. The type identifier has form of &quot;F:1-1:1&quot; where as the associated text name has the form of &quot;F:~Std-Coral:Root&quot;, i.e. the type identifier is the //short// format and text name is the //verbose// format.
 
-The license [[file|http://integerfox.com/colony.core/license.txt]] can be found in the &lt;code&gt;top/&lt;/code&gt; directory of the package.
-
-&lt;div align=&quot;center&quot;&gt;&lt;iframe src=&quot;./license.txt&quot; frameborder=&quot;0&quot; width=&quot;100%&quot; height=&quot;800&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;</pre>
-</div>
-<div created="20150523171953887" modified="20150523173729732" tags="[[Design Patterns]] Standards" title="Maker">
-<pre>The //Maker// (or aggregation) pattern is used to combine a set of objects into a single class and/or to manage the life cycle of the contained objects.  The Maker class owns or is responsible for the contained objects.  In addition the life cycle of the Maker class and its contained objects are ''identical''.
-
-Another characteristic of the //Maker// pattern is that the Maker class encapsulated the business logic for correctly connecting and/or wiring its contained objects together.  The Maker class also contains the business logic for creating/starting and stopping/destroying its contained objects.
-
-Within the Colony.* eco-system, //Maker classess// will have a class name that starts with &quot;Maker&quot;.  Examples:
-
-&gt; `Cpl/TShell/Dac/Maker.h|.cpp`
-</pre>
-</div>
-<div created="20141102032738917" modified="20150523174037203" tags="Standards [[Coding Standards]]" title="Naming Conventions">
-<pre>!!!The following is a list of all naming conventions and/or standards for Colony.Core package 
-
-|extraheight|k
-| Type |Change/Description|h
-| Rule |Class data member names start with a leading `m_` followed by a lower case character, e.g  `int m_myCount;`|
-|  Rule |Do not abbreviate names/words; long names are preferred over cryptic abbreviations. |
-| Rule |Enum symbols start with a lower case &quot;e&quot;, followed by all upper case letters and/or numbers, e.g.` eRED, eORANGE` |
-|  Rule |Functions that perform in-thread initialization of an object shall be named `start(...)` |
-| Rule |Functions that perform in-thread shutdown of an object shall be named `stop(...)` |
-|  Rule |Functions that invoke ITC (inter-thread-communication) initialization (e.g. invoke initialization across thread boundaries) shall be named `open(...)` |
-|  Rule |Function that perform ITC shutdown (e.g. reclaiming resources across thread bounders) shall be named `close(...)` |
-| Rule |[[Maker]] classes shall have class names that start with `Maker`. |
-|  Rule |Namespace names should be singular, e.g. Use `Cpl::Container` instead of `Cpl::Containers`. |
-|  Rule |File names shall be named after the primary/principle class contained in the file. |
-|  Rule |Directory names shall be named after/match namespace names. It is okay to have directories that do not map 1-to-1 with namespace, but this should be the minority use case. |
-| Rule |All __private__ - to the namespace - classes shall be identified by a trailing suffix of `_` to the class names, e.g. `class Foo_ {..}` |
-| Rule |Functions, variable, and class name that are considered //''private''// shall be identified by a trailing suffix of `_`.  This applies to class names (see rule above), statically scope file variables, class methods that are public is class scope - but are //private// in their general usage.  This last case is convention used to mimic the //package// scope qualify from JAVA (instead of using the tight coupling of C++'s `friend` mechanism). |
-| Rule |All non-namespace directories (see 3.2.2 above) names shall start with a leading underscore, e.g. `src\Cpl\_foobar\` |
-| Rule |All pointer variable names shall have a trailing suffix of `Ptr`, e.g. `int* scalePtr`.  An exception to this rule is for variables/arguments that are for C strings. |
-| Rule |Typedef names shall have a trailing suffix of `_T`, e.g. `typedef KeyPOD&lt;int&gt;  KeyInteger_T` |
-| Rule |No double underscore (`__`) shall be used in symbol name.  This is typically only problem in the #header latch.  For the #header latch use `_x_` in lieu of `__`. |
-
-
-
-</pre>
-</div>
-<div created="20141016035733241" modified="20150215025931844" title="Overview">
-<pre>The ''Colony.*'' Packages are a working example of a reusable C/C++ source code repository.  The ''Colony.Core'' package is the basic system and/or interfaces for the Colony family of packages.  The Colony packages are:
-
-# A redesign/refactor of the Jcl C++ Class library from the [[Shift-Right Open Repository|http://integerfox.com/openrepo]]. Some of the changes include:
-#* Bug fixes
-#* Cleaner and/or more consistent interfaces
-#* Unittests for all namespaces/packages.
-#* All interfaces/namespaces support simulate time.
-#* Works (Compiles, link, runs, etc.) on 64bit platforms as well as with C++11 compilers.
-# Part of a proof-of-concept for the [[Outcast|http://integerfox.com/outcast]] project.  Outcast is a project that attempts to manage code reuse in a scalable, team oriented environment.
-
-''Colony.Core is a C++ class library'' that is designed from ground up to support software reuse. To achieve extensive software reuse, attention has to be paid to managing dependencies between elements. To this end, the following features where implemented to achieve the reuse goal:
-
-* Source code files organized independent of the projects that use them.
-* Directory layout not based on the traditional &quot;top-down call tree&quot; paradigm, but structured to reflex the actual dependences of the code modules.
-* A reusable and extendable build environment.
-* Extensive use of Object Orient Design methodologies to make the source code modules as loosely coupled as possible.
-
-Another characteristic of the Colony Packages are that the majority of the code was developed for embedded software development. And as such, was designed to meet the constrained environment of embedded programming. The most obvious characteristics are the obsession with deterministic memory management and strict type checking. The following traits are typical of embedded systems.
-
-*Memory constrained. Embedded systems have limited ROM, FLASH, and RAM memories.
-*Dedicated system. Embedded hardware typically runs one and only one application.
-* High availability. Most embedded systems are expected to run once power is applied and continuing running until power is lost/turned off. This means a embedded application is expected to run for months and/or years without //rebooting//.
-* Real time. Embedded systems interact with the physical world. This interaction involves hardware inputs and controls. The software must respond to this stimuli in a deterministic and timely fashion.
-* Stand alone. There is no standard hardware platform or RTOS for embedded applications. Typically, the hardware supporting the application is very specialized and proprietary. Unique hardware translates to unique software (i.e. limited COTS software support).
-*Platform changes. Designers of embedded systems have to deal with the possibility of the underlying hardware and/or RTOS being changed. Also hardware platforms are constantly being upgraded or cost reduced. If the hardware changes, the software must change with it.</pre>
-</div>
-<div created="20141020032450043" modified="20150831005959998" title="Remaining core interfaces.....">
-<pre>New namespace or part of Bsp?
-
-* WatchDog App.  Creates its own thread to physically kick the dog and then the apps registers individual threads with individual timeouts
-** Built on top of WatchDog
-
-
-</pre>
-</div>
-<div created="20141023034645046" modified="20150224045732991" tags="[[Coding Standards]] Standards" title="Source File 'Headers'">
-<pre>The following block is to be included at the top of every file.  Note: The trailing `/** @file */` is ''only'' used/required in header (.h) files.
+!!Functional Unit Named type
 
 ```
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
-* http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014, 2015,  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
-/** @file */
-```</pre>
-</div>
-<div created="20141023060155692" modified="20150224041019087" tags="Contents" title="Source Reference">
-<pre>!!Use the links below to view the Doxygen output for the Colony.Core 
-* Click here for [[local|file:../docs/html/index.html]] pages
-* Click here for [[online|http://integerfox.com/docs/html/index.html]] pages.  
+Format:
+    ntype   := &lt;qual&gt;:&lt;pkgname&gt;:&lt;lname&gt;
+    pkgname := &lt;domain&gt;-&lt;val&gt;[-&lt;val&gt;]*
+    domain  := &lt;val&gt;
+    lname   := &lt;val&gt;
+    qual    := { &lt;funit&gt;, &lt;token&gt; }
+    val     := { unsigned integer greater than zero}
+    funit   := { F }
+    token   := { T }
 
-//Note: The __online__ pages will be the latest version of the package while the __local__ are version specific to the package in your workspace.</pre>
+Examples:
+    Package  = 1-1 (Std-Coral)
+    Token    = 1 (Privileges)
+    Token Type --&gt; T:1-1:1 (T:Std-Coral:Privileges)
+
+    Package  = 2-3-24-1 (DMZ-Networking-Appliances-Router)
+    FUnit    = 1 (NetworkAddress)
+    FUnit Type --&gt;F:2-3-24-1:1 (F:DMZ-Networking-Appliances-Router:NetworkAddress)
+```
+
+Note: Camel Case is recommend, but not required, for all text names.  See [[Domain]] and [[Packages]] for additional details</pre>
+</div>
+<div created="20141016040318200" modified="20150831015856881" title="Overview">
+<pre>[[CORAL]] is one of the major components of [[ SW-Eden|http://integerfox.com/index.html#sweden]] (pronounced Sweden).  SW-Eden consists of numerous pieces/parts, but the goal of all of the parts is to provide a communication protocol and framework between embedded autonomous devices and external clients.  For those with a telecom background read embedded autonomous device as a [[network element (NE)|http://en.wikipedia.org/wiki/Network_element]] and the external clients as [[element management system (EMS)|http://en.wikipedia.org/wiki/Element_Management_Systems]].   
+
+SW-Eden contains the following:
+
+* [[CORAL]] - a text based communication protocol
+* C++ framework and source code for supporting [[CORAL]] on an embedded device (aka a [[CORAL]] server)
+* Applets and scripts to auto generate source code for both [[CORAL]] clients and servers
+* An example [[CORAL]] client (part of phase 2)
+
+The diagram provides a high level view of a SW-Eden system 
+
+[img[eden - high level ERD.svg]]</pre>
+</div>
+<div created="20150831013041706" modified="20150831015314216" tags="CORAL Register" title="Packages">
+<pre>Packages are used to organize [[Functional Units|Functional Unit]] and to provide a mechanism for ensuring unique [[Named Types|Named Type]] within a [[Domain]]. 
+
+!!Package version control
+
+* Packages can be viewed as a //contract// that can ''only'' be extended, but were ''no'' functionality/behavior can be removed.
+** i.e. once a package has been //released// the only changes that can be be made to the package is to add new [[Functional Unit(s)|Functional Unit]] or new register(s) in an existing [[Functional Unit]]. 
+** If more extensive changes are required, a new package must be created
+* Each package has generation (or version) number.  
+** Generation 0 is used to indicate a package under development
+** The first binding release of Package is always Generation 1
+** Any change (after the initial release) to Package, its Generation number must be incremented
+</pre>
+</div>
+<div created="20150831013738652" modified="20150831014038868" tags="Contents" title="Register">
+<pre>A Register provides a mechanism for accessing and manipulating the data stored/represented by a FUNIT.  A Register is part of a  [[FUNIT|Functional Unit]] and is //addressable// via a register offset from the address of a FUNIT instance.  A Register contains or more [[Data Fields|Data Field]] where each data field consist of a primitive data type.  A Register is analogous to C data structure.
+
+Properties/Characteristics of a Register
+
+* Has at least one [[Data Field]]
+* Has an minimum access privileges for read and write operations, i.e. a client must have sufficient privileges to perform individual read/write operations on a register.
+** Privilege level for read/write operation for a given register can be set/defined by the domain application. In addition, difference instances (i.e. different addresses) of a [[FUNIT|Functional Unit]] can have different privileges levels for read/write operations.
+* There are three types of registers
+** //''REGISTER''// - is the basic non-scalar register.
+** //''LISTREG''// - is register that represents a list, where each entry in the list is is made up of the data fields contained with the register definition.  LISTREG registers are by definition not -writable by a [[RAC|Remote Access Client]].  A LISTREG is analogous to singly linked list of a C data structures.
+*** All LISTREG registers have a maximum number of elements.  The maximum number of elements (SZ) can be defined by the FUNIT definition or by the ALA.
+*** All LISTREG registers have the reserved data field of ''_eol'' as the first data field in the register  to identify the last entry in the list. 
+**** If the a list is empty, then the data event is generated with ''_eol'' data field set to true and then immediately followed by the closing parenthesis (i.e. all other data fields omitted). 
+*** The reset() operation (if allowed) restores the list to its default state, i.e. in addition to reseting individual data fiels, it also potentially deletes/removes items from the list. 
+**** A [[RAC]] does ''not'' have the ability to reset individual list items
+** //''ARRAYREG''// - is register that represents an array, where each index in the array is made up of the data fields contained with register definition.  ARRAYREG registers are writable, by index, by a [[RAC]].  A ARRAYREG is analogous to a C array of a data structures.
+*** All ARRAYREG registers are fixed sizes.  The size (SZ) can be defined by the FUNIT definition or by the ALA.
+*** All ARRAYREG registers have the reserved data field of ''_index'' as the first data field in the register to identify a specific entry in the array. 
+*** The reset() operation (if allowed) restores the entire array to its default state, i.e. it effects all all indexes in the array. 
+**** A [[RAC|Remote Access Client]] ''can'' reset individual array indexes
+* A [[RAC|Remote Access Client]] can performed the following operations on a Register
+** //''write''// - update individual registers within a FUNIT and/or individual fields within a register
+** //''read''// - read the content of individual registers within a FUNIT 
+** //''monitor''// - subscribe for change notification from individual registers within a FUNIT
+** //''ignore''// - cancel the change notification subscription for individual registers in the FUNIT
+** //''reset''// - reset the contents of individual registers within a FUNIT
+* The following events can be generated by a Register
+**//''data''//. Reports the current data fields content of individual registers within a FUNIT
+* Registers have a scope qualifier.  There are two scope qualifiers: 
+** //''GLOBAL''// registers are registers who's content is visible across all active CORAL sessions, i.e. when the content of the register is change, the new contents are visible/accessible to all CORAL sessions.
+** //''LOCAL''// registers are registers who's content/meaning is only visible within a single CORAL session, i.e. when the content of the register is change, no other CORAL session has visibility/access to the new content. 
+* Each Register has the one and only on of the following properties with respect to generating an data() event.
+** //''NEVER''//.  
+** //''ONREAD''//.  The register will generate a data() event in response to a read() command.
+** //''ONWRITE.x''//.  The register generates a data() event in response to a write() command. There are three variants of the ONWRITE.x semantics
+*** //''ONWRITE.ME''//.  The ONWRITE.ME requires the write() operation to be on the register itself.  //Note: also generates the data() event in response to the read() and monitor() commands (does ''not'' support the subscription semantics of the monitor() command).//
+*** //''ONWRITE.n''//, where //''n''// is a register with the same FUNIT.  The write() operation is on register ''//n//''.  The read() and monitor() commands are ignored.
+*** //''ONWRITE.*''//.  The write operation occurred on any register.  The read() and monitor() commands are ignored.  Currently the ONWRITE.* is restricted in use to CORAL's command error reporting mechanism.
+** //''ONCHANGE''//. The register supports subscription semantics and will generate a data() event when one or more the register's data fields change (requires the RAC to first issued an monitor() command on the register).  The register will also generate a data() event in response to read() commands.  With respect to a list or array register, any change in a list/array item or membership changes in the list/array will trigger an //onchange// condition.  //Note: what ''change'' means with respect to numeric data fields is register specific.//
+
+
+Register version control
+
+* Registers - withing a given [[Functional Unit]] - can be viewed as a //contract// that can ''not'' be changed.
+* Once a [[Functional Unit]] has been published (i.e. Generation 1) - none of the Register definitions contained with the Functional Unit can be change
+** Note: New Registers can be added to a [[Functional Unit]] between Generations</pre>
+</div>
+<div created="20150831013308719" modified="20150831013426944" tags="" title="Security Model">
+<pre>* The default CORAL security model for user access is: password authentication protocol ([[PAP|http://en.wikipedia.org/wiki/Password_Authentication_Protocol]]).  
+**A [[RAC's|Remote Application Client]] password is transmitted as unencrypted ASCII text. 
+* For a secure security model, the intention is to use [[SSL|http://en.wikipedia.org/wiki/Secure_Sockets_Layer]] as the transport mechanism (instead of raw TCP sockets) for CORAL sessions.
+* The [[ALA|Autonomous Local Application]] stores each user account password in a cryptographically protected form.
+** A [[MD5 Hash|http://en.wikipedia.org/wiki/MD5]] is used to encrypt the stored passwords.
+* Each Domain Application is responsible for providing a [[hash salt|http://en.wikipedia.org/wiki/Salt_%28cryptography%29]], hash iteration count for the encryption process, as well as the default password for the //root// user account.
+</pre>
+</div>
+<div created="20150831012439579" modified="20150831013611526" tags="CORAL" title="Semantics">
+<pre># All Command/Event strings only contain printable ASCII characters
+## Character values: {32-126}
+### A illegal character (i.e. non-printable) will generate an //framing error// and cause the current frame (if there is) to be rejected/dropped
+## To transfer binary, the raw data is converted to &quot;ASCII HEX&quot;, 
+### e.g. the binary octet stream of 0x10,0x43,0xD3,0x00 would be encoded as the string &quot;1043D300&quot;
+# All Command/Event strings are framed.  
+## The start of frame characters are: '.' (0x2E) and/or '^' (0x5E)
+## The end of frame character is: ';' (0x3B)
+### To include the ';' character as part of the CORAL string it must be escape, i.e the sequence of &quot;~;&quot;
+## The escape character is: '~' (0x7E)
+### To include the '~'character as part of the CORAL string it must be escape, i.e the sequence of {{{&quot;~~&quot;}}}
+## Characters //outside// of frames are discarded
+
+</pre>
+</div>
+<div created="20150831013644812" modified="20150831015326989" tags="CORAL Register" title="Token">
+<pre>!!Token version control
+
+* Tokens - withing a given Package- can be viewed as a //contract// that can ''not'' be changed.
+* Once a Token has been published within a Package - none of the Token's enumerations can be change, and/or new enumerations added.
+** Note: New Tokens can be added to a [[Package|Packages]]</pre>
 </div>
 <div created="20141012034532185" modified="20141019032946319" tags="$:/tags/TopLeftBar" title="TopButtons">
 <pre>&lt;div class=&quot;tc-page-controls tc-toolbar&quot;&gt;
@@ -6947,35 +7100,6 @@ Another characteristic of the Colony Packages are that the majority of the code 
 {{$:/core/ui/Buttons/control-panel}}
 {{$:/core/ui/Buttons/close-all}}
 &lt;div&gt;</pre>
-</div>
-<div created="20141124195248157" modified="20141130152035536" tags="[[Coding Standards]] Testing" title="Unit Testing">
-<pre>''Automated Unit Tests'' are required for ''all'' code.  Okay, what does //automated unit tests// mean and what does //all// mean? 
-
-''//All//'' means all source code under the `src/` directory in a package.  ''Note:'' This does not apply to test code that is organized under the `src/` tree, i.e. no test code to test the test code is required.
-
-''//Automated Unit Tests//'' (or ''AUT''s) are a collection of one or more  applications that execute one or more test cases and return a pass/fail result.  These AUTs shall be built and executed as part of the process for publishing a package.  Typically AUT applications are command line/console applications that are built to run on the Host platform (i.e. Windows, Linux, etc.).  
-
-Testing or AUTs ''shall'' be done by namespace, i.e. each namespace has AUTs.
-
-''Test Coverage''.  The minimum required test coverage of the AUTs is that the code compiles and links without errors (and without warnings).  However, the desired minimum test coverage is that the AUTs execerise all of the lines of code.  The `gcc` toolchain comes with [[gcov|http://en.wikipedia.org/wiki/Gcov]] - which is a utility for analyzing code coverage.  It is ''strongly'' encouraged that the  [[gcov|http://en.wikipedia.org/wiki/Gcov]] tool be incorporated as part of the AUTs.
-
-''Compilers''.  If possible AUTs should include more than one compiler.  This is to detect issues with non-standard compilers earlier than later.
-
-
-
-</pre>
-</div>
-<div created="20141130152118736" modified="20150215030529725" tags="Testing Standards [[Coding Standards]]" title="Unit Testing Conventions">
-<pre>!!The following naming/organization convetions are used to meet the required [[Unit Testing]] requirements.
-
-* The source for the AUTs shall be organized under a directory named `_0test/` for each namespace.
-** ''Example:'' The directory `src/Cpl/Text/_0test/` contains the AUT code for the `Cpl::Text` namespace.
-* The project/build directory for the individual AUTs shall be located under the package's top level `tests/` directory.
-** The organization under the `tests/` directory shall be `&lt;namespace&gt;[/&lt;namespace&gt;]*/_0test/[variant.../]&lt;host&gt;/&lt;compiler&gt;`
-*** ''Example:''
-**** `tests/Cpl/Text/_0test/windows/mingw`
-**** `tests/Cpl/Text/_0test/windows/vc12`
-</pre>
 </div>
 
 </div>

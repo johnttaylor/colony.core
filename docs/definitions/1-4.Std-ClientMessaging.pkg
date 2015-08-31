@@ -1,0 +1,39 @@
+PACKAGE DOMAIN=1 NAME=4 (ClientMessaging)
+//============================================================================
+// Inter Remote Access Communications
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//                      FUNCTIONAL UNITS
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FUNIT NAME=1 (Chat)  GENERATION=1
+//============================================================================
+// Provides a communication mechanism for RACs to communicate with each other.
+// Note: Basically a communication 'channel' is a global model point that
+// clients can write/monitor.  What this means is that 'messages' are not
+// guarantied to be deliveried under all/heavy load circumstances - only that
+// the last 'message' written  (once the usually circumstances have subsided) 
+// will be received by the clients monitoring the channel, i.e. the same 
+// semantics as all model points.
+
+  GLOBAL REGISTER 1 (Channel)  RESET=USER WRITE=USER READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // A RAC can 'sent' message to one or more clients by writing to this 
+  // Register.  A RAC 'receives' the message(s) be monitoring this Register.
+  // The reset() command clears all fields (i.e. empty field notation).
+  
+    messsage  TEXT WRV SZ=$ RST=X
+    // Message text that is communicated to other Remote Access Clients.  The 
+    // format/content is strictly determined by the RACs.
+
+    userID  TEXT -RV SZ=64 RST=X   
+    // User ID of the client that last wrote to this Register
+
+    sessionID  UINT32 -RV LV=* UV=* RST=X
+    // Session ID of the client that last wrote to this Register
+
+    timestamp  TEXT -RV SZ=19 RST=X
+    // The date/time stamp of when the this Register was last written to
+    // The format is: "YYYY/MM/DD-HH:MM:SS"
+  END
+END

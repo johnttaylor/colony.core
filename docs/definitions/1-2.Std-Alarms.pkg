@@ -1,0 +1,455 @@
+PACKAGE DOMAIN=1 NAME=2 (Alarms)
+//============================================================================
+// Fundamental Primitives and Tokens for basic Alarm and Messaging 
+// functionality 
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//                          TOKENS
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+TOKEN NAME=1 (Severity)
+//============================================================================
+// Enumeration for Alarm Severity
+
+  CRIT (Critical)
+  // An alarm condition that signficantly impairs or prevents service and 
+  // requires immediate corrective action.
+  
+  MAJR (Major)
+  // An alarm condition that indicates some loss of service, but the system is 
+  // still able to deliver basic services. Corrective action is needed, though
+  // not immediately.
+  
+  WARN (Warning)
+  // An alarm condition that does not impair service, but indicates atypical 
+  // operation. 
+
+  INFO (Information)
+  // A stateful condition exists that is worth/useful to report, but does not 
+  // necessarily indicate any incorrect operation.
+END
+
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//                      FUNCTIONAL UNITS
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FUNIT NAME=1 (Alarms)  GENERATION=1
+//============================================================================
+// This FUNIT is used to report and manage active alarms
+
+  GLOBAL LISTREG 1 (Critical)  SZ=$ RESET=X WRITE=X READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Provides a list of all active critical alarms
+
+    _eol  BOOL -RV
+    // Returns true on last entry in the list; else false
+
+    handle  UINT32 -RV LV=* UV=*
+    // handle that uniquely identifies the alarm (used when acknowledging the 
+    // alarm)
+    
+    code  TEXT -RV SZ=$
+    // Domain Application defined alarm code 
+
+    source  ADDR<*>
+    // The address of the Functional Unit that the alarm is associated with 
+    // and/or sourced from.  All alarms are required to have a FUnit that 
+    // enables/disables the reporting of the alarms.  The enabling/disabling 
+    // FUnit is considered to be the source of the alarm.
+
+    timestamp  TEXT -RV SZ=19 
+    // The date/time stamp of when the alarm was assrted
+    // The format is: "YYYY/MM/DD-HH:MM:SS"
+
+    sequenceNum  INT32 -RV LV=1 UV=*
+    // A free running (positive) counter that is incremented every time the 
+    // alarm is asserted.  It is possible if the ALA is under a heavy load and 
+    // a given alarm is being asserted/deasserted rapidly that an assert edge 
+    // is missed.  However, the alarm's sequence number is ALWAYS incremented. 
+    // The ALA will guaranty that when things settle down that the last state 
+    // of all alarms are correctly reported.  The RAC can use the sequenceNum 
+    // field to determine (by a gap in the sequence number values) if the ALA 
+    // failed to report an alarm assertion. The sequenceNum field is volatile, 
+    // i.e. it is reset if the ALA is restarted/powered cycle.
+     
+    acknowledged  BOOL -RV 
+    // Indicate if the alarm has been acknowleged by a RAC.
+
+    dataOptional1  TEXT -RV SZ=$
+    // Additional information/data assocaited with the alarm (is optional)
+
+    dataOptional2  TEXT -RV  SZ=$
+    // More additional information/data assocaited with the alarm (is 
+    // optional)
+  END            
+
+  GLOBAL LISTREG 2 (Major)  SZ=$ RESET=X WRITE=X READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Provides a list of all active major alarms
+
+    handle  UINT32 -RV LV=* UV=*
+    // See Register 1 for description
+    
+    code  TEXT -RV SZ=$
+    // See Register 1 for description
+
+    source  ADDR<*>
+    // See Register 1 for description
+
+    timestamp  TEXT -RV SZ=19 
+    // See Register 1 for description
+
+    sequenceNum  INT32 -RV LV=1 UV=*
+    // See Register 1 for description
+     
+    acknowledged  BOOL -RV
+    // See Register 1 for description
+
+    dataOptional1  TEXT -RV SZ=$
+    // See Register 1 for description
+
+    dataOptional2  TEXT -RV  SZ=$
+    // See Register 1 for description
+  END
+
+  GLOBAL LISTREG 3 (Warning)  SZ=$ RESET=X WRITE=X READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Provides a list of all active warning alarms
+
+    handle  UINT32 -RV LV=* UV=*
+    // See Register 1 for description
+    
+    code  TEXT -RV SZ=$
+    // See Register 1 for description
+
+    source  ADDR<*>
+    // See Register 1 for description
+
+    timestamp  TEXT -RV SZ=19 
+    // See Register 1 for description
+
+    sequenceNum  INT32 -RV LV=1 UV=*
+    // See Register 1 for description
+     
+    acknowledged  BOOL -RV
+    // See Register 1 for description
+
+    dataOptional1  TEXT -RV SZ=$
+    // See Register 1 for description
+
+    dataOptional2  TEXT -RV  SZ=$
+    // See Register 1 for description
+  END
+
+  GLOBAL LISTREG 4 (Information)  SZ=$ RESET=X WRITE=X READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Provides a list of all active Information alarms
+
+    handle  UINT32 -RV LV=* UV=*
+    // See Register 1 for description
+    
+    code  TEXT -RV SZ=$
+    // See Register 1 for description
+
+    source  ADDR<*>
+    // See Register 1 for description
+
+    timestamp  TEXT -RV SZ=19 
+    // See Register 1 for description
+
+    sequenceNum  INT32 -RV LV=1 UV=*
+    // See Register 1 for description
+     
+    acknowledged  BOOL -RV
+    // See Register 1 for description
+
+    dataOptional1  TEXT -RV SZ=$
+    // See Register 1 for description
+
+    dataOptional2  TEXT -RV  SZ=$
+    // See Register 1 for description
+  END
+
+  GLOBAL REGISTER 5 (Acknowledge) RESET=X WRITE=OPER+ READ=NONE EVENT=NEVER
+  //--------------------------------------------------------------------------
+  // This register is used to acknowledge an alarm.  Note: Acknowledging an 
+  // alarm does not clear or reset the alarm - it only provides an indication
+  // that a RAC has reviewed and acknowledge the alarm's presence.  Note: The
+  // history log will contain information of when the acknowledged state of
+  // a alarm is changed and by which RAC/user.
+
+    handle  UINT32 W-V LV=* UV=* 
+    // The handle of the alarm to change the acknowledge state of
+
+    ackState  BOOL W-V 
+    // The value to set the acknowledge state of the alarm to. 
+  END
+
+END
+
+
+FUNIT NAME=2 (Messages)  GENERATION=1 
+//============================================================================
+// Messages are used to report events/occurances that do not have state, but 
+// convey information about the current behavior of ALA. 
+
+  GLOBAL REGISTER 1 (Critical)  RESET=X WRITE=X READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Reports a critical message
+
+    message  TEXT -RV SZ=$
+    // Domain Application defined message code 
+
+    source  ADDR<*>
+    // The address of the Functional Unit that the message is associated with 
+    // and/or sourced from.  All messages are required to have a FUnit that 
+    // enables/disables the reporting of the messages.  The enabling/disabling 
+    // FUnit is considered to be the source of the message.
+
+    timestamp  TEXT -RV SZ=19 
+    // The date/time stamp of when the alarm was assrted
+    // The format is: "YYYY/MM/DD-HH:MM:SS"
+     
+    dataOptional1  TEXT -RV SZ=$
+    // Additional information/data assocaited with the alarm (is optional)
+
+    dataOptional2  TEXT -RV  SZ=$
+    // More additional information/data assocaited with the alarm (is 
+    // optional)
+  END            
+
+  GLOBAL REGISTER 2 (Major) RESET=X WRITE=X READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Reports a major message
+
+    message  TEXT -RV SZ=$
+    // See description of Register 1
+
+    source  ADDR<*>
+    // See description of Register 1
+
+    timestamp  TEXT -RV SZ=19 
+    // See description of Register 1
+
+    dataOptional1  TEXT -RV SZ=$
+    // See description of Register 1
+
+    dataOptional2  TEXT -RV  SZ=$
+    // See description of Register 1
+  END            
+
+  GLOBAL REGISTER 3 (Warning) RESET=X WRITE=X READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Reports a warning message
+
+    message  TEXT -RV SZ=$
+    // See description of Register 1
+
+    source  ADDR<*>
+    // See description of Register 1
+
+    timestamp  TEXT -RV SZ=19 
+    // See description of Register 1
+
+    dataOptional1  TEXT -RV SZ=$
+    // See description of Register 1
+
+    dataOptional2  TEXT -RV  SZ=$
+    // See description of Register 1
+  END            
+
+  GLOBAL REGISTER 4 (Information) RESET=X WRITE=X READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Reports a information message
+
+    message  TEXT -RV SZ=$
+    // See description of Register 1
+
+    source  ADDR<*>
+    // See description of Register 1
+
+    timestamp  TEXT -RV SZ=19 
+    // See description of Register 1
+
+    dataOptional1  TEXT -RV SZ=$
+    // See description of Register 1
+
+    dataOptional2  TEXT -RV  SZ=$
+    // See description of Register 1
+  END            
+
+
+FUNIT NAME=3 (History)  GENERATION=1 
+//============================================================================
+// Provides a log of the ALA's alarms and messages
+
+  GLOBAL REGISTER 1 (Files) RESET=X WRITE=X READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Provides the name of the history file(s).  Access to the history file(s)
+  // is via the 1-3 (Std-Files) package.  The ALA can only stored a finite 
+  // amount of history. The ALA manages its history size limitation be keeping
+  // a series of history files and purging the older files when it runs out of
+  // the allocated history file space.
+  //
+  // History File format (uses CORAL event syntax so an RAC can reuse its 
+  //                      CORAL parser to process the history file)
+  //
+  // ALA start/restart indication
+  //   ^data@new(<time>);
+  //      time:     = timestamp of when the ALA started/restarted
+  //      
+  // History Mask change (note: an entry is always generated on startup)
+  //   ^data@msk(<time>,<ca>,<ma>,<wa>,<ia>,<cm>,<mm>,<wm>,<im>);
+  //      time:     = timestamp of when the logging mask was changed/set
+  //      ca:       = critical alarms logged (T=yes,F=not logged)
+  //      ma:       = major alarms logged
+  //      wa:       = warning alarms logged
+  //      ia:       = information alarms logged
+  //      cm:       = critical messages logged (T=yes,F=not logged)
+  //      mm:       = major messages logged
+  //      wm:       = warning messages logged
+  //      im:       = information messages logged
+  //      
+  // Alarm assertion/de-asseration:
+  //   ^data@<action>(<time>,<severity>,<hdl>,<code>,<src>,<seq>,<data1>,<data2>);
+  //      action:   = { alm, clr }
+  //      severity: = alarm severity
+  //      time:     = alarm timestamp
+  //      hdl:      = alarm handle
+  //      code:     = alarm code
+  //      src:      = alarm source
+  //      seq:      = alarm sequenceNum
+  //      data1:    = alarm dataOptional1
+  //      data2:    = alarm dataOptional2
+  //
+  // Alarm ack/unack
+  //   ^data@<ack>(<time>,<hdl>,<seq>,<user>,<info>);
+  //      ack:      = { ack, nak }
+  //      time:     = timestamp of when the alarmed acknowledged/un-acknowledged
+  //      hdl:      = alarm handle
+  //      seq:      = alarm sequenceNum
+  //      user:     = user of ID of the RAC who ack/nack the alarm
+  //      info:     = connection info of 'user'
+  //
+  // Message indication
+  //   ^data@msg(<time>,<severity>,<msg>,<src>,<seq>,<data1>,<data2>);
+  //      time:     = message timestamp
+  //      severity: = message severity
+  //      msg:      = message code
+  //      src:      = message source
+  //      data1:    = message dataOptional1
+  //      data2:    = message dataOptional2
+  //
+  // Examples:
+  //   ^data@new("2011/06/12-13:21:41");
+  //   ^data@msk("2011/06/12-13:21:42",T,T,F,F,T,T,F,F,,);
+  //   ^data@alm("2011/06/12-23:32:01",CRIT,32,"FOO-12.4",foo,23,,);
+  //   ^data@ack("2011/06/12-23:43:31",32,23,"root","192.168.1.32");
+  //   ^data@clr("2011/06/12-23:52:27",CRIT,32,"FOO-12.4",foo,23,,);
+  //   ^data@msg("2011/06/13-03:30:10",MAJR,"FOOBAR-1",foobar,,);
+  //
+
+    newest  TEXT -RP SZ=$
+    // file name of the current history file
+
+    oldest  TEXT -RP SZ=$
+    // file name of the oldest history file
+  END
+
+  GLOBAL REGISTER 2 (Masks) RESET=SUPR+ WRITE=SUPR+ READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Controls which, by severity, alarm and messages are logged to the alarm
+  // history file
+
+    criticalAlarm  BOOL wRP RST=$
+    // If this field is set to true then all critical alarms will be logged to
+    // the history file; else if false then no critical alarms will be
+    // logged.
+      
+    majorAlarm  BOOL wRP RST=$
+    // If this field is set to true then all major alarms will be logged to
+    // the history file; else if false then no major alarms will be
+    // logged.
+
+    warningAlarm  BOOL wRP RST=$
+    // If this field is set to true then all warning alarms will be logged to
+    // the history file; else if false then no warning alarms will be
+    // logged.
+
+    infoAlarm  BOOL wRP RST=$
+    // If this field is set to true then all information alarms will be logged 
+    // to the history file; else if false then no informatin alarms will be
+    // logged.
+
+    criticalMessage  BOOL wRP RST=$
+    // If this field is set to true then all critical messages will be logged 
+    // to the history file; else if false then no critical messages will be
+    // logged.
+      
+    majorMessage  BOOL wRP RST=$
+    // If this field is set to true then all major messages will be logged to
+    // alarm history file; else if false then no major messages will be
+    // logged.
+
+    warningMessage  BOOL wRP RST=$
+    // If this field is set to true then all warning messages will be logged 
+    // to the history file; else if false then no warning messages will be
+    // logged.
+
+    infoMessage  BOOL wRP RST=$
+    // If this field is set to true then all information messages will be 
+    // logged to the history file; else if false then no information messages 
+    // will be logged.
+  END            
+END
+
+
+FUNIT NAME=4 (Summary)  GENERATION=1
+//============================================================================
+// This FUNIT is used to report summary of the active alarms.  
+
+  GLOBAL REGISTER 1 (Counts)  WRITE=X READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Provides a summary count of all active alarms by severity.  The number of
+  // un-acknowledged alarms can be calculated by the RAC by subtracting the
+  // Acknowledge Count from the Active count. With respect to 'on-change', any
+  // time a alarm is asserted, deasserted, or a change in the acknowledged 
+  // state of an active alarm - the data event (if monitored) will be 
+  // generated.
+  
+    critical  UINT16 -RV LV=* UV=*
+    // The total number of active critical alarms
+  
+    ackedCritical  UINT16 -RV LV=* UV=*
+    // The number of acknowledged active critical alarms.
+
+    major  UINT16 -RV LV=* UV=*
+    // The total number of active major alarms
+  
+    ackedMajor  UINT16 -RV LV=* UV=*
+    // The number of unacknowledged active major alarms
+  
+    minor  UINT16 -RV LV=* UV=*
+    // The total number of active minor alarms
+  
+    ackedMinor  UINT16 -RV LV=* UV=*
+    // The number of acknowledged active minor alarms.  
+  
+    warning  UINT16 -RV LV=* UV=*
+    // The total number of active warning alarms
+  
+    ackedWarning  UINT16 -RV LV=* UV=*
+    // The number of acknowledged active warning alarms.
+  
+    info  UINT16 -RV LV=* UV=*
+    // The total number of active information alarms
+
+    ackedInfo  UINT16 -RV LV=* UV=*
+    // The number of acknowledged active information alarms.
+  END
+END
+

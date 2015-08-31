@@ -1,0 +1,395 @@
+PACKAGE DOMAIN=1 NAME=1 (Coral)
+//============================================================================
+// Fundamental Primitives and Tokens for basic CORAL functionality 
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//                          TOKENS
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+TOKEN NAME=1 (Privileges)
+//============================================================================
+// Enumeration for CORAL user access privileges 
+
+  GUES (guest)
+  // Privilege level for a user/client that has NOT logged in.
+  
+  USER (user)             
+  // Lowest privilege level for a logged in user
+  
+  OPER (operator)
+  // 
+
+  SUPR (supervisor)
+  //
+  
+  ADMN (administrator)    
+  // Highest privilege level for a logged in user
+END
+
+
+TOKEN NAME=2 (ErrorCodes)
+//============================================================================
+// Enumeration for error codes when processing CORAL commands 
+
+  XSYN (InvalidSyntax)            
+  // Unable to parse command
+  
+  XADR (InvalidAddress)           
+  // Unknown/illegal address
+  
+  XPRV (InsufficientPrivilege)    
+  // User has insufficient access privileges
+  
+  XARG (IncorrectArguments)       
+  // Wrong number/type of command arguments
+  
+  XWRT (NotWritable)       
+  // Attempt to write to non-writable address and/or FUNIT
+  
+  XRD (NotReadable)       
+  // Attempt to read a non-readable address
+  
+  XMON (NotMonitorable)
+  // Attempt to read a non-monitorable address
+  
+  XRST (NotResettable)       
+  // Attempt to reset a non-resetabble address
+  
+  XCMD (CommandFailed)            
+  // Command failed
+END
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//                      FUNCTIONAL UNITS
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FUNIT NAME=1 (Information)  GENERATION=1
+//============================================================================
+// 
+  GLOBAL REGISTER 1 (Protocol)  WRITE=X READ=GUES EVENT=ONREAD
+  //--------------------------------------------------------------------------
+  // Details what version, basic constraints of the CORAL protocol that the
+  // ALA supports.
+  
+    majorIndex  UINT32 -RC LV=* UV=* RST=X
+    // The major version index of the CORAL protocol that the ALA is using.
+  
+    minorIndex  UINT32 -RC LV=* UV=* RST=X
+    // The minor version index of the CORAL protocol that the ALA is using.
+  
+    maxCmdLength  UINT32 -RC LV=256 UV=$ RST=X
+    // Maximum length of a CORAL command string that the ALA can process 
+    // without generating a error
+  
+    maxEventLength  UINT32 -RC LV=256 UV=$ RST=X
+    // Maximum length of a CORAL event string that the ALA can/will generate
+  
+    maxConcurrentClients UINT16 -RC LV=1 UV=$ RST=X
+    // Maximum number of concurrent CORAL clients the ALA can/will support.
+
+    maxUserAccounts UINT16= -RC LV=1 UV=$ RST=X
+    // Maximum number of user accounts the ALA supports
+  END
+
+  GLOBAL REGISTER 2 (Application)  WRITE=X READ=GUES EVENT=ONREAD
+  //--------------------------------------------------------------------------
+  // Provides basic description and version information of the Autonomous 
+  // Local Application (ALA).  The format/content of the all of the fields
+  // are ALA specific.
+  
+    name  TEXT -RC SZ=$ RST=X
+    // Name of the ALA
+  
+    version  TEXT -RC SZ=$ RST=X
+    // version identifier(s) of the ALA
+  
+    descriptor1  TEXT -RC SZ=$ RST=X
+    // Additional description information of the ALA
+  
+    descriptor2  TEXT -RC SZ=$ RST=X
+    // Additional description information of the ALA
+  
+    descriptor3  TEXT -RC SZ=$ RST=X
+    // Additional description information of the ALA
+  END
+
+  GLOBAL REGISTER 3 (Persistence)  WRITE=X READ=USER EVENT=ONREAD
+  //--------------------------------------------------------------------------
+  // Provides versioning/schema information about the ALA's pesistent database
+  // that stores all of the persistent fields for all of its FUNITs
+  
+    schema UINT32 -RC LV=0 UV=* RST=X
+    // identifies what version or schema index of the database the ALA 
+    // requires and or supports, i.e. when reading a DB file, the schema 
+    // index from the file MUST be equal to this field's value.
+  
+    minor UINT32 -RC LV=0 UV=* RST=X
+    // identifies the minor version index of the DB schema the ALA requires
+    // and or supports, i.e. when reading a DB file, the minor index from the 
+    // file MUST be greater than or equal to this field's value.  If the DB
+    // file's minor index is less than this field - the ALA must not use
+    // the DB file, or upgrade the DB file.
+  END
+
+END
+
+
+FUNIT NAME=2 (Root)  GENERATION=1 
+//============================================================================
+// UserAccount/main object, i.e. all CORAL sessions start and end here. Issuing a 
+// reset() command on this FUNIT will terminate the client's CORAL session.
+
+  LOCAL REGISTER 1 (Login)  RESET=GUES WRITE=GUES READ=GUES EVENT=ONWRITE.ME
+  //--------------------------------------------------------------------------
+  // This register is used by clients to login into the ALA
+
+    userID  TEXT WRV SZ=64 RST=X   
+    // User ID of the client
+
+    password  TEXT W-V SZ=64 RST=X   
+    // Password associated with the user ID
+
+    accessLevel  TOKEN<T1-1-1> WRV RST=X   
+    // Desired access privilege level for this CORAL session
+
+    loggedIn  BOOL -RV RST=F   
+    // Is set to true if/when the client has succesfully logged in.
+
+    sessionID  UINT32 -RV LV=* UV=* RST=X
+    // Unique (within active CORAL sessions) identifier for the CORAL session.
+    // The ID is assigned when communication connection is made (e.g. when the 
+    // socket connection is established).
+  END
+
+  LOCAL REGISTER 2 (SessionError)  RESET=X WRITE=X READ=X EVENT=ONWRITE.*
+  //--------------------------------------------------------------------------
+  // This register is used report errors that occur when parsing and/or
+  // executing commands 
+
+    code  TOKEN<T1-1-2> -RV RST=X
+    // Type of error
+
+    text  TEXT -RV SZ=$ RST=X  
+    // The Complete command string that caused the error
+
+    textOptional1  TEXT -RV SZ=$ RST=X
+    // Additional information about the error (is optional)
+
+    textOptional2  TEXT -RV SZ=$ RST=X
+    // More Additional information about the error (is optional)
+  END
+
+  GLOBAL LISTREG 3 (CurrentUsers)  SZ=$ RESET=X WRITE=X READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Provides a list of currently logged in users
+
+    _eol  BOOL -RV
+    // Returns true on last entry in the list; else false
+
+    sessionID  UINT32 -RV LV=* UV=*
+    // Session ID for the client's/user's CORAL session
+    
+    userID  TEXT -RV SZ=16
+    // User ID of the logged in client
+
+    loggedIn  BOOL -RV   
+    // Indicates if the user has successfully login it yet
+
+    accessLevel  TOKEN<T1-1-1> -RV
+    // Access level of logged in user/client
+    
+    racConnectionInfo  TEXT -RV SZ=$ 
+    // Information about how the Remote Access Client connected
+    // to the ALA.  The meaning/format of this field is defined
+    // the individual ALA
+  END            
+END
+
+
+FUNIT NAME=3 (UserAccounts)  GENERATION=1 
+//============================================================================
+// Provides the ability to manage the ALA's user accounts
+
+  GLOBAL LISTREG 1 (List)  SZ=$ RESET=X WRITE=X READ=SUPR EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  // Provides the list of all active user accounts
+
+    _eol  BOOL -RV
+    // Returns true on last entry in the list; else false
+
+    userID  TEXT -RP SZ=64
+    // User ID for a client
+
+    maxAccessLevel  TOKEN<T1-1-1> -RP
+    // maximum allowed access privilege level for the user
+
+    description  TEXT -RP SZ=$
+    // Description of the use/role/purpose of the user account
+  END
+
+  GLOBAL REGISTER 2 (Modify)  RESET=X WRITE=SUPR READ=X EVENT=NEVER
+  //--------------------------------------------------------------------------
+  // Used to modify and/or create a user account.  Note: To modify/create a
+  // user account to have ADMN privileges, the logged in client must have
+  // ADMN access privileges
+  
+    userID  TEXT W-P SZ=64 RST=X
+    // Identifies which user account is being modified, or if the userID
+    // does not already exist it specifies the name of the new user account
+
+    password  TEXT w-P SZ=64 RST=X   
+    // Sets/changes the password associated with the user ID
+  
+    maxAccessLevel  TOKEN<T1-1-1> w-P RST=X   
+    // Sets the maximum allowed access privilege level for the user
+
+    description  TEXT w-P SZ=$ RST=X   
+    // Sets the description of the use/role/purpose of the user account
+  END
+  
+  GLOBAL REGISTER 3 (Remove)  RESET=X WRITE=SUPR READ=X EVENT=NEVER
+  //--------------------------------------------------------------------------
+  // Used to remove an existing user account.  Note: To remove a user account 
+  // that has ADMN privileges, the logged in client must have ADMN access 
+  // privileges.
+  
+    userID  TEXT W-P SZ=64 RST=X
+    // Identifies which user account to remove
+  END
+END
+
+
+FUNIT NAME=4 (FUnitCatalog)  GENERATION=1 
+//============================================================================
+// Provides a list of addresses for ALL FUNITs available on the ALA
+
+  LOCAL LISTREG 1 (Instances)  SZ=$ RESET=X WRITE=X READ=USER EVENT=ONREAD
+  //--------------------------------------------------------------------------
+  // List of all FUNIT instances    
+
+    _eol  BOOL -RV
+    // Returns true on last entry in the list; else false
+
+    instanceAddress  XADR<*> -RC
+    // Address of the FUNIT instance
+
+    typeShort  TEXT -RC
+    // full - short format - type identifier of the FUNIT instance
+
+    typeVerbose  TEXT -RC
+    // full - verbose format - type identifier of the FUNIT instance
+
+    generation  UINT32 -RC
+    // Generation and/or version of the FUnit
+  END
+
+  LOCAL REGISTER 2 (RegistersQuery)  RESET=X WRITE=USER READ=X EVENT=NEVER
+  //--------------------------------------------------------------------------
+  // When this register is written to, it triggers a series of data() events 
+  // (from register 3) that provides the list of registers contained  within
+  // the FUNIT specified by 'address'
+  
+    address  XADR<*>  W-V RST=X
+    //
+  END
+
+  LOCAL LISTREG 3 (RegistersQueryResponse)  SZ=$ RESET=X WRITE=X READ=X EVENT=ONWRITE.2
+  //--------------------------------------------------------------------------
+  // This register reports the list of registers contained with the FUNIT for 
+  // the 'address' written to register 3.
+
+    _eol  BOOL -RV
+    // Returns true on last entry in the list; else false
+
+    offset  UINT32 -RC
+    // Register offset
+
+    name  TEXT -RC
+    // Register name
+  END
+
+  LOCAL REGISTER 4 (TypeQuery)  RESET=X WRITE=USER READ=USER EVENT=NEVER
+  //--------------------------------------------------------------------------
+  // When this register is writtent to, it triggers a data() event (from
+  // register 5) that provide type information of the FUNIT addressed by
+  // the specified address.
+
+    address  XADR<*> WRV RST=_null
+    // The address to look up its type
+  END
+
+  LOCAL REGISTER 5 (TypeQueryResponse)  RESET=X WRITE=X READ=X EVENT=ONWRITE.4
+  //--------------------------------------------------------------------------
+  // This register reports the type information for 'address' written to
+  // register 4.
+
+    address  XADR<*> -RV RST=_null
+    // The address to look up its type
+
+    typeShort  TEXT -RV RST=X
+    // full - short format - FUNIT type of 'instance'
+
+    typeVerbose  TEXT -RV RST=X
+    // full - verbose format - FUNIT text name of 'instance'
+
+    generation  UINT32 -RV RST=X
+    // Generation and/or version of the FUnit of 'instance'
+  END
+END
+
+
+FUNIT NAME=5 (Neighborhood)  GENERATION=1 
+//============================================================================
+
+  GLOBAL REGISTER 1 (Location)  WRITE=OPER READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  //
+  
+    locationName  TEXT wRP SZ=24 RST=$
+    //
+  
+    memberName  TEXT wRP SZ=64 RST=$
+    //
+  
+    memberUID  UINT32 -RC LV=* UV=* RST=X
+    //
+  END
+
+  GLOBAL LISTREG 2 (Members)  SZ=$ RESET=X WRITE=X READ=USER EVENT=ONCHANGE
+  //--------------------------------------------------------------------------
+  //
+  
+    _eol  BOOL -RV
+    // Returns true on last entry in the list; else false
+
+    memberName  TEXT -RV SZ=64
+    //
+  
+    memberUID  UINT32 -RV LV=* UV=*
+    //
+  
+    line  TEXT -RC
+    //
+  
+    name  TEXT -RC SZ=$
+    //
+  
+    buildID  TEXT -RC SZ=$
+    //
+  
+    version  TEXT -RC SZ=$
+    //
+  
+    descriptor1  TEXT -RC SZ=$
+    //
+  
+    descriptor2  TEXT -RC SZ=$
+    //
+  
+    descriptor3  TEXT -RC SZ=$
+    //
+  END
+END
