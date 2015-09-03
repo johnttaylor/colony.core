@@ -110,11 +110,9 @@ size_t Base::sumAllExternalSize( void ) const
     }
 
 ////////////////////////
-void Api::copy( Api& dst, const Api& src, const Api* inUseFilterPtr ) 
+bool Api::copy( Api& dst, const Api& src, const Api* inUseFilterPtr ) 
     {
-    // Mark the tuple state as: 'updated'
-    dst.setUpdatedState();
-    dst.incrementSequenceNumber();
+    unsigned updated = 0;
 
     // Skip copy if the source Tuple is a Null Tuple
     if ( src.getNumElements() != 0 )
@@ -123,14 +121,37 @@ void Api::copy( Api& dst, const Api& src, const Api* inUseFilterPtr )
         unsigned i;
         for(i=0; i < dst.getNumElements(); i++ )
             {
+            // Apply lock operations (if any).  MUST be done BEFORE the copy operations!
+            if ( inUseFilterPtr )
+                {
+                if ( inUseFilterPtr->getElement(i).isLockRequest() )
+                    {
+                    dst.getElement(i).setLocked();
+                    }
+                else if ( inUseFilterPtr->getElement(i).isUnlockRequest() )
+                    {
+                    dst.getElement(i).setUnlocked();
+                    } 
+                }
+
             // Only copy in-use elements (or all if specified)
             if ( !inUseFilterPtr || inUseFilterPtr->getElement(i).isInUse() )
                 {
-                dst.getElement(i).setValidState( src.getElement(i).validState() );
-                dst.getElement(i).copyDataFrom( src.getElement(i) );
+                dst.getElement(i).setRawValidState_( src.getElement(i).getRawValidState_() );  // MUST be done BEFORE the copyDataFrom operation!
+                updated += dst.getElement(i).copyDataFrom( src.getElement(i) );
                 }
             }
         }
+
+    // Mark the tuple state as: 'updated'
+    if ( updated )
+        {
+        dst.setUpdatedState();
+        dst.incrementSequenceNumber();
+        return true;
+        }
+
+    return false;
     }
 
 bool Api::compareAndCopy( Rte::Tuple::Api& srcTuple, Rte::Tuple::Api& dstTuple, bool allElements, bool compareValues )

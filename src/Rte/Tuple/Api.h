@@ -46,9 +46,11 @@ public:
     /** This class method performs a copy operation for a tuple.  If 
         'inUseFilerP' is zero, then all elements in the tuple are copied;
         else then only elements that are marked by inUseFilter->isInUse()
-        are copied.
+        are copied. The method returns if at least one element in the tuple
+        was actually updated (i.e. at least one element was copied and that 
+        element was NOT in the locked state).
      */
-    static void copy( Api& dst, const Api& src, const Api* inUseFilterPtr=0 );
+    static bool copy( Api& dst, const Api& src, const Api* inUseFilterPtr=0 );
 
     /** This class method performs a compare of two tuples and if there
         are different, then 'src' id copied to 'dst'.  The default behavior for

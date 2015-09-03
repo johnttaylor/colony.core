@@ -49,7 +49,7 @@ public:
 
 public: 
     /// See Rte::Element::Api
-    void copyDataFrom( const Api& other );
+    bool copyDataFrom( const Api& other );
 
     /// See Rte::Element::Api
     bool isDifferentFrom( const Api& other ) const;
@@ -140,10 +140,16 @@ ELEMTYPE Rte::Element::Basic<ELEMTYPE,TYPEID>::get( void ) const
 
 /////////////////
 template<class ELEMTYPE, int TYPEID>
-void Rte::Element::Basic<ELEMTYPE,TYPEID>::copyDataFrom( const Api& other )
+bool Rte::Element::Basic<ELEMTYPE,TYPEID>::copyDataFrom( const Api& other )
     {
     assertTypeMatches( other );
-    m_data = *((ELEMTYPE*)(other.dataPointer()));
+    if ( !isLocked() )
+        {
+        m_data = *((ELEMTYPE*)(other.dataPointer()));
+        return true;
+        }
+
+    return false;
     }
 
 template<class ELEMTYPE, int TYPEID>

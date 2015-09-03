@@ -40,23 +40,31 @@ int32_t SeqNumber::get( void ) const
 
 
 /////////////////
-void SeqNumber::copyDataFrom( const Api& other )
+bool SeqNumber::copyDataFrom( const Api& other )
     {
     assertTypeMatches( other );
 
-    int32_t src = *((int32_t*)(other.dataPointer()));
-    if ( src < 0 )
+    // Silently ignore when locked
+    if ( !isLocked() )
         {
-        // When incrementing - don't let the value go negative 
-        if ( ++m_data <= 0 )
+        int32_t src = *((int32_t*)(other.dataPointer()));
+        if ( src < 0 )
             {
-            m_data = 1; // By deisgn, a valid sequence number is never zero
+            // When incrementing - don't let the value go negative 
+            if ( ++m_data <= 0 )
+                {
+                m_data = 1; // By deisgn, a valid sequence number is never zero
+                }
             }
+        else if ( src > 0 )
+            {
+            m_data = src;
+            }
+
+        return true;
         }
-    else if ( src > 0 )
-        {
-        m_data = src;
-        }
+
+    return false;
     }
 
 

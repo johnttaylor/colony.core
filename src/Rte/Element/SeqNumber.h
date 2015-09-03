@@ -53,7 +53,7 @@ public:
 
 public:
     /// See Rte::Element::Api
-    void copyDataFrom( const Api& other );
+    bool copyDataFrom( const Api& other );
 
     /// See Rte::Element::Api
     bool isDifferentFrom( const Api& other ) const;

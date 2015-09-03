@@ -28,18 +28,19 @@ protected:
     /// My Type ID
     DataType    m_myDataType;
 
-    /// My valid state
+    /// My valid state AND current locked/unlocked state
     int8_t      m_valid;
 
-    /// My in-use state
-    bool        m_inUse;
+    /// My in-use and lock/unlock requests
+    uint8_t     m_opers;
 
 
 protected:
     /// Constructor
     Base( int    myDataType,
           bool   inUse      = false,
-          int8_t validState = RTE_ELEMENT_API_STATE_INVALID
+          int8_t validState = RTE_ELEMENT_API_STATE_INVALID,
+          bool   locked     = false
         );
 
 
@@ -66,6 +67,33 @@ public:
 
     ///  See Rte::Element::Api
     void setInUseState( bool newState );
+    
+    ///  See Rte::Element::Api
+    bool isLocked(void) const;
+    
+    ///  See Rte::Element::Api
+    void setLocked(void);
+    
+    ///  See Rte::Element::Api
+    void setUnlocked(void);
+
+    ///  See Rte::Element::Api
+    bool isLockRequest(void) const;
+    
+    ///  See Rte::Element::Api
+    bool isUnlockRequest(void) const;
+
+    ///  See Rte::Element::Api
+    void requestLockOperation( bool newState );
+
+    ///  See Rte::Element::Api
+    void clearLockOperation(void);
+
+    ///  See Rte::Element::Api
+    void setRawValidState_( int8_t newRawState );
+
+    ///  See Rte::Element::Api
+    int8_t getRawValidState_(void) const;
 
 };
 

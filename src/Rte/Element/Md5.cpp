@@ -39,10 +39,16 @@ Cpl::Checksum::ApiMd5::Digest_T& Md5::get( void )
 
 
 /////////////////
-void Md5::copyDataFrom( const Api& other )
+bool Md5::copyDataFrom( const Api& other )
     {
     assertTypeMatches( other );
-    memcpy(&m_data, other.dataPointer(), sizeof(m_data));
+    if ( !isLocked() )
+        {
+        memcpy(&m_data, other.dataPointer(), sizeof(m_data));
+        return true;
+        }
+
+    return false;
     }
 
 bool Md5::isDifferentFrom( const Api& other ) const

@@ -6521,13 +6521,13 @@ html .solidborders td {  border: 1px solid black; }</pre>
 <div modified="20150831010837537" title="$:/state/toc/Contents-Design Patterns--242358753">
 <pre>open</pre>
 </div>
-<div modified="20150831015749126" title="$:/state/toc/Contents-Functional Unit--242358753">
-<pre>close</pre>
+<div modified="20150903023458288" title="$:/state/toc/Contents-Functional Unit--242358753">
+<pre>open</pre>
 </div>
 <div modified="20150831015354345" title="$:/state/toc/Contents-Register--242358753">
 <pre>close</pre>
 </div>
-<div list="[[Command/Event Syntax]] Overview Commands [[Functional Unit]] $:/ControlPanel" title="$:/StoryList">
+<div list="[[Command/Event Syntax]] [[FUNIT File Format]]" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -6683,7 +6683,7 @@ html .solidborders td {  border: 1px solid black; }</pre>
 |John Taylor |john.t.taylor@gmail.com|principal author |
 </pre>
 </div>
-<div created="20150831012226260" modified="20150831023055989" tags="CORAL" title="Command/Event Syntax">
+<div created="20150831012226260" modified="20150903025954394" tags="CORAL" title="Command/Event Syntax">
 <pre>```
 
 Command String Format                   
@@ -6691,8 +6691,7 @@ Command String Format
 
     Examples:
         .write@_root:1(&quot;bob&quot;,&quot;mypasswd&quot;,ADMN,&quot;Bob's EMS&quot;,,);
-        .write@zone2:1( ,75!, : ); // Forces 2nd field, invalidates 3rd field
-        .write@xyz:2( forced string! );
+        .write@zone2:1(:32,,);
         .monitor@relay12:1();
         .reset@_root();
 
@@ -6701,8 +6700,7 @@ Event String Format
 
     Examples:
         ^data@_root:1(&quot;bob&quot;,,ADMN,&quot;Bob's EMS&quot;,T,23);
-        ^data@zone2:1( &quot;My Zone&quot;, 75!, : ); 
-        ^data@xyz:2( &quot;forced string&quot;! );
+        ^data@zone2:1(:32,75,:); 
         ^data@3543.A2:1(T,-32.90,0xA3,&quot;quoted string: \&quot;Hello World\&quot;&quot;);
         ^data@_2.324:3(T);
 
@@ -6717,11 +6715,14 @@ General Format:
     adom        := { { '_' } | &lt;domain&gt; }
                      Note: the '_' is short hand notation for the '1 (Std)' domain
     domain      := { &lt;num&gt;&lt;aspeical&gt; where the numeric value is the containing domain ID }
-    general     := { &lt;alpha&gt; [atext]* [:&lt;num&gt;*] }
+    general     := { &lt;alpha&gt; [atext]* [:&lt;reg&gt;*] }
     atext       := { {&lt;alphanum&gt;|&lt;aspecial&gt; }
     aspecial    := { any of the following 3 characters: -_. }
+    reg         := { [&lt;shadow&gt;]&lt;num&gt; }
+    shadow      := { '+' | '-'  }
+                     Note: Selects the P or N shadow register respectively
     num         := { any numeric character }
-    args        := { &lt;argtext&gt;[&lt;status&gt;] [,&lt;argtext&gt;[&lt;status&gt;]* }
+    args        := { &lt;argtext&gt;|&lt;istat&gt; [,&lt;args&gt;]* }
     parms       := { &lt;argtext&gt; [,&lt;argtext&gt;]*}
     argtext     := { &lt;data&gt; | textstr }
     data        := { any printable character except for the following 6 
@@ -6732,13 +6733,12 @@ General Format:
                      characters: &quot;\ }
     esc         := { Two character sequence that 'escapes' the second character.  
                      Allowed sequences: \&quot; and \\ }
-    status      := { { '!' } | { :[&lt;sval&gt;] } }
-                   Notes: The '!' indicates/invokes a forced status.
-                          When the ':' field is present, the argument value is 
-                          consider to be in non-valid state. 
+        istat       := { :[&lt;ireason&gt;] }
+                     Note: The ':' character indicates that the argument 
+                         is in a non-valid state.
 
-    sval        := { any numeric value ranging from 1 to 254.  When 
-                     &lt;sval&gt; is not specified its value is considered be 1 }
+    ireason     := { any numeric value ranging from 1 to 127.  When 
+                     &lt;ireason&gt; is not specified its value is considered be 1 }
 
 ```</pre>
 </div>
@@ -6864,7 +6864,7 @@ Currently registered [[Domain]]s
 *[[1-3 (Std-Files) |file:./definitions/1-3.Std-Files.pkg]]
 *[[1-4 (Std-ClientMessaging) |file:./definitions/1-4.Std-ClientMessaging.pkg]]</pre>
 </div>
-<div created="20150831015617333" modified="20150831015642633" tags="[[Functional Unit]]" title="FUNIT File Format">
+<div created="20150831015617333" modified="20150903023733397" tags="[[Functional Unit]]" title="FUNIT File Format">
 <pre>```
 Format for Function Unit Definition File
 ------------------------
@@ -6882,7 +6882,7 @@ PACKAGE DOMAIN=&lt;val&gt; NAME=&lt;nname&gt; (&lt;ntext&gt;)
 
         &lt;reg&gt;
         -----------------
-        &lt;rtype&gt; REGISTER=&lt;val&gt; (&lt;ntext&gt;) RESET=&lt;rst&gt;[&lt;op&gt;] WRITE=&lt;rw&gt;[&lt;op&gt;] READ=&lt;rr&gt;[&lt;op&gt;] EVENT=&lt;re&gt;
+        &lt;rtype&gt; REGISTER=&lt;rval&gt; (&lt;ntext&gt;) RESET=&lt;rst&gt;[&lt;op&gt;] WRITE=&lt;rw&gt;[&lt;op&gt;] READ=&lt;rr&gt;[&lt;op&gt;] EVENT=&lt;re&gt;
             &lt;datafld&gt;*
             -----------------
             &lt;ntext&gt; &lt;dtype&gt; &lt;attr&gt; [&lt;bounds&gt;] RST=&lt;reset&gt;
@@ -6899,7 +6899,7 @@ PACKAGE DOMAIN=&lt;val&gt; NAME=&lt;nname&gt; (&lt;ntext&gt;)
 
         &lt;areg&gt;
         -----------------
-        &lt;rtype&gt; ARRAYREG=&lt;val&gt; (&lt;ntext&gt;) SZ=&lt;val&gt;|$ RESET=&lt;rst&gt;[&lt;op&gt;] WRITE=&lt;rw&gt;[&lt;op&gt;] READ=&lt;rr&gt;[&lt;op&gt;] EVENT=&lt;re&gt;
+        &lt;rtype&gt; ARRAYREG=&lt;rval&gt; (&lt;ntext&gt;) SZ=&lt;val&gt;|$ RESET=&lt;rst&gt;[&lt;op&gt;] WRITE=&lt;rw&gt;[&lt;op&gt;] READ=&lt;rr&gt;[&lt;op&gt;] EVENT=&lt;re&gt;
             _index UINT32 -RP
             &lt;datafld&gt;*
             -----------------
@@ -6926,6 +6926,8 @@ General Format:
     reset       := &lt;dval&gt;|$|X  // $=domain app defined, X=undefined/none
     dval        := constant based on dtype (numeric, string, bool, token, addr)
     val         := unsigned integer greater than zero 
+    rval        := [&lt;shadow&gt;]&lt;val&gt;
+    shadow      := { '+' | '-' } // P or N Shadow register respectively
     alpha       := any alphabetic character 
     alphanum    := any alphabetic or numeric character 
     rtype       := { GLOBAL|LOCAL }

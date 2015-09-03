@@ -21,7 +21,8 @@
 
 /** This symbol provides the default 'Invalid' state value for an Element. The 
     application is free define/apply its own meaning to the set of 
-    'invalid-values'. 
+    'invalid-values'.  NOTE: All 'Status' values MUST be a POSITIVE integer, 
+    i.e. between 0 and 127.  Negative values ARE Reserved by the RTE Engine.  
  */
 #ifndef RTE_ELEMENT_API_STATE_INVALID
 #define RTE_ELEMENT_API_STATE_INVALID   1
@@ -51,7 +52,8 @@ public:
     /** This method sets the valid/invalid state of the element. A Value of zero
         indicates 'valid'; else ALL other values represent 'invalid'.  The 
         application is free define/apply its own meaning to the set of 
-        'invalid-values' 
+        'invalid-values'.  The value MUST be a POSITIVE integer, i.e. between
+        0 and 127.  Negative values ARE Reserved by the RTE Engine.
      */
     virtual void setValidState( int8_t newState ) = 0;
 
@@ -88,10 +90,61 @@ public:
 
 
 public:
-    /** This method copies the data content of the 'other' element to THIS
-        instance.
+    /** Returns true if the element is marked as 'locked'.  In the locked
+        state - ALL WRITE/UPDATE OPERATIONS (except for changing the locked
+        state) are silently ignored/dropped.
      */
-    virtual void copyDataFrom( const Api& other ) = 0;
+    virtual bool isLocked(void) const = 0;
+
+    /** This method sets the Element to the locked state.  The Application 
+        should NEVER call this method directly -->it should use the 'requestXxxx'
+        method below instead.
+     */
+    virtual void setLocked(void) = 0;
+
+    /** This method sets the Element to the unlocked state.  The Application 
+        should NEVER call this method directly -->it should use the 'requestXxxx'
+        method below instead.
+     */
+    virtual void setUnlocked(void) = 0;
+
+
+
+public:
+    /** Returns true if element has been marked with a 'lock request'
+     */
+    virtual bool isLockRequest(void) const = 0;
+
+    /** Returns true if element has been marked with a 'lock unrequest'
+     */
+    virtual bool isUnlockRequest(void) const = 0;
+
+    /** This method sets the 'locked request' state of the element.  When
+        'newState' is true a lock operation is requested; else a unlock
+        operation is requested.  Only Controllers can/should/do make lock/unlock 
+        requests. Note: The 'inUse' flag has NO effect on the requestion 
+        operations, i.e.the lock/unlock request operations are orthogonal to 
+        the 'inUse' flag.
+     */
+    virtual void requestLockOperation( bool newState ) = 0;
+
+    /// This method is used to request the element be 'locked'
+    inline void requestLocked(void)       { requestLockOperation(true); }
+
+    /// This method is used to request the element be 'unlocked'
+    inline void requestUnlocked(void)     { requestLockOperation(false); }
+
+    /// This method clears any previous Lock/Unlock operation requests
+    virtual void clearLockOperation(void) = 0;
+
+
+public:
+    /** This method copies the data content of the 'other' element to THIS
+        instance. This method returns true when the copy operation was
+        performed, i.e. the element is NOT in the locked state; else false
+        is returned.
+     */
+    virtual bool copyDataFrom( const Api& other ) = 0;
 
     /** This method returns true IF the data content of the THIS instance
         is NOT equal to the 'other' elements data content .
@@ -132,6 +185,20 @@ public:
               data content and valid flag.
      */
     virtual size_t externalSize(void) const = 0;
+
+
+public:
+    /** This is an INTERNAL method to the RTE Engine for managing the
+        various states/status of an Element -->the Application should NEVER
+        call this method.
+     */
+    virtual void setRawValidState_( int8_t newRawState ) = 0;
+
+    /** This is an INTERNAL method to the RTE Engine for managing the
+        various states/status of an Element -->the Application should NEVER
+        call this method.
+     */
+    virtual int8_t getRawValidState_(void) const = 0;
 
 
 public:

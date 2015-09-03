@@ -62,7 +62,7 @@ public:
 
 public: 
     /// See Rte::Element::Api
-    void copyDataFrom( const Api& other );
+    bool copyDataFrom( const Api& other );
 
     /// See Rte::Element::Api
     bool isDifferentFrom( const Api& other ) const;
@@ -128,10 +128,16 @@ Cpl::Text::String& Rte::Element::String<S>::getString( void )
 
 /////////////////
 template<int S>
-void Rte::Element::String<S>::copyDataFrom( const Api& other )
+bool Rte::Element::String<S>::copyDataFrom( const Api& other )
     {
     assertTypeMatches( other );
-    m_data = *((Cpl::Text::String*)(other.dataPointer()));
+    if ( !isLocked() )
+        {
+        m_data = *((Cpl::Text::String*)(other.dataPointer()));
+        return true;
+        }
+
+    return false;
     }
 
 template<int S>

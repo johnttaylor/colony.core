@@ -39,35 +39,43 @@ uint32_t BitFlags::get( void ) const
 
 
 /////////////////
-void BitFlags::copyDataFrom( const Api& other )
+bool BitFlags::copyDataFrom( const Api& other )
     {
     assertTypeMatches( other );
 
-    uint32_t src = *((uint32_t*)(other.dataPointer()));
-
-    // Normal copy
-    if ( src < eOPER_TGL_BITS )
+    // Silent skip when locked
+    if ( !isLocked() )
         {
-        m_data = src;
+        uint32_t src = *((uint32_t*)(other.dataPointer()));
+
+        // Normal copy
+        if ( src < eOPER_TGL_BITS )
+            {
+            m_data = src;
+            }
+
+        // Toggle Bits
+        else if ( src < eOPER_CLR_BITS )
+            {
+            m_data ^= src;
+            }
+
+        // Clear bits
+        else if ( src < eOPER_SET_BITS )
+            {
+            m_data &= ~(src&eUSABLE_BITS_MASK); 
+            }
+
+        // Set bits
+        else if ( src < (eOPER_SET_BITS|eOPER_TGL_BITS) )
+            {
+            m_data |= (src&eUSABLE_BITS_MASK); 
+            }
+
+        return true;
         }
 
-    // Toggle Bits
-    else if ( src < eOPER_CLR_BITS )
-        {
-        m_data ^= src;
-        }
-
-    // Clear bits
-    else if ( src < eOPER_SET_BITS )
-        {
-        m_data &= ~(src&eUSABLE_BITS_MASK); 
-        }
-
-    // Set bits
-    else if ( src < (eOPER_SET_BITS|eOPER_TGL_BITS) )
-        {
-        m_data |= (src&eUSABLE_BITS_MASK); 
-        }
+    return false;
     }
 
 
