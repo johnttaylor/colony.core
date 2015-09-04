@@ -42,7 +42,7 @@ Cpl::Checksum::ApiMd5::Digest_T& Md5::get( void )
 bool Md5::copyDataFrom( const Api& other )
     {
     assertTypeMatches( other );
-    if ( !isLocked() )
+    if ( !isModelElement() || !isLocked() )
         {
         memcpy(&m_data, other.dataPointer(), sizeof(m_data));
         return true;

@@ -140,6 +140,16 @@ public:
 
 
 public:
+    /** This is an INTERNAL helper method to the RTE Enginer for marking an
+        an entire Point as Model-Point.  The default construction is the 
+        Tuple is not-a-Model-Point.  Once set it cannot be changed.  
+        The Application should NEVER calls this method.
+     */
+    virtual void setAsModelPoint_(void) = 0;
+
+
+
+public:
     /// Virtual destructor to make the compiler happy
     virtual ~Api(){}
 };

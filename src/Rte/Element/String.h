@@ -131,7 +131,7 @@ template<int S>
 bool Rte::Element::String<S>::copyDataFrom( const Api& other )
     {
     assertTypeMatches( other );
-    if ( !isLocked() )
+    if ( !isModelElement() || !isLocked() )
         {
         m_data = *((Cpl::Text::String*)(other.dataPointer()));
         return true;

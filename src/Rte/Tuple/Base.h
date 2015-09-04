@@ -71,6 +71,10 @@ public:
     /// See Rte::Tuple::Api
     size_t sumAllExternalSize(void) const;
 
+    /// See Rte::Tuple::Api
+    void setAsModelTuple_(void);
+
+
 };
 
 

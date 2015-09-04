@@ -143,7 +143,7 @@ template<class ELEMTYPE, int TYPEID>
 bool Rte::Element::Basic<ELEMTYPE,TYPEID>::copyDataFrom( const Api& other )
     {
     assertTypeMatches( other );
-    if ( !isLocked() )
+    if ( !isModelElement() || !isLocked() )
         {
         m_data = *((ELEMTYPE*)(other.dataPointer()));
         return true;

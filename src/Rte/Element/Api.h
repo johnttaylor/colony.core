@@ -122,19 +122,34 @@ public:
     /** This method sets the 'locked request' state of the element.  When
         'newState' is true a lock operation is requested; else a unlock
         operation is requested.  Only Controllers can/should/do make lock/unlock 
-        requests. Note: The 'inUse' flag has NO effect on the requestion 
-        operations, i.e.the lock/unlock request operations are orthogonal to 
-        the 'inUse' flag.
+        requests. 
+        
+        Notes: 
+        
+            o The 'inUse' flag has NO effect on the request lock operations, 
+              i.e. the lock/unlock request operations are orthogonal to 
+              the 'inUse' flag.
+            o The application CAN update and lock an element is a single
+              Controller update action.  However, the application can NOT
+              unlock and update an elemetn is single Controller update
+              action.  A second/subsequent Controller update action is
+              required to update a Element once the Element has been
+              unlocked.
      */
     virtual void requestLockOperation( bool newState ) = 0;
 
-    /// This method is used to request the element be 'locked'
+    ///This method is used to request the element be 'locked'. 
     inline void requestLocked(void)       { requestLockOperation(true); }
 
     /// This method is used to request the element be 'unlocked'
     inline void requestUnlocked(void)     { requestLockOperation(false); }
 
-    /// This method clears any previous Lock/Unlock operation requests
+    /** This method clears any previous Lock/Unlock operation requests.
+        Note: Typically the Application and/or Controller does NOT need
+              to call this method.  This method is ALWAYS internally called
+              once the lock request operaiton has bee applied to the
+              model Point/Tuple/Element.
+     */
     virtual void clearLockOperation(void) = 0;
 
 
@@ -199,6 +214,20 @@ public:
         call this method.
      */
     virtual int8_t getRawValidState_(void) const = 0;
+
+
+public:
+    /** This method returns true of the Element is a 'Model Element' vs.
+        an Element in a Controller, Viewer, etc.
+     */
+    virtual bool isModelElement(void) const = 0;
+
+    /** This is an INTERNAL method to the RTE Enginer for marking an
+        Element as a Model-Element.  The default construction is the 
+        Element is not-a-Model-Element.  Once set it cannot be changed.  
+        The Application should NEVER calls this method.
+     */
+    virtual void setAsModelElement_(void) = 0;
 
 
 public:

@@ -73,25 +73,25 @@ static const char* n2s_( const char* elementValue, bool isValid )
 static void traceFoo1_( Tuple::Foo1& tuple, const char* name, const char* msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo1: %s", name, msg ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s",  n2s_(tuple.m_name.get(), tuple.m_name.isValid()), v2t_(tuple.m_name.validState()), b2t_(tuple.m_name.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s", tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%s",   tuple.m_count.get(), v2t_(tuple.m_count.validState()), b2t_(tuple.m_count.isInUse()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s, isLocked=%s",  n2s_(tuple.m_name.get(), tuple.m_name.isValid()), v2t_(tuple.m_name.validState()), b2t_(tuple.m_name.isInUse()), b2t_(tuple.m_name.isLocked())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s, isLocked=%s", tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse()), b2t_(tuple.m_enabled.isLocked())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%s, isLocked=%s",   tuple.m_count.get(), v2t_(tuple.m_count.validState()), b2t_(tuple.m_count.isInUse()), b2t_(tuple.m_count.isLocked()) ));
     }
 
 static void traceFoo2_( Tuple::Foo2& tuple, const char* name, const char* msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo2: %s", name, msg ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s", tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _limit:=%d. valid=%s, inUse=%s",   tuple.m_limit.get(), v2t_(tuple.m_limit.validState()), b2t_(tuple.m_limit.isInUse()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s, isLocked=%s", tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse()), b2t_(tuple.m_enabled.isLocked())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _limit:=%d. valid=%s, inUse=%s, isLocked=%s",   tuple.m_limit.get(), v2t_(tuple.m_limit.validState()), b2t_(tuple.m_limit.isInUse()), b2t_(tuple.m_limit.isLocked()) ));
     }
 
 static void traceFoo3_( Tuple::Foo3& tuple, const char* name, const char* msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo3: %s", name, msg ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _inContainer_:=%s. valid=%s, inUse=%s",    b2t_(tuple.isInContainer()), v2t_(tuple.m_inContainer_.validState()), b2t_(tuple.m_inContainer_.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s",          n2s_(tuple.m_name.get(), tuple.m_name.isValid()), v2t_(tuple.m_name.validState()), b2t_(tuple.m_name.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s",         tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%s",           tuple.m_count.get(), v2t_(tuple.m_count.validState()), b2t_(tuple.m_count.isInUse()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _inContainer_:=%s. valid=%s, inUse=%s, isLocked=%s",    b2t_(tuple.isInContainer()), v2t_(tuple.m_inContainer_.validState()), b2t_(tuple.m_inContainer_.isInUse()), b2t_(tuple.m_inContainer_.isLocked())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s, isLocked=%s",          n2s_(tuple.m_name.get(), tuple.m_name.isValid()), v2t_(tuple.m_name.validState()), b2t_(tuple.m_name.isInUse()), b2t_(tuple.m_name.isLocked())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s, isLocked=%s",         tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse()), b2t_(tuple.m_enabled.isLocked())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%s, isLocked=%s",           tuple.m_count.get(), v2t_(tuple.m_count.validState()), b2t_(tuple.m_count.isInUse()), b2t_(tuple.m_count.isLocked()) ));
     }
 
 
@@ -306,6 +306,15 @@ protected: // Cpl::Itc::Close/Open
             }
         }
 
+
+public:
+    void clearCounters(void)
+        {
+        m_changed1Count           = 0;
+        m_changed2Count           = 0;
+        m_changed3Count           = 0;
+        m_membershipChanged3Count = 0;
+        }
 };
 
 class LWViewerContext: public Cpl::Itc::CloseSync
@@ -460,6 +469,13 @@ protected: // Cpl::Itc::Close/Open
             }
         }
 
+public:
+    void clearCounters(void)
+        {
+        m_changed1Count           = 0;
+        m_changed3Count           = 0;
+        m_membershipChanged3Count = 0;
+        }
 };
 
 

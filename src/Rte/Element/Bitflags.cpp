@@ -43,8 +43,8 @@ bool BitFlags::copyDataFrom( const Api& other )
     {
     assertTypeMatches( other );
 
-    // Silent skip when locked
-    if ( !isLocked() )
+    // Silent skip when locked AND I am a Model Element
+    if ( !isModelElement() || !isLocked() )
         {
         uint32_t src = *((uint32_t*)(other.dataPointer()));
 

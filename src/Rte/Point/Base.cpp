@@ -178,3 +178,13 @@ size_t Base::sumAllExternalSize( void )
     }
 
 
+void Base::setAsModelPoint_(void)
+    {
+    unsigned j;
+    for(j=0; j<getNumTuples(); j++)
+        {
+        getTuple(j).setAsModelTuple_();
+        }
+    }
+    
+

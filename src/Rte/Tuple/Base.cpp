@@ -109,6 +109,16 @@ size_t Base::sumAllExternalSize( void ) const
     return sum;
     }
 
+void Base::setAsModelTuple_(void)
+    {
+    unsigned i;
+    for(i=0; i<getNumElements(); i++)
+        {
+        getElement(i).setAsModelElement_();
+        }
+    }
+
+
 ////////////////////////
 bool Api::copy( Api& dst, const Api& src, const Api* inUseFilterPtr ) 
     {
@@ -121,25 +131,50 @@ bool Api::copy( Api& dst, const Api& src, const Api* inUseFilterPtr )
         unsigned i;
         for(i=0; i < dst.getNumElements(); i++ )
             {
-            // Apply lock operations (if any).  MUST be done BEFORE the copy operations!
+            // Only copy in-use elements (or all if specified)
+            if ( !inUseFilterPtr || inUseFilterPtr->getElement(i).isInUse() )
+                {
+                if ( dst.getElement(i).copyDataFrom( src.getElement(i) ) )
+                    {
+                    updated++;
+                    dst.getElement(i).setRawValidState_( src.getElement(i).getRawValidState_() ); 
+                    }
+                }
+
+            // Apply lock operations (if any).  MUST be done AFTER the copy operations (so that new value can be applied with a lock request)!
             if ( inUseFilterPtr )
                 {
                 if ( inUseFilterPtr->getElement(i).isLockRequest() )
                     {
+                    // Treat a change in the lock state as an update
+                    if ( dst.getElement(i).isLocked() == false )
+                        {
+                        updated++;      
+                        }
+
+                    // update the lock state
                     dst.getElement(i).setLocked();
+
+                    // Clear lock request -->treat it as a 'one-shot' operation
+                    inUseFilterPtr->getElement(i).clearLockOperation();
+
                     }
                 else if ( inUseFilterPtr->getElement(i).isUnlockRequest() )
                     {
+                    // Treat a change in the lock state as an update
+                    if ( dst.getElement(i).isLocked() == true )
+                        {
+                        updated++;      
+                        }
+
+                    // update the lock state
                     dst.getElement(i).setUnlocked();
+
+                    // Clear unlock request -->treat it as a 'one-shot' operation
+                    inUseFilterPtr->getElement(i).clearLockOperation();
                     } 
                 }
 
-            // Only copy in-use elements (or all if specified)
-            if ( !inUseFilterPtr || inUseFilterPtr->getElement(i).isInUse() )
-                {
-                dst.getElement(i).setRawValidState_( src.getElement(i).getRawValidState_() );  // MUST be done BEFORE the copyDataFrom operation!
-                updated += dst.getElement(i).copyDataFrom( src.getElement(i) );
-                }
             }
         }
 
@@ -182,7 +217,7 @@ bool Api::compareAndCopy( Rte::Tuple::Api& srcTuple, Rte::Tuple::Api& dstTuple, 
             if ( dstTuple.getElement(i).isInUse() || allElements )
                 {
                 // Difference in the valid state
-                if ( srcTuple.getElement(i).validState() != dstTuple.getElement(i).validState() )
+                if ( srcTuple.getElement(i).getRawValidState_() != dstTuple.getElement(i).getRawValidState_() )
                     {
                     tupleIsDifferent = true;
                     break;

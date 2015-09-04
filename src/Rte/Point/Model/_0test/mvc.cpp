@@ -38,7 +38,7 @@ LWViewerContext v4LW_( "V4", viewerMailbox_, modelBar1_, modelBar3_, true, true 
 
 Cpl::System::Thread* modelThreadPtr  = 0;
 Cpl::System::Thread* viewerThreadPtr = 0;
-static unsigned testcount_ = 3;
+static unsigned testcount_ = 4;
 
 static void init_()
     {
@@ -1071,6 +1071,354 @@ TEST_CASE( "mvc3", "[mvc3]" )
         REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == false );
         REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == false );
         }
+
+    // CLEAN-UP AND END TESTS
+    if ( --testcount_ == 0 )
+        {
+        // Stop viewers
+        v1_.close();
+        v2_.close();
+        v3_.close();
+        v4LW_.close();
+
+        // Shutdown threads
+        viewerMailbox_.pleaseStop();
+        modelMailbox_.pleaseStop();
+        Cpl::System::Api::sleep(250); // allow time for threads to stop
+        REQUIRE( modelThreadPtr->isRunning() == false );
+        REQUIRE( viewerThreadPtr->isRunning() == false );
+
+        Cpl::System::Thread::destroy( *modelThreadPtr );
+        Cpl::System::Thread::destroy( *viewerThreadPtr );
+        REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+        }
+    }
+
+
+TEST_CASE( "mvc4", "[mvc4]" )
+    {
+    CPL_SYSTEM_TRACE_FUNC( SECT_ );
+    Cpl::System::Shutdown_TS::clearAndUseCounter();
+    init_();
+
+    /// Clear counts
+    v1_.clearCounters();
+    v2_.clearCounters();
+    v3_.clearCounters();
+    v4LW_.clearCounters();
+
+    /// FOO3 Controller 
+    Point::ControllerBar3 controllerBar3( modelBar3_ );
+    static const char* names[4] = { "apple", "cherry", "plum", "orange" };
+    unsigned idx;
+    for(idx=0; idx<4; idx++)
+        {
+        controllerBar3.m_tuples_[idx].m_name.set( names[idx] );
+        controllerBar3.m_tuples_[idx].m_enabled.set(true);
+        controllerBar3.m_tuples_[idx].m_count.set(idx);
+        controllerBar3.m_tuples_[idx].setAllValidState(RTE_ELEMENT_API_STATE_VALID);
+        controllerBar3.m_tuples_[idx].setAllInUseState(true);
+        controllerBar3.addItem(idx);
+        }
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model to baseline...."));
+    controllerBar3.updateModel();
+    Cpl::System::Api::sleep(250); // Pause to allow other threads to run
+
+    // BAR3 Query
+    Point::QueryBar3 queryBar3( modelBar3_ );
+    queryBar3.issueQuery();
+    traceBar3_( queryBar3, "Bar3", "Query - model point in its initial baseline state" );
+    for(idx=0; idx<4; idx++)
+        {
+        REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+        REQUIRE( queryBar3.m_tuples_[idx].m_name.isLocked() == false );
+        REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+        REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == names[idx] );
+        REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isLocked() == false );
+        REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+        REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+        REQUIRE( queryBar3.m_tuples_[idx].m_count.isLocked() == false );
+        REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+        REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == idx );
+        }
+ 
+    REQUIRE( v1_.m_changed1Count == 0 );
+    REQUIRE( v1_.m_changed2Count == 0 );
+    REQUIRE( v1_.m_changed3Count == 1 );
+    REQUIRE( v1_.m_membershipChanged3Count == 1 );
+    REQUIRE( v2_.m_changed1Count == 0 );
+    REQUIRE( v2_.m_changed2Count == 0 );
+    REQUIRE( v2_.m_changed3Count == 1 );
+    REQUIRE( v2_.m_membershipChanged3Count == 1 );
+    REQUIRE( v3_.m_changed1Count == 0 );
+    REQUIRE( v3_.m_changed2Count == 0 );
+    REQUIRE( v3_.m_changed3Count == 1 ); 
+    REQUIRE( v3_.m_membershipChanged3Count == 1 );
+    REQUIRE( v4LW_.m_changed1Count == 0 );
+    REQUIRE( v4LW_.m_changed3Count == 1 );
+    REQUIRE( v4LW_.m_membershipChanged3Count == 1 );
+
+
+    /// FOO3 Controller - Lock elements
+    controllerBar3.setAllInUseState(false);
+    idx = 1;
+    controllerBar3.m_tuples_[idx].m_name.set( "IamLocked" );
+    controllerBar3.m_tuples_[idx].m_name.setInUse();
+    controllerBar3.m_tuples_[idx].m_name.requestLocked();
+    controllerBar3.m_tuples_[idx].m_count.requestLocked();
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model... Locking elements in index[1]..." ));
+    controllerBar3.updateModel();
+    Cpl::System::Api::sleep(250); // Pause to allow other threads to run
+
+    // BAR3 Query - Verify results
+    queryBar3.issueQuery();
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isLocked() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == "IamLocked" );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isLocked() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == idx );    
+    idx = 0;
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == names[idx] );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == idx );    
+
+    REQUIRE( v1_.m_changed1Count == 0 );
+    REQUIRE( v1_.m_changed2Count == 0 );
+    REQUIRE( v1_.m_changed3Count == 2 );
+    REQUIRE( v1_.m_membershipChanged3Count == 1 );
+    REQUIRE( v2_.m_changed1Count == 0 );
+    REQUIRE( v2_.m_changed2Count == 0 );
+    REQUIRE( v2_.m_changed3Count == 1 );
+    REQUIRE( v2_.m_membershipChanged3Count == 1 );
+    REQUIRE( v3_.m_changed1Count == 0 );
+    REQUIRE( v3_.m_changed2Count == 0 );
+    REQUIRE( v3_.m_changed3Count == 1 ); 
+    REQUIRE( v3_.m_membershipChanged3Count == 1 );
+    REQUIRE( v4LW_.m_changed1Count == 0 );
+    REQUIRE( v4LW_.m_changed3Count == 2 );
+    REQUIRE( v4LW_.m_membershipChanged3Count == 1 );
+
+
+    /// FOO3 Controller - Write to Lock elements
+    controllerBar3.setAllInUseState(false);
+    idx = 1;
+    controllerBar3.m_tuples_[idx].m_name.set( "WriteWhenLocked" );
+    controllerBar3.m_tuples_[idx].m_name.setInUse();
+    controllerBar3.m_tuples_[idx].m_enabled.set( false );
+    controllerBar3.m_tuples_[idx].m_enabled.setInUse();
+    controllerBar3.m_tuples_[idx].m_count.set( 66 );
+    controllerBar3.m_tuples_[idx].m_count.setInUse();
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model... Writing to Locked elements in index[1]..." ));
+    controllerBar3.updateModel();
+    Cpl::System::Api::sleep(250); // Pause to allow other threads to run
+
+    // BAR3 Query - Verify results
+    queryBar3.issueQuery();
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isLocked() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == "IamLocked" );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isLocked() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == idx );    
+    idx = 0;
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == names[idx] );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == idx );    
+
+    REQUIRE( v1_.m_changed1Count == 0 );
+    REQUIRE( v1_.m_changed2Count == 0 );
+    REQUIRE( v1_.m_changed3Count == 3 );
+    REQUIRE( v1_.m_membershipChanged3Count == 1 );
+    REQUIRE( v2_.m_changed1Count == 0 );
+    REQUIRE( v2_.m_changed2Count == 0 );
+    REQUIRE( v2_.m_changed3Count == 1 );
+    REQUIRE( v2_.m_membershipChanged3Count == 1 );
+    REQUIRE( v3_.m_changed1Count == 0 );
+    REQUIRE( v3_.m_changed2Count == 0 );
+    REQUIRE( v3_.m_changed3Count == 1 ); 
+    REQUIRE( v3_.m_membershipChanged3Count == 1 );
+    REQUIRE( v4LW_.m_changed1Count == 0 );
+    REQUIRE( v4LW_.m_changed3Count == 3 );
+    REQUIRE( v4LW_.m_membershipChanged3Count == 1 );
+
+
+    /// FOO3 Controller - Write to Lock elements - again
+    controllerBar3.setAllInUseState(false);
+    idx = 1;
+    controllerBar3.m_tuples_[idx].m_name.set( "AgainWriteWhenLocked" );
+    controllerBar3.m_tuples_[idx].m_name.setInUse();
+    controllerBar3.m_tuples_[idx].m_count.set( 77 );
+    controllerBar3.m_tuples_[idx].m_count.setInUse();
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model... Writing (again) to Locked elements in index[1]..." ));
+    controllerBar3.updateModel();
+    Cpl::System::Api::sleep(250); // Pause to allow other threads to run
+
+    // BAR3 Query - Verify results
+    queryBar3.issueQuery();
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isLocked() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == "IamLocked" );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isLocked() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == idx );    
+    idx = 0;
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == names[idx] );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == idx );    
+
+    REQUIRE( v1_.m_changed1Count == 0 );
+    REQUIRE( v1_.m_changed2Count == 0 );
+    REQUIRE( v1_.m_changed3Count == 3 );
+    REQUIRE( v1_.m_membershipChanged3Count == 1 );
+    REQUIRE( v2_.m_changed1Count == 0 );
+    REQUIRE( v2_.m_changed2Count == 0 );
+    REQUIRE( v2_.m_changed3Count == 1 );
+    REQUIRE( v2_.m_membershipChanged3Count == 1 );
+    REQUIRE( v3_.m_changed1Count == 0 );
+    REQUIRE( v3_.m_changed2Count == 0 );
+    REQUIRE( v3_.m_changed3Count == 1 ); 
+    REQUIRE( v3_.m_membershipChanged3Count == 1 );
+    REQUIRE( v4LW_.m_changed1Count == 0 );
+    REQUIRE( v4LW_.m_changed3Count == 3 );
+    REQUIRE( v4LW_.m_membershipChanged3Count == 1 );
+
+    /// FOO3 Controller - Remove locks
+    controllerBar3.setAllInUseState(false);
+    idx = 1;
+    controllerBar3.m_tuples_[idx].m_name.requestUnlocked();
+    controllerBar3.m_tuples_[idx].m_name.set( "IamFree" );            // This should FAIL since semantic of unlock is that I can't update and unlock is single operation
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model... Removing lock to the name field for tuple index[1]..." ));
+    controllerBar3.updateModel();
+    Cpl::System::Api::sleep(250); // Pause to allow other threads to run
+
+    // BAR3 Query - Verify results
+    queryBar3.issueQuery();
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == "IamLocked" );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isLocked() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == idx );    
+    idx = 0;
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == names[idx] );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == idx );    
+
+    REQUIRE( v1_.m_changed1Count == 0 );
+    REQUIRE( v1_.m_changed2Count == 0 );
+    REQUIRE( v1_.m_changed3Count == 4 );
+    REQUIRE( v1_.m_membershipChanged3Count == 1 );
+    REQUIRE( v2_.m_changed1Count == 0 );
+    REQUIRE( v2_.m_changed2Count == 0 );
+    REQUIRE( v2_.m_changed3Count == 1 );
+    REQUIRE( v2_.m_membershipChanged3Count == 1 );
+    REQUIRE( v3_.m_changed1Count == 0 );
+    REQUIRE( v3_.m_changed2Count == 0 );
+    REQUIRE( v3_.m_changed3Count == 1 ); 
+    REQUIRE( v3_.m_membershipChanged3Count == 1 );
+    REQUIRE( v4LW_.m_changed1Count == 0 );
+    REQUIRE( v4LW_.m_changed3Count == 4 );
+    REQUIRE( v4LW_.m_membershipChanged3Count == 1 );
+
+
+    /// FOO3 Controller - Remove locks agains
+    controllerBar3.setAllInUseState(false);
+    idx = 1;
+    idx = 1;
+    controllerBar3.m_tuples_[idx].m_name.set( "IamFree" );
+    controllerBar3.m_tuples_[idx].m_name.setInUse();
+    controllerBar3.m_tuples_[idx].m_count.requestUnlocked();
+    controllerBar3.m_tuples_[idx].m_count.set( 77 );            // This should FAIL since semantic of unlock is that I can't update and unlock is single operation
+    controllerBar3.m_tuples_[idx].m_count.setInUse();
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Updating Model... Removing lock to the count field for tuple index[1]..." ));
+    controllerBar3.updateModel();
+    Cpl::System::Api::sleep(250); // Pause to allow other threads to run
+
+    // BAR3 Query - Verify results
+    queryBar3.issueQuery();
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == "IamFree" );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == idx );    
+    idx = 0;
+    REQUIRE( queryBar3.isTupleInContainer(idx) == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_name.getString() == names[idx] );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_enabled.get() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isLocked() == false );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.isValid() == true );
+    REQUIRE( queryBar3.m_tuples_[idx].m_count.get() == idx );    
+
+    REQUIRE( v1_.m_changed1Count == 0 );
+    REQUIRE( v1_.m_changed2Count == 0 );
+    REQUIRE( v1_.m_changed3Count == 5 );
+    REQUIRE( v1_.m_membershipChanged3Count == 1 );
+    REQUIRE( v2_.m_changed1Count == 0 );
+    REQUIRE( v2_.m_changed2Count == 0 );
+    REQUIRE( v2_.m_changed3Count == 1 );
+    REQUIRE( v2_.m_membershipChanged3Count == 1 );
+    REQUIRE( v3_.m_changed1Count == 0 );
+    REQUIRE( v3_.m_changed2Count == 0 );
+    REQUIRE( v3_.m_changed3Count == 1 ); 
+    REQUIRE( v3_.m_membershipChanged3Count == 1 );
+    REQUIRE( v4LW_.m_changed1Count == 0 );
+    REQUIRE( v4LW_.m_changed3Count == 5 );
+    REQUIRE( v4LW_.m_membershipChanged3Count == 1 );
+
 
     // CLEAN-UP AND END TESTS
     if ( --testcount_ == 0 )

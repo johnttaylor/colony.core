@@ -95,6 +95,13 @@ public:
     ///  See Rte::Element::Api
     int8_t getRawValidState_(void) const;
 
+    ///  See Rte::Element::Api
+    bool isModelElement(void) const;
+
+    ///  See Rte::Element::Api
+    void setAsModelElement_(void);
+
+
 };
 
 };      // end namespaces

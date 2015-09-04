@@ -16,13 +16,14 @@
 ///
 using namespace Rte::Element;
 
-#define IN_USE_MASK_        0x01
-#define LOCK_REQ_MASK_      0x02
-#define UNLOCK_REQ_MASK_    0x04
-#define REQUESTS_MASK_      (LOCK_REQ_MASK_|UNLOCK_REQ_MASK_)
+#define IN_USE_MASK_            0x01
+#define LOCK_REQ_MASK_          0x02
+#define UNLOCK_REQ_MASK_        0x04
+#define REQUESTS_MASK_          (LOCK_REQ_MASK_|UNLOCK_REQ_MASK_)
+#define IS_MODEL_ELEMENT_MASK_  0x08
 
-#define LOCK_STATE_MASK_    0x80
-#define VALID_MASK_         (~LOCK_STATE_MASK_)
+#define LOCK_STATE_MASK_        0x80
+#define VALID_MASK_             0x7F
 
 
 ////////////////////////
@@ -48,7 +49,6 @@ void Base::assertTypeMatches( const Api& other ) const
         }
     }
 
-
 ////////////////////////
 const DataType Base::getType(void) const
     {
@@ -62,7 +62,8 @@ bool Base::isValid(void) const
 
 void Base::setValidState( int8_t newState )
     {
-    m_valid = newState & VALID_MASK_;
+    m_valid &= ~VALID_MASK_;
+    m_valid |= newState & VALID_MASK_;
     }
 
 
@@ -94,7 +95,7 @@ void Base::setInUseState( bool newState )
 ////////////////////////
 bool Base::isLocked(void) const
     {
-    return (m_valid & LOCK_STATE_MASK_) != 0;  // Note: the logical comparsion is need to avoid compiler warnings under Visual Studio
+    return (m_valid & LOCK_STATE_MASK_) != 0;
     }
 
 void Base::setLocked(void)
@@ -142,3 +143,17 @@ int8_t Base::getRawValidState_(void) const
     {
     return m_valid;
     }
+
+
+////////////////////////
+bool Base::isModelElement(void) const
+    {
+    return (m_opers & IS_MODEL_ELEMENT_MASK_) != 0;
+    }
+
+void Base::setAsModelElement_(void)
+    {
+    m_opers |= IS_MODEL_ELEMENT_MASK_;
+    }
+
+

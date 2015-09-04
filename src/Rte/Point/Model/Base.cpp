@@ -27,6 +27,7 @@ Base::Base( Rte::Point::Api& myPoint, Cpl::Itc::PostApi& myMbox )
 ,m_querySAP(*this,myMbox)
 ,m_defaultSAP(*this,myMbox)
     {
+    m_myPoint.setAsModelPoint_();
     }
 
 

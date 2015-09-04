@@ -44,8 +44,8 @@ bool SeqNumber::copyDataFrom( const Api& other )
     {
     assertTypeMatches( other );
 
-    // Silently ignore when locked
-    if ( !isLocked() )
+    // Silently ignore when locked AND I am a Model Element
+    if ( !isModelElement() || !isLocked() )
         {
         int32_t src = *((int32_t*)(other.dataPointer()));
         if ( src < 0 )

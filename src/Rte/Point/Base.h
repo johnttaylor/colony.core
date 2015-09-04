@@ -81,6 +81,9 @@ public:
     /// See Rte::Point::Api
     void copyAllSequenceNumbersFrom( Api& other );
 
+    /// See Rte::Point::Api
+    void setAsModelPoint_(void);
+
 };
 
 };      // end namespaces
