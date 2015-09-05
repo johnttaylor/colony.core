@@ -1,11 +1,10 @@
 ; Header skeleton
 #HEADER
-copyright_holder
 class
 namespaces
 
 #CONTENT
-$_SUBSCRIPT, copyright.f4t, copyright_holder, ''
+$_SUBSCRIPT, copyright.f4t, ''
 
 #include "$class$.h"
 

@@ -1,13 +1,12 @@
 ; Header skeleton
 #HEADER
-copyright_holder
 class
 namespaces
 
 #CONTENT
 #ifndef $namespaces>+_$_$class$_h_
 #define $namespaces>+_$_$class$_h_
-$_SUBSCRIPT, copyright.f4t, copyright_holder, '/** @file */'
+$_SUBSCRIPT, copyright.f4t, '/** @file */'
 
 
 /// Namespaces

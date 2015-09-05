@@ -6527,7 +6527,7 @@ html .solidborders td {  border: 1px solid black; }</pre>
 <div modified="20150831015354345" title="$:/state/toc/Contents-Register--242358753">
 <pre>close</pre>
 </div>
-<div list="[[Command/Event Syntax]] [[FUNIT File Format]]" title="$:/StoryList">
+<div list="[[FUNIT File Format]] [[Command/Event Syntax]] Semantics Overview" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -6683,7 +6683,7 @@ html .solidborders td {  border: 1px solid black; }</pre>
 |John Taylor |john.t.taylor@gmail.com|principal author |
 </pre>
 </div>
-<div created="20150831012226260" modified="20150903025954394" tags="CORAL" title="Command/Event Syntax">
+<div created="20150831012226260" modified="20150905034508431" tags="CORAL" title="Command/Event Syntax">
 <pre>```
 
 Command String Format                   
@@ -6715,31 +6715,22 @@ General Format:
     adom        := { { '_' } | &lt;domain&gt; }
                      Note: the '_' is short hand notation for the '1 (Std)' domain
     domain      := { &lt;num&gt;&lt;aspeical&gt; where the numeric value is the containing domain ID }
-    general     := { &lt;alpha&gt; [atext]* [:&lt;reg&gt;*] }
+    general     := { &lt;alpha&gt; [atext]* [:&lt;register&gt;*] }
     atext       := { {&lt;alphanum&gt;|&lt;aspecial&gt; }
     aspecial    := { any of the following 3 characters: -_. }
-    reg         := { [&lt;shadow&gt;]&lt;num&gt; }
-    shadow      := { '+' | '-'  }
-                     Note: Selects the P or N shadow register respectively
+    register    := { &lt;num&gt; }
     num         := { any numeric character }
-    args        := { &lt;argtext&gt;|&lt;istat&gt; [,&lt;args&gt;]* }
+    args        := { &lt;argtext&gt; [,&lt;args&gt;]* }
     parms       := { &lt;argtext&gt; [,&lt;argtext&gt;]*}
     argtext     := { &lt;data&gt; | textstr }
-    data        := { any printable character except for the following 6 
-                     characters: ,)&quot;\:! }
+    data        := { any printable character except for the following 4 
+                     characters: ,)&quot;\  }
     textstr     := { &quot;&lt;text&gt;&quot; }
     text        := { {&lt;chr&gt;|&lt;esc&gt;)* }
     chr         := { Any printable character except for the following 2 
                      characters: &quot;\ }
     esc         := { Two character sequence that 'escapes' the second character.  
                      Allowed sequences: \&quot; and \\ }
-        istat       := { :[&lt;ireason&gt;] }
-                     Note: The ':' character indicates that the argument 
-                         is in a non-valid state.
-
-    ireason     := { any numeric value ranging from 1 to 127.  When 
-                     &lt;ireason&gt; is not specified its value is considered be 1 }
-
 ```</pre>
 </div>
 <div created="20150831012412961" modified="20150831023849813" tags="CORAL" title="Commands">
@@ -6864,7 +6855,7 @@ Currently registered [[Domain]]s
 *[[1-3 (Std-Files) |file:./definitions/1-3.Std-Files.pkg]]
 *[[1-4 (Std-ClientMessaging) |file:./definitions/1-4.Std-ClientMessaging.pkg]]</pre>
 </div>
-<div created="20150831015617333" modified="20150903023733397" tags="[[Functional Unit]]" title="FUNIT File Format">
+<div created="20150831015617333" modified="20150905034214330" tags="[[Functional Unit]]" title="FUNIT File Format">
 <pre>```
 Format for Function Unit Definition File
 ------------------------

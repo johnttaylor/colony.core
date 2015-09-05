@@ -1,6 +1,5 @@
 ; Copyright 
 #HEADER
-copyright_holder
 doxygen_header
 
 #CONTENT
@@ -10,7 +9,7 @@ doxygen_header
 * agreement (license.txt) in the top/ directory or on the Internet at           
 * http://integerfox.com/colony.core/license.txt
 *                                                                               
-* Copyright (c) $_YYYY$ $copyright_holder$
+* Copyright (c) $_YYYY$ John T. Taylor
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 

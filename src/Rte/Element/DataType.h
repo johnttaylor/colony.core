@@ -90,7 +90,7 @@ public:
 
 
     /// Start of APPLICATION defined Element Type IDs
-    static const int START_APP_DEFINED = 0x8000;            
+    static const int START_APP_DEFINED = 0x2000;            
 
 
 
