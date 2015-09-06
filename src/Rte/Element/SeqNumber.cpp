@@ -39,6 +39,31 @@ int32_t SeqNumber::get( void ) const
     }
 
 
+const char* SeqNumber::toString( Cpl::Text::String& dstMemory ) const
+    {
+    dstMemory = m_data;
+    return dstMemory;
+    }
+
+bool SeqNumber::setFromText( const char* srcText )
+    {
+    {
+    int32_t temp;
+
+    if ( Cpl::Text::a2l( temp, srcText, 0 ) )
+        {
+        // Sequence numbers (in the Model) can NOT be negative OR zero
+        if ( temp > 0 )
+            {
+            m_data = temp;
+            return true;
+            }
+        }
+    
+    return false;
+    }
+    }
+
 /////////////////
 bool SeqNumber::copyDataFrom( const Api& other )
     {

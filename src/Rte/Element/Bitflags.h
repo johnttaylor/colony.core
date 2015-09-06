@@ -105,6 +105,16 @@ public:
 
     /// See Rte::Element::Api
     size_t externalSize(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /** See Rte::Element::Api. Input format is: Numeric number in base 10, 
+        or base 8 when a leading zero is specified, or base 16 if a leading
+        '0x' (or '0X') is specified.
+     */
+    bool setFromText( const char* srcText );
+
 };
 
 };      // end namespaces

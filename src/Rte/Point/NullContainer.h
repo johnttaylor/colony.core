@@ -1,5 +1,5 @@
-#ifndef Rte_Tuple_NullItem_h_
-#define Rte_Tuple_NullItem_h_
+#ifndef Rte_Point_NullContainer_h_
+#define Rte_Point_NullContainer_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -13,30 +13,27 @@
 /** @file */
 
 
-#include "Rte/Tuple/Null.h"
-#include "Rte/Tuple/ContainerItem.h"
-
+#include "Rte/Point/Container.h"
+#include "Rte/Tuple/NullItem.h"
 
 
 ///
-namespace Rte { namespace Tuple {
+namespace Rte { namespace Point {
 
 
-/** This class implements a Null Tuple that can be used in Container.  A Null 
-    Tuple is a Tuple with zero Elements.  A Null Tuple is typically only used to 
-    implement Lite Weight Viewers.
+/** This template class implements a "Null Container Point" that contain N 
+    tuples. A Null Container Point is ONLY used/needed for the Lite Weight 
+    Viewer mechanism. The template parameter 'N' is the number of Null Tuples 
+    in the concrete Container Point.
  */
-class NullItem: public Null,
-                public ContainerItem
+template<int N>
+class NullContainer: public Container<Rte::Tuple::NullItem, N>
 {
 public:
     /// Constructor
-    NullItem( void ){};
-
-
+    NullContainer( void ){};
 
 };
-
 
 
 };      // end namespaces

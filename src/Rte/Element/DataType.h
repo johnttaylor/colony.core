@@ -110,6 +110,15 @@ public:
         { 
         return m_dataTypeId != x.m_dataTypeId; 
         }
+                          
+
+public:
+    /** This method returns string/text identifier associated with the specified
+        data type.  The caller is responsible for providing the String memory
+        for the returned value. If the provided dataTypeId is invalid, unknown
+        (i.e. application defined Type ID), etc. then 0 is returned.
+     */
+    static const char * toString( int dataTypeId );
 
 };
 

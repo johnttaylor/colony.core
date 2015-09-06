@@ -79,6 +79,13 @@ public:
     /// See Rte::Element::Api
     size_t externalSize(void) const;
 
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+
+
 };
 
 
@@ -125,6 +132,20 @@ Cpl::Text::String& Rte::Element::String<S>::getString( void )
     return m_data;
     }
 
+
+template<int S>
+const char* Rte::Element::String<S>::toString( Cpl::Text::String& dstMemory ) const
+    {
+    dstMemory = get();
+    return dstMemory;
+    }
+     
+template<int S>
+bool Rte::Element::String<S>::setFromText( const char* srcText )
+    {
+    set( srcText );
+    return true;
+    }
 
 /////////////////
 template<int S>

@@ -11,6 +11,8 @@
 
 #include "Md5.h"
 #include <memory.h>
+#include "Cpl/Text/Format.h"
+#include "Cpl/Text/atob.h"
 
 
 ///
@@ -37,6 +39,23 @@ Cpl::Checksum::ApiMd5::Digest_T& Md5::get( void )
     return m_data;
     }
 
+
+const char* Md5::toString( Cpl::Text::String& dstMemory ) const
+    {
+    Cpl::Text::Format::bufferToAsciiHex( m_data, dstMemory );
+    return dstMemory;
+    }
+
+
+bool Md5::setFromText( const char* srcText )
+    {
+    if ( strlen(srcText) != sizeof(m_data)*2 )
+        {
+        return false;
+        }
+
+    return Cpl::Text::asciiHexToBuffer( m_data, srcText, sizeof(m_data) );
+    }
 
 /////////////////
 bool Md5::copyDataFrom( const Api& other )

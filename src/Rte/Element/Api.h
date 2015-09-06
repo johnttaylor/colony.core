@@ -15,6 +15,7 @@
 
 #include "colony_config.h"
 #include "Rte/Element/DataType.h"
+#include "Cpl/Text/String.h"
 #include <stdlib.h>
 #include <stdint.h>
 
@@ -200,6 +201,22 @@ public:
               data content and valid flag.
      */
     virtual size_t externalSize(void) const = 0;
+
+
+public:
+    /** This method returns the Element's string representation of its
+        value.  The caller must supply the destination string to hold
+        the returned value.
+     */
+    virtual const char* toString( Cpl::Text::String& dstMemory ) const = 0;
+
+    /** This method attempts to set the Element's value from the provided
+        text string.  If the contents of the 'srcText' is invalid OR the Element
+        does not support a full/complete conversion from Text to binary then
+        the method returns false; else upon succesfully conversion true is
+        returned.
+     */
+    virtual bool setFromText( const char* srcText ) = 0;
 
 
 public:

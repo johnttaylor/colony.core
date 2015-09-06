@@ -63,6 +63,19 @@ public:
 
     /// See Rte::Element::Api
     size_t externalSize(void) const;
+
+    /** See Rte::Element::Api. Output is in 'ASCII HEX'. The destination
+        string needs to be at least 32 characters in length (no leading 
+        '0x' is needed/used).
+     */
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /** See Rte::Element::Api. Input format is an 'ASCII HEX' string that
+        contains EXACTLY 32 ASCII hexadecimal digits (no leading '0x' is
+        needed/used).   
+     */
+    bool setFromText( const char* srcText );
+
 };
 
 };      // end namespaces

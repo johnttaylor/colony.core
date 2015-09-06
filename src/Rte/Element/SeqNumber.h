@@ -69,6 +69,13 @@ public:
 
     /// See Rte::Element::Api
     size_t externalSize(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+
 };
 
 };      // end namespaces

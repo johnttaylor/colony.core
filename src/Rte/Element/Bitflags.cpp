@@ -11,6 +11,8 @@
 
 #include "Bitflags.h"
 #include <memory.h>
+#include "Cpl/Text/atob.h"
+
 
 ///
 using namespace Rte::Element;
@@ -35,6 +37,25 @@ void BitFlags::set( uint32_t newValue )
 uint32_t BitFlags::get( void ) const
     {
     return m_data;
+    }
+
+const char* BitFlags::toString( Cpl::Text::String& dstMemory ) const
+    {
+    dstMemory.format( "%08X", m_data );
+    return dstMemory;
+    }
+
+bool BitFlags::setFromText( const char* srcText )
+    {
+    uint32_t temp;
+
+    if ( Cpl::Text::a2ul( temp, srcText, 0 ) )
+        {
+        m_data = temp;
+        return true;
+        }
+    
+    return false;
     }
 
 
