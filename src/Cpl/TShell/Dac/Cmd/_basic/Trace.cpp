@@ -33,6 +33,12 @@ Trace::Trace( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) thro
     {
     }
 
+Trace::Trace( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+:Command(commandList, "trace", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
+    {
+    }
+
+
 ///////////////////////////
 Cpl::TShell::Dac::Command::Result_T Trace::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {

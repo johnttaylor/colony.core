@@ -84,6 +84,10 @@ public:
     /// See Rte::Point::Api
     void setAsModelPoint_(void);
 
+    /// See Rte::Point::Api
+    bool isContainer(void) const;
+
+
 };
 
 };      // end namespaces

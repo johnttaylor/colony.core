@@ -26,6 +26,12 @@ Tokenize::Tokenize( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList 
     {
     }
 
+Tokenize::Tokenize( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+:Command(commandList, "tokenize", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
+    {
+    }
+
+
 ///////////////////////////
 Cpl::TShell::Dac::Command::Result_T Tokenize::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {

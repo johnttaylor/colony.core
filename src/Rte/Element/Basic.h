@@ -32,7 +32,7 @@ protected:
     ELEMTYPE    m_data;
 
 
-public:
+protected:
     /// Constructor
     Basic( ELEMTYPE initialValue = 0,
            bool     inUse        = false,
@@ -69,46 +69,295 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////////////////
-// Pre-defined types to simply element declarations
 
 /// C POD type
-typedef Basic<bool,DataType::BOOLEAN>          Boolean_T;
+class Boolean_T: public Basic<bool,DataType::BOOL> 
+{
+public:
+    /// Constructor
+    Boolean_T( bool    initialValue = 0,
+               bool    inUse        = false,
+               int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
+             );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api.  Format: "T"=true, "F"=false
+    bool setFromText( const char* srcText );
+    
+};
+
 
 /// C POD type
-typedef Basic<int8_t,DataType::INTEGER8>       Integer8_T;
+class Integer8_T: public Basic<int8_t,DataType::INT8> 
+{
+public:
+    /// int8_t
+    Integer8_T( int8_t initialValue = 0,
+                bool   inUse        = false,
+                int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
+              );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+};
+
+
 
 /// C POD type
-typedef Basic<uint8_t,DataType::UINTEGER8>     Uinteger8_T;
+class Uinteger8_T: public Basic<uint8_t,DataType::UINT8> 
+{
+public:
+    /// int8_t
+    Uinteger8_T( uint8_t initialValue = 0,
+                 bool    inUse        = false,
+                 int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
+               );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+};
+
+
 
 /// C POD type
-typedef Basic<int16_t,DataType::INTEGER16>     Integer16_T;
+class Integer16_T: public Basic<int16_t,DataType::INT16> 
+{
+public:
+    /// int8_t
+    Integer16_T( int16_t initialValue = 0,
+                 bool    inUse        = false,
+                 int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
+               );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+};
+
 
 /// C POD type
-typedef Basic<uint16_t,DataType::UINTEGER16>   Uinteger16_T;
+class Uinteger16_T: public Basic<uint16_t,DataType::UINT16> 
+{
+public:
+    /// int8_t
+    Uinteger16_T( uint16_t initialValue = 0,
+                  bool     inUse        = false,
+                  int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
+                );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+};
+
 
 /// C POD type
-typedef Basic<int32_t,DataType::INTEGER32>     Integer32_T;
+class Integer32_T: public Basic<int32_t,DataType::INT32> 
+{
+public:
+    /// int8_t
+    Integer32_T( int32_t  initialValue = 0,
+                 bool     inUse        = false,
+                 int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
+               );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+};
+
 
 /// C POD type
-typedef Basic<uint32_t,DataType::UINTEGER32>   Uinteger32_T;
+class Uinteger32_T: public Basic<uint32_t,DataType::UINT32> 
+{
+public:
+    /// int8_t
+    Uinteger32_T( uint32_t initialValue = 0,
+                  bool     inUse        = false,
+                  int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
+                );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+};
+
 
 /// C POD type
-typedef Basic<int64_t,DataType::INTEGER32>     Integer64_T;
+class Integer64_T: public Basic<int64_t,DataType::INT64> 
+{
+public:
+    /// int8_t
+    Integer64_T( int64_t initialValue = 0,
+                 bool     inUse        = false,
+                 int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
+               );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+};
+
 
 /// C POD type
-typedef Basic<uint64_t,DataType::UINTEGER32>   Uinteger64_T;
+class Uinteger64_T: public Basic<uint64_t,DataType::UINT64> 
+{
+public:
+    /// int8_t
+    Uinteger64_T( uint64_t initialValue = 0,
+                  bool     inUse        = false,
+                  int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
+                );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+};
+
 
 /// C POD type
-typedef Basic<size_t,DataType::SIZE_T>         Size_T;
+class Size_T: public Basic<size_t,DataType::SIZE_T> 
+{
+public:
+    /// int8_t
+    Size_T( size_t initialValue = 0,
+            bool   inUse        = false,
+            int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
+          );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+};
+
 
 /// C POD type
-typedef Basic<float,DataType::FLOAT>           Float_T;
+class Float_T: public Basic<float,DataType::FLOAT> 
+{
+public:
+    /// int8_t
+    Float_T( float initialValue = 0,
+             bool   inUse        = false,
+             int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
+           );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+};
+
 
 /// C POD type
-typedef Basic<double,DataType::DOUBLE>         Double_T;
+class Double_T: public Basic<double,DataType::DOUBLE> 
+{
+public:
+    /// int8_t
+    Double_T( double initialValue = 0,
+              bool   inUse        = false,
+              int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
+            );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+};
+
 
 /// C POD type
-typedef Basic<void*,DataType::VOIDPTR>         VoidPtr_T;
+class VoidPtr_T: public Basic<void*,DataType::VOIDPTR> 
+{
+public:
+    /// int8_t
+    VoidPtr_T( void*  initialValue = 0,
+               bool   inUse        = false,
+               int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
+             );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory ) const;
+    
+    /// See Rte::Element::Api
+    bool setFromText( const char* srcText );
+};
+
 
 
 /////////////////////////////////////////////////////////////////////////////

@@ -29,6 +29,9 @@ public:
     /// Constructor
     Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw();
 
+    /// Constructor.  Used to create a static instance of the command
+    Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+
 
 protected:
     /// See Cpl::TShell::Dac::Cmd::Threads

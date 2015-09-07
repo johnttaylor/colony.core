@@ -11,6 +11,8 @@
 
 #include "SeqNumber.h"
 #include <memory.h>
+#include "Cpl/Text/atob.h"
+
 
 ///
 using namespace Rte::Element;
@@ -22,12 +24,18 @@ using namespace Rte::Element;
 
 //////////////////////////////////
 SeqNumber::SeqNumber( bool inUse, int8_t validState )
-:Base(DataType::SEQNUMBER, inUse, validState)
+:Base(DataType::SEQNUM, inUse, validState)
 ,m_data(1) // Default value is 'perform normal copy'
     {
     }
 
 /////////////////
+const char* SeqNumber::getTypeAsText(void) const
+    {
+    return "SEQNUM";
+    }
+
+
 void SeqNumber::set( int32_t newValue )
     {
     m_data = newValue;
@@ -48,14 +56,14 @@ const char* SeqNumber::toString( Cpl::Text::String& dstMemory ) const
 bool SeqNumber::setFromText( const char* srcText )
     {
     {
-    int32_t temp;
+    long temp;
 
     if ( Cpl::Text::a2l( temp, srcText, 0 ) )
         {
         // Sequence numbers (in the Model) can NOT be negative OR zero
-        if ( temp > 0 )
+        if ( (temp ^ 0x7FFFFFFF) == 0 )
             {
-            m_data = temp;
+            m_data = (int32_t) temp;
             return true;
             }
         }

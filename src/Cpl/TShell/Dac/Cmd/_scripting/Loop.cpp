@@ -25,6 +25,15 @@ Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw(
     {
     }
 
+Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+:Command(commandList, "loop", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
+,m_state(eIDLE)
+,m_level(0)
+,m_breakLevel(0)
+    {
+    }
+
+
 ///////////////////////////
 Cpl::TShell::Dac::Command::Result_T Loop::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {

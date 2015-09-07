@@ -64,6 +64,14 @@ public:
     virtual const char* getHelp() const throw() = 0;
 
 
+protected:
+    /// Constructor
+    Command(){};
+
+    /// Constructor use to create a static instance of a command
+    Command( const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ):Cpl::Container::MapItem(ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance){}
+
+
 public:
     /// Virtual destructor
     virtual ~Command(){}

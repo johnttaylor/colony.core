@@ -31,6 +31,10 @@ public:
             bool        inUse        = false,
             int8_t      validState   = RTE_ELEMENT_API_STATE_INVALID
           );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
 };
 
 

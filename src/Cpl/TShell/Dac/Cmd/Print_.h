@@ -29,6 +29,9 @@ public:
     /// Constructor
     Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb ) throw();
 
+    /// Constructor.  Used to create a static instance of the command
+    Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+
 
 public:
     /// See Cpl::TShell::Dac::Command

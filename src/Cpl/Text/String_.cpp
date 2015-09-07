@@ -176,7 +176,7 @@ String_::startsWith( const char* string, int startOffset ) const
 
     int len  = strlen(m_strPtr);
     int len2 = strlen(string);
-    if ( startOffset < 0 || startOffset >= len || len2 > len || len == 0 ) 
+    if ( startOffset < 0 || (startOffset+len2) > len )
         {
         return false;
         }
@@ -201,6 +201,42 @@ String_::endsWith( const char* string ) const
 
     return strncmp(m_strPtr+len-len2,string,len2) == 0;
     }
+
+bool String_::contains( const char* match, int startOffset, int endOffset ) const
+    {
+    // Convert endOffset to an actual offset (when needed)
+    int len   = length();
+    endOffset = endOffset < 0? len - 1: endOffset;
+
+    // Error Traps
+    if ( match == 0 || startOffset < 0 || endOffset > len - 1 ||  startOffset > endOffset )
+        {
+        return false;
+        }
+
+    //
+    // TODO: Not a very efficient algorithm -->should be improved!
+    //
+    int  matchLen = strlen( match );
+    int  offset   = indexOf( *match, startOffset );
+    while( offset >= 0 && offset <= endOffset )
+        {
+        if ( offset + matchLen > endOffset )
+            {
+            return false;
+            }
+
+        if ( startsWith( match, offset ) )
+            {
+            return true;
+            }
+
+        offset = indexOf( *match, offset+1 );
+        }
+
+    return false;
+    }
+    
 
 void 
 String_::format( const char* format, ... )

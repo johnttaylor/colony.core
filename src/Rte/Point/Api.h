@@ -100,6 +100,7 @@ public:
     /// Resets the Point's internal sequence number.
     virtual void resetSequenceNumber(void) = 0;
 
+
 public:
     /** This method clears the membership-has-changed state for a Point 
         Container.  This only applies to Viewers and/or change 
@@ -147,6 +148,12 @@ public:
      */
     virtual void setAsModelPoint_(void) = 0;
 
+
+public:
+    /** This method returns true if the Point is a Container of Tuples, i.e.
+        an array of N Tuples.
+     */
+    virtual bool isContainer(void) const = 0;
 
 
 public:

@@ -22,6 +22,12 @@ Set::Set( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
     {
     }
 
+Set::Set( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+:Command(commandList, "set", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
+    {
+    }
+
+
 ///////////////////////////
 Cpl::TShell::Dac::Command::Result_T Set::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {

@@ -29,28 +29,28 @@ public:
 
 public:
     /// Element Type ID
-    static const int INTEGER8   = 1;
+    static const int INT8       = 1;
 
     /// Element Type ID
-    static const int INTEGER16  = 2;
+    static const int INT16      = 2;
 
     /// Element Type ID
-    static const int INTEGER32  = 3;
+    static const int INT32      = 3;
 
     /// Element Type ID
-    static const int INTEGER64  = 4;
+    static const int INT64      = 4;
 
     /// Element Type ID
-    static const int UINTEGER8  = 5;
+    static const int UINT8      = 5;
 
     /// Element Type ID
-    static const int UINTEGER16 = 6;
+    static const int UINT16     = 6;
 
     /// Element Type ID
-    static const int UINTEGER32 = 7;
+    static const int UINT32     = 7;
 
     /// Element Type ID
-    static const int UINTEGER64 = 8;
+    static const int UINT64     = 8;
 
     /// Element Type ID
     static const int SIZE_T     = 9;
@@ -68,7 +68,7 @@ public:
     static const int STRING     = 13;
 
     /// Element Type ID
-    static const int BOOLEAN    = 14;
+    static const int BOOL       = 14;
 
     /// Element Type ID
     static const int TOKEN4     = 15;
@@ -77,7 +77,7 @@ public:
     static const int MD5        = 16;
 
     /// Element Type ID
-    static const int SEQNUMBER  = 17;
+    static const int SEQNUM     = 17;
 
     /// Element Type ID
     static const int TIMET      = 18;
@@ -110,16 +110,6 @@ public:
         { 
         return m_dataTypeId != x.m_dataTypeId; 
         }
-                          
-
-public:
-    /** This method returns string/text identifier associated with the specified
-        data type.  The caller is responsible for providing the String memory
-        for the returned value. If the provided dataTypeId is invalid, unknown
-        (i.e. application defined Type ID), etc. then 0 is returned.
-     */
-    static const char * toString( int dataTypeId );
-
 };
 
 };      // end namespaces

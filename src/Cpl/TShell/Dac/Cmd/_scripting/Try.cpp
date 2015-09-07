@@ -29,6 +29,15 @@ Try::Try( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
     {
     }
 
+Try::Try( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+:Command(commandList, "try", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
+,m_state(eIDLE)
+,m_level(0)
+,m_stack(OPTION_CPL_TSHELL_DAC_CMD_TRY_IFELSE_NEST_LEVELS,m_memStack)
+    {
+    }
+
+
 
 ///////////////////////////
 Cpl::TShell::Dac::Command::Result_T Try::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()

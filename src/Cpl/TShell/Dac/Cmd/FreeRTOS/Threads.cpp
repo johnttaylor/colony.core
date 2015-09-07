@@ -25,6 +25,11 @@ Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) 
     {
     }
 
+Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+:Cpl::TShell::Dac::Cmd::Threads(commandList, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
+    {
+    }
+
 
 /////////////////////////////////////////////////////////
 void Threads::hookHeader1( Cpl::Text::String& text )    

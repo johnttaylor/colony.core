@@ -52,6 +52,9 @@ protected:
     /// Constructor
     Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb ) throw();
 
+    /// Constructor. Used when creating a static instance of a command
+    Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+
 
 public:
     /// See Cpl::TShell::Dac::Command

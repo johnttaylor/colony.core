@@ -65,6 +65,11 @@ bool Base::isMembershipChanged(void) const
     }
 
 
+bool Base::isContainer(void) const
+    {
+    return false;
+    }
+
 ////////////////////////
 void Base::invalidateAllTupleSequenceNumbers(void)
     {

@@ -157,6 +157,16 @@ TEST_CASE( "String", "[string]" )
         REQUIRE( s1.endsWith( "BOb" ) == false );
         REQUIRE( s1.endsWith( "HELLO" ) == false );
         REQUIRE( s1.endsWith( nullPtr ) == false );
+
+        REQUIRE( s1.contains( "HELLO WORLD, THIS IS BOB" ) == true );
+        REQUIRE( s1.contains( "THIS" ) == true );
+        REQUIRE( s1.contains( "HELLOW" ) == false );
+        REQUIRE( s1.contains( "WORLD" ) == true );
+        REQUIRE( s1.contains( "WORLD", 0, 8 ) == false );
+        REQUIRE( s1.contains( "WORLD", 7 ) == false );
+        REQUIRE( s1.contains( "WORLD", 6 ) == true );
+        REQUIRE( s1.contains( 0 ) == false );
+        REQUIRE( s1.contains( "WORLD", 6, 0 ) == false );
         }
 
     SECTION( "Index..." )

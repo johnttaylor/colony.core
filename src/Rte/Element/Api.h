@@ -48,6 +48,13 @@ public:
      */
     virtual const DataType getType(void) const = 0;
 
+    /** This method returns a string identifier for the Element's data type.
+        Note: This value is NOT guaranteed to be unique -->use the DataType
+        class for uniquess -->this is just a helper method for display type
+        values as text.
+     */
+     virtual const char* getTypeAsText(void) const = 0;
+
 
 public:
     /** This method sets the valid/invalid state of the element. A Value of zero

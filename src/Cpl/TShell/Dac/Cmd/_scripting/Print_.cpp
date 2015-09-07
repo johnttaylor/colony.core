@@ -29,6 +29,13 @@ Print_::Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, con
     {
     }
 
+Print_::Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+:Command(commandList, verb, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
+    {
+    }
+
+
+
 ///////////////////////////
 Cpl::TShell::Dac::Command::Result_T Print_::execute( bool prependTimeStamp, Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {

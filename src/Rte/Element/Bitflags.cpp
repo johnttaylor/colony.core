@@ -29,6 +29,12 @@ BitFlags::BitFlags( bool inUse, int8_t validState )
     }
 
 /////////////////
+const char* BitFlags::getTypeAsText(void) const
+    {
+    return "BITFLAGS";
+    }
+
+
 void BitFlags::set( uint32_t newValue )
     {
     m_data = newValue;
@@ -47,12 +53,15 @@ const char* BitFlags::toString( Cpl::Text::String& dstMemory ) const
 
 bool BitFlags::setFromText( const char* srcText )
     {
-    uint32_t temp;
+    unsigned long temp;
 
     if ( Cpl::Text::a2ul( temp, srcText, 0 ) )
         {
-        m_data = temp;
-        return true;
+        if ( temp <= eUSABLE_BITS_MASK )
+            {
+            m_data = temp;
+            return true;
+            }
         }
     
     return false;

@@ -76,6 +76,9 @@ public:
      */
     bool setFromText( const char* srcText );
 
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
 };
 
 };      // end namespaces

@@ -27,6 +27,15 @@ Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) 
     {
     }
 
+Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+:Command(commandList, "threads", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
+,m_contextPtr(0)
+,m_count(0)
+,m_io(true)
+    {
+    }
+
+
 ///////////////////////////
 Cpl::TShell::Dac::Command::Result_T Threads::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {

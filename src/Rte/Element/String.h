@@ -85,6 +85,8 @@ public:
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
 
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
 
 };
 
@@ -114,6 +116,12 @@ Rte::Element::String<S>::String( int          specializeType,
     }
 
 /////////////////
+template<int S>
+const char* Rte::Element::String<S>::getTypeAsText(void) const
+    {
+    return "STRING";
+    }
+
 template<int S>
 void Rte::Element::String<S>::set( const char* newValue )
     {

@@ -74,6 +74,8 @@ public:
     /// Constructor
     Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw();
 
+    /// Constructor.  Used to create a static instance of the command
+    Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
 
 public:
     /// See Cpl::TShell::Dac::Command

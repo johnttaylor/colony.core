@@ -26,6 +26,12 @@ Help::Help( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw(
     {
     }
 
+Help::Help( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+:Command(commandList, "help", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
+    {
+    }
+
+
 ///////////////////////////
 Cpl::TShell::Dac::Command::Result_T Help::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {

@@ -24,6 +24,13 @@ Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, c
     }
 
 
+Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance  ) throw()
+:Cpl::TShell::Dac::Command(ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
+,m_mapKey(verb)
+    {
+    commandList.insert( *this );
+    }
+
 
 ////////////////////////////
 const char* Command::getVerb() const throw()                 

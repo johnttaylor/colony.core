@@ -24,6 +24,12 @@ Print::Print( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) thro
     {
     }
 
+Print::Print( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+:Print_(commandList, "print", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
+    {
+    }
+
+
 ///////////////////////////
 Cpl::TShell::Dac::Command::Result_T Print::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {

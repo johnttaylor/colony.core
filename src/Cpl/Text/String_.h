@@ -94,6 +94,9 @@ public:
     bool endsWith( const char* string ) const;
 
     /// See Cpl::Text::String
+    bool contains( const char* match, int startOffset=0, int endOffset=-1 ) const;
+
+    /// See Cpl::Text::String
     void format( const char* format, ... );
 
     /// See Cpl::Text::String

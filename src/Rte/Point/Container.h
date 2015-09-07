@@ -54,6 +54,8 @@ public:
     /// See Rte::Point::Api
     Rte::Tuple::Api& getTuple( unsigned tupleIdx );
 
+    /// See Rte::Point::Api
+    bool isContainer(void) const;
 
 public: 
     /// See Rte::Point::ContainerApi
@@ -70,6 +72,7 @@ public:
 
     /// See Rte::Point::ContainerApi
     int nextEmptyTuple( unsigned startIdx ) const;
+
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -102,6 +105,12 @@ Rte::Tuple::Api& Rte::Point::Container<TUPLE,N>::getTuple( unsigned tupleIdx )
         }
 
     return m_tuples_[tupleIdx];
+    }
+
+template<class TUPLE, int N>
+bool Rte::Point::Container<TUPLE,N>::isContainer( void ) const
+    {
+    return true;
     }
 
 /////////////////

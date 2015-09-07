@@ -27,8 +27,8 @@ namespace Rte { namespace Element {
     more  RAM, i.e. storage for a the _delta member that is not used when an
     Model (or Controller) element.
  */
-template<class ELEMTYPE, int TYPEID>
-class Delta: public Basic<ELEMTYPE,TYPEID>
+template<class ELEMTYPE, class PARENT>
+class Delta: public PARENT
 {
 protected:
     /// cache the minimum delta required for a change
@@ -55,84 +55,83 @@ public:
 public: 
     /// See Rte::Element::Api
     bool isDifferentFrom( const Api& other ) const;
-
 };
 
 /////////////////////////////////////////////////////////////////////////////
 // Pre-defined types to simply element declarations
 
 /// C POD type
-typedef Delta<int8_t,DataType::INTEGER8>       Integer8Delta_t;
+typedef Delta<int8_t,Integer8_T>       Integer8Delta_t;
 
 /// C POD type
-typedef Delta<uint8_t,DataType::UINTEGER8>     Uinteger8Delta_t;
+typedef Delta<uint8_t,Uinteger8_T>     Uinteger8Delta_t;
 
 /// C POD type
-typedef Delta<int16_t,DataType::INTEGER16>     Integer16Delta_t;
+typedef Delta<int16_t,Integer16_T>     Integer16Delta_t;
 
 /// C POD type
-typedef Delta<uint16_t,DataType::UINTEGER16>   Uinteger16Delta_t;
+typedef Delta<uint16_t,Uinteger16_T>   Uinteger16Delta_t;
 
 /// C POD type
-typedef Delta<int32_t,DataType::INTEGER32>     Integer32Delta_t;
+typedef Delta<int32_t,Integer32_T>     Integer32Delta_t;
 
 /// C POD type
-typedef Delta<uint32_t,DataType::UINTEGER32>   Uinteger32Delta_t;
+typedef Delta<uint32_t,Uinteger32_T>   Uinteger32Delta_t;
 
 /// C POD type
-typedef Delta<int64_t,DataType::INTEGER64>     Integer64Delta_t;
+typedef Delta<int64_t,Integer64_T>     Integer64Delta_t;
 
 /// C POD type
-typedef Delta<uint64_t,DataType::UINTEGER64>   Uinteger64Delta_t;
+typedef Delta<uint64_t,Uinteger64_T>   Uinteger64Delta_t;
 
 /// C POD type
-typedef Delta<uint64_t,DataType::SIZE_T>       SizeTDelta_T;
+typedef Delta<uint64_t,Size_T>         SizeTDelta_T;
 
 /// C POD type
-typedef Delta<float,DataType::FLOAT>           FloatDelta_t;
+typedef Delta<float,Float_T>           FloatDelta_T;
 
 /// C POD type
-typedef Delta<double,DataType::DOUBLE>         DoubleDelta_t;
+typedef Delta<double,Double_T>         DoubleDelta_T;
 
 /// C POD type
-typedef Delta<void*,DataType::VOIDPTR>         VoidPtrDelta_t;
+typedef Delta<void*,VoidPtr_T>         VoidPtrDelta_T;
 
 
 /////////////////////////////////////////////////////////////////////////////
 //                  INLINE IMPLEMENTAION
 /////////////////////////////////////////////////////////////////////////////
-template<class ELEMTYPE, int TYPEID>
-Rte::Element::Delta<ELEMTYPE,TYPEID>::Delta( ELEMTYPE  delta,
+template<class ELEMTYPE, class PARENT>
+Rte::Element::Delta<ELEMTYPE,PARENT>::Delta( ELEMTYPE  delta,
                                              ELEMTYPE  initialValue,
                                              bool      inUse,
                                              int8_t    validState
                                            )
-:Basic<ELEMTYPE,TYPEID>(initialValue,inUse,validState),
+:Basic<ELEMTYPE,PARENT>(initialValue,inUse,validState),
  m_delta(delta)
     {
     }
 
 /////////////////
-template<class ELEMTYPE, int TYPEID>
-void Rte::Element::Delta<ELEMTYPE,TYPEID>::setDelta( ELEMTYPE newDelta )
+template<class ELEMTYPE, class PARENT>
+void Rte::Element::Delta<ELEMTYPE,PARENT>::setDelta( ELEMTYPE newDelta )
     {
     m_delta = newDelta;
     }
 
-template<class ELEMTYPE, int TYPEID>
-ELEMTYPE Rte::Element::Delta<ELEMTYPE,TYPEID>::getDelta( void ) const
+template<class ELEMTYPE, class PARENT>
+ELEMTYPE Rte::Element::Delta<ELEMTYPE,PARENT>::getDelta( void ) const
     {
     return m_delta;
     }
 
 
 /////////////////
-template<class ELEMTYPE, int TYPEID>
-bool Rte::Element::Delta<ELEMTYPE,TYPEID>::isDifferentFrom( const Api& other ) const
+template<class ELEMTYPE, class PARENT>
+bool Rte::Element::Delta<ELEMTYPE,PARENT>::isDifferentFrom( const Api& other ) const
     {
     Base::assertTypeMatches( other );
     ELEMTYPE otherVal = *((ELEMTYPE*)(other.dataPointer()));
-    ELEMTYPE delta    = Basic<ELEMTYPE,TYPEID>::_data > otherVal? Basic<ELEMTYPE,TYPEID>::_data - otherVal: otherVal -Basic<ELEMTYPE,TYPEID>::_data;
+    ELEMTYPE delta    = Basic<ELEMTYPE,PARENT>::_data > otherVal? Basic<ELEMTYPE,PARENT>::_data - otherVal: otherVal -Basic<ELEMTYPE,PARENT>::_data;
     return delta > m_delta;
     }
 

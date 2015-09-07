@@ -35,6 +35,11 @@ public:
         :Rte::Element::Delta<time_t,DataType::TIMET>(delta,initialValue,inUse,validState)
             {
             }
+
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
 };
 
 

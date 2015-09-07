@@ -16,12 +16,18 @@
 using namespace Rte::Element;
 
 //////////////////////////////////
-Rte::Element::Token4::Token4( const char*  initialValue,
-                              bool         inUse,
-                              int8_t       validState
-                            )
+Token4::Token4( const char*  initialValue,
+                bool         inUse,
+                int8_t       validState
+              )
 :Rte::Element::String<4>(Rte::Element::DataType::TOKEN4,initialValue,inUse,validState)
     {
+    }
+
+
+const char* Token4::getTypeAsText(void) const
+    {
+    return "TOKEN4";
     }
 
 

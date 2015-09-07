@@ -17,14 +17,21 @@ using namespace Rte::Element;
 
 
 //////////////////////////////////
-Rte::Element::CoralAddr::CoralAddr( const char*  initialValue,
-                                    bool         inUse,
-                                    int8_t       validState
-                                  )
+CoralAddr::CoralAddr( const char*  initialValue,
+                      bool         inUse,
+                      int8_t       validState
+                    )
 //:Rte::Element::String<OPTION_CORAL_SZ_ADDRESS>(DataType::CORAL_ADDR,initialValue,inUse,validState)
 :Rte::Element::String<10>(DataType::CORAL_ADDR,initialValue,inUse,validState)
     {
     }
+
+const char* CoralAddr::getTypeAsText(void) const
+    {
+    return "CORAL_ADDR";
+    }
+
+
 
 
 
