@@ -143,7 +143,7 @@ TEST_CASE( "String", "[string]" )
         REQUIRE( s1.startsWith( "HELLo " ) == false );
         REQUIRE( s1.startsWith( "HELLO WORLD, THIS IS BOB" ) == true);
         REQUIRE( s1.startsWith( "HELLO WORLD  THIS IS BOB" ) == false);
-        REQUIRE( s1.startsWith( "" ) == true);
+        REQUIRE( s1.startsWith( "" ) == false );
         REQUIRE( s1.startsWith( nullPtr ) == false);
         REQUIRE( s1.startsWith( "WORLD", 6 ) == true );
         REQUIRE( s1.startsWith( "WORLD, THIS IS BOB", 6 ) == true );
@@ -157,8 +157,11 @@ TEST_CASE( "String", "[string]" )
         REQUIRE( s1.endsWith( "BOb" ) == false );
         REQUIRE( s1.endsWith( "HELLO" ) == false );
         REQUIRE( s1.endsWith( nullPtr ) == false );
+        REQUIRE( s1.endsWith( "" ) == false );
 
         REQUIRE( s1.contains( "HELLO WORLD, THIS IS BOB" ) == true );
+        REQUIRE( s1.contains( "HELLO" ) == true );
+        REQUIRE( s1.contains( "BOB" ) == true );
         REQUIRE( s1.contains( "THIS" ) == true );
         REQUIRE( s1.contains( "HELLOW" ) == false );
         REQUIRE( s1.contains( "WORLD" ) == true );
@@ -167,6 +170,25 @@ TEST_CASE( "String", "[string]" )
         REQUIRE( s1.contains( "WORLD", 6 ) == true );
         REQUIRE( s1.contains( 0 ) == false );
         REQUIRE( s1.contains( "WORLD", 6, 0 ) == false );
+
+        REQUIRE( s1.contains( "HELLO " ) == true );
+        REQUIRE( s1.contains( "HELLo " ) == false );
+        REQUIRE( s1.contains( "HELLO WORLD, THIS IS BOB" ) == true);
+        REQUIRE( s1.contains( "HELLO WORLD  THIS IS BOB" ) == false);
+        REQUIRE( s1.contains( "" ) == false );
+        REQUIRE( s1.contains( nullPtr ) == false);
+        REQUIRE( s1.contains( "WORLD", 6 ) == true );
+        REQUIRE( s1.contains( "WORLD, THIS IS BOB", 6 ) == true );
+        REQUIRE( s1.contains( nullPtr , 6 ) == false );
+        REQUIRE( s1.contains( "WORLD, THIS IS BOB", 7 ) == false );
+        REQUIRE( s1.contains( "WORLD, THIS IS BOB", -1 ) == false );
+        REQUIRE( s1.contains( "WORLD, THIS IS BOB", 40 ) == false );
+        REQUIRE( s1.contains( "HELLO", -1 ) == false );
+
+        REQUIRE( s1.contains( "BOB" ) == true );
+        REQUIRE( s1.contains( "BOb" ) == false );
+        REQUIRE( s1.contains( " HELLO" ) == false );
+        REQUIRE( s1.contains( nullPtr ) == false );
         }
 
     SECTION( "Index..." )

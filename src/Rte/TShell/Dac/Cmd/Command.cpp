@@ -92,11 +92,9 @@ void Command::outputPointInfo( Cpl::TShell::Dac::Context_& context, bool& io, Cp
         unsigned         i;
 
         // Only display ONE tuple when the Point is a Container
-        unsigned firstElement = 0;
         if ( point.isContainer() )
             {
-            ntuples      = 1;
-            firstElement = 1;
+            ntuples = 1;
             }
 
         // Iterate through my Tuples
@@ -111,7 +109,7 @@ void Command::outputPointInfo( Cpl::TShell::Dac::Context_& context, bool& io, Cp
                 }
             else
                 {
-                firstTuple = false;
+                firstTuple = false; 
                 }
 
             // Housekeeping
@@ -122,10 +120,18 @@ void Command::outputPointInfo( Cpl::TShell::Dac::Context_& context, bool& io, Cp
 
             // Iterate through my Elements
             outbuffer += "(";
-            for(j=firstElement; j<nelems; j++)
+            for(j=0; j<nelems; j++)
                 {
+                // For a container -->indicate the first element is the "in_container" element
+                if ( point.isContainer() && firstElem )
+                    {
+                    outbuffer.formatAppend( "[%s]", tuple.getElement(j).getTypeAsText() );
+                    firstElem = false;
+                    continue;
+                    }
+
                 // Comma seperate my Elements
-                if ( !firstElem )
+                else if ( !firstElem )
                     {
                     outbuffer += ", ";
                     }

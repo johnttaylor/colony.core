@@ -27,7 +27,7 @@
 #ifndef RTETSHELLDACMD_DETAIL_TQUERY_
 #define RTETSHELLDACMD_DETAIL_TQUERY_  "  Reads a single Tuple within a RTE Model point.  <point> is the symbolic \n" \
                                        "  name of a RTE Model Point and <idx> is the zero base index of the Tuple to\n" \
-                                       "  read.  When 'ls|ll' is used, a list of Model point is generated. The <filter>\n" \
+                                       "  read.  When 'ls|ll' is used, a list of Model points is generated. The <filter>\n" \
                                        "  argument will only list points that contain <filter>"
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
