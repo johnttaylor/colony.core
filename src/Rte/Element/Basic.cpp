@@ -33,9 +33,10 @@ const char* Boolean_T::getTypeAsText(void) const
     }
 
 
-const char* Boolean_T::toString( Cpl::Text::String& dstMemory ) const
+const char* Boolean_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    return m_data? "T": "F";
+    dstMemory.formatOpt( append, "%s", m_data? "T": "F" ); 
+    return dstMemory; 
     }
 
 
@@ -73,10 +74,10 @@ const char* Integer8_T::getTypeAsText(void) const
     }
 
 
-const char* Integer8_T::toString( Cpl::Text::String& dstMemory ) const
+const char* Integer8_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory = m_data;
-    return dstMemory;
+    dstMemory.formatOpt( append, "%d", m_data );
+    return dstMemory; 
     }
 
 
@@ -113,10 +114,10 @@ const char* Uinteger8_T::getTypeAsText(void) const
     }
 
 
-const char* Uinteger8_T::toString( Cpl::Text::String& dstMemory ) const
+const char* Uinteger8_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory = m_data;
-    return dstMemory;
+    dstMemory.formatOpt( append, "%u", m_data );
+    return dstMemory; 
     }
     
 
@@ -153,10 +154,10 @@ const char* Integer16_T::getTypeAsText(void) const
     }
 
 
-const char* Integer16_T::toString( Cpl::Text::String& dstMemory ) const
+const char* Integer16_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory = m_data;
-    return dstMemory;
+    dstMemory.formatOpt( append, "%d", m_data );
+    return dstMemory; 
     }
 
 
@@ -192,10 +193,10 @@ const char* Uinteger16_T::getTypeAsText(void) const
     }
 
 
-const char* Uinteger16_T::toString( Cpl::Text::String& dstMemory ) const
+const char* Uinteger16_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory = m_data;
-    return dstMemory;
+    dstMemory.formatOpt( append, "%u", m_data );
+    return dstMemory; 
     }
 
 
@@ -231,10 +232,10 @@ const char* Integer32_T::getTypeAsText(void) const
     }
 
 
-const char* Integer32_T::toString( Cpl::Text::String& dstMemory ) const
+const char* Integer32_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory = m_data;
-    return dstMemory;
+    dstMemory.formatOpt( append, "%ld", m_data );
+    return dstMemory; 
     }
 
 
@@ -270,10 +271,10 @@ const char* Uinteger32_T::getTypeAsText(void) const
     }
 
 
-const char* Uinteger32_T::toString( Cpl::Text::String& dstMemory ) const
+const char* Uinteger32_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory = m_data;
-    return dstMemory;
+    dstMemory.formatOpt( append, "%lu", m_data );
+    return dstMemory; 
     }
 
 
@@ -309,10 +310,10 @@ const char* Integer64_T::getTypeAsText(void) const
     }
 
 
-const char* Integer64_T::toString( Cpl::Text::String& dstMemory ) const
+const char* Integer64_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory = m_data;
-    return dstMemory;
+    dstMemory.formatOpt( append, "%lld", m_data );
+    return dstMemory; 
     }
 
 
@@ -345,9 +346,9 @@ const char* Uinteger64_T::getTypeAsText(void) const
     }
 
 
-const char* Uinteger64_T::toString( Cpl::Text::String& dstMemory ) const
+const char* Uinteger64_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory = m_data;
+    dstMemory.formatOpt( append, "%llu", m_data );
     return dstMemory;
     }
 
@@ -382,9 +383,9 @@ const char* Size_T::getTypeAsText(void) const
     }
 
 
-const char* Size_T::toString( Cpl::Text::String& dstMemory ) const
+const char* Size_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory = m_data;
+    dstMemory.formatOpt( append, "%p", (void*)m_data ); // NOTE: Microsoft VC12 does NOT support the "z" length modifier! 
     return dstMemory;
     }
 
@@ -421,9 +422,9 @@ const char* Float_T::getTypeAsText(void) const
     }
 
 
-const char* Float_T::toString( Cpl::Text::String& dstMemory ) const
+const char* Float_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory.format( "%G", m_data );
+    dstMemory.formatOpt( append, "%G", m_data );
     return dstMemory;
     }
 
@@ -456,9 +457,9 @@ const char* Double_T::getTypeAsText(void) const
     }
 
 
-const char* Double_T::toString( Cpl::Text::String& dstMemory ) const
+const char* Double_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory.format( "%G", m_data );
+    dstMemory.formatOpt( append, "%G", m_data );
     return dstMemory;
     }
 
@@ -491,9 +492,9 @@ const char* VoidPtr_T::getTypeAsText(void) const
     }
 
 
-const char* VoidPtr_T::toString( Cpl::Text::String& dstMemory ) const
+const char* VoidPtr_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory.format( "%0*X", sizeof(void*)*2, m_data );
+    dstMemory.formatOpt( append, "%0*p", sizeof(void*)*2, m_data );
     return dstMemory;
     }
 

@@ -273,6 +273,28 @@ String_::formatAppend( const char* format, ... )
     }
 
 void 
+String_::formatOpt( bool appendFlag, const char* format, ... )
+    {
+    if ( !format )
+        {
+        return;
+        }
+
+    va_list ap;
+    va_start(ap, format);
+    if ( appendFlag )
+        {
+        vformatAppend(format,ap);
+        }
+    else
+        {
+        vformat(format,ap);
+        }
+
+    va_end(ap);
+    }
+
+void 
 String_::vformat( const char* format, va_list ap )
     {
     if ( !format )
@@ -298,6 +320,25 @@ String_::vformatAppend( const char* format, va_list ap )
     int   flen  = vsnprintf(ptr, avail+1, format, ap);
     validateSizeAfterFormat(avail,flen,maxLength());
     }
+
+void 
+String_::vformatOpt( bool appendFlag, const char* format, va_list ap )
+    {
+    if ( !format )
+        {
+        return;
+        }
+
+    if ( appendFlag )
+        {
+        vformatAppend( format, ap );
+        }
+    else
+        {
+        vformat( format, ap );
+        } 
+    }
+
 
 const char*
 String_::toUpper()

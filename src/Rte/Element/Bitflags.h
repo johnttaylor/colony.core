@@ -107,7 +107,7 @@ public:
     size_t externalSize(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /** See Rte::Element::Api. Input format is: Numeric number in base 10, 
         or base 8 when a leading zero is specified, or base 16 if a leading

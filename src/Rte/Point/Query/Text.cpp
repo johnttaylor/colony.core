@@ -9,28 +9,27 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "Base.h"
+#include "Text.h"
 
 using namespace Rte::Point::Query;
 
 
 ///////////////////
-Base::Base( Rte::Point::Api&                          myPoint, 
-            Rte::Point::Model::Api&                   modelPoint, 
-            Rte::Point::Model::QueryRequest::Option_T copyOption
-          )
-:m_myPoint(myPoint)
+Text::Text( Cpl::Text::String&       storageForResults,
+            Rte::Point::Model::Api&  modelPoint,
+            int                      tupleIndex 
+            )
+:m_results(storageForResults)
 ,m_modelPoint(modelPoint)
-,m_copyOption(copyOption)
+,m_tupleIdx(tupleIndex)
     {
     }
 
 
 ///////////////////
-bool Base::issueQuery( void )
+bool Text::issueQuery( void )
     {
     // issue the query
-    m_modelPoint.query(m_myPoint, m_copyOption);
-    return true;
+    return m_modelPoint.query(m_results, m_tupleIdx);
     }
 

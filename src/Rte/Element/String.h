@@ -12,9 +12,23 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
+#include "colony_config.h"
 #include "Rte/Element/Base.h"
 #include "Cpl/Text/FString.h"
+#include "Cpl/Text/Frame/StringEncoder.h"
 #include <stdint.h>
+
+
+/// Quote character used for ALL String element when encoding/decoding to text
+#ifndef OPTION_RTE_ELEMENT_STRING_QUOTE_CHAR
+#define OPTION_RTE_ELEMENT_STRING_QUOTE_CHAR        '"'
+#endif
+
+/// Escape character used for ALL String element when encoding/decoding to text
+#ifndef OPTION_RTE_ELEMENT_STRING_ESCAPE_CHAR
+#define OPTION_RTE_ELEMENT_STRING_ESCAPE_CHAR       '\\'
+#endif
+
 
 
 ///
@@ -79,8 +93,11 @@ public:
     /// See Rte::Element::Api
     size_t externalSize(void) const;
 
-    /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    /** See Rte::Element::Api.  The output of this method is a "text string", 
+        i.e. the value is enclosed in quotes with quote characters (and escape
+        characters) being esacped with '\'
+     */
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
@@ -142,9 +159,12 @@ Cpl::Text::String& Rte::Element::String<S>::getString( void )
 
 
 template<int S>
-const char* Rte::Element::String<S>::toString( Cpl::Text::String& dstMemory ) const
+const char* Rte::Element::String<S>::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory = get();
+    Cpl::Text::Frame::StringEncoder encoder( dstMemory, OPTION_RTE_ELEMENT_STRING_QUOTE_CHAR, OPTION_RTE_ELEMENT_STRING_QUOTE_CHAR, OPTION_RTE_ELEMENT_STRING_ESCAPE_CHAR, false, append );
+    encoder.startFrame();
+    encoder.output( get() );
+    encoder.endFrame();
     return dstMemory;
     }
      

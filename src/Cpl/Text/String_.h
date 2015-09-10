@@ -103,10 +103,16 @@ public:
     void formatAppend( const char* format, ... );
 
     /// See Cpl::Text::String
+    void formatOpt( bool appendFlag, const char* format, ... );
+
+    /// See Cpl::Text::String
     void vformat( const char* format, va_list ap );
 
     /// See Cpl::Text::String
     void vformatAppend( const char* format, va_list ap );
+
+    /// See Cpl::Text::String
+    void vformatOpt( bool appendFlag, const char* format, va_list ap );
 
     /// See Cpl::Text::String
     int  indexOf( char c ) const;

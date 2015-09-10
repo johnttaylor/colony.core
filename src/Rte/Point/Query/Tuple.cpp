@@ -31,9 +31,10 @@ Tuple::Tuple( unsigned                                  tupleIndex,
 
 
 ///////////////////////////////////////////////////
-void Tuple::issueQuery( void )
+bool Tuple::issueQuery( void )
     {
     m_modelPoint.query( m_myTuple, m_tupleIdx, 0, m_copyOption );
+    return true;
     }
 
 

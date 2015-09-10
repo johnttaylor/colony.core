@@ -20,7 +20,7 @@
 namespace Rte { namespace Point { namespace Query {
 
 
-/** This concrete class implements the Controller Point interface.
+/** This concrete class implements the Query Point interface.
 
     NOTE: This Query viewer DEFAULTS the 'in-use' state for all Elements
           to true!
@@ -48,7 +48,7 @@ protected:
 
 public:
     /// See Rte::Point::Query::Api
-    void issueQuery( void );
+    bool issueQuery( void );
 
 
 };

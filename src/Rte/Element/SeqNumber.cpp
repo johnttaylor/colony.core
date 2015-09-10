@@ -47,9 +47,9 @@ int32_t SeqNumber::get( void ) const
     }
 
 
-const char* SeqNumber::toString( Cpl::Text::String& dstMemory ) const
+const char* SeqNumber::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory = m_data;
+    dstMemory.formatOpt( append, "%lu", m_data );
     return dstMemory;
     }
 

@@ -24,9 +24,10 @@ class Api
 {
 public:
     /** This method takes updates the client point with the contents of the 
-        associated model point.
+        associated model point. Returns true if succesful, else false is
+        returned
      */
-    virtual void issueQuery( void ) = 0;
+    virtual bool issueQuery( void ) = 0;
 
 
 public: 

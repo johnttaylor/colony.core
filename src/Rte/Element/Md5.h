@@ -68,7 +68,7 @@ public:
         string needs to be at least 32 characters in length (no leading 
         '0x' is needed/used).
      */
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /** See Rte::Element::Api. Input format is an 'ASCII HEX' string that
         contains EXACTLY 32 ASCII hexadecimal digits (no leading '0x' is

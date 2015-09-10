@@ -18,9 +18,10 @@ using namespace Cpl::Text::Frame;
 
 
 ///////////////////////////////////
-StringEncoder::StringEncoder( Cpl::Text::String& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline )
+StringEncoder::StringEncoder( Cpl::Text::String& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline, bool appendToDst )
 :Encoder_(startOfFrame, endOfFrame, escapeChar, appendNewline)
 ,m_dst(dst)
+,m_append(appendToDst)
     {
     }
 
@@ -29,13 +30,17 @@ StringEncoder::StringEncoder( Cpl::Text::String& dst, char startOfFrame, char en
 ///////////////////////////////////
 bool StringEncoder::start( char src ) throw()
     {
-    m_dst = src;
+    m_dst.formatOpt( m_append, "%c", src );
     return m_dst.truncated() == false;
     }
 
 bool StringEncoder::start() throw()
     {
-    m_dst.clear();
+    if ( !m_append )
+        {
+        m_dst.clear();
+        }
+
     return m_dst.truncated() == false;
     }
 

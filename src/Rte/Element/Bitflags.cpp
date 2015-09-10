@@ -45,9 +45,9 @@ uint32_t BitFlags::get( void ) const
     return m_data;
     }
 
-const char* BitFlags::toString( Cpl::Text::String& dstMemory ) const
+const char* BitFlags::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory.format( "%08X", m_data );
+    dstMemory.formatOpt( append, "%08X", m_data );
     return dstMemory;
     }
 

@@ -125,6 +125,17 @@ void Base::query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Quer
     }
 
 
+bool Base::query( Cpl::Text::String& results, int tupleIdx )
+    {
+    QueryTextPayload              payload( results, tupleIdx );
+    Cpl::Itc::SyncReturnHandler   srh;
+    QueryTextMsg                  msg(*this,payload,srh);
+    m_querySAP.postSync(msg);
+
+    return payload.m_success;
+    }
+
+
 ///////////////////
 void Base::pollViewer( ViewerRequest::RegisterMsg& viewerToPoll )
     {
@@ -471,3 +482,110 @@ void Base::copyTuple( QueryTupleMsg& msg, unsigned index )
         }
     }
 
+
+void Base::request( QueryTextMsg& msg )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(QueryTextMsg) - (%p)", this) );
+
+    Cpl::Text::String& results = msg.getPayload().m_results;
+
+    // Do Tuple query
+    if ( msg.getPayload().m_tupleIdx >= 0 )
+        {
+        // Trap: Tuple index out-of-range
+        if ( (unsigned)(msg.getPayload().m_tupleIdx) >= m_myPoint.getNumTuples() )
+            {
+            msg.getPayload().m_success = false;
+            }
+
+        // Get tuple data
+        else
+            { 
+            results.clear();
+            copyTupleAsText( msg.getPayload().m_results, (unsigned) msg.getPayload().m_tupleIdx );
+            }
+        } 
+
+    // Query entire Point
+    else
+        {
+        results  = "{ ";
+        unsigned i;
+        for(i=0; i<m_myPoint.getNumTuples(); i++)
+            {
+            // Add seperator between tuples
+            if ( i>0 )
+                {
+                results += ", ";
+                }
+
+            copyTupleAsText( msg.getPayload().m_results, i );
+            } 
+        results += " }";
+        }
+
+    // Return the client's message
+    msg.returnToSender();
+    }
+
+
+void Base::copyTupleAsText( Cpl::Text::String& results, unsigned tupleIdx )
+    {
+    // Add tuple prefix
+    results += "("; 
+
+    // Loop through ALL elements
+    Rte::Tuple::Api& tuple       = m_myPoint.getTuple(tupleIdx);
+    bool             isContainer = m_myPoint.isContainer();
+    unsigned         i;
+    for(i=0; i<tuple.getNumElements(); i++)
+        {
+        Rte::Element::Api& element = tuple.getElement(i);
+
+        // Add seperator between Elements
+        if ( i>0 )
+            {
+            results += ", ";
+            }
+
+        // Add lock indicator
+        if ( element.isLocked() )
+            {
+            results += "!";
+            }
+
+        // Add [] notation to the first element of each tuple when a Container point
+        if ( isContainer && i == 0 )
+            {
+            results += "[";
+            }
+
+        // Valid status
+        int8_t status = element.validState();
+        if ( status == RTE_ELEMENT_API_STATE_VALID )
+            { 
+            element.toString( results, true );
+            }
+
+        // Invalid -->default invalid state
+        else if ( status == RTE_ELEMENT_API_STATE_INVALID )
+            {
+            results += "?";
+            }
+
+        // Invalid -->application specific value
+        else
+            {
+            results.formatAppend( "?%d", status );
+            }
+      
+        // Add trail "]" for in_container element
+        if ( isContainer && i == 0 )
+            {
+            results += "]";
+            }
+        }
+
+    // Add tuple postfix
+    results += ")"; 
+    }

@@ -163,6 +163,7 @@ public:
         terminated.
      */
     virtual void appendTo(const char* string, int n) = 0;
+
     ///@}
 
 
@@ -345,6 +346,12 @@ public:
     /// Same as format() - but appends "formatting" to the end of the string
     virtual void formatAppend( const char* format, ... ) = 0;
 
+    /** This method is the same as format(), except when 'appendFlag' is true
+        then it behaves as formatAppend().
+     */
+    virtual void formatOpt( bool appendFlag, const char* format, ... ) = 0;
+
+
     /** Same as format(), except that it is called with a va_list  
         instead of a variable number of arguments.
      */
@@ -354,6 +361,11 @@ public:
         instead of a variable number of arguments.
      */
     virtual void vformatAppend( const char* format, va_list ap ) = 0;
+    
+    /** This method is the same as vformat(), except when 'appendFlag' is true
+        then it behaves as vformatAppend().
+     */
+    virtual void vformatOpt( bool appendFlag, const char* format, va_list ap ) = 0;
     ///@}
 
 

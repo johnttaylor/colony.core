@@ -71,7 +71,7 @@ public:
     size_t externalSize(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );

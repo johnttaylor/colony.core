@@ -29,9 +29,10 @@ Container::Container( Rte::Point::ContainerApi&                 myPoint,
 
 
 ///////////////////
-void Container::issueQuery( void )
+bool Container::issueQuery( void )
     {
     // issue the query
     m_modelPoint.query( m_myPoint, m_copyOption );
+    return true;
     }
 

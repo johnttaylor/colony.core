@@ -34,11 +34,16 @@ protected:
     /// Output stream
     Cpl::Text::String&  m_dst;
 
+    /// Append flag
+    bool                m_append;
+
 
 public:
     /** Constructor.  The 'appendNewline' argument when set to true will
         append a newline character to the output stream AFTER the EOF
-        character (this can make for more human readable output stream).
+        character (this can make for more human readable output stream). The
+        'appendToDst' flag when true will not clear contents of 'dst' on 
+        the start-of-frame - rather it will ALWAYS append all output to 'dst'
 
         NOTES: 
         
@@ -50,7 +55,7 @@ public:
             o If 'escapeChar' is '\0', then Encoder will NOT escape any
               characters - buyers beware when using this feature!
      */
-    StringEncoder( Cpl::Text::String& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline=true );
+    StringEncoder( Cpl::Text::String& dst, char startOfFrame, char endOfFrame, char escapeChar, bool appendNewline=true, bool appendToDst=false );
 
 public:
     /// Returns a refernce to the String that holds the encoded frame.  The contents of the buffer depends on the state of frame being built.

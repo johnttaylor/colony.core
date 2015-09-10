@@ -85,7 +85,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api.  Format: "T"=true, "F"=false
     bool setFromText( const char* srcText );
@@ -108,7 +108,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
@@ -131,7 +131,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
@@ -154,7 +154,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
@@ -176,7 +176,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
@@ -198,7 +198,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
@@ -220,7 +220,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
@@ -242,7 +242,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
@@ -264,7 +264,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
@@ -286,7 +286,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
@@ -308,7 +308,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
@@ -330,7 +330,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );
@@ -352,7 +352,7 @@ public:
     const char* getTypeAsText(void) const;
 
     /// See Rte::Element::Api
-    const char* toString( Cpl::Text::String& dstMemory ) const;
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
     bool setFromText( const char* srcText );

@@ -37,9 +37,10 @@ Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, c
 ////////////////////////////
 Cpl::TShell::Dac::Command::Result_T Command::listPoints( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens ) throw()
     {
-    Cpl::Text::String&  outtext   = context.getOutputBuffer();
-    unsigned            numParms  = tokens.numParameters();
-    bool                io        = true;
+    Cpl::Text::String&                    outtext   = context.getOutputBuffer();
+    Cpl::TShell::Dac::ActiveVariablesApi& vars      = context.getVariables();
+    unsigned                              numParms  = tokens.numParameters();
+    bool                                  io        = true;
 
     // Display Points
     if ( numParms >= 2 )
@@ -51,7 +52,20 @@ Cpl::TShell::Dac::Command::Result_T Command::listPoints( Cpl::TShell::Dac::Conte
         if ( ls || ll )
             {
             // Identify Filter (if any)
-            const char* filter = numParms == 2? 0: tokens.getParameter(2);
+            const char* filter = 0;
+            if ( numParms > 2 )
+                {
+                Cpl::Text::String& token = context.getTokenBuffer();
+                if ( expandText( tokens.getParameter(2), token, vars ) == Command::eSUCCESS )
+                    {
+                    filter = token;
+                    }
+                else
+                    {
+                    // BAD <etext> -->generate an error
+                    return Command::eERROR_INVALID_ARGS;
+                    }
+                }
 
             // Iterate across all Points
             Rte::TShell::Dac::Point* pointPtr = m_points.first();

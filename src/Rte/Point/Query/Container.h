@@ -48,7 +48,7 @@ protected:
 
 public: 
     /// See Rte::Point::Query::Api
-    void issueQuery( void );
+    bool issueQuery( void );
 
 
 public: 

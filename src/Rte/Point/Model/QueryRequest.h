@@ -17,6 +17,8 @@
 #include "Rte/Point/Api.h"
 #include "Rte/Point/Query/Traverser.h"
 #include "Rte/Tuple/Api.h"
+#include "Cpl/Text/String.h"
+
 
 ///
 namespace Rte { namespace Point { namespace Model {
@@ -58,7 +60,7 @@ public:
                 {}
     };
 
-    /// Message Type: Update Model Point
+    /// Message Type: Query Model Point
     typedef Cpl::Itc::RequestMessage<QueryRequest,QueryPayload> QueryMsg;
     
 
@@ -90,9 +92,36 @@ public:
                 {}
     };
 
-    /// Message Type: Update a single Tuple in the Model Point
+    /// Message Type: Query a single Tuple in the Model Point
     typedef Cpl::Itc::RequestMessage<QueryRequest,QueryTuplePayload> QueryTupleMsg;
+ 
     
+public:
+    /// Payload for Message: Query Text
+    class QueryTextPayload
+    {
+    public:
+        /// Destination for where the Model Point's data will be COPIED to
+        Cpl::Text::String&  m_results;
+
+        /// Tuple index (<0 indicates query entire point)
+        int                 m_tupleIdx;
+
+        /// Returns the pass/fail of the query
+        bool                m_success;
+    public:
+        /// Constructor
+        QueryTextPayload( Cpl::Text::String& queryResults, int tupleIndex )
+            :m_results(queryResults)
+            ,m_tupleIdx(tupleIndex)
+            ,m_success(true)
+                {}
+    };
+
+    /// Message Type: Generic/text-base results Query Model Point
+    typedef Cpl::Itc::RequestMessage<QueryRequest,QueryTextPayload> QueryTextMsg;
+    
+
 
 
 public:
@@ -101,6 +130,9 @@ public:
     
     /// Request: Reads a single Tuple in the Model Point
     virtual void request( QueryTupleMsg& msg ) = 0;
+
+    /// Request: Generic/text-base results read of a Model Point
+    virtual void request( QueryTextMsg& msg ) = 0;
 };
 
 

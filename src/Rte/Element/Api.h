@@ -215,7 +215,7 @@ public:
         value.  The caller must supply the destination string to hold
         the returned value.
      */
-    virtual const char* toString( Cpl::Text::String& dstMemory ) const = 0;
+    virtual const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const = 0;
 
     /** This method attempts to set the Element's value from the provided
         text string.  If the contents of the 'srcText' is invalid OR the Element

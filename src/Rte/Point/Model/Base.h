@@ -102,6 +102,8 @@ public:
     /// See Rte::Point::Model::Api
     void query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* walkCallbackPtr = 0, QueryRequest::Option_T copyOption = QueryRequest::eCOPY  );
 
+    /// See Rte::Point::Model::Api
+    bool query( Cpl::Text::String& results, int tupleIdx = -1 );
 
 public:
     /// See Rte::Point::Model::ViewerRequest
@@ -145,6 +147,8 @@ public:
     /// See Rte::Point::Model::QueryRequest
     void request( QueryTupleMsg& msg );
 
+    /// See Rte::Point::Model::QueryRequest
+    void request( QueryTextMsg& msg );
 
 
 public: 
@@ -167,6 +171,10 @@ protected:
 
     /// Helper
     void copyTuple( QueryTupleMsg& msg, unsigned index );
+
+    /// Helper
+    void copyTupleAsText( Cpl::Text::String& results, unsigned tupleIdx );
+
 
 
 };

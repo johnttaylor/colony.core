@@ -19,20 +19,21 @@
 
 #include "colony_config.h"
 #include <cmath>
+#include <cfloat>
 
 
 /** This symbols provides the default Epsilon value when testing for 'almost
     equal' between to float numbers.  Note: This is GLOBAL setting.
  */
 #ifndef CPL_MATH_REAL_FLOAT_EPSILON
-#define CPL_MATH_REAL_FLOAT_EPSILON     ((float)0.00001)
+#define CPL_MATH_REAL_FLOAT_EPSILON     (FLT_EPSILON)
 #endif
 
 /** This symbols provides the default Epsilon value when testing for 'almost
     equal' between to double numbers.  Note: This is GLOBAL setting.
  */
 #ifndef CPL_MATH_REAL_DOUBLE_EPSILON
-#define CPL_MATH_REAL_DOUBLE_EPSILON    ((double)0.000000000001)
+#define CPL_MATH_REAL_DOUBLE_EPSILON    (DBL_EPSILON)
 #endif
 
 

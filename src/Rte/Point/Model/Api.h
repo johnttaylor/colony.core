@@ -81,7 +81,14 @@ public:
         Tuples starts with Tuple index 'tupleIdx'.
      */
     virtual void query( Rte::Tuple::Api& dstTuple, unsigned tupleIdx, Rte::Point::Query::Traverser* walkCallbackPtr = 0, QueryRequest::Option_T copyOption = QueryRequest::eCOPY  ) = 0;
-          
+  
+    /** This method synchronously queries a Model Point (or individual Tuple) and
+        returns the result a generic ASCII text.  When 'tupleIdx' is less than
+        zero than the entire Point is queried; else only the specified tuple
+        is queried. The method returns true if succesful, else false is returned.
+     */
+    virtual bool query( Cpl::Text::String& results, int tupleIdx = -1 ) = 0;        
+
 
 public:
     /** This method is used force a change notification to a viewer, aka Poll 
