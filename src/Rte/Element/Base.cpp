@@ -98,16 +98,18 @@ bool Base::isLocked(void) const
     return (m_valid & LOCK_STATE_MASK_) != 0;
     }
 
-void Base::setLocked(void)
-    { 
-    m_valid |= LOCK_STATE_MASK_;
-    }
-
-void Base::setUnlocked(void)
+void Base::setLockedState( bool newState )
     {
     m_valid &= ~LOCK_STATE_MASK_;
+    if ( newState )
+        {    
+        m_valid |= LOCK_STATE_MASK_;
+        }
+    else
+        {
+        m_valid &= ~LOCK_STATE_MASK_;
+        }
     }
-
 
 ////////////////////////
 bool Base::isLockRequest(void) const

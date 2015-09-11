@@ -72,7 +72,7 @@ Cpl::TShell::Dac::Command::Result_T Command::listPoints( Cpl::TShell::Dac::Conte
             while( pointPtr && io == true )
                 {
                 outtext = pointPtr->getName();
-                if ( !filter || outtext.contains( filter ) )
+                if ( !filter || outtext.indexOf( filter ) >= 0 )
                     {
                     outputPointInfo( context, io, outtext, *pointPtr, ls? false: true );
                     }

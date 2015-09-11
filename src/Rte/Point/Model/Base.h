@@ -94,6 +94,9 @@ public:
                  unsigned                                    itemIndexStart = 0   
                );
 
+    /// See Rte::Point::Model::Api
+    bool update( Cpl::Text::String& sourceValues, int tupleIdx = -1 );
+
 
 public:
     /// See Rte::Point::Model::Api
@@ -138,6 +141,9 @@ public:
     
     /// See Rte::Point::Model::ControllerRequest
     void request( RmwContainerMsg& msg );
+
+    /// See Rte::Point::Model::ControllerRequest
+    void request( UpdateTextMsg& msg ); 
 
 
 public:

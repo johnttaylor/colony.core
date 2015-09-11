@@ -72,10 +72,7 @@ public:
     bool isLocked(void) const;
     
     ///  See Rte::Element::Api
-    void setLocked(void);
-    
-    ///  See Rte::Element::Api
-    void setUnlocked(void);
+    void setLockedState( bool newState );
 
     ///  See Rte::Element::Api
     bool isLockRequest(void) const;

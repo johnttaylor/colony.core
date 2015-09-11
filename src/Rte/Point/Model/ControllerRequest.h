@@ -138,6 +138,32 @@ public:
     typedef Cpl::Itc::RequestMessage<ControllerRequest,RmwContainerPayload> RmwContainerMsg;
 
 
+public:
+    /// Payload for Message: Controller Text
+    class ControllerTextPayload
+    {
+    public:
+        /// Source values to update the Model Point
+        Cpl::Text::String&  m_source;
+
+        /// Tuple index (<0 indicates update entire point)
+        int                 m_tupleIdx;
+
+        /// Returns the pass/fail of the update
+        bool                m_success;
+    public:
+        /// Constructor
+        ControllerTextPayload( Cpl::Text::String& sourceValues, int tupleIndex )
+            :m_source(sourceValues)
+            ,m_tupleIdx(tupleIndex)
+            ,m_success(true)
+                {}
+    };
+
+    /// Message Type: Generic/text-base values Controller Model Point
+    typedef Cpl::Itc::RequestMessage<ControllerRequest,ControllerTextPayload> ControllerTextMsg;
+    
+
 
 public:
     /// Request: Update Model Point
@@ -151,6 +177,9 @@ public:
     
     /// Request: Read-Modify-Write a Model Container Point
     virtual void request( RmwContainerMsg& msg ) = 0;
+
+    /// Request: Generic/text-base values Controller Model Point
+    virtual void request( ControllerTextMsg& msg ) = 0;
 };
 
 

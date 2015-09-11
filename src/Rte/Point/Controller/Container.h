@@ -40,7 +40,7 @@ protected:
 
 public: 
     /// See Rte::Point::Controller::Api
-    void updateModel( void );
+    bool updateModel( void );
 
 
 public: 

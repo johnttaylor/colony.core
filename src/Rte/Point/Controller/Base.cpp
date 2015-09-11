@@ -23,12 +23,13 @@ Base::Base( Rte::Point::Api& myPoint, Rte::Point::Model::Api& modelPoint )
 
 
 ///////////////////
-void Base::updateModel( void )
+bool Base::updateModel( void )
     {
     m_modelPoint.update( m_myPoint );
 
     // Ensure that the sequence number gets reset if the client
     // reuses the controller 
     m_myPoint.resetSequenceNumber();
+    return true;
     }
 

@@ -279,14 +279,6 @@ public:
      */
     virtual bool endsWith( const char* string ) const = 0;
 
-    /** Returns true if the 'match' is found within the specified 'startOffset'
-        and 'endOffset' bound of the string.  The value of '-1' can be used with
-        'endOffset' to indicate search to End-of-String. Note: if 'match' is a 
-        null pointer or invalid range specified by 'startOffset' and 'endOffset'
-        then false is returned.
-     */
-     virtual bool contains( const char* match, int startOffset=0, int endOffset=-1 ) const = 0;
-
     ///@}
 
 public:

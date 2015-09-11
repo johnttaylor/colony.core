@@ -74,6 +74,13 @@ public:
     /// See Rte::Tuple::Api
     void setAsModelTuple_(void);
 
+    /// See Rte::Tuple::Api
+    void setAllLockedState( bool newState );
+
+    /// See Rte::Tuple::Api
+    void requestAllLockOperation( bool newState );
+
+
 
 };
 

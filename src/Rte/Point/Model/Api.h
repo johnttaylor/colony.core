@@ -67,6 +67,16 @@ public:
                          unsigned                                    itemIndexStart = 0   
                        ) = 0;
 
+    /** This method synchronously updates a Model Point (or individual Tuple) 
+        from a generic ASCII text string.  When 'tupleIdx' is less than zero 
+        than the entire Point is updated; else only the specified tuple is 
+        updated. The method returns true if succesful, else false is returned.
+ 
+        NOTE: When false is returned the state of the Model Point IS NOT 
+        GUARANTEED!
+     */
+    virtual bool update( Cpl::Text::String& sourceValues, int tupleIdx = -1 ) = 0;        
+
 
 public:
     /** This method synchronously queries the Model Point

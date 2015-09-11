@@ -69,6 +69,18 @@ public:
      */
     virtual size_t sumAllExternalSize(void) = 0;
 
+    /** Helper method that sets the 'locked/unlocked' state for ALL Elements
+        in ALL Tuples to the same state.  The Application SHOULD NEVER call 
+        this method, instead it should call the requestAllLockOperation() 
+        method below.
+     */
+    virtual void setAllLockedState( bool newState ) = 0;
+
+    /** Helper method that requests ALL Elements in ALL Tuples to be 
+        locked/unlocked to the specified state.
+     */
+    virtual void requestAllLockOperation( bool newState ) = 0;
+
 
 public:
     /** This method returns the number of tuples contain in the Point

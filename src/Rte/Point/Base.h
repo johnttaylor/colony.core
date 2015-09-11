@@ -87,6 +87,13 @@ public:
     /// See Rte::Point::Api
     bool isContainer(void) const;
 
+    /// See Rte::Point::Api
+    void setAllLockedState( bool newState );
+
+    /// See Rte::Point::Api
+    void requestAllLockOperation( bool newState );
+
+
 
 };
 

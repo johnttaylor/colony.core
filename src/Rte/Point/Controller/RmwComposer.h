@@ -64,7 +64,7 @@ public:
 
 public:
     /// See Rte::Point::Controller::Api
-    void updateModel( void );
+    bool updateModel( void );
 
 
 public:
@@ -92,9 +92,10 @@ Rte::Point::Controller::RmwComposer<CONTEXT>::RmwComposer( Rte::Point::Api&     
 
 /////////////////
 template <class CONTEXT>
-void Rte::Point::Controller::RmwComposer<CONTEXT>::updateModel( void )
+bool Rte::Point::Controller::RmwComposer<CONTEXT>::updateModel( void )
     {
     m_modelPoint.update( m_myPoint, *this );
+    return true;
     }
     
 

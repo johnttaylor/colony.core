@@ -26,7 +26,8 @@ Tuple::Tuple( unsigned tupleIndex, Rte::Tuple::Api& myTuple, Rte::Point::Model::
 
 
 ///////////////////////////////////////////////////
-void Tuple::updateModel( void )
+bool Tuple::updateModel( void )
     {
     m_modelPoint.update( m_myTuple, m_tupleIdx );
+    return true;
     }

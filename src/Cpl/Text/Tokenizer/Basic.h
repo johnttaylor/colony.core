@@ -22,7 +22,7 @@ namespace Cpl { namespace Text { namespace Tokenizer {
     string. A token is a one or more characters seperated by one or 
     more delimiter characters. The parsing is a destructive parsing in 
     that it modifies the original string.  The tokenizing is done 
-    one token at timem i.e. when the next() method is called.
+    one token at time i.e. when the next() method is called.
  */
 class Basic
 {

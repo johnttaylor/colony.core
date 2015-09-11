@@ -50,7 +50,7 @@ protected:
 
 public: 
     /// See Rte::Point::Controller::Api
-    void updateModel( void );
+    bool updateModel( void );
 
 
 public: 
@@ -108,10 +108,11 @@ Rte::Point::Controller::TupleItem<TUPLE>::TupleItem( unsigned tupleIndex, TUPLE&
 
 /////////////////
 template<class TUPLE>
-void Rte::Point::Controller::TupleItem<TUPLE>::updateModel( void )
+bool Rte::Point::Controller::TupleItem<TUPLE>::updateModel( void )
     {
     m_modelPoint.update( m_myTuple, m_tupleIdx, m_membershipChanged );
-    m_membershipChanged = false; // Clear the membershp flag incase this Tuple Controller gets reused by the Client
+    m_membershipChanged = false; // Clear the membershp flag incase this Tuple Controller gets reused by the Client 
+    return true;
     }
 
 

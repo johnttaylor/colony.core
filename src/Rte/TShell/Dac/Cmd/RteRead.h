@@ -1,5 +1,5 @@
-#ifndef Rte_TShell_Dac_Cmd_PQuery_h
-#define Rte_TShell_Dac_Cmd_PQuery_h
+#ifndef Rte_TShell_Dac_Cmd_RteRead_h
+#define Rte_TShell_Dac_Cmd_RteRead_h
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -17,17 +17,19 @@
 
 
 /** Usage
-                                       "         1         2         3         4         5         6         7         8"
-                                       "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                                        "         1         2         3         4         5         6         7         8"
+                                        "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define RTETSHELLDACMD_USAGE_PQUERY_   "pquery ls|ll [<filter>]\n" \
-                                       "pquery <point>"
+#define RTETSHELLDACMD_USAGE_TRTEREAD_  "rte-read ls|ll [<filter>]\n" \
+                                        "rte-read <point>\n" \
+                                        "rte-read <point> <idx>"
 
 /// Detailed Help text
-#ifndef RTETSHELLDACMD_DETAIL_PQUERY_
-#define RTETSHELLDACMD_DETAIL_PQUERY_  "  Reads a RTE Model point.  <point> is the symbolic name of a RTE Model Point.\n" \
-                                       "  When 'ls|ll' is used, a list of Model points is generated. The <filter>\n" \
-                                       "  argument will only list points that contain <filter>"
+#ifndef RTETSHELLDACMD_DETAIL_TRTEREAD_
+#define RTETSHELLDACMD_DETAIL_TRTEREAD_ "  Reads a Point or single Tuple within a RTE Model point.  <point> is the\n" \
+                                        "  symbolic name of a RTE Model Point and <idx> is the zero base index of the\n" \
+                                        "  Tuple to read.  When 'ls|ll' is used, a list of Model points is generated. The\n" \
+                                        "  <filter> argument will only list points that contain <filter>"
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
 
@@ -40,22 +42,22 @@ namespace Rte { namespace TShell { namespace Dac { namespace Cmd {
 
 /** This class implements a DAC Shell command
  */
-class PQuery: public Command
+class RteRead: public Command
 {
 public:
     /// See Cpl::TShell::Dac::Command
-    const char* getUsage() const throw()   { return RTETSHELLDACMD_USAGE_PQUERY_; }
+    const char* getUsage() const throw()   { return RTETSHELLDACMD_USAGE_TRTEREAD_; }
 
     /// See Cpl::TShell::Dac::Command
-    const char* getHelp() const throw()    { return RTETSHELLDACMD_DETAIL_PQUERY_; }
+    const char* getHelp() const throw()    { return RTETSHELLDACMD_DETAIL_TRTEREAD_; }
     
      
 public:
     /// Constructor
-    PQuery( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw();
+    RteRead( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw();
 
     /// Constructor.  Used to create a static instance of the command
-    PQuery( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+    RteRead( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
 
 
 public:

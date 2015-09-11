@@ -118,6 +118,25 @@ void Base::setAsModelTuple_(void)
         }
     }
 
+void Base::setAllLockedState( bool newState )
+    {
+    unsigned i;
+    for(i=0; i<getNumElements(); i++)
+        {
+        getElement(i).seLockedState( newState );
+        }
+    }
+
+void Base::requestAllLockOperation( bool newState )
+    {
+    unsigned i;
+    for(i=0; i<getNumElements(); i++)
+        {
+        getElement(i).requestLockOperation( newState );
+        }
+    }
+
+
 
 ////////////////////////
 bool Api::copy( Api& dst, const Api& src, const Api* inUseFilterPtr ) 

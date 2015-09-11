@@ -39,7 +39,7 @@ protected:
 
 public: 
     /// See Rte::Point::Controller::Api
-    virtual void updateModel( void );
+    virtual bool updateModel( void );
 
 
 };

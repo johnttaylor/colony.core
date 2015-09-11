@@ -25,9 +25,10 @@ class Api
 {
 public:
     /** This method takes the controller point's current content
-        and updates the associated model point.  
+        and updates the associated model point. The method returns true
+        when the update is successful; else false is returned  
      */
-    virtual void updateModel( void ) = 0;
+    virtual bool updateModel( void ) = 0;
 
 
 public: 

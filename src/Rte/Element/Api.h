@@ -108,14 +108,19 @@ public:
         should NEVER call this method directly -->it should use the 'requestXxxx'
         method below instead.
      */
-    virtual void setLocked(void) = 0;
+    inline void setLocked(void)     { setLockedState( true ); }
 
     /** This method sets the Element to the unlocked state.  The Application 
         should NEVER call this method directly -->it should use the 'requestXxxx'
         method below instead.
      */
-    virtual void setUnlocked(void) = 0;
+    inline void setUnlocked(void)   { setLockedState( false ); }  
 
+    /** This method is use to the 'locked' state.  The application should NEVER
+        call this method directly -->it should use the requestLockOperation
+        method below.
+     */
+    virtual void setLockedState( bool newState ) = 0;
 
 
 public:

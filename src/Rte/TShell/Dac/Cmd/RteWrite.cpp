@@ -9,9 +9,9 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "TQuery.h"
+#include "RteWrite.h"
 #include "Cpl/Text/atob.h"
-#include "Rte/Point/Query/Text.h"
+#include "Rte/Point/Controller/Text.h"
 
 
 ///
@@ -19,19 +19,19 @@ using namespace Rte::TShell::Dac::Cmd;
 
 
 ///////////////////////////
-TQuery::TQuery( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw()
-:Command( commandList, "tquery", modelPointList )
+RteWrite::RteWrite( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw()
+:Command( commandList, "rte-write", modelPointList )
     {
     }
 
-TQuery::TQuery( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
-:Command( commandList, "tquery", modelPointList, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
+RteWrite::RteWrite( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+:Command( commandList, "rte-write", modelPointList, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
     {
     }
 
 
 ///////////////////////////
-Cpl::TShell::Dac::Command::Result_T TQuery::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T RteWrite::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     // Display Points
     Cpl::TShell::Dac::Command::Result_T result = listPoints(context, tokens);
@@ -45,11 +45,11 @@ Cpl::TShell::Dac::Command::Result_T TQuery::execute( Cpl::TShell::Dac::Context_&
     unsigned                              numParms = tokens.numParameters();
 
     // Error checking
-    if ( tokens.numParameters() < 3 )
+    if ( numParms < 2 )
         {
         return Command::eERROR_MISSING_ARGS;
         }
-    if ( tokens.numParameters() > 3 )
+    if ( numParms > 3 )
         {
         return Command::eERROR_EXTRA_ARGS;
         }
@@ -60,17 +60,21 @@ Cpl::TShell::Dac::Command::Result_T TQuery::execute( Cpl::TShell::Dac::Context_&
         {
         return Command::eERROR_BAD_SYNTAX;
         }
-
-    // Get tuple index (can be <etext>)
-    Cpl::Text::String& tuple = context.getTokenBuffer2();
-    if ( expandText( tokens.getParameter(2), tuple, vars ) != Command::eSUCCESS )
+    
+    // Parse Tuple index (if there is any)
+    int tupleIdx = -1;  // Default to: Point read
+    if ( numParms == 3 )
         {
-        return Command::eERROR_BAD_SYNTAX;
-        }
-    unsigned tupleIdx = 0;
-    if ( !Cpl::Text::a2ui( tupleIdx, tuple ) )
-        {
-        return Command::eERROR_BAD_SYNTAX;
+        // Get tuple index (can be <etext>)
+        Cpl::Text::String& tuple = context.getTokenBuffer2();
+        if ( expandText( tokens.getParameter(2), tuple, vars ) != Command::eSUCCESS )
+            {
+            return Command::eERROR_BAD_SYNTAX;
+            }
+        if ( !Cpl::Text::a2i( tupleIdx, tuple ) )
+            {
+            return Command::eERROR_BAD_SYNTAX;
+            }
         }
 
     // Look-up Point
@@ -80,10 +84,10 @@ Cpl::TShell::Dac::Command::Result_T TQuery::execute( Cpl::TShell::Dac::Context_&
         return Command::eERROR_INVALID_ARGS;
         }
 
-    // Perform Query
+    // Perform Controller
     Cpl::Text::String&      outtext = context.getOutputBuffer();
-    Rte::Point::Query::Text query(outtext, pointPtr->getModelPoint(), tupleIdx);
-    if ( query.issueQuery() )
+    Rte::Point::Controller::Text query(outtext, pointPtr->getModelPoint(), tupleIdx);
+    if ( query.issueController() )
         {
         return context.writeFrame( outtext )? Command::eSUCCESS: Command::eERROR_IO;
         }

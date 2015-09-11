@@ -23,7 +23,7 @@
 #include "Cpl/TShell/Dac/Cmd/Exe.h"
 #include "Cpl/TShell/Dac/Cmd/Tokenize.h"
 
-#include "Rte/TShell/Dac/Cmd/TQuery.h"
+#include "Rte/TShell/Dac/Cmd/RteRead.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@ static Cpl::TShell::Dac::Cmd::Loop                      loopCmd( cmdlist, "invok
 static Cpl::TShell::Dac::Cmd::Exe                       ExeCmd( cmdlist, "invoke_special_static_constructor" );
 static Cpl::TShell::Dac::Cmd::Tokenize                  TokenizeCmd( cmdlist, "invoke_special_static_constructor" );
 
-static Rte::TShell::Dac::Cmd::TQuery                    TQueryCmd( cmdlist, pointList, "invoke_special_static_constructor" );
+static Rte::TShell::Dac::Cmd::RteRead                   readCmd( cmdlist, pointList, "invoke_special_static_constructor" );
 
 
 

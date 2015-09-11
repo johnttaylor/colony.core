@@ -193,3 +193,21 @@ void Base::setAsModelPoint_(void)
     }
     
 
+void Base::setAllLockedState( bool newState )
+    {
+    unsigned j;
+    for(j=0; j<getNumTuples(); j++)
+        {
+        getTuple(j).setAllLockedState( newState );
+        }
+    }
+
+
+void Base::requestAllLockOperation( bool newState )
+    {
+    unsigned j;
+    for(j=0; j<getNumTuples(); j++)
+        {
+        getTuple(j).requestAllLockOperation( newState );
+        }
+    }

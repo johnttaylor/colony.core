@@ -1,5 +1,5 @@
-#ifndef Rte_Point_Query_Base_h_
-#define Rte_Point_Query_Base_h_
+#ifndef Rte_Point_Query_Text_h_
+#define Rte_Point_Query_Text_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -45,7 +45,7 @@ namespace Rte { namespace Point { namespace Query {
 
         {(T,3.1415,1), ("My Label",?)}    
         {(T,!3.1415,?32), (!"My Label",!?)}   
-        {([T],32,"Fred"),([F],?,?)} 
+        {([T],32,"Fred")}
 
 
  */
@@ -64,7 +64,7 @@ protected:
    
 public:
     /** Constructor.  If 'tupleIndex' is < 0 then the ENTIRE point
-        is queried/returned.  If 'tupleIndex' >=- then only the
+        is queried/returned.  If 'tupleIndex' >=0 then only the
         specified tuple is queired/returned.
      */
 

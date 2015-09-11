@@ -91,7 +91,7 @@ public:
 
 public:
     /// See Rte::Point::Controller::Api
-    void updateModel( void );
+    bool updateModel( void );
 
 
 public:
@@ -146,9 +146,10 @@ bool Rte::Point::Controller::RmwContainer<TUPLE, CONTEXT>::removeItem( void )
 
 /////////////////
 template <class TUPLE, class CONTEXT>
-void Rte::Point::Controller::RmwContainer<TUPLE, CONTEXT>::updateModel( void )
+bool Rte::Point::Controller::RmwContainer<TUPLE, CONTEXT>::updateModel( void )
     {
     m_modelPoint.update( *this, *this, m_startTupleIdx );
+    return true;
     }
     
 

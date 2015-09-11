@@ -107,6 +107,17 @@ void Base::update( Rte::Tuple::Api&                            rmwTuple,
     }
 
 
+bool Base::update( Cpl::Text::String& sourceValues, int tupleIdx )
+    {
+    ControllerTextPayload         payload( sourceValues, tupleIdx );
+    Cpl::Itc::SyncReturnHandler   srh;
+    ControllerTextMsg             msg(*this,payload,srh);
+    m_controllerSAP.postSync(msg);
+
+    return payload.m_success;
+    }
+
+
 ///////////////////
 void Base::query( Rte::Point::Api& dstPoint, QueryRequest::Option_T copyOption  )
     {
@@ -483,6 +494,7 @@ void Base::copyTuple( QueryTupleMsg& msg, unsigned index )
     }
 
 
+///////////////////
 void Base::request( QueryTextMsg& msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(QueryTextMsg) - (%p)", this) );
@@ -502,7 +514,7 @@ void Base::request( QueryTextMsg& msg )
         else
             { 
             results.clear();
-            copyTupleAsText( msg.getPayload().m_results, (unsigned) msg.getPayload().m_tupleIdx );
+            copyTupleAsText( results, (unsigned) msg.getPayload().m_tupleIdx );
             }
         } 
 
@@ -519,7 +531,7 @@ void Base::request( QueryTextMsg& msg )
                 results += ", ";
                 }
 
-            copyTupleAsText( msg.getPayload().m_results, i );
+            copyTupleAsText( results, i );
             } 
         results += " }";
         }
@@ -589,3 +601,226 @@ void Base::copyTupleAsText( Cpl::Text::String& results, unsigned tupleIdx )
     // Add tuple postfix
     results += ")"; 
     }
+
+
+///////////////////
+void Base::request( UpdateTextMsg& msg )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::request(UpdateTextMsg) - (%p)", this) );
+
+    // Housekeeping (default to FAILED update)
+    msg.getPayload().m_success = false;
+    const char* source = msg.getPayload().m_source;
+
+    // Do Tuple update
+    if ( msg.getPayload().m_tupleIdx >= 0 )
+        {
+        // Get tuple data
+        if ( (unsigned)(msg.getPayload().m_tupleIdx) < m_myPoint.getNumTuples() )
+            {
+            if ( setTupleFromText( source, (unsigned) msg.getPayload().m_tupleIdx ) )
+                {
+                msg.getPayload().m_success = true;
+                }
+            }
+        } 
+
+    // Update entire Point
+    else
+        {
+        source = Cpl::Text::stripSpace( source );
+        if ( *source++ == '{' )
+            {
+            bool     parseError = false;
+            unsigned i;
+            for(i=0; i<m_myPoint.getNumTuples(); i++)
+                {
+                // Skip 'empty field' tuple(s)
+                source = Cpl::Text::stripSpace( source );
+                if ( *source == ',' || *source == '}' )
+                    {
+                    continue;
+                    }
+
+                // Parse next tuple
+                if ( (source=setTupleFromText( source, i )) == 0 )
+                    {
+                    parseError = true;
+                    break;
+                    }
+                } 
+
+            // Check for trailing '}'
+            if ( parseError == false && *(Cpl::Text::stripSpace( source ) == '}' )
+                {
+                msg.getPayload().m_success = true;
+                }
+            }
+        }
+
+
+    // Process any change notifications
+    checkForNotifications();
+
+    // Return the client's message
+    msg.returnToSender();
+    }
+
+
+const char* Base::SetTupleFromText( const char* source, unsigned tupleIdx )
+    {
+    // Trap: invalid starting notation (i.e. missing '(')
+    source = Cpl::Text::stripSpace( source );
+    if ( *source++ != '(' )
+        {
+        return 0;
+        }
+
+    // Parse individual elements fields
+    Rte::Tuple::Api&                tuple       = m_myPoint.getTuple(tupleIdx);
+    bool                            isContainer = m_myPoint.isContainer();
+    Cpl::Text::Tokenizer::TextBlock tokens( source, ',', ')', '"', '\\' );
+    if ( tokens.isValidTokens() == false || tokens.numParameters > tuple.getNumElements() )
+        {
+        return 0;
+        }
+
+
+    // Loop through ALL elements
+    unsigned i;
+    unsigned updated = 0;
+    for(i=0; i<tuple.getNumElements(); i++)
+        {
+        Rte::Element::Api& element = tuple.getElement(i);
+        const char*        token   = tokens.getParamater(i);
+
+        // Trap prefix operation that apply to the Element 
+        bool   lockOp      = false;
+        bool   unlockOp    = false;
+        int8_t validState  = RTE_ELEMENT_API_STATE_VALID
+        token              = parsePrefixOps( token, lockOp, unlockOp, validState );
+
+        // Invalidate the element (when requested)
+        if ( validState != RTE_ELEMENT_API_STATE_VALID )
+            {
+            element.setValidState( validState );
+            updated++;
+            }
+
+        // Update Element Value
+        else
+            {
+            // Skip 'empty field' tokens/elements
+            if ( token || *token != '\0; )
+                {
+                // Cache previous 'in-container' state (when a container tuple)
+                Cpl::Text::FString<2> prevInContainer("x");
+                if ( i == 0 && isContainer )
+                    {
+                    element.toString( prevInContainer );
+                    }
+
+                if ( !element.setFromText( token ) )
+                    {
+                    return 0; // Error in element value -->exit update
+                    }
+                else
+                    {
+                    element.setValid();     // By defintion a succesful update of an Element -->moves it to the Valid state.
+                    updated++;
+
+                    // Trap membership changes for a Container Tuple
+                    if ( prevInContainer != "x" && prevInContainer != token )
+                        {
+                        m_myPoint.incrementSequenceNumber();
+                        }
+                    }
+                }
+            }
+
+        // LOCK Operations MUST be applied AFTER any status/update operations
+        if ( lockOp )
+            {
+            if ( element.isLocked() == false )
+                {
+                updated++;
+                }
+
+            element.setLocked();
+            }
+        else if ( unlockOp )
+            {
+            if ( element.isLocked() == true )
+                {
+                updated++;
+                }
+
+            element.setUnlocked();
+            }
+
+        }
+
+    // Mark the element/tuple as updated (i.e. support to using SeqNumbers for change detection)
+    if ( updated )
+        {
+        tuple.setUpdatedState();
+        tuple.incrementSequenceNumber();
+        }
+
+    // Return an error if the Tuple was not properly terminated
+    if ( !tokens.isTerminated() )
+        {
+        return 0;
+        }
+
+    // Everything is 'good' (in theory anyway)
+    return tokens.remaining();
+    }
+
+
+const char* Base::parsePrefixOps( const char* source, bool& lockOp, bool& unlockOp, int8_t validState )
+    {
+    // Do nothing when there is NO 'source'
+    if ( source == 0 || *source == '\0' )
+        {
+        return source;
+        }
+
+    // Strip leading whitespace and check for lock/unlock operations
+    source = Cpl::Text::stripSpace( source );
+    if ( *source == '!' )
+        {
+        lockOp = true;
+        source++;
+        }
+    else if ( *source == '^' )
+        {
+        unlockOp = true;
+        source++;
+        }
+
+    // Check for invalidate operation
+    if ( *source == '?' )
+        {
+        const char* endPtr = 0;
+        int   invalid      = RTE_ELEMENT_API_STATE_INVALID;
+        if ( !Cpl::Text::a2i( invalid, source+1, 10, " {(,)", &endPtr ) )
+            {
+            return endPtr;
+            }
+
+        // Force the invalid value to be valid INVALID value
+        if ( invalid < 1 || invalid > 127 )
+            {
+            invalid = RTE_ELEMENT_API_STATE_INVALID;
+            }
+
+        validState = (int8_t) invalid;
+        source     = endPtr;
+        }
+  
+    // Return the next 'un-parsed' character
+    return source;
+    }          
+
+

@@ -24,12 +24,13 @@ Container::Container( Rte::Point::ContainerApi& myPoint, Rte::Point::Model::Api&
 
 
 ///////////////////
-void Container::updateModel( void  )
+bool Container::updateModel( void  )
     {
     m_modelPoint.update( m_myPoint );
 
     // Ensure that the sequence number gets reset if the client reuses the controller 
     m_myPoint.resetSequenceNumber();
+    return true;
     }
 
 

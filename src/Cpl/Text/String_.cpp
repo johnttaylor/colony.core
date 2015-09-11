@@ -202,47 +202,6 @@ String_::endsWith( const char* string ) const
     return strncmp(m_strPtr+len-len2,string,len2) == 0;
     }
 
-bool String_::contains( const char* match, int startOffset, int endOffset ) const
-    {
-    // Convert endOffset to an actual offset (when needed)
-    int len      = length();
-    endOffset    = endOffset < 0? len - 1: endOffset;
-
-    // Error Traps
-    if ( match == 0 || startOffset < 0 || endOffset > len - 1 ||  startOffset > endOffset )
-        {
-        return false;
-        }
-
-    int matchLen  = strlen( match );
-    if ( matchLen == 0 )
-        {
-        return false;
-        }
-
-
-    //
-    // TODO: Not a very efficient algorithm -->should be improved!
-    //
-    int offset = indexOf( *match, startOffset );
-    while( offset >= 0 && offset <= endOffset )
-        {
-        if ( offset + matchLen - 1 > endOffset )
-            {
-            return false;
-            }
-
-        if ( startsWith( match, offset ) )
-            {
-            return true;
-            }
-
-        offset = indexOf( *match, offset+1 );
-        }
-
-    return false;
-    }
-    
 
 void 
 String_::format( const char* format, ... )

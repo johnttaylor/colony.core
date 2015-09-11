@@ -76,11 +76,24 @@ public:
      */
     virtual void setAllInUseState( bool newState ) = 0;
 
+    /** Helper method that sets the 'locked/unlocked' state for ALL Elements
+        to the same state.  The Application SHOULD NEVER call this method,
+        instead it should call the requestAllLockOperation() method below.
+     */
+    virtual void setAllLockedState( bool newState ) = 0;
+
+    /** Helper method that request ALL Elements to be locked/unlocked
+        to the specified state.
+     */
+    virtual void requestAllLockOperation( bool newState ) = 0;
+
     /** Helper method that returns the SUM of ALL the element's export
         data size.
      */
     virtual size_t sumAllExternalSize(void) const = 0;
     
+
+
 
 public:
     /** This method returns true when one or more elements in the tuple
