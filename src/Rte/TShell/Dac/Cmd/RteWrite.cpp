@@ -45,13 +45,9 @@ Cpl::TShell::Dac::Command::Result_T RteWrite::execute( Cpl::TShell::Dac::Context
     unsigned                              numParms = tokens.numParameters();
 
     // Error checking
-    if ( numParms < 2 )
+    if ( numParms < 3 )
         {
         return Command::eERROR_MISSING_ARGS;
-        }
-    if ( numParms > 3 )
-        {
-        return Command::eERROR_EXTRA_ARGS;
         }
 
     // Get Point name (can be <etext>)
@@ -61,9 +57,18 @@ Cpl::TShell::Dac::Command::Result_T RteWrite::execute( Cpl::TShell::Dac::Context
         return Command::eERROR_BAD_SYNTAX;
         }
     
+    // Get start of Point/Tuple data
+    const char* pointStart = strchr(rawInputString, '{' );
+    const char* tupleStart = strchr(rawInputString, '(' );
+    if ( tupleStart < pointStart )
+        {
+        return Command::eERROR_BAD_SYNTAX;
+        }
+
+
     // Parse Tuple index (if there is any)
-    int tupleIdx = -1;  // Default to: Point read
-    if ( numParms == 3 )
+    int tupleIdx = -1;  // Default to: Point write
+    if ( !pointStart )
         {
         // Get tuple index (can be <etext>)
         Cpl::Text::String& tuple = context.getTokenBuffer2();
@@ -84,12 +89,19 @@ Cpl::TShell::Dac::Command::Result_T RteWrite::execute( Cpl::TShell::Dac::Context
         return Command::eERROR_INVALID_ARGS;
         }
 
-    // Perform Controller
-    Cpl::Text::String&      outtext = context.getOutputBuffer();
-    Rte::Point::Controller::Text query(outtext, pointPtr->getModelPoint(), tupleIdx);
-    if ( query.issueController() )
+    // Get data to write (note: <etext> is supported for values)
+    Cpl::Text::String& source = context.getOutputBuffer();
+	source.clear();
+    if ( expandText( pointStart? pointStart: tupleStart, source, vars ) != Command::eSUCCESS )
         {
-        return context.writeFrame( outtext )? Command::eSUCCESS: Command::eERROR_IO;
+        return Command::eERROR_BAD_SYNTAX;
+        }
+
+    // Perform Update 
+    Rte::Point::Controller::Text controller(source, pointPtr->getModelPoint(), tupleIdx);
+    if ( controller.updateModel() )
+        {
+        return Command::eSUCCESS;
         }
 
     // If I get here the command failed!

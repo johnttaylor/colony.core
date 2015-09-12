@@ -73,7 +73,9 @@ protected:
 public:
     /** Constructor.  If 'tupleIndex' is < 0 then the ENTIRE point
         is updated.  If 'tupleIndex' >=0 then only the
-        specified tuple is updated.
+        specified tuple is updated. NOTE: Parsing of the 'sourceValues' 
+        is destructive, i.e. the orignal content of 'sourceValues' is 
+        MODIFIED.
      */
 
     Text( Cpl::Text::String&       sourceValues,

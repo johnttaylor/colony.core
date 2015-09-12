@@ -123,7 +123,7 @@ void Base::setAllLockedState( bool newState )
     unsigned i;
     for(i=0; i<getNumElements(); i++)
         {
-        getElement(i).seLockedState( newState );
+        getElement(i).setLockedState( newState );
         }
     }
 

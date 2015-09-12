@@ -32,7 +32,7 @@
                                         "  The <filter> argument will only list points that contain <filter>.  The '!'\n" \
                                         "  and '^' will lock and unlock the element respectively.  The '?' will set the\n" \
                                         "  element to the invalid state.  The <num> is an optional invalid state value\n" \
-                                        "  (range: 1 - 127)."
+                                        "  (range: 1 - 127). Note: <etext> is support for all parameters."
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
 
@@ -47,11 +47,6 @@ namespace Rte { namespace TShell { namespace Dac { namespace Cmd {
  */
 class RteWrite: public Command
 {
-protected:
-    /// List of supported points
-    Cpl::Container::Map<Rte::TShell::Dac::Point>& m_points;
-
-
 public:
     /// See Cpl::TShell::Dac::Command                                                               `
     const char* getUsage() const throw()   { return RTETSHELLDACMD_USAGE_RTEWRITE_; }

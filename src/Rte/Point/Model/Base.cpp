@@ -12,6 +12,10 @@
 #include "Base.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/Itc/SyncReturnHandler.h"
+#include "Cpl/Text/strip.h"
+#include "Cpl/Text/atob.h"
+#include "Cpl/Text/FString.h"
+#include "Cpl/Text/Tokenizer/TextBlock.h"
 
 
 using namespace Rte::Point::Model;
@@ -109,9 +113,9 @@ void Base::update( Rte::Tuple::Api&                            rmwTuple,
 
 bool Base::update( Cpl::Text::String& sourceValues, int tupleIdx )
     {
-    ControllerTextPayload         payload( sourceValues, tupleIdx );
+    UpdateTextPayload             payload( sourceValues, tupleIdx );
     Cpl::Itc::SyncReturnHandler   srh;
-    ControllerTextMsg             msg(*this,payload,srh);
+    UpdateTextMsg                 msg(*this,payload,srh);
     m_controllerSAP.postSync(msg);
 
     return payload.m_success;
@@ -651,7 +655,7 @@ void Base::request( UpdateTextMsg& msg )
                 } 
 
             // Check for trailing '}'
-            if ( parseError == false && *(Cpl::Text::stripSpace( source ) == '}' )
+            if ( parseError == false && *(Cpl::Text::stripSpace( source )) == '}' )
                 {
                 msg.getPayload().m_success = true;
                 }
@@ -667,7 +671,7 @@ void Base::request( UpdateTextMsg& msg )
     }
 
 
-const char* Base::SetTupleFromText( const char* source, unsigned tupleIdx )
+const char* Base::setTupleFromText( const char* source, unsigned tupleIdx )
     {
     // Trap: invalid starting notation (i.e. missing '(')
     source = Cpl::Text::stripSpace( source );
@@ -679,8 +683,8 @@ const char* Base::SetTupleFromText( const char* source, unsigned tupleIdx )
     // Parse individual elements fields
     Rte::Tuple::Api&                tuple       = m_myPoint.getTuple(tupleIdx);
     bool                            isContainer = m_myPoint.isContainer();
-    Cpl::Text::Tokenizer::TextBlock tokens( source, ',', ')', '"', '\\' );
-    if ( tokens.isValidTokens() == false || tokens.numParameters > tuple.getNumElements() )
+    Cpl::Text::Tokenizer::TextBlock tokens( (char*)source, ',', ')', '"', '\\' );
+    if ( tokens.isValidTokens() == false || tokens.numParameters() > tuple.getNumElements() )
         {
         return 0;
         }
@@ -692,72 +696,83 @@ const char* Base::SetTupleFromText( const char* source, unsigned tupleIdx )
     for(i=0; i<tuple.getNumElements(); i++)
         {
         Rte::Element::Api& element = tuple.getElement(i);
-        const char*        token   = tokens.getParamater(i);
+        const char*        token   = tokens.getParameter(i);
 
-        // Trap prefix operation that apply to the Element 
-        bool   lockOp      = false;
-        bool   unlockOp    = false;
-        int8_t validState  = RTE_ELEMENT_API_STATE_VALID
-        token              = parsePrefixOps( token, lockOp, unlockOp, validState );
-
-        // Invalidate the element (when requested)
-        if ( validState != RTE_ELEMENT_API_STATE_VALID )
+        // Skip 'empty fields'
+        if ( token && *token != '\0' )
             {
-            element.setValidState( validState );
-            updated++;
-            }
+            // Trap prefix operation that apply to the Element 
+            bool   lockOp      = false;
+            bool   unlockOp    = false;
+            int8_t validState  = RTE_ELEMENT_API_STATE_VALID;
+            token              = parsePrefixOps( token, lockOp, unlockOp, validState );
 
-        // Update Element Value
-        else
-            {
-            // Skip 'empty field' tokens/elements
-            if ( token || *token != '\0; )
+            // Invalidate the element (when requested)
+            if ( validState != RTE_ELEMENT_API_STATE_VALID )
                 {
-                // Cache previous 'in-container' state (when a container tuple)
-                Cpl::Text::FString<2> prevInContainer("x");
-                if ( i == 0 && isContainer )
+                // Enforce locked semantics
+                if ( !element.isLocked() )
                     {
-                    element.toString( prevInContainer );
-                    }
-
-                if ( !element.setFromText( token ) )
-                    {
-                    return 0; // Error in element value -->exit update
-                    }
-                else
-                    {
-                    element.setValid();     // By defintion a succesful update of an Element -->moves it to the Valid state.
+                    element.setValidState( validState );
                     updated++;
+                    }
+                }
 
-                    // Trap membership changes for a Container Tuple
-                    if ( prevInContainer != "x" && prevInContainer != token )
+            // Update Element Value
+            else
+                {
+                // Skip if JUST locking/unlocking
+                if ( token && *token != '\0' )
+                    {
+                    // Enforce locked semantics
+                    if ( !element.isLocked() )
                         {
-                        m_myPoint.incrementSequenceNumber();
+                        // Cache previous 'in-container' state (when a container tuple)
+                        Cpl::Text::FString<1> prevInContainer("x");
+                        if ( i == 0 && isContainer )
+                            {
+                            element.toString( prevInContainer );
+                            }
+
+                        if ( !element.setFromText( token ) )
+                            {
+                            return 0; // Error in element value -->exit update
+                            }
+                        else
+                            {
+                            element.setValid();     // By defintion a succesful update of an Element -->moves it to the Valid state.
+                            updated++;
+
+                            // Trap membership changes for a Container Tuple
+                            if ( prevInContainer != "x" && prevInContainer != token )
+                                {
+                                m_myPoint.incrementSequenceNumber();
+                                }
+                            }
                         }
                     }
                 }
-            }
 
-        // LOCK Operations MUST be applied AFTER any status/update operations
-        if ( lockOp )
-            {
-            if ( element.isLocked() == false )
+            // LOCK Operations MUST be applied AFTER any status/update operations
+            if ( lockOp )
                 {
-                updated++;
-                }
+                if ( element.isLocked() == false )
+                    {
+                    updated++;
+                    }
 
-            element.setLocked();
-            }
-        else if ( unlockOp )
-            {
-            if ( element.isLocked() == true )
+                element.setLocked();
+                }
+            else if ( unlockOp )
                 {
-                updated++;
+                if ( element.isLocked() == true )
+                    {
+                    updated++;
+                    }
+
+                element.setUnlocked();
                 }
-
-            element.setUnlocked();
             }
-
         }
 
     // Mark the element/tuple as updated (i.e. support to using SeqNumbers for change detection)
@@ -778,7 +793,7 @@ const char* Base::SetTupleFromText( const char* source, unsigned tupleIdx )
     }
 
 
-const char* Base::parsePrefixOps( const char* source, bool& lockOp, bool& unlockOp, int8_t validState )
+const char* Base::parsePrefixOps( const char* source, bool& lockOp, bool& unlockOp, int8_t& validState )
     {
     // Do nothing when there is NO 'source'
     if ( source == 0 || *source == '\0' )
@@ -786,8 +801,7 @@ const char* Base::parsePrefixOps( const char* source, bool& lockOp, bool& unlock
         return source;
         }
 
-    // Strip leading whitespace and check for lock/unlock operations
-    source = Cpl::Text::stripSpace( source );
+    // check for lock/unlock operations
     if ( *source == '!' )
         {
         lockOp = true;
@@ -806,7 +820,8 @@ const char* Base::parsePrefixOps( const char* source, bool& lockOp, bool& unlock
         int   invalid      = RTE_ELEMENT_API_STATE_INVALID;
         if ( !Cpl::Text::a2i( invalid, source+1, 10, " {(,)", &endPtr ) )
             {
-            return endPtr;
+			validState = RTE_ELEMENT_API_STATE_INVALID;
+			return endPtr;
             }
 
         // Force the invalid value to be valid INVALID value

@@ -42,12 +42,12 @@ const char* Boolean_T::toString( Cpl::Text::String& dstMemory, bool append ) con
 
 bool Boolean_T::setFromText( const char* srcText )
     {
-    if ( *srcText == 'T' )
+    if ( *srcText == 'T' || *srcText == 't' )
         {
         m_data = true;
         return true;
         }
-    else if ( *srcText == 'F' )
+    else if ( *srcText == 'F' || *srcText == 'f' )
         {
         m_data = false;
         return true;

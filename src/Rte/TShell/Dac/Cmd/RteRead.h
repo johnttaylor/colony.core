@@ -29,7 +29,8 @@
 #define RTETSHELLDACMD_DETAIL_TRTEREAD_ "  Reads a Point or single Tuple within a RTE Model point.  <point> is the\n" \
                                         "  symbolic name of a RTE Model Point and <idx> is the zero base index of the\n" \
                                         "  Tuple to read.  When 'ls|ll' is used, a list of Model points is generated. The\n" \
-                                        "  <filter> argument will only list points that contain <filter>"
+                                        "  <filter> argument will only list points that contain <filter>. Note: <etext>\n" \
+                                        "  is support for all parameters."
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
 

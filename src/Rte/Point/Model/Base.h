@@ -181,6 +181,14 @@ protected:
     /// Helper
     void copyTupleAsText( Cpl::Text::String& results, unsigned tupleIdx );
 
+    /// Helper
+    const char* setTupleFromText( const char* source, unsigned tupleIdx );
+
+    /// Helpter
+    const char* parsePrefixOps( const char* source, bool& lockOp, bool& unlockOp, int8_t& validState );
+
+
+
 
 
 };

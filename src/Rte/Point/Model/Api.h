@@ -72,8 +72,12 @@ public:
         than the entire Point is updated; else only the specified tuple is 
         updated. The method returns true if succesful, else false is returned.
  
-        NOTE: When false is returned the state of the Model Point IS NOT 
-        GUARANTEED!
+        NOTES: 
+
+            o Parsing of the 'sourceValues' is destructive, i.e. the orignal
+              content of 'sourceValues' is MODIFIED.
+            o When false is returned the state of the Model Point IS NOT 
+              GUARANTEED!
      */
     virtual bool update( Cpl::Text::String& sourceValues, int tupleIdx = -1 ) = 0;        
 

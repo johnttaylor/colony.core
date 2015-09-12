@@ -140,7 +140,7 @@ public:
 
 public:
     /// Payload for Message: Controller Text
-    class ControllerTextPayload
+    class UpdateTextPayload
     {
     public:
         /// Source values to update the Model Point
@@ -153,7 +153,7 @@ public:
         bool                m_success;
     public:
         /// Constructor
-        ControllerTextPayload( Cpl::Text::String& sourceValues, int tupleIndex )
+        UpdateTextPayload( Cpl::Text::String& sourceValues, int tupleIndex )
             :m_source(sourceValues)
             ,m_tupleIdx(tupleIndex)
             ,m_success(true)
@@ -161,7 +161,7 @@ public:
     };
 
     /// Message Type: Generic/text-base values Controller Model Point
-    typedef Cpl::Itc::RequestMessage<ControllerRequest,ControllerTextPayload> ControllerTextMsg;
+    typedef Cpl::Itc::RequestMessage<ControllerRequest,UpdateTextPayload> UpdateTextMsg;
     
 
 
@@ -179,7 +179,7 @@ public:
     virtual void request( RmwContainerMsg& msg ) = 0;
 
     /// Request: Generic/text-base values Controller Model Point
-    virtual void request( ControllerTextMsg& msg ) = 0;
+    virtual void request( UpdateTextMsg& msg ) = 0;
 };
 
 

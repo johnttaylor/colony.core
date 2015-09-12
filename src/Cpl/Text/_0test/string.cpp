@@ -158,37 +158,34 @@ TEST_CASE( "String", "[string]" )
         REQUIRE( s1.endsWith( "HELLO" ) == false );
         REQUIRE( s1.endsWith( nullPtr ) == false );
         REQUIRE( s1.endsWith( "" ) == false );
+                              
+        REQUIRE( s1.indexOf( "HELLO WORLD, THIS IS BOB" ) == 0 );
+        REQUIRE( s1.indexOf( "HELLO" ) == 0 );
+        REQUIRE( s1.indexOf( "BOB" ) == 21 );
+        REQUIRE( s1.indexOf( "THIS" ) == 13 );
+        REQUIRE( s1.indexOf( "HELLOW" ) == -1 );
+        REQUIRE( s1.indexOf( "WORLD" ) == 6 );
+        REQUIRE( s1.indexOf( "WORLD", 0 ) == 6 );
+        REQUIRE( s1.indexOf( "WORLD", 7 ) == -1 );
+        REQUIRE( s1.indexOf( "WORLD", 6 ) == 6 );
 
-        REQUIRE( s1.contains( "HELLO WORLD, THIS IS BOB" ) == true );
-        REQUIRE( s1.contains( "HELLO" ) == true );
-        REQUIRE( s1.contains( "BOB" ) == true );
-        REQUIRE( s1.contains( "THIS" ) == true );
-        REQUIRE( s1.contains( "HELLOW" ) == false );
-        REQUIRE( s1.contains( "WORLD" ) == true );
-        REQUIRE( s1.contains( "WORLD", 0, 8 ) == false );
-        REQUIRE( s1.contains( "WORLD", 7 ) == false );
-        REQUIRE( s1.contains( "WORLD", 6 ) == true );
-        REQUIRE( s1.contains( 0 ) == false );
-        REQUIRE( s1.contains( "WORLD", 6, 0 ) == false );
+        REQUIRE( s1.indexOf( "HELLO " ) == 0 );
+        REQUIRE( s1.indexOf( "HELLo " ) == -1 );
+        REQUIRE( s1.indexOf( "HELLO WORLD, THIS IS BOB" ) == 0);
+        REQUIRE( s1.indexOf( "HELLO WORLD  THIS IS BOB" ) == -1);
+        REQUIRE( s1.indexOf( "" ) == 0 );
+        REQUIRE( s1.indexOf( nullPtr ) == -1);
+        REQUIRE( s1.indexOf( "WORLD", 6 ) == 6 );
+        REQUIRE( s1.indexOf( "WORLD, THIS IS BOB", 6 ) == 6 );
+        REQUIRE( s1.indexOf( nullPtr , 6 ) == -1 );
+        REQUIRE( s1.indexOf( "WORLD, THIS IS BOB", 7 ) == -1 );
+        REQUIRE( s1.indexOf( "WORLD, THIS IS BOB", -1 ) == -1 );
+        REQUIRE( s1.indexOf( "WORLD, THIS IS BOB", 40 ) == -1 );
+        REQUIRE( s1.indexOf( "HELLO", -1 ) == -1 );
 
-        REQUIRE( s1.contains( "HELLO " ) == true );
-        REQUIRE( s1.contains( "HELLo " ) == false );
-        REQUIRE( s1.contains( "HELLO WORLD, THIS IS BOB" ) == true);
-        REQUIRE( s1.contains( "HELLO WORLD  THIS IS BOB" ) == false);
-        REQUIRE( s1.contains( "" ) == false );
-        REQUIRE( s1.contains( nullPtr ) == false);
-        REQUIRE( s1.contains( "WORLD", 6 ) == true );
-        REQUIRE( s1.contains( "WORLD, THIS IS BOB", 6 ) == true );
-        REQUIRE( s1.contains( nullPtr , 6 ) == false );
-        REQUIRE( s1.contains( "WORLD, THIS IS BOB", 7 ) == false );
-        REQUIRE( s1.contains( "WORLD, THIS IS BOB", -1 ) == false );
-        REQUIRE( s1.contains( "WORLD, THIS IS BOB", 40 ) == false );
-        REQUIRE( s1.contains( "HELLO", -1 ) == false );
-
-        REQUIRE( s1.contains( "BOB" ) == true );
-        REQUIRE( s1.contains( "BOb" ) == false );
-        REQUIRE( s1.contains( " HELLO" ) == false );
-        REQUIRE( s1.contains( nullPtr ) == false );
+        REQUIRE( s1.indexOf( "BOB" ) == 21 );
+        REQUIRE( s1.indexOf( "BOb" ) == -1 );
+        REQUIRE( s1.indexOf( " HELLO" ) == -1 );
         }
 
     SECTION( "Index..." )
