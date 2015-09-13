@@ -680,99 +680,100 @@ const char* Base::setTupleFromText( const char* source, unsigned tupleIdx )
         return 0;
         }
 
-    // Parse individual elements fields
-    Rte::Tuple::Api&                tuple       = m_myPoint.getTuple(tupleIdx);
-    bool                            isContainer = m_myPoint.isContainer();
-    Cpl::Text::Tokenizer::TextBlock tokens( (char*)source, ',', ')', '"', '\\' );
-    if ( tokens.isValidTokens() == false || tokens.numParameters() > tuple.getNumElements() )
-        {
-        return 0;
-        }
-
 
     // Loop through ALL elements
-    unsigned i;
-    unsigned updated = 0;
-    for(i=0; i<tuple.getNumElements(); i++)
+    Rte::Tuple::Api& tuple       = m_myPoint.getTuple(tupleIdx);
+    bool             isContainer = m_myPoint.isContainer();
+    unsigned         updated     = 0;
+    unsigned         numElems    = tuple.getNumElements();
+    unsigned         i;
+    for(i=0; i<numElems && *source != '\0'; i++)
         {
-        Rte::Element::Api& element = tuple.getElement(i);
-        const char*        token   = tokens.getParameter(i);
+        // Trap prefix operation that apply to the Element 
+        bool   lockOp      = false;
+        bool   unlockOp    = false;
+        int8_t validState  = RTE_ELEMENT_API_STATE_VALID;
+        source             = parsePrefixOps( source, lockOp, unlockOp, validState );
 
-        // Skip 'empty fields'
-        if ( token && *token != '\0' )
+        // Parse token
+        Cpl::Text::Tokenizer::TextBlock tokens( (char*)source, ',', i+1 == numElems? ')': ',', '"', '\\' );
+        if ( tokens.isValidTokens() == false || tokens.numParameters() > 1 )
             {
-            // Trap prefix operation that apply to the Element 
-            bool   lockOp      = false;
-            bool   unlockOp    = false;
-            int8_t validState  = RTE_ELEMENT_API_STATE_VALID;
-            token              = parsePrefixOps( token, lockOp, unlockOp, validState );
+            return 0;
+            }
 
-            // Invalidate the element (when requested)
-            if ( validState != RTE_ELEMENT_API_STATE_VALID )
+        // Get element to update
+        Rte::Element::Api& element = tuple.getElement(i);
+
+        // Invalidate the element (when requested)
+        if ( validState != RTE_ELEMENT_API_STATE_VALID )
+            {
+            // Enforce locked semantics
+            if ( !element.isLocked() )
+                {
+                element.setValidState( validState );
+                updated++;
+                }
+            }
+
+        // Update Element Value
+        else
+            {
+            // Skip if JUST locking/unlocking
+            const char* token = tokens.getParameter(0);
+            if ( token && *token != '\0' )
                 {
                 // Enforce locked semantics
                 if ( !element.isLocked() )
                     {
-                    element.setValidState( validState );
-                    updated++;
-                    }
-                }
-
-            // Update Element Value
-            else
-                {
-                // Skip if JUST locking/unlocking
-                if ( token && *token != '\0' )
-                    {
-                    // Enforce locked semantics
-                    if ( !element.isLocked() )
+                    // Cache previous 'in-container' state (when a container tuple)
+                    Cpl::Text::FString<1> prevInContainer("x");
+                    if ( i == 0 && isContainer )
                         {
-                        // Cache previous 'in-container' state (when a container tuple)
-                        Cpl::Text::FString<1> prevInContainer("x");
-                        if ( i == 0 && isContainer )
-                            {
-                            element.toString( prevInContainer );
-                            }
+                        element.toString( prevInContainer );
+                        }
 
-                        if ( !element.setFromText( token ) )
-                            {
-                            return 0; // Error in element value -->exit update
-                            }
-                        else
-                            {
-                            element.setValid();     // By defintion a succesful update of an Element -->moves it to the Valid state.
-                            updated++;
+                    if ( !element.setFromText( token ) )
+                        {
+                        return 0; // Error in element value -->exit update
+                        }
+                    else
+                        {
+                        element.setValid();     // By defintion a succesful update of an Element -->moves it to the Valid state.
+                        updated++;
 
-                            // Trap membership changes for a Container Tuple
-                            if ( prevInContainer != "x" && prevInContainer != token )
-                                {
-                                m_myPoint.incrementSequenceNumber();
-                                }
+                        // Trap membership changes for a Container Tuple
+                        if ( prevInContainer != "x" && !prevInContainer.isEqualIgnoreCase(token) )
+                            {
+                            m_myPoint.incrementSequenceNumber();
                             }
                         }
                     }
                 }
-
-            // LOCK Operations MUST be applied AFTER any status/update operations
-            if ( lockOp )
-                {
-                if ( element.isLocked() == false )
-                    {
-                    updated++;
-                    }
-
-                element.setLocked();
-                }
-            else if ( unlockOp )
-                {
-                if ( element.isLocked() == true )
-                    {
-                    updated++;
-                    }
-
-                element.setUnlocked();
-                }
             }
+
+        // LOCK Operations MUST be applied AFTER any status/update operations
+        if ( lockOp )
+            {
+            if ( element.isLocked() == false )
+                {
+                updated++;
+                }
+
+            element.setLocked();
+            }
+        else if ( unlockOp )
+            {
+            if ( element.isLocked() == true )
+                {
+                updated++;
+                }
+
+            element.setUnlocked();
+            }
+
+        // Advance input string to the next unparsed token
+        source = tokens.remaining();
         }
 
     // Mark the element/tuple as updated (i.e. support to using SeqNumbers for change detection)
@@ -782,14 +783,9 @@ const char* Base::setTupleFromText( const char* source, unsigned tupleIdx )
         tuple.incrementSequenceNumber();
         }
 
-    // Return an error if the Tuple was not properly terminated
-    if ( !tokens.isTerminated() )
-        {
-        return 0;
-        }
 
     // Everything is 'good' (in theory anyway)
-    return tokens.remaining();
+    return source;
     }
 
 
@@ -800,6 +796,9 @@ const char* Base::parsePrefixOps( const char* source, bool& lockOp, bool& unlock
         {
         return source;
         }
+
+    // Remove leading whitespace
+    source = Cpl::Text::stripSpace( source );
 
     // check for lock/unlock operations
     if ( *source == '!' )

@@ -9,6 +9,9 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
+
+#include "common.h"
+
 #include "Cpl/TShell/Dac/MakerWithScripting.h"
 
 #include "Cpl/TShell/Dac/Cmd/Help.h"
@@ -57,6 +60,8 @@ static Cpl::TShell::Dac::Cmd::Tokenize                  TokenizeCmd( cmdlist, "i
 
 static Rte::TShell::Dac::Cmd::RteRead                   readCmd( cmdlist, pointList, "invoke_special_static_constructor" );
 static Rte::TShell::Dac::Cmd::RteWrite                  writeCmd( cmdlist, pointList, "invoke_special_static_constructor" );
+
+
 
 
 

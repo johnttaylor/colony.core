@@ -89,7 +89,7 @@ public:
 
 public: 
     /// See Rte::Point::Query::Api
-    void issueQuery( void );
+    bool issueQuery( void );
 
 
 protected:
@@ -132,9 +132,10 @@ Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::TupleItem( Rte::Point::Model::Api&
 
 /////////////////
 template<class TUPLE, class CONTEXT>
-void Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::issueQuery( void )
+bool Rte::Point::Query::TupleItem<TUPLE, CONTEXT>::issueQuery( void )
     {
     m_modelPoint.query( *this, m_tupleIdx, this, m_copyOption );
+    return true;
     }
 
 

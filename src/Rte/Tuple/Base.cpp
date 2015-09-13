@@ -236,7 +236,7 @@ bool Api::compareAndCopy( Rte::Tuple::Api& srcTuple, Rte::Tuple::Api& dstTuple, 
             if ( dstTuple.getElement(i).isInUse() || allElements )
                 {
                 // Difference in the valid state
-                if ( srcTuple.getElement(i).getRawValidState_() != dstTuple.getElement(i).getRawValidState_() )
+                if ( srcTuple.getElement(i).validState() != dstTuple.getElement(i).validState() )
                     {
                     tupleIsDifferent = true;
                     break;

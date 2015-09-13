@@ -11,6 +11,7 @@
 
 #include "colony_config.h"
 
+
 #include "staticsA.h"
 #include "Point/bar1_m.h"
 #include "Point/bar2_m.h"
@@ -20,7 +21,6 @@
 
 
 
-#define SECT_                   "_0test"
 
 
 
@@ -28,8 +28,11 @@
 extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 
 ////////////////////////////////////////////////////////////////////////////////
-// Mailbox for the server 
+// Mailbox for the server and viewer threads
 static Cpl::Itc::MailboxServer modelMailbox_;
+static Cpl::Itc::MailboxServer viewerMailbox_;
+
+
 
 // Model Points
 static  Point::ModelBar1 modelBar1_(modelMailbox_);
@@ -42,10 +45,18 @@ Cpl::Container::Map<Rte::TShell::Dac::Point>     pointList( "invoke_special_stat
 
 // Create DAC Model Points
 static Rte::TShell::Dac::Point m1_( pointList, modelBar1_,  "bar1" );
-static Rte::TShell::Dac::Point m2_( pointList, modelBar2a_, "bar2a" );
-static Rte::TShell::Dac::Point m3_( pointList, modelBar2b_, "bar2b" );
+static Rte::TShell::Dac::Point m2_( pointList, modelBar2a_, "bar2" );
+static Rte::TShell::Dac::Point m3_( pointList, modelBar2b_, "foobar2" );
 static Rte::TShell::Dac::Point m4_( pointList, modelBar3_,  "bar3" );
 
+
+// Viewers
+ViewerContext   v0_(   "V0", viewerMailbox_, modelBar1_, modelBar2a_, modelBar3_, true, true, true );
+ViewerContext   v1_(   "V1", viewerMailbox_, modelBar1_, modelBar2a_, modelBar3_, true, true, true );
+ViewerContext   v2_(   "V2", viewerMailbox_, modelBar1_, modelBar2a_, modelBar3_, true, true, true, false, false, false );  // Compare using seqnumber
+LWViewerContext v3LW_( "V3", viewerMailbox_, modelBar1_, modelBar3_, true, true );
+
+static Viewers viewersCmd( cmdlist, "invoke_special_static_constructor", &v0_, &v1_, &v2_, &v3LW_ );
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,6 +67,13 @@ void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
     {
     // Create Model Thread
     Cpl::System::Thread* modelThreadPtr  = Cpl::System::Thread::create( modelMailbox_,  "MODEL" );
+    Cpl::System::Thread* viewerThreadPtr = Cpl::System::Thread::create( viewerMailbox_,  "Viewer" );
+
+    // Start viewers
+    v0_.open();
+    v1_.open();
+    v2_.open();
+    v3LW_.open();
 
     // Start the shell
     shell_.launch( infd, outfd );

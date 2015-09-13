@@ -1351,7 +1351,7 @@ TEST_CASE( "mvc4", "[mvc4]" )
 
     REQUIRE( v1_.m_changed1Count == 0 );
     REQUIRE( v1_.m_changed2Count == 0 );
-    REQUIRE( v1_.m_changed3Count == 4 );
+    REQUIRE( v1_.m_changed3Count == 3 );
     REQUIRE( v1_.m_membershipChanged3Count == 1 );
     REQUIRE( v2_.m_changed1Count == 0 );
     REQUIRE( v2_.m_changed2Count == 0 );
@@ -1405,7 +1405,7 @@ TEST_CASE( "mvc4", "[mvc4]" )
 
     REQUIRE( v1_.m_changed1Count == 0 );
     REQUIRE( v1_.m_changed2Count == 0 );
-    REQUIRE( v1_.m_changed3Count == 5 );
+    REQUIRE( v1_.m_changed3Count == 4 );
     REQUIRE( v1_.m_membershipChanged3Count == 1 );
     REQUIRE( v2_.m_changed1Count == 0 );
     REQUIRE( v2_.m_changed2Count == 0 );
