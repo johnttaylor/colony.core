@@ -12,7 +12,7 @@ import subprocess
 #------------------------------------------------------------------------------
 def run_test( root, subdir ):
     utils.push_dir( subdir )
-    basesrc = os.path.join( root, 'colony.core', 'src', 'Cpl', 'TShell', 'Dac', '_0test' )
+    basesrc = os.path.join( root, 'colony.core', 'src', 'Rte', 'TShell', 'Dac', '_0test' )
     src     = os.path.join( basesrc, 'testscript.txt' )
     shutil.copy( src, '.' ); 
     print "Running unit test dir: {} ...".format( subdir )

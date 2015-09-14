@@ -33,7 +33,7 @@ FINAL_OUTPUT_NAME = 'a.exe'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++ -Wl,-static-libgcc -Wl,-static-libstdc++ -fprofile-arcs -ftest-coverage'
+base_release.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
 base_release.linkflags = '-m32 -fprofile-arcs'
 base_release.linklibs  = '-lgcov'
 
@@ -59,7 +59,7 @@ optimzed_cpp11 = BuildValues()
 debug_cpp11    = BuildValues()
 
 # Set 'base' options
-base_cpp11.cflags     = '-m32 -std=c++11 -Wall -Werror -x c++ -Wl,-static-libgcc -Wl,-static-libstdc++ -fprofile-arcs -ftest-coverage'
+base_cpp11.cflags     = '-m32 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
 base_cpp11.linkflags  = '-m32 -fprofile-arcs'
 base_cpp11.linklibs   = '-lgcov'
 
@@ -79,7 +79,7 @@ optimzed_win64 = BuildValues()
 debug_win64    = BuildValues()
 
 # Set 'base' options
-base_win64.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++ -Wl,-static-libgcc -Wl,-static-libstdc++ -fprofile-arcs -ftest-coverage'
+base_win64.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
 base_win64.linkflags  = '-m64 -fprofile-arcs'
 base_win64.linklibs   = '-lgcov'
 

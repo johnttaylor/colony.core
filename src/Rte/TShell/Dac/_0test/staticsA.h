@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef MAXVARS_
-#define MAXVARS_                4
+#define MAXVARS_                32
 #endif
 
 #ifndef MAX_CMD_BUFFER_

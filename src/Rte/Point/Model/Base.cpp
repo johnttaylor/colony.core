@@ -652,6 +652,15 @@ void Base::request( UpdateTextMsg& msg )
                     parseError = true;
                     break;
                     }
+
+				// Consume the trailing delimiter if there is one
+				else
+					{ 
+					if (*source == ',')
+						{
+						source++;
+						}
+					}
                 } 
 
             // Check for trailing '}'

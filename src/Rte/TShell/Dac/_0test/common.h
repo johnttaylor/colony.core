@@ -649,7 +649,7 @@ public:
 
         // Get viewer number
         unsigned viewerNum = 0;
-        if ( expandText( tokens.getParameter(1), token, vars ) != Command::eSUCCESS  && !Cpl::Text::a2ui(viewerNum, token) )
+        if ( expandText( tokens.getParameter(1), token, vars ) != Command::eSUCCESS  || !Cpl::Text::a2ui(viewerNum, token) )
             {
             return Command::eERROR_INVALID_ARGS;
             }
@@ -677,7 +677,7 @@ public:
         ViewerApi* ptr = m_viewers[idx];
         if ( ptr )
             {
-            outtext.format( "viewer: %02d. Change counts: %02d %02d %02d. Membership3 Count: %02d",
+            outtext.format( "viewer: %02d  Change counts: %02d %02d %02d  Membership3 Count: %02d",
                             idx, 
                             ptr->getPoint1Count(),
                             ptr->getPoint2Count(),

@@ -66,8 +66,8 @@ Cpl::TShell::Stdio shell_( cmdProcessor_ );
 void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
     {
     // Create Model Thread
-    Cpl::System::Thread* modelThreadPtr  = Cpl::System::Thread::create( modelMailbox_,  "MODEL" );
-    Cpl::System::Thread* viewerThreadPtr = Cpl::System::Thread::create( viewerMailbox_,  "Viewer" );
+    Cpl::System::Thread::create( modelMailbox_,  "MODEL" );
+    Cpl::System::Thread::create( viewerMailbox_,  "Viewer" );
 
     // Start viewers
     v0_.open();
