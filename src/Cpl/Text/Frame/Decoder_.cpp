@@ -30,7 +30,7 @@ Decoder_::Decoder_( char buffer[], size_t bufsize )
 
 
 /////////////////////////////////////////////////////////////////////////////
-bool Decoder_::scan( Cpl::Io::Input& src, size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw()
+bool Decoder_::scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw()
     {
     // Housekeeping
     bool  inFrame  = false;
@@ -51,7 +51,7 @@ bool Decoder_::scan( Cpl::Io::Input& src, size_t maxSizeOfFrame, char* frame, si
         {
         if ( !m_dataLen )
             {
-            if ( !src.read( m_buffer, m_bufSize, m_dataLen ) )
+            if ( !read( m_buffer, m_bufSize, m_dataLen ) )
                 {
                 // Error reading data -->exit scan
                 m_dataLen = 0; // Reset my internal count so I start 'over' on the next call (if there is one)

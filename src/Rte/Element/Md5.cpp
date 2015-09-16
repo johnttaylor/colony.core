@@ -52,14 +52,17 @@ const char* Md5::toString( Cpl::Text::String& dstMemory, bool append ) const
     }
 
 
-bool Md5::setFromText( const char* srcText )
+const char* Md5::setFromText( const char* srcText, const char* terminationChars )
     {
-    if ( strlen(srcText) != sizeof(m_data)*2 )
+    if ( strlen(srcText) >= sizeof(m_data)*2 )
         {
-        return false;
+        if ( Cpl::Text::asciiHexToBuffer( m_data, srcText, sizeof(m_data) ) );
+            {
+            return srcText + sizeof(m_data)*2;
+            }
         }
 
-    return Cpl::Text::asciiHexToBuffer( m_data, srcText, sizeof(m_data) );
+    return 0;
     }
 
 /////////////////

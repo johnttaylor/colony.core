@@ -46,30 +46,30 @@ TEST_CASE( "linedecoder", "[linedecoder]" )
     Cpl::System::Shutdown_TS::clearAndUseCounter();
     
     Cpl::Io::File::Input  infd( "testinput2.txt" );
-    LineDecoder<7>        decoder;
+    LineDecoder<7>        decoder( &infd );
     size_t                fsize;
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "hello world" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "  start" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "not really end" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == ".good frame;" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == " just kidding  " );

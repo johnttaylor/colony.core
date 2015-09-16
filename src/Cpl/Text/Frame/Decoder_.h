@@ -34,7 +34,7 @@ protected:
     /// Pointer to the next unprocessed character in my raw input buffer
     char*           m_dataPtr;
 
-    /// Raw input buffer for reading characters in 'chuncks' from my Input stream (i.e. minimize the calls to read())
+    /// Raw input buffer for reading characters in 'chunks' from my Input stream (i.e. minimize the calls to read())
     char*           m_buffer;
 
     /// Size of my raw input buffer
@@ -42,19 +42,17 @@ protected:
 
 
 public:
-    /** Constructor.  If 'restrict' is set to true ONLY printable ASCII 
-        characters (0x20-0x7E) are accepted inside a frame.  If false, then 
-        all ASCII chracters (0x00-0x7F) are accepted inside a frame.  When
-        a illegal character is detected, it causes the Decoder's state machine
-        to reset and begin searching/looking-for the next start-of-frame
-        character.
+    /** Constructor.  The size of the rawInputBuffer determines how big of 
+        'chunks' data is read from the "input source", i.e. it is a working
+        buffer and does NOT have to be the size of the maximum possible input
+        frame.
      */
     Decoder_( char rawInputBuffer[], size_t sizeOfRawInputBuffer );
 
 
 public:
     /// See Cpl::Text::Frame::Decoder
-    bool scan( Cpl::Io::Input& src, size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw();
+    bool scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw();
 
 
 protected:
@@ -69,6 +67,13 @@ protected:
 
     /// Returns true if the current character is a legal/valid within a frame
     virtual bool isLegalCharacter() throw() = 0;
+
+    /** Attempts to read the specified number of bytes from the "input source"
+        in the supplied buffer.  The actual number of bytes read is returned via 
+        'bytesRead'. Returns true if successful, or false if End-of-Input 
+        was encountered.
+     */
+    virtual bool read( void* buffer, int numBytes, int& bytesRead ) = 0;
 
 };
 

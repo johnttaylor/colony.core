@@ -19,17 +19,6 @@
 #include <stdint.h>
 
 
-/// Quote character used for ALL String element when encoding/decoding to text
-#ifndef OPTION_RTE_ELEMENT_STRING_QUOTE_CHAR
-#define OPTION_RTE_ELEMENT_STRING_QUOTE_CHAR        '"'
-#endif
-
-/// Escape character used for ALL String element when encoding/decoding to text
-#ifndef OPTION_RTE_ELEMENT_STRING_ESCAPE_CHAR
-#define OPTION_RTE_ELEMENT_STRING_ESCAPE_CHAR       '\\'
-#endif
-
-
 
 ///
 namespace Rte { namespace Element {
@@ -100,7 +89,7 @@ public:
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
     /// See Rte::Element::Api
-    bool setFromText( const char* srcText );
+    const char* setFromText( const char* srcText, const char* terminationChars=0 );
 
     /// See Rte::Element::Api
     const char* getTypeAsText(void) const;
@@ -161,7 +150,7 @@ Cpl::Text::String& Rte::Element::String<S>::getString( void )
 template<int S>
 const char* Rte::Element::String<S>::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    Cpl::Text::Frame::StringEncoder encoder( dstMemory, OPTION_RTE_ELEMENT_STRING_QUOTE_CHAR, OPTION_RTE_ELEMENT_STRING_QUOTE_CHAR, OPTION_RTE_ELEMENT_STRING_ESCAPE_CHAR, false, append );
+    Cpl::Text::Frame::StringEncoder encoder( dstMemory, OPTION_RTE_ELEMENT_QUOTE_CHAR, OPTION_RTE_ELEMENT_QUOTE_CHAR, OPTION_RTE_ELEMENT_ESCAPE_CHAR, false, append );
     encoder.startFrame();
     encoder.output( get() );
     encoder.endFrame();
@@ -169,7 +158,7 @@ const char* Rte::Element::String<S>::toString( Cpl::Text::String& dstMemory, boo
     }
      
 template<int S>
-bool Rte::Element::String<S>::setFromText( const char* srcText )
+const char* Rte::Element::String<S>::setFromText( const char* srcText, const char* terminationChars )
     {
     set( srcText );
     return true;

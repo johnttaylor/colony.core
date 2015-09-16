@@ -33,6 +33,22 @@
 #define RTE_ELEMENT_API_STATE_VALID     0
 
 
+/** Quote character used for ALL "text" elements when encoding/decoding to text.
+    A "text" element is an Element that whose value when converted to text can 
+    contain special ASCII characters such as commas, spaces, quotes, question 
+    mark, dollar sign, semi-colon, etc.
+ */
+#ifndef OPTION_RTE_ELEMENT_QUOTE_CHAR
+#define OPTION_RTE_ELEMENT_QUOTE_CHAR        '"'
+#endif
+
+/// Escape character used for ALL String element when encoding/decoding to text.
+#ifndef OPTION_RTE_ELEMENT_ESCAPE_CHAR
+#define OPTION_RTE_ELEMENT_ESCAPE_CHAR       '`'
+#endif
+
+
+
 
 ///
 namespace Rte { namespace Element {
@@ -223,12 +239,16 @@ public:
     virtual const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const = 0;
 
     /** This method attempts to set the Element's value from the provided
-        text string.  If the contents of the 'srcText' is invalid OR the Element
-        does not support a full/complete conversion from Text to binary then
-        the method returns false; else upon succesfully conversion true is
-        returned.
+        text string.  When 'terminationChars' is not null/0, the converstion
+        of text to binary is stopped if one of characters in 'terminationChars'
+        is encountered.  When 'terminationChars' is null/0, the entire string
+        contents (i.e. till '\0' is found) is converted. If the conversion 
+        successful a point to next character after the last 'consumed' 
+        charactered is returned.  If the contents of the 'srcText' is invalid 
+        OR the Element does not support a full/complete conversion from Text to 
+        binary then the method returns 0.
      */
-    virtual bool setFromText( const char* srcText ) = 0;
+    virtual const char* setFromText( const char* srcText, const char* terminationChars=0 ) = 0;
 
 
 public:

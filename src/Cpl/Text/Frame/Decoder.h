@@ -14,7 +14,6 @@
 
 
 #include <stdlib.h>
-#include "Cpl/Io/Input.h"
 
 
 ///
@@ -64,17 +63,18 @@ namespace Cpl { namespace Text { namespace Frame {
 class Decoder
 {
 public:
-    /** This method reads from the Input source until a valid frame is found
-        or an error occured.  If a valid frame was found, true will be returned
-        and the frame will be stored 'frame'.  The length, in bytes, of the 
-        frame found is returned via 'frameSize'.  False is returned if a
-        error was encountered while reading the Input source.
+    /** This method reads from an Input source (which is defined/provided by
+        the concrete implemenation) until a valid frame is found or an error 
+        occured.  If a valid frame was found, true will be returned and the 
+        frame will be stored 'frame'.  The length, in bytes, of the frame found 
+        is returned via 'frameSize'.  False is returned if a error was 
+        encountered while reading the Input source.
 
         CAUTION: The returned frame is NOT a null terminated string - it is
                  ONLY a buffer with 'frameSize' number of characters stored
                  in it. 
      */
-    virtual bool scan( Cpl::Io::Input& src, size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw() = 0;
+    virtual bool scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw() = 0;
 
 
 public:

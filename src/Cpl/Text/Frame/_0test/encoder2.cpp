@@ -136,50 +136,50 @@ TEST_CASE( "encode2", "[encode2]" )
 
     {
     Cpl::Io::File::Input  infd( OUTFILE_NAME_ );
-    AsciiDecoder<128>     decoder( SOF_, EOF_, ESC_ );
+    AsciiDecoder<128>     decoder( SOF_, EOF_, ESC_, true, &infd );
     size_t                fsize;
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "hello world" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == ".~;" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "A~~;;.Z" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "hello world" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == ".~;" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "A~~;;.Z" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) == false );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) == false );
     REQUIRE( fsize == 0u );
     infd.close();
     }

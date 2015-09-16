@@ -169,6 +169,24 @@ try IF $v3-c3$ != 4 OR $v3-mc3$ != 2 OR $v3-c1$ != 0
 	bye app 1
 try ENDIF
 
+#
+# TODO: Remaing tests...
+#
+
+# Test of 'locked'
+# 1) basic lock, unlock, no update if locked (and proper viewer counts)
+# 2) What about membership?
+# 3) locked and invalidate update
+# 4) unlock with a value -->should 'fail'
+# 5) just lock/unlock should not trip the viewer count of a by-value viewer
+
+# Test of invalidate
+# 1) basic ? and ?<val> (and proper viewer counts)
+
+# Test ALL Elements types (MD5, BitFlags, Seqnum (with appropriate semantics), etc.)
+
+
+#
 # ALL DONE (and ALL passed)
 print "ALL TESTS PASSED!"
 bye app 0

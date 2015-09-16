@@ -51,20 +51,21 @@ const char* BitFlags::toString( Cpl::Text::String& dstMemory, bool append ) cons
     return dstMemory;
     }
 
-bool BitFlags::setFromText( const char* srcText )
+const char* BitFlags::setFromText( const char* srcText, const char* terminationChars )
     {
+    const char*   endPtr = 0;
     unsigned long temp;
 
-    if ( Cpl::Text::a2ul( temp, srcText, 0 ) )
+    if ( Cpl::Text::a2ul( temp, srcText, 0, terminationChars, &endPtr ) )
         {
         if ( temp <= eUSABLE_BITS_MASK )
             {
             m_data = temp;
-            return true;
+            return endPtr;
             }
         }
     
-    return false;
+    return 0;
     }
 
 

@@ -40,20 +40,20 @@ const char* Boolean_T::toString( Cpl::Text::String& dstMemory, bool append ) con
     }
 
 
-bool Boolean_T::setFromText( const char* srcText )
+const char* Boolean_T::setFromText( const char* srcText, const char* terminationChars )
     {
     if ( *srcText == 'T' || *srcText == 't' )
         {
         m_data = true;
-        return true;
+        return srcText+1;
         }
     else if ( *srcText == 'F' || *srcText == 'f' )
         {
         m_data = false;
-        return true;
+        return srcText+1;
         }
 
-    return false;
+    return 0;
     }
 
 
@@ -81,19 +81,20 @@ const char* Integer8_T::toString( Cpl::Text::String& dstMemory, bool append ) co
     }
 
 
-bool Integer8_T::setFromText( const char* srcText ) 
+const char* Integer8_T::setFromText( const char* srcText, const char* terminationChars ) 
     {
-    int temp;
-    if ( Cpl::Text::a2i(temp, srcText, 0 ) )
+    const char* endPtr = 0;
+    int         temp;
+    if ( Cpl::Text::a2i(temp, srcText, 0, terminationChars, &endPtr ) )
         {
         if ( (temp ^ 0xff) == 0 )
             {
             m_data = temp;
-            return true;
+            return endPtr;
             }
         }
 
-    return false;
+    return 0;
     }
 
 
@@ -121,19 +122,20 @@ const char* Uinteger8_T::toString( Cpl::Text::String& dstMemory, bool append ) c
     }
     
 
-bool Uinteger8_T::setFromText( const char* srcText )
+const char* Uinteger8_T::setFromText( const char* srcText, const char* terminationChars )
     {
-    unsigned temp;
-    if ( Cpl::Text::a2ui(temp, srcText, 0 ) )
+    const char* endPtr = 0;
+    unsigned    temp;
+    if ( Cpl::Text::a2ui(temp, srcText, 0, terminationChars, &endPtr ) )
         {
         if ( temp <= 0xff )
             {
             m_data = temp;
-            return true;
+            return endPtr;
             }
         }
 
-    return false;
+    return 0;
     }
 
 
@@ -161,19 +163,20 @@ const char* Integer16_T::toString( Cpl::Text::String& dstMemory, bool append ) c
     }
 
 
-bool Integer16_T::setFromText( const char* srcText )
+const char* Integer16_T::setFromText( const char* srcText, const char* terminationChars )
     {
-    int temp;
-    if ( Cpl::Text::a2i(temp, srcText, 0 ) )
+    const char* endPtr = 0;
+    int         temp;
+    if ( Cpl::Text::a2i(temp, srcText, 0, terminationChars, &endPtr ) )
         {
         if ( (temp ^ 0xffff) == 0 )
             {
             m_data = temp;
-            return true;
+            return endPtr;
             }
         }
 
-    return false;
+    return 0;
     }
 
 
@@ -200,19 +203,20 @@ const char* Uinteger16_T::toString( Cpl::Text::String& dstMemory, bool append ) 
     }
 
 
-bool Uinteger16_T::setFromText( const char* srcText )
+const char* Uinteger16_T::setFromText( const char* srcText, const char* terminationChars )
     {
-    unsigned temp;
-    if ( Cpl::Text::a2ui(temp, srcText, 0 ) )
+    const char* endPtr = 0;
+    unsigned    temp;
+    if ( Cpl::Text::a2ui(temp, srcText, 0, terminationChars, &endPtr ) )
         {
         if ( temp <= 0xffff )
             {
             m_data = temp;
-            return true;
+            return endPtr;
             }
         }
 
-    return false;
+    return 0;
     }
 
 
@@ -239,19 +243,20 @@ const char* Integer32_T::toString( Cpl::Text::String& dstMemory, bool append ) c
     }
 
 
-bool Integer32_T::setFromText( const char* srcText )
+const char* Integer32_T::setFromText( const char* srcText, const char* terminationChars )
     {
-    long temp;
-    if ( Cpl::Text::a2l(temp, srcText, 0 ) )
+    const char* endPtr = 0;
+    long        temp;
+    if ( Cpl::Text::a2l(temp, srcText, 0, terminationChars, &endPtr ) )
         {
         if ( (temp ^ 0xffffffff) == 0 )
             {
             m_data = temp;
-            return true;
+            return endPtr;
             }
         }
 
-    return false;
+    return 0;
     }
 
 
@@ -278,19 +283,20 @@ const char* Uinteger32_T::toString( Cpl::Text::String& dstMemory, bool append ) 
     }
 
 
-bool Uinteger32_T::setFromText( const char* srcText )
+const char* Uinteger32_T::setFromText( const char* srcText, const char* terminationChars )
     {
+    const char* endPtr = 0;
     unsigned long temp;
-    if ( Cpl::Text::a2ul(temp, srcText, 0 ) )
+    if ( Cpl::Text::a2ul(temp, srcText, 0, terminationChars, &endPtr ) )
         {
         if ( temp <= 0xffffffff )
             {
             m_data = temp;
-            return true;
+            return endPtr;
             }
         }
 
-    return false;
+    return 0;
     }
 
 
@@ -317,16 +323,17 @@ const char* Integer64_T::toString( Cpl::Text::String& dstMemory, bool append ) c
     }
 
 
-bool Integer64_T::setFromText( const char* srcText )
+const char* Integer64_T::setFromText( const char* srcText, const char* terminationChars )
     {
-    long long temp;
-    if ( Cpl::Text::a2ll(temp, srcText, 0 ) )
+    const char* endPtr = 0;
+    long long   temp;
+    if ( Cpl::Text::a2ll(temp, srcText, 0, terminationChars, &endPtr ) )
         {
         m_data = temp;
-        return true;
+        return endPtr;
         }
 
-    return false;
+    return 0;
     }
 
 
@@ -353,16 +360,17 @@ const char* Uinteger64_T::toString( Cpl::Text::String& dstMemory, bool append ) 
     }
 
 
-bool Uinteger64_T::setFromText( const char* srcText )
+const char* Uinteger64_T::setFromText( const char* srcText, const char* terminationChars )
     {
+    const char*        endPtr = 0;
     unsigned long long temp;
-    if ( Cpl::Text::a2ull(temp, srcText, 0 ) )
+    if ( Cpl::Text::a2ull(temp, srcText, 0, terminationChars, &endPtr ) )
         {
         m_data = temp;
-        return true;
+        return endPtr;
         }
 
-    return false;
+    return 0;
     }
 
 
@@ -390,19 +398,20 @@ const char* Size_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     }
 
 
-bool Size_T::setFromText( const char* srcText )
+const char* Size_T::setFromText( const char* srcText, const char* terminationChars )
     {
+    const char*        endPtr = 0;
     unsigned long long temp;
-    if ( Cpl::Text::a2ull(temp, srcText, 0 ) )
+    if ( Cpl::Text::a2ull(temp, srcText, 0, terminationChars, &endPtr ) )
         {
         if ( temp <= ((size_t) -1 ) )
             {
             m_data = (size_t)temp;
-            return true;
+            return endPtr;
             }
         }
 
-    return false;
+    return 0;
     }
 
 
@@ -429,10 +438,11 @@ const char* Float_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     }
 
 
-bool Float_T::setFromText( const char* srcText )
+const char* Float_T::setFromText( const char* srcText, const char* terminationChars )
     {
-    double temp;
-    if ( Cpl::Text::a2d(temp, srcText) )
+    const char* endPtr = 0;
+    double      temp;
+    if ( Cpl::Text::a2d(temp, srcText, terminationChars, &endPtr) )
         {
         m_data = (float) temp;
         }
@@ -464,10 +474,11 @@ const char* Double_T::toString( Cpl::Text::String& dstMemory, bool append ) cons
     }
 
 
-bool Double_T::setFromText( const char* srcText )
+const char* Double_T::setFromText( const char* srcText, const char* terminationChars )
     {
-    double temp;
-    if ( Cpl::Text::a2d(temp, srcText) )
+    const char* endPtr = 0;
+    double      temp;
+    if ( Cpl::Text::a2d(temp, srcText, terminationChars, &endPtr) )
         {
         m_data = temp;
         }
@@ -499,10 +510,11 @@ const char* VoidPtr_T::toString( Cpl::Text::String& dstMemory, bool append ) con
     }
 
 
-bool VoidPtr_T::setFromText( const char* srcText )
+const char* VoidPtr_T::setFromText( const char* srcText, const char* terminationChars )
     {
+    const char*        endPtr = 0;
     unsigned long long temp;
-    if ( Cpl::Text::a2ull(temp, srcText, 0 ) )
+    if ( Cpl::Text::a2ull(temp, srcText, 0, terminationChars, &endPtr ) )
         {
         if ( temp <= ((size_t) -1 ) )
             {
@@ -511,5 +523,5 @@ bool VoidPtr_T::setFromText( const char* srcText )
             }
         }
 
-    return false;
+    return 0;
     }

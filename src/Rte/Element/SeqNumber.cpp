@@ -53,22 +53,23 @@ const char* SeqNumber::toString( Cpl::Text::String& dstMemory, bool append ) con
     return dstMemory;
     }
 
-bool SeqNumber::setFromText( const char* srcText )
+const char* SeqNumber::setFromText( const char* srcText, const char* terminationChars )
     {
     {
-    long temp;
+    const char* endPtr = 0;
+    long        temp;
 
-    if ( Cpl::Text::a2l( temp, srcText, 0 ) )
+    if ( Cpl::Text::a2l( temp, srcText, 0, terminationChars, &endPtr ) )
         {
         // Sequence numbers (in the Model) can NOT be negative OR zero
         if ( (temp ^ 0x7FFFFFFF) == 0 )
             {
             m_data = (int32_t) temp;
-            return true;
+            return endPtr;
             }
         }
     
-    return false;
+    return 0;
     }
     }
 

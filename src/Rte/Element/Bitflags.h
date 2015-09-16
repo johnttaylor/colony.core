@@ -113,7 +113,7 @@ public:
         or base 8 when a leading zero is specified, or base 16 if a leading
         '0x' (or '0X') is specified.
      */
-    bool setFromText( const char* srcText );
+    const char* setFromText( const char* srcText, const char* terminationChars=0 );
 
     /// See Rte::Element::Api
     const char* getTypeAsText(void) const;

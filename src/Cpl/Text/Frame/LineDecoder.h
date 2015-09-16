@@ -13,7 +13,7 @@
 /** @file */
 
 
-#include "Cpl/Text/Frame/Decoder_.h"
+#include "Cpl/Text/Frame/StreamDecoder.h"
 
 
 ///
@@ -40,7 +40,7 @@ namespace Cpl { namespace Text { namespace Frame {
                     characters from the Input stream.
  */
 template <int BUFSIZE>
-class LineDecoder: public Decoder_
+class LineDecoder: public StreamDecoder
 {
 protected:
     /// Track if I have encountered an invalid character in the 'middle' of a frame
@@ -59,8 +59,8 @@ public:
         than a tab character, then any tab characters encounter will be 
         converted to the value of 'convertTabs'.
      */
-    LineDecoder( char convertTabs = '\t' )
-        :Decoder_(m_buffer,BUFSIZE)
+    LineDecoder( Cpl::Io::Input* inputSource=0, char convertTabs = '\t' )
+        :StreamDecoder(m_buffer, BUFSIZE, inputSource)
         ,m_illegal(false)
         ,m_convertTabs(convertTabs)
             {

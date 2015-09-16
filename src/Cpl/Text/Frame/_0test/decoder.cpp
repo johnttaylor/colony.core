@@ -55,45 +55,45 @@ TEST_CASE( "decode", "[decode]" )
     Cpl::System::Shutdown_TS::clearAndUseCounter();
     
     Cpl::Io::File::Input  infd( "testinput.txt" );
-    AsciiDecoder<7>       decoder( SOF_, EOF_, ESC_ );
+    AsciiDecoder<7>       decoder( SOF_, EOF_, ESC_, true, &infd );
     size_t                fsize;
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "hello world" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "good frame" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == "just kidding" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == ".sof" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == ".more sof" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == ";eof" );
 
-    REQUIRE( decoder.scan( infd, sizeof(buffer_), buffer_, fsize ) );
+    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
     instring.copyIn( buffer_, fsize );
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
     REQUIRE( instring == ".~;sef" );

@@ -13,7 +13,7 @@
 /** @file */
 
 
-#include "Cpl/Text/Frame/Decoder_.h"
+#include "Cpl/Text/Frame/StreamDecoder.h"
 
 
 ///
@@ -23,7 +23,7 @@ namespace Cpl { namespace Text { namespace Frame {
 
 /** This concrete template class provide a basic implemenation of the 
     Frame::Decoder interface that uses Cpl::Io::Input stream as the input
-    source.  In addition, this class only accepts ASCCI characters within the
+    source.  In addition, this class only accepts ASCII characters within the
     the frame.
 
     Template args:
@@ -31,7 +31,7 @@ namespace Cpl { namespace Text { namespace Frame {
                     characters from the Input stream.
  */
 template <int BUFSIZE>
-class AsciiDecoder: public Decoder_
+class AsciiDecoder: public StreamDecoder
 {
 protected:
         /// SOF character
@@ -58,8 +58,8 @@ public:
         to reset and begin searching/looking-for the next start-of-frame
         character.
      */
-    AsciiDecoder( char startOfFrame, char endOfFrame, char escapeChar, bool restrict=true )
-        :Decoder_(m_buffer,BUFSIZE)
+    AsciiDecoder( char startOfFrame, char endOfFrame, char escapeChar, bool restrict=true, Cpl::Io::Input* inputSource=0 )
+        :StreamDecoder(m_buffer, BUFSIZE, inputSource)
         ,m_sof(startOfFrame)
         ,m_eof(endOfFrame)
         ,m_esc(escapeChar)
