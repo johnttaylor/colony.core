@@ -21,7 +21,7 @@ static const char* resultToString_( Command::Result_T errcode );
 ///////////////////////////////////
 Processor::Processor( Cpl::Container::Map<Command>&     commands,
                       ActiveVariablesApi&               variables,
-                      Cpl::Text::Frame::Decoder&        deframer,
+                      Cpl::Text::Frame::StreamDecoder&  deframer,
                       Cpl::Text::Frame::StreamEncoder&  framer,
                       Cpl::System::Mutex&               outputLock,
                       CommandBuffer_T*                  cmdBufferPtr,
@@ -89,7 +89,7 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
 
     // Output the greeting message
     greeting( outfd );
-
+    m_deframer.setInput( infd );
 
     // Run until I am requested to stop
     for(;;)
@@ -128,7 +128,7 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
             prompt( outfd );
 
             // Get the next command string from my input stream
-            if ( !m_deframer.scan( infd, OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE, m_inputBuffer, frameSize ) )
+            if ( !m_deframer.scan( OPTION_CPL_TSHELL_DAC_PROCESSOR_INPUT_SIZE, m_inputBuffer, frameSize ) )
                 {
                 // Error reading raw input -->exit the Command processor
                 return false;

@@ -20,7 +20,7 @@
 #include "Cpl/System/Api.h"
 #include "Cpl/Text/FString.h"
 #include "Cpl/Text/Frame/StreamEncoder.h"
-#include "Cpl/Text/Frame/Decoder.h"
+#include "Cpl/Text/Frame/StreamDecoder.h"
 #include "Cpl/Log/Loggers.h"
 
 
@@ -129,7 +129,7 @@ protected:
     ActiveVariablesApi&                 m_variables;
 
     /// Raw input deframer
-    Cpl::Text::Frame::Decoder&          m_deframer;
+    Cpl::Text::Frame::StreamDecoder&    m_deframer;
 
     /// Output framer handle
     Cpl::Text::Frame::StreamEncoder&    m_framer;
@@ -258,7 +258,7 @@ public:
      */
     Processor( Cpl::Container::Map<Command>&     commands,
                ActiveVariablesApi&               variables,
-               Cpl::Text::Frame::Decoder&        deframer,
+               Cpl::Text::Frame::StreamDecoder&  deframer,
                Cpl::Text::Frame::StreamEncoder&  framer,
                Cpl::System::Mutex&               outputLock,
                CommandBuffer_T*                  cmdBufferPtr=0, 

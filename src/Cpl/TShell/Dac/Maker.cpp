@@ -19,7 +19,7 @@ using namespace Cpl::TShell::Dac;
 Maker::Maker( Cpl::Container::Map<Cpl::TShell::Dac::Command>& cmdlist, Cpl::System::Mutex& lock )
 :m_variables()
 ,m_framer( 0, '\0', '\n', '\0', false )
-,m_deframer( ' ' )
+,m_deframer( 0, ' ' )
 ,m_processor( cmdlist, m_variables, m_deframer, m_framer, lock, 0, 0 ) 
     {
     }

@@ -79,7 +79,7 @@ template<int NUM_VARS, int BUF_NCMDS>
 MakerWithScripting<NUM_VARS,BUF_NCMDS>::MakerWithScripting( Cpl::Container::Map<Cpl::TShell::Dac::Command>& cmdlist, Cpl::System::Mutex& lock )
 :m_variables()
 ,m_framer( 0, '\0', '\n', '\0', false )
-,m_deframer( ' ' )
+,m_deframer( 0, ' ' )
 ,m_processor( cmdlist, m_variables, m_deframer, m_framer, lock, m_cmdBuffer, BUF_NCMDS ) 
     {
     }
@@ -88,7 +88,7 @@ template<int NUM_VARS, int BUF_NCMDS>
 MakerWithScripting<NUM_VARS,BUF_NCMDS>::MakerWithScripting( const char* ignoreThisParameter_usedToCreateAUniqueConstructor, Cpl::Container::Map<Cpl::TShell::Dac::Command>& cmdlist, Cpl::System::Mutex& lock )
 :m_variables(ignoreThisParameter_usedToCreateAUniqueConstructor)
 ,m_framer( 0, '\0', '\n', '\0', false )
-,m_deframer( ' ' )
+,m_deframer( 0, ' ' )
 ,m_processor( cmdlist, m_variables, m_deframer, m_framer, lock, m_cmdBuffer, BUF_NCMDS ) 
     {
     }
