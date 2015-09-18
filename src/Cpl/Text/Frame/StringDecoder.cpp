@@ -20,10 +20,13 @@ using namespace Cpl::Text::Frame;
 
 
 ////////////////////////////////////
-StringDecoder::StringDecoder( const char* inputSourceAsNullTerminatedString )
+StringDecoder::StringDecoder( char startOfFrame, char endOfFrame, char escapeChar, const char* inputSourceAsNullTerminatedString )
 :Decoder_(0,0)
 ,m_srcPtr(inputSourceAsNullTerminatedString)
 ,m_srcLen(inputSourceAsNullTerminatedString? strlen(inputSourceAsNullTerminatedString): 0)
+,m_sof(startOfFrame)
+,m_eof(endOfFrame)
+,m_esc(escapeChar)
     {
     } 
 
@@ -45,12 +48,36 @@ void StringDecoder::setInput( const char* inputSoruce, int sizeInBytesOfSource )
 
 
 
+////////////////////////////////////////////
+bool StringDecoder::isStartOfFrame() throw()   
+    { 
+    return *m_dataPtr == m_sof; 
+    }
+
+bool StringDecoder::isEofOfFrame() throw()     
+    { 
+    return *m_dataPtr == m_eof; 
+    }
+
+bool StringDecoder::isEscapeChar() throw()     
+    { 
+    return *m_dataPtr == m_esc; 
+    }
+
+bool StringDecoder::isLegalCharacter() throw() 
+    { 
+    return *m_dataPtr != '\0'; 
+    }
+
+
+////////////////////////////////////////////
 bool StringDecoder::read( void* buffer, int numBytes, int& bytesRead )
     {
     // Trap missing input source
     if ( !m_srcPtr )
         {
         Cpl::System::FatalError::logf( "Cpl::Text::Frame::StringDecoder::read() - Input source has NOT be set!" );
+        return false;  // Should never get here! -->but needed for unittests
         }
 
     // Return end-of-input if already been decoded/read
@@ -60,9 +87,9 @@ bool StringDecoder::read( void* buffer, int numBytes, int& bytesRead )
         return false;
         }
 
-    // Directly update the parent's data members because I don't want to do a copy (and I didn't provide the parent class a 'work buffer')
+    // Directly update the parent's data member because I don't want to do a copy (and I didn't provide the parent class a 'work buffer' anyway)
     m_buffer  = (char*) m_srcPtr;
-    m_dataLen = m_srcLen;
+    bytesRead = m_srcLen;
 
     // Mark the input string as 'decoded', i.e. a subsequent call to read() is return end-of-input
     m_srcLen = -1;

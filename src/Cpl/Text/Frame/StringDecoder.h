@@ -35,6 +35,16 @@ protected:
     /// Input source length
     int                m_srcLen;
 
+    /// SOF character
+    const char          m_sof;
+
+    /// EOF character
+    const char          m_eof;
+
+    /// Escape character
+    const char          m_esc;
+
+
 
 public:
     /** Constructor. The optional 'inputSource' argument points to the raw 
@@ -47,7 +57,7 @@ public:
               before calling scan() again (if not, the scan() call will fail
               - i.e. return false - with an end-of-input error).
      */
-    StringDecoder( const char* inputSourceAsNullTerminatedString = 0 );
+    StringDecoder( char startOfFrame, char endOfFrame, char escapeChar, const char* inputSourceAsNullTerminatedString = 0 );
 
 
 
@@ -63,6 +73,21 @@ public:
      */
     void setInput( const char* inputSoruce, int sizeInBytesOfSource ) throw();
 
+
+
+
+protected:
+    /// See Cpl::Text::Frame::Decoder_
+    bool isStartOfFrame() throw();
+    
+    /// See Cpl::Text::Frame::Decoder_
+    bool isEofOfFrame() throw();
+
+    /// See Cpl::Text::Frame::Decoder_
+    bool isEscapeChar() throw();
+
+    /// See Cpl::Text::Frame::Decoder_
+    bool isLegalCharacter() throw();
 
 
 protected:

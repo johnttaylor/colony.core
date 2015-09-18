@@ -40,6 +40,7 @@ bool StreamDecoder::read( void* buffer, int numBytes, int& bytesRead )
     if ( !m_srcPtr )
         {
         Cpl::System::FatalError::logf( "Cpl::Text::Frame::StreamDecoder::read() - Input source has NOT be set!" );
+        return false;  // Should never get here! -->but needed for unittests
         }
 
     return m_srcPtr->read( buffer, numBytes, bytesRead );

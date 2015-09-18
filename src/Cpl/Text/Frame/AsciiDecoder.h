@@ -34,7 +34,7 @@ template <int BUFSIZE>
 class AsciiDecoder: public StreamDecoder
 {
 protected:
-        /// SOF character
+    /// SOF character
     const char      m_sof;
 
     /// EOF character
