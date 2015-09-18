@@ -12,6 +12,7 @@
 #include "Md5.h"
 #include <memory.h>
 #include "Cpl/Text/format.h"
+#include "Cpl/Text/strip.h"
 #include "Cpl/Text/atob.h"
 
 
@@ -54,9 +55,11 @@ const char* Md5::toString( Cpl::Text::String& dstMemory, bool append ) const
 
 const char* Md5::setFromText( const char* srcText, const char* terminationChars )
     {
-    if ( strlen(srcText) >= sizeof(m_data)*2 )
+    const char* endPtr = Cpl::Text::stripNotChars( srcText, terminationChars );
+
+    if ( endPtr - srcText >= sizeof(m_data)*2 )
         {
-        if ( Cpl::Text::asciiHexToBuffer( m_data, srcText, sizeof(m_data) ) );
+        if ( Cpl::Text::asciiHexToBuffer( m_data, srcText, sizeof(m_data) ) )
             {
             return srcText + sizeof(m_data)*2;
             }

@@ -22,6 +22,8 @@ using namespace Cpl::Text::Frame;
 ////////////////////////////////////
 StringDecoder::StringDecoder( char startOfFrame, char endOfFrame, char escapeChar, const char* inputSourceAsNullTerminatedString )
 :Decoder_(0,0)
+,m_startPtr(0)
+,m_endPtr(0)
 ,m_srcPtr(inputSourceAsNullTerminatedString)
 ,m_srcLen(inputSourceAsNullTerminatedString? strlen(inputSourceAsNullTerminatedString): 0)
 ,m_sof(startOfFrame)
@@ -33,10 +35,27 @@ StringDecoder::StringDecoder( char startOfFrame, char endOfFrame, char escapeCha
 
 
 ////////////////////////////////////
+bool StringDecoder::scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw()
+    {
+    bool result = Decoder_::scan( maxSizeOfFrame, frame, frameSize );
+    m_endPtr    = m_dataPtr;
+    m_startPtr  = m_endPtr;
+    return result;
+    }
+
+
+const char* StringDecoder::getRemainder() const throw()
+    {
+    return m_endPtr;
+    }
+
+
+////////////////////////////////////
 void StringDecoder::setInput( const char* inputSourceAsNullTerminatedString ) throw()
     {
     m_srcPtr = inputSourceAsNullTerminatedString;
     m_srcLen = inputSourceAsNullTerminatedString? strlen(inputSourceAsNullTerminatedString): 0;
+
     }
 
 
@@ -88,10 +107,12 @@ bool StringDecoder::read( void* buffer, int numBytes, int& bytesRead )
         }
 
     // Directly update the parent's data member because I don't want to do a copy (and I didn't provide the parent class a 'work buffer' anyway)
-    m_buffer  = (char*) m_srcPtr;
-    bytesRead = m_srcLen;
+    m_buffer   = (char*) m_srcPtr;
+    bytesRead  = m_srcLen;
+
 
     // Mark the input string as 'decoded', i.e. a subsequent call to read() is return end-of-input
-    m_srcLen = -1;
+    m_srcLen   = -1;
+    m_startPtr = m_srcPtr;     // Handle the 'remainder' case when starting with a 'fresh' string
     return true;
     }

@@ -15,7 +15,9 @@
 #include "colony_config.h"
 #include "Rte/Element/Base.h"
 #include "Cpl/Text/FString.h"
+#include "Cpl/Text/strip.h"
 #include "Cpl/Text/Frame/StringEncoder.h"
+#include "Cpl/Text/Frame/StringDecoder.h"
 #include <stdint.h>
 
 
@@ -160,9 +162,52 @@ const char* Rte::Element::String<S>::toString( Cpl::Text::String& dstMemory, boo
 template<int S>
 const char* Rte::Element::String<S>::setFromText( const char* srcText, const char* terminationChars )
     {
-    set( srcText );
-    return true;
+    const char* endPtr = 0;
+
+    // Do nothing if srcText is bad pointer
+    if ( srcText )
+        {
+        // Allow non-quoted text (the burden is on the caller that the text does 
+        // NOT contain any 'special' characters where this would get us in 
+        // trouble).  This is done as CONVENIENCE for the use case of a human typing
+        // in the srcText 
+        if ( *srcText != OPTION_RTE_ELEMENT_QUOTE_CHAR )
+            {
+            // At least one termination character specified
+            if ( terminationChars && *terminationChars != '\0' )
+                {
+                endPtr = Cpl::Text::stripNotChars( srcText, terminationChars );
+                }
+
+            // No terminator characters -->consume ALL characters
+            else
+                {
+                endPtr = srcText + strlen(srcText);
+                }
+            
+            // Update the element
+            m_data.copyIn( srcText, endPtr - srcText );
+            }
+
+        // Quoted text use case
+        else
+            {
+            Cpl::Text::Frame::StringDecoder decoder( OPTION_RTE_ELEMENT_QUOTE_CHAR, OPTION_RTE_ELEMENT_QUOTE_CHAR, OPTION_RTE_ELEMENT_ESCAPE_CHAR, srcText );
+            size_t                          decodedSize      = 0;
+            int                             maxAllowedLength = 0;
+            char*                           frame            = m_data.getBuffer( maxAllowedLength );
+  
+  
+            if ( decoder.scan( (size_t) maxAllowedLength, frame, decodedSize ) )
+                {
+                endPtr = decoder.getRemainder();
+                }
+            }
+        }
+  
+    return endPtr;
     }
+
 
 /////////////////
 template<int S>

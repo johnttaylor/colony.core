@@ -242,8 +242,8 @@ public:
         text string.  When 'terminationChars' is not null/0, the converstion
         of text to binary is stopped if one of characters in 'terminationChars'
         is encountered.  When 'terminationChars' is null/0, the entire string
-        contents (i.e. till '\0' is found) is converted. If the conversion 
-        successful a point to next character after the last 'consumed' 
+        contents (i.e. till '\0' is found) is converted. If the conversion is 
+        successful a pointer to next character after the last 'consumed' 
         charactered is returned.  If the contents of the 'srcText' is invalid 
         OR the Element does not support a full/complete conversion from Text to 
         binary then the method returns 0.

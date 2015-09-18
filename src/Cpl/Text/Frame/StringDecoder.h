@@ -29,11 +29,17 @@ namespace Cpl { namespace Text { namespace Frame {
 class StringDecoder: public Decoder_
 {
 protected:
+    /// From the last scan: start of the data being scanned
+    const char*         m_startPtr;
+
+    /// From the last scan: pointer to the next character AFTER the LAST character decoded
+    const char*         m_endPtr;
+
     /// Input source
-    const char*        m_srcPtr;
+    const char*         m_srcPtr;
 
     /// Input source length
-    int                m_srcLen;
+    int                 m_srcLen;
 
     /// SOF character
     const char          m_sof;
@@ -65,14 +71,25 @@ public:
     /** This method allows the Application/consumer to change/Set the Input
         source.
      */
-    void setInput( const char* inputSourceAsNullTerminatedString ) throw();
+    virtual void setInput( const char* inputSourceAsNullTerminatedString ) throw();
 
     /** This method allows the Application/consumer to change/Set the Input
         source.  Note: 'sizeInBytesOfSource' does NOT include the/a null 
         terminator
      */
-    void setInput( const char* inputSoruce, int sizeInBytesOfSource ) throw();
+    virtual void setInput( const char* inputSoruce, int sizeInBytesOfSource ) throw();
 
+    /** This method return a pointer to the next character AFTER the LAST character
+        decoded.  The value returned from this method is ONLY valid after a
+        call to scan() and BEFORE a subsequent call to scan() or setInput().
+     */
+    virtual const char* getRemainder() const throw();
+    
+
+
+public:
+    /// See Cpl::Text::Frame::Decoder
+    bool scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw();
 
 
 

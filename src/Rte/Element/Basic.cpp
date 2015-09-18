@@ -519,7 +519,7 @@ const char* VoidPtr_T::setFromText( const char* srcText, const char* termination
         if ( temp <= ((size_t) -1 ) )
             {
             m_data = (void*) temp;
-            return true;
+            return endPtr;
             }
         }
 
