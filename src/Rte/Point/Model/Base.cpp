@@ -564,37 +564,15 @@ void Base::copyTupleAsText( Cpl::Text::String& results, unsigned tupleIdx )
             results += ", ";
             }
 
-        // Add lock indicator
-        if ( element.isLocked() )
-            {
-            results += "!";
-            }
-
         // Add [] notation to the first element of each tuple when a Container point
         if ( isContainer && i == 0 )
             {
             results += "[";
             }
 
-        // Valid status
-        int8_t status = element.validState();
-        if ( status == RTE_ELEMENT_API_STATE_VALID )
-            { 
-            element.toString( results, true );
-            }
+        // Convert the element's value to text
+        element.toString( results, true );
 
-        // Invalid -->default invalid state
-        else if ( status == RTE_ELEMENT_API_STATE_INVALID )
-            {
-            results += "?";
-            }
-
-        // Invalid -->application specific value
-        else
-            {
-            results.formatAppend( "?%d", status );
-            }
-      
         // Add trail "]" for in_container element
         if ( isContainer && i == 0 )
             {

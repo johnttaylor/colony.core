@@ -159,3 +159,36 @@ void Base::setAsModelElement_(void)
     }
 
 
+
+
+////////////////////////
+bool Base::convertStateToText( Cpl::Text::String& dstMemory, bool& append ) const
+    {
+    // Indicate locked state
+    if ( isLocked() )
+        {
+        dstMemory.formatOpt( append, "%c", OPTION_RTE_ELEMENT_LOCK_CHAR );
+        append = true;
+        }
+
+    // All done if the element has a valid value
+    int8_t status = validState();
+    if ( status == RTE_ELEMENT_API_STATE_VALID )
+        { 
+        return true;
+        }
+
+    // Invalid -->default invalid state
+    if ( status == RTE_ELEMENT_API_STATE_INVALID )
+        {
+        dstMemory.formatOpt( append, "%c", OPTION_RTE_ELEMENT_INVALID_CHAR );
+        }
+
+    // Invalid -->application specific value
+    else
+        {
+        dstMemory.formatOpt( append, "%c%d", OPTION_RTE_ELEMENT_INVALID_CHAR, status );
+        }
+
+    return false;
+    }

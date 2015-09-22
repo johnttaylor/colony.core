@@ -48,7 +48,11 @@ Cpl::Checksum::ApiMd5::Digest_T& Md5::get( void )
 
 const char* Md5::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    Cpl::Text::bufferToAsciiHex( m_data, sizeof(m_data), dstMemory, true, append );
+    if ( convertStateToText( dstMemory, append ) )
+        {
+        Cpl::Text::bufferToAsciiHex( m_data, sizeof(m_data), dstMemory, true, append );
+        }
+
     return dstMemory;
     }
 

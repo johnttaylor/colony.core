@@ -42,11 +42,39 @@
 #define OPTION_RTE_ELEMENT_QUOTE_CHAR        '"'
 #endif
 
+
 /// Escape character used for ALL String element when encoding/decoding to text.
 #ifndef OPTION_RTE_ELEMENT_ESCAPE_CHAR
 #define OPTION_RTE_ELEMENT_ESCAPE_CHAR       '`'
 #endif
 
+
+/** Locked character.  This character is used to prefix ALL values (when converted
+    to text) when the current value is locked.  The lock character is also used
+    to lock the element's value on the setToText() calls - when it is FIRST character
+    in the source text string.
+ */
+#ifndef OPTION_RTE_ELEMENT_LOCK_CHAR
+#define OPTION_RTE_ELEMENT_LOCK_CHAR        '!'
+#endif
+
+
+/** Unlocked character.  This character is used to unlock the element's value on
+    the setToText() calls - when it is the FIRST and ONLY character in the source
+    text string.
+ */
+#ifndef OPTION_RTE_ELEMENT_UNLOCK_CHAR
+#define OPTION_RTE_ELEMENT_UNLOCK_CHAR      '^'
+#endif
+
+
+/** Invalid State character.  This character is used in place of an actual value
+    (when the element's value is converted to text) when the element is in the
+    invalid state
+ */
+#ifndef OPTION_RTE_ELEMENT_INVALID_CHAR
+#define OPTION_RTE_ELEMENT_INVALID_CHAR     '?'
+#endif
 
 
 

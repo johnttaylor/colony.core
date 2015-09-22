@@ -48,6 +48,11 @@ protected:
     /// Throws a fatal error if there is Type mismatch
     virtual void assertTypeMatches( const Api& other ) const;
 
+    /** Helper method for encoding Invalid & Locked states.  Returns false
+        when the element's value is invalid; else true is returned.
+     */
+    virtual bool convertStateToText( Cpl::Text::String& dstMemory, bool& append ) const;
+
 
 public:
     ///  See Rte::Element::Api

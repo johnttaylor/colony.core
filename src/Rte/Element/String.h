@@ -152,10 +152,14 @@ Cpl::Text::String& Rte::Element::String<S>::getString( void )
 template<int S>
 const char* Rte::Element::String<S>::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    Cpl::Text::Frame::StringEncoder encoder( dstMemory, OPTION_RTE_ELEMENT_QUOTE_CHAR, OPTION_RTE_ELEMENT_QUOTE_CHAR, OPTION_RTE_ELEMENT_ESCAPE_CHAR, false, append );
-    encoder.startFrame();
-    encoder.output( get() );
-    encoder.endFrame();
+    if ( convertStateToText( dstMemory, append ) )
+        {
+        Cpl::Text::Frame::StringEncoder encoder( dstMemory, OPTION_RTE_ELEMENT_QUOTE_CHAR, OPTION_RTE_ELEMENT_QUOTE_CHAR, OPTION_RTE_ELEMENT_ESCAPE_CHAR, false, append );
+        encoder.startFrame();
+        encoder.output( get() );
+        encoder.endFrame();
+        }
+
     return dstMemory;
     }
      

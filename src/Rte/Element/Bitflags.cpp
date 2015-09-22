@@ -47,7 +47,11 @@ uint32_t BitFlags::get( void ) const
 
 const char* BitFlags::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
-    dstMemory.formatOpt( append, "%08X", m_data );
+    if ( convertStateToText( dstMemory, append ) )
+        {
+        dstMemory.formatOpt( append, "%08X", m_data );
+        }
+
     return dstMemory;
     }
 
