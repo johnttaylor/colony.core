@@ -46,19 +46,23 @@ const char* Boolean_T::toString( Cpl::Text::String& dstMemory, bool append ) con
 
 const char* Boolean_T::setFromText( const char* srcText, const char* terminationChars )
     {
-    if ( *srcText == 'T' || *srcText == 't' )
+    if ( srcText )
         {
-        m_data = true;
-        return srcText+1;
-        }
-    else if ( *srcText == 'F' || *srcText == 'f' )
-        {
-        m_data = false;
-        return srcText+1;
+        if ( *srcText == 'T' || *srcText == 't' )
+            {
+            m_data = true;
+            return srcText+1;
+            }
+        else if ( *srcText == 'F' || *srcText == 'f' )
+            {
+            m_data = false;
+            return srcText+1;
+            }
         }
 
     return 0;
     }
+
 
 
 

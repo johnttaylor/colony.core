@@ -11,6 +11,9 @@
 
 #include "Base.h"
 #include "Cpl/System/FatalError.h"
+#include "Cpl/Text/atob.h"
+#include "Cpl/Text/strip.h"
+
 
 
 ///
@@ -192,3 +195,105 @@ bool Base::convertStateToText( Cpl::Text::String& dstMemory, bool& append ) cons
 
     return false;
     }
+
+
+const char* Base::fromString( const char* srcText, const char* terminationChars, unsigned* updatedPtr )
+    {
+    // Trap prefix operation that apply to the Element 
+    bool updated         = false;
+    bool lockAction      = false;
+    bool unlockAction    = false;
+    bool invalidAction   = false;
+    srcText              = parsePrefixOps( srcText, lockAction, unlockAction, invalidAction, updated, terminationChars );
+
+    // NOT an 'invalidate' request
+    if ( !invalidAction )
+        {
+        // Enforce LOCK semantics
+        if ( !isLocked() )
+            {
+            // Set the element's value based on the source text
+            srcText = setFromText( srcText, terminationChars );
+
+            // By defintion a succesful update of an Element moves it to the Valid state.
+            setValid();     
+            updated = true;
+            }
+
+        // LOCK Operations MUST be applied AFTER any status/update operations
+        if ( lockAction )
+            {
+            if ( !isLocked() )
+                {
+                setLocked();
+                updated = true;
+                }
+            }
+        else if ( unlockAction )
+            {
+            if ( isLocked() )
+                {
+                setUnlocked();
+                updated = true;
+                }
+            }
+        }
+
+    // Return the remaining 'un-parsed' text (or ZERO if any error)
+    if ( updated && updatedPtr )
+        {
+        *updatedPtr += 1;
+        }
+    return srcText;
+    }
+
+
+const char* Base::parsePrefixOps( const char* source, bool& lockAction, bool& unlockAction, bool& invalidAction, bool& updated, const char* terminationChars )
+    {
+    // Do nothing when there is NO 'source'
+    if ( source == 0 || *source == '\0' )
+        {
+        return source;
+        }
+
+    // Remove leading whitespace
+    source = Cpl::Text::stripSpace( source );
+
+    // check for lock/unlock operations
+    if ( *source == OPTION_RTE_ELEMENT_LOCK_CHAR )
+        {
+        lockAction = true;
+        source++;
+        }
+    else if ( *source == OPTION_RTE_ELEMENT_UNLOCK_CHAR )
+        {
+        unlockAction = true;
+        source++;
+        }
+
+    // Check for invalidate operation
+    if ( *source == OPTION_RTE_ELEMENT_INVALID_CHAR )
+        {
+        const char* endPtr  = 0;
+        int         invalid = RTE_ELEMENT_API_STATE_INVALID;
+        if ( !Cpl::Text::a2i( invalid, source+1, 10, terminationChars, &endPtr ) || invalid < 1 || invalid > 127)
+            {
+            // Force the default invalid state value on error (or when missing numeric value)
+            invalid = RTE_ELEMENT_API_STATE_INVALID;
+            }
+
+        // Apply invalidate - but ONLY when not LOCKED
+        if ( !isLocked() )
+            {
+            invalidAction = true;
+            setValidState( invalid );
+            updated = true;
+            }
+
+        source = endPtr;
+        }
+  
+    // Return the next 'un-parsed' character
+    return source;
+    }          
+

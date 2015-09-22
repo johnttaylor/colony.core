@@ -564,20 +564,8 @@ void Base::copyTupleAsText( Cpl::Text::String& results, unsigned tupleIdx )
             results += ", ";
             }
 
-        // Add [] notation to the first element of each tuple when a Container point
-        if ( isContainer && i == 0 )
-            {
-            results += "[";
-            }
-
         // Convert the element's value to text
         element.toString( results, true );
-
-        // Add trail "]" for in_container element
-        if ( isContainer && i == 0 )
-            {
-            results += "]";
-            }
         }
 
     // Add tuple postfix
@@ -676,92 +664,34 @@ const char* Base::setTupleFromText( const char* source, unsigned tupleIdx )
     unsigned         i;
     for(i=0; i<numElems && *source != '\0'; i++)
         {
-        // Trap prefix operation that apply to the Element 
-        bool   lockOp      = false;
-        bool   unlockOp    = false;
-        int8_t validState  = RTE_ELEMENT_API_STATE_VALID;
-        source             = parsePrefixOps( source, lockOp, unlockOp, validState );
-
-        // Parse token
-        Cpl::Text::Tokenizer::TextBlock tokens( (char*)source, ',', i+1 == numElems? ')': ',', '"', '\\' );
-        if ( tokens.isValidTokens() == false || tokens.numParameters() > 1 )
-            {
-            return 0;
-            }
-
         // Get element to update
         Rte::Element::Api& element = tuple.getElement(i);
 
-        // Invalidate the element (when requested)
-        if ( validState != RTE_ELEMENT_API_STATE_VALID )
+        // Cache previous 'in-container' state (when a container tuple)
+        Cpl::Text::FString<1> prevInContainer;
+        if ( i == 0 && isContainer )
             {
-            // Enforce locked semantics
-            if ( !element.isLocked() )
-                {
-                element.setValidState( validState );
-                updated++;
-                }
+            element.toString( prevInContainer );
             }
 
-        // Update Element Value
-        else
+        // Update the element
+        if ( (source = element.fromString( source, " ,)}", &updated)) )
             {
-            // Skip if JUST locking/unlocking
-            const char* token = tokens.getParameter(0);
-            if ( token && *token != '\0' )
-                {
-                // Enforce locked semantics
-                if ( !element.isLocked() )
-                    {
-                    // Cache previous 'in-container' state (when a container tuple)
-                    Cpl::Text::FString<1> prevInContainer("x");
-                    if ( i == 0 && isContainer )
-                        {
-                        element.toString( prevInContainer );
-                        }
-
-                    if ( !element.setFromText( token ) )
-                        {
-                        return 0; // Error in element value -->exit update
-                        }
-                    else
-                        {
-                        element.setValid();     // By defintion a succesful update of an Element -->moves it to the Valid state.
-                        updated++;
-
-                        // Trap membership changes for a Container Tuple
-                        if ( prevInContainer != "x" && !prevInContainer.isEqualIgnoreCase(token) )
-                            {
-                            m_myPoint.incrementSequenceNumber();
-                            }
-                        }
-                    }
-                }
+            // EXIT -->un-able to convert the string to a binary value (or bad syntax, i.e. failed to parse)
+            return 0;
             }
 
-        // LOCK Operations MUST be applied AFTER any status/update operations
-        if ( lockOp )
+        // Trap change 'in-container' state, aka membership changes
+        if ( i == 0 && isContainer )
             {
-            if ( element.isLocked() == false )
+            Cpl::Text::FString<1> newInContainer;
+            if ( newInContainer != prevInContainer )
                 {
-                updated++;
+                m_myPoint.incrementSequenceNumber();
                 }
-
-            element.setLocked();
             }
-        else if ( unlockOp )
-            {
-            if ( element.isLocked() == true )
-                {
-                updated++;
-                }
-
-            element.setUnlocked();
-            }
-
-        // Advance input string to the next unparsed token
-        source = tokens.remaining();
         }
+
 
     // Mark the element/tuple as updated (i.e. support to using SeqNumbers for change detection)
     if ( updated )
@@ -770,58 +700,10 @@ const char* Base::setTupleFromText( const char* source, unsigned tupleIdx )
         tuple.incrementSequenceNumber();
         }
 
-
     // Everything is 'good' (in theory anyway)
     return source;
     }
 
 
-const char* Base::parsePrefixOps( const char* source, bool& lockOp, bool& unlockOp, int8_t& validState )
-    {
-    // Do nothing when there is NO 'source'
-    if ( source == 0 || *source == '\0' )
-        {
-        return source;
-        }
-
-    // Remove leading whitespace
-    source = Cpl::Text::stripSpace( source );
-
-    // check for lock/unlock operations
-    if ( *source == '!' )
-        {
-        lockOp = true;
-        source++;
-        }
-    else if ( *source == '^' )
-        {
-        unlockOp = true;
-        source++;
-        }
-
-    // Check for invalidate operation
-    if ( *source == '?' )
-        {
-        const char* endPtr = 0;
-        int   invalid      = RTE_ELEMENT_API_STATE_INVALID;
-        if ( !Cpl::Text::a2i( invalid, source+1, 10, " {(,)", &endPtr ) )
-            {
-			validState = RTE_ELEMENT_API_STATE_INVALID;
-			return endPtr;
-            }
-
-        // Force the invalid value to be valid INVALID value
-        if ( invalid < 1 || invalid > 127 )
-            {
-            invalid = RTE_ELEMENT_API_STATE_INVALID;
-            }
-
-        validState = (int8_t) invalid;
-        source     = endPtr;
-        }
-  
-    // Return the next 'un-parsed' character
-    return source;
-    }          
 
 

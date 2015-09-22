@@ -48,10 +48,22 @@ protected:
     /// Throws a fatal error if there is Type mismatch
     virtual void assertTypeMatches( const Api& other ) const;
 
+
     /** Helper method for encoding Invalid & Locked states.  Returns false
         when the element's value is invalid; else true is returned.
      */
     virtual bool convertStateToText( Cpl::Text::String& dstMemory, bool& append ) const;
+
+
+    /// Helper method that handles the lock/unlock/invalidate requests
+    virtual const char* Base::parsePrefixOps( const char* source, bool& lockAction, bool& unlockAction, bool& invalidAction, bool& updated, const char* terminationChars );
+
+
+    /** Helper method that set's the Element value from a text string.  Has the 
+        semantics of fromString() method.  This method MUST be implemented by 
+        the leaf child classes.
+     */
+    virtual const char* setFromText( const char* srcText, const char* terminationChars=0 ) = 0;
 
 
 public:
@@ -102,6 +114,10 @@ public:
 
     ///  See Rte::Element::Api
     void setAsModelElement_(void);
+
+    ///  See Rte::Element::Api
+    const char* fromString( const char* srcText, const char* terminationChars=0, unsigned* updatedPtr=0 );
+
 
 
 };

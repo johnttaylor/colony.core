@@ -270,13 +270,15 @@ public:
         text string.  When 'terminationChars' is not null/0, the converstion
         of text to binary is stopped if one of characters in 'terminationChars'
         is encountered.  When 'terminationChars' is null/0, the entire string
-        contents (i.e. till '\0' is found) is converted. If the conversion is 
+        contents (i.e. till '\0' is found) is converted. When 'updatedPtr' is
+        not null/0, then the counter that 'updatePtr' points to is incremented
+        if the element value's (or state) was written to. If the conversion is 
         successful a pointer to next character after the last 'consumed' 
         charactered is returned.  If the contents of the 'srcText' is invalid 
         OR the Element does not support a full/complete conversion from Text to 
         binary then the method returns 0.
      */
-    virtual const char* setFromText( const char* srcText, const char* terminationChars=0 ) = 0;
+    virtual const char* fromString( const char* srcText, const char* terminationChars=0, unsigned* updatedPtr=0 ) = 0;
 
 
 public:
