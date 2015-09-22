@@ -23,6 +23,7 @@ using namespace Rte::Point::Model;
 #define SECT_   "Rte::Point::Model"
 
 
+
 ///////////////////
 Base::Base( Rte::Point::Api& myPoint, Cpl::Itc::PostApi& myMbox )
 :m_myPoint(myPoint)
@@ -609,6 +610,7 @@ void Base::request( UpdateTextMsg& msg )
                 source = Cpl::Text::stripSpace( source );
                 if ( *source == ',' || *source == '}' )
                     {
+                    source++;
                     continue;
                     }
 
@@ -622,6 +624,7 @@ void Base::request( UpdateTextMsg& msg )
 				// Consume the trailing delimiter if there is one
 				else
 					{ 
+                    source = Cpl::Text::stripSpace( source );
 					if (*source == ',')
 						{
 						source++;
@@ -664,6 +667,14 @@ const char* Base::setTupleFromText( const char* source, unsigned tupleIdx )
     unsigned         i;
     for(i=0; i<numElems && *source != '\0'; i++)
         {
+        // Skip 'empty field' element(s)
+        source = Cpl::Text::stripSpace( source );
+        if ( *source == ',' || *source == ')' )
+            {
+			source++;
+            continue;
+            }
+
         // Get element to update
         Rte::Element::Api& element = tuple.getElement(i);
 
@@ -675,7 +686,7 @@ const char* Base::setTupleFromText( const char* source, unsigned tupleIdx )
             }
 
         // Update the element
-        if ( (source = element.fromString( source, " ,)}", &updated)) )
+        if ( !(source = element.fromString( source, " ,)", &updated)) )
             {
             // EXIT -->un-able to convert the string to a binary value (or bad syntax, i.e. failed to parse)
             return 0;
@@ -685,14 +696,28 @@ const char* Base::setTupleFromText( const char* source, unsigned tupleIdx )
         if ( i == 0 && isContainer )
             {
             Cpl::Text::FString<1> newInContainer;
+            element.toString( newInContainer );
             if ( newInContainer != prevInContainer )
                 {
                 m_myPoint.incrementSequenceNumber();
                 }
             }
+
+		// Consume the trailing delimiter if there is one
+        source = Cpl::Text::stripSpace( source );
+		if ( *source == ',' )
+			{
+			source++;
+			}
         }
 
+    // Check for trailing ')'
+    if ( *(Cpl::Text::stripSpace( source )) != ')' )
+        {
+        return 0;
+        }
 
+ 
     // Mark the element/tuple as updated (i.e. support to using SeqNumbers for change detection)
     if ( updated )
         {
@@ -700,8 +725,8 @@ const char* Base::setTupleFromText( const char* source, unsigned tupleIdx )
         tuple.incrementSequenceNumber();
         }
 
-    // Everything is 'good' (in theory anyway)
-    return source;
+    // Everything is 'good' (in theory anyway) AND consume the trailing ')'
+    return ++source;
     }
 
 

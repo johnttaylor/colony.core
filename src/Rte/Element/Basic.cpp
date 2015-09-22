@@ -461,6 +461,51 @@ const char* Size_T::setFromText( const char* srcText, const char* terminationCha
 
 
 /////////////////////////////
+Time_T::Time_T( time_t  initialValue,
+                bool    inUse,
+                int8_t  validState
+              )
+:Basic<time_t,DataType::TIME_T>( initialValue, inUse, validState )
+    {
+    }
+
+
+const char* Time_T::getTypeAsText(void) const
+    {
+    return "TIME_T";
+    }
+
+
+const char* Time_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+    {
+    if ( convertStateToText( dstMemory, append ) )
+        {
+        dstMemory.formatOpt( append, "%lld", (long long)m_data ); 
+        }
+
+    return dstMemory;
+    }
+
+
+const char* Time_T::setFromText( const char* srcText, const char* terminationChars )
+    {
+    const char*  endPtr = 0;
+    long long    temp;
+    if ( Cpl::Text::a2ll(temp, srcText, 0, terminationChars, &endPtr ) )
+        {
+        if ( temp > 0 )
+            {
+            m_data = (time_t)temp;
+            return endPtr;
+            }
+        }
+
+    return 0;
+    }
+
+
+
+/////////////////////////////
 Float_T::Float_T( float   initialValue,
                   bool    inUse,
                   int8_t  validState

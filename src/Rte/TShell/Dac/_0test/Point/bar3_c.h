@@ -15,7 +15,7 @@
 #include "Rte/Point/Controller/Container.h"
 #include "Rte/Point/Controller/RmwContainer.h"
 #include "Rte/Point/Controller/TupleItem.h"
-#include "Rte/Point/Model/_0test/Point/bar3_m.h"
+#include "Rte/TShell/Dac/_0test/Point/bar3_m.h"
 
 ///
 namespace Point {

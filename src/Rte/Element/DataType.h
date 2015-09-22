@@ -80,7 +80,7 @@ public:
     static const int SEQNUM     = 17;
 
     /// Element Type ID
-    static const int TIMET      = 18;
+    static const int TIME_T     = 18;
 
     /// Element Type ID
     static const int BITFLAGS   = 19;

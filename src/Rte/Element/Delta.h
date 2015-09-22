@@ -85,7 +85,10 @@ typedef Delta<int64_t,Integer64_T>     Integer64Delta_t;
 typedef Delta<uint64_t,Uinteger64_T>   Uinteger64Delta_t;
 
 /// C POD type
-typedef Delta<uint64_t,Size_T>         SizeTDelta_T;
+typedef Delta<size_t,Size_T>           SizeTDelta_T;
+
+/// C POD type
+typedef Delta<time_t,Time_T>           TimeTDelta_T;
 
 /// C POD type
 typedef Delta<float,Float_T>           FloatDelta_T;

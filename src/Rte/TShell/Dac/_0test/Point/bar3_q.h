@@ -15,7 +15,7 @@
 #include "Rte/Point/Query/Container.h"
 #include "Rte/Point/Query/Tuple.h"
 #include "Rte/Point/Query/TupleItem.h"
-#include "Rte/Point/Model/_0test/Point/bar3.h"
+#include "Rte/TShell/Dac/_0test/Point/bar3.h"
 
 ///
 namespace Point {

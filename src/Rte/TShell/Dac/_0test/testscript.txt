@@ -83,7 +83,7 @@ try ENDIF
 viewers clear
 rte-write bar3 {(t,a,t,0),(f,b,t,1),(f,c,f,2),(t,d,t,3)}
 rte-read bar3
-try IF $_lastout$ != "{ ([T], `"a`", T, 0), ([F], `"b`", T, 1), ([F], `"c`", F, 2), ([T], `"d`", T, 3) }"
+try IF $_lastout$ != "{ (T, `"a`", T, 0), (F, `"b`", T, 1), (F, `"c`", F, 2), (T, `"d`", T, 3) }"
 	print "Failed. Failed Point write of bar3"
 	bye app 1
 try ENDIF
@@ -106,7 +106,7 @@ try ENDIF
 #
 rte-write bar3 3 (,,, 44 )
 rte-read bar3 3
-try IF $_lastout$ != "([T], `"d`", T, 44)"
+try IF $_lastout$ != "(T, `"d`", T, 44)"
 	print "Failed Tuple[3] write of bar3"
 	bye app 1
 try ENDIF
@@ -129,7 +129,7 @@ try ENDIF
 #
 rte-write bar3 2 (t,,,)
 rte-read bar3 2
-try IF $_lastout$ != "([T], `"c`", F, 2)"
+try IF $_lastout$ != "(T, `"c`", F, 2)"
 	print "Failed Tuple[2] write of bar3"
 	bye app 1
 try ENDIF
@@ -152,7 +152,7 @@ try ENDIF
 #
 rte-write bar3 3 (,,, 44 )
 rte-read bar3 3
-try IF $_lastout$ != "([T], `"d`", T, 44)"
+try IF $_lastout$ != "(T, `"d`", T, 44)"
 	print "Failed Tuple[3] 'duplicate' write of bar3"
 	bye app 1
 try ENDIF
@@ -166,6 +166,31 @@ try IF $v0-c3$ != 3 OR $v0-mc3$ != 2 OR $v0-c1$ != 0
 try ENDIF
 try IF $v3-c3$ != 4 OR $v3-mc3$ != 2 OR $v3-c1$ != 0
 	print "Failed. Bad viewer counts for Tuple[3] 'duplicate' update of bar3 for V3"
+	bye app 1
+try ENDIF
+
+
+#
+# Write a single tuple -->test empty-tuple notation
+#
+viewers clear
+rte-read bar3
+rte-write bar3 {,(f,@,t,1),(t,#,t,3)}
+rte-read bar3
+try IF $_lastout$ != "{ (T, `"a`", T, 0), (F, `"@`", T, 1), (T, `"#`", T, 3), (T, `"d`", T, 44) }"
+	print "Failed. Failed empty-tuple write of bar3"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 9 v0-c1 4
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 9 v3-c1 4
+try IF $v0-c3$ != 1 OR $v0-mc3$ != 0 OR $v0-c1$ != 0
+	print "Failed. Bad viewer counts for empty-tuple write update of bar3 for V0"
+	bye app 1
+try ENDIF
+try IF $v3-c3$ != 1 OR $v3-mc3$ != 0 OR $v3-c1$ != 0
+	print "Failed. Bad viewer counts for empty-tuple write update of bar3 for V3"
 	bye app 1
 try ENDIF
 

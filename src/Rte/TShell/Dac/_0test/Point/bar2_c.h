@@ -14,7 +14,7 @@
 
 #include "Rte/Point/Controller/Base.h"
 #include "Rte/Point/Controller/Tuple.h"
-#include "Rte/Point/Model/_0test/Point/bar2_m.h"
+#include "Rte/TShell/Dac/_0test/Point/bar2_m.h"
 
 ///
 namespace Point {

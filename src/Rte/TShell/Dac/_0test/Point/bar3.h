@@ -14,7 +14,7 @@
 
 #include "Rte/Point/Container.h"
 #include "Rte/Tuple/NullItem.h"
-#include "Rte/Point/Model/_0test/Tuple/foo3.h"
+#include "Rte/TShell/Dac/_0test/Tuple/foo3.h"
 
 ///
 namespace Point {

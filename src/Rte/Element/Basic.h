@@ -294,6 +294,28 @@ public:
 
 
 /// C POD type
+class Time_T: public Basic<time_t,DataType::TIME_T> 
+{
+public:
+    /// int8_t
+    Time_T( time_t initialValue = 0,
+            bool   inUse        = false,
+            int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
+          );
+
+public:
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
+
+    /// See Rte::Element::Api
+    const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
+    
+    /// See Rte::Element::Api
+    const char* setFromText( const char* srcText, const char* terminationChars=0 );
+};
+
+
+/// C POD type
 class Float_T: public Basic<float,DataType::FLOAT> 
 {
 public:

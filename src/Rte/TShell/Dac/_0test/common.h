@@ -19,20 +19,20 @@
 
 #include "Cpl/Itc/CloseSync.h"
 
-#include "Rte/Point/Model/_0test/Point/bar1_m.h"   // Note: violating #include rule about not including from sub-directories -->since this is test code I rationalize the cheating!
-#include "Rte/Point/Model/_0test/Point/bar1_c.h"
-#include "Rte/Point/Model/_0test/Point/bar1_q.h"
-#include "Rte/Point/Model/_0test/Point/bar1_v.h"
+#include "Rte/TShell/Dac/_0test/Point/bar1_m.h"   // Note: violating #include rule about not including from sub-directories -->since this is test code I rationalize the cheating!
+#include "Rte/TShell/Dac/_0test/Point/bar1_c.h"
+#include "Rte/TShell/Dac/_0test/Point/bar1_q.h"
+#include "Rte/TShell/Dac/_0test/Point/bar1_v.h"
 
-#include "Rte/Point/Model/_0test/Point/bar2_m.h"
-#include "Rte/Point/Model/_0test/Point/bar2_c.h"
-#include "Rte/Point/Model/_0test/Point/bar2_q.h"
-#include "Rte/Point/Model/_0test/Point/bar2_v.h"
+#include "Rte/TShell/Dac/_0test/Point/bar2_m.h"
+#include "Rte/TShell/Dac/_0test/Point/bar2_c.h"
+#include "Rte/TShell/Dac/_0test/Point/bar2_q.h"
+#include "Rte/TShell/Dac/_0test/Point/bar2_v.h"
 
-#include "Rte/Point/Model/_0test/Point/bar3_m.h"
-#include "Rte/Point/Model/_0test/Point/bar3_c.h"
-#include "Rte/Point/Model/_0test/Point/bar3_q.h"
-#include "Rte/Point/Model/_0test/Point/bar3_v.h"
+#include "Rte/TShell/Dac/_0test/Point/bar3_m.h"
+#include "Rte/TShell/Dac/_0test/Point/bar3_c.h"
+#include "Rte/TShell/Dac/_0test/Point/bar3_q.h"
+#include "Rte/TShell/Dac/_0test/Point/bar3_v.h"
 
 #include "Cpl/TShell/Dac/Cmd/Command.h"
 

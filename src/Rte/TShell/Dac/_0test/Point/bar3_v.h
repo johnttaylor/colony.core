@@ -13,7 +13,7 @@
 /** @file */
 
 #include "Rte/Point/Viewer/Container.h"
-#include "Rte/Point/Model/_0test/Point/bar3.h"
+#include "Rte/TShell/Dac/_0test/Point/bar3.h"
 
 ///
 namespace Point {

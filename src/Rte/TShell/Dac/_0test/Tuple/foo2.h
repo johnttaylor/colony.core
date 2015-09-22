@@ -14,28 +14,36 @@
 
 
 #include "Rte/Tuple/Basic.h"
-#include "Rte/Element/Basic.h"
+#include "Rte/Element/BitFlags.h"
+#include "Rte/Element/SeqNumber.h"
+#include "Rte/Element/Delta.h"
+#include "Rte/Element/Md5.h"
 
 namespace Tuple {
 
 
 /** Concrete Tuple: FOO2
  */
-class Foo2: public Rte::Tuple::Basic<2>
+class Foo2: public Rte::Tuple::Basic<4>
 {
 public: // Provide the domain application access to the Data
     ///
-    Rte::Element::Boolean_T       m_enabled;
+    Rte::Element::BitFlags      m_flags;
     ///
-    Rte::Element::Uinteger8_T     m_limit;
-
+    Rte::Element::SeqNumber     m_seqNum;
+    ///
+    Rte::Element::TimeTDelta_T  m_time;
+    ///
+    Rte::Element::Md5           m_checksum;
 
 public:
     /// Constructor
     Foo2( void )
         {
-        registerElement( 0, m_enabled );
-        registerElement( 1, m_limit );
+        registerElement( 0, m_flags );
+        registerElement( 1, m_seqNum );
+        registerElement( 2, m_time );
+        registerElement( 3, m_checksum );
         }
 };
 

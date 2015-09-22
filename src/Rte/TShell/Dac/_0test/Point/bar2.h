@@ -13,8 +13,8 @@
 /** @file */
 
 #include "Rte/Point/Basic.h"
-#include "Rte/Point/Model/_0test/Tuple/foo1.h"
-#include "Rte/Point/Model/_0test/Tuple/foo2.h"
+#include "Rte/TShell/Dac/_0test/Tuple/foo1.h"
+#include "Rte/TShell/Dac/_0test/Tuple/foo2.h"
 
 
 ///
