@@ -608,9 +608,13 @@ void Base::request( UpdateTextMsg& msg )
                 {
                 // Skip 'empty field' tuple(s)
                 source = Cpl::Text::stripSpace( source );
-                if ( *source == ',' || *source == '}' )
+                if ( *source == ',' )
                     {
                     source++;
+                    continue;
+                    }
+                if ( *source == '}' )
+                    {
                     continue;
                     }
 
@@ -669,9 +673,13 @@ const char* Base::setTupleFromText( const char* source, unsigned tupleIdx )
         {
         // Skip 'empty field' element(s)
         source = Cpl::Text::stripSpace( source );
-        if ( *source == ',' || *source == ')' )
+        if ( *source == ',' )
             {
 			source++;
+            continue;
+            }
+        if ( *source == ')' )
+            {
             continue;
             }
 

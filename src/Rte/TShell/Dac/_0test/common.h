@@ -84,9 +84,14 @@ static void traceFoo1_( Tuple::Foo1& tuple, const char* name, const char* msg )
 
 static void traceFoo2_( Tuple::Foo2& tuple, const char* name, const char* msg )
     {
+    Cpl::Text::FString<32> temp;
+    tuple.m_checksum.toString(temp);
+
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo2: %s", name, msg ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s, isLocked=%s", tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse()), b2t_(tuple.m_enabled.isLocked())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _limit:=%d. valid=%s, inUse=%s, isLocked=%s",   tuple.m_limit.get(), v2t_(tuple.m_limit.validState()), b2t_(tuple.m_limit.isInUse()), b2t_(tuple.m_limit.isLocked()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _flags:=0x%lX. valid=%s, inUse=%s, isLocked=%s", tuple.m_flags.get(), v2t_(tuple.m_flags.validState()), b2t_(tuple.m_flags.isInUse()), b2t_(tuple.m_flags.isLocked())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _seqNum:=%ld. valid=%s, inUse=%s, isLocked=%s",tuple.m_seqNum.get(), v2t_(tuple.m_seqNum.validState()), b2t_(tuple.m_seqNum.isInUse()), b2t_(tuple.m_seqNum.isLocked()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _time:=%lld. valid=%s, inUse=%s, isLocked=%s",  (long long)tuple.m_time.get(), v2t_(tuple.m_time.validState()), b2t_(tuple.m_time.isInUse()), b2t_(tuple.m_time.isLocked()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _md5:=0x%s. valid=%s, inUse=%s, isLocked=%s",   temp(), v2t_(tuple.m_checksum.validState()), b2t_(tuple.m_checksum.isInUse()), b2t_(tuple.m_checksum.isLocked()) ));
     }
 
 static void traceFoo3_( Tuple::Foo3& tuple, const char* name, const char* msg )

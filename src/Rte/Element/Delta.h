@@ -109,7 +109,7 @@ Rte::Element::Delta<ELEMTYPE,PARENT>::Delta( ELEMTYPE  delta,
                                              bool      inUse,
                                              int8_t    validState
                                            )
-:Basic<ELEMTYPE,PARENT>(initialValue,inUse,validState),
+:PARENT(initialValue,inUse,validState),
  m_delta(delta)
     {
     }
@@ -134,7 +134,7 @@ bool Rte::Element::Delta<ELEMTYPE,PARENT>::isDifferentFrom( const Api& other ) c
     {
     Base::assertTypeMatches( other );
     ELEMTYPE otherVal = *((ELEMTYPE*)(other.dataPointer()));
-    ELEMTYPE delta    = Basic<ELEMTYPE,PARENT>::_data > otherVal? Basic<ELEMTYPE,PARENT>::_data - otherVal: otherVal -Basic<ELEMTYPE,PARENT>::_data;
+    ELEMTYPE delta    = PARENT::m_data > otherVal? PARENT::m_data - otherVal: otherVal - PARENT::m_data;
     return delta > m_delta;
     }
 

@@ -13,9 +13,9 @@
 
 
 #include "staticsA.h"
-#include "Point/bar1_m.h"
-#include "Point/bar2_m.h"
-#include "Point/bar3_m.h"
+#include "Rte/TShell/Dac/_0test/Point/bar1_m.h"
+#include "Rte/TShell/Dac/_0test/Point/bar2_m.h"
+#include "Rte/TShell/Dac/_0test/Point/bar3_m.h"
 #include "Cpl/TShell/Stdio.h"
 #include "Cpl/Itc/MailboxServer.h"
 
@@ -53,7 +53,7 @@ static Rte::TShell::Dac::Point m4_( pointList, modelBar3_,  "bar3" );
 // Viewers
 ViewerContext   v0_(   "V0", viewerMailbox_, modelBar1_, modelBar2a_, modelBar3_, true, true, true );
 ViewerContext   v1_(   "V1", viewerMailbox_, modelBar1_, modelBar2a_, modelBar3_, true, true, true );
-ViewerContext   v2_(   "V2", viewerMailbox_, modelBar1_, modelBar2a_, modelBar3_, true, true, true, false, false, false );  // Compare using seqnumber
+ViewerContext   v2_(   "V2", viewerMailbox_, modelBar1_, modelBar2b_, modelBar3_, true, true, true, false, false, false );  // Compare using seqnumber
 LWViewerContext v3LW_( "V3", viewerMailbox_, modelBar1_, modelBar3_, true, true );
 
 static Viewers viewersCmd( cmdlist, "invoke_special_static_constructor", &v0_, &v1_, &v2_, &v3LW_ );

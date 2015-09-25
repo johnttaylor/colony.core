@@ -39,6 +39,7 @@ public: // Provide the domain application access to the Data
 public:
     /// Constructor
     Foo2( void )
+    :m_time(60)   // Set delta to 1 minute
         {
         registerElement( 0, m_flags );
         registerElement( 1, m_seqNum );

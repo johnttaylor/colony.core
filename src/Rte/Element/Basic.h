@@ -15,6 +15,7 @@
 #include "Rte/Element/Base.h"
 #include <memory.h>
 #include <stdint.h>
+#include <time.h>
 
 ///
 namespace Rte { namespace Element {
@@ -87,6 +88,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api.  Format: "T"=true, "F"=false
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
     
@@ -110,6 +113,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };
@@ -133,6 +138,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };
@@ -156,6 +163,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };
@@ -178,6 +187,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };
@@ -200,6 +211,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };
@@ -222,6 +235,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };
@@ -244,6 +259,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };
@@ -266,6 +283,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };
@@ -288,6 +307,7 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };
@@ -310,6 +330,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };
@@ -332,6 +354,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };
@@ -354,6 +378,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };
@@ -376,6 +402,8 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    
+protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 };

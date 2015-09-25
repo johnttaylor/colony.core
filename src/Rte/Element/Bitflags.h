@@ -108,15 +108,18 @@ public:
 
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
+
+    /// See Rte::Element::Api
+    const char* getTypeAsText(void) const;
     
+    
+protected:
     /** See Rte::Element::Api. Input format is: Numeric number in base 10, 
         or base 8 when a leading zero is specified, or base 16 if a leading
         '0x' (or '0X') is specified.
      */
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
 
-    /// See Rte::Element::Api
-    const char* getTypeAsText(void) const;
 };
 
 };      // end namespaces

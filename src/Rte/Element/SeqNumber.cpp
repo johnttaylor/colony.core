@@ -66,7 +66,7 @@ const char* SeqNumber::setFromText( const char* srcText, const char* termination
     if ( Cpl::Text::a2l( temp, srcText, 0, terminationChars, &endPtr ) )
         {
         // Sequence numbers (in the Model) can NOT be negative OR zero
-        if ( (temp ^ 0x7FFFFFFF) == 0 )
+        if ( (temp & (~0x7FFFFFFF)) == 0 )
             {
             m_data = (int32_t) temp;
             return endPtr;
