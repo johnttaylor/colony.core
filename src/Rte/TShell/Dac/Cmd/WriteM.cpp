@@ -9,9 +9,9 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "RteRead.h"
+#include "WriteM.h"
 #include "Cpl/Text/atob.h"
-#include "Rte/Point/Query/Text.h"
+#include "Rte/Point/Controller/Text.h"
 
 
 ///
@@ -19,19 +19,19 @@ using namespace Rte::TShell::Dac::Cmd;
 
 
 ///////////////////////////
-RteRead::RteRead( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw()
-:Command( commandList, "rte-read", modelPointList )
+WriteM::WriteM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw()
+:Command( commandList, "writem", modelPointList )
     {
     }
 
-RteRead::RteRead( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
-:Command( commandList, "rte-read", modelPointList, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
+WriteM::WriteM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+:Command( commandList, "writem", modelPointList, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
     {
     }
 
 
 ///////////////////////////
-Cpl::TShell::Dac::Command::Result_T RteRead::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T WriteM::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
     {
     // Display Points
     Cpl::TShell::Dac::Command::Result_T result = listPoints(context, tokens);
@@ -45,13 +45,9 @@ Cpl::TShell::Dac::Command::Result_T RteRead::execute( Cpl::TShell::Dac::Context_
     unsigned                              numParms = tokens.numParameters();
 
     // Error checking
-    if ( numParms < 2 )
+    if ( numParms < 3 )
         {
         return Command::eERROR_MISSING_ARGS;
-        }
-    if ( numParms > 3 )
-        {
-        return Command::eERROR_EXTRA_ARGS;
         }
 
     // Get Point name (can be <etext>)
@@ -61,9 +57,18 @@ Cpl::TShell::Dac::Command::Result_T RteRead::execute( Cpl::TShell::Dac::Context_
         return Command::eERROR_BAD_SYNTAX;
         }
     
+    // Get start of Point/Tuple data
+    const char* pointStart = strchr(rawInputString, '{' );
+    const char* tupleStart = strchr(rawInputString, '(' );
+    if ( tupleStart < pointStart )
+        {
+        return Command::eERROR_BAD_SYNTAX;
+        }
+
+
     // Parse Tuple index (if there is any)
-    int tupleIdx = -1;  // Default to: Point read
-    if ( numParms == 3 )
+    int tupleIdx = -1;  // Default to: Point write
+    if ( !pointStart )
         {
         // Get tuple index (can be <etext>)
         Cpl::Text::String& tuple = context.getTokenBuffer2();
@@ -84,12 +89,19 @@ Cpl::TShell::Dac::Command::Result_T RteRead::execute( Cpl::TShell::Dac::Context_
         return Command::eERROR_INVALID_ARGS;
         }
 
-    // Perform Query
-    Cpl::Text::String&      outtext = context.getOutputBuffer();
-    Rte::Point::Query::Text query(outtext, pointPtr->getModelPoint(), tupleIdx);
-    if ( query.issueQuery() )
+    // Get data to write (note: <etext> is supported for values)
+    Cpl::Text::String& source = context.getOutputBuffer();
+	source.clear();
+    if ( expandText( pointStart? pointStart: tupleStart, source, vars ) != Command::eSUCCESS )
         {
-        return context.writeFrame( outtext )? Command::eSUCCESS: Command::eERROR_IO;
+        return Command::eERROR_BAD_SYNTAX;
+        }
+
+    // Perform Update 
+    Rte::Point::Controller::Text controller(source, pointPtr->getModelPoint(), tupleIdx);
+    if ( controller.updateModel() )
+        {
+        return Command::eSUCCESS;
         }
 
     // If I get here the command failed!

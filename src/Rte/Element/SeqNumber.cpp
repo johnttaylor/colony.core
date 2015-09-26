@@ -57,20 +57,42 @@ const char* SeqNumber::toString( Cpl::Text::String& dstMemory, bool append ) con
     return dstMemory;
     }
 
+
+const char* SeqNumber::fromString( const char* srcText, const char* terminationChars, unsigned* updatedPtr )
+    {
+    // Cache current state
+    unsigned    prevUpdatedValue = updatedPtr? *updatedPtr: 0;
+    int32_t     prevSeqNum       = m_data;
+    int8_t      prevValidState   = validState();
+
+    // Update the sequence number
+    const char* result           = Base::fromString( srcText, terminationChars, updatedPtr );
+
+    // Back out the 'set' operation when the requested seqNumber value was ZERO -->maintains/enforces the SeqNumber Element's semantics!
+    if ( result && m_data == 0 )
+        {
+        m_data = prevSeqNum;
+        setValidState( prevValidState );
+        if ( updatedPtr )
+            {
+            *updatedPtr = prevUpdatedValue;
+            }
+        }
+
+    return result;
+    }
+    
+
 const char* SeqNumber::setFromText( const char* srcText, const char* terminationChars )
     {
     {
     const char* endPtr = 0;
     long        temp;
 
-    if ( Cpl::Text::a2l( temp, srcText, 0, terminationChars, &endPtr ) )
+    if ( Cpl::Text::a2l( temp, srcText, 0, terminationChars, &endPtr ) && (temp & (~0xFFFFFFFF)) == 0 )
         {
-        // Sequence numbers (in the Model) can NOT be negative OR zero
-        if ( (temp & (~0x7FFFFFFF)) == 0 )
-            {
-            m_data = (int32_t) temp;
-            return endPtr;
-            }
+        applyNewValue( (int32_t) temp );
+        return endPtr;
         }
     
     return 0;
@@ -82,29 +104,36 @@ bool SeqNumber::copyDataFrom( const Api& other )
     {
     assertTypeMatches( other );
 
-    // Silently ignore when locked AND I am a Model Element
-    if ( !isModelElement() || !isLocked() )
+    // Silently ignore when locked AND I am a Model Element (also ignore a value of zero per the SeqNumber semantics)
+    int32_t temp = *((int32_t*)(other.dataPointer()));
+    if ( temp != 0 && (!isModelElement() || !isLocked()) )
         {
-        int32_t src = *((int32_t*)(other.dataPointer()));
-        if ( src < 0 )
-            {
-            // When incrementing - don't let the value go negative 
-            if ( ++m_data <= 0 )
-                {
-                m_data = 1; // By deisgn, a valid sequence number is never zero
-                }
-            }
-        else if ( src > 0 )
-            {
-            m_data = src;
-            }
-
+        applyNewValue( temp );
         return true;
         }
 
     return false;
     }
 
+
+void SeqNumber::applyNewValue( int32_t operAndValue )
+    {
+    // INCREMENT SeqNumber 
+    if ( operAndValue < 0 )
+        {
+        // When incrementing - don't let the value go negative 
+        if ( ++m_data <= 0 )
+            {
+            m_data = 1; // By deisgn, a valid sequence number is never zero
+            }
+        }
+
+    // SET SeqNumber (Note: The caller is not allowed to call this method if 'operAndValue' is Zero)
+    else 
+        {
+        m_data = operAndValue;
+        }
+    }
 
 
 bool SeqNumber::isDifferentFrom( const Api& other ) const

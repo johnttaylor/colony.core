@@ -1,5 +1,5 @@
-#ifndef Rte_TShell_Dac_Cmd_RteWrite_h
-#define Rte_TShell_Dac_Cmd_RteWrite_h
+#ifndef Rte_TShell_Dac_Cmd_WriteM_h
+#define Rte_TShell_Dac_Cmd_WriteM_h
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -20,13 +20,13 @@
                                         "         1         2         3         4         5         6         7         8"
                                         "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define RTETSHELLDACMD_USAGE_RTEWRITE_  "rte-write ls|ll [<filter>]\n" \
-                                        "rte-write <point> {(<tuple0>)[,(<tuple1>)]*}\n" \
-                                        "rte-write <point> <idx> ([!|^] <[?[<num>]]|<elm0>>[,[!|^] <[?[<num>]]|<elm0>>]*)\n" \
+#define RTETSHELLDACMD_USAGE_WRITEM_    "writem ls|ll [<filter>]\n" \
+                                        "writem <point> {(<tuple0>)[,(<tuple1>)]*}\n" \
+                                        "writem <point> <idx> ([!|^] <[?[<num>]]|<elm0>>[,[!|^] <[?[<num>]]|<elm0>>]*)\n" \
 
 /// Detailed Help text
-#ifndef RTETSHELLDACMD_DETAIL_RTEWRITE_
-#define RTETSHELLDACMD_DETAIL_RTEWRITE_ "  Writes an entire RTE Model point or tuple.  <point> is the symbolic name of a\n" \
+#ifndef RTETSHELLDACMD_DETAIL_WRITEM_
+#define RTETSHELLDACMD_DETAIL_WRITEM_   "  Writes an entire RTE Model point or tuple.  <point> is the symbolic name of a\n" \
                                         "  RTE Model Point.  <idx> is the zero based tuple index when selecting a single\n" \
                                         "  tuple to update. When 'ls|ll' is used, a list of Model points is generated.\n" \
                                         "  The <filter> argument will only list points that contain <filter>.  The '!'\n" \
@@ -45,22 +45,22 @@ namespace Rte { namespace TShell { namespace Dac { namespace Cmd {
 
 /** This class implements a DAC Shell command
  */
-class RteWrite: public Command
+class WriteM: public Command
 {
 public:
     /// See Cpl::TShell::Dac::Command                                                               `
-    const char* getUsage() const throw()   { return RTETSHELLDACMD_USAGE_RTEWRITE_; }
+    const char* getUsage() const throw()   { return RTETSHELLDACMD_USAGE_WRITEM_; }
 
     /// See Cpl::TShell::Dac::Command
-    const char* getHelp() const throw()    { return RTETSHELLDACMD_DETAIL_RTEWRITE_; }
+    const char* getHelp() const throw()    { return RTETSHELLDACMD_DETAIL_WRITEM_; }
     
      
 public:
     /// Constructor
-    RteWrite( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw();
+    WriteM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw();
 
     /// Constructor.  Used to create a static instance of the command
-    RteWrite( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+    WriteM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
 
 
 public:

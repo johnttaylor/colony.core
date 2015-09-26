@@ -55,18 +55,40 @@ const char* BitFlags::toString( Cpl::Text::String& dstMemory, bool append ) cons
     return dstMemory;
     }
 
+const char* BitFlags::fromString( const char* srcText, const char* terminationChars, unsigned* updatedPtr )
+    {
+    // Cache current state
+    unsigned    prevUpdatedValue = updatedPtr? *updatedPtr: 0;
+    uint32_t    prevFlags        = m_data;
+    int8_t      prevValidState   = validState();
+
+    // Update the sequence number
+    const char* result           = Base::fromString( srcText, terminationChars, updatedPtr );
+
+    // Back out the 'set' operation when the requested 'action' was NO_UPDATE -->maintains/enforces the BitFlags Element's semantics!
+    if ( result && m_data >= (eOPER_SET_BITS|eOPER_CLR_BITS) )
+        {
+        m_data = prevFlags;
+        setValidState( prevValidState );
+        if ( updatedPtr )
+            {
+            *updatedPtr = prevUpdatedValue;
+            }
+        }
+
+    return result;
+    }
+    
+
 const char* BitFlags::setFromText( const char* srcText, const char* terminationChars )
     {
     const char*   endPtr = 0;
     unsigned long temp;
 
-    if ( Cpl::Text::a2ul( temp, srcText, 0, terminationChars, &endPtr ) )
+    if ( Cpl::Text::a2ul( temp, srcText, 0, terminationChars, &endPtr ) && temp <= 0xFFFFFFFF )
         {
-        if ( temp <= eUSABLE_BITS_MASK )
-            {
-            m_data = temp;
-            return endPtr;
-            }
+        applyNewValue( (uint32_t) temp );
+        return endPtr;
         }
     
     return 0;
@@ -79,41 +101,53 @@ bool BitFlags::copyDataFrom( const Api& other )
     assertTypeMatches( other );
 
     // Silent skip when locked AND I am a Model Element
-    if ( !isModelElement() || !isLocked() )
+    uint32_t temp = *((uint32_t*)(other.dataPointer()));
+    if ( temp < (eOPER_SET_BITS|eOPER_CLR_BITS) && (!isModelElement() || !isLocked()) )
         {
-        uint32_t src = *((uint32_t*)(other.dataPointer()));
-
-        // Normal copy
-        if ( src < eOPER_TGL_BITS )
-            {
-            m_data = src;
-            }
-
-        // Toggle Bits
-        else if ( src < eOPER_CLR_BITS )
-            {
-            m_data ^= src;
-            }
-
-        // Clear bits
-        else if ( src < eOPER_SET_BITS )
-            {
-            m_data &= ~(src&eUSABLE_BITS_MASK); 
-            }
-
-        // Set bits
-        else if ( src < (eOPER_SET_BITS|eOPER_TGL_BITS) )
-            {
-            m_data |= (src&eUSABLE_BITS_MASK); 
-            }
-
+        applyNewValue( *((uint32_t*)(other.dataPointer())) );
         return true;
         }
 
     return false;
     }
 
+void BitFlags::applyNewValue( uint32_t operAndValue )
+    {
+    // Normal copy. Note: The caller is not allowed to call this method if 
+    // 'operAndValue' >= 0xC0000000.  However to proper handle the fromString()
+    // logic/sematic -->it is allowed (okay somewhat of hack!)
+    // Normal copy
+    if ( operAndValue < eOPER_TGL_BITS )
+        {
+        m_data = operAndValue;
+        }
 
+    // Toggle Bits
+    else if ( operAndValue < eOPER_CLR_BITS )
+        {
+		m_data ^= (operAndValue&eUSABLE_BITS_MASK);
+        }
+
+    // Clear bits
+    else if ( operAndValue < eOPER_SET_BITS )
+        {
+        m_data &= ~(operAndValue&eUSABLE_BITS_MASK); 
+        }
+
+    // Set bits
+    else if ( operAndValue < (eOPER_SET_BITS|eOPER_TGL_BITS) )
+        {
+        m_data |= (operAndValue&eUSABLE_BITS_MASK); 
+        }
+
+    // SPECIAL Case: The caller is not allowed to call this method if 
+    // 'operAndValue' >= 0xC0000000.  However to proper handle the fromString()
+    // logic/sematic -->it is allowed (okay somewhat of hack!)
+    else
+        {
+        m_data = operAndValue;
+        }
+    }
 
 bool BitFlags::isDifferentFrom( const Api& other ) const
     {
@@ -150,3 +184,6 @@ size_t BitFlags::externalSize( void ) const
     {
     return sizeof(m_data) + sizeof(m_valid);
     }
+
+
+

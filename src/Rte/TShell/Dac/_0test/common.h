@@ -88,7 +88,7 @@ static void traceFoo2_( Tuple::Foo2& tuple, const char* name, const char* msg )
     tuple.m_checksum.toString(temp);
 
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo2: %s", name, msg ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _flags:=0x%lX. valid=%s, inUse=%s, isLocked=%s", tuple.m_flags.get(), v2t_(tuple.m_flags.validState()), b2t_(tuple.m_flags.isInUse()), b2t_(tuple.m_flags.isLocked())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _flags:=0x%08lX. valid=%s, inUse=%s, isLocked=%s", tuple.m_flags.get(), v2t_(tuple.m_flags.validState()), b2t_(tuple.m_flags.isInUse()), b2t_(tuple.m_flags.isLocked())  ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _seqNum:=%ld. valid=%s, inUse=%s, isLocked=%s",tuple.m_seqNum.get(), v2t_(tuple.m_seqNum.validState()), b2t_(tuple.m_seqNum.isInUse()), b2t_(tuple.m_seqNum.isLocked()) ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _time:=%lld. valid=%s, inUse=%s, isLocked=%s",  (long long)tuple.m_time.get(), v2t_(tuple.m_time.validState()), b2t_(tuple.m_time.isInUse()), b2t_(tuple.m_time.isLocked()) ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _md5:=0x%s. valid=%s, inUse=%s, isLocked=%s",   temp(), v2t_(tuple.m_checksum.validState()), b2t_(tuple.m_checksum.isInUse()), b2t_(tuple.m_checksum.isLocked()) ));
@@ -627,6 +627,8 @@ public:
         // Display ALL viewers' count
         if ( tokens.numParameters() == 1 )
             {
+            Cpl::System::Api::sleep(100);   // Since I am not thread safe -->use a delay and hope that the viewer thread is done!
+
             unsigned i;
             for( i=0; io && i<MAX_VIEWERS; i++ )
                 {
@@ -639,6 +641,8 @@ public:
         // Clear all viewers
         if ( tokens.numParameters() == 2 && strcmp(tokens.getParameter(1),"clear") == 0 )
             {
+            Cpl::System::Api::sleep(100);   // Since I am not thread safe -->use a delay and hope that the viewer thread is done!
+            
             unsigned i;
             for( i=0; io && i<MAX_VIEWERS; i++ )
                 {
@@ -663,6 +667,7 @@ public:
         if ( tokens.numParameters() == 2 )
             {
             // Display counts
+            Cpl::System::Api::sleep(100);   // Since I am not thread safe -->use a delay and hope that the viewer thread is done!
             return displayCounts( viewerNum, context, vars, outtext )? Command::eSUCCESS: Command::eERROR_IO;
             }
 
@@ -670,6 +675,7 @@ public:
         ViewerApi* ptr = m_viewers[viewerNum];
         if ( ptr )
             {
+            Cpl::System::Api::sleep(100);   // Since I am not thread safe -->use a delay and hope that the viewer thread is done!
             ptr->clearCounts();
             }
         return Command::eSUCCESS;

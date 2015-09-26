@@ -1,5 +1,5 @@
-#ifndef Rte_TShell_Dac_Cmd_RteRead_h
-#define Rte_TShell_Dac_Cmd_RteRead_h
+#ifndef Rte_TShell_Dac_Cmd_ReadM_h
+#define Rte_TShell_Dac_Cmd_ReadM_h
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -20,13 +20,13 @@
                                         "         1         2         3         4         5         6         7         8"
                                         "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define RTETSHELLDACMD_USAGE_TRTEREAD_  "rte-read ls|ll [<filter>]\n" \
-                                        "rte-read <point>\n" \
-                                        "rte-read <point> <idx>"
+#define RTETSHELLDACMD_USAGE_READM_     "readm ls|ll [<filter>]\n" \
+                                        "readm <point>\n" \
+                                        "readm <point> <idx>"
 
 /// Detailed Help text
-#ifndef RTETSHELLDACMD_DETAIL_TRTEREAD_
-#define RTETSHELLDACMD_DETAIL_TRTEREAD_ "  Reads a Point or single Tuple within a RTE Model point.  <point> is the\n" \
+#ifndef RTETSHELLDACMD_DETAIL_READM_
+#define RTETSHELLDACMD_DETAIL_READM_    "  Reads a Point or single Tuple within a RTE Model point.  <point> is the\n" \
                                         "  symbolic name of a RTE Model Point and <idx> is the zero base index of the\n" \
                                         "  Tuple to read.  When 'ls|ll' is used, a list of Model points is generated. The\n" \
                                         "  <filter> argument will only list points that contain <filter>. Note: <etext>\n" \
@@ -43,22 +43,22 @@ namespace Rte { namespace TShell { namespace Dac { namespace Cmd {
 
 /** This class implements a DAC Shell command
  */
-class RteRead: public Command
+class ReadM: public Command
 {
 public:
     /// See Cpl::TShell::Dac::Command
-    const char* getUsage() const throw()   { return RTETSHELLDACMD_USAGE_TRTEREAD_; }
+    const char* getUsage() const throw()   { return RTETSHELLDACMD_USAGE_READM_; }
 
     /// See Cpl::TShell::Dac::Command
-    const char* getHelp() const throw()    { return RTETSHELLDACMD_DETAIL_TRTEREAD_; }
+    const char* getHelp() const throw()    { return RTETSHELLDACMD_DETAIL_READM_; }
     
      
 public:
     /// Constructor
-    RteRead( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw();
+    ReadM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw();
 
     /// Constructor.  Used to create a static instance of the command
-    RteRead( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+    ReadM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
 
 
 public:

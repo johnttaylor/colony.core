@@ -216,8 +216,11 @@ const char* Base::fromString( const char* srcText, const char* terminationChars,
             srcText = setFromText( srcText, terminationChars );
 
             // By defintion a succesful update of an Element moves it to the Valid state.
-            setValid();     
-            updated = true;
+            if ( srcText )
+                {
+                setValid();     
+                updated = true;
+                }
             }
 
         // LOCK Operations MUST be applied AFTER any status/update operations

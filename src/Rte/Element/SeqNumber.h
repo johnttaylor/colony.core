@@ -73,6 +73,9 @@ public:
     /// See Rte::Element::Api
     const char* toString( Cpl::Text::String& dstMemory, bool append=false ) const;
     
+    ///  See Rte::Element::Api (because of the sequence number semantics -->need to override Base class implemenation)
+    const char* fromString( const char* srcText, const char* terminationChars=0, unsigned* updatedPtr=0 );
+
     /// See Rte::Element::Api
     const char* getTypeAsText(void) const;
     
@@ -80,6 +83,9 @@ public:
 protected:
     /// See Rte::Element::Api
     const char* setFromText( const char* srcText, const char* terminationChars=0 );
+
+    /// Helper method to apply the sequence number 'action'.  The caller is required to handle the case of 'operAndValue' == 0.
+    virtual void applyNewValue( int32_t operAndValue );
 
 };
 

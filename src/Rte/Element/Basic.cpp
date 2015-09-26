@@ -100,7 +100,7 @@ const char* Integer8_T::setFromText( const char* srcText, const char* terminatio
     int         temp;
     if ( Cpl::Text::a2i(temp, srcText, 0, terminationChars, &endPtr ) )
         {
-        if ( (temp ^ 0xff) == 0 )
+        if ( (temp & (~0xff)) == 0 )
             {
             m_data = temp;
             return endPtr;
@@ -190,7 +190,7 @@ const char* Integer16_T::setFromText( const char* srcText, const char* terminati
     int         temp;
     if ( Cpl::Text::a2i(temp, srcText, 0, terminationChars, &endPtr ) )
         {
-        if ( (temp ^ 0xffff) == 0 )
+        if ( (temp & (~0xffff)) == 0 )
             {
             m_data = temp;
             return endPtr;
@@ -278,7 +278,7 @@ const char* Integer32_T::setFromText( const char* srcText, const char* terminati
     long        temp;
     if ( Cpl::Text::a2l(temp, srcText, 0, terminationChars, &endPtr ) )
         {
-        if ( (temp ^ 0xffffffff) == 0 )
+        if ( (temp & (~0xffffffff)) == 0 )
             {
             m_data = temp;
             return endPtr;
