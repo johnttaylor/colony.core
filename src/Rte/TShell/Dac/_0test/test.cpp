@@ -16,6 +16,7 @@
 #include "Rte/TShell/Dac/_0test/Point/bar1_m.h"
 #include "Rte/TShell/Dac/_0test/Point/bar2_m.h"
 #include "Rte/TShell/Dac/_0test/Point/bar3_m.h"
+#include "Rte/TShell/Dac/_0test/Point/bar4_m.h"
 #include "Cpl/TShell/Stdio.h"
 #include "Cpl/Itc/MailboxServer.h"
 
@@ -39,6 +40,7 @@ static  Point::ModelBar1 modelBar1_(modelMailbox_);
 static  Point::ModelBar2 modelBar2a_(modelMailbox_);
 static  Point::ModelBar2 modelBar2b_(modelMailbox_);
 static  Point::ModelBar3 modelBar3_(modelMailbox_);
+static  Point::ModelBar4 modelBar4_(modelMailbox_);
 
 // DAC Model Point List
 Cpl::Container::Map<Rte::TShell::Dac::Point>     pointList( "invoke_special_static_constructor" );
@@ -48,15 +50,17 @@ static Rte::TShell::Dac::Point m1_( pointList, modelBar1_,  "bar1" );
 static Rte::TShell::Dac::Point m2_( pointList, modelBar2a_, "bar2" );
 static Rte::TShell::Dac::Point m3_( pointList, modelBar2b_, "foobar2" );
 static Rte::TShell::Dac::Point m4_( pointList, modelBar3_,  "bar3" );
+static Rte::TShell::Dac::Point m5_( pointList, modelBar4_,  "bar4" );
 
 
 // Viewers
-ViewerContext   v0_(   "V0", viewerMailbox_, modelBar1_, modelBar2a_, modelBar3_, true, true, true );
-ViewerContext   v1_(   "V1", viewerMailbox_, modelBar1_, modelBar2a_, modelBar3_, true, true, true );
-ViewerContext   v2_(   "V2", viewerMailbox_, modelBar1_, modelBar2b_, modelBar3_, true, true, true, false, false, false );  // Compare using seqnumber
+ViewerContext   v0_(   "V0", viewerMailbox_, modelBar1_, modelBar2a_, modelBar3_, modelBar4_, true, true, true, true );
+ViewerContext   v1_(   "V1", viewerMailbox_, modelBar1_, modelBar2a_, modelBar3_, modelBar4_, true, true, true, true );
+ViewerContext   v2_(   "V2", viewerMailbox_, modelBar1_, modelBar2b_, modelBar3_, modelBar4_, true, true, true, true, false, false, false, false );  // Compare using seqnumber
 LWViewerContext v3LW_( "V3", viewerMailbox_, modelBar1_, modelBar3_, true, true );
+ViewerContext   v4_(   "V4", viewerMailbox_, modelBar1_, modelBar2b_, modelBar3_, modelBar4_, true, true, true, true );
 
-static Viewers viewersCmd( cmdlist, "invoke_special_static_constructor", &v0_, &v1_, &v2_, &v3LW_ );
+static Viewers viewersCmd( cmdlist, "invoke_special_static_constructor", &v0_, &v1_, &v2_, &v3LW_, &v4_ );
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,6 +78,7 @@ void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
     v1_.open();
     v2_.open();
     v3LW_.open();
+    v4_.open();
 
     // Start the shell
     shell_.launch( infd, outfd );

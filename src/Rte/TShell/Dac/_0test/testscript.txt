@@ -19,9 +19,9 @@ try IF $_lastout$ != "{ (?, ?, ?, ?), (?, ?, ?, ?), (?, ?, ?, ?), (?, ?, ?, ?) }
 	bye app 1
 try ENDIF
 viewers 0
-tokenize * $_lastout$ v0-c3 6 v0-mc3 9 v0-c1 4
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 v0-c1 4
 viewers 3
-tokenize * $_lastout$ v3-c3 6 v3-mc3 9 v3-c1 4
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 v3-c1 4
 set
 try IF $v0-c3$ != 0 OR $v0-mc3$ != 0 OR $v0-c1$ != 0
 	print "Failed. Bad initial viewer counts for V0"
@@ -43,9 +43,9 @@ try IF $_lastout$ != "{ (`"bob`", T, 0) }"
 	bye app 1
 try ENDIF
 viewers 0
-tokenize * $_lastout$ v0-c3 6 v0-mc3 9 v0-c1 4
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 v0-c1 4
 viewers 3
-tokenize * $_lastout$ v3-c3 6 v3-mc3 9 v3-c1 4
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 v3-c1 4
 try IF $v0-c3$ != 0 OR $v0-mc3$ != 0 OR $v0-c1$ != 1
 	print "Failed. Bad viewer counts for Point update of bar1 for V0"
 	bye app 1
@@ -66,9 +66,9 @@ try IF $_lastout$ != "{ (`"bob`", T, 1) }"
 	bye app 1
 try ENDIF
 viewers 0
-tokenize * $_lastout$ v0-c3 6 v0-mc3 9 v0-c1 4
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 v0-c1 4
 viewers 3
-tokenize * $_lastout$ v3-c3 6 v3-mc3 9 v3-c1 4
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 v3-c1 4
 try IF $v0-c3$ != 0 OR $v0-mc3$ != 0 OR $v0-c1$ != 2
 	print "Failed. Bad viewer counts for Tuple update of bar1 for V0"
 	bye app 1
@@ -90,9 +90,9 @@ try IF $_lastout$ != "{ (T, `"a`", T, 0), (F, `"b`", T, 1), (F, `"c`", F, 2), (T
 	bye app 1
 try ENDIF
 viewers 0
-tokenize * $_lastout$ v0-c3 6 v0-mc3 9 v0-c1 4
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 v0-c1 4
 viewers 3
-tokenize * $_lastout$ v3-c3 6 v3-mc3 9 v3-c1 4
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 v3-c1 4
 try IF $v0-c3$ != 1 OR $v0-mc3$ != 1 OR $v0-c1$ != 0
 	print "Failed. Bad viewer counts for Point update of bar3 for V0"
 	bye app 1
@@ -113,9 +113,9 @@ try IF $_lastout$ != "(T, `"d`", T, 44)"
 	bye app 1
 try ENDIF
 viewers 0
-tokenize * $_lastout$ v0-c3 6 v0-mc3 9 v0-c1 4
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 v0-c1 4
 viewers 3
-tokenize * $_lastout$ v3-c3 6 v3-mc3 9 v3-c1 4
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 v3-c1 4
 try IF $v0-c3$ != 2 OR $v0-mc3$ != 1 OR $v0-c1$ != 0
 	print "Failed. Bad viewer counts for Tuple[3] update of bar3 for V0"
 	bye app 1
@@ -136,9 +136,9 @@ try IF $_lastout$ != "(T, `"c`", F, 2)"
 	bye app 1
 try ENDIF
 viewers 0
-tokenize * $_lastout$ v0-c3 6 v0-mc3 9 v0-c1 4
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 v0-c1 4
 viewers 3
-tokenize * $_lastout$ v3-c3 6 v3-mc3 9 v3-c1 4
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 v3-c1 4
 try IF $v0-c3$ != 3 OR $v0-mc3$ != 2 OR $v0-c1$ != 0
 	print "Failed. Bad viewer counts for Tuple[2] update of bar3 for V0"
 	bye app 1
@@ -159,9 +159,9 @@ try IF $_lastout$ != "(T, `"d`", T, 44)"
 	bye app 1
 try ENDIF
 viewers 0
-tokenize * $_lastout$ v0-c3 6 v0-mc3 9 v0-c1 4
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 v0-c1 4
 viewers 3
-tokenize * $_lastout$ v3-c3 6 v3-mc3 9 v3-c1 4
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 v3-c1 4
 try IF $v0-c3$ != 3 OR $v0-mc3$ != 2 OR $v0-c1$ != 0
 	print "Failed. Bad viewer counts for Tuple[3] 'duplicate' update of bar3 for V0"
 	bye app 1
@@ -436,6 +436,203 @@ try IF $_lastout$ != "{ (?, ?, ?), (?, 111, ?, ?) }"
 try ENDIF
 
 
+
+#
+# Test Delta  (Bar2 -->compare by value semantics)
+#
+writem bar2 {(?,?,?), (?,?,?,?)}
+viewers clear
+writem bar2 {(?,?,?), (?,?,1000,?)}
+viewers 1
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 1 
+	print "Failed. DeltaTime: Bar2: Bad viewer counts for set value semantics V1"
+	bye app 1
+try ENDIF
+readm bar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1000, ?) }"
+	print "Failed. DeltaTime: Bar2: set value"
+	bye app 1
+try ENDIF
+writem bar2 {(?,?,?), (?,?,1032,?)}
+viewers 1
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 1 
+	print "Failed. DeltaTime: Bar2: Bad viewer counts  set value#1 - Less than delta threshold semantics V1"
+	bye app 1
+try ENDIF
+readm bar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1032, ?) }"
+	print "Failed. DeltaTime: Bar2: set value#1 - Less than delta threshold"
+	bye app 1
+try ENDIF
+writem bar2 {(?,?,?), (?,?,1060,?)}
+viewers 1
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 1 
+	print "Failed. DeltaTime: Bar2: Bad viewer counts  set value#2 - Less than delta threshold semantics V1"
+	bye app 1
+try ENDIF
+readm bar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1060, ?) }"
+	print "Failed. DeltaTime: Bar2: set value#2 - Less than delta threshold"
+	bye app 1
+try ENDIF
+writem bar2 {(?,?,?), (?,?,1061,?)}
+viewers 1
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 2 
+	print "Failed. DeltaTime: Bar2: Bad viewer counts  set value#3 - greater than delta threshold semantics V1"
+	bye app 1
+try ENDIF
+readm bar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1061, ?) }"
+	print "Failed. DeltaTime: Bar2: set value#3 - greater than delta threshold"
+	bye app 1
+try ENDIF
+writem bar2 {(?,?,?), (?,?,999,?)}
+viewers 1
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 3 
+	print "Failed. DeltaTime: Bar2: Bad viewer counts  set value#4 - greater than delta threshold semantics V1"
+	bye app 1
+try ENDIF
+readm bar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 999, ?) }"
+	print "Failed. DeltaTime: Bar2: set value#4 - greater than delta threshold"
+	bye app 1
+try ENDIF
+
+
+#
+# Test Delta  (FooBar2 -->compare by seqnumber semantics)
+#
+writem foobar2 {(?,?,?), (?,?,?,?)}
+viewers clear
+writem foobar2 {(?,?,?), (?,?,1000,?)}
+viewers 2
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 1 
+	print "Failed. DeltaTime: FooBar2: Bad viewer counts for set value semantics V2"
+	bye app 1
+try ENDIF
+readm foobar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1000, ?) }"
+	print "Failed. DeltaTime: FooBar2: set value"
+	bye app 1
+try ENDIF
+writem foobar2 {(?,?,?), (?,?,1032,?)}
+viewers 2
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 2 
+	print "Failed. DeltaTime: FooBar2: Bad viewer counts  set value#1 - Less than delta threshold semantics V2"
+	bye app 1
+try ENDIF
+readm foobar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1032, ?) }"
+	print "Failed. DeltaTime: FooBar2: set value#1 - Less than delta threshold"
+	bye app 1
+try ENDIF
+writem foobar2 {(?,?,?), (?,?,1060,?)}
+viewers 2
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 3 
+	print "Failed. DeltaTime: FooBar2: Bad viewer counts  set value#2 - Less than delta threshold semantics V2"
+	bye app 1
+try ENDIF
+readm foobar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1060, ?) }"
+	print "Failed. DeltaTime: FooBar2: set value#2 - Less than delta threshold"
+	bye app 1
+try ENDIF
+writem foobar2 {(?,?,?), (?,?,1061,?)}
+viewers 2
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 4 
+	print "Failed. DeltaTime: FooBar2: Bad viewer counts  set value#3 - greater than delta threshold semantics V2"
+	bye app 1
+try ENDIF
+readm foobar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1061, ?) }"
+	print "Failed. DeltaTime: FooBar2: set value#3 - greater than delta threshold"
+	bye app 1
+try ENDIF
+writem foobar2 {(?,?,?), (?,?,999,?)}
+viewers 2
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 5 
+	print "Failed. DeltaTime: FooBar2: Bad viewer counts  set value#4 - greater than delta threshold semantics V2"
+	bye app 1
+try ENDIF
+readm foobar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 999, ?) }"
+	print "Failed. DeltaTime: FooBar2: set value#4 - greater than delta threshold"
+	bye app 1
+try ENDIF
+
+
+#
+# Test MD5 Checksum  (Bar2 -->compare by value semantics)
+#
+writem bar2 {(?,?,?), (?,?,?,?)}
+viewers clear
+writem bar2 {(?,?,?), (?,?,?,E0000000000000000000000000000007)}
+viewers 1
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 1 
+	print "Failed. Md5: Bar2: Bad viewer counts for set value semantics V1"
+	bye app 1
+try ENDIF
+readm bar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, E0000000000000000000000000000007) }"
+	print "Failed. Md5: Bar2: set value"
+	bye app 1
+try ENDIF
+writem bar2 {(?,?,?), (?,?,?,123)}
+viewers 1
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 2 
+	print "Failed. Md5: Bar2: Bad viewer counts for set value semantics V1"
+	bye app 1
+try ENDIF
+readm bar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, 12300000000000000000000000000000) }"
+	print "Failed. Md5: Bar2: set value"
+	bye app 1
+try ENDIF
+
+
+#
+# Test MD5 Checksum  (FooBar2 -->compare by seqnumber semantics)
+#
+writem foobar2 {(?,?,?), (?,?,?,?)}
+viewers clear
+writem foobar2 {(?,?,?), (?,?,?,E0000000000000000000000000000007)}
+viewers 2
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 1 
+	print "Failed. Md5: FooBar2: Bad viewer counts for set value semantics V2"
+	bye app 1
+try ENDIF
+readm foobar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, E0000000000000000000000000000007) }"
+	print "Failed. Md5: FooBar2: set value"
+	bye app 1
+try ENDIF
+writem foobar2 {(?,?,?), (?,?,?,123)}
+viewers 2
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 2 
+	print "Failed. Md5: FooBar2: Bad viewer counts for set value semantics V2"
+	bye app 1
+try ENDIF
+readm foobar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, 12300000000000000000000000000000) }"
+	print "Failed. Md5: FooBar2: set value"
+	bye app 1
+try ENDIF
+
+
 #
 # TODO: Remaining tests...
 #
@@ -462,4 +659,4 @@ bye app 0
 trace on
 trace section on _0test
 writem ll
-writem bar2 {,(3,7,11,000000000000000000000000000000A0)}
+writem foobar2 {,(3,7,11,000000000000000000000000000000A0)}

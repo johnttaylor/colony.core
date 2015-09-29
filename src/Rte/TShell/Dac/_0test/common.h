@@ -34,6 +34,11 @@
 #include "Rte/TShell/Dac/_0test/Point/bar3_q.h"
 #include "Rte/TShell/Dac/_0test/Point/bar3_v.h"
 
+#include "Rte/TShell/Dac/_0test/Point/bar4_m.h"
+#include "Rte/TShell/Dac/_0test/Point/bar4_c.h"
+#include "Rte/TShell/Dac/_0test/Point/bar4_q.h"
+#include "Rte/TShell/Dac/_0test/Point/bar4_v.h"
+
 #include "Cpl/TShell/Dac/Cmd/Command.h"
 
 
@@ -77,7 +82,7 @@ static const char* n2s_( const char* elementValue, bool isValid )
 static void traceFoo1_( Tuple::Foo1& tuple, const char* name, const char* msg )
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo1: %s", name, msg ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s, isLocked=%s",  n2s_(tuple.m_name.get(), tuple.m_name.isValid()), v2t_(tuple.m_name.validState()), b2t_(tuple.m_name.isInUse()), b2t_(tuple.m_name.isLocked())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _name:=[%s]. valid=%s, inUse=%s, isLocked=%s",  n2s_(tuple.m_name.get(),tuple.m_name.isValid()), v2t_(tuple.m_name.validState()), b2t_(tuple.m_name.isInUse()), b2t_(tuple.m_name.isLocked())  ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s, isLocked=%s", tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse()), b2t_(tuple.m_enabled.isLocked())  ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%s, isLocked=%s",   tuple.m_count.get(), v2t_(tuple.m_count.validState()), b2t_(tuple.m_count.isInUse()), b2t_(tuple.m_count.isLocked()) ));
     }
@@ -89,9 +94,9 @@ static void traceFoo2_( Tuple::Foo2& tuple, const char* name, const char* msg )
 
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo2: %s", name, msg ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _flags:=0x%08lX. valid=%s, inUse=%s, isLocked=%s", tuple.m_flags.get(), v2t_(tuple.m_flags.validState()), b2t_(tuple.m_flags.isInUse()), b2t_(tuple.m_flags.isLocked())  ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _seqNum:=%ld. valid=%s, inUse=%s, isLocked=%s",tuple.m_seqNum.get(), v2t_(tuple.m_seqNum.validState()), b2t_(tuple.m_seqNum.isInUse()), b2t_(tuple.m_seqNum.isLocked()) ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _time:=%lld. valid=%s, inUse=%s, isLocked=%s",  (long long)tuple.m_time.get(), v2t_(tuple.m_time.validState()), b2t_(tuple.m_time.isInUse()), b2t_(tuple.m_time.isLocked()) ));
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _md5:=0x%s. valid=%s, inUse=%s, isLocked=%s",   temp(), v2t_(tuple.m_checksum.validState()), b2t_(tuple.m_checksum.isInUse()), b2t_(tuple.m_checksum.isLocked()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _seqNum:=%ld. valid=%s, inUse=%s, isLocked=%s",    tuple.m_seqNum.get(), v2t_(tuple.m_seqNum.validState()), b2t_(tuple.m_seqNum.isInUse()), b2t_(tuple.m_seqNum.isLocked()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _time:=%lld. valid=%s, inUse=%s, isLocked=%s",     (long long)tuple.m_time.get(), v2t_(tuple.m_time.validState()), b2t_(tuple.m_time.isInUse()), b2t_(tuple.m_time.isLocked()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _md5:=0x%s. valid=%s, inUse=%s, isLocked=%s",      temp(), v2t_(tuple.m_checksum.validState()), b2t_(tuple.m_checksum.isInUse()), b2t_(tuple.m_checksum.isLocked()) ));
     }
 
 static void traceFoo3_( Tuple::Foo3& tuple, const char* name, const char* msg )
@@ -102,6 +107,20 @@ static void traceFoo3_( Tuple::Foo3& tuple, const char* name, const char* msg )
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _enabled:=%d. valid=%s, inUse=%s, isLocked=%s",         tuple.m_enabled.get(), v2t_(tuple.m_enabled.validState()), b2t_(tuple.m_enabled.isInUse()), b2t_(tuple.m_enabled.isLocked())  ));
     CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _count:=%d. valid=%s, inUse=%s, isLocked=%s",           tuple.m_count.get(), v2t_(tuple.m_count.validState()), b2t_(tuple.m_count.isInUse()), b2t_(tuple.m_count.isLocked()) ));
     }
+
+static void traceFoo4_( Tuple::Foo4& tuple, const char* name, const char* msg )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    # %s::Foo4: %s", name, msg ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _float:=%g. valid=%s, inUse=%s, isLocked=%s",   tuple.m_single.get(), v2t_(tuple.m_single.validState()), b2t_(tuple.m_single.isInUse()), b2t_(tuple.m_single.isLocked())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _double:=%g. valid=%s, inUse=%s, isLocked=%s",  tuple.m_double.get(), v2t_(tuple.m_double.validState()), b2t_(tuple.m_double.isInUse()), b2t_(tuple.m_double.isLocked())  ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _sizet:=%p. valid=%s, inUse=%s, isLocked=%s",   tuple.m_sizet.get(),  v2t_(tuple.m_sizet.validState()), b2t_(tuple.m_sizet.isInUse()), b2t_(tuple.m_sizet.isLocked()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _ptr:=%p. valid=%s, inUse=%s, isLocked=%s",     tuple.m_ptr.get(),  v2t_(tuple.m_ptr.validState()), b2t_(tuple.m_ptr.isInUse()), b2t_(tuple.m_ptr.isLocked()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _int64:=lld. valid=%s, inUse=%s, isLocked=%s",  tuple.m_int64.get(),  v2t_(tuple.m_int64.validState()), b2t_(tuple.m_int64.isInUse()), b2t_(tuple.m_int64.isLocked()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _int8:=%d. valid=%s, inUse=%s, isLocked=%s",    tuple.m_int8.get(),  v2t_(tuple.m_int8.validState()), b2t_(tuple.m_int8.isInUse()), b2t_(tuple.m_int8.isLocked()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _uint16:=%u. valid=%s, inUse=%s, isLocked=%s",  tuple.m_uint16.get(),  v2t_(tuple.m_uint16.validState()), b2t_(tuple.m_uint16.isInUse()), b2t_(tuple.m_uint16.isLocked()) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("    #   _token4:=[%s]. valid=%s, inUse=%s, isLocked=%s",n2s_(tuple.m_token4.get(),tuple.m_token4.isValid()),  v2t_(tuple.m_token4.validState()), b2t_(tuple.m_token4.isInUse()), b2t_(tuple.m_token4.isLocked()) ));
+    }
+
 
 
 static void traceBar1_( Point::Bar1& point, const char* name, const char* msg )
@@ -134,6 +153,13 @@ static void traceBar3_( Point::Bar3& point, const char* name, const char* msg )
         }
     }
 
+static void traceBar4_( Point::Bar4& point, const char* name, const char* msg )
+    {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("==> %s::Bar4: %s", name, msg ));
+    traceFoo4_( point.m_tuple, name, "" );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("") );
+    }
+
 
 ////////////////////////////////////////////
 class ViewerApi
@@ -145,6 +171,8 @@ public:
     virtual unsigned getPoint2Count(void) const = 0;
     ///
     virtual unsigned getPoint3Count(void) const = 0;
+    ///
+    virtual unsigned getPoint4Count(void) const = 0;
     ///
     virtual unsigned getPoint3MembershipCount(void) const = 0;
     ///
@@ -167,6 +195,8 @@ public: // Make public to simply testing
     ///
     Point::ViewerBar3<ViewerContext>   m_bar3;
     ///
+    Point::ViewerBar4<ViewerContext>   m_bar4;
+    ///
     int                                m_openViewerCount;
     ///
     Cpl::Itc::CloseRequest::CloseMsg*  m_closeMsgPtr;
@@ -179,6 +209,8 @@ public: // Make public to simply testing
     ///
     unsigned                           m_changed3Count;
     ///
+    unsigned                           m_changed4Count;
+    ///
     unsigned                           m_membershipChanged3Count;
     ///
     bool                               m_useValueCompare1;
@@ -186,6 +218,8 @@ public: // Make public to simply testing
     bool                               m_useValueCompare2;
     ///
     bool                               m_useValueCompare3;
+    ///
+    bool                               m_useValueCompare4;
 
 
 public:
@@ -195,12 +229,15 @@ public:
                    Point::ModelBar1&    modelBar1,
                    Point::ModelBar2&    modelBar2,
                    Point::ModelBar3&    modelBar3,
+                   Point::ModelBar4&    modelBar4,
                    bool                 enableAllInUseBar1  = true,
                    bool                 enableAllInUseBar2  = true,
                    bool                 enableAllInUseBar3  = true,
+                   bool                 enableAllInUseBar4  = true,
                    bool                 useValueCompareBar1 = true,
                    bool                 useValueCompareBar2 = true,
-                   bool                 useValueCompareBar3 = true
+                   bool                 useValueCompareBar3 = true,
+                   bool                 useValueCompareBar4 = true
                  )
         :CloseSync(viewerMbox)
         ,m_bar1(*this,
@@ -221,16 +258,24 @@ public:
                 modelBar3,
                 viewerMbox
                )
+        ,m_bar4(*this,
+                &ViewerContext::bar4Changed,
+                &ViewerContext::bar4Stopped,
+                modelBar4,
+                viewerMbox
+               )
         ,m_openViewerCount(0)
         ,m_closeMsgPtr(0)
         ,m_name(viewerName)
         ,m_changed1Count(0)
         ,m_changed2Count(0)
         ,m_changed3Count(0)
+        ,m_changed4Count(0)
         ,m_membershipChanged3Count(0)
         ,m_useValueCompare1(useValueCompareBar1)
         ,m_useValueCompare2(useValueCompareBar2)
         ,m_useValueCompare3(useValueCompareBar3)
+        ,m_useValueCompare4(useValueCompareBar4)
             {
             if ( enableAllInUseBar1 )
                 {
@@ -243,6 +288,10 @@ public:
             if ( enableAllInUseBar3 )
                 {
                 m_bar3.setAllInUseState(true);
+                }
+            if ( enableAllInUseBar4 )
+                {
+                m_bar4.setAllInUseState(true);
                 }
             }
 
@@ -308,6 +357,19 @@ protected:
         viewerStopped();
         }
 
+    ///
+    void bar4Changed(void)
+        {
+        m_changed4Count++;
+        traceBar4_( m_bar4, m_name, "Viewer::Changed" );
+        }
+    ///
+    void bar4Stopped(void)
+        {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Viewer(%s).Bar4 STOPPED", m_name ));
+        viewerStopped();
+        }
+
 
 protected: // Cpl::Itc::Close/Open
     void request( Cpl::Itc::OpenRequest::OpenMsg& msg )
@@ -316,6 +378,7 @@ protected: // Cpl::Itc::Close/Open
         m_openViewerCount += m_bar1.startViewing( m_useValueCompare1, true );
         m_openViewerCount += m_bar2.startViewing( m_useValueCompare2, true );
         m_openViewerCount += m_bar3.startViewing( m_useValueCompare3, true );
+        m_openViewerCount += m_bar4.startViewing( m_useValueCompare4, true );
         msg.returnToSender();
         }
 
@@ -332,6 +395,7 @@ protected: // Cpl::Itc::Close/Open
             m_bar1.stopViewing();
             m_bar2.stopViewing();
             m_bar3.stopViewing();
+            m_bar4.stopViewing();
             m_closeMsgPtr = &msg;        
             }
         }
@@ -354,6 +418,11 @@ public:
         return m_changed3Count;
         }
     ///
+    unsigned getPoint4Count(void) const
+        {
+        return m_changed4Count;
+        }
+    ///
     unsigned getPoint3MembershipCount(void) const
         {
         return m_membershipChanged3Count;
@@ -364,9 +433,11 @@ public:
         m_changed1Count           = 0;
         m_changed2Count           = 0;
         m_changed3Count           = 0;
+        m_changed4Count           = 0;
         m_membershipChanged3Count = 0;
         }
 };
+
 
 class LWViewerContext: public ViewerApi,
                        public Cpl::Itc::CloseSync
@@ -541,6 +612,11 @@ public:
         return m_changed3Count;
         }
     ///
+    unsigned getPoint4Count(void) const
+        {
+        return 0;
+        }
+    ///
     unsigned getPoint3MembershipCount(void) const
         {
         return m_membershipChanged3Count;
@@ -569,7 +645,7 @@ public:
     const char* getHelp() const throw()    { return "  Displays the Model viewer counts and optionally clears the counts."; }
     
     ///
-    static const unsigned MAX_VIEWERS = 4;
+    static const unsigned MAX_VIEWERS = 5;
 
     /// Viewers
     ViewerApi*  m_viewers[MAX_VIEWERS];
@@ -581,7 +657,8 @@ public:
              ViewerApi*                                      viewer0 = 0,
              ViewerApi*                                      viewer1 = 0,
              ViewerApi*                                      viewer2 = 0,
-             ViewerApi*                                      viewer3 = 0
+             ViewerApi*                                      viewer3 = 0,
+             ViewerApi*                                      viewer4 = 0
            )
     :Command(commandList, "viewers")
         {
@@ -589,6 +666,7 @@ public:
         m_viewers[1] = viewer1;
         m_viewers[2] = viewer2;
         m_viewers[3] = viewer3;
+        m_viewers[4] = viewer4;
         }
 
 
@@ -598,7 +676,8 @@ public:
              ViewerApi*                                      viewer0 = 0,
              ViewerApi*                                      viewer1 = 0,
              ViewerApi*                                      viewer2 = 0,
-             ViewerApi*                                      viewer3 = 0
+             ViewerApi*                                      viewer3 = 0,
+             ViewerApi*                                      viewer4 = 0
            )
     :Command(commandList, "viewers", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
         {
@@ -606,6 +685,7 @@ public:
         m_viewers[1] = viewer1;
         m_viewers[2] = viewer2;
         m_viewers[3] = viewer3;
+        m_viewers[4] = viewer4;
         }
 
 
@@ -688,11 +768,12 @@ public:
         ViewerApi* ptr = m_viewers[idx];
         if ( ptr )
             {
-            outtext.format( "viewer: %02d  Change counts: %02d %02d %02d  Membership3 Count: %02d",
+            outtext.format( "viewer: %02d  Change counts: %02d %02d %02d %02d  Membership3 Count: %02d",
                             idx, 
                             ptr->getPoint1Count(),
                             ptr->getPoint2Count(),
                             ptr->getPoint3Count(),
+                            ptr->getPoint4Count(),
                             ptr->getPoint3MembershipCount()
                           );
             return context.writeFrame( outtext );
