@@ -11,6 +11,8 @@
 
 #include "Basic.h"
 #include "Cpl/Text/atob.h"
+#include "Cpl/Math/real.h"
+
 
 
 ///
@@ -100,7 +102,7 @@ const char* Integer8_T::setFromText( const char* srcText, const char* terminatio
     int         temp;
     if ( Cpl::Text::a2i(temp, srcText, 0, terminationChars, &endPtr ) )
         {
-        if ( (temp & (~0xff)) == 0 )
+        if ( temp <= INT8_MAX && temp >= INT8_MIN )
             {
             m_data = temp;
             return endPtr;
@@ -145,7 +147,7 @@ const char* Uinteger8_T::setFromText( const char* srcText, const char* terminati
     unsigned    temp;
     if ( Cpl::Text::a2ui(temp, srcText, 0, terminationChars, &endPtr ) )
         {
-        if ( temp <= 0xff )
+        if ( temp <= UINT8_MAX )
             {
             m_data = temp;
             return endPtr;
@@ -190,7 +192,7 @@ const char* Integer16_T::setFromText( const char* srcText, const char* terminati
     int         temp;
     if ( Cpl::Text::a2i(temp, srcText, 0, terminationChars, &endPtr ) )
         {
-        if ( (temp & (~0xffff)) == 0 )
+        if ( temp <= INT16_MAX && temp >= INT16_MIN )
             {
             m_data = temp;
             return endPtr;
@@ -234,7 +236,7 @@ const char* Uinteger16_T::setFromText( const char* srcText, const char* terminat
     unsigned    temp;
     if ( Cpl::Text::a2ui(temp, srcText, 0, terminationChars, &endPtr ) )
         {
-        if ( temp <= 0xffff )
+        if ( temp <= UINT16_MAX )
             {
             m_data = temp;
             return endPtr;
@@ -278,7 +280,7 @@ const char* Integer32_T::setFromText( const char* srcText, const char* terminati
     long        temp;
     if ( Cpl::Text::a2l(temp, srcText, 0, terminationChars, &endPtr ) )
         {
-        if ( (temp & (~0xffffffff)) == 0 )
+        if ( temp <= INT32_MAX && temp >= INT32_MIN )
             {
             m_data = temp;
             return endPtr;
@@ -322,7 +324,7 @@ const char* Uinteger32_T::setFromText( const char* srcText, const char* terminat
     unsigned long temp;
     if ( Cpl::Text::a2ul(temp, srcText, 0, terminationChars, &endPtr ) )
         {
-        if ( temp <= 0xffffffff )
+        if ( temp <= UINT32_MAX )
             {
             m_data = temp;
             return endPtr;
@@ -515,6 +517,13 @@ Float_T::Float_T( float   initialValue,
     }
 
 
+bool Float_T::isDifferentFrom( const Api& other ) const
+    {
+    assertTypeMatches( other );
+    return Cpl::Math::areFloatsEqual( m_data, *((float*)(other.dataPointer())) );
+    }
+
+
 const char* Float_T::getTypeAsText(void) const
     {
     return "FLOAT";
@@ -525,7 +534,7 @@ const char* Float_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
-        dstMemory.formatOpt( append, "%G", m_data );
+        dstMemory.formatOpt( append, "%.9G", m_data );
         }
 
     return dstMemory;
@@ -539,9 +548,10 @@ const char* Float_T::setFromText( const char* srcText, const char* terminationCh
     if ( Cpl::Text::a2d(temp, srcText, terminationChars, &endPtr) )
         {
         m_data = (float) temp;
+        return endPtr;
         }
 
-    return false;
+    return 0;
     }
 
 
@@ -555,6 +565,13 @@ Double_T::Double_T( double   initialValue,
     }
 
 
+bool Double_T::isDifferentFrom( const Api& other ) const
+    {
+    assertTypeMatches( other );
+    return Cpl::Math::areDoublesEqual( m_data, *((double*)(other.dataPointer())) );
+    }
+
+
 const char* Double_T::getTypeAsText(void) const
     {
     return "DOUBLE";
@@ -565,7 +582,7 @@ const char* Double_T::toString( Cpl::Text::String& dstMemory, bool append ) cons
     {
     if ( convertStateToText( dstMemory, append ) )
         {
-        dstMemory.formatOpt( append, "%G", m_data );
+        dstMemory.formatOpt( append, "%.17G", m_data );
         }
 
     return dstMemory;
@@ -579,9 +596,10 @@ const char* Double_T::setFromText( const char* srcText, const char* terminationC
     if ( Cpl::Text::a2d(temp, srcText, terminationChars, &endPtr) )
         {
         m_data = temp;
+        return endPtr;
         }
 
-    return false;
+    return 0;
     }
 
 

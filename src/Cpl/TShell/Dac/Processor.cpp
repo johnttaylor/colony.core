@@ -443,28 +443,28 @@ const char* resultToString_( Command::Result_T errcode )
     switch( errcode )
         {
         default: 
-            return "ERRNO: Command failed - unknown error code";
+            return "ERRNO ?: Command failed - unknown error code";
 
         case Command::eERROR_BAD_SYNTAX:
-            return "ERRNO: (1) Unable to parse command string";
+            return "ERRNO 1: Unable to parse command string";
 
         case Command::eERROR_INVALID_CMD:
-            return "ERRNO: (2) Command not supported";
+            return "ERRNO 2: Command not supported";
 
         case Command::eERROR_IO:
-            return "ERRNO: (3) Input/Output stream IO encounter";
+            return "ERRNO 3: Input/Output stream IO encounter";
 
         case Command::eERROR_MISSING_ARGS:
-            return "ERRNO: (4) Command is missing argument(s)";
+            return "ERRNO 4: Command is missing argument(s)";
 
         case Command::eERROR_EXTRA_ARGS:
-            return "ERRNO: (5) Command encounter 'extra' argument(s)";
+            return "ERRNO 5: Command encounter 'extra' argument(s)";
 
         case Command::eERROR_INVALID_ARGS:
-            return "ERRNO: (6) One or more Command arguments are incorrect/invalid";
+            return "ERRNO 6: One or more Command arguments are incorrect/invalid";
 
         case Command::eERROR_FAILED:
-            return "ERRNO: (7) Command failed to complete one or more of its actions";
+            return "ERRNO 7: Command failed to complete one or more of its actions";
         }
 
     return "ERROR: I SHOULD NEVER GET HERE!";

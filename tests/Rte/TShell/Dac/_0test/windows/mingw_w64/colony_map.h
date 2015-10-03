@@ -1,6 +1,10 @@
 #ifndef COLONY_MAP_H_
 #define COLONY_MAP_H_
 
+/// Missing support for stdint.h
+#include "Cpl/Type/Stdint.h"
+
+
 /// Null BSP
 #include "Bsp/UserSpace/Api.h"
 

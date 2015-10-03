@@ -348,6 +348,9 @@ public:
            );
 
 public:
+    /// See Rte::Element::Api (need to use "almost equal" since this is floating point)
+    bool isDifferentFrom( const Api& other ) const;
+
     /// See Rte::Element::Api
     const char* getTypeAsText(void) const;
 
@@ -372,6 +375,9 @@ public:
             );
 
 public:
+    /// See Rte::Element::Api (need to use "almost equal" since this is floating point)
+    bool isDifferentFrom( const Api& other ) const;
+
     /// See Rte::Element::Api
     const char* getTypeAsText(void) const;
 

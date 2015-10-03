@@ -553,7 +553,6 @@ void Base::copyTupleAsText( Cpl::Text::String& results, unsigned tupleIdx )
 
     // Loop through ALL elements
     Rte::Tuple::Api& tuple       = m_myPoint.getTuple(tupleIdx);
-    bool             isContainer = m_myPoint.isContainer();
     unsigned         i;
     for(i=0; i<tuple.getNumElements(); i++)
         {

@@ -56,7 +56,7 @@ protected:
 
 
     /// Helper method that handles the lock/unlock/invalidate requests
-    virtual const char* Base::parsePrefixOps( const char* source, bool& lockAction, bool& unlockAction, bool& invalidAction, bool& updated, const char* terminationChars );
+    virtual const char* parsePrefixOps( const char* source, bool& lockAction, bool& unlockAction, bool& invalidAction, bool& updated, const char* terminationChars );
 
 
     /** Helper method that set's the Element value from a text string.  Has the 

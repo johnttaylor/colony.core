@@ -30,6 +30,8 @@
 #include "Cpl/TShell/Dac/Cmd/Loop.h"
 #include "Cpl/TShell/Dac/Cmd/Exe.h"
 #include "Cpl/TShell/Dac/Cmd/Tokenize.h"
+#include "Cpl/TShell/Dac/Cmd/Strip.h"
+#include "Cpl/TShell/Dac/Cmd/ToDec.h"
 
 
 #define SECT_     "_0test"

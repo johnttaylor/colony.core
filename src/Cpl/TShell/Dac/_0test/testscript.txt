@@ -504,6 +504,81 @@ try ENDIF
 print "Passed ALL TOKENIZE tests."
 
 
+
+# TEST STRIP command
+set a 0
+set b "hello world"
+set c " $b$"
+strip $c$ a h
+print "[$c$] [$a$]"
+try IF $a$ != " hello world"
+      print "Failed Strip Test #1"
+      bye app 1
+try ENDIF
+
+set c $b$
+strip $c$ a h
+print "[$c$] [$a$]"
+try IF $a$ != "ello world"
+      print "Failed Strip Test #2"
+      bye app 1
+try ENDIF
+
+set c ". $b$ "
+strip $c$ a " ." " "
+print "[$c$] [$a$]"
+try IF $a$ != "hello world"
+      print "Failed Strip Test #3"
+      bye app 1
+try ENDIF
+
+set c ". $b$ ;"
+strip $c$ a "" "; "
+print "[$c$] [$a$]"
+try IF $a$ != ". hello world"
+      print "Failed Strip Test #4"
+      bye app 1
+try ENDIF
+
+
+# TEST TODEC command
+set a 0
+set b 0xff
+todec $b$ a
+print "[$b$] [$a$]"
+try IF $a$ != 255
+      print "Failed ToDec Test #1"
+      bye app 1
+try ENDIF
+
+set a 0
+set b fe
+todec $b$ a
+print "[$b$] [$a$]"
+try IF $a$ != 254
+      print "Failed ToDec Test #2"
+      bye app 1
+try ENDIF
+
+set a 0
+set b 077
+todec $b$ a
+print "[$b$] [$a$]"
+try IF $a$ != 119
+      print "Failed ToDec Test #3"
+      bye app 1
+try ENDIF
+
+set a 0
+set b 77
+todec $b$ a 8
+print "[$b$] [$a$]"
+try IF $a$ != 63
+      print "Failed ToDec Test #4"
+      bye app 1
+try ENDIF
+
+
 # ALL DONE (and ALL passed)
 print "ALL TESTS PASSED!"
 bye app 0

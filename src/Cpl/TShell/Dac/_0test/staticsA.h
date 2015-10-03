@@ -25,11 +25,13 @@ static Cpl::TShell::Dac::Cmd::Trace                     traceCmd_( cmdlist, "inv
 static Cpl::TShell::Dac::Cmd::Set                       setCmd_( cmdlist, "invoke_special_static_constructor" );
 static Cpl::TShell::Dac::Cmd::Print                     printCmd_( cmdlist, "invoke_special_static_constructor" );
 static Cpl::TShell::Dac::Cmd::TPrint                    tprintCmd_( cmdlist, "invoke_special_static_constructor" );
-static Cpl::TShell::Dac::Cmd::Try                       tryCmd( cmdlist, "invoke_special_static_constructor" );
-static Cpl::TShell::Dac::Cmd::Inc                       incCmd( cmdlist, "invoke_special_static_constructor" );
-static Cpl::TShell::Dac::Cmd::Loop                      loopCmd( cmdlist, "invoke_special_static_constructor" );
-static Cpl::TShell::Dac::Cmd::Exe                       ExeCmd( cmdlist, "invoke_special_static_constructor" );
-static Cpl::TShell::Dac::Cmd::Tokenize                  TokenizeCmd( cmdlist, "invoke_special_static_constructor" );
+static Cpl::TShell::Dac::Cmd::Try                       tryCmd_( cmdlist, "invoke_special_static_constructor" );
+static Cpl::TShell::Dac::Cmd::Inc                       incCmd_( cmdlist, "invoke_special_static_constructor" );
+static Cpl::TShell::Dac::Cmd::Loop                      loopCmd_( cmdlist, "invoke_special_static_constructor" );
+static Cpl::TShell::Dac::Cmd::Exe                       ExeCmd_( cmdlist, "invoke_special_static_constructor" );
+static Cpl::TShell::Dac::Cmd::Tokenize                  TokenizeCmd_( cmdlist, "invoke_special_static_constructor" );
+static Cpl::TShell::Dac::Cmd::Strip                     StripCmd_( cmdlist, "invoke_special_static_constructor" );
+static Cpl::TShell::Dac::Cmd::ToDec                     ToDecCmd_( cmdlist, "invoke_special_static_constructor" );
 
 
 static Apple   mockApp;

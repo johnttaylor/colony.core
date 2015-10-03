@@ -25,6 +25,8 @@
 #include "Cpl/TShell/Dac/Cmd/Loop.h"
 #include "Cpl/TShell/Dac/Cmd/Exe.h"
 #include "Cpl/TShell/Dac/Cmd/Tokenize.h"
+#include "Cpl/TShell/Dac/Cmd/Strip.h"
+#include "Cpl/TShell/Dac/Cmd/ToDec.h"
 
 #include "Rte/TShell/Dac/Cmd/ReadM.h"
 #include "Rte/TShell/Dac/Cmd/WriteM.h"
@@ -57,6 +59,8 @@ static Cpl::TShell::Dac::Cmd::Inc                       incCmd_( cmdlist, "invok
 static Cpl::TShell::Dac::Cmd::Loop                      loopCmd_( cmdlist, "invoke_special_static_constructor" );
 static Cpl::TShell::Dac::Cmd::Exe                       ExeCmd_( cmdlist, "invoke_special_static_constructor" );
 static Cpl::TShell::Dac::Cmd::Tokenize                  TokenizeCmd_( cmdlist, "invoke_special_static_constructor" );
+static Cpl::TShell::Dac::Cmd::Strip                     StripCmd_( cmdlist, "invoke_special_static_constructor" );
+static Cpl::TShell::Dac::Cmd::ToDec                     ToDecCmd_( cmdlist, "invoke_special_static_constructor" );
 
 static Rte::TShell::Dac::Cmd::ReadM                     readCmd_( cmdlist, pointList, "invoke_special_static_constructor" );
 static Rte::TShell::Dac::Cmd::WriteM                    writeCmd_( cmdlist, pointList, "invoke_special_static_constructor" );

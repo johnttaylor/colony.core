@@ -9,6 +9,8 @@ set v2-c2 a
 set v3-mc3 a
 set v3-c3 a
 set v3-c1 a
+set t1 a
+set t2 a
 
 viewers clear
 viewers
@@ -32,6 +34,7 @@ try IF $v3-c3$ != 0 OR $v3-mc3$ != 0 OR $v3-c1$ != 0
 	bye app 1
 try ENDIF
 set
+
 
 #
 # Write an entire point
@@ -632,6 +635,273 @@ try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, 12300000000000000000000000000000) }
 	bye app 1
 try ENDIF
 
+#
+# Test remaining data type conversion
+#
+
+# Float
+writem bar4 {(3.14159274,,,,,,,)}
+readm bar4
+tokenize * $_lastout$ t1 1
+strip $t1$ t1 "(" ","
+try IF $t1$ != 3.14159274
+    print "Failed. Float. set#1 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(-3e14,,,,,,,)}
+readm bar4
+tokenize * $_lastout$ t1 1
+strip $t1$ t1 "(" ","
+try IF $t1$ != -3.0000001E+014
+    print "Failed. Float. set#2 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {( 3 ,,,,,,,)}
+readm bar4
+tokenize * $_lastout$ t1 1
+strip $t1$ t1 "(" ","
+try IF $_lastout$ != 3
+    print "Failed. Float. set#3 value"
+    #bye app 1
+try ENDIF
+writem bar4 {( ? ,,,,,,,)}
+
+
+# Double
+writem bar4 {(,3.1415926535897931,,,,,,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 2
+strip $t1$ t1 " " ","
+try IF $t1$ != 3.1415926535897931 
+    print "Failed. Double. set#1 value"
+    #bye app 1
+try ENDIF
+
+writem bar4 {(?,-3e14 ,,,,,,)}
+readm bar4
+tokenize * $_lastout$ t1 2
+strip $t1$ t1 " " ","
+try IF $t1$ != -300000000000000 
+    print "Failed. Double. set#2"
+    #bye app 1
+try ENDIF
+
+writem bar4 {( ?, 3 ,,,,,,)}
+readm bar4
+tokenize * $_lastout$ t1 2
+strip $t1$ t1 " " ","
+try IF $t1$ != 3
+    print "Failed. Double. set#3 value"
+    #bye app 1
+try ENDIF
+writem bar4 {( ,?,,,,,,)}
+
+
+# Size_t.
+writem bar4 {(,,12345,,,,,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 3
+strip $t1$ t1 " " ","
+todec $t1$ t1
+try IF $t1$ != 12345
+    print "Failed: Size_t. Set#1 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,0xffffffff,,,,,)}
+readm bar4
+tokenize * $_lastout$ t1 3
+strip $t1$ t1 " " ","
+todec $t1$ t1
+try IF $t1$ != 4294967295
+    print "Failed: Size_t. Set#2 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,0,,,,,)}
+readm bar4
+tokenize * $_lastout$ t1 3
+strip $t1$ t1 " " ","
+todec $t1$ t1
+try IF $t1$ != 0
+    print "Failed: Size_t. Set#3 value"
+    bye app 1
+try ENDIF
+writem bar4 {(,,?,,,,,)}
+
+
+# Void Pointer.
+writem bar4 {(,,,212345,,,,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 4
+strip $t1$ t1 " " ","
+todec $t1$ t1
+try IF $t1$ != 212345
+    print "Failed: VointPtr. Set#1 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,,0xfffffffe,,,,)}
+readm bar4
+tokenize * $_lastout$ t1 4
+strip $t1$ t1 " " ","
+todec $t1$ t1
+try IF $t1$ != 4294967294
+    print "Failed: VointPtr. Set#2 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,,0,,,,)}
+readm bar4
+tokenize * $_lastout$ t1 4
+strip $t1$ t1 " " ","
+todec $t1$ t1
+try IF $t1$ != 0
+    print "Failed: VointPtr. Set#3 value"
+    bye app 1
+try ENDIF
+writem bar4 {(,,,?,,,,)}
+
+
+# Int64.
+writem bar4 {(,,,,-2,,,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 5
+strip $t1$ t1 " " ","
+try IF $t1$ != -2
+    print "Failed: Int64. Set#1 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,,,0x7fff0000aaaa5555,,,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 5
+strip $t1$ t1 " " ","
+try IF $t1$ != 9223090564741354837
+    print "Failed: Int64. Set#2 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,,,-8070732004361349803,,,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 5
+strip $t1$ t1 " " ","
+try IF $t1$ != -8070732004361349803
+    print "Failed: Int64. Set#3 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,,,3,,,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 5
+strip $t1$ t1 " " ","
+try IF $t1$ != 3
+    print "Failed: Int64. Set#4 value"
+    bye app 1
+try ENDIF
+writem bar4 {(,,,,?,,,)}
+
+
+# Int8.
+writem bar4 {(,,,,,-2,,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 6
+strip $t1$ t1 " " ","
+try IF $t1$ != -2
+    print "Failed: Int8. Set#1 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,,,,0x7f,,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 6
+strip $t1$ t1 " " ","
+try IF $t1$ != 127
+    print "Failed: Int8. Set#2 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,,,,-128,,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 6
+strip $t1$ t1 " " ","
+try IF $t1$ != -128
+    print "Failed: Int8. Set#3 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,,,,3,,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 6
+strip $t1$ t1 " " ","
+try IF $t1$ != 3
+    print "Failed: Int8. Set#4 value"
+    bye app 1
+try ENDIF
+writem bar4 {(,,,,,?,,)}
+
+
+
+# Uint16.
+writem bar4 {(,,,,,,2,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 7
+strip $t1$ t1 " " ","
+try IF $t1$ != 2
+    print "Failed: Uint16. Set#1 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,,,,,0x7fff,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 7
+strip $t1$ t1 " " ","
+try IF $t1$ != 32767
+    print "Failed: Uint16. Set#2 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,,,,,0xFFFF,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 7
+strip $t1$ t1 " " ","
+try IF $t1$ != 65535
+    print "Failed: Uint16. Set#3 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,,,,,0x8000,)}
+readm bar4                                        
+tokenize * $_lastout$ t1 7
+strip $t1$ t1 " " ","
+try IF $t1$ != 32768
+    print "Failed: Uint16. Set#4 value"
+    bye app 1
+try ENDIF
+writem bar4 {(,,,,,,?,)}
+
+
+# Token4.
+writem bar4 {(,,,,,,,AbcD)}
+readm bar4                                        
+tokenize * $_lastout$ t1 8
+strip $t1$ t1 " " ")"
+try IF $t1$ != AbcD
+    print "Failed: Token4. Set#1 value"
+    bye app 1
+try ENDIF
+
+writem bar4 {(,,,,,,,"abcd")}
+readm bar4                                        
+tokenize * $_lastout$ t1 8
+strip $t1$ t1 " " ")"
+try IF $t1$ != abcd
+    print "Failed: Token4. Set#2 value"
+    bye app 1
+try ENDIF
+
 
 #
 # TODO: Remaining tests...
@@ -647,7 +917,6 @@ try ENDIF
 # Test of invalidate
 # 1) basic ? and ?<val> (and proper viewer counts) 
 
-# Test ALL Elements types (Done: BitFlags, Seqnum.  Remaining: MD5, Deltas, etc.)
 
 
 #
