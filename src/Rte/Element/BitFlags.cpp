@@ -9,7 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "Bitflags.h"
+#include "BitFlags.h"
 #include <memory.h>
 #include "Cpl/Text/atob.h"
 

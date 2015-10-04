@@ -69,6 +69,11 @@ Cpl::TShell::Stdio shell_( cmdProcessor_ );
 
 void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
     {
+    // Dummy calls to prevent compiler warnings/errors when TRACE is disabled at compile time
+    b2t_( true );
+    v2t_( 3 );
+    n2s_( "123", true );
+        
     // Create Model Thread
     Cpl::System::Thread::create( modelMailbox_,  "MODEL" );
     Cpl::System::Thread::create( viewerMailbox_, "Viewer" );

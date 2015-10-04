@@ -19,10 +19,6 @@ int main( int argc, char* const argv[] )
     // Initialize Colony
     Cpl::System::Api::initialize();
 
-    CPL_SYSTEM_TRACE_ENABLE();
-    CPL_SYSTEM_TRACE_ENABLE_SECTION("_0test");
-    CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eINFO );
-
    	// Run the test
     shell_test( infd_, outfd_ );
 

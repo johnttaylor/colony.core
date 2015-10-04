@@ -722,12 +722,12 @@ try IF $t1$ != 4294967295
     bye app 1
 try ENDIF
 
-writem bar4 {(,,0,,,,,)}
+writem bar4 {(,,1,,,,,)}
 readm bar4
 tokenize * $_lastout$ t1 3
 strip $t1$ t1 " " ","
 todec $t1$ t1
-try IF $t1$ != 0
+try IF $t1$ != 1
     print "Failed: Size_t. Set#3 value"
     bye app 1
 try ENDIF
@@ -755,12 +755,12 @@ try IF $t1$ != 4294967294
     bye app 1
 try ENDIF
 
-writem bar4 {(,,,0,,,,)}
+writem bar4 {(,,,1,,,,)}
 readm bar4
 tokenize * $_lastout$ t1 4
 strip $t1$ t1 " " ","
 todec $t1$ t1
-try IF $t1$ != 0
+try IF $t1$ != 1
     print "Failed: VointPtr. Set#3 value"
     bye app 1
 try ENDIF
