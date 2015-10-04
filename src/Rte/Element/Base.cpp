@@ -206,39 +206,44 @@ const char* Base::fromString( const char* srcText, const char* terminationChars,
     bool invalidAction   = false;
     srcText              = parsePrefixOps( srcText, lockAction, unlockAction, invalidAction, updated, terminationChars );
 
-    // NOT an 'invalidate' request
-    if ( !invalidAction )
+    // Unlock Request (can NOT be combined with invalidate OR set a value in the same action)
+    if ( unlockAction )
         {
-        // Enforce LOCK semantics
-        if ( !isLocked() )
+        if ( isLocked() )
+            {
+            setUnlocked();
+            updated = true;
+            }
+        }
+
+    // NOT an 'invalidate' request
+    else if ( !invalidAction )
+        {
+        // Do NOT attempt to set a value when locking WITHOUT setting a new value
+        if ( !lockAction || !Cpl::Text::isCharInString( terminationChars, *srcText ) )
             {
             // Set the element's value based on the source text
             srcText = setFromText( srcText, terminationChars );
-
+   
             // By defintion a succesful update of an Element moves it to the Valid state.
             if ( srcText )
                 {
-                setValid();     
-                updated = true;
+                if ( !isLocked() )
+                    {
+                    setValid();     
+                    updated = true;
+                    }
                 }
             }
+        }
 
-        // LOCK Operations MUST be applied AFTER any status/update operations
-        if ( lockAction )
+    // LOCK Operations MUST be applied AFTER any status/update operations
+    if ( lockAction )
+        {
+        if ( !isLocked() )
             {
-            if ( !isLocked() )
-                {
-                setLocked();
-                updated = true;
-                }
-            }
-        else if ( unlockAction )
-            {
-            if ( isLocked() )
-                {
-                setUnlocked();
-                updated = true;
-                }
+            setLocked();
+            updated = true;
             }
         }
 
@@ -288,12 +293,12 @@ const char* Base::parsePrefixOps( const char* source, bool& lockAction, bool& un
         // Apply invalidate - but ONLY when not LOCKED
         if ( !isLocked() )
             {
-            invalidAction = true;
             setValidState( invalid );
             updated = true;
             }
 
-        source = endPtr;
+        invalidAction = true;
+        source        = endPtr;
         }
   
     // Return the next 'un-parsed' character

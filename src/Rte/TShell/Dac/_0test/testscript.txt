@@ -635,6 +635,8 @@ try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, 12300000000000000000000000000000) }
 	bye app 1
 try ENDIF
 
+
+
 #
 # Test remaining data type conversion
 #
@@ -662,9 +664,9 @@ writem bar4 {( 3 ,,,,,,,)}
 readm bar4
 tokenize * $_lastout$ t1 1
 strip $t1$ t1 "(" ","
-try IF $_lastout$ != 3
+try IF $t1$ != 3
     print "Failed. Float. set#3 value"
-    #bye app 1
+    bye app 1
 try ENDIF
 writem bar4 {( ? ,,,,,,,)}
 
@@ -676,7 +678,7 @@ tokenize * $_lastout$ t1 2
 strip $t1$ t1 " " ","
 try IF $t1$ != 3.1415926535897931 
     print "Failed. Double. set#1 value"
-    #bye app 1
+    bye app 1
 try ENDIF
 
 writem bar4 {(?,-3e14 ,,,,,,)}
@@ -685,7 +687,7 @@ tokenize * $_lastout$ t1 2
 strip $t1$ t1 " " ","
 try IF $t1$ != -300000000000000 
     print "Failed. Double. set#2"
-    #bye app 1
+    bye app 1
 try ENDIF
 
 writem bar4 {( ?, 3 ,,,,,,)}
@@ -694,7 +696,7 @@ tokenize * $_lastout$ t1 2
 strip $t1$ t1 " " ","
 try IF $t1$ != 3
     print "Failed. Double. set#3 value"
-    #bye app 1
+    bye app 1
 try ENDIF
 writem bar4 {( ,?,,,,,,)}
 
@@ -904,18 +906,205 @@ try ENDIF
 
 
 #
-# TODO: Remaining tests...
+# Test lock
 #
+writem bar3 {(f,a,t,0),(f,b,t,1),(f,c,f,2),(t,d,t,3)}
+readm bar3
+try IF $_lastout$ != "{ (F, `"a`", T, 0), (F, `"b`", T, 1), (F, `"c`", F, 2), (T, `"d`", T, 3) }"
+	print "Failed Lock Test#1 (initialization)"
+	bye app 1
+try ENDIF
+writem bar3 {(?,?,?,?),,(?,?,?,?),(?,?,?,?)}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, 1), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#2 (initialization)"
+	bye app 1
+try ENDIF
+viewers clear
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 0 OR $v0-mc3$ != 0 OR $v3-c3$ != 0 OR $v3-mc3$ != 0
+	print "Failed Lock Test#3 (initialization)"
+	bye app 1
+try ENDIF
 
-# Test of 'locked'
-# 1) basic lock, unlock, no update if locked (and proper viewer counts)
-# 2) What about membership?
-# 3) locked and invalidate update
-# 4) unlock with a value -->should 'fail'
-# 5) just lock/unlock should not trip the viewer count of a by-value viewer
+writem bar3 {,(,,,!11),,}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, !11), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#4 (lock + write)"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 1 OR $v0-mc3$ != 0 OR $v3-c3$ != 1 OR $v3-mc3$ != 0
+	print "Failed Lock Test#5 (lock + write)"
+	bye app 1
+try ENDIF
 
-# Test of invalidate
-# 1) basic ? and ?<val> (and proper viewer counts) 
+writem bar3 {,(,,,!12),,}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, !11), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#6 (lock + write when locked)"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 1 OR $v0-mc3$ != 0 OR $v3-c3$ != 1 OR $v3-mc3$ != 0
+	print "Failed Lock Test#7 (lock + write when locked)"
+	bye app 1
+try ENDIF
+
+writem bar3 {,(,,,14),,}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, !11), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#8 (write when locked)"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 1 OR $v0-mc3$ != 0 OR $v3-c3$ != 1 OR $v3-mc3$ != 0
+	print "Failed Lock Test#9 (write when locked)"
+	bye app 1
+try ENDIF
+
+writem bar3 {,(,,,^),,}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, 11), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#10 (unlock)"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 1 OR $v0-mc3$ != 0 OR $v3-c3$ != 2 OR $v3-mc3$ != 0
+	print "Failed Lock Test#11 (unlock)"
+	bye app 1
+try ENDIF
+
+writem bar3 {,(,,,13),,}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, 13), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#12 (lock)"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 2 OR $v0-mc3$ != 0 OR $v3-c3$ != 3 OR $v3-mc3$ != 0
+	print "Failed Lock Test#13 (lock)"
+	bye app 1
+try ENDIF
+writem bar3 {,(,,,!),,}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, !13), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#14 (lock)"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 2 OR $v0-mc3$ != 0 OR $v3-c3$ != 4 OR $v3-mc3$ != 0
+	print "Failed Lock Test#15 (lock)"
+	bye app 1
+try ENDIF
+writem bar3 {,(,,,!),,}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, !13), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#16 (lock)"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 2 OR $v0-mc3$ != 0 OR $v3-c3$ != 4 OR $v3-mc3$ != 0
+	print "Failed Lock Test#17 (lock)"
+	bye app 1
+try ENDIF
+
+writem bar3 {,(,,,^),,}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, 13), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#18 (unlock again)"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 2 OR $v0-mc3$ != 0 OR $v3-c3$ != 5 OR $v3-mc3$ != 0
+	print "Failed Lock Test#19 (unlock again)"
+	bye app 1
+try ENDIF
+
+writem bar3 {,(,,,!?),,}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, !?), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#20 (lock + invalidate )"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 3 OR $v0-mc3$ != 0 OR $v3-c3$ != 6 OR $v3-mc3$ != 0
+	print "Failed Lock Test#21 (lock + invalidate )"
+	bye app 1
+try ENDIF
+writem bar3 {,(,,,^),,}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, ?), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#22 (lock + invalidate)"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 3 OR $v0-mc3$ != 0 OR $v3-c3$ != 7 OR $v3-mc3$ != 0
+	print "Failed Lock Test#23 (lock + invalidate)"
+	bye app 1
+try ENDIF
+writem bar3 {,(,,,!?3),,}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, !?3), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#24 (lock + invalidate )"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 4 OR $v0-mc3$ != 0 OR $v3-c3$ != 8 OR $v3-mc3$ != 0
+	print "Failed Lock Test#25 (lock + invalidate )"
+	bye app 1
+try ENDIF
+writem bar3 {,(,,,^),,}
+readm bar3
+try IF $_lastout$ != "{ (?, ?, ?, ?), (F, `"b`", T, ?3), (?, ?, ?, ?), (?, ?, ?, ?) }"
+	print "Failed Lock Test#26 (lock + invalidate)"
+	bye app 1
+try ENDIF
+viewers 0
+tokenize * $_lastout$ v0-c3 6 v0-mc3 10 
+viewers 3
+tokenize * $_lastout$ v3-c3 6 v3-mc3 10 
+try IF $v0-c3$ != 4 OR $v0-mc3$ != 0 OR $v3-c3$ != 9 OR $v3-mc3$ != 0
+	print "Failed Lock Test#26 (lock + invalidate )"
+	bye app 1
+try ENDIF
+
 
 
 
@@ -924,8 +1113,5 @@ try ENDIF
 print "ALL TESTS PASSED!"
 bye app 0
 
-
 trace on
 trace section on _0test
-writem ll
-writem foobar2 {,(3,7,11,000000000000000000000000000000A0)}

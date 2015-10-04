@@ -15,7 +15,7 @@
 
 
 ////////////////
-static bool ischar(const char* charsSet, const char c )
+bool Cpl::Text::isCharInString(const char* charsSet, const char c )
     {
     for(size_t i=0; i<strlen(charsSet); i++)
         {
@@ -115,7 +115,7 @@ const char* Cpl::Text::stripChars(const char *s, const char* charsSet )
         return s;
         }
 
-    while(*s && ischar(charsSet,*s))   
+    while(*s && isCharInString(charsSet,*s))   
         {
         s++;
         }
@@ -135,7 +135,7 @@ const char* Cpl::Text::stripNotChars( const char* s, const char* charsSet )
         return s;
         }
 
-    while(*s && !(ischar(charsSet,*s)))    
+    while(*s && !(isCharInString(charsSet,*s)))    
         {
         s++;
         }
@@ -164,7 +164,7 @@ const char* Cpl::Text::stripTrailingChars(const char *s, const char* charsSet)
 
     // Walk the string right to left
     const char* p = s + len -1;
-    while(p != s && ischar(charsSet,*p))
+    while(p != s && isCharInString(charsSet,*p))
         {
         p--;
         }
@@ -180,7 +180,7 @@ void Cpl::Text::removeTrailingChars( char* s, const char* charsSet )
         }
 
     char* ptr = (char*)Cpl::Text::stripTrailingChars((const char*)s,charsSet);
-    if ( ischar(charsSet,*ptr) )
+    if ( isCharInString(charsSet,*ptr) )
         {
         *ptr = '\0';        // trap the case of string is ALL spaces
         }

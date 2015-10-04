@@ -85,7 +85,7 @@ const char* BitFlags::setFromText( const char* srcText, const char* terminationC
     const char*   endPtr = 0;
     unsigned long temp;
 
-    if ( Cpl::Text::a2ul( temp, srcText, 0, terminationChars, &endPtr ) && temp <= 0xFFFFFFFF )
+    if ( Cpl::Text::a2ul( temp, srcText, 0, terminationChars, &endPtr ) && temp <= 0xFFFFFFFF && (!isModelElement() || !isLocked()) )
         {
         applyNewValue( (uint32_t) temp );
         return endPtr;
@@ -102,9 +102,13 @@ bool BitFlags::copyDataFrom( const Api& other )
 
     // Silent skip when locked AND I am a Model Element
     uint32_t temp = *((uint32_t*)(other.dataPointer()));
-    if ( temp < (eOPER_SET_BITS|eOPER_CLR_BITS) && (!isModelElement() || !isLocked()) )
+    if ( temp < (eOPER_SET_BITS|eOPER_CLR_BITS) )
         {
-        applyNewValue( *((uint32_t*)(other.dataPointer())) );
+        if ( !isModelElement() || !isLocked() )
+            {
+            applyNewValue( *((uint32_t*)(other.dataPointer())) );
+            }
+
         return true;
         }
 

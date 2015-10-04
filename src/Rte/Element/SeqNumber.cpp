@@ -89,9 +89,13 @@ const char* SeqNumber::setFromText( const char* srcText, const char* termination
     const char* endPtr = 0;
     long        temp;
 
-    if ( Cpl::Text::a2l( temp, srcText, 0, terminationChars, &endPtr ) && (temp & (~0xFFFFFFFF)) == 0 )
+    if ( Cpl::Text::a2l( temp, srcText, 0, terminationChars, &endPtr ) && temp <= INT32_MAX && temp >= INT32_MIN )
         {
-        applyNewValue( (int32_t) temp );
+        if ( !isModelElement() || !isLocked() )
+            {
+            applyNewValue( (int32_t) temp );
+            }
+
         return endPtr;
         }
     

@@ -116,6 +116,12 @@ const char* stripTrailingChars(const char* s, const char* charsSet );
 void removeTrailingChars( char* s, const char* charsSet );
 
 
+/** This method returns true if the character 'c' is one of
+    character(s) contained in 'charsSet'; else false is
+    returned.
+ */
+bool isCharInString(const char* charsSet, const char c );
+
 
 };      // end namespaces
 };

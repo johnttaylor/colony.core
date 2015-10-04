@@ -52,12 +52,20 @@ const char* Boolean_T::setFromText( const char* srcText, const char* termination
         {
         if ( *srcText == 'T' || *srcText == 't' )
             {
-            m_data = true;
+            if ( !isModelElement() || !isLocked() )
+                {
+                m_data = true;
+                }
+
             return srcText+1;
             }
         else if ( *srcText == 'F' || *srcText == 'f' )
             {
-            m_data = false;
+            if ( !isModelElement() || !isLocked() )
+                {
+                m_data = false;
+                }
+
             return srcText+1;
             }
         }
@@ -104,7 +112,11 @@ const char* Integer8_T::setFromText( const char* srcText, const char* terminatio
         {
         if ( temp <= INT8_MAX && temp >= INT8_MIN )
             {
-            m_data = temp;
+            if ( !isModelElement() || !isLocked() )
+                {
+                m_data = (int8_t) temp;
+                }
+
             return endPtr;
             }
         }
@@ -149,7 +161,11 @@ const char* Uinteger8_T::setFromText( const char* srcText, const char* terminati
         {
         if ( temp <= UINT8_MAX )
             {
-            m_data = temp;
+            if ( !isModelElement() || !isLocked() )
+                {
+                m_data = (uint8_t) temp;
+                }
+
             return endPtr;
             }
         }
@@ -194,7 +210,11 @@ const char* Integer16_T::setFromText( const char* srcText, const char* terminati
         {
         if ( temp <= INT16_MAX && temp >= INT16_MIN )
             {
-            m_data = temp;
+            if ( !isModelElement() || !isLocked() )
+                {
+                m_data = (int16_t) temp;
+                }
+
             return endPtr;
             }
         }
@@ -238,7 +258,11 @@ const char* Uinteger16_T::setFromText( const char* srcText, const char* terminat
         {
         if ( temp <= UINT16_MAX )
             {
-            m_data = temp;
+            if ( !isModelElement() || !isLocked() )
+                {
+                m_data = (uint16_t) temp;
+                }
+
             return endPtr;
             }
         }
@@ -282,7 +306,11 @@ const char* Integer32_T::setFromText( const char* srcText, const char* terminati
         {
         if ( temp <= INT32_MAX && temp >= INT32_MIN )
             {
-            m_data = temp;
+            if ( !isModelElement() || !isLocked() )
+                {
+                m_data = (int32_t) temp;
+                }
+
             return endPtr;
             }
         }
@@ -326,7 +354,11 @@ const char* Uinteger32_T::setFromText( const char* srcText, const char* terminat
         {
         if ( temp <= UINT32_MAX )
             {
-            m_data = temp;
+            if ( !isModelElement() || !isLocked() )
+                {
+                m_data = (uint32_t) temp;
+                }
+
             return endPtr;
             }
         }
@@ -368,7 +400,11 @@ const char* Integer64_T::setFromText( const char* srcText, const char* terminati
     long long   temp;
     if ( Cpl::Text::a2ll(temp, srcText, 0, terminationChars, &endPtr ) )
         {
-        m_data = temp;
+        if ( !isModelElement() || !isLocked() )
+            {
+            m_data = (int64_t) temp;
+            }
+
         return endPtr;
         }
 
@@ -409,7 +445,11 @@ const char* Uinteger64_T::setFromText( const char* srcText, const char* terminat
     unsigned long long temp;
     if ( Cpl::Text::a2ull(temp, srcText, 0, terminationChars, &endPtr ) )
         {
-        m_data = temp;
+        if ( !isModelElement() || !isLocked() )
+            {
+            m_data = (uint64_t) temp;
+            }
+
         return endPtr;
         }
 
@@ -453,7 +493,11 @@ const char* Size_T::setFromText( const char* srcText, const char* terminationCha
         {
         if ( temp <= ((size_t) -1 ) )
             {
-            m_data = (size_t)temp;
+            if ( !isModelElement() || !isLocked() )
+                {
+                m_data = (size_t)temp;
+                }
+
             return endPtr;
             }
         }
@@ -497,7 +541,11 @@ const char* Time_T::setFromText( const char* srcText, const char* terminationCha
         {
         if ( temp > 0 )
             {
-            m_data = (time_t)temp;
+            if ( !isModelElement() || !isLocked() )
+                {
+                m_data = (time_t)temp;
+                }
+
             return endPtr;
             }
         }
@@ -547,7 +595,11 @@ const char* Float_T::setFromText( const char* srcText, const char* terminationCh
     double      temp;
     if ( Cpl::Text::a2d(temp, srcText, terminationChars, &endPtr) )
         {
-        m_data = (float) temp;
+        if ( !isModelElement() || !isLocked() )
+            {
+            m_data = (float)temp;
+            }
+
         return endPtr;
         }
 
@@ -595,7 +647,11 @@ const char* Double_T::setFromText( const char* srcText, const char* terminationC
     double      temp;
     if ( Cpl::Text::a2d(temp, srcText, terminationChars, &endPtr) )
         {
-        m_data = temp;
+        if ( !isModelElement() || !isLocked() )
+            {
+            m_data = temp;
+            }
+
         return endPtr;
         }
 
@@ -638,7 +694,11 @@ const char* VoidPtr_T::setFromText( const char* srcText, const char* termination
         {
         if ( temp <= ((size_t) -1 ) )
             {
-            m_data = (void*) temp;
+            if ( !isModelElement() || !isLocked() )
+                {
+                m_data = (void*)temp;
+                }
+
             return endPtr;
             }
         }

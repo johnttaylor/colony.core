@@ -66,12 +66,15 @@ const char* Md5::setFromText( const char* srcText, const char* terminationChars 
     temp.copyIn( srcText, len );
     temp += "00000000000000000000000000000000";
 
-    if ( Cpl::Text::asciiHexToBuffer( m_data, temp, sizeof(m_data)*2) )
+    if ( !isModelElement() || !isLocked() )
         {
-        return srcText + len;
+        if ( !Cpl::Text::asciiHexToBuffer( m_data, temp, sizeof(m_data)*2) )
+            {
+            endPtr = 0;
+            }
         }
 
-    return 0;
+    return endPtr;
     }
 
 /////////////////
