@@ -33,9 +33,9 @@ FINAL_OUTPUT_NAME = 'b.exe'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
-base_release.linkflags = '-m32 -fprofile-arcs'
-base_release.linklibs  = '-lgcov'
+base_release.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++'
+base_release.linkflags = '-m32'
+base_release.linklibs  = ''
 
 # Set project specific 'optimzed' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
@@ -59,9 +59,10 @@ optimzed_cpp11 = BuildValues()
 debug_cpp11    = BuildValues()
 
 # Set 'base' options
-base_cpp11.cflags     = '-m32 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
-base_cpp11.linkflags  = '-m32 -fprofile-arcs'
-base_cpp11.linklibs   = '-lgcov'
+base_cpp11.cflags     = '-m32 -std=c++11 -Wall -Werror -x c++'
+base_cpp11.linkflags  = '-m32'
+base_cpp11.linklibs   = ''
+
 
 # Set 'Optimized' options
 optimzed_cpp11.cflags = '-O3'
@@ -79,12 +80,34 @@ optimzed_win64 = BuildValues()
 debug_win64    = BuildValues()
 
 # Set 'base' options
-base_win64.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
-base_win64.linkflags  = '-m64 -fprofile-arcs'
-base_win64.linklibs   = '-lgcov'
+base_win64.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++'
+base_win64.linkflags  = '-m64'
+base_win64.linklibs   = ''
+
 
 # Set 'Optimized' options
-optimzed_cpp11.cflags = '-O3'
+optimzed_win64.cflags = '-O3'
+
+
+#
+# For build config/variant: "_testcov"
+# (note: uses same internal toolchain options as the 'Release' variant,
+#        only the 'User' options will/are different)
+#
+
+# Construct option structs
+base_testcov     = BuildValues()
+optimzed_testcov = BuildValues()
+debug_testcov    = BuildValues()
+
+# Set 'base' options
+base_testcov.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
+base_testcov.linkflags  = '-m64 -fprofile-arcs'
+base_testcov.linklibs   = '-lgcov'
+
+# Set 'Optimized' options
+optimzed_testcov.cflags = '-O0'
+
 
 #-------------------------------------------------
 # ONLY edit this section if you are ADDING options
@@ -110,11 +133,19 @@ win64_opts = { 'user_base':base_win64,
              }
                
         
+# Add new dictionary of for new build configuraiton options
+testcov_opts = { 'user_base':base_testcov,
+                 'user_optimized':optimzed_testcov,
+                 'user_debug':debug_testcov
+               }
+
+               
 # Add new variant option dictionary to # dictionary of 
 # build varaints
 build_variants = { 'win32':release_opts,
                    'win64':win64_opts,
                    'cpp11':cpp11_opts,
+                   '_testcov':testcov_opts,
                  }    
 
 

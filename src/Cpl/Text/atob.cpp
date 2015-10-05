@@ -48,7 +48,7 @@ static bool conversionOk(const char* originalString, char* endPtr, const char* v
 ///////////////////
 bool Cpl::Text::a2i(int& convertedValue, const char* string, int base, const char* validStopChars, const char** end )
     {
-    char* endPtr;
+    char* endPtr = 0;
     if ( string )
         {
         convertedValue = (int)strtol(string,&endPtr,base);
@@ -63,7 +63,7 @@ bool Cpl::Text::a2i(int& convertedValue, const char* string, int base, const cha
 
 bool Cpl::Text::a2ui(unsigned& convertedValue, const char* string, int base, const char* validStopChars, const char** end)
     {
-    char* endPtr;
+    char* endPtr = 0;
     if ( string )
         {
         convertedValue = (unsigned)strtoul(string,&endPtr,base);
@@ -79,7 +79,7 @@ bool Cpl::Text::a2ui(unsigned& convertedValue, const char* string, int base, con
 
 bool Cpl::Text::a2l(long& convertedValue, const char* string, int base, const char* validStopChars, const char** end)
     {
-    char* endPtr;
+    char* endPtr = 0;
     if ( string )
         {
         convertedValue = strtol(string,&endPtr,base);
@@ -94,7 +94,7 @@ bool Cpl::Text::a2l(long& convertedValue, const char* string, int base, const ch
 
 bool Cpl::Text::a2ul(unsigned long& convertedValue, const char* string, int base, const char* validStopChars, const char** end)
     {
-    char* endPtr;
+    char* endPtr = 0;
     if ( string )
         {
         convertedValue = strtoul(string,&endPtr,base);
@@ -109,7 +109,7 @@ bool Cpl::Text::a2ul(unsigned long& convertedValue, const char* string, int base
     
 bool Cpl::Text::a2ll(long long& convertedValue, const char* string, int base, const char* validStopChars, const char** end)
     {
-    char* endPtr;
+    char* endPtr = 0;
     if ( string )
         {
         convertedValue = strtoll(string,&endPtr,base);
@@ -124,7 +124,7 @@ bool Cpl::Text::a2ll(long long& convertedValue, const char* string, int base, co
 
 bool Cpl::Text::a2ull(unsigned long long& convertedValue, const char* string, int base, const char* validStopChars, const char** end)
     {
-    char* endPtr;
+    char* endPtr = 0;
     if ( string )
         {
         convertedValue = strtoull(string,&endPtr,base);
@@ -140,7 +140,7 @@ bool Cpl::Text::a2ull(unsigned long long& convertedValue, const char* string, in
 ///////////////////
 bool Cpl::Text::a2d(double& convertedValue, const char* string, const char* validStopChars, const char** end)
     {
-    char* endPtr;
+    char* endPtr = 0;
     if ( string )
         {
         convertedValue = strtod(string,&endPtr);

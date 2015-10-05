@@ -32,7 +32,7 @@ src/Cpl/TShell/Dac
 src/Cpl/TShell/Dac/Cmd
 src/Cpl/TShell/Dac/Cmd/_basic
 src/Cpl/TShell/Dac/Cmd/_scripting
-[win32|win64] src/Cpl/TShell/Dac/Cmd/Win32
+[win32|win64|_testcov] src/Cpl/TShell/Dac/Cmd/Win32
 
 
 # Platforms
@@ -43,9 +43,9 @@ src/Cpl/System/_ansi
 src/Cpl/System/_ansi/_shutdown
 src/Cpl/System/_trace
 src/Cpl/System/_trace/_stdout
-[win32|win64] src/Cpl/System/Win32
-[win32|win64] src/Cpl/System/Win32/_fatalerror
-[win32|win64] /top/libdirs/platform_win32_default_realtime_libdirs.b
+[win32|win64|_testcov] src/Cpl/System/Win32
+[win32|win64|_testcov] src/Cpl/System/Win32/_fatalerror
+[win32|win64|_testcov] /top/libdirs/platform_win32_default_realtime_libdirs.b
 [cpp11] src/Cpl/System/Cpp11
 [cpp11] src/Cpl/System/Cpp11/_fatalerror
 [cpp11] /top/libdirs/platform_cpp11_default_realtime_libdirs.b
