@@ -5,7 +5,7 @@
 #include "Bsp/UserSpace/Api.h"
 
 // Cpl::System mappings
-#if defined(BUILD_VARIANT_POSIX) || defined(BUILD_VARIANT_POSIX64)
+#if defined(BUILD_VARIANT_POSIX) || defined(BUILD_VARIANT_POSIX64) || defined(BUILD_VARIANT__TESTCOV)
 #include "Cpl/System/Posix/mappings_.h"
 #endif
 #ifdef BUILD_VARIANT_CPP11
