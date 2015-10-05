@@ -37,9 +37,9 @@ FINAL_OUTPUT_NAME = 'b.out'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
-base_release.linkflags = '-m32 -fprofile-arcs'
-base_release.linklibs  = '-lgcov -lpthread'
+base_release.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++'
+base_release.linkflags = '-m32'
+base_release.linklibs  = '-lpthread'
 
 # Set project specific 'optimzed' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
@@ -62,9 +62,9 @@ optimzed_cpp11 = BuildValues()
 debug_cpp11    = BuildValues()
 
 # Set 'base' options
-base_cpp11.cflags     = '-m32 -std=c++11 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
-base_cpp11.linkflags  = '-m32 -fprofile-arcs -std=c++11'
-base_cpp11.linklibs   = '-lgcov -lpthread'
+base_cpp11.cflags     = '-m32 -std=c++11 -Wall -Werror -x c++'
+base_cpp11.linkflags  = '-m32 -std=c++11'
+base_cpp11.linklibs   = '-lpthread'
 
 # Set 'Optimized' options
 optimzed_cpp11.cflags = '-O3'
@@ -83,12 +83,33 @@ optimzed_posix64 = BuildValues()
 debug_posix64    = BuildValues()
 
 # Set project specific 'base' (i.e always used) options
-base_posix64.cflags    = '-m64 -std=c++03 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
-base_posix64.linkflags = '-fprofile-arcs'
-base_posix64.linklibs  = '-lgcov -lpthread'
+base_posix64.cflags    = '-m64 -std=c++03 -Wall -Werror -x c++'
+base_posix64.linkflags = '-m64'
+base_posix64.linklibs  = '-lpthread'
 
 # Set project specific 'optimzed' options
 optimzed_posix64.cflags = '-O3'
+
+# Set project specific 'debug' options
+
+# 
+# For build config/variant: "_testcov" 
+# (note: uses same internal toolchain options as the 'Release' variant, 
+#        only the 'User' options will/are different)
+#
+
+# Construct option structs
+base_testcov     = BuildValues()
+optimzed_testcov = BuildValues()
+debug_testcov    = BuildValues()
+
+# Set project specific 'base' (i.e always used) options
+base_testcov.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
+base_testcov.linkflags = '-m32 -fprofile-arcs'
+base_testcov.linklibs  = '-lgcov -lpthread'
+
+# Set project specific 'optimzed' options
+optimzed_testcov.cflags = '-O0'
 
 # Set project specific 'debug' options
 
@@ -116,12 +137,18 @@ posix64_opts = { 'user_base':base_posix64,
                  'user_debug':debug_posix64
                }
   
+testcov_opts = { 'user_base':base_testcov, 
+                 'user_optimized':optimzed_testcov, 
+                 'user_debug':debug_testcov
+               }
+  
         
 # Add new variant option dictionary to # dictionary of 
 # build varaints
 build_variants = { 'posix':release_opts,
                    'posix64':posix64_opts,
                    'cpp11':cpp11_opts,
+                   '_testcov':testcov_opts,
                  }    
 
 #---------------------------------------------------
