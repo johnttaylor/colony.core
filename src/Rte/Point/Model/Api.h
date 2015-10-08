@@ -128,16 +128,16 @@ public:
 public:
     /** This method returns the Model Point's internal Point.  This method is 
         typically ONLY used internally by the Rte Engine and should NOT be 
-        called by the Application. This method is non-thread safe (i.e. 
-        can only be called from the 'Model' thread) of defaultContents(). 
+        called by the Application. This method is non-thread safe, i.e. 
+        can ONLY be called from the 'Model' thread. 
      */
     virtual Rte::Point::Api& getMyPoint_nonThreadSafe(void) throw() = 0;
     
     /** This method 'touches' and/or marks the Model Point's internal Point
         as have been updated/modified.  This method is typically ONLY used 
         internally by the Rte Engine and should NOT be called by the 
-        Application.. This method is non-thread safe (i.e. can only be called 
-        from the 'Model' thread) of defaultContents(). 
+        Application.. This method is non-thread safe, i.e. can ONLY be called 
+        from the 'Model' thread.
      */
     virtual void touch_nonThreadSafe( void ) throw() = 0;
 
