@@ -1,5 +1,5 @@
-#ifndef Rte_Element_SeqNumber_h_
-#define Rte_Element_SeqNumber_h_
+#ifndef Rte_Element_RefCounter_h_
+#define Rte_Element_RefCounter_h_
 /*----------------------------------------------------------------------------- 
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an   
 * open source project with a BSD type of licensing agreement.  See the license  
@@ -20,32 +20,51 @@
 namespace Rte { namespace Element {
 
 
-/** This concrete class provides a sequence number data type.  
-    The controller can set a less-than-zero, zero, or 
-    greater-than-zero value.  The copyDataFrom() reacts
-    differently based on the <,0,> value of the 'src' - see
-    the table below:
+/** This concrete class provides a reference counter data type.  
+    A refernce number is positive integer that typically is either
+    increment or decrement.  Increment operations will be clamped
+    at the max positive integer value and decrement operation will
+    be clamped at zero. The controller can perform a set of operations 
+    on the point value. The copyDataFrom() reacts differently based on 
+    the actual value 'src' - see the table below:
 
-        if src._data < 0,  then dst._data is increment
-        if src._data == 0, then dst._data is NOT updated
-        if src._data > 0,  then dst._data:= src._data
+        if src._data == -1. then dst._data is incremented
+        if src._data == -2. then dst._data is decremented
+        if src._data == -3, then dst._data is NOT updated
+        if src._data >= 0,  then dst._data:= src._data
  */
-class SeqNumber: public Base
+class RefCounter: public Base
 {
 protected:
-    /// Storage for the sequence number
+    /// Storage for the reference number
     int32_t m_data;
 
 public:
     /// Constructor
-    SeqNumber( bool   inUse      = false,
-               int8_t validState = RTE_ELEMENT_API_STATE_INVALID
-             );
+    RefCounter( bool   inUse      = false,
+                int8_t validState = RTE_ELEMENT_API_STATE_INVALID
+              );
 
 
 public:
-    /// Requests the sequence number to be incremented
-    inline void increment(void)     { set( -1 ); }
+    /// Magic values for reference counter operations
+    enum Operations_T { eINCREMENT = -1,    
+                        eDECREMENT = -2,
+                        eNOP       = -3
+                      };
+                        
+public:
+    /// Requests that NO update occur
+    inline void nop( void )         { set( eNOP ); }
+
+    /// Requests the reference counter to be incremented
+    inline void increment( void )   { set( eINCREMENT ); }
+
+    /// Requests the reference counter to be decremented
+    inline void decrement( void )   { set( eDECREMENT ); }
+
+    /// Requests the reference counter to be reset to zero
+    inline void reset( void )       { set(0); }
 
     /// See class description on what value to set
     virtual void set( int32_t newValue );

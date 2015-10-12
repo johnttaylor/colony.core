@@ -179,9 +179,9 @@ try ENDIF
 #
 # Test Bit flag operators  (Bar2)
 #
-writem bar2 {(?,?,?), (?,?,?,?)}
+writem bar2 {(?,?,?), (?,?,?,?,?)}
 viewers clear
-writem bar2 {(?,?,?), (0x3,?,?,?)}
+writem bar2 {(?,?,?), (0x3,?,?,?,?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 1 
@@ -189,23 +189,23 @@ try IF $v1-c2$ != 1
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (00000003, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00000003, ?, ?, ?, ?) }"
 	print "Failed. Normal set value for Bitflags"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (0x20070002,?,?,?)}
+writem bar2 {(?,?,?), (0x20070002,?,?,?, ?)}
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (00070001, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00070001, ?, ?, ?, ?) }"
 	print "Failed. Toggle Bitflags"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (0x40020002,?,?,?)}
+writem bar2 {(?,?,?), (0x40020002,?,?,?, ?)}
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (00050001, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00050001, ?, ?, ?, ?) }"
 	print "Failed. Clear Bitflags"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (0x80e20002,?,?,?)}
+writem bar2 {(?,?,?), (0x80e20002,?,?,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 4 
@@ -213,11 +213,11 @@ try IF $v1-c2$ != 4
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (00E70003, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00E70003, ?, ?, ?, ?) }"
 	print "Failed. Set Bitflags"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (0xC000aa00,?,?,?)}
+writem bar2 {(?,?,?), (0xC000aa00,?,?,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 4 
@@ -225,7 +225,7 @@ try IF $v1-c2$ != 4
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (00E70003, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00E70003, ?, ?, ?, ?) }"
 	print "Failed. Out-of-range Bitflags operation"
 	bye app 1
 try ENDIF
@@ -234,9 +234,9 @@ try ENDIF
 #
 # Test Bit flag operators  (Bar2 -->compare by value semantics)
 #
-writem bar2 {(?,?,?), (?,?,?,?)}
+writem bar2 {(?,?,?), (?,?,?,?, ?)}
 viewers clear
-writem bar2 {(?,?,?), (0x3,?,?,?)}
+writem bar2 {(?,?,?), (0x3,?,?,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 1 
@@ -244,23 +244,23 @@ try IF $v1-c2$ != 1
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (00000003, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00000003, ?, ?, ?, ?) }"
 	print "Failed. Bar2: Normal set value for Bitflags"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (0x20070002,?,?,?)}
+writem bar2 {(?,?,?), (0x20070002,?,?,?, ?)}
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (00070001, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00070001, ?, ?, ?, ?) }"
 	print "Failed. Bar2: Toggle Bitflags"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (0x40020002,?,?,?)}
+writem bar2 {(?,?,?), (0x40020002,?,?,?, ?)}
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (00050001, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00050001, ?, ?, ?, ?) }"
 	print "Failed. Bar2: Clear Bitflags"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (0x80e20002,?,?,?)}
+writem bar2 {(?,?,?), (0x80e20002,?,?,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 4 
@@ -268,11 +268,11 @@ try IF $v1-c2$ != 4
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (00E70003, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00E70003, ?, ?, ?, ?) }"
 	print "Failed. Bar2: Set Bitflags"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (0xC000aa00,?,?,?)}
+writem bar2 {(?,?,?), (0xC000aa00,?,?,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 4 
@@ -280,7 +280,7 @@ try IF $v1-c2$ != 4
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (00E70003, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00E70003, ?, ?, ?, ?) }"
 	print "Failed. Bar2 Out-of-range Bitflags operation"
 	bye app 1
 try ENDIF
@@ -289,9 +289,9 @@ try ENDIF
 #
 # Test Bit flag operators  (foobar2 -->compare by seqnumber semantics)
 #
-writem foobar2 {(?,?,?), (?,?,?,?)}
+writem foobar2 {(?,?,?), (?,?,?,?, ?)}
 viewers clear
-writem foobar2 {(?,?,?), (0x3,?,?,?)}
+writem foobar2 {(?,?,?), (0x3,?,?,?, ?)}
 viewers 2
 tokenize * $_lastout$ v2-c2 5
 try IF $v2-c2$ != 1 
@@ -299,23 +299,23 @@ try IF $v2-c2$ != 1
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (00000003, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00000003, ?, ?, ?, ?) }"
 	print "Failed. FooBar2: Normal set value for Bitflags"
 	bye app 1
 try ENDIF
-writem foobar2 {(?,?,?), (0x20070002,?,?,?)}
+writem foobar2 {(?,?,?), (0x20070002,?,?,?, ?)}
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (00070001, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00070001, ?, ?, ?, ?) }"
 	print "Failed. FooBar2: Toggle Bitflags"
 	bye app 1
 try ENDIF
-writem foobar2 {(?,?,?), (0x40020002,?,?,?)}
+writem foobar2 {(?,?,?), (0x40020002,?,?,?, ?)}
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (00050001, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00050001, ?, ?, ?, ?) }"
 	print "Failed. FooBar2: Clear Bitflags"
 	bye app 1
 try ENDIF
-writem foobar2 {(?,?,?), (0x80e20002,?,?,?)}
+writem foobar2 {(?,?,?), (0x80e20002,?,?,?, ?)}
 viewers 2
 tokenize * $_lastout$ v2-c2 5
 try IF $v2-c2$ != 4 
@@ -323,11 +323,11 @@ try IF $v2-c2$ != 4
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (00E70003, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00E70003, ?, ?, ?, ?) }"
 	print "Failed. FooBar2: Set Bitflags"
 	bye app 1
 try ENDIF
-writem foobar2 {(?,?,?), (0xC000aa00,?,?,?)}
+writem foobar2 {(?,?,?), (0xC000aa00,?,?,?, ?)}
 viewers 2
 tokenize * $_lastout$ v2-c2 5
 try IF $v2-c2$ != 5 
@@ -335,7 +335,7 @@ try IF $v2-c2$ != 5
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (00E70003, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (00E70003, ?, ?, ?, ?) }"
 	print "Failed. FooBar2: Out-of-range Bitflags operation"
 	bye app 1
 try ENDIF
@@ -344,9 +344,9 @@ try ENDIF
 #
 # Test Sequence number operations (on bar2 which has compare value semantics)
 #
-writem bar2 {(?,?,?), (?,?,?,?)}
+writem bar2 {(?,?,?), (?,?,?,?, ?)}
 viewers clear
-writem bar2 {(?,?,?), (?,0,?,?)}
+writem bar2 {(?,?,?), (?,0,?,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 0 
@@ -354,17 +354,17 @@ try IF $v1-c2$ != 0
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?, ?) }"
 	print "Failed. SeqNumber: Bar2: test of update with '0' semantics"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (?,10,?,?)}
+writem bar2 {(?,?,?), (?,10,?,?, ?)}
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, 10, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, 10, ?, ?, ?) }"
 	print "Failed. SeqNumber: Bar2: set value semantic"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (?,-33,?,?)}
+writem bar2 {(?,?,?), (?,-33,?,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 2 
@@ -372,11 +372,11 @@ try IF $v1-c2$ != 2
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, 11, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, 11, ?, ?, ?) }"
 	print "Failed. SeqNumber: Bar2: increment semantic"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (?,0,?,?)}
+writem bar2 {(?,?,?), (?,0,?,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 2 
@@ -384,7 +384,7 @@ try IF $v1-c2$ != 2
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, 11, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, 11, ?, ?, ?) }"
 	print "Failed. SeqNumber: Bar2: test of update with '0' semantics (test#2)"
 	bye app 1
 try ENDIF
@@ -393,9 +393,9 @@ try ENDIF
 #
 # Test Sequence number operations (on foobar2 which has 'seqnumber compare' semantics)
 #
-writem foobar2 {(?,?,?), (?,?,?,?)}
+writem foobar2 {(?,?,?), (?,?,?,?, ?)}
 viewers clear
-writem foobar2 {(?,?,?), (?,0,?,?)}
+writem foobar2 {(?,?,?), (?,0,?,?, ?)}
 viewers 2
 tokenize * $_lastout$ v2-c2 5
 try IF $v2-c2$ != 1 
@@ -403,17 +403,17 @@ try IF $v2-c2$ != 1
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?, ?) }"
 	print "Failed. SeqNumber: FooBar2: test of update with '0' semantics"
 	bye app 1
 try ENDIF
-writem foobar2 {(?,?,?), (?,110,?,?)}
+writem foobar2 {(?,?,?), (?,110,?,?, ?)}
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, 110, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, 110, ?, ?, ?) }"
 	print "Failed. SeqNumber: FooBar2: set value semantic"
 	bye app 1
 try ENDIF
-writem foobar2 {(?,?,?), (?,-33,?,?)}
+writem foobar2 {(?,?,?), (?,-33,?,?, ?)}
 viewers 2
 tokenize * $_lastout$ v2-c2 5
 try IF $v2-c2$ != 3 
@@ -421,11 +421,11 @@ try IF $v2-c2$ != 3
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, 111, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, 111, ?, ?, ?) }"
 	print "Failed. SeqNumber: FooBar2: increment semantic"
 	bye app 1
 try ENDIF
-writem foobar2 {(?,?,?), (?,0,?,?)}
+writem foobar2 {(?,?,?), (?,0,?,?, ?)}
 viewers 2
 tokenize * $_lastout$ v2-c2 5
 try IF $v2-c2$ != 4 
@@ -433,7 +433,7 @@ try IF $v2-c2$ != 4
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, 111, ?, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, 111, ?, ?, ?) }"
 	print "Failed. SeqNumber: FooBar2: test of update with '0' semantics (test#2)"
 	bye app 1
 try ENDIF
@@ -443,9 +443,9 @@ try ENDIF
 #
 # Test Delta  (Bar2 -->compare by value semantics)
 #
-writem bar2 {(?,?,?), (?,?,?,?)}
+writem bar2 {(?,?,?), (?,?,?,?, ?)}
 viewers clear
-writem bar2 {(?,?,?), (?,?,1000,?)}
+writem bar2 {(?,?,?), (?,?,1000,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 1 
@@ -453,11 +453,11 @@ try IF $v1-c2$ != 1
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1000, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1000, ?, ?) }"
 	print "Failed. DeltaTime: Bar2: set value"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (?,?,1032,?)}
+writem bar2 {(?,?,?), (?,?,1032,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 1 
@@ -465,11 +465,11 @@ try IF $v1-c2$ != 1
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1032, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1032, ?, ?) }"
 	print "Failed. DeltaTime: Bar2: set value#1 - Less than delta threshold"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (?,?,1060,?)}
+writem bar2 {(?,?,?), (?,?,1060,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 1 
@@ -477,11 +477,11 @@ try IF $v1-c2$ != 1
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1060, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1060, ?, ?) }"
 	print "Failed. DeltaTime: Bar2: set value#2 - Less than delta threshold"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (?,?,1061,?)}
+writem bar2 {(?,?,?), (?,?,1061,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 2 
@@ -489,11 +489,11 @@ try IF $v1-c2$ != 2
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1061, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1061, ?, ?) }"
 	print "Failed. DeltaTime: Bar2: set value#3 - greater than delta threshold"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (?,?,999,?)}
+writem bar2 {(?,?,?), (?,?,999,?, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 3 
@@ -501,7 +501,7 @@ try IF $v1-c2$ != 3
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 999, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 999, ?, ?) }"
 	print "Failed. DeltaTime: Bar2: set value#4 - greater than delta threshold"
 	bye app 1
 try ENDIF
@@ -510,9 +510,9 @@ try ENDIF
 #
 # Test Delta  (FooBar2 -->compare by seqnumber semantics)
 #
-writem foobar2 {(?,?,?), (?,?,?,?)}
+writem foobar2 {(?,?,?), (?,?,?,?, ?)}
 viewers clear
-writem foobar2 {(?,?,?), (?,?,1000,?)}
+writem foobar2 {(?,?,?), (?,?,1000,?, ?)}
 viewers 2
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 1 
@@ -520,11 +520,11 @@ try IF $v1-c2$ != 1
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1000, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1000, ?, ?) }"
 	print "Failed. DeltaTime: FooBar2: set value"
 	bye app 1
 try ENDIF
-writem foobar2 {(?,?,?), (?,?,1032,?)}
+writem foobar2 {(?,?,?), (?,?,1032,?, ?)}
 viewers 2
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 2 
@@ -532,11 +532,11 @@ try IF $v1-c2$ != 2
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1032, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1032, ?, ?) }"
 	print "Failed. DeltaTime: FooBar2: set value#1 - Less than delta threshold"
 	bye app 1
 try ENDIF
-writem foobar2 {(?,?,?), (?,?,1060,?)}
+writem foobar2 {(?,?,?), (?,?,1060,?, ?)}
 viewers 2
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 3 
@@ -544,11 +544,11 @@ try IF $v1-c2$ != 3
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1060, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1060, ?, ?) }"
 	print "Failed. DeltaTime: FooBar2: set value#2 - Less than delta threshold"
 	bye app 1
 try ENDIF
-writem foobar2 {(?,?,?), (?,?,1061,?)}
+writem foobar2 {(?,?,?), (?,?,1061,?, ?)}
 viewers 2
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 4 
@@ -556,11 +556,11 @@ try IF $v1-c2$ != 4
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1061, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 1061, ?, ?) }"
 	print "Failed. DeltaTime: FooBar2: set value#3 - greater than delta threshold"
 	bye app 1
 try ENDIF
-writem foobar2 {(?,?,?), (?,?,999,?)}
+writem foobar2 {(?,?,?), (?,?,999,?, ?)}
 viewers 2
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 5 
@@ -568,7 +568,7 @@ try IF $v1-c2$ != 5
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 999, ?) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, 999, ?, ?) }"
 	print "Failed. DeltaTime: FooBar2: set value#4 - greater than delta threshold"
 	bye app 1
 try ENDIF
@@ -577,9 +577,9 @@ try ENDIF
 #
 # Test MD5 Checksum  (Bar2 -->compare by value semantics)
 #
-writem bar2 {(?,?,?), (?,?,?,?)}
+writem bar2 {(?,?,?), (?,?,?,?, ?)}
 viewers clear
-writem bar2 {(?,?,?), (?,?,?,E0000000000000000000000000000007)}
+writem bar2 {(?,?,?), (?,?,?,E0000000000000000000000000000007, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 1 
@@ -587,11 +587,11 @@ try IF $v1-c2$ != 1
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, E0000000000000000000000000000007) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, E0000000000000000000000000000007, ?) }"
 	print "Failed. Md5: Bar2: set value"
 	bye app 1
 try ENDIF
-writem bar2 {(?,?,?), (?,?,?,123)}
+writem bar2 {(?,?,?), (?,?,?,123, ?)}
 viewers 1
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 2 
@@ -599,7 +599,7 @@ try IF $v1-c2$ != 2
 	bye app 1
 try ENDIF
 readm bar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, 12300000000000000000000000000000) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, 12300000000000000000000000000000, ?) }"
 	print "Failed. Md5: Bar2: set value"
 	bye app 1
 try ENDIF
@@ -608,9 +608,9 @@ try ENDIF
 #
 # Test MD5 Checksum  (FooBar2 -->compare by seqnumber semantics)
 #
-writem foobar2 {(?,?,?), (?,?,?,?)}
+writem foobar2 {(?,?,?), (?,?,?,?, ?)}
 viewers clear
-writem foobar2 {(?,?,?), (?,?,?,E0000000000000000000000000000007)}
+writem foobar2 {(?,?,?), (?,?,?,E0000000000000000000000000000007, ?)}
 viewers 2
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 1 
@@ -618,11 +618,11 @@ try IF $v1-c2$ != 1
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, E0000000000000000000000000000007) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, E0000000000000000000000000000007, ?) }"
 	print "Failed. Md5: FooBar2: set value"
 	bye app 1
 try ENDIF
-writem foobar2 {(?,?,?), (?,?,?,123)}
+writem foobar2 {(?,?,?), (?,?,?,123, ?)}
 viewers 2
 tokenize * $_lastout$ v1-c2 5
 try IF $v1-c2$ != 2 
@@ -630,8 +630,131 @@ try IF $v1-c2$ != 2
 	bye app 1
 try ENDIF
 readm foobar2
-try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, 12300000000000000000000000000000) }"
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, 12300000000000000000000000000000, ?) }"
 	print "Failed. Md5: FooBar2: set value"
+	bye app 1
+try ENDIF
+
+
+#
+# Test Reference Counter operations (on bar2 which has compare value semantics)
+#
+writem bar2 {(?,?,?), (?,?,?,?,?)}
+viewers clear
+writem bar2 {(?,?,?), (?,?,?,?,-3)}
+viewers 1
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 0 
+	print "Failed. RefCounter: Bar2: Bad viewer counts for test of update with '-3' semantics V1"
+	bye app 1
+try ENDIF
+readm bar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?, ?) }"
+	print "Failed. RefCounter: Bar2: test of update with '-3' semantics"
+	bye app 1
+try ENDIF
+writem bar2 {(?,?,?), (?,,?,?,10)}
+readm bar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?, 10) }"
+	print "Failed. RefCounter: Bar2: set value semantic"
+	bye app 1
+try ENDIF
+writem bar2 {(?,?,?), (?,?,?,?, -1)}
+viewers 1
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 2 
+	print "Failed. RefCounter: Bar2: Bad viewer counts for increment semantic V1"
+	bye app 1
+try ENDIF
+readm bar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?, 11) }"
+	print "Failed. RefCounter: Bar2: increment semantic"
+	bye app 1
+try ENDIF
+writem bar2 {(?,?,?), (?,?,?,?, -2)}
+viewers 1
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 3 
+	print "Failed. RefCounter: Bar2: Bad viewer counts for decrement semantic V1"
+	bye app 1
+try ENDIF
+readm bar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?, 10) }"
+	print "Failed. RefCounter: Bar2: decrement semantic"
+	bye app 1
+try ENDIF
+writem bar2 {(?,?,?), (?,?,?,?, -3)}
+viewers 1
+tokenize * $_lastout$ v1-c2 5
+try IF $v1-c2$ != 3 
+	print "Failed. RefCounter: Bar2: Bad viewer counts for test (#2) of update with '-3' semantics V1"
+	bye app 1
+try ENDIF
+readm bar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?, 10) }"
+	print "Failed. RefCounter: Bar2: test of update with '-3' semantics (test#2)"
+	bye app 1
+try ENDIF
+
+
+
+#
+# Test Reference Counter operations (on foobar2 which has 'seqnumber compare' semantics)
+#
+writem foobar2 {(?,?,?), (?,?,?,?, ?)}
+viewers clear
+writem foobar2 {(?,?,?), (?,?,?,?, -3)}
+viewers 2
+tokenize * $_lastout$ v2-c2 5
+try IF $v2-c2$ != 1 
+	print "Failed. RefCounter: FooBar2: Bad viewer counts for test of update with '-3' semantics V2"
+	bye app 1
+try ENDIF
+readm foobar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?, ?) }"
+	print "Failed. RefCounter: FooBar2: test of update with '-3' semantics"
+	bye app 1
+try ENDIF
+writem foobar2 {(?,?,?), (?,?,?,?, 110)}
+readm foobar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?, 110) }"
+	print "Failed. RefCounter: FooBar2: set value semantic"
+	bye app 1
+try ENDIF
+writem foobar2 {(?,?,?), (?,0,?,?, -1)}
+viewers 2
+tokenize * $_lastout$ v2-c2 5
+try IF $v2-c2$ != 3 
+	print "Failed. RefCounter: FooBar2: Bad viewer counts for increment semantic V2"
+	bye app 1
+try ENDIF
+readm foobar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?, 111) }"
+	print "Failed. RefCounter: FooBar2: increment semantic"
+	bye app 1
+try ENDIF
+writem foobar2 {(?,?,?), (?,0,?,?, -2)}
+viewers 2
+tokenize * $_lastout$ v2-c2 5
+try IF $v2-c2$ != 4
+	print "Failed. RefCounter: FooBar2: Bad viewer counts for decrement semantic V2"
+	bye app 1
+try ENDIF
+readm foobar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?, 110) }"
+	print "Failed. RefCounter: FooBar2: decrement semantic"
+	bye app 1
+try ENDIF
+writem foobar2 {(?,?,?), (?,?,?,?, -3)}
+viewers 2
+tokenize * $_lastout$ v2-c2 5
+try IF $v2-c2$ != 5 
+	print "Failed. RefCounter: FooBar2: Bad viewer counts for test (#2) of update with '-3' semantics V2"
+	bye app 1
+try ENDIF
+readm foobar2
+try IF $_lastout$ != "{ (?, ?, ?), (?, ?, ?, ?, 110) }"
+	print "Failed. RefCounter: FooBar2: test of update with '-3' semantics (test#2)"
 	bye app 1
 try ENDIF
 

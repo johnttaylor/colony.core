@@ -9,7 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "SeqNumber.h"
+#include "RefCounter.h"
 #include <memory.h>
 #include "Cpl/Text/atob.h"
 
@@ -23,31 +23,31 @@ using namespace Rte::Element;
 
 
 //////////////////////////////////
-SeqNumber::SeqNumber( bool inUse, int8_t validState )
-:Base(DataType::SEQNUM, inUse, validState)
-,m_data(1) // Default value is 'perform normal copy'
+RefCounter::RefCounter( bool inUse, int8_t validState )
+:Base(DataType::REFCOUNT, inUse, validState)
+,m_data(0) // Default value is start the reference count at zero
     {
     }
 
 /////////////////
-const char* SeqNumber::getTypeAsText(void) const
+const char* RefCounter::getTypeAsText(void) const
     {
-    return "SEQNUM";
+    return "REFCOUNT";
     }
 
 
-void SeqNumber::set( int32_t newValue )
+void RefCounter::set( int32_t newValue )
     {
     m_data = newValue;
     }
 
-int32_t SeqNumber::get( void ) const
+int32_t RefCounter::get( void ) const
     {
     return m_data;
     }
 
 
-const char* SeqNumber::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* RefCounter::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -58,20 +58,20 @@ const char* SeqNumber::toString( Cpl::Text::String& dstMemory, bool append ) con
     }
 
 
-const char* SeqNumber::fromString( const char* srcText, const char* terminationChars, unsigned* updatedPtr )
+const char* RefCounter::fromString( const char* srcText, const char* terminationChars, unsigned* updatedPtr )
     {
     // Cache current state
     unsigned    prevUpdatedValue = updatedPtr? *updatedPtr: 0;
-    int32_t     prevSeqNum       = m_data;
+    int32_t     prevRefCnt       = m_data;
     int8_t      prevValidState   = validState();
 
     // Update the sequence number
     const char* result           = Base::fromString( srcText, terminationChars, updatedPtr );
 
-    // Back out the 'set' operation when the requested seqNumber value was ZERO -->maintains/enforces the SeqNumber Element's semantics!
-    if ( result && m_data == 0 )
+    // Back out the 'set' operation when the requested refence counter value was eNOP (-3) -->maintains/enforces the RefCounter Element's semantics!
+    if ( result && m_data == eNOP )
         {
-        m_data = prevSeqNum;
+        m_data = prevRefCnt;
         setValidState( prevValidState );
         if ( updatedPtr )
             {
@@ -83,7 +83,7 @@ const char* SeqNumber::fromString( const char* srcText, const char* terminationC
     }
     
 
-const char* SeqNumber::setFromText( const char* srcText, const char* terminationChars )
+const char* RefCounter::setFromText( const char* srcText, const char* terminationChars )
     {
     {
     const char* endPtr = 0;
@@ -104,13 +104,13 @@ const char* SeqNumber::setFromText( const char* srcText, const char* termination
     }
 
 /////////////////
-bool SeqNumber::copyDataFrom( const Api& other )
+bool RefCounter::copyDataFrom( const Api& other )
     {
     assertTypeMatches( other );
 
-    // Silently ignore when locked AND I am a Model Element (also ignore a value of zero per the SeqNumber semantics)
+    // Silently ignore when locked AND I am a Model Element (also ignore a value of zero per the RefCounter semantics)
     int32_t temp = *((int32_t*)(other.dataPointer()));
-    if ( temp != 0 && (!isModelElement() || !isLocked()) )
+    if ( temp != eNOP && (!isModelElement() || !isLocked()) )
         {
         applyNewValue( temp );
         return true;
@@ -120,19 +120,30 @@ bool SeqNumber::copyDataFrom( const Api& other )
     }
 
 
-void SeqNumber::applyNewValue( int32_t operAndValue )
+void RefCounter::applyNewValue( int32_t operAndValue )
     {
-    // INCREMENT SeqNumber 
-    if ( operAndValue < 0 )
+    // INCREMENT the reference counter
+    if ( operAndValue == eINCREMENT )
         {
-        // When incrementing - don't let the value go negative 
-        if ( ++m_data <= 0 )
+        // don't let the value go negative 
+        if ( ++m_data < 0 )
             {
-            m_data = 1; // By deisgn, a valid sequence number is never zero
+            m_data--;
             }
         }
 
-    // SET SeqNumber (Note: The caller is not allowed to call this method if 'operAndValue' is Zero)
+    // INCREMENT the reference counter
+    else if ( operAndValue == eDECREMENT )
+        {
+        // don't let the value go negative 
+        if ( m_data > 0 )
+            {
+            m_data--;
+            }
+        }
+
+
+    // SET the Reference counter (Note: The caller is not allowed to call this method if 'operAndValue' is eNOP )
     else 
         {
         m_data = operAndValue;
@@ -140,19 +151,19 @@ void SeqNumber::applyNewValue( int32_t operAndValue )
     }
 
 
-bool SeqNumber::isDifferentFrom( const Api& other ) const
+bool RefCounter::isDifferentFrom( const Api& other ) const
     {
     assertTypeMatches( other );
     return m_data != *((int32_t*)(other.dataPointer()));
     }
 
-const void* SeqNumber::dataPointer( void ) const
+const void* RefCounter::dataPointer( void ) const
     {
     return &m_data;
     }
 
 /////////////////
-size_t SeqNumber::exportElement( void* dstDataStream ) const
+size_t RefCounter::exportElement( void* dstDataStream ) const
     {
     uint8_t* dstPtr = (uint8_t*)dstDataStream;
 
@@ -161,7 +172,7 @@ size_t SeqNumber::exportElement( void* dstDataStream ) const
     return sizeof(m_data) + sizeof(m_valid);
     }
 
-size_t SeqNumber::importElement( const void* srcDataStream )
+size_t RefCounter::importElement( const void* srcDataStream )
     {
     const uint8_t* srcPtr = (const uint8_t*)srcDataStream;
 
@@ -170,7 +181,7 @@ size_t SeqNumber::importElement( const void* srcDataStream )
     return sizeof(m_data) + sizeof(m_valid);
     }
 
-size_t SeqNumber::externalSize( void ) const
+size_t RefCounter::externalSize( void ) const
     {
     return sizeof(m_data) + sizeof(m_valid);
     }

@@ -80,13 +80,16 @@ public:
     static const int SEQNUM     = 17;
 
     /// Element Type ID
-    static const int TIME_T     = 18;
+    static const int REFCOUNT   = 18;
 
     /// Element Type ID
-    static const int BITFLAGS   = 19;
+    static const int TIME_T     = 19;
+
+    /// Element Type ID
+    static const int BITFLAGS   = 20;
 
     /// Element Type ID 
-    static const int CORAL_ADDR = 20;
+    static const int CORAL_ADDR = 21;
 
 
     /// Start of APPLICATION defined Element Type IDs
