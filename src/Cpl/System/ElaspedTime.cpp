@@ -39,7 +39,7 @@ ElaspedTime::Precision_T ElaspedTime::deltaPrecision( Precision_T startTime, Pre
     }
 
 
-static bool expiredPrecision( Precision_T timeMarker, Precision_T duration, Precision_T currentTime ) throw();
+bool ElaspedTime::expiredPrecision( Precision_T timeMarker, Precision_T duration, Precision_T currentTime ) throw()
     {
     Precision_T delta = ElaspedTime::deltaPrecision( timeMarker, currentTime );
     return delta.m_seconds >= duration.m_seconds && delta.m_thousandths >= duration.m_thousandths;
