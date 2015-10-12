@@ -96,18 +96,18 @@ public:
         since the 'timeMarker'.  The calculation properly handles the scenario 
         of when the has been 'roll over' between the 'timeMarker' and NOW.
      */
-    inline static bool expiredMilliseconds( unsigned long timeMarker, unsigned long duration ) throw()
+    inline static bool expiredMilliseconds( unsigned long timeMarker, unsigned long duration, unsigned long currentTime = milliseconds() ) throw()
         {
-        return deltaMilliseconds( timeMarker ) >= duration;
+        return deltaMilliseconds( timeMarker, currentTime ) >= duration;
         }
 
     /** This method returns true if the specified amount of time has elasped 
         since the 'timeMarker'.  The calculation properly handles the scenario 
         of when the has been 'roll over' between the 'timeMarker' and NOW.
      */
-    inline static bool expiredSeconds( unsigned long timeMarker, unsigned long duration ) throw()
+    inline static bool expiredSeconds( unsigned long timeMarker, unsigned long duration, unsigned long currentTime = seconds() ) throw()
         {
-        return deltaSeconds( timeMarker ) >= duration;
+        return deltaSeconds( timeMarker, currentTime ) >= duration;
         }
 
 
@@ -115,9 +115,10 @@ public:
         since the 'timeMarker'.  The calculation properly handles the scenario 
         of when the has been 'roll over' between the 'timeMarker' and NOW.
      */
-    static bool expiredPrecision( Precision_T timeMarker, Precision_T duration ) throw();
+    static bool expiredPrecision( Precision_T timeMarker, Precision_T duration, Precision_T currentTime = precision() ) throw();
 
 
+    
 public:
     /** This method is the same as seconds(), EXCEPT that is ALWAYS guaranteed
         to return elasped time in 'real time'.  See the Cpl::System::SimTick for
