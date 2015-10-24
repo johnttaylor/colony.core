@@ -20,11 +20,14 @@
 namespace Rte { namespace Element {
 
 
-/** This concrete class provides a sequence number data type.  
-    The controller can set a less-than-zero, zero, or 
-    greater-than-zero value.  The copyDataFrom() reacts
-    differently based on the <,0,> value of the 'src' - see
-    the table below:
+/** This concrete class provides a sequence number data type.  A Sequence Number 
+    is defined as a free running counter that is always a positive integer 
+    greater than zero.  On increment of a sequence number, the value 'rolls 
+    over' to 1 when the max positive range of the integer has been consumed.
+     
+    The controller can set a less-than-zero, zero, or greater-than-zero value.  
+    The copyDataFrom() reacts differently based on the <,0,> value of the 
+    'src' - see the table below:
 
         if src._data < 0,  then dst._data is increment
         if src._data == 0, then dst._data is NOT updated

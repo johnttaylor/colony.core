@@ -11,9 +11,8 @@
 
 #include "Bsp/Api.h"
 #include "Cpl/System/Mutex.h"
+#include "Cpl/System/Private_.h"     // Slight cheat here.  I use the 'System' mutex to better emulate the semantics of disable/enable interrupts
 
-
-static Cpl::System::Mutex irqLock_;
 
 
 ///////////////////////////////////////////////////////////
@@ -24,25 +23,25 @@ void Bsp_Api_initialize( void )
 
 void Bsp_Api_disableIrqs_MAP(void)
     {
-    irqLock_.lock();
+    Cpl::System::Locks_::system().lock();
     }
 
 
 void Bsp_Api_enableIrqs_MAP(void)
     {
-    irqLock_.unlock();
+    Cpl::System::Locks_::system().unlock();
     }
 
 
 void Bsp_Api_pushAndDisableIrqs_MAP(void)
     {
-    irqLock_.lock();
+    Cpl::System::Locks_::system().lock();
     }
 
                      
 void Bsp_Api_popIrqs_MAP(void)
     {
-    irqLock_.unlock();
+    Cpl::System::Locks_::system().unlock();
     }
 
 
