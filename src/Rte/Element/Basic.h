@@ -35,9 +35,10 @@ protected:
 
 protected:
     /// Constructor
-    Basic( ELEMTYPE initialValue = 0,
-           bool     inUse        = false,
-           int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
+    Basic( ELEMTYPE initialValue   = 0,
+           bool     inUse          = false,
+           int8_t   validState     = RTE_ELEMENT_API_STATE_INVALID,
+           int      specilizedType = TYPEID
          );
 
 public:
@@ -80,6 +81,15 @@ public:
                bool    inUse        = false,
                int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
              );
+
+protected:
+    /// Constructor
+    Boolean_T( int     specializedType,
+               bool    initialValue = 0,
+               bool    inUse        = false,
+               int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
+             );
+
 
 public:
     /// See Rte::Element::Api

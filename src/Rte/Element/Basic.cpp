@@ -28,6 +28,16 @@ Boolean_T::Boolean_T( bool    initialValue,
     {
     }
 
+Boolean_T::Boolean_T( int     specializedType,
+                      bool    initialValue,
+                      bool    inUse,
+                      int8_t  validState
+                    )
+:Basic<bool,DataType::BOOL>( initialValue, inUse, validState, specializedType )
+    {
+    }
+
+
 
 const char* Boolean_T::getTypeAsText(void) const
     {
