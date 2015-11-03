@@ -56,6 +56,11 @@ TEST_CASE( "elaspedtime", "[elaspedtime]" )
     precValue.m_seconds     = 1;
     precValue.m_thousandths = 500;
     REQUIRE( ElaspedTime::expiredPrecision(precision,precValue) == true );
+    precision.m_thousandths++;
+    REQUIRE( precValue != precision );
+    precision.m_seconds     = 1;
+    precision.m_thousandths = 500;
+    REQUIRE( precValue == precision );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Post verify: sleep = 1.5") );
 
     // Get current time

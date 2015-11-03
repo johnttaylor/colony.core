@@ -578,7 +578,7 @@ Float_T::Float_T( float   initialValue,
 bool Float_T::isDifferentFrom( const Api& other ) const
     {
     assertTypeMatches( other );
-    return Cpl::Math::areFloatsEqual( m_data, *((float*)(other.dataPointer())) );
+    return Cpl::Math::areFloatsEqual( m_data, *((float*)(other.dataPointer())) ) == false;
     }
 
 
@@ -630,7 +630,7 @@ Double_T::Double_T( double   initialValue,
 bool Double_T::isDifferentFrom( const Api& other ) const
     {
     assertTypeMatches( other );
-    return Cpl::Math::areDoublesEqual( m_data, *((double*)(other.dataPointer())) );
+    return Cpl::Math::areDoublesEqual( m_data, *((double*)(other.dataPointer())) ) == false;
     }
 
 

@@ -32,6 +32,16 @@ public:
         {
         unsigned long  m_seconds;      //!< Total number of elasped seconds
         uint16_t       m_thousandths;  //!< fractional number of milliseconds (i.e. a value between 0 and 999)
+
+
+        /// Comparision operator (explicitly provided to avoid potential issue with pad bytes in the structure)
+        bool operator == (Precision_Tag other) const { 
+			return m_seconds == other.m_seconds && m_thousandths == other.m_thousandths; }
+
+        /// Not equals operator
+        bool operator != (Precision_Tag other) const { 
+			return m_seconds != other.m_seconds || m_thousandths != other.m_thousandths; }
+
         } Precision_T;
 
 

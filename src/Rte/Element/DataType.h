@@ -29,68 +29,70 @@ public:
 
 public:
     /// Element Type ID
-    static const int INT8       = 1;
+    static const int INT8        = 1;
 
     /// Element Type ID
-    static const int INT16      = 2;
+    static const int INT16       = 2;
 
     /// Element Type ID
-    static const int INT32      = 3;
+    static const int INT32       = 3;
 
     /// Element Type ID
-    static const int INT64      = 4;
+    static const int INT64       = 4;
 
     /// Element Type ID
-    static const int UINT8      = 5;
+    static const int UINT8       = 5;
 
     /// Element Type ID
-    static const int UINT16     = 6;
+    static const int UINT16      = 6;
 
     /// Element Type ID
-    static const int UINT32     = 7;
+    static const int UINT32      = 7;
 
     /// Element Type ID
-    static const int UINT64     = 8;
+    static const int UINT64      = 8;
 
     /// Element Type ID
-    static const int SIZE_T     = 9;
+    static const int SIZE_T      = 9;
 
     /// Element Type ID
-    static const int FLOAT      = 10;
+    static const int FLOAT       = 10;
 
     /// Element Type ID
-    static const int DOUBLE     = 11;
+    static const int DOUBLE      = 11;
 
     /// Element Type ID
-    static const int VOIDPTR    = 12;
+    static const int VOIDPTR     = 12;
 
     /// Element Type ID
-    static const int STRING     = 13;
+    static const int STRING      = 13;
 
     /// Element Type ID
-    static const int BOOL       = 14;
+    static const int BOOL        = 14;
 
     /// Element Type ID
-    static const int TOKEN4     = 15;
+    static const int TOKEN4      = 15;
 
     /// Element Type ID
-    static const int MD5        = 16;
+    static const int MD5         = 16;
 
     /// Element Type ID
-    static const int SEQNUM     = 17;
+    static const int SEQNUM      = 17;
 
     /// Element Type ID
-    static const int REFCOUNT   = 18;
+    static const int REFCOUNT    = 18;
 
     /// Element Type ID
-    static const int TIME_T     = 19;
+    static const int TIME_T      = 19;
 
     /// Element Type ID
-    static const int BITFLAGS   = 20;
+    static const int BITFLAGS    = 20;
 
     /// Element Type ID 
-    static const int CORAL_ADDR = 21;
+    static const int CORAL_ADDR  = 21;
 
+    /// Element Type ID 
+    static const int PRECISION_T = 22;
 
     /// Start of APPLICATION defined Element Type IDs
     static const int START_APP_DEFINED = 0x2000;            
