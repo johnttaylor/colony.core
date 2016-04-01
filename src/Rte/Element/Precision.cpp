@@ -18,13 +18,13 @@
 ///
 using namespace Rte::Element;
 
-
+static const Cpl::System::ElaspedTime::Precision_T zero_ = {0};
 
 /////////////////////////////
 Precision::Precision( bool    inUse,
                       int8_t  validState
                     )
-:Basic<float,DataType::PRECISION_T>( initialValue, inUse, validState )
+:Basic<Cpl::System::ElaspedTime::Precision_T,DataType::PRECISION_T>( zero_, inUse, validState )
     {
     m_data.m_seconds     = 0;
     m_data.m_thousandths = 0;
@@ -57,7 +57,7 @@ const char* Precision::setFromText( const char* srcText, const char* termination
         if ( !isModelElement() || !isLocked() )
             {
             double intpart       = 0.0;
-            double fracpart      = std::modf( temp, &intpart );
+            double fracpart      = modf( temp, &intpart );
             m_data.m_seconds     = (unsigned long) intpart;
             m_data.m_thousandths = (uint16_t)(fracpart * 1000);
             }

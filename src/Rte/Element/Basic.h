@@ -35,10 +35,10 @@ protected:
 
 protected:
     /// Constructor
-    Basic( ELEMTYPE initialValue   = 0,
-           bool     inUse          = false,
-           int8_t   validState     = RTE_ELEMENT_API_STATE_INVALID,
-           int      specilizedType = TYPEID
+    Basic( ELEMTYPE initialValue    = 0,
+           bool     inUse           = false,
+           int8_t   validState      = RTE_ELEMENT_API_STATE_INVALID,
+           int      specializedType = TYPEID
          );
 
 public:
@@ -432,9 +432,10 @@ protected:
 template<class ELEMTYPE, int TYPEID>
 Rte::Element::Basic<ELEMTYPE,TYPEID>::Basic( ELEMTYPE initialValue,
                                              bool     inUse,
-                                             int8_t   validState
-                                           )
-:Base(TYPEID,inUse,validState),
+                                             int8_t   validState,
+           			    	     int      specializedType
+					   )
+:Base(specializedType,inUse,validState),
  m_data(initialValue)
     {
     }

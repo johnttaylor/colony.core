@@ -24,7 +24,7 @@ namespace Rte { namespace Element {
 /** This class provides an RTE Element for the Cpl::System::ElaspedTime::Precision_T
     data type
  */
-class Precision: public Basic<DataType::Cpl::System::ElaspedTime::Precision_T,DataType::PRECISION_T> 
+class Precision: public Basic<Cpl::System::ElaspedTime::Precision_T,DataType::PRECISION_T> 
 {
 public:
     /// Constructor
