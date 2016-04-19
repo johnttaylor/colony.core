@@ -17,6 +17,7 @@ src/Cpl/Container
 src/Cpl/Log
 src/Cpl/Log/_default
 src/Cpl/Text
+src/Cpl/Text/Frame
 src/Cpl/System
 src/Cpl/Itc
 src/Cpl/Timer

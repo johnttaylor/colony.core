@@ -12,6 +12,7 @@
 #include "Basic.h"
 #include "Cpl/Text/atob.h"
 #include "Cpl/Math/real.h"
+#include <stdint.h>
 
 
 
