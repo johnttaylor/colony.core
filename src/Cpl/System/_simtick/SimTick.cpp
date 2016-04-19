@@ -17,7 +17,7 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/FatalError.h"
 #include "Cpl/Container/SList.h"
-
+#include <new>
 
 /// 
 using namespace Cpl::System;
