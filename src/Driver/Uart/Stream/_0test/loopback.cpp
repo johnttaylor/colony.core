@@ -213,15 +213,15 @@ public:
 void loopback_test( Driver_Uart_Hal_T uartHdl, bool manualFirstTx )
     {
     // Create some threads....
-    Tx*                  transmitterPtr = new Tx( uartHdl, manualFirstTx, MSG1, MSG2, MSG3 );
+    Tx*                  transmitterPtr = new(std::nothrow) Tx( uartHdl, manualFirstTx, MSG1, MSG2, MSG3 );
     Cpl::System::Thread* ptr            = Cpl::System::Thread::create( *transmitterPtr, "TX" );
     txPtr                               = &(transmitterPtr->m_tx);
 
-    Rx* receiverPtr = new Rx( *ptr, *transmitterPtr, uartHdl );
+    Rx* receiverPtr = new(std::nothrow) Rx( *ptr, *transmitterPtr, uartHdl );
     Cpl::System::Thread::create( *receiverPtr, "RX" );
     rxPtr           = &(receiverPtr->m_rx);
     
-    Led* blinkPtr = new Led( 250, 750 );
+    Led* blinkPtr = new(std::nothrow) Led( 250, 750 );
     Cpl::System::Thread::create( *blinkPtr, "LEDs" );
    
        

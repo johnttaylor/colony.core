@@ -47,7 +47,7 @@ protected:
         // Set up TLS storage for working buffer for File/Path names
         if ( !workNameTlsPtr_ )
             {
-            workNameTlsPtr_ = new Cpl::System::Tls();
+            workNameTlsPtr_ = new(std::nothrow) Cpl::System::Tls();
             }
         }
 
@@ -321,7 +321,7 @@ Cpl::Text::String& Api::getWorkBuffer(void)
     Cpl::Text::String* workNamePtr = (Cpl::Text::String*) workNameTlsPtr_->get();
     if ( workNamePtr == 0 )
         {
-        workNamePtr = new NameString;
+        workNamePtr = new(std::nothrow) NameString;
         if ( !workNamePtr )
             {
             Cpl::System::FatalError::logf( "Failed to allocate work string for Cpl::Io::File namespace in thread=%s", Cpl::System::Thread::myName() );

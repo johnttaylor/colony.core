@@ -198,13 +198,13 @@ public:
 void loopback_test( Cpl::Io::InputOutput& fd )
     {
     // Create some threads....
-    Tx*                  transmitterPtr = new Tx( fd, MSG1, MSG2, MSG3 );
+    Tx*                  transmitterPtr = new(std::nothrow) Tx( fd, MSG1, MSG2, MSG3 );
     Cpl::System::Thread* ptr            = Cpl::System::Thread::create( *transmitterPtr, "TX" );
 
-    Rx* receiverPtr = new Rx( fd, *ptr, *transmitterPtr );
+    Rx* receiverPtr = new(std::nothrow) Rx( fd, *ptr, *transmitterPtr );
     Cpl::System::Thread::create( *receiverPtr, "RX" );
     
-    Led* blinkPtr = new Led( 250, 750 );
+    Led* blinkPtr = new(std::nothrow) Led( 250, 750 );
     Cpl::System::Thread::create( *blinkPtr, "LEDs" );
    
        

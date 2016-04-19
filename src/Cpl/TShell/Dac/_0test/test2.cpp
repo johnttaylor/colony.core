@@ -35,7 +35,7 @@ extern void shell_test2( Cpl::Io::Socket::Listener& listener );
 void shell_test2( Cpl::Io::Socket::Listener& listener )
     {
     // Start the shell
-    Cpl::TShell::Socket* shellPtr = new Cpl::TShell::Socket( cmdProcessor_, listener );
+    Cpl::TShell::Socket* shellPtr = new(std::nothrow) Cpl::TShell::Socket( cmdProcessor_, listener );
     shellPtr->launch( PORT_ );
        
     // Create thread for my mock-application to run in

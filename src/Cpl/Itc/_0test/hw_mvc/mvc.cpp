@@ -67,8 +67,8 @@ public:
             {
             Bsp_Api_turnOn_debug1();    
             
-            TestUnit*            testPtr         = new TestUnit();
-            Master*              masterRunPtr    = new Master( NUM_SEQ_, NUM_WRITES_, testPtr->m_myViewer, testPtr->m_myModel, testPtr->m_myModel, Cpl::System::Thread::getCurrent()); 
+            TestUnit*            testPtr         = new(std::nothrow) TestUnit();
+            Master*              masterRunPtr    = new(std::nothrow) Master( NUM_SEQ_, NUM_WRITES_, testPtr->m_myViewer, testPtr->m_myModel, testPtr->m_myModel, Cpl::System::Thread::getCurrent()); 
             Cpl::System::Thread* viewerThreadPtr = Cpl::System::Thread::create( testPtr->m_viewerMbox, "Viewer" );
             Cpl::System::Thread* modelThreadPtr  = Cpl::System::Thread::create( testPtr->m_modelMbox,  "Model" );
             Cpl::System::Thread* masterThreadPtr = Cpl::System::Thread::create( *masterRunPtr, "MASTER" );

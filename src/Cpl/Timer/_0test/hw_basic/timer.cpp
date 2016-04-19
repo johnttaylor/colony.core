@@ -85,8 +85,8 @@ public:
             Bsp_Api_turnOn_debug1();    
             
             // Create my test sequencer
-            TestUnit*            testPtr         = new TestUnit();
-            Master*              masterRunPtr    = new Master( NUM_SEQ_, DELAY_, testPtr->m_appApple, testPtr->m_appRose, testPtr->m_appDaisy, testPtr->m_appOak, testPtr->m_appPine, testPtr->m_appOrange, Cpl::System::Thread::getCurrent() );
+            TestUnit*            testPtr         = new(std::nothrow) TestUnit();
+            Master*              masterRunPtr    = new(std::nothrow) Master( NUM_SEQ_, DELAY_, testPtr->m_appApple, testPtr->m_appRose, testPtr->m_appDaisy, testPtr->m_appOak, testPtr->m_appPine, testPtr->m_appOrange, Cpl::System::Thread::getCurrent() );
             Cpl::System::Thread* t1Ptr           = Cpl::System::Thread::create( testPtr->m_fruits,   "FRUITS" );
             Cpl::System::Thread* t2Ptr           = Cpl::System::Thread::create( testPtr->m_trees,    "TREES" );
             Cpl::System::Thread* t3Ptr           = Cpl::System::Thread::create( testPtr->m_flowers,  "FLOWERS" );

@@ -14,6 +14,7 @@
 #include "Cpl/System/Private_.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <new>
 
 ///
 using namespace Cpl::Memory;
@@ -126,12 +127,12 @@ static void my_delete( void* ptr )
         }
     }
 
-void* operator new( size_t sz) throw()
+void* operator new( size_t sz, const std::nothrow_t& nothrow_value ) throw()
     {
     return my_new(sz);
     }
 
-void* operator new[](size_t sz) throw()
+void* operator new[](size_t sz, const std::nothrow_t& nothrow_value) throw()
     {
     return my_new(sz);
     }

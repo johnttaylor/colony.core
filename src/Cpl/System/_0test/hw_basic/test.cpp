@@ -217,7 +217,7 @@ public:
 void runtests( void )
     {
     // Create my TLS key (can't be done statically)
-    Tls* keyPtr = new Tls();
+    Tls* keyPtr = new(std::nothrow) Tls();
     
     
     // Create some threads....

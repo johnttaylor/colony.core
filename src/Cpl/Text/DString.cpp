@@ -35,7 +35,7 @@ DString::DString(const String& string, int initialSize, int blocksize)
  m_blockSize(blocksize),
  m_storageLen(calcMemSize(my_max(string.length(),initialSize)))
     {
-    m_strPtr = new char[m_storageLen];
+    m_strPtr = new(std::nothrow) char[m_storageLen];
     validateAndCopy(string,string.length());
     }
 
@@ -44,7 +44,7 @@ DString::DString(const DString& string, int initialSize, int blocksize)
  m_blockSize(blocksize),
  m_storageLen(calcMemSize(my_max(string.length(),initialSize)))
     {
-    m_strPtr = new char[m_storageLen];
+    m_strPtr = new(std::nothrow) char[m_storageLen];
     validateAndCopy(string,string.length());
     }
 
@@ -53,7 +53,7 @@ DString::DString(const char* string, int initialSize, int blocksize)
  m_blockSize(blocksize),
  m_storageLen(calcMemSize(my_max((string?strlen(string):1),initialSize)))
     {
-    m_strPtr = new char[m_storageLen];
+    m_strPtr = new(std::nothrow) char[m_storageLen];
 	validateAndCopy(string, string ? strlen(string): 0 );
     }
 
@@ -62,7 +62,7 @@ DString::DString(char c, int initialSize, int blocksize)
  m_blockSize(blocksize),
  m_storageLen(calcMemSize(my_max(sizeof(c),initialSize)))
     {
-    m_strPtr = new char[m_storageLen];
+    m_strPtr = new(std::nothrow) char[m_storageLen];
     validateAndCopy(&c,1);
     }
 
@@ -71,7 +71,7 @@ DString::DString(int num, int initialSize, int blocksize)
  m_blockSize(blocksize),
  m_storageLen(calcMemSize(my_max(maxIntegerChars_,initialSize)))
     {
-    m_strPtr = new char[m_storageLen];
+    m_strPtr = new(std::nothrow) char[m_storageLen];
     FString<maxIntegerChars_> string(num);
     validateAndCopy(string,string.length());
     }
@@ -81,7 +81,7 @@ DString::DString(unsigned num, int initialSize, int blocksize)
  m_blockSize(blocksize),
  m_storageLen(calcMemSize(my_max(maxIntegerChars_,initialSize)))
     {
-    m_strPtr = new char[m_storageLen];
+    m_strPtr = new(std::nothrow) char[m_storageLen];
     FString<maxIntegerChars_> string(num);
     validateAndCopy(string,string.length());
     }
@@ -91,7 +91,7 @@ DString::DString(long num, int initialSize, int blocksize)
  m_blockSize(blocksize),
  m_storageLen(calcMemSize(my_max(maxIntegerChars_,initialSize)))
     {
-    m_strPtr = new char[m_storageLen];
+    m_strPtr = new(std::nothrow) char[m_storageLen];
     FString<maxIntegerChars_> string(num);
     validateAndCopy(string,string.length());
     }
@@ -101,7 +101,7 @@ DString::DString(long long num, int initialSize, int blocksize)
  m_blockSize(blocksize),
  m_storageLen(calcMemSize(my_max(maxIntegerChars_,initialSize)))
     {
-    m_strPtr = new char[m_storageLen];
+    m_strPtr = new(std::nothrow) char[m_storageLen];
     FString<maxIntegerChars_> string(num);
     validateAndCopy(string,string.length());
     }
@@ -112,7 +112,7 @@ DString::DString(unsigned long num, int initialSize, int blocksize)
  m_blockSize(blocksize),
  m_storageLen(calcMemSize(my_max(maxIntegerChars_,initialSize)))
     {
-    m_strPtr = new char[m_storageLen];
+    m_strPtr = new(std::nothrow) char[m_storageLen];
     FString<maxIntegerChars_> string(num);
     validateAndCopy(string,string.length());
     }
@@ -122,7 +122,7 @@ DString::DString(unsigned long long num, int initialSize, int blocksize)
  m_blockSize(blocksize),
  m_storageLen(calcMemSize(my_max(maxIntegerChars_,initialSize)))
     {
-    m_strPtr = new char[m_storageLen];
+    m_strPtr = new(std::nothrow) char[m_storageLen];
     FString<maxIntegerChars_> string(num);
     validateAndCopy(string,string.length());
     }
@@ -158,7 +158,7 @@ void DString::validateAndCopy(const char* string, int len )
         // Everything is good!
         else 
             {
-            strncpy(m_strPtr,string,len); // Assumes 'len' has been check for not overflowing the buffer BEFORE this method is called!
+            strncpy(m_strPtr,string,len); // Assumes 'len' has been checked for not overflowing the buffer BEFORE this method is called!
             m_strPtr[len] = '\0';
             }
         }
@@ -184,7 +184,7 @@ DString::copyIn(const char* src, int len)
     if ( len > maxStrLen() )
         {
         int   newsize = calcMemSize(len);
-        char* ptr     = new char[newsize];
+        char* ptr     = new(std::nothrow) char[newsize];
         if ( !ptr )
             {
             m_truncated = true;
@@ -215,7 +215,7 @@ DString::appendTo(const char* string, int len)
         if ( len > avail )
             {
             int   newsize = calcMemSize(maxStrLen()+len);
-            char* ptr     = new char[newsize];
+            char* ptr     = new(std::nothrow) char[newsize];
             if ( !ptr )
                 {
                 m_truncated = true;
@@ -266,7 +266,7 @@ DString::insertAt(int insertOffset, const char* stringToInsert)
         if ( curlen + insertlen > maxStrLen() )
             {
             int   newsize = calcMemSize(curlen+insertlen);
-            char* ptr     = new char[newsize];
+            char* ptr     = new(std::nothrow) char[newsize];
 
             // Failed to get more memory
             if ( !ptr )

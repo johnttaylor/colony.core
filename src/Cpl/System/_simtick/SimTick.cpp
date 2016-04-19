@@ -261,7 +261,7 @@ void SimTick::threadInit_(bool useSimTicks) throw()
     // Create the TLS key/index needed to store the per thread info (do a lazy create)
     if ( !simTlsPtr_ )
         {
-        simTlsPtr_ = new Tls();
+        simTlsPtr_ = new(std::nothrow) Tls();
         }
 
     // Set my TLS SimInfo block to NULL since the thread has be requested to NOT USE simulated ticks
@@ -272,7 +272,7 @@ void SimTick::threadInit_(bool useSimTicks) throw()
         }
     
     // Create an instance of SimTick for my per thread simInfo and store the newly created instance in TLS
-    SimTick* simInfoPtr = new SimTick();
+    SimTick* simInfoPtr = new(std::nothrow) SimTick();
     if ( !simInfoPtr )
         {
         FatalError::logRaw( "SimTick::threadInit_().  Failed to alloc an instance SimTick for thread", Thread::myId() );

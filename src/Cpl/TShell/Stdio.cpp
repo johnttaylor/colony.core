@@ -88,7 +88,7 @@ void Stdio::launch( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
         Cpl::System::Thread::destroy( *m_threadPtr );
         }
 
-    m_runnablePtr = new Shell_( m_shell, infd, outfd );
+    m_runnablePtr = new(std::nothrow) Shell_( m_shell, infd, outfd );
     m_threadPtr   = Cpl::System::Thread::create( *m_runnablePtr, m_name, m_priority );
     }
 

@@ -26,8 +26,6 @@ using namespace Cpl::System;
 void link_dstring(void) {}
 
 
-
-
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -217,12 +215,12 @@ TEST_CASE( "DString", "[dstring]" )
     
     SECTION( "Memory..." )
         {
-        DString s1("uncle");
+        DString s1("unclexx");
         Cpl::Memory::New_TS::disable();
         DString s2(s1);
         DString s3(bref);
         DString s4("abcdefghijklmnopqrstuvwxyz");
-        DString s5('@');
+        DString s5('%');
         DString s6(-32);
         DString s7((unsigned) 42);
         DString s8((long) -10000000);
@@ -230,27 +228,27 @@ TEST_CASE( "DString", "[dstring]" )
         DString s10((long long) -81000000);
         DString s11((unsigned long long)9100000000000);
         Cpl::Memory::New_TS::enable();
-        REQUIRE( s1 == (const char*)"uncle" );
-        REQUIRE( s2.length() == 0 );
+        REQUIRE( s1 == (const char*)"unclexx" );
         REQUIRE( s2 == "");
-        REQUIRE( s3.length() == 0 );                
+        REQUIRE( s2.length() == 0 );
         REQUIRE( s3 == "");
-        REQUIRE( s4.length() == 0 );
+        REQUIRE( s3.length() == 0 );                
         REQUIRE( s4 == "");
-        REQUIRE( s5.length() == 0 );
+        REQUIRE( s4.length() == 0 );
         REQUIRE( s5 == "");
-        REQUIRE( s6.length() == 0 );
+        REQUIRE( s5.length() == 0 );
         REQUIRE( s6 == "");
-        REQUIRE( s7.length() == 0 );
+        REQUIRE( s6.length() == 0 );
         REQUIRE( s7 == "");
-        REQUIRE( s8.length() == 0 );
+        REQUIRE( s7.length() == 0 );
         REQUIRE( s8 == "");
-        REQUIRE( s9.length() == 0 );
+        REQUIRE( s8.length() == 0 );
         REQUIRE( s9 == "");
-        REQUIRE( s10.length() == 0 );
+        REQUIRE( s9.length() == 0 );
         REQUIRE( s10 == "");
-        REQUIRE( s11.length() == 0 );
+        REQUIRE( s10.length() == 0 );
         REQUIRE( s11 == "");
+        REQUIRE( s11.length() == 0 );
   
 
         DString s12("Hi");
