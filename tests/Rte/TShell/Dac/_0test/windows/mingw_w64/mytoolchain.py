@@ -33,7 +33,7 @@ FINAL_OUTPUT_NAME = 'b.exe'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++'
+base_release.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++ -D__STDC_CONSTANT_MACROS=1 -D__STDC_LIMIT_MACROS=1'
 base_release.linkflags = '-m32'
 base_release.linklibs  = ''
 
