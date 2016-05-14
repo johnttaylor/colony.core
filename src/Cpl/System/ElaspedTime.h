@@ -34,7 +34,7 @@ public:
         uint16_t       m_thousandths;  //!< fractional number of milliseconds (i.e. a value between 0 and 999)
 
 
-        /// Comparision operator (explicitly provided to avoid potential issue with pad bytes in the structure)
+        /// Comparison operator (explicitly provided to avoid potential issue with pad bytes in the structure)
         bool operator == (Precision_Tag other) const { 
 			return m_seconds == other.m_seconds && m_thousandths == other.m_thousandths; }
 
@@ -42,26 +42,29 @@ public:
         bool operator != (Precision_Tag other) const { 
 			return m_seconds != other.m_seconds || m_thousandths != other.m_thousandths; }
 
+        /// Increment elaspedtime by 'x'
+        Precision_Tag& operator +=(const Precision_Tag& x);
+
         } Precision_T;
 
 
 public:
-    /** This method returns the elasped time, in seconds, since the system
+    /** This method returns the elapsed time, in seconds, since the system
         was powered on and/or reset.  The elapsed time is free running counter
         that will roll over once the range of the data type is exceeded.
      */
     static unsigned long    seconds() throw();
 
 
-    /** This method returns the elasped time, in milliseconds, since the system
+    /** This method returns the elapsed time, in milliseconds, since the system
         was powered on and/or reset.  The elapsed time is free running counter
         that will roll over once the range of the data type is exceeded.
      */
     static unsigned long    milliseconds() throw();
 
 
-    /** This method returns the elasped time, in seconds with milliseconds
-        prceission, since the system was powered on and/or reset.  The elapsed 
+    /** This method returns the elapsed time, in seconds with milliseconds
+        precision, since the system was powered on and/or reset.  The elapsed 
         second time is free running counter that will roll over once the range 
         of the data type is exceeded.
      */
@@ -69,7 +72,7 @@ public:
 
 
 public:
-    /** This method returns the delta time, in millseconds, between the 
+    /** This method returns the delta time, in milliseconds, between the 
         specified 'startTime' and 'endTime'.  'endTime' is defaulted to
         NOW (i.e. a call to milliseconds(). The calculation properly
         handles the scenario of when the has been 'roll over' between the
@@ -130,8 +133,26 @@ public:
 
     
 public:
+    /** This method will initialize the contents 'etime' to the number of seconds
+        specified by 'seconds' and set the m_thousandths field to zero.
+     */
+    inline static void initializeWithSeconds( Precision_T& dst, unsigned long seconds )
+        {
+        dst.m_seconds = seconds; dst.m_thousandths = 0;
+        }
+
+    /** This method will initialize the contents of 'etime' to the number of 
+        milliseconds specified by 'msec'.  If 'msec' is greater than 1000, the
+        m_seconds field will be populate with the "overflow".
+     */
+    inline static void initializeWithMilliseconds( Precision_T& dst, unsigned long msec )
+        {
+        dst.m_seconds = msec / 1000; dst.m_thousandths = msec % 1000;
+        }
+
+public:
     /** This method is the same as seconds(), EXCEPT that is ALWAYS guaranteed
-        to return elasped time in 'real time'.  See the Cpl::System::SimTick for
+        to return elapsed time in 'real time'.  See the Cpl::System::SimTick for
         more details about real time vs. simulated time.  It is recommended
         the application NOT CALL this method because then that code can NOT
         be simulated using the SimTick interface.
@@ -140,7 +161,7 @@ public:
 
 
     /** This method is the same as milliseconds(), EXCEPT that is ALWAYS 
-        guaranteed to return elasped time in 'real time'.  See the 
+        guaranteed to return elapsed time in 'real time'.  See the 
         Cpl::System::SimTick for more details about real time vs. simulated 
         time.  It is recommended the application NOT CALL this method because 
         then that code can NOT be simulated using the SimTick interface.

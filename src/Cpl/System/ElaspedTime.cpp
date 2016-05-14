@@ -18,6 +18,15 @@ using namespace Cpl::System;
 
 #define MAX_POSITVE_MSEC_   0x7FFF
 
+///////////////////////////////////////////////////////
+ElaspedTime::Precision_T& ElaspedTime::Precision_T::operator +=(const ElaspedTime::Precision_T& x)
+    {
+    this->m_thousandths += x.m_thousandths;
+    this->m_seconds     += x.m_seconds + this->m_thousandths / 1000;
+    this->m_thousandths %= 1000;
+    return *this;
+    }
+
 
 ///////////////////////////////////////////////////////
 ElaspedTime::Precision_T ElaspedTime::deltaPrecision( Precision_T startTime, Precision_T endTime ) throw()

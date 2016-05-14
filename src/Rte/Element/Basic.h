@@ -35,7 +35,7 @@ protected:
 
 protected:
     /// Constructor
-    Basic( ELEMTYPE initialValue    = 0,
+    Basic( ELEMTYPE initialValue    = (ELEMTYPE)0,
            bool     inUse           = false,
            int8_t   validState      = RTE_ELEMENT_API_STATE_INVALID,
            int      specializedType = TYPEID
