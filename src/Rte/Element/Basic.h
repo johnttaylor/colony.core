@@ -73,18 +73,18 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 
 /// C POD type
-class Boolean_T: public Basic<bool,DataType::BOOL> 
+class Boolean: public Basic<bool,DataType::BOOL> 
 {
 public:
     /// Constructor
-    Boolean_T( bool    initialValue = 0,
+    Boolean( bool    initialValue = 0,
                bool    inUse        = false,
                int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
              );
 
 protected:
     /// Constructor
-    Boolean_T( int     specializedType,
+    Boolean( int     specializedType,
                bool    initialValue = 0,
                bool    inUse        = false,
                int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
@@ -107,11 +107,11 @@ protected:
 
 
 /// C POD type
-class Integer8_T: public Basic<int8_t,DataType::INT8> 
+class Integer8: public Basic<int8_t,DataType::INT8> 
 {
 public:
     /// int8_t
-    Integer8_T( int8_t initialValue = 0,
+    Integer8( int8_t initialValue = 0,
                 bool   inUse        = false,
                 int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
               );
@@ -132,11 +132,11 @@ protected:
 
 
 /// C POD type
-class Uinteger8_T: public Basic<uint8_t,DataType::UINT8> 
+class Uinteger8: public Basic<uint8_t,DataType::UINT8> 
 {
 public:
     /// int8_t
-    Uinteger8_T( uint8_t initialValue = 0,
+    Uinteger8( uint8_t initialValue = 0,
                  bool    inUse        = false,
                  int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
                );
@@ -157,11 +157,11 @@ protected:
 
 
 /// C POD type
-class Integer16_T: public Basic<int16_t,DataType::INT16> 
+class Integer16: public Basic<int16_t,DataType::INT16> 
 {
 public:
     /// int8_t
-    Integer16_T( int16_t initialValue = 0,
+    Integer16( int16_t initialValue = 0,
                  bool    inUse        = false,
                  int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
                );
@@ -181,11 +181,11 @@ protected:
 
 
 /// C POD type
-class Uinteger16_T: public Basic<uint16_t,DataType::UINT16> 
+class Uinteger16: public Basic<uint16_t,DataType::UINT16> 
 {
 public:
     /// int8_t
-    Uinteger16_T( uint16_t initialValue = 0,
+    Uinteger16( uint16_t initialValue = 0,
                   bool     inUse        = false,
                   int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
                 );
@@ -205,11 +205,11 @@ protected:
 
 
 /// C POD type
-class Integer32_T: public Basic<int32_t,DataType::INT32> 
+class Integer32: public Basic<int32_t,DataType::INT32> 
 {
 public:
     /// int8_t
-    Integer32_T( int32_t  initialValue = 0,
+    Integer32( int32_t  initialValue = 0,
                  bool     inUse        = false,
                  int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
                );
@@ -229,11 +229,11 @@ protected:
 
 
 /// C POD type
-class Uinteger32_T: public Basic<uint32_t,DataType::UINT32> 
+class Uinteger32: public Basic<uint32_t,DataType::UINT32> 
 {
 public:
     /// int8_t
-    Uinteger32_T( uint32_t initialValue = 0,
+    Uinteger32( uint32_t initialValue = 0,
                   bool     inUse        = false,
                   int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
                 );
@@ -253,11 +253,11 @@ protected:
 
 
 /// C POD type
-class Integer64_T: public Basic<int64_t,DataType::INT64> 
+class Integer64: public Basic<int64_t,DataType::INT64> 
 {
 public:
     /// int8_t
-    Integer64_T( int64_t initialValue = 0,
+    Integer64( int64_t initialValue = 0,
                  bool     inUse        = false,
                  int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
                );
@@ -277,11 +277,11 @@ protected:
 
 
 /// C POD type
-class Uinteger64_T: public Basic<uint64_t,DataType::UINT64> 
+class Uinteger64: public Basic<uint64_t,DataType::UINT64> 
 {
 public:
     /// int8_t
-    Uinteger64_T( uint64_t initialValue = 0,
+    Uinteger64( uint64_t initialValue = 0,
                   bool     inUse        = false,
                   int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
                 );
@@ -301,11 +301,11 @@ protected:
 
 
 /// C POD type
-class Size_T: public Basic<size_t,DataType::SIZE_T> 
+class SizeT: public Basic<size_t,DataType::SIZE_T> 
 {
 public:
     /// int8_t
-    Size_T( size_t initialValue = 0,
+    SizeT( size_t initialValue = 0,
             bool   inUse        = false,
             int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
           );
@@ -324,11 +324,11 @@ protected:
 
 
 /// C POD type
-class Time_T: public Basic<time_t,DataType::TIME_T> 
+class TimeT: public Basic<time_t,DataType::TIME_T> 
 {
 public:
     /// int8_t
-    Time_T( time_t initialValue = 0,
+    TimeT( time_t initialValue = 0,
             bool   inUse        = false,
             int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
           );
@@ -348,11 +348,11 @@ protected:
 
 
 /// C POD type
-class Float_T: public Basic<float,DataType::FLOAT> 
+class Float: public Basic<float,DataType::FLOAT> 
 {
 public:
     /// int8_t
-    Float_T( float initialValue = 0,
+    Float( float initialValue = 0,
              bool   inUse        = false,
              int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
            );
@@ -375,11 +375,11 @@ protected:
 
 
 /// C POD type
-class Double_T: public Basic<double,DataType::DOUBLE> 
+class Double: public Basic<double,DataType::DOUBLE> 
 {
 public:
     /// int8_t
-    Double_T( double initialValue = 0,
+    Double( double initialValue = 0,
               bool   inUse        = false,
               int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
             );
@@ -402,11 +402,11 @@ protected:
 
 
 /// C POD type
-class VoidPtr_T: public Basic<void*,DataType::VOIDPTR> 
+class VoidPtr: public Basic<void*,DataType::VOIDPTR> 
 {
 public:
     /// int8_t
-    VoidPtr_T( void*  initialValue = 0,
+    VoidPtr( void*  initialValue = 0,
                bool   inUse        = false,
                int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
              );

@@ -33,9 +33,9 @@ public: // Provide the domain application access to the Data
     ///
     Rte::Element::String<10>      m_name;
     ///
-    Rte::Element::Boolean_T       m_enabled;
+    Rte::Element::Boolean       m_enabled;
     ///
-    Rte::Element::Uinteger32_T    m_count;
+    Rte::Element::Uinteger32    m_count;
 
 public:
     /// Constructor

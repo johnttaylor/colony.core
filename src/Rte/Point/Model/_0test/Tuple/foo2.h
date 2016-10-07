@@ -25,9 +25,9 @@ class Foo2: public Rte::Tuple::Basic<2>
 {
 public: // Provide the domain application access to the Data
     ///
-    Rte::Element::Boolean_T       m_enabled;
+    Rte::Element::Boolean       m_enabled;
     ///
-    Rte::Element::Uinteger8_T     m_limit;
+    Rte::Element::Uinteger8     m_limit;
 
 
 public:

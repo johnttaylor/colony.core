@@ -25,17 +25,17 @@ class Foo4: public Rte::Tuple::Basic<8>
 {
 public: // Provide the domain application access to the Data
     ///
-    Rte::Element::Float_T           m_single;
+    Rte::Element::Float           m_single;
     ///
-    Rte::Element::Double_T          m_double;
+    Rte::Element::Double          m_double;
     ///
-    Rte::Element::Size_T            m_sizet;
+    Rte::Element::SizeT            m_sizet;
     ///
-    Rte::Element::VoidPtr_T         m_ptr;
+    Rte::Element::VoidPtr         m_ptr;
     ///
-    Rte::Element::Integer64_T       m_int64;
+    Rte::Element::Integer64       m_int64;
     ///
-    Rte::Element::Integer8_T        m_int8;
+    Rte::Element::Integer8        m_int8;
     ///
     Rte::Element::Uinteger16Delta_t m_uint16;
     ///

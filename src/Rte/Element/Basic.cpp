@@ -22,7 +22,7 @@ using namespace Rte::Element;
 
 
 /////////////////////////////
-Boolean_T::Boolean_T( bool    initialValue,
+Boolean::Boolean( bool    initialValue,
                       bool    inUse,
                       int8_t  validState
                     )
@@ -30,7 +30,7 @@ Boolean_T::Boolean_T( bool    initialValue,
     {
     }
 
-Boolean_T::Boolean_T( int     specializedType,
+Boolean::Boolean( int     specializedType,
                       bool    initialValue,
                       bool    inUse,
                       int8_t  validState
@@ -41,13 +41,13 @@ Boolean_T::Boolean_T( int     specializedType,
 
 
 
-const char* Boolean_T::getTypeAsText(void) const
+const char* Boolean::getTypeAsText(void) const
     {
     return "BOOL";
     }
 
 
-const char* Boolean_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* Boolean::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -58,7 +58,7 @@ const char* Boolean_T::toString( Cpl::Text::String& dstMemory, bool append ) con
     }
 
 
-const char* Boolean_T::setFromText( const char* srcText, const char* terminationChars )
+const char* Boolean::setFromText( const char* srcText, const char* terminationChars )
     {
     if ( srcText )
         {
@@ -91,7 +91,7 @@ const char* Boolean_T::setFromText( const char* srcText, const char* termination
 
 /////////////////////////////
 
-Integer8_T::Integer8_T( int8_t initialValue, 
+Integer8::Integer8( int8_t initialValue, 
                         bool   inUse,
                         int8_t validState
                       )
@@ -99,13 +99,13 @@ Integer8_T::Integer8_T( int8_t initialValue,
     {
     }
 
-const char* Integer8_T::getTypeAsText(void) const
+const char* Integer8::getTypeAsText(void) const
     {
     return "INT8";
     }
 
 
-const char* Integer8_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* Integer8::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -116,7 +116,7 @@ const char* Integer8_T::toString( Cpl::Text::String& dstMemory, bool append ) co
     }
 
 
-const char* Integer8_T::setFromText( const char* srcText, const char* terminationChars ) 
+const char* Integer8::setFromText( const char* srcText, const char* terminationChars ) 
     {
     const char* endPtr = 0;
     int         temp;
@@ -139,7 +139,7 @@ const char* Integer8_T::setFromText( const char* srcText, const char* terminatio
 
 
 /////////////////////////////
-Uinteger8_T::Uinteger8_T( uint8_t initialValue,
+Uinteger8::Uinteger8( uint8_t initialValue,
                           bool    inUse,
                           int8_t  validState
                         )
@@ -148,13 +148,13 @@ Uinteger8_T::Uinteger8_T( uint8_t initialValue,
     }
 
 
-const char* Uinteger8_T::getTypeAsText(void) const
+const char* Uinteger8::getTypeAsText(void) const
     {
     return "UINT8";
     }
 
 
-const char* Uinteger8_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* Uinteger8::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -165,7 +165,7 @@ const char* Uinteger8_T::toString( Cpl::Text::String& dstMemory, bool append ) c
     }
     
 
-const char* Uinteger8_T::setFromText( const char* srcText, const char* terminationChars )
+const char* Uinteger8::setFromText( const char* srcText, const char* terminationChars )
     {
     const char* endPtr = 0;
     unsigned    temp;
@@ -188,7 +188,7 @@ const char* Uinteger8_T::setFromText( const char* srcText, const char* terminati
 
 
 /////////////////////////////
-Integer16_T::Integer16_T( int16_t initialValue,
+Integer16::Integer16( int16_t initialValue,
                           bool    inUse,
                           int8_t  validState
                         )
@@ -197,13 +197,13 @@ Integer16_T::Integer16_T( int16_t initialValue,
     }
 
 
-const char* Integer16_T::getTypeAsText(void) const
+const char* Integer16::getTypeAsText(void) const
     {
     return "INT16";
     }
 
 
-const char* Integer16_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* Integer16::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -214,7 +214,7 @@ const char* Integer16_T::toString( Cpl::Text::String& dstMemory, bool append ) c
     }
 
 
-const char* Integer16_T::setFromText( const char* srcText, const char* terminationChars )
+const char* Integer16::setFromText( const char* srcText, const char* terminationChars )
     {
     const char* endPtr = 0;
     int         temp;
@@ -236,7 +236,7 @@ const char* Integer16_T::setFromText( const char* srcText, const char* terminati
 
 
 /////////////////////////////
-Uinteger16_T::Uinteger16_T( uint16_t initialValue,
+Uinteger16::Uinteger16( uint16_t initialValue,
                             bool     inUse,
                             int8_t   validState
                           )
@@ -245,13 +245,13 @@ Uinteger16_T::Uinteger16_T( uint16_t initialValue,
     }
 
 
-const char* Uinteger16_T::getTypeAsText(void) const
+const char* Uinteger16::getTypeAsText(void) const
     {
     return "UINT16";
     }
 
 
-const char* Uinteger16_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* Uinteger16::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -262,7 +262,7 @@ const char* Uinteger16_T::toString( Cpl::Text::String& dstMemory, bool append ) 
     }
 
 
-const char* Uinteger16_T::setFromText( const char* srcText, const char* terminationChars )
+const char* Uinteger16::setFromText( const char* srcText, const char* terminationChars )
     {
     const char* endPtr = 0;
     unsigned    temp;
@@ -284,7 +284,7 @@ const char* Uinteger16_T::setFromText( const char* srcText, const char* terminat
 
 
 /////////////////////////////
-Integer32_T::Integer32_T( int32_t initialValue,
+Integer32::Integer32( int32_t initialValue,
                           bool    inUse,
                           int8_t  validState
                         )
@@ -293,13 +293,13 @@ Integer32_T::Integer32_T( int32_t initialValue,
     }
 
 
-const char* Integer32_T::getTypeAsText(void) const
+const char* Integer32::getTypeAsText(void) const
     {
     return "INT32";
     }
 
 
-const char* Integer32_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* Integer32::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -310,7 +310,7 @@ const char* Integer32_T::toString( Cpl::Text::String& dstMemory, bool append ) c
     }
 
 
-const char* Integer32_T::setFromText( const char* srcText, const char* terminationChars )
+const char* Integer32::setFromText( const char* srcText, const char* terminationChars )
     {
     const char* endPtr = 0;
     long        temp;
@@ -332,7 +332,7 @@ const char* Integer32_T::setFromText( const char* srcText, const char* terminati
 
 
 /////////////////////////////
-Uinteger32_T::Uinteger32_T( uint32_t initialValue,
+Uinteger32::Uinteger32( uint32_t initialValue,
                             bool     inUse,
                             int8_t   validState
                           )
@@ -341,13 +341,13 @@ Uinteger32_T::Uinteger32_T( uint32_t initialValue,
     }
 
 
-const char* Uinteger32_T::getTypeAsText(void) const
+const char* Uinteger32::getTypeAsText(void) const
     {
     return "UINT32";
     }
 
 
-const char* Uinteger32_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* Uinteger32::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -358,7 +358,7 @@ const char* Uinteger32_T::toString( Cpl::Text::String& dstMemory, bool append ) 
     }
 
 
-const char* Uinteger32_T::setFromText( const char* srcText, const char* terminationChars )
+const char* Uinteger32::setFromText( const char* srcText, const char* terminationChars )
     {
     const char* endPtr = 0;
     unsigned long temp;
@@ -380,7 +380,7 @@ const char* Uinteger32_T::setFromText( const char* srcText, const char* terminat
 
 
 /////////////////////////////
-Integer64_T::Integer64_T( int64_t initialValue,
+Integer64::Integer64( int64_t initialValue,
                           bool    inUse,
                           int8_t  validState
                         )
@@ -389,13 +389,13 @@ Integer64_T::Integer64_T( int64_t initialValue,
     }
 
 
-const char* Integer64_T::getTypeAsText(void) const
+const char* Integer64::getTypeAsText(void) const
     {
     return "INT64";
     }
 
 
-const char* Integer64_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* Integer64::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -406,7 +406,7 @@ const char* Integer64_T::toString( Cpl::Text::String& dstMemory, bool append ) c
     }
 
 
-const char* Integer64_T::setFromText( const char* srcText, const char* terminationChars )
+const char* Integer64::setFromText( const char* srcText, const char* terminationChars )
     {
     const char* endPtr = 0;
     long long   temp;
@@ -425,7 +425,7 @@ const char* Integer64_T::setFromText( const char* srcText, const char* terminati
 
 
 /////////////////////////////
-Uinteger64_T::Uinteger64_T( uint64_t initialValue,
+Uinteger64::Uinteger64( uint64_t initialValue,
                             bool     inUse,
                             int8_t   validState
                           )
@@ -434,13 +434,13 @@ Uinteger64_T::Uinteger64_T( uint64_t initialValue,
     }
 
 
-const char* Uinteger64_T::getTypeAsText(void) const
+const char* Uinteger64::getTypeAsText(void) const
     {
     return "UINT64";
     }
 
 
-const char* Uinteger64_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* Uinteger64::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -451,7 +451,7 @@ const char* Uinteger64_T::toString( Cpl::Text::String& dstMemory, bool append ) 
     }
 
 
-const char* Uinteger64_T::setFromText( const char* srcText, const char* terminationChars )
+const char* Uinteger64::setFromText( const char* srcText, const char* terminationChars )
     {
     const char*        endPtr = 0;
     unsigned long long temp;
@@ -471,7 +471,7 @@ const char* Uinteger64_T::setFromText( const char* srcText, const char* terminat
 
 
 /////////////////////////////
-Size_T::Size_T( size_t  initialValue,
+SizeT::SizeT( size_t  initialValue,
                 bool    inUse,
                 int8_t  validState
               )
@@ -480,13 +480,13 @@ Size_T::Size_T( size_t  initialValue,
     }
 
 
-const char* Size_T::getTypeAsText(void) const
+const char* SizeT::getTypeAsText(void) const
     {
     return "SIZE_T";
     }
 
 
-const char* Size_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* SizeT::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -497,7 +497,7 @@ const char* Size_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     }
 
 
-const char* Size_T::setFromText( const char* srcText, const char* terminationChars )
+const char* SizeT::setFromText( const char* srcText, const char* terminationChars )
     {
     const char*        endPtr = 0;
     unsigned long long temp;
@@ -519,7 +519,7 @@ const char* Size_T::setFromText( const char* srcText, const char* terminationCha
 
 
 /////////////////////////////
-Time_T::Time_T( time_t  initialValue,
+TimeT::TimeT( time_t  initialValue,
                 bool    inUse,
                 int8_t  validState
               )
@@ -528,13 +528,13 @@ Time_T::Time_T( time_t  initialValue,
     }
 
 
-const char* Time_T::getTypeAsText(void) const
+const char* TimeT::getTypeAsText(void) const
     {
     return "TIME_T";
     }
 
 
-const char* Time_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* TimeT::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -545,7 +545,7 @@ const char* Time_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     }
 
 
-const char* Time_T::setFromText( const char* srcText, const char* terminationChars )
+const char* TimeT::setFromText( const char* srcText, const char* terminationChars )
     {
     const char*  endPtr = 0;
     long long    temp;
@@ -568,7 +568,7 @@ const char* Time_T::setFromText( const char* srcText, const char* terminationCha
 
 
 /////////////////////////////
-Float_T::Float_T( float   initialValue,
+Float::Float( float   initialValue,
                   bool    inUse,
                   int8_t  validState
                 )
@@ -577,20 +577,20 @@ Float_T::Float_T( float   initialValue,
     }
 
 
-bool Float_T::isDifferentFrom( const Api& other ) const
+bool Float::isDifferentFrom( const Api& other ) const
     {
     assertTypeMatches( other );
     return Cpl::Math::areFloatsEqual( m_data, *((float*)(other.dataPointer())) ) == false;
     }
 
 
-const char* Float_T::getTypeAsText(void) const
+const char* Float::getTypeAsText(void) const
     {
     return "FLOAT";
     }
 
 
-const char* Float_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* Float::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -601,7 +601,7 @@ const char* Float_T::toString( Cpl::Text::String& dstMemory, bool append ) const
     }
 
 
-const char* Float_T::setFromText( const char* srcText, const char* terminationChars )
+const char* Float::setFromText( const char* srcText, const char* terminationChars )
     {
     const char* endPtr = 0;
     double      temp;
@@ -620,7 +620,7 @@ const char* Float_T::setFromText( const char* srcText, const char* terminationCh
 
 
 /////////////////////////////
-Double_T::Double_T( double   initialValue,
+Double::Double( double   initialValue,
                     bool    inUse,
                     int8_t  validState
                   )
@@ -629,20 +629,20 @@ Double_T::Double_T( double   initialValue,
     }
 
 
-bool Double_T::isDifferentFrom( const Api& other ) const
+bool Double::isDifferentFrom( const Api& other ) const
     {
     assertTypeMatches( other );
     return Cpl::Math::areDoublesEqual( m_data, *((double*)(other.dataPointer())) ) == false;
     }
 
 
-const char* Double_T::getTypeAsText(void) const
+const char* Double::getTypeAsText(void) const
     {
     return "DOUBLE";
     }
 
 
-const char* Double_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* Double::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -653,7 +653,7 @@ const char* Double_T::toString( Cpl::Text::String& dstMemory, bool append ) cons
     }
 
 
-const char* Double_T::setFromText( const char* srcText, const char* terminationChars )
+const char* Double::setFromText( const char* srcText, const char* terminationChars )
     {
     const char* endPtr = 0;
     double      temp;
@@ -672,7 +672,7 @@ const char* Double_T::setFromText( const char* srcText, const char* terminationC
 
 
 /////////////////////////////
-VoidPtr_T::VoidPtr_T( void*   initialValue,
+VoidPtr::VoidPtr( void*   initialValue,
                       bool    inUse,
                       int8_t  validState
                     )
@@ -681,13 +681,13 @@ VoidPtr_T::VoidPtr_T( void*   initialValue,
     }
 
 
-const char* VoidPtr_T::getTypeAsText(void) const
+const char* VoidPtr::getTypeAsText(void) const
     {
     return "VOIDPTR";
     }
 
 
-const char* VoidPtr_T::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* VoidPtr::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -698,7 +698,7 @@ const char* VoidPtr_T::toString( Cpl::Text::String& dstMemory, bool append ) con
     }
 
 
-const char* VoidPtr_T::setFromText( const char* srcText, const char* terminationChars )
+const char* VoidPtr::setFromText( const char* srcText, const char* terminationChars )
     {
     const char*        endPtr = 0;
     unsigned long long temp;

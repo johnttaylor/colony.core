@@ -30,7 +30,7 @@ public:
         allow simply access by other Rte namespaces - the application should use 
         the isInContainer() method
      */
-    Rte::Element::Boolean_T   m_inContainer_;
+    Rte::Element::Boolean   m_inContainer_;
 
 protected:
     /// Constructor

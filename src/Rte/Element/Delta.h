@@ -61,43 +61,43 @@ public:
 // Pre-defined types to simply element declarations
 
 /// C POD type
-typedef Delta<int8_t,Integer8_T>       Integer8Delta_t;
+typedef Delta<int8_t,Integer8>       Integer8Delta_t;
 
 /// C POD type
-typedef Delta<uint8_t,Uinteger8_T>     Uinteger8Delta_t;
+typedef Delta<uint8_t,Uinteger8>     Uinteger8Delta_t;
 
 /// C POD type
-typedef Delta<int16_t,Integer16_T>     Integer16Delta_t;
+typedef Delta<int16_t,Integer16>     Integer16Delta_t;
 
 /// C POD type
-typedef Delta<uint16_t,Uinteger16_T>   Uinteger16Delta_t;
+typedef Delta<uint16_t,Uinteger16>   Uinteger16Delta_t;
 
 /// C POD type
-typedef Delta<int32_t,Integer32_T>     Integer32Delta_t;
+typedef Delta<int32_t,Integer32>     Integer32Delta_t;
 
 /// C POD type
-typedef Delta<uint32_t,Uinteger32_T>   Uinteger32Delta_t;
+typedef Delta<uint32_t,Uinteger32>   Uinteger32Delta_t;
 
 /// C POD type
-typedef Delta<int64_t,Integer64_T>     Integer64Delta_t;
+typedef Delta<int64_t,Integer64>     Integer64Delta_t;
 
 /// C POD type
-typedef Delta<uint64_t,Uinteger64_T>   Uinteger64Delta_t;
+typedef Delta<uint64_t,Uinteger64>   Uinteger64Delta_t;
 
 /// C POD type
-typedef Delta<size_t,Size_T>           SizeTDelta_T;
+typedef Delta<size_t,SizeT>           SizeTDelta_T;
 
 /// C POD type
-typedef Delta<time_t,Time_T>           TimeTDelta_T;
+typedef Delta<time_t,TimeT>           TimeTDelta_T;
 
 /// C POD type
-typedef Delta<float,Float_T>           FloatDelta_T;
+typedef Delta<float,Float>           FloatDelta_T;
 
 /// C POD type
-typedef Delta<double,Double_T>         DoubleDelta_T;
+typedef Delta<double,Double>         DoubleDelta_T;
 
 /// C POD type
-typedef Delta<void*,VoidPtr_T>         VoidPtrDelta_T;
+typedef Delta<void*,VoidPtr>         VoidPtrDelta_T;
 
 
 /////////////////////////////////////////////////////////////////////////////

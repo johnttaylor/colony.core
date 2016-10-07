@@ -21,7 +21,7 @@ using namespace Rte::Tuple;
 
 
 /// Dummy Element
-static Rte::Element::Boolean_T  dummy_;
+static Rte::Element::Boolean  dummy_;
 
 
 /////////////////////
