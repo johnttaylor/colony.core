@@ -92,7 +92,7 @@ public:
     static const int CORAL_ADDR  = 21;
 
     /// Element Type ID 
-    static const int PRECISION_T = 22;
+    static const int ELAPSED_PRECISION_TIME = 22;
 
     /// Start of APPLICATION defined Element Type IDs
     static const int START_APP_DEFINED = 0x2000;            

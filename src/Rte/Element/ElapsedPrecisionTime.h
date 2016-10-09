@@ -24,13 +24,13 @@ namespace Rte { namespace Element {
 /** This class provides an RTE Element for the Cpl::System::ElaspedTime::Precision_T
     data type
  */
-class Precision: public Basic<Cpl::System::ElaspedTime::Precision_T,DataType::PRECISION_T> 
+class ElapsedPrecisionTime: public Basic<Cpl::System::ElaspedTime::Precision_T,DataType::ELAPSED_PRECISION_TIME>
 {
 public:
     /// Constructor
-    Precision( bool    inUse        = false,
-               int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
-             );
+    ElapsedPrecisionTime( bool    inUse        = false,
+                          int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
+                        );
 
 
 public:

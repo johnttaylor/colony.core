@@ -21,7 +21,7 @@ using namespace Rte::Element;
 static const Cpl::System::ElaspedTime::Precision_T zero_ = {0};
 
 /////////////////////////////
-Precision::Precision( bool    inUse,
+ElapsedPrecisionTime::ElapsedPrecisionTime( bool    inUse,
                       int8_t  validState
                     )
 :Basic<Cpl::System::ElaspedTime::Precision_T,DataType::PRECISION_T>( zero_, inUse, validState )
@@ -31,13 +31,13 @@ Precision::Precision( bool    inUse,
     }
 
 
-const char* Precision::getTypeAsText(void) const
+const char* ElapsedPrecisionTime::getTypeAsText(void) const
     {
     return "PRECISION_T";
     }
 
 
-const char* Precision::toString( Cpl::Text::String& dstMemory, bool append ) const
+const char* ElapsedPrecisionTime::toString( Cpl::Text::String& dstMemory, bool append ) const
     {
     if ( convertStateToText( dstMemory, append ) )
         {
@@ -48,7 +48,7 @@ const char* Precision::toString( Cpl::Text::String& dstMemory, bool append ) con
     }
 
 
-const char* Precision::setFromText( const char* srcText, const char* terminationChars )
+const char* ElapsedPrecisionTime::setFromText( const char* srcText, const char* terminationChars )
     {
     const char* endPtr = 0;
     double      temp;

@@ -78,17 +78,17 @@ class Boolean: public Basic<bool,DataType::BOOL>
 public:
     /// Constructor
     Boolean( bool    initialValue = 0,
-               bool    inUse        = false,
-               int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
-             );
+             bool    inUse        = false,
+             int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
+           );
 
 protected:
     /// Constructor
     Boolean( int     specializedType,
-               bool    initialValue = 0,
-               bool    inUse        = false,
-               int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
-             );
+             bool    initialValue = 0,
+             bool    inUse        = false,
+             int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
+           );
 
 
 public:
@@ -112,9 +112,9 @@ class Integer8: public Basic<int8_t,DataType::INT8>
 public:
     /// int8_t
     Integer8( int8_t initialValue = 0,
-                bool   inUse        = false,
-                int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
-              );
+              bool   inUse        = false,
+              int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
+            );
 
 public:
     /// See Rte::Element::Api
@@ -137,9 +137,9 @@ class Uinteger8: public Basic<uint8_t,DataType::UINT8>
 public:
     /// int8_t
     Uinteger8( uint8_t initialValue = 0,
-                 bool    inUse        = false,
-                 int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
-               );
+               bool    inUse        = false,
+               int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
+             );
 
 public:
     /// See Rte::Element::Api
@@ -162,9 +162,9 @@ class Integer16: public Basic<int16_t,DataType::INT16>
 public:
     /// int8_t
     Integer16( int16_t initialValue = 0,
-                 bool    inUse        = false,
-                 int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
-               );
+               bool    inUse        = false,
+               int8_t  validState   = RTE_ELEMENT_API_STATE_INVALID
+             );
 
 public:
     /// See Rte::Element::Api
@@ -186,9 +186,9 @@ class Uinteger16: public Basic<uint16_t,DataType::UINT16>
 public:
     /// int8_t
     Uinteger16( uint16_t initialValue = 0,
-                  bool     inUse        = false,
-                  int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
-                );
+                bool     inUse        = false,
+                int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
+              );
 
 public:
     /// See Rte::Element::Api
@@ -210,9 +210,9 @@ class Integer32: public Basic<int32_t,DataType::INT32>
 public:
     /// int8_t
     Integer32( int32_t  initialValue = 0,
-                 bool     inUse        = false,
-                 int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
-               );
+               bool     inUse        = false,
+               int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
+             );
 
 public:
     /// See Rte::Element::Api
@@ -234,9 +234,9 @@ class Uinteger32: public Basic<uint32_t,DataType::UINT32>
 public:
     /// int8_t
     Uinteger32( uint32_t initialValue = 0,
-                  bool     inUse        = false,
-                  int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
-                );
+                bool     inUse        = false,
+                int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
+              );
 
 public:
     /// See Rte::Element::Api
@@ -258,9 +258,9 @@ class Integer64: public Basic<int64_t,DataType::INT64>
 public:
     /// int8_t
     Integer64( int64_t initialValue = 0,
-                 bool     inUse        = false,
-                 int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
-               );
+               bool     inUse        = false,
+               int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
+             );
 
 public:
     /// See Rte::Element::Api
@@ -282,9 +282,9 @@ class Uinteger64: public Basic<uint64_t,DataType::UINT64>
 public:
     /// int8_t
     Uinteger64( uint64_t initialValue = 0,
-                  bool     inUse        = false,
-                  int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
-                );
+                bool     inUse        = false,
+                int8_t   validState   = RTE_ELEMENT_API_STATE_INVALID
+              );
 
 public:
     /// See Rte::Element::Api
@@ -306,9 +306,9 @@ class SizeT: public Basic<size_t,DataType::SIZE_T>
 public:
     /// int8_t
     SizeT( size_t initialValue = 0,
-            bool   inUse        = false,
-            int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
-          );
+           bool   inUse        = false,
+           int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
+         );
 
 public:
     /// See Rte::Element::Api
@@ -329,9 +329,9 @@ class TimeT: public Basic<time_t,DataType::TIME_T>
 public:
     /// int8_t
     TimeT( time_t initialValue = 0,
-            bool   inUse        = false,
-            int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
-          );
+           bool   inUse        = false,
+           int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
+         );
 
 public:
     /// See Rte::Element::Api
@@ -353,9 +353,9 @@ class Float: public Basic<float,DataType::FLOAT>
 public:
     /// int8_t
     Float( float initialValue = 0,
-             bool   inUse        = false,
-             int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
-           );
+           bool   inUse        = false,
+           int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
+         );
 
 public:
     /// See Rte::Element::Api (need to use "almost equal" since this is floating point)
@@ -380,9 +380,9 @@ class Double: public Basic<double,DataType::DOUBLE>
 public:
     /// int8_t
     Double( double initialValue = 0,
-              bool   inUse        = false,
-              int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
-            );
+            bool   inUse        = false,
+            int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
+          );
 
 public:
     /// See Rte::Element::Api (need to use "almost equal" since this is floating point)
@@ -407,9 +407,9 @@ class VoidPtr: public Basic<void*,DataType::VOIDPTR>
 public:
     /// int8_t
     VoidPtr( void*  initialValue = 0,
-               bool   inUse        = false,
-               int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
-             );
+             bool   inUse        = false,
+             int8_t validState   = RTE_ELEMENT_API_STATE_INVALID
+           );
 
 public:
     /// See Rte::Element::Api
