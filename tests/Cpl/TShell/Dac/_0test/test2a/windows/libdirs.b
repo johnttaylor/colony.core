@@ -23,7 +23,6 @@ src/Cpl/Log/_default
 src/Cpl/Io
 src/Cpl/Io/Stdio
 src/Cpl/Io/Stdio/_win32
-src/Cpl/Io/Stdio/_win32
 src/Cpl/Io/Socket
 src/Cpl/Io/Socket/Win32
 src/Cpl/System/_ansi
