@@ -150,12 +150,12 @@ public:
              
             if ( flatten < sleepTime )
                 {
-                FatalError::logf( "Elasped Precision_T delta is wrong" );
+                FatalError::logf( "Elapsed Precision_T delta is wrong" );
                 }
              
             if ( deltaM < sleepTime )
                 {
-                FatalError::logf( "Elasped msec delta is wrong" );
+                FatalError::logf( "Elapsed msec delta is wrong" );
                 }
 
             if ( flatten < deltaM - 1 || flatten > deltaM + 1 )
@@ -238,6 +238,6 @@ void runtests( void )
     MyRunnable3 t3( 64.0, 128.0 );
     Thread::create( t3, "T3" );
      
-    // Start the schedular
+    // Start the scheduler
     Api::enableScheduling();
     }

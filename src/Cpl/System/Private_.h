@@ -50,7 +50,7 @@ public:
     sub-system to register to be called when the Api::initialize() 
     method is called.
 
-    The intended usage of this inteface is that a sub-system creates
+    The intended usage of this interface is that a sub-system creates
     a sub-class of this class and then creates a static instance of
     its sub-class.  During the init process, the instance's 'notifyInit'
     method will be called.  
@@ -66,12 +66,12 @@ public:
         in order (lowest value to highest), i.e. callbacks for lowest
         numbered init level are called first and the callback for highest
         numbered init level are called last.  Within a init level there is
-        no guarentied order to the callbacks.
+        no guaranteed order to the callbacks.
      */
-    enum InitLevel_T { eTEST_INFRA=0,    /// Initialize first
+    enum InitLevel_T { eTEST_INFRA=0,    /// Initialized first
                        eSYSTEM,   
                        eMIDDLE_WARE,   
-                       eAPPLICATION  } ; /// Initalized last
+                       eAPPLICATION  } ; /// Initialized last
 
 
 public:

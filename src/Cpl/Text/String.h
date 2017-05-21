@@ -450,8 +450,8 @@ public:
 
 
 /* Note: I could only make the stream operators work if there were NOT declared 
-         within the Cpl::Text namespace.  Fortunaly, I don't actually have to
-         make the stream operators 'friends' for the neccesary implementation.
+         within the Cpl::Text namespace.  Fortunately, I don't actually have to
+         make the stream operators 'friends' for the necessary implementation.
 
          If someone could explain/show me how to make it work using the
          'friend' approach - please contact me.

@@ -83,7 +83,7 @@ public:
             m_loops++;
             CPL_SYSTEM_TRACE_MSG( SECT_, ("Waiting.... (loops=%d)", m_loops ) );
             Thread::wait();
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("Signalled.  (loops=%d)", m_loops ) );
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("Signaled.  (loops=%d)", m_loops ) );
             if ( isRunning() && m_nextThreadPtr )
                 {                                                       
                 CPL_SYSTEM_TRACE_MSG( SECT_, ("Signaling: %s", m_nextThreadPtr->getName() ) );
@@ -102,7 +102,7 @@ public:
         m_tls.set( m_myThreadPtr->getName() );
         }
 
-    /// Override default implemenation
+    /// Override default implementation
     void pleaseStop( void )
         {
         if ( isRunning() && m_myThreadPtr )
