@@ -59,9 +59,9 @@
 
 
 //
-// Thread Priorites
+// Thread Priorities
 //    The maximum number of priority levels is defined FreeRTOSConfig.h
-//    The highest prioirty is 'configMAX_PRIORITIES - 1', the lowest
+//    The highest priority is 'configMAX_PRIORITIES - 1', the lowest
 //    priority is 1.
 //
 #define CPL_SYSTEM_THREAD_PRIORITY_HIGHEST_MAP      (configMAX_PRIORITIES - 1)

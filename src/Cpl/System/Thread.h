@@ -65,7 +65,7 @@ public:
     /// This method returns the name (null terminated string) of the current thread.
     virtual const char* getName() throw() = 0;
 
-    /// This methoid returns the task's unique identifier
+    /// This method returns the task's unique identifier
     virtual size_t getId() throw() = 0;  
 
     /** This method returns the 'running' state of the thread.  If the method  
@@ -111,7 +111,7 @@ public:
 public:
     /** This abstract class defines the client interface for walking
         the list of threads, i.e. defines the callback method for
-        when walking/travering the list of active threads. 
+        when walking/traversing the list of active threads. 
      */
     class Traverser
     {
@@ -121,7 +121,7 @@ public:
     
     public: 
         /** This method is called once for ever item in the "traversee's"
-            list.  The return code from the method is used by the traverer
+            list.  The return code from the method is used by the traverser
             to continue the traversal (eCONTINUE), or abort the traversal 
             (eABORT).
          */
@@ -138,11 +138,11 @@ public:
               determines if the a thread is "active", i.e. the thread
               is created and running.  The Thread object gets created
               BEFORE the thread is active and exists AFTER thread
-              terminates/end.  Why the explaination, this method only
+              terminates/end.  Why the explanation, this method only
               includes "active" threads.  Threads that have terminated,
-              but that their assocated Thread object instance has not
+              but that their associated Thread object instance has not
               been delete/destroyed will NOT show up in the active list.              
-            o This call is mutexed protected.  It will prevent new
+            o This call is mutex protected.  It will prevent new
               threads from being created/deleted until it has 
               completed.
      */
@@ -151,11 +151,11 @@ public:
 
 public:
 
-    /** This method creates a thread according to the specified paramters.  The
-        thread/task begins execution immiedately upon its creation.
+    /** This method creates a thread according to the specified parameters.  The
+        thread/task begins execution immediately upon its creation.
 
         NOTE: Not all platform support all options, e.g. The C++11 multi 
-              threading support does not directly support thread priorites.
+              threading support does not directly support thread priorities.
               
 
         @returns A pointer to the Thread created, OR 0 if the was an error.
@@ -200,7 +200,7 @@ public:
         NOTES: 
         
             o The application should only delete/destroy a thread AFTER the 
-              thread's Runnable object.run() method has ended/termianted.  If
+              thread's Runnable object.run() method has ended/terminated.  If
               the thread is destroy/delete before run() has completed, there is 
               NO GUARANTEE with respect to whether or not the thread has 
               released all acquired resources!

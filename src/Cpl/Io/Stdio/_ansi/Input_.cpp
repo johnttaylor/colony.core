@@ -110,7 +110,7 @@ bool Input_::read(void* buffer, int numBytes, int& bytesRead)
 
 bool Input_::available()
     {
-    // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documenation/contract)
+    // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract)
     return true;
     }
 

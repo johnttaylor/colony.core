@@ -40,14 +40,26 @@ void InputOutput::start( unsigned long baudrate, uint16_t config )throw()
     }
 }
 
-bool InputOutput::isReady(void)
+bool InputOutput::isReady( void )
 {
+    // Fail if I have not been started
+    if ( !m_started )
+    {
+        return false;
+    }
+
     return m_serialPort;
 }
 
 ////////////////////////////////////
 bool InputOutput::read( void* buffer, int numBytes, int& bytesRead )
 {
+    // Fail if I have not been started
+    if ( !m_started )
+    {
+        return false;
+    }
+
     uint8_t* ptr = (uint8_t*) buffer;
     for ( bytesRead = 0; bytesRead < numBytes; bytesRead++ )
     {
@@ -68,6 +80,12 @@ bool InputOutput::read( void* buffer, int numBytes, int& bytesRead )
 
 bool InputOutput::available()
 {
+    // Fail if I have not been started
+    if ( !m_started )
+    {
+        return false;
+    }
+
     return m_serialPort.available();
 }
 
@@ -75,6 +93,12 @@ bool InputOutput::available()
 ////////////////////////////////////
 bool InputOutput::write( const void* buffer, int maxBytes, int& bytesWritten )
 {
+    // Fail if I have not been started
+    if ( !m_started )
+    {
+        return false;
+    }
+
     const uint8_t* ptr = (const uint8_t*) buffer;
     bytesWritten = maxBytes;
 
@@ -92,12 +116,20 @@ bool InputOutput::write( const void* buffer, int maxBytes, int& bytesWritten )
 
 void InputOutput::flush()
 {
-    m_serialPort.flush();
+    // Do nothing if I have not been started
+    if ( m_started )
+    {
+        m_serialPort.flush();
+    }
 }
 
 
 void InputOutput::close()
 {
-    m_serialPort.end();
-    m_started = false;
+    // Do nothing if I have not been started
+    if ( m_started )
+    {
+        m_serialPort.end();
+        m_started = false;
+    }
 }

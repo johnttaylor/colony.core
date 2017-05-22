@@ -20,8 +20,8 @@ namespace Cpl { namespace Io {
 
 
 /** This abstract template class defines a interface for an Atomic outputs to a 
-    stream.  The AtomicOutputApi interface is intented to be used in an multi 
-    threaded environment and provides a mechamism for many clients to write to 
+    stream.  The AtomicOutputApi interface is intended to be used in an multi 
+    threaded environment and provides a mechanism for many clients to write to 
     a single output stream in manner where each client's output is atomic with 
     respect to other clients. 
 
@@ -29,7 +29,7 @@ namespace Cpl { namespace Io {
     
         1) An atomic output of a single a 'chunk' of data, i.e. each write()
            call on the Output is an atomic operation.
-        2) A Callback mechanism that allows outputing many 'chunks' 
+        2) A Callback mechanism that allows outputting many 'chunks' 
            a single atomic operation.
 
     The template arg - CONTEXT - is the class that implements the callback
@@ -50,7 +50,7 @@ public:
 public:
     /** This method is used to output a series of output operations to the 
         stream as a single atomic operation. A callback mechanism is used and 
-        all output operations peformed in the callback are atomic with respect 
+        all output operations performed in the callback are atomic with respect 
         to the Output Stream. This method returns false if a error occur on the 
         Output Stream; else true is returned.
 

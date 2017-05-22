@@ -39,7 +39,7 @@ protected:
 
 
 public:
-    /** The application is repsonsible for supplying the actual Output stream.
+    /** The application is responsible for supplying the actual Output stream.
         In addition, the application must supply a 'lock'.  This allows the
         application to associate each Output stream with it own lock or the
         application could chose to use a single lock for all Atomic 

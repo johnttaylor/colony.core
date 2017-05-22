@@ -31,8 +31,64 @@ static void removeThreadFromActiveList_( Thread& thread );
 #define AREA_	"Cpl::System::FreeRTOS::Thread"
 
 
+////////////////////////////////////
+#ifdef USE_CPL_SYSTEM_FREERTOS_NATIVE_THREAD 
+namespace {
+
+    /// This class is used to turn the entry/native/main thread into a Cpl::System::Thread (i.e. add the thread semaphore)    
+    class RegisterInitHandler_: public Cpl::System::StartupHook_,
+                                public Cpl::System::Runnable
+    {                               
+    protected:
+        // Empty run function
+        // Note: Leave my 'running state' set to false -->this is so I don't 
+        // terminate the native thread prematurely when/if the Thread instance
+        // is deleted.  In theory this can't happen since the Thread and Runnable
+        // instance pointers for the native thread are never exposed to the 
+        // application and/or explicitly deleted.
+        void appRun(){} 
+
+    public:
+        ///
+        RegisterInitHandler_():StartupHook_(eSYSTEM) {}
+
+            
+    protected:
+        ///
+        void notify( InitLevel_T init_level )
+            {
+            // Create a thread object for the native thread
+            m_running = true;
+            new Cpl::System::FreeRTOS::Thread( *this );
+            }
+
+    };
+}; // end namespace
+
+///
+static RegisterInitHandler_ autoRegister_systemInit_hook_;
+#endif
 
 ////////////////////////////////////
+Thread::Thread( Cpl::System::Runnable& dummyRunnable )
+:m_runnable(dummyRunnable),
+ m_name("main"),
+ m_threadHandle(xTaskGetCurrentTaskHandle())
+    {
+    // Initialize by TLS storage for this thread
+    for(unsigned i=0; i < OPTION_CPL_SYSTEM_TLS_DESIRED_MIN_INDEXES; i++)
+        {
+        m_tlsArray[i]   = 0;
+        }
+
+    // Plant the address of my TLS array into FreeRTOS's TCB
+    vTaskSetApplicationTaskTag( m_threadHandle,  (TaskHookFunction_t)this);
+
+    // Add the native thread to the list of active threads
+    addThreadToActiveList_(*this);
+    }
+
+
 Thread::Thread( Cpl::System::Runnable&   runnable,
                 const char*              name,
                 int                      priority,
@@ -42,7 +98,7 @@ Thread::Thread( Cpl::System::Runnable&   runnable,
  m_name(name),
  m_threadHandle(NULL)
     {
-    // Initialize by TLS storage for this thrad
+    // Initialize by TLS storage for this thread
     for(unsigned i=0; i < OPTION_CPL_SYSTEM_TLS_DESIRED_MIN_INDEXES; i++)
         {
         m_tlsArray[i]   = 0;

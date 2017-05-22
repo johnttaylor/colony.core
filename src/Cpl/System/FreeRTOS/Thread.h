@@ -1,16 +1,16 @@
 #ifndef Cpl_System_FreeRTOS_Thread_h_
 #define Cpl_System_FreeRTOS_Thread_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014 John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
-/** @file */ 
+*
+* Copyright (c) 2014 John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
+/** @file */
 
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Tls.h"
@@ -18,25 +18,29 @@
 #include "task.h"
 
 // Forward declaration for making the Tls class a friend
-namespace Cpl { namespace System {
+namespace Cpl {
+namespace System {
 class Tls;
-};};
+};
+};
 
 
 ///
-namespace Cpl { namespace System { namespace FreeRTOS {
+namespace Cpl {
+namespace System {
+namespace FreeRTOS {
 
 /** This concrete class implements a Thread object using FreeRTOS threads
  */
-class Thread: public Cpl::System::Thread 
+class Thread : public Cpl::System::Thread
 {
 protected:
     /// Reference to the runnable object for the thread
-    Cpl::System::Runnable&  m_runnable;         
+    Cpl::System::Runnable&  m_runnable;
 
     /// ASCII name of the task
     Cpl::Text::FString<configMAX_TASK_NAME_LEN>  m_name;
-    
+
     /// internal handle
     TaskHandle_t            m_threadHandle;
 
@@ -44,7 +48,7 @@ protected:
     void*                   m_tlsArray[OPTION_CPL_SYSTEM_TLS_DESIRED_MIN_INDEXES];
 
 
-public: 
+public:
     /** Constructor.
             o Does NOT support the application supplying the stack
               memory. Stack memory is allocated from the HEAP
@@ -61,36 +65,43 @@ public:
     /// Destructor
     ~Thread();
 
-public: 
+public:
     /// See Cpl::System::Thread
     const char* getName() throw();
 
     /// See Cpl::System::Thread
-    size_t getId() throw();    
+    size_t getId() throw();
 
     /// See Cpl::System::Thread
-    bool isRunning(void) throw();
+    bool isRunning( void ) throw();
 
     /// See Cpl::System::Thread
-    Cpl_System_Thread_NativeHdl_T getNativeHandle(void) throw();
+    Cpl_System_Thread_NativeHdl_T getNativeHandle( void ) throw();
 
 
-public: 
+public:
     /// See Cpl::System::Signable
-    int signal(void) throw();
+    int signal( void ) throw();
 
     /// See Cpl::System::Signable
-    int su_signal(void) throw();
+    int su_signal( void ) throw();
 
 
 
 private:
     /// Entry point for all newly created threads
-    static void entryPoint(void* data);
+    static void entryPoint( void* data );
 
 protected:
     /// Returns access to the TLS key array
-    static void** getTlsArray() throw();    
+    static void** getTlsArray() throw();
+
+
+public:
+    /** Private constructor to convert the native FreeRTOS thread to a Cpl Thread.
+        THIS CONSTRUCTOR SHOULD NEVER BE USED BY THE APPLICATION!
+     */
+    Thread( Cpl::System::Runnable& dummyRunnable );
 
 public:
     /// Housekeeping

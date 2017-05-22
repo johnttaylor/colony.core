@@ -42,7 +42,7 @@ namespace {
         // terminate the native thread prematurely when/if the Thread instance
         // is deleted.  In theory this can't happen since the Thread and Runnable
         // instance pointers for the native thread are never exposed to the 
-        // application and/or explicted deleted.
+        // application and/or explicitly deleted.
         void appRun(){} 
 
     public:

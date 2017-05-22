@@ -1,3 +1,6 @@
+# Test Application
+src/Cpl/System/_0test/hw_basic2
+
 # Colony::Core libraries (note: the Feather52/Arduino boards uses FreeRTOS)
 src/Cpl/Io
 src/Cpl/System/FreeRTOS
@@ -7,6 +10,7 @@ src/Cpl/System/_trace
 src/Cpl/System/_trace/_arduino
 src/Cpl/Container
 src/Cpl/Text
+src/Cpl/Io/Serial/Adafruit/Nrf5
 //Arduino/src/Bsp/Adafruit/feather52/gcc
 
 # Ardunio Core library for the Nordic nrf52 Feather52

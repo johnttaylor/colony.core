@@ -33,8 +33,8 @@ namespace Cpl { namespace Io { namespace Serial {
 namespace Cpl { namespace Io { namespace Stdio {
 
 /** This concrete class implements a Input-Output stream.  The actual
-    implemenation is dependant on the linked-in implemenation (which
-    is platform/behaviour specifc).
+    implementation is dependent on the linked-in implementation (which
+    is platform/behavior specific).
  */
 class InputOutput_: public Cpl::Io::InputOutput
 {
@@ -105,7 +105,7 @@ public:
      */
     void activate( void* handle );
 
-    /** Activates and/or resets the underlying 'srreamfd' for the stream.  If the
+    /** Activates and/or resets the underlying 'streamfd' for the stream.  If the
         current 'fd' is not in the closed state - a fatal error is generated
      */
     void activate( Cpl::Io::Descriptor streamfd );
