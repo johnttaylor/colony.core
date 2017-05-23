@@ -59,7 +59,7 @@ namespace {
             {
             // Create a thread object for the native thread
             m_running = true;
-            new Cpl::System::FreeRTOS::Thread( *this );
+            new Cpl::System::FreeRTOS::Thread( "main", *this );
             }
 
     };
@@ -69,10 +69,21 @@ namespace {
 static RegisterInitHandler_ autoRegister_systemInit_hook_;
 #endif
 
+void Thread::makeNativeMainThreadACplThread(void)
+{
+    static bool once=false;
+    if ( !once )
+    {
+        once = true;
+        new Cpl::System::FreeRTOS::MakeCurrentThreadACplThread();
+        CPL_SYSTEM_TRACE_MSG( AREA_, ("loop(): Main thread has be converted to a CPL thread - I can know use Tracing safely!") );
+    }
+}
+
 ////////////////////////////////////
-Thread::Thread( Cpl::System::Runnable& dummyRunnable )
+Thread::Thread( const char* threadName, Cpl::System::Runnable& dummyRunnable )
 :m_runnable(dummyRunnable),
- m_name("main"),
+ m_name(threadName),
  m_threadHandle(xTaskGetCurrentTaskHandle())
     {
     // Initialize by TLS storage for this thread

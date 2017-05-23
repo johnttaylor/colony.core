@@ -60,9 +60,9 @@ public:
             const char*    name,
             int            priority      = CPL_SYSTEM_THREAD_PRIORITY_NORMAL,
             unsigned       stackSize     = 0
-          );
+            );
 
-    /// Destructor
+      /// Destructor
     ~Thread();
 
 public:
@@ -101,12 +101,50 @@ public:
     /** Private constructor to convert the native FreeRTOS thread to a Cpl Thread.
         THIS CONSTRUCTOR SHOULD NEVER BE USED BY THE APPLICATION!
      */
-    Thread( Cpl::System::Runnable& dummyRunnable );
+    Thread( const char* threadName, Cpl::System::Runnable& dummyRunnable );
+
+    /** This is helper method to 'convert' the first/main FreeRTOS thread
+        to a CPL thread.  The method can be called many times - but it
+        does the 'conversation' once.  The motivation for this method was
+        working with the Arduino platform/framework where it creates
+        the first/main FreeRTOS thread.
+     */
+    static void makeNativeMainThreadACplThread(void);
 
 public:
     /// Housekeeping
     friend class Cpl::System::Thread;
     friend class Cpl::System::Tls;
+};
+
+/** This is a helper class that can be used to make the current thread
+    a CPL thread.  This class should only be used when the 'application'
+    contains active threads there were not created through the CPL
+    libraries APIs.  For example: On the Arduino Feather52 platform,
+    the Arduino framework creates the 'main' thread.  
+
+    ** ONLY USE THIS CLASS IF YOU KNOW WHAT YOU ARE DOING **
+ */
+class MakeCurrentThreadACplThread: public Cpl::System::Runnable
+{
+protected:
+    // Empty run function
+    // Note: Leave my 'running state' set to false -->this is so I don't 
+    // terminate the native thread prematurely when/if the Thread instance
+    // is deleted.  In theory this can't happen since the Thread and Runnable
+    // instance pointers for the native thread are never exposed to the 
+    // application and/or explicitly deleted.
+    void appRun() {}
+
+
+public:
+    ///
+    MakeCurrentThreadACplThread( const char* threadName="main" )
+        {
+        // Create a thread object for the native thread
+        m_running = true;
+        new Cpl::System::FreeRTOS::Thread( threadName, *this );
+        }
 };
 
 

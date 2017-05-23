@@ -96,10 +96,10 @@
 #define configUSE_TICKLESS_IDLE                                                   0
 //TODO SDK13 #define configUSE_TICKLESS_IDLE_SIMPLE_DEBUG                                      1 /* See into vPortSuppressTicksAndSleep source code for explanation */
 #define configCPU_CLOCK_HZ                                                        ( SystemCoreClock )
-#define configTICK_RATE_HZ                                                        1024
+#define configTICK_RATE_HZ                                                        1000          // JTT: Changed from baseline Arduino config (was 1024)
 #define configMAX_PRIORITIES                                                      ( 5 )
 #define configMINIMAL_STACK_SIZE                                                  ( 100 )
-#define configTOTAL_HEAP_SIZE                                                     ( 4096 ) /* not used since we use malloc */
+#define configTOTAL_HEAP_SIZE                                                     ( 4096*3 )    // JTT: Changed from baseline Arduino config (was 4096 )
 #define configMAX_TASK_NAME_LEN                                                   ( 8 )
 #define configUSE_16_BIT_TICKS                                                    0
 #define configIDLE_SHOULD_YIELD                                                   1
@@ -112,12 +112,13 @@
 #define configUSE_TIME_SLICING                                                    0
 #define configUSE_NEWLIB_REENTRANT                                                0
 #define configENABLE_BACKWARD_COMPATIBILITY                                       1
-#define configUSE_APPLICATION_TASK_TAG                                          1     // JTT: Changed from baseline Arduino config
+#define configUSE_APPLICATION_TASK_TAG                                            1     // JTT: Changed from baseline Arduino config
+#define configUSE_TASK_NOTIFICATIONS                                              1     // JTT: Changed from baseline Arduino config
 
 
 /* Hook function related definitions. */
 #define configUSE_IDLE_HOOK                                                       1
-#define configUSE_TICK_HOOK                                                       1
+#define configUSE_TICK_HOOK                                                       1     // JTT: Changed from baseline Arduino config
 #define configCHECK_FOR_STACK_OVERFLOW                                            1
 #define configUSE_MALLOC_FAILED_HOOK                                              1
 

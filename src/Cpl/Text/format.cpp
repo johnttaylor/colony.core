@@ -99,22 +99,22 @@ static bool formatMsec( Cpl::Text::String& buffer, unsigned msec, unsigned long 
 
         if ( !appendToString )
             {
-            buffer.format("%02llu %02u:%02u:%02u.%03u", dd, (unsigned)hh, (unsigned)mm, (unsigned)ss, msec );
+            buffer.format("%02u %02u:%02u:%02u.%03u", (unsigned)dd, (unsigned)hh, (unsigned)mm, (unsigned)ss, msec );
             }
         else
             {
-            buffer.formatAppend("%02llu %02u:%02u:%02u.%03u", dd, (unsigned)hh, (unsigned)mm, (unsigned)ss, msec );
+            buffer.formatAppend("%02u %02u:%02u:%02u.%03u", (unsigned)dd, (unsigned)hh, (unsigned)mm, (unsigned)ss, msec );
             }
         }
     else
         {
         if ( !appendToString )
             {
-            buffer.format("%02llu:%02u:%02u.%03u", hh, (unsigned)mm, (unsigned)ss, (unsigned)msec );
+            buffer.format("%02u:%02u:%02u.%03u", (unsigned)hh, (unsigned)mm, (unsigned)ss, (unsigned)msec );
             }
         else
             {
-            buffer.formatAppend("%02llu:%02u:%02u.%03u", hh, (unsigned)mm, (unsigned)ss, (unsigned)msec );
+            buffer.formatAppend("%02u:%02u:%02u.%03u", (unsigned)hh, (unsigned)mm, (unsigned)ss, (unsigned)msec );
             }
         }
 

@@ -18,6 +18,9 @@
 #include "Cpl/System/Tls.h"
 #include "Cpl/System/Trace.h"
 
+#ifndef OPTION_0TEST_HW_BASIC2_STACK_SIZE
+#define OPTION_0TEST_HW_BASIC2_STACK_SIZE       (512*3)
+#endif
 
 #define SECT_       "_0test"
 
@@ -78,14 +81,16 @@ public:
 
         for ( ;;)
         {
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("Top of MyRunnable::appRun()") );
+            CPL_SYSTEM_TRACE_MSG( SECT_, ( "Top of MyRunnable::appRun()" ) );
             m_tlsKey.set( (void*) m_tlsCounter );
             toggleLED();
-            Api::sleep( 100 );
+            Thread::wait();
+            toggleLED();
+            Thread::wait();
             if ( m_tlsKey.get() != (void*) m_tlsCounter )
-            {
+                {
                 FatalError::logf( "(%s) Bad TLS value (%p) - should be (%p)", Thread::myName(), m_tlsKey.get(), m_tlsCounter );
-            }
+                }
             m_tlsCounter++;
         }
     }
@@ -128,9 +133,9 @@ public:
 public:
     void appRun()
     {
-        unsigned long sleepTime = m_onTime_ms + m_offTime_ms;
-        m_ptime                 = ElaspedTime::precision();
-        m_msec                  = ElaspedTime::milliseconds();
+        unsigned long sleepTime      = m_onTime_ms + m_offTime_ms;
+        m_ptime                      = ElaspedTime::precision();
+        m_msec                       = ElaspedTime::milliseconds();
 
         for ( ;;)
         {
@@ -148,6 +153,8 @@ public:
             ElaspedTime::Precision_T deltaP    = ElaspedTime::deltaPrecision( m_ptime, ptime );
             unsigned long            flatten   = deltaP.m_seconds * 1000 + deltaP.m_thousandths;
 
+            //CPL_SYSTEM_TRACE_MSG( SECT_, ("msec=%u, ptime.s=%u, ptime.msec=%u, deltaM=%u, flatten=%u, sleepTime=%u", msec, ptime.m_seconds, ptime.m_thousandths, deltaM, flatten, sleepTime) );
+ 
             if ( flatten < sleepTime )
             {
                 FatalError::logf( "Elapsed Precision_T delta is wrong. flatten=%lu, sleepTime=%lu", flatten, sleepTime );
@@ -227,22 +234,22 @@ void runtests( void )
         created_threads = true;
         Tls* tlsKey = new Cpl::System::Tls();
 
-        /*MyRunnable*  appleLed       = new MyRunnable( *tlsKey, 1 );
-        Thread*      appleLedThread = Thread::create( *appleLed, "AppleLED" );
+        MyRunnable*  appleLed       = new MyRunnable( *tlsKey, 1 );
+        Thread*      appleLedThread = Thread::create( *appleLed, "AppleLED", CPL_SYSTEM_THREAD_PRIORITY_NORMAL, OPTION_0TEST_HW_BASIC2_STACK_SIZE );
         MyRunnable2* appleTimer     = new MyRunnable2( *appleLedThread, 1000, 1000 );
-        Thread::create( *appleTimer, "AppleTimer" );
-*/
-        MyRunnable*  orangeLed       = new MyRunnable( *tlsKey, 2 );
-        Thread*      orangeLedThread = Thread::create( *orangeLed, "OrangeLED" );
-        MyRunnable2* orangeTimer     = new MyRunnable2( *orangeLedThread, 1500, 250 );
-        Thread::create( *orangeTimer, "OrangeTimer" );
+        Thread::create( *appleTimer, "AppleTimer", CPL_SYSTEM_THREAD_PRIORITY_NORMAL, OPTION_0TEST_HW_BASIC2_STACK_SIZE );
 
-        //MyRunnable3* t1 = new MyRunnable3( 3.14159, 3 );
-        //Thread::create( *t1, "T1" );
-        //MyRunnable3* t2 = new MyRunnable3( 2.71828, 7 );
-        //Thread::create( *t2, "T2" );
-        //MyRunnable3* t3 = new MyRunnable3( 64.0, 128.0 );
-        //Thread::create( *t3, "T3" );
+        MyRunnable*  orangeLed       = new MyRunnable( *tlsKey, 2 );
+        Thread*      orangeLedThread = Thread::create( *orangeLed, "OrangeLED", CPL_SYSTEM_THREAD_PRIORITY_NORMAL, OPTION_0TEST_HW_BASIC2_STACK_SIZE );
+        MyRunnable2* orangeTimer     = new MyRunnable2( *orangeLedThread, 750, 250 );
+        Thread::create( *orangeTimer, "OrangeTimer", CPL_SYSTEM_THREAD_PRIORITY_NORMAL, OPTION_0TEST_HW_BASIC2_STACK_SIZE );
+
+        MyRunnable3* t1 = new MyRunnable3( 3.14159, 3 );
+        Thread::create( *t1, "T1", CPL_SYSTEM_THREAD_PRIORITY_NORMAL, OPTION_0TEST_HW_BASIC2_STACK_SIZE );
+        MyRunnable3* t2 = new MyRunnable3( 2.71828, 7 );
+        Thread::create( *t2, "T2", CPL_SYSTEM_THREAD_PRIORITY_NORMAL, OPTION_0TEST_HW_BASIC2_STACK_SIZE );
+        MyRunnable3* t3 = new MyRunnable3( 64.0, 128.0 );
+        Thread::create( *t3, "T3", CPL_SYSTEM_THREAD_PRIORITY_NORMAL, OPTION_0TEST_HW_BASIC2_STACK_SIZE );
     }
 
 

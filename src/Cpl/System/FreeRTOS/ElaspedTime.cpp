@@ -60,11 +60,11 @@ unsigned long ElaspedTime::millisecondsInRealTime( void ) throw()
     unsigned long s;
     uint16_t      ms;
 
-    // Note: I use my own counter because it was the only way to guaranty that milliseoncds and seconds are in sync
-    taskDISABLE_INTERRUPTS();
+    // Note: I use my own counter because it was the only way to guaranty that milliseconds and seconds are in sync
+    taskENTER_CRITICAL();
     s  = elaspedSeconds_;
     ms = secondsDivider_;
-    taskENABLE_INTERRUPTS();
+    taskEXIT_CRITICAL();
 
     return (ms * portTICK_PERIOD_MS) + s * 1000L;
     }
@@ -73,9 +73,9 @@ unsigned long ElaspedTime::secondsInRealTime( void ) throw()
     {
     unsigned long s;
 
-    taskDISABLE_INTERRUPTS();
+    taskENTER_CRITICAL();
     s  = elaspedSeconds_;
-    taskENABLE_INTERRUPTS();
+    taskEXIT_CRITICAL();
 
     return s;
     }
@@ -85,10 +85,10 @@ ElaspedTime::Precision_T ElaspedTime::precisionInRealTime( void ) throw()
     {
     ElaspedTime::Precision_T now;
 
-    taskDISABLE_INTERRUPTS();
+    taskENTER_CRITICAL();
     now.m_seconds     = elaspedSeconds_;
     now.m_thousandths = secondsDivider_;
-    taskENABLE_INTERRUPTS();
+    taskEXIT_CRITICAL();
 
     now.m_thousandths *= portTICK_PERIOD_MS;
     return now;

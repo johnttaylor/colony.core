@@ -1,9 +1,12 @@
 #include "Bsp/Api.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Trace.h"
+#include "Cpl/System/FreeRTOS/Thread.h"
 #include "Arduino.h"
 
 extern void runtests( void );
+extern void testsetup(void);
+
 extern Cpl::Io::Output& Bsp_Serial( void );
 
 #define SECT_       "_0test"
@@ -19,14 +22,19 @@ void setup( void )
 
     CPL_SYSTEM_TRACE_ENABLE();
     CPL_SYSTEM_TRACE_ENABLE_SECTION( SECT_ );
-    CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eNONE );
-    //CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eINFO );
-  //  CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eBRIEF );
+    //CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eNONE );
+    CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eINFO );
+    //CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eBRIEF );
+
+    
 }
 
 
 void loop( void )
 {
+    // Make the current/main thread a CPL Thread
+    Cpl::System::FreeRTOS::Thread::makeNativeMainThreadACplThread();
+
     // Go run the test(s) 
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Trace: Main Arduino loop") );
     runtests();
