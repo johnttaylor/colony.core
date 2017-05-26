@@ -18,10 +18,10 @@
 /// 
 namespace Cpl { namespace System { 
 
-/** This class defines the interface for accessing the elasped time since
-    power up and/or reset of the platform.  Elasped time in provided in
+/** This class defines the interface for accessing the elapsed time since
+    power up and/or reset of the platform.  Elapsed time in provided in
     three different formats:milliseconds, seconds, and seconds with 
-    milliseconds precision.  All time formats are guarentied to be
+    milliseconds precision.  All time formats are guaranteed to be
     synchronized with each other.
  */
 class ElaspedTime
@@ -30,7 +30,7 @@ public:
     /// Datatype for time in seconds with a 'fractional' millisecond precision
     typedef struct Precision_Tag
         {
-        unsigned long  m_seconds;      //!< Total number of elasped seconds
+        unsigned long  m_seconds;      //!< Total number of elapsed seconds
         uint16_t       m_thousandths;  //!< fractional number of milliseconds (i.e. a value between 0 and 999)
 
 
@@ -42,7 +42,7 @@ public:
         bool operator != (Precision_Tag other) const { 
 			return m_seconds != other.m_seconds || m_thousandths != other.m_thousandths; }
 
-        /// Increment elaspedtime by 'x'
+        /// Increment elapsed time by 'x'
         Precision_Tag& operator +=(const Precision_Tag& x);
 
         } Precision_T;
@@ -105,7 +105,7 @@ public:
 
 
 public:
-    /** This method returns true if the specified amount of time has elasped 
+    /** This method returns true if the specified amount of time has elapsed 
         since the 'timeMarker'.  The calculation properly handles the scenario 
         of when the has been 'roll over' between the 'timeMarker' and NOW.
      */
@@ -114,7 +114,7 @@ public:
         return deltaMilliseconds( timeMarker, currentTime ) >= duration;
         }
 
-    /** This method returns true if the specified amount of time has elasped 
+    /** This method returns true if the specified amount of time has elapsed 
         since the 'timeMarker'.  The calculation properly handles the scenario 
         of when the has been 'roll over' between the 'timeMarker' and NOW.
      */
@@ -124,7 +124,7 @@ public:
         }
 
 
-    /** This method returns true if the specified amount of time has elasped 
+    /** This method returns true if the specified amount of time has elapsed 
         since the 'timeMarker'.  The calculation properly handles the scenario 
         of when the has been 'roll over' between the 'timeMarker' and NOW.
      */
@@ -170,7 +170,7 @@ public:
 
 
     /** This method is the same as precision(), EXCEPT that is ALWAYS guaranteed
-        to return elasped time in 'real time'.  See the Cpl::System::SimTick for
+        to return elapsed time in 'real time'.  See the Cpl::System::SimTick for
         more details about real time vs. simulated time.  It is recommended
         the application NOT CALL this method because then that code can NOT
         be simulated using the SimTick interface.

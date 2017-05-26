@@ -11,6 +11,7 @@
 
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/Api.h"
 #include "Cpl/System/SimTick.h"
 #include "Cpl/System/Private_.h"
 #include "Cpl/Text/format.h"
@@ -69,8 +70,14 @@ void TracePlatform_::appendInfo( Cpl::Text::String& dst, Trace::InfoLevel_T info
             dst += "  ";
             }
 
-        // Add time stamp
-        formatPrecisionTimeStamp(dst, ElaspedTime::precision(), true, true );
+        // Add time stamp (Note: Elapsed time may not be valid/working when
+        // the scheduler has not been started - so use 'zero' instead)
+        ElaspedTime::Precision_T now = { 0, 0 };
+        if (Api::isSchedulingEnabled() )
+        {
+            now =  ElaspedTime::precision();    
+        }
+        formatPrecisionTimeStamp(dst, now, true, true );
 
         // Add section name         
         dst += " (";

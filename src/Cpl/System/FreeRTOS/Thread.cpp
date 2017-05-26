@@ -257,6 +257,12 @@ const char* Cpl::System::Thread::myName() throw()
 
 size_t Cpl::System::Thread::myId() throw()
 {
+    // Provide some protection in case this method is called before the scheduler is running (e.g. called by the trace engine)
+    if ( !Cpl::System::Api::isSchedulingEnabled() )
+    {
+        return 0;
+    }
+
     return (size_t) (((Cpl::System::FreeRTOS::Thread*)(&getCurrent()))->m_threadHandle);
 }
 

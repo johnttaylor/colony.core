@@ -24,7 +24,7 @@ namespace Cpl { namespace System {
 
 /** This concrete class provide a 'printf' tracing mechanism. The output of
     tracing messages typically defaults (dependent on the target platform)
-    to stdout.  However, the ouptut cat be redirectred to any 
+    to stdout.  However, the output cat be redirected to any 
     Cpl::Stream::Output instance.  
     
     The trace engine is thread safe, i.e. it guarantees that outputting a single
@@ -33,10 +33,10 @@ namespace Cpl { namespace System {
 
     All of the `methods SHOULD be access via the preprocessor macros below to 
     allow the 'trace code' to be compiled out of a 'release' build if desired.  
-    In addition to a compile time decision to use/execlude tracing, there are
+    In addition to a compile time decision to use/exclude tracing, there are
     run-time switches to selective enable and/or control what is displayed.
 
-    There are numerous applicataion customizable (at compile time) options
+    There are numerous application customizable (at compile time) options
     for how the internals of how the trace engine works (see OPTION_xxx 
     macros below).
 
@@ -111,7 +111,7 @@ public:
 public:
     /** This enum is used to globally control the amount of 'Prolog' information
         that is prepended to the Trace log messages.  The specifics of what
-        information is added is platform specfic.
+        information is added is platform specific.
      */
     enum InfoLevel_T { eNONE=0,         //!< Turns off ALL prolog info
                        eBRIEF,          //!< Default setting 
@@ -202,7 +202,7 @@ public:
 
     /** This method returns the number of enabled 'sections' and returns the 
         actual section name(s) via the String 'dst'.  It is the caller 
-        responsiblity to ensure that 'dst' is large enough to hold all of the 
+        responsibility to ensure that 'dst' is large enough to hold all of the 
         enable sections.  If 'dst' is to short, the results will be truncated.
 
         NOTE: NEVER call this method directly -->use the CPL_SYSTEM_TRACE_xxx() 
@@ -211,7 +211,7 @@ public:
     static unsigned getSections_( Cpl::Text::String& dst );
 
     /** This method applies a filter by thread name when generating output, i.e.
-        for a message to be ouput, trace must be enabled, the message's section
+        for a message to be output, trace must be enabled, the message's section
         enabled, and must be running in the one of the threads specified 
         by the thread filter.
 
@@ -226,7 +226,7 @@ public:
 
     /** This method returns the number of enabled 'thread filters' and returns 
         the actual thread name(s) via the String 'dst'.  It is the caller 
-        responsiblity to ensure that 'dst' is large enough to hold all of the 
+        responsibility to ensure that 'dst' is large enough to hold all of the 
         enable thread filters.  If 'dst' is to short, the results will be 
         truncated.
 
@@ -315,7 +315,7 @@ protected:
 #define CPL_SYSTEM_TRACE_PRETTY_FUNCNAME    __PRETTY_FUNCTION__
 
 #elif defined(_MSC_VER)
-/// Take advantage of Microsofts pretty function symbol
+/// Take advantage of Microsoft's pretty function symbol
 #define CPL_SYSTEM_TRACE_PRETTY_FUNCNAME    __FUNCSIG__
 
 #else

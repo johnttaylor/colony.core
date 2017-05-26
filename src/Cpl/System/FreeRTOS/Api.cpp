@@ -26,6 +26,7 @@ static Mutex systemMutex_;
 static Mutex tracingMutex_;
 static Mutex sysList_;
 
+static bool schedulerStarted_ = false;
 
 ////////////////////////////////////////////////////////////////////////////////
 void Api::initialize( void )
@@ -38,6 +39,7 @@ void Api::initialize( void )
 void Api::enableScheduling( void )
     {
     // This method should never return
+    schedulerStarted_ = true;            // Manually track the scheduler state since xTaskGetSchedulerState() is return 'taskSCHEDULER_RUNNING' BEFORE I have started the scheduler!!!!
     vTaskStartScheduler();
 
     // If I get here something is wrong!!
@@ -50,7 +52,7 @@ void Api::enableScheduling( void )
 
 bool Api::isSchedulingEnabled( void )
 {
-    return xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED;
+    return schedulerStarted_;
 }
 
 void Api::sleep( unsigned long milliseconds ) throw()
