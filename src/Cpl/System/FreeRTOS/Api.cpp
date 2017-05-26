@@ -38,7 +38,7 @@ void Api::initialize( void )
 void Api::enableScheduling( void )
     {
     // This method should never return
-	vTaskStartScheduler();
+    vTaskStartScheduler();
 
     // If I get here something is wrong!!
     Bsp_Api_disableIrqs();
@@ -47,6 +47,11 @@ void Api::enableScheduling( void )
         Bsp_Api_nop();
         }
     }
+
+bool Api::isSchedulingEnabled( void )
+{
+    return xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED;
+}
 
 void Api::sleep( unsigned long milliseconds ) throw()
     {

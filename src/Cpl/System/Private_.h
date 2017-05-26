@@ -110,7 +110,7 @@ public:
 };
 
 
-/** This class defines the interface to the platform specific implemenation of the
+/** This class defines the interface to the platform specific implementation of the
     Cpl::System::Trace interface
  */
 class TracePlatform_

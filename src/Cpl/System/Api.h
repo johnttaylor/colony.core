@@ -40,16 +40,24 @@ public:
     static void initialize( void );
 
 
-    /** This function is used to intiatate thread scheduling.  The semantics of 
+    /** This function is used to initiate thread scheduling.  The semantics of 
         this call is that thread scheduling is guarantied to occur AFTER this 
         call.  However thread scheduling could have already begun/started PRIOR 
         to this call. The actual behavior is platform specific.  
         
         NOTE: This function MAY or MAY NOT return.  The specific behavior is
               platform specific.  It is the application's responsible to properly
-              handle the funciton's 'return behavior'
+              handle the function's 'return behavior'
      */
     static void enableScheduling( void );
+
+    /** This function returns true if scheduling has enabled using the enableScheduling()
+        functions.  When this function returns true, the application is guaranteed that 
+        current execution context is a CPL thread (assuming the application did not create
+        any threads outside of the CPL Threading interface).
+     */
+    static bool isSchedulingEnabled( void );
+
 
 public:
     /** This method causes the current thread to be suspended for

@@ -76,7 +76,7 @@ public:
     virtual bool isRunning(void) throw() = 0;
 
     /** Returns the native thread handle.  Note: This handle can NOT be used
-        a handle/reference/pointer to a Thread object instnace.
+        a handle/reference/pointer to a Thread object instance.
      */
     virtual Cpl_System_Thread_NativeHdl_T getNativeHandle(void) throw() = 0;
 

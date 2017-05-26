@@ -39,6 +39,11 @@ void Api::enableScheduling( void )
     // started/active -->nothing needed!
     }
 
+bool Api::isSchedulingEnabled( void )
+{
+    return true; // Always return true since scheduling is always enabled by definition of running in user space
+}
+
 void Api::sleepInRealTime( unsigned long milliseconds ) throw()
     {
     // Convert milliseconds to the nanosleep time spec
