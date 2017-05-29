@@ -42,9 +42,9 @@
 namespace Cpl { namespace Math {
 
 
-/** This template function implements a 'almost equals' comparasion function for
+/** This template function implements a 'almost equals' comparison function for
     floating points numbers.  See the following link for why an 'almost equals'
-    function is neccesary:
+    function is necessary:
 
     http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
  */
