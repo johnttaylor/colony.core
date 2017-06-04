@@ -23,14 +23,14 @@
 
 
 /** This symbols provides the default Epsilon value when testing for 'almost
-    equal' between to float numbers.  Note: This is GLOBAL setting.
+    equal' between to float numbers.  Note: This is a GLOBAL setting.
  */
 #ifndef CPL_MATH_REAL_FLOAT_EPSILON
 #define CPL_MATH_REAL_FLOAT_EPSILON     (FLT_EPSILON)
 #endif
 
 /** This symbols provides the default Epsilon value when testing for 'almost
-    equal' between to double numbers.  Note: This is GLOBAL setting.
+    equal' between to double numbers.  Note: This is a GLOBAL setting.
  */
 #ifndef CPL_MATH_REAL_DOUBLE_EPSILON
 #define CPL_MATH_REAL_DOUBLE_EPSILON    (DBL_EPSILON)

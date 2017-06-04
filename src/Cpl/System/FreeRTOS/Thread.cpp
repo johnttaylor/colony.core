@@ -70,12 +70,15 @@ protected:
 static RegisterInitHandler_ autoRegister_systemInit_hook_;
 #endif
 
+extern bool cpl_system_thread_freertos_schedulerStarted_; // THIS IS BLATANT HACK to work around that xTaskGetSchedulerState() does not work as expected.  This variable is defined in Api.cpp
+
 void Thread::makeNativeMainThreadACplThread( void )
 {
     static bool once=false;
     if ( !once )
     {
-        once = true;
+        once                                         = true;
+        cpl_system_thread_freertos_schedulerStarted_ = true;
         new Cpl::System::FreeRTOS::MakeCurrentThreadACplThread();
         CPL_SYSTEM_TRACE_MSG( AREA_, ("loop(): Main thread has be converted to a CPL thread - I can know use Tracing safely!") );
     }
