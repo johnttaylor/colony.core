@@ -24,7 +24,7 @@ namespace Cpl { namespace Log {
     that implement this interface.  
 
     The interface provides severity levels when logging information. It is up 
-    to the implemenation class to determine how to handle/process the severity 
+    to the implementation class to determine how to handle/process the severity 
     level, but the intent of the severity levels is it is a hierarchical ranking 
     of the importance of the information being  logged.
 

@@ -17,6 +17,14 @@
 #include "Cpl/Text/FString.h"
 #include "task.h"
 
+
+/** Provides the default stack size (since FreeRTOS does not provide one)
+ */
+#ifndef OPTION_CPL_SYSTEM_FREERTOS_DEFAULT_STACK_SIZE
+#define OPTION_CPL_SYSTEM_FREERTOS_DEFAULT_STACK_SIZE   (1024*3)
+#endif
+
+
 // Forward declaration for making the Tls class a friend
 namespace Cpl {
 namespace System {
@@ -54,7 +62,8 @@ public:
               memory. Stack memory is allocated from the HEAP
 
             o If zero is passed as the stack size, then the default stack size
-              is set based on the value from the 'FreeRTOSCConfig.h' header file
+              is set based on the OPTION_CPL_SYSTEM_FREERTOS_DEFAULT_STACK_SIZE 
+              parameter.
      */
     Thread( Runnable&      runnable,
             const char*    name,

@@ -122,10 +122,10 @@ Thread::Thread( Cpl::System::Runnable&   runnable,
     // Calculate stack size in terms of 'depth' (not bytes)
     if ( stackSize == 0 )
     {
-        stackSize = configMINIMAL_STACK_SIZE;
+        stackSize = OPTION_CPL_SYSTEM_FREERTOS_DEFAULT_STACK_SIZE >> sizeof(StackType_t)/2;
     } else
     {
-        stackSize = stackSize >> 2; // Depth is defined in size of size_t -->which is 4 bytes on the RX platform
+        stackSize = stackSize >> sizeof(StackType_t)/2; 
     }
 
 

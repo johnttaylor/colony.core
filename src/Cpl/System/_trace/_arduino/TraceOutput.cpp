@@ -10,8 +10,9 @@
 *----------------------------------------------------------------------------*/
 
 #include "Cpl/System/Private_.h"
+#include "Cpl/Io/InputOutput.h"
 
-extern Cpl::Io::Output& Bsp_Serial(void);
+extern Cpl::Io::InputOutput& Bsp_Serial(void);
 
 /*-----------------------------------------------------------*/
 Cpl::Io::Output* Cpl::System::Trace::getDefaultOutputStream_( void ) throw()

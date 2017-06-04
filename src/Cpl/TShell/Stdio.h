@@ -52,7 +52,7 @@ public:
         instance being create that it is being created statically (i.e. before 
         main() is entered) - which is the intended typically behavior.  This
         knowledge is used to inhibit delete/destroy-thread actions in the 
-        instance's destructor.  This is neccesary because there is no
+        instance's destructor.  This is necessary because there is no
         guaranteed order to when static destructor fire and as such the state
         of the CPL Libraries static resources (e.g. mutexes) are unknown
         which your application will crash/behavior poorly on exit.

@@ -83,7 +83,7 @@ namespace Cpl { namespace TShell { namespace Dac {
 /** This concrete class provides the implementation of Command Processor for
     a DAC TShell.
 
-    The implemeantion assumes a single threaded model, i.e. the Command
+    The implementation assumes a single threaded model, i.e. the Command
     Processor and all of its  commands run in a single thread.  It is 
     APPLICATION's responsibility to provide any desired multi-threaded 
     support. There are two caveats to the single-threaded model:
@@ -107,11 +107,11 @@ namespace Cpl { namespace TShell { namespace Dac {
           is ignored.
           
         o Format of a command is: verb [arg]*  where the verb and arguments
-          are seperated by spaces.  Arguments can contain spaces character
+          are separated by spaces.  Arguments can contain spaces character
           buy enclosing the argument with double quote characters.  A double
-          quote character can be embedded inside a quoted string by preceeding
-          it the double quote character with the esacpe character.  The escape
-          character can be embedded by escaping the esacpe character.
+          quote character can be embedded inside a quoted string by preceding
+          it the double quote character with the escape character.  The escape
+          character can be embedded by escaping the escape character.
  */
 class Processor: public Context_
 {
@@ -158,13 +158,13 @@ protected:
     /// Argument quote character
     char                                m_quote;
 
-    /// Argument terminotr character
+    /// Argument terminator character
     char                                m_term;
 
     /// Error level Shell variable
     Variable_                           m_errorLevel;
 
-    /// Last-Command-Ouput Shell variable
+    /// Last-Command-Output Shell variable
     VariableBase_                       m_lastCmdOutput;
 
     /// Pointer to cache the current output string
@@ -247,9 +247,9 @@ public:
         @param commentChar      The comment character used to indicate that the
                                 input string is a comment and should not be
                                 executed.
-        @param argEscape        Escape character to be used when escaping qouble 
+        @param argEscape        Escape character to be used when escaping double 
                                 quote characters inside a quoted argument.
-        @param argDelimiter     The delimiter character used to seperate the
+        @param argDelimiter     The delimiter character used to separate the
                                 command verb and arguments.
         @param argQuote         The quote character used to 'double quote' a
                                 argument string.
