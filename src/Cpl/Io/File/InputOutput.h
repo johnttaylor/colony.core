@@ -21,9 +21,9 @@ namespace Cpl { namespace Io { namespace File {
 
 
 /** This concrete class provides a platform independent 'standard' 
-    implementaiton of an InputOutputFileApi  object.
+    implementation of an InputOutputFileApi  object.
 
-    NOTE: All the read/write operations return 'false' if an error occured, 
+    NOTE: All the read/write operations return 'false' if an error occurred, 
           this INCLUDES the end-of-file condition (which is error when dealing 
           with streams). To differentiate between a true error and EOF, the 
           client must call isEof().

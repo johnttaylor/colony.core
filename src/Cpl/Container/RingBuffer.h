@@ -62,7 +62,7 @@ public:
 public:
     /** Removes the first item in the Buffer. The contents of the
         removed item will be copied into the 'dst' argument. The method
-        return true if the operation was succesfull; else false is
+        return true if the operation was successful; else false is
         returned, i.e. the Ring buffer is/was empty.
      */
     bool remove( ITEM& dst ) throw();
@@ -70,7 +70,7 @@ public:
 
     /** The contents of 'item' will be copied into the Ring Buffer as the
         'last' item in the  buffer. Return true if the operation was 
-        succesfull; else false is returned, i.e. the Buffer was full prior to 
+        successful; else false is returned, i.e. the Buffer was full prior to 
         the attempted add().
      */
     bool add( ITEM& item) throw();
