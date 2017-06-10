@@ -14,7 +14,7 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Mutex.h"
 #include "Cpl/System/FatalError.h"
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 #include "Cpl/System/Tls.h"
 #include "Cpl/System/Trace.h"
 
@@ -113,7 +113,7 @@ public:
     ///
     uint16_t                    m_offTime_ms;
     ///
-    ElaspedTime::Precision_T    m_ptime;
+    ElapsedTime::Precision_T    m_ptime;
     ///
     unsigned long               m_msec;
 
@@ -129,8 +129,8 @@ public:
     void appRun()
         {
         unsigned long sleepTime = m_onTime_ms + m_offTime_ms;
-        m_ptime                 = ElaspedTime::precision();
-        m_msec                  = ElaspedTime::milliseconds();
+        m_ptime                 = ElapsedTime::precision();
+        m_msec                  = ElapsedTime::milliseconds();
 
         for(;;)
             {
@@ -142,10 +142,10 @@ public:
             m_ledThread.signal();
 
 
-            ElaspedTime::Precision_T ptime     = ElaspedTime::precision();
-            unsigned long            msec      = ElaspedTime::milliseconds();
-            unsigned long            deltaM    = ElaspedTime::deltaMilliseconds( m_msec, msec );
-            ElaspedTime::Precision_T deltaP    = ElaspedTime::deltaPrecision( m_ptime, ptime );
+            ElapsedTime::Precision_T ptime     = ElapsedTime::precision();
+            unsigned long            msec      = ElapsedTime::milliseconds();
+            unsigned long            deltaM    = ElapsedTime::deltaMilliseconds( m_msec, msec );
+            ElapsedTime::Precision_T deltaP    = ElapsedTime::deltaPrecision( m_ptime, ptime );
             unsigned long            flatten   = deltaP.m_seconds * 1000 + deltaP.m_thousandths;
              
             if ( flatten < sleepTime )

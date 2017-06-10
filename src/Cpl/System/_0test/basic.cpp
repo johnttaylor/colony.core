@@ -13,7 +13,7 @@
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Semaphore.h"
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 #include "Cpl/System/Tls.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/System/_testsupport/Shutdown_TS.h"
@@ -163,31 +163,31 @@ public:
         CPL_SYSTEM_TRACE_MSG( SECT_, ("TLS Compare: '%s' =? '%s', result=%d", (const char*)m_tls.get(), m_expectedTlsValue, m_tlsCompareResult ) );
 
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Semaphore Time wait test1 (timeout occurs)...") );
-        unsigned long start = ElaspedTime::milliseconds();
+        unsigned long start = ElapsedTime::milliseconds();
         m_sema.timedWait( 333 );
         m_waitResult1 = m_sema.tryWait();                 // Should be false;
-        m_delta1      = ElaspedTime::deltaMilliseconds( start );      // Should be >= 333
+        m_delta1      = ElapsedTime::deltaMilliseconds( start );      // Should be >= 333
         m_masterThread.signal();          
         Api::sleep( 100 );         // Allow time for my test harness to run, i.e. increment the semaphore for the next test
 
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Semaphore Time wait test2 (no timeout)...") );
-        start = ElaspedTime::milliseconds();
+        start = ElapsedTime::milliseconds();
         m_waitResult2 = m_sema.tryWait();                 // Should be true;
         m_sema.timedWait( 1000 );
-        m_delta2      = ElaspedTime::deltaMilliseconds( start );      // Should be close to zero
+        m_delta2      = ElapsedTime::deltaMilliseconds( start );      // Should be close to zero
         m_masterThread.signal();          
 
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Thread Time wait test1 (timeout occurs)...") );
-        start    = ElaspedTime::milliseconds();
+        start    = ElapsedTime::milliseconds();
         Thread::timedWait( 333 );
-        m_delta3 = ElaspedTime::deltaMilliseconds( start );      // Should be >= 333
+        m_delta3 = ElapsedTime::deltaMilliseconds( start );      // Should be >= 333
         m_masterThread.signal();          
         Api::sleep( 100 );         // Allow time for my test harness to run, i.e. increment the semaphore for the next test
 
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Thread Time wait test2 (no timeout)...") );
-        start    = ElaspedTime::milliseconds();
+        start    = ElapsedTime::milliseconds();
         Thread::timedWait( 1000 );
-        m_delta4 = ElaspedTime::deltaMilliseconds( start );      // Should be close to zero
+        m_delta4 = ElapsedTime::deltaMilliseconds( start );      // Should be close to zero
         m_masterThread.signal();          
 
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Results: wait1=%d =? 0, delta1=%d >? 333, wait2=%d =? 1, delta2=%d <? 50, delta3=%d >? 333, delta4=%d <? 50.", m_waitResult1, (unsigned)m_delta1, m_waitResult2, (unsigned)m_delta2, (unsigned)m_delta3, (unsigned)m_delta4 ));

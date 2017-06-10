@@ -3,14 +3,14 @@
 * open source project with a BSD type of licensing agreement.  See the license  
 * agreement (license.txt) in the top/ directory or on the Internet at           
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
+*                                                                                
 * Copyright (c) 2014, 2015  John T. Taylor                                        
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
 
-#include "ElaspedTime.h"
+#include "ElapsedTime.h"
 
 ///
 using namespace Cpl::System;
@@ -19,7 +19,7 @@ using namespace Cpl::System;
 #define MAX_POSITVE_MSEC_   0x7FFF
 
 ///////////////////////////////////////////////////////
-ElaspedTime::Precision_T& ElaspedTime::Precision_T::operator +=(const ElaspedTime::Precision_T& x)
+ElapsedTime::Precision_T& ElapsedTime::Precision_T::operator +=(const ElapsedTime::Precision_T& x)
     {
     this->m_thousandths += x.m_thousandths;
     this->m_seconds     += x.m_seconds + this->m_thousandths / 1000;
@@ -29,7 +29,7 @@ ElaspedTime::Precision_T& ElaspedTime::Precision_T::operator +=(const ElaspedTim
 
 
 ///////////////////////////////////////////////////////
-ElaspedTime::Precision_T ElaspedTime::deltaPrecision( Precision_T startTime, Precision_T endTime ) throw()
+ElapsedTime::Precision_T ElapsedTime::deltaPrecision( Precision_T startTime, Precision_T endTime ) throw()
     {
     Precision_T delta;
 
@@ -48,8 +48,8 @@ ElaspedTime::Precision_T ElaspedTime::deltaPrecision( Precision_T startTime, Pre
     }
 
 
-bool ElaspedTime::expiredPrecision( Precision_T timeMarker, Precision_T duration, Precision_T currentTime ) throw()
+bool ElapsedTime::expiredPrecision( Precision_T timeMarker, Precision_T duration, Precision_T currentTime ) throw()
     {
-    Precision_T delta = ElaspedTime::deltaPrecision( timeMarker, currentTime );
+    Precision_T delta = ElapsedTime::deltaPrecision( timeMarker, currentTime );
     return delta.m_seconds >= duration.m_seconds && delta.m_thousandths >= duration.m_thousandths;
     }

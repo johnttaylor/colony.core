@@ -24,7 +24,7 @@ namespace Cpl { namespace System {
     milliseconds precision.  All time formats are guaranteed to be
     synchronized with each other.
  */
-class ElaspedTime
+class ElapsedTime
 {
 public:
     /// Datatype for time in seconds with a 'fractional' millisecond precision

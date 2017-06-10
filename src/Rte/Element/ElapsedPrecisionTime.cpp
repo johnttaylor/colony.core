@@ -18,13 +18,13 @@
 ///
 using namespace Rte::Element;
 
-static const Cpl::System::ElaspedTime::Precision_T zero_ = {0};
+static const Cpl::System::ElapsedTime::Precision_T zero_ = {0};
 
 /////////////////////////////
 ElapsedPrecisionTime::ElapsedPrecisionTime( bool    inUse,
                       int8_t  validState
                     )
-:Basic<Cpl::System::ElaspedTime::Precision_T,DataType::PRECISION_T>( zero_, inUse, validState )
+:Basic<Cpl::System::ElapsedTime::Precision_T,DataType::PRECISION_T>( zero_, inUse, validState )
     {
     m_data.m_seconds     = 0;
     m_data.m_thousandths = 0;

@@ -9,7 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 #include "Cpl/System/Private_.h"
 #include <stdlib.h>
 
@@ -49,7 +49,7 @@ static RegisterInitHandler_ autoRegister_systemInit_hook_;
 
 
 ///////////////////////////////////////////////////////////////
-unsigned long ElaspedTime::millisecondsInRealTime( void ) throw()
+unsigned long ElapsedTime::millisecondsInRealTime( void ) throw()
     {
     Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
 
@@ -61,7 +61,7 @@ unsigned long ElaspedTime::millisecondsInRealTime( void ) throw()
     return elaspedMsec_;
     }
 
-unsigned long ElaspedTime::secondsInRealTime( void ) throw()
+unsigned long ElapsedTime::secondsInRealTime( void ) throw()
     {
     Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
 
@@ -73,7 +73,7 @@ unsigned long ElaspedTime::secondsInRealTime( void ) throw()
     }
 
 
-ElaspedTime::Precision_T ElaspedTime::precisionInRealTime( void ) throw()
+ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) throw()
     {
     Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
 

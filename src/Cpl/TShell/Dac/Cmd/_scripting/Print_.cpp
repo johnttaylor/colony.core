@@ -12,7 +12,7 @@
 #include "Cpl/TShell/Dac/Cmd/Print_.h"
 #include "Cpl/Text/strip.h"
 #include "Cpl/Text/format.h"
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 
 
 ///
@@ -79,7 +79,7 @@ void initializeOuttext_( Cpl::Text::String& outtext, bool prependTimeStamp )
 
     else
         {
-        Cpl::Text::formatPrecisionTimeStamp( outtext, Cpl::System::ElaspedTime::precision() );
+        Cpl::Text::formatPrecisionTimeStamp( outtext, Cpl::System::ElapsedTime::precision() );
         outtext += "  ";
         }
     }

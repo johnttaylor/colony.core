@@ -87,7 +87,7 @@ public:
 
     private:
         /** This method PREVENTS this object from being created on the Heap. 
-            This class can only/should only be instaniated as a local variable to
+            This class can only/should only be instantiated as a local variable to
             a critical section scope block!
          */
         void* operator  new(size_t);

@@ -13,7 +13,7 @@
 /** @file */
 
 #include "Rte/Element/Basic.h"
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 
 
 ///
@@ -21,10 +21,10 @@ namespace Rte { namespace Element {
 
 
 
-/** This class provides an RTE Element for the Cpl::System::ElaspedTime::Precision_T
+/** This class provides an RTE Element for the Cpl::System::ElapsedTime::Precision_T
     data type
  */
-class ElapsedPrecisionTime: public Basic<Cpl::System::ElaspedTime::Precision_T,DataType::ELAPSED_PRECISION_TIME>
+class ElapsedPrecisionTime: public Basic<Cpl::System::ElapsedTime::Precision_T,DataType::ELAPSED_PRECISION_TIME>
 {
 public:
     /// Constructor

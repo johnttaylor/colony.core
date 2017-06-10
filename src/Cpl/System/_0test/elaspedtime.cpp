@@ -11,7 +11,7 @@
 
 #include "Catch/catch.hpp"
 #include "Cpl/System/Api.h"
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/System/_testsupport/Shutdown_TS.h"
 #include <string.h>
@@ -39,23 +39,23 @@ TEST_CASE( "elaspedtime", "[elaspedtime]" )
 
     unsigned long            secs;
     unsigned long            msecs;
-    ElaspedTime::Precision_T precision;
-    ElaspedTime::Precision_T precValue;
+    ElapsedTime::Precision_T precision;
+    ElapsedTime::Precision_T precValue;
 
     // Get current time
-    secs      = ElaspedTime::seconds();
-    msecs     = ElaspedTime::milliseconds();
-    precision = ElaspedTime::precision();
+    secs      = ElapsedTime::seconds();
+    msecs     = ElapsedTime::milliseconds();
+    precision = ElapsedTime::precision();
 
     // Sleep at least 1.5 second
     Api::sleep( 1500 );
     
     // Verify delta time
-    REQUIRE( ElaspedTime::expiredMilliseconds(msecs,1500) == true );
-    REQUIRE( ElaspedTime::expiredSeconds(secs,1) == true );
+    REQUIRE( ElapsedTime::expiredMilliseconds(msecs,1500) == true );
+    REQUIRE( ElapsedTime::expiredSeconds(secs,1) == true );
     precValue.m_seconds     = 1;
     precValue.m_thousandths = 500;
-    REQUIRE( ElaspedTime::expiredPrecision(precision,precValue) == true );
+    REQUIRE( ElapsedTime::expiredPrecision(precision,precValue) == true );
     precision.m_thousandths++;
     REQUIRE( precValue != precision );
     precision.m_seconds     = 1;
@@ -64,35 +64,35 @@ TEST_CASE( "elaspedtime", "[elaspedtime]" )
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Post verify: sleep = 1.5") );
 
     // Get current time
-    precision = ElaspedTime::precision();
-    secs      = ElaspedTime::seconds();
-    msecs     = ElaspedTime::milliseconds();
+    precision = ElapsedTime::precision();
+    secs      = ElapsedTime::seconds();
+    msecs     = ElapsedTime::milliseconds();
 
     // Sleep at least 1.0 second
     Api::sleep( 1000 );
     
     // Verify delta time
-    REQUIRE( ElaspedTime::expiredMilliseconds(msecs,1000) == true );
-    REQUIRE( ElaspedTime::expiredSeconds(secs,1) == true );
+    REQUIRE( ElapsedTime::expiredMilliseconds(msecs,1000) == true );
+    REQUIRE( ElapsedTime::expiredSeconds(secs,1) == true );
     precValue.m_seconds     = 1;
     precValue.m_thousandths = 0;
-    REQUIRE( ElaspedTime::expiredPrecision(precision,precValue) == true );
+    REQUIRE( ElapsedTime::expiredPrecision(precision,precValue) == true );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Post verify: sleep = 1.0") );
 
     // Get current time
-    msecs     = ElaspedTime::milliseconds();
-    secs      = ElaspedTime::seconds();
-    precision = ElaspedTime::precision();
+    msecs     = ElapsedTime::milliseconds();
+    secs      = ElapsedTime::seconds();
+    precision = ElapsedTime::precision();
 
     // Sleep at least 3.7 second
     Api::sleep( 3700 );
     
     // Verify delta time
-    REQUIRE( ElaspedTime::expiredMilliseconds(msecs,3700) == true );
-    REQUIRE( ElaspedTime::expiredSeconds(secs,3) == true );
+    REQUIRE( ElapsedTime::expiredMilliseconds(msecs,3700) == true );
+    REQUIRE( ElapsedTime::expiredSeconds(secs,3) == true );
     precValue.m_seconds     = 3;
     precValue.m_thousandths = 700;
-    REQUIRE( ElaspedTime::expiredPrecision(precision,precValue) == true );
+    REQUIRE( ElapsedTime::expiredPrecision(precision,precValue) == true );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Post verify: sleep = 3.7") );
 
     CPL_SYSTEM_TRACE_MSG( SECT_, ("msec=%lu, secs=%lu, prec.sec=%lu, prec.msec=%u", msecs, secs, precision.m_seconds, precision.m_thousandths ));
@@ -101,9 +101,9 @@ TEST_CASE( "elaspedtime", "[elaspedtime]" )
     for(i=0; i<50; i++)
         {
         Api::sleep(21);
-        msecs     = ElaspedTime::milliseconds();
-        secs      = ElaspedTime::seconds();
-        precision = ElaspedTime::precision();
+        msecs     = ElapsedTime::milliseconds();
+        secs      = ElapsedTime::seconds();
+        precision = ElapsedTime::precision();
     
         unsigned long prec_as_ms = precision.m_seconds * 1000 + precision.m_thousandths;
         CPL_SYSTEM_TRACE_MSG( SECT_, ("msec(%lu) =? prec(%lu)", msecs, prec_as_ms ));

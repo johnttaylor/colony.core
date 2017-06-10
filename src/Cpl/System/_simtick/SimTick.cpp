@@ -11,7 +11,7 @@
 
 #include "Cpl/System/SimTick.h"
 #include "Cpl/System/Api.h"
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 #include "Cpl/System/Mutex.h"
 #include "Cpl/System/Tls.h"
 #include "Cpl/System/Thread.h"
@@ -69,8 +69,8 @@ bool SimTick::advance( size_t numTicks ) throw()
         // There MUST be a least one waiter
         if ( !waiters )
             {
-            unsigned long  start = ElaspedTime::milliseconds();
-            while( ElaspedTime::expiredMilliseconds( start, OPTION_CPL_SYSTEM_SIM_TICK_NO_ACTIVITY_LIMIT ) == false )
+            unsigned long  start = ElapsedTime::milliseconds();
+            while( ElapsedTime::expiredMilliseconds( start, OPTION_CPL_SYSTEM_SIM_TICK_NO_ACTIVITY_LIMIT ) == false )
                 {
                 // yeild the CPU to give other threads a chance at the CPU
                 Api::sleepInRealTime(1); 
@@ -340,7 +340,7 @@ void Api::sleep(unsigned long milliseconds) throw()
             myLock_.unlock();
 
             // Subtract the elasped time from my count down timer
-            unsigned long delta = (unsigned long) ElaspedTime::deltaMilliseconds( start, current );
+            unsigned long delta = (unsigned long) ElapsedTime::deltaMilliseconds( start, current );
             milliseconds        = milliseconds > delta? milliseconds - delta: 0;
             }
         }
@@ -348,7 +348,7 @@ void Api::sleep(unsigned long milliseconds) throw()
 
 
 ///////////////////////////////////////////////////////////////
-unsigned long ElaspedTime::milliseconds( void ) throw()
+unsigned long ElapsedTime::milliseconds( void ) throw()
     {
     // Get my thread's SimInfo
     SimTick* simInfoPtr = (SimTick*) simTlsPtr_->get();
@@ -356,7 +356,7 @@ unsigned long ElaspedTime::milliseconds( void ) throw()
     // ALWAYS use the 'real' elasped time when I am a non-simulated-tick thread
     if ( !simInfoPtr )
         {
-        return ElaspedTime::millisecondsInRealTime();
+        return ElapsedTime::millisecondsInRealTime();
         }
 
 
@@ -367,7 +367,7 @@ unsigned long ElaspedTime::milliseconds( void ) throw()
     return msec;
     }
 
-unsigned long ElaspedTime::seconds( void ) throw()
+unsigned long ElapsedTime::seconds( void ) throw()
     {
     // Get my thread's SimInfo
     SimTick* simInfoPtr = (SimTick*) simTlsPtr_->get();
@@ -375,7 +375,7 @@ unsigned long ElaspedTime::seconds( void ) throw()
     // ALWAYS use the 'real' elasped time when I am a non-simulated-tick thread
     if ( !simInfoPtr )
         {
-        return ElaspedTime::secondsInRealTime();
+        return ElapsedTime::secondsInRealTime();
         }
 
     // Thread is using simulated time -->return the simulate time
@@ -386,7 +386,7 @@ unsigned long ElaspedTime::seconds( void ) throw()
     }
 
 
-ElaspedTime::Precision_T ElaspedTime::precision( void ) throw()
+ElapsedTime::Precision_T ElapsedTime::precision( void ) throw()
     {
      // Get my thread's SimInfo
     SimTick* simInfoPtr = (SimTick*) simTlsPtr_->get();
@@ -394,7 +394,7 @@ ElaspedTime::Precision_T ElaspedTime::precision( void ) throw()
     // ALWAYS use the 'real' elasped time when I am a non-simulated-tick thread
     if ( !simInfoPtr )
         {
-        return ElaspedTime::precisionInRealTime();
+        return ElapsedTime::precisionInRealTime();
         }
 
  

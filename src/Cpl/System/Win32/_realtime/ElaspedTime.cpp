@@ -9,7 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 
 
 /// 
@@ -18,17 +18,17 @@ using namespace Cpl::System;
 
 
 ///////////////////////////////////////////////////////////////
-unsigned long ElaspedTime::milliseconds( void ) throw()
+unsigned long ElapsedTime::milliseconds( void ) throw()
     {
     return millisecondsInRealTime();
     }
 
-unsigned long ElaspedTime::seconds( void ) throw()
+unsigned long ElapsedTime::seconds( void ) throw()
     {
     return secondsInRealTime();
     }
 
-ElaspedTime::Precision_T ElaspedTime::precision( void ) throw()
+ElapsedTime::Precision_T ElapsedTime::precision( void ) throw()
     {
     return precisionInRealTime();
     }

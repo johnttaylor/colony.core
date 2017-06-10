@@ -122,7 +122,7 @@ static bool formatMsec( Cpl::Text::String& buffer, unsigned msec, unsigned long 
 	}
 
 
-bool Cpl::Text::formatPrecisionTimeStamp(Cpl::Text::String& buffer, Cpl::System::ElaspedTime::Precision_T timeStamp, bool encodeDay, bool appendToString )
+bool Cpl::Text::formatPrecisionTimeStamp(Cpl::Text::String& buffer, Cpl::System::ElapsedTime::Precision_T timeStamp, bool encodeDay, bool appendToString )
     {
     return formatMsec( buffer, timeStamp.m_thousandths, timeStamp.m_seconds, encodeDay, appendToString );
     } 

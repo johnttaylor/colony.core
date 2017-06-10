@@ -9,7 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -36,26 +36,26 @@ void vApplicationTickHook( void )
 
 
 ///////////////////////////////////////////////////////////////
-unsigned long ElaspedTime::milliseconds( void ) throw()
+unsigned long ElapsedTime::milliseconds( void ) throw()
     {
     return millisecondsInRealTime();
     }
 
 
-unsigned long ElaspedTime::seconds( void ) throw()
+unsigned long ElapsedTime::seconds( void ) throw()
     {
     return secondsInRealTime();
     }
 
 
-ElaspedTime::Precision_T ElaspedTime::precision( void ) throw()
+ElapsedTime::Precision_T ElapsedTime::precision( void ) throw()
     {
     return precisionInRealTime();
     }
 
 
 ///////////////////////////////////////////////////////////////
-unsigned long ElaspedTime::millisecondsInRealTime( void ) throw()
+unsigned long ElapsedTime::millisecondsInRealTime( void ) throw()
     {
     unsigned long s;
     uint16_t      ms;
@@ -69,7 +69,7 @@ unsigned long ElaspedTime::millisecondsInRealTime( void ) throw()
     return (ms * portTICK_PERIOD_MS) + s * 1000L;
     }
 
-unsigned long ElaspedTime::secondsInRealTime( void ) throw()
+unsigned long ElapsedTime::secondsInRealTime( void ) throw()
     {
     unsigned long s;
 
@@ -81,9 +81,9 @@ unsigned long ElaspedTime::secondsInRealTime( void ) throw()
     }
 
 
-ElaspedTime::Precision_T ElaspedTime::precisionInRealTime( void ) throw()
+ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) throw()
     {
-    ElaspedTime::Precision_T now;
+    ElapsedTime::Precision_T now;
 
     taskENTER_CRITICAL();
     now.m_seconds     = elaspedSeconds_;

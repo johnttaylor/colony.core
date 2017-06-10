@@ -12,7 +12,7 @@
 #include "Cpl/System/Semaphore.h"
 #include "Cpl/System/SimTick.h"
 #include "Cpl/System/Api.h"
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 
 #include <stdio.h>
 #include "Cpl/System/Thread.h"
@@ -46,7 +46,7 @@ bool Semaphore::timedWait(unsigned long milliseconds) throw()
 
         // Update my count down timer
         unsigned long current = SimTick::current();
-        unsigned long delta   = (unsigned long) ElaspedTime::deltaMilliseconds( start, current );
+        unsigned long delta   = (unsigned long) ElapsedTime::deltaMilliseconds( start, current );
         start                 = current;
         milliseconds          = milliseconds > delta? milliseconds - delta: 0;
         }

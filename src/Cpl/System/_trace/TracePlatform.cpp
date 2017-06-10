@@ -10,7 +10,7 @@
 *----------------------------------------------------------------------------*/ 
 
 #include "Cpl/System/Thread.h"
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/System/SimTick.h"
 #include "Cpl/System/Private_.h"
@@ -72,10 +72,10 @@ void TracePlatform_::appendInfo( Cpl::Text::String& dst, Trace::InfoLevel_T info
 
         // Add time stamp (Note: Elapsed time may not be valid/working when
         // the scheduler has not been started - so use 'zero' instead)
-        ElaspedTime::Precision_T now = { 0, 0 };
+        ElapsedTime::Precision_T now = { 0, 0 };
         if (Api::isSchedulingEnabled() )
         {
-            now =  ElaspedTime::precision();    
+            now =  ElapsedTime::precision();    
         }
         formatPrecisionTimeStamp(dst, now, true, true );
 

@@ -350,7 +350,7 @@ protected:
     static unsigned wakeUpWaiters( void ) throw();
 
     /// Friend(s)
-    friend class ElaspedTime;  
+    friend class ElapsedTime;  
     friend class Api;
 };
 

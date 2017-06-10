@@ -12,7 +12,7 @@
 #include "MailboxServer.h"
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/FatalError.h"
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 #include "Cpl/System/SimTick.h"
 #include "Cpl/System/Trace.h"
 
@@ -39,7 +39,7 @@ void MailboxServer::appRun()
     initialize();
 
     // Get the initial starting time
-    unsigned long timeMark = Cpl::System::ElaspedTime::milliseconds();
+    unsigned long timeMark = Cpl::System::ElapsedTime::milliseconds();
 
     // Process messages forever (or until told to stop)
     for(;;)
@@ -73,8 +73,8 @@ void MailboxServer::appRun()
         if ( m_timeout )
             {
             // Calcualte the elasped time in milliseconds
-            m_timeNow               = Cpl::System::ElaspedTime::milliseconds();
-            unsigned long deltaTime = Cpl::System::ElaspedTime::deltaMilliseconds( timeMark, m_timeNow );
+            m_timeNow               = Cpl::System::ElapsedTime::milliseconds();
+            unsigned long deltaTime = Cpl::System::ElapsedTime::deltaMilliseconds( timeMark, m_timeNow );
 
             // Update my timers
             CPL_SYSTEM_TRACE_MSG( SECT_, (" @@ START TICK: %lu, now=%lu, [timeMark=%lu]", deltaTime, m_timeNow, timeMark ));
@@ -107,7 +107,7 @@ void MailboxServer::appRun()
 
 unsigned long MailboxServer::msecToCounts( unsigned long durationInMsecs ) throw()
     {
-    unsigned long delta = Cpl::System::ElaspedTime::deltaMilliseconds( m_timeNow );
+    unsigned long delta = Cpl::System::ElapsedTime::deltaMilliseconds( m_timeNow );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("duration IN=%lu, count out=%lu",durationInMsecs, durationInMsecs +  delta ));
     return durationInMsecs + delta;
     }

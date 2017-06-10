@@ -16,7 +16,7 @@
 */
 
 #include "Cpl/Text/String.h"
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 #include <stdlib.h>
 
 
@@ -64,13 +64,13 @@ bool formatMsecTimeStamp(Cpl::Text::String& buffer, unsigned long long timeStamp
  */
 bool formatSecTimeStamp(Cpl::Text::String& buffer, unsigned long long timeStampInSecs, bool encodeDay=true, bool appendToString=false );
 
-/** This method converts the Cpl::System::ElaspedTime::Precision_T value of
+/** This method converts the Cpl::System::ElapsedTime::Precision_T value of
     time into a string with the folloing format: "DD HH:MM:SS.SSS". The 
     converted result is returned via 'buffer'. If the results where trunaced 
     by the no enough memory in 'buffer' then false is returned; else true 
     is returned.
  */
-bool formatPrecisionTimeStamp(Cpl::Text::String& buffer, Cpl::System::ElaspedTime::Precision_T timeStamp, bool encodeDay=true, bool appendToString=false );
+bool formatPrecisionTimeStamp(Cpl::Text::String& buffer, Cpl::System::ElapsedTime::Precision_T timeStamp, bool encodeDay=true, bool appendToString=false );
 
 };      // end namespaces
 };

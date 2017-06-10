@@ -13,7 +13,7 @@
 
 #include "Cpl/System/Trace.h"
 #include "Cpl/System/Thread.h"
-#include "Cpl/System/ElaspedTime.h"
+#include "Cpl/System/ElapsedTime.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/System/SimTick.h"
 #include "Cpl/Itc/CloseSync.h"
@@ -133,9 +133,9 @@ public:
         m_maxTime2 = 0;
         m_sumTime2 = 0;
 
-        m_timeMark1 = m_startTime1 = Cpl::System::ElaspedTime::milliseconds();
+        m_timeMark1 = m_startTime1 = Cpl::System::ElapsedTime::milliseconds();
         m_timer1.start( m_timer1Duration );
-        m_timeMark2 = m_startTime2 = Cpl::System::ElaspedTime::milliseconds();
+        m_timeMark2 = m_startTime2 = Cpl::System::ElapsedTime::milliseconds();
         m_timer2.start( m_timer2Duration );
 
         msg.returnToSender();
@@ -153,9 +153,9 @@ public:
 
         m_opened    = false;
         m_timer1.stop();
-        m_deltaTime1 = Cpl::System::ElaspedTime::deltaMilliseconds(m_timeMark1);
+        m_deltaTime1 = Cpl::System::ElapsedTime::deltaMilliseconds(m_timeMark1);
         m_timer2.stop();
-        m_deltaTime2 = Cpl::System::ElaspedTime::deltaMilliseconds(m_timeMark1);
+        m_deltaTime2 = Cpl::System::ElapsedTime::deltaMilliseconds(m_timeMark1);
 
 		msg.returnToSender();
         }
@@ -165,7 +165,7 @@ public:
     void timer1Expired( void )
         {
         // Capture stats
-        unsigned elasped = Cpl::System::ElaspedTime::deltaMilliseconds(m_startTime1);
+        unsigned elasped = Cpl::System::ElapsedTime::deltaMilliseconds(m_startTime1);
         if ( elasped < m_minTime1 )
             {
             m_minTime1 = elasped;
@@ -178,14 +178,14 @@ public:
 
         m_count1++;
         CPL_SYSTEM_TRACE_MSG( SECT_, ( "(%s)::Timer 1::Expired.  Total count=%lu (%lu)", m_name, m_count1, m_timer1Duration ));
-        m_startTime1 = Cpl::System::ElaspedTime::milliseconds();
+        m_startTime1 = Cpl::System::ElapsedTime::milliseconds();
         m_timer1.start( m_timer1Duration );        
         }
 
     void timer2Expired( void )
         {
         // Capture stats
-        unsigned elasped = Cpl::System::ElaspedTime::deltaMilliseconds(m_startTime2);
+        unsigned elasped = Cpl::System::ElapsedTime::deltaMilliseconds(m_startTime2);
         if ( elasped < m_minTime2 )
             {
             m_minTime2 = elasped;
@@ -198,7 +198,7 @@ public:
 
         m_count2++;
         CPL_SYSTEM_TRACE_MSG( SECT_, ( "(%s)::Timer 2 ::Expired.  Total count=%lu (%lu)", m_name, m_count2, m_timer2Duration ));
-        m_startTime2 = Cpl::System::ElaspedTime::milliseconds();
+        m_startTime2 = Cpl::System::ElapsedTime::milliseconds();
         m_timer2.start( m_timer2Duration );        
         }
 
