@@ -31,7 +31,7 @@ extern void shell_test3( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 
 
 ////////////////////////////////////////////////////////////////////////////////
-Cpl::TShell::Stdio shell_( cmdProcessor_, "DAC-Shell", OPTION_0TEST_DAC_SHELL_THREAD_PRIORITY );
+static Cpl::TShell::Stdio shell_( cmdProcessor_, "DAC-Shell", OPTION_0TEST_DAC_SHELL_THREAD_PRIORITY );
 
 
 // Assumes that the scheduler is already started!

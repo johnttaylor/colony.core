@@ -27,7 +27,7 @@ extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 
 
 ////////////////////////////////////////////////////////////////////////////////
-Cpl::TShell::Stdio shell_( cmdProcessor_ );
+static Cpl::TShell::Stdio shell_( cmdProcessor_ );
 
 
 void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
