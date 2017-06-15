@@ -78,7 +78,7 @@ public:
         Mutex&  m_mutex;
 
     public:
-        /// Constructor.  This will block until unti the mutex lock is aquired.
+        /// Constructor.  This will block until the mutex lock is acquired.
         inline ScopeBlock(Mutex& mutex) throw():m_mutex(mutex) {m_mutex.lock();}
 
         /// Destructor.  This method releases ownership of the mutex

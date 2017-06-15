@@ -9,8 +9,8 @@
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
 /* 
-   This file contains helper commands that are primarly used by the Scripting
-   commands.  They are seperated into a seperate from Command.cpp so that
+   This file contains helper commands that are primarily used by the Scripting
+   commands.  They are separated into a separate from Command.cpp so that
    an application that does not use Scripting commands does not 'pick-up'
    the object code for these functions
 */
