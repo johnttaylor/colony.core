@@ -20,7 +20,7 @@ namespace Cpl { namespace Timer {
 
 
 /** This abstract class defines the call-back interface for a Counter object.
-    A Counter object is used to maintain a counter down mechasim for tracking
+    A Counter object is used to maintain a counter down mechanism for tracking
     the time remaining for an individual timer.  
     
     The Counter interface is NOT inherently thread safe.  It is designed to be
