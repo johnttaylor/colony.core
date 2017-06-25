@@ -164,7 +164,7 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
         m_errorLevel.setValue ( (long) result );
         if ( result == Command::eERROR_IO )
             {
-            // Output stream error -->exit Command Processlr
+            // Output stream error -->exit Command Processor
             return false;
             }
 
