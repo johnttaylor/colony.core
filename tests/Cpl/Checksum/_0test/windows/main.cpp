@@ -9,7 +9,7 @@
 extern void link_test(void);
 
 
-int main( int argc, char* const argv[] )
+int main( int argc, char* argv[] )
     {
     // Initialize Colony
     Cpl::System::Api::initialize();
