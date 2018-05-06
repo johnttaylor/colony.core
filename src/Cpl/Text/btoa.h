@@ -15,7 +15,7 @@
     This file contains a collection of methods that convert a binary value
     to a text string. Typically snprinf() is/can-be used for this - however
     these routines explicitly DO NOT use snprintf for the conversation.  This
-    is for platforms/situations where it is not possible or undersirble (i.e.
+    is for platforms/situations where it is not possible or undesirable (i.e.
     stack usage) to call snprintf.
 
 */
@@ -28,9 +28,9 @@ namespace Cpl { namespace Text {
 
 
 /** This method converts a long to a string. If the number of converted digits
-    exceeds the size of 'dstString', then the MOST signficant digit(s) are
+    exceeds the size of 'dstString', then the MOST significant digit(s) are
     discarded.  When 'num' is negative there will always be a leading minus
-    sign ('-') even if it means discarding a MOST signficant digit.  There is
+    sign ('-') even if it means discarding a MOST significant digit.  There is
     no feedback if/when digits are discarded.
 
     @param num          number to convert
@@ -38,7 +38,7 @@ namespace Cpl { namespace Text {
     @param maxChars     size, in bytes, of 'dstString'.  Note: This includes the space for the null terminator
     @param base         Number base for conversion
     @param padChar      The character to use to pad any unused leading 
-                        characters in 'dstSting'
+                        characters in 'dstString'
 
     @returns a pointer to the beginning of the converted number when 
              successful; else 0 is returned on error (e.g. illegal 'base'

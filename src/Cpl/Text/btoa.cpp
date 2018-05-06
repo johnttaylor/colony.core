@@ -42,7 +42,7 @@ static const char* convert_( size_t num, char* dstString, size_t maxChars, unsig
     // Null terminate the string
     dstString[--maxChars] = '\0';
 
-    // Handle  special case: orignal number is zero
+    // Handle  special case: original number is zero
     if ( num == 0 )
         {
         dstString[--maxChars] = '0';
@@ -51,7 +51,7 @@ static const char* convert_( size_t num, char* dstString, size_t maxChars, unsig
     // Convert the number 
     else
         {
-        // Converstion is done LSB first
+        // Conversion is done LSB first
         while( num != 0 && maxChars > sign )
             {
             char remainder = (char) (num % base);

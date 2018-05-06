@@ -143,7 +143,7 @@ bool Transmitter::write( const void* data, size_t numBytesToTx ) throw()
             }
            
 
-        // Wait (if neccesary) for buffer to be transmitted/drained
+        // Wait (if necessary) for buffer to be transmitted/drained
         if ( numBytesToTx )
             {
             Cpl::System::Thread::wait();

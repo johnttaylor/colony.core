@@ -91,7 +91,7 @@ void Cpl::Text::removeTrailingSpace( char* s )
         }
 
     char* ptr = (char*)Cpl::Text::stripTrailingSpace(s);
-    if ( isspace(*ptr) )
+    if ( isspace((int)*ptr) )
         {
         *ptr = '\0';
         }

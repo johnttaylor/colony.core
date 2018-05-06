@@ -105,8 +105,8 @@ public:
         until all bytes have been transferred to the outbound buffer. The
         application CANNOT  assume that the byte(s) have been physically
         transmitted on the 'wire' when this method returns. The method returns
-        true if succesful; else false is returned  When an error is encounter
-        there is no guarenty/information-available with  respect to how many (if
+        true if successful; else false is returned  When an error is encounter
+        there is no guaranty/information-available with  respect to how many (if
         any) bytes where transmitted.
      */
     bool write( const void* data, size_t numBytesToTx ) throw();

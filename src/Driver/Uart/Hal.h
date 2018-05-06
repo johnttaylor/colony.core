@@ -20,7 +20,7 @@
           start/stop bits, etc. is VERY platform specific - which translate
           to very cumbersome/inefficiencies in trying to make a generic one
           size-fits-all init() method. What does this mean.... well first the
-          application is RESPONSIBLE for making sure that the platform specfic
+          application is RESPONSIBLE for making sure that the platform specific
           initialization happens BEFORE any of the Cpl drivers are started.  
           Second, this interface ASSUMES that the required 'Uart Handle' is 
           returned/created (at least conceptually) from this platform specific 
@@ -32,7 +32,7 @@
 
 
 /*-------------- PUBLIC API ------------------------------------------------*/
-/** This data type defines the platform specifc 'handle' of a UART.  The
+/** This data type defines the platform specific 'handle' of a UART.  The
     'handle' is used to unique identify a specific UART instance.
  */
 #define Driver_Uart_Hal_T               Driver_Uart_Hal_T_MAP
@@ -50,7 +50,7 @@
 
 
 /** This method clears the Tx Interrupt request.  This method can be empty/null
-    if the loadind the data register clears the IRQ.
+    if the loading the data register clears the IRQ.
 
     Prototype:
         void Driver_Uart_Hal_clrTxIrq( Driver_Uart_Hal_T hdl );

@@ -25,7 +25,7 @@ static unsigned long lastMsec_;
 
 namespace {
 
-    /// This class is to 'zero' the elasped to the start of the application
+    /// This class is to 'zero' the elapsed to the start of the application
     class RegisterInitHandler_: public Cpl::System::StartupHook_
     {                               
     public:
@@ -64,13 +64,13 @@ unsigned long ElapsedTime::millisecondsInRealTime( void ) throw()
 unsigned long ElapsedTime::secondsInRealTime( void ) throw()
     {
     Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
-
-    // Update my internal elaspedMsec time
+   // Update my internal elaspedMsec time
     milliseconds();
 
     // Convert my internal elasped time to seconds
     return (unsigned long)(elaspedMsec_ / 1000LL);
-    }
+
+     }
 
 
 ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) throw()

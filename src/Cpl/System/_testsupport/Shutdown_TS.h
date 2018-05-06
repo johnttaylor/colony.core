@@ -22,13 +22,13 @@ namespace Cpl { namespace System {
 /** This class provides methods to access the unit testing support
     for the Cpl::System::Shutdown interface.
     
-    This class provides an implemenation of Shutdown interface that
+    This class provides an implementation of Shutdown interface that
     has the ability to count the number times the Shutdown interface
     is/was called instead of exiting.  It can also alter the application's
     exit code.
 
     Notes: 
-        o The Shutdown implemenation assumes/uses the C Library 'exit()'
+        o The Shutdown implementation assumes/uses the C Library 'exit()'
           method.
  */
 class Shutdown_TS

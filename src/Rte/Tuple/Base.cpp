@@ -213,7 +213,7 @@ bool Api::compareAndCopy( Rte::Tuple::Api& srcTuple, Rte::Tuple::Api& dstTuple, 
     // Clear the 'destination tuple' (aka the tuple that might be updated) as not-updated
     dstTuple.clearUpdatedState();
 
-    // Compare by sequence numbers (OR force a sequence number comparsion if my destination Tuple is a Null Tuple)
+    // Compare by sequence numbers (OR force a sequence number comparison if my destination Tuple is a Null Tuple)
     bool tupleIsDifferent = false;
     if ( !compareValues || dstTuple.getNumElements() == 0 )
         {
@@ -243,7 +243,7 @@ bool Api::compareAndCopy( Rte::Tuple::Api& srcTuple, Rte::Tuple::Api& dstTuple, 
                     }
 
                 // Only compare data when it is VALID
-                // NOTE: With respect to the value comparision: 'src' is the 
+                // NOTE: With respect to the value comparison: 'src' is the 
                 //       point/tuple/element in the model, and 'dst' is the
                 //       point/tuple/element of the model VIEWER.
                 else if ( srcTuple.getElement(i).isValid() && dstTuple.getElement(i).isDifferentFrom(srcTuple.getElement(i)) )
