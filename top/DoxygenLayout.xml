@@ -26,9 +26,9 @@
   <class>
     <briefdescription visible="yes"/>
     <detaileddescription title=""/>
-    <includes visible="$SHOW_INCLUDE_FILES"/>
-    <inheritancegraph visible="$CLASS_GRAPH"/>
-    <collaborationgraph visible="$COLLABORATION_GRAPH"/>
+    <includes visible="yes"/>
+    <inheritancegraph visible="yes"/>
+    <collaborationgraph visible="yes"/>
     <allmemberslink visible="yes"/>
     <memberdecl>
       <nestedclasses visible="yes" title=""/>
@@ -77,7 +77,7 @@
       <properties title=""/>
       <events title=""/>
     </memberdef>
-    <usedfiles visible="$SHOW_USED_FILES"/>
+    <usedfiles visible="yes"/>
     <authorsection visible="yes"/>
   </class>
 
@@ -109,9 +109,9 @@
   <file>
     <briefdescription visible="yes"/>
     <detaileddescription title=""/>
-    <includes visible="$SHOW_INCLUDE_FILES"/>
-    <includegraph visible="$INCLUDE_GRAPH"/>
-    <includedbygraph visible="$INCLUDED_BY_GRAPH"/>
+    <includes visible="yes"/>
+    <includegraph visible="yes"/>
+    <includedbygraph visible="yest"/>
     <sourcelink visible="yes"/>
     <memberdecl>
       <classes visible="yes" title=""/>
@@ -139,7 +139,7 @@
   <group>
     <briefdescription visible="yes"/>
     <detaileddescription title=""/>
-    <groupgraph visible="$GROUP_GRAPHS"/>
+    <groupgraph visible="yes"/>
     <memberdecl>
       <nestedgroups visible="yes" title=""/>
       <dirs visible="yes" title=""/>

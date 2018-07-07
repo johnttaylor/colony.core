@@ -1,15 +1,15 @@
 #ifndef Cpl_System_FatalError_h_
 #define Cpl_System_FatalError_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014, 2015  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014, 2015  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 
@@ -25,7 +25,9 @@
 
 
 /// 
-namespace Cpl { namespace System { 
+namespace Cpl {
+/// 
+namespace System {
 
 
 /** This class defines methods for handling fatal errors encountered by
@@ -37,16 +39,16 @@ class FatalError
 public:
     /** This function is used to process/log a FATAL error.  The supplied error
         message will be logged to a "storage media" along with other useful
-        info such as the current task, stack dump, etc. In addition, THE 
-        APPLICATION AND/OR SYSTEM WILL BE "STOPPED".  Stopped can mean the 
+        info such as the current task, stack dump, etc. In addition, THE
+        APPLICATION AND/OR SYSTEM WILL BE "STOPPED".  Stopped can mean the
         application/system is exited, restarted, paused forever, etc.  The
-        type of "storage media", additional info, stopped behaviour, etc.
-        is defined by the selected/linked implemenation.
+        type of "storage media", additional info, stopped behavior, etc.
+        is defined by the selected/linked implementation.
 
-        NOTE: Applications, in general should NOT call this method - the 
+        NOTE: Applications, in general should NOT call this method - the
         application should be DESIGNED to handle and recover from errors that it
         encounters/detects.
-     */             
+     */
     static void log( const char* message );
 
     /** Same as above, but "value" is also logged.  This method allows additional
@@ -60,9 +62,9 @@ public:
 
 
 public:
-    /** Same as log(..) method, except NO "...other usefull info 
-        such as current task,..." is logged.  This allows routines that are 
-        supplying the extra info to be able to log fatal errors WITHOUT 
+    /** Same as log(..) method, except NO "...other useful info
+        such as current task,..." is logged.  This allows routines that are
+        supplying the extra info to be able to log fatal errors WITHOUT
         creating a recursive death loop.
      */
     static void logRaw( const char* message );
