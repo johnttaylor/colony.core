@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at           
 * http://integerfox.com/colony.core/license.txt
 *                                                                               
-* Copyright (c) 2014, 2015  John T. Taylor                                        
+* Copyright (c) 2014-2018  John T. Taylor                                        
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
@@ -73,10 +73,10 @@ Message* Mailbox::waitNext( bool& wasTimeout ) throw()
 
     for(;;)
         {
-        // START critcal section
+        // START critical section
         m_flock.lock();
         
-        // Trap if I was signalled
+        // Trap if I was signaled
         if ( m_signaled )
             {
             m_signaled = false;
@@ -94,7 +94,7 @@ Message* Mailbox::waitNext( bool& wasTimeout ) throw()
         
         // Remember that I am waiting for a next message
         m_waiting = true;
-        m_flock.unlock();           // END critcal section
+        m_flock.unlock();           // END critical section
 
 
         // Wait for the next message
@@ -114,7 +114,7 @@ Message* Mailbox::waitNext( bool& wasTimeout ) throw()
             }
         else
             {
-            // For Simulation: Since this call can block 'past a tick boundary', I need a call Appliation Wait()
+            // For Simulation: Since this call can block 'past a tick boundary', I need a call Application Wait()
             CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT();
             m_sema.wait();
             }

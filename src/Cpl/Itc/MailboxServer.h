@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at           
 * http://integerfox.com/colony.core/license.txt
 *                                                                               
-* Copyright (c) 2014, 2015  John T. Taylor                                        
+* Copyright (c) 2014-2018  John T. Taylor                                        
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
@@ -33,7 +33,7 @@ namespace Cpl { namespace Itc {
 
     The timing source for mailbox server is based on timed-wait operations
     of a semaphore and should not be considered a deterministic timing 
-    source.  In addition, the execuation of the callback of a expired timer 
+    source.  In addition, the execution of the callback of a expired timer 
     is subject to the processing that is ongoing in the thread, i.e.if a 
     message takes a relatively long time to be process, it can potentially 
     delay the execution of the timer callback - thus making precision timing 
@@ -64,7 +64,7 @@ public:
               server/thread is blocked on waiting for a 'next-message' or 
               attempts to process a 'next-message'.  
             o Any message(s) remaining in the mailbox will NOT be processed.  
-            o This is call is asychronous to the mailbox's executation, i.e.
+            o This is call is asynchronous to the mailbox's execution, i.e.
               the method will return immediately, but when the mailbox actually
               terminates is not guaranteed. 
             o This method is safe to be called ANY thread including from the 
@@ -98,7 +98,7 @@ protected:
     /** This operation is called when there are no messages in the
         mailbox, but the mailbox's thread semaphore is signaled. This can
         happen, for example, when a timer is associated with the
-        mailbox "Signable" interface. The default implementation
+        mailbox "Signal-able" interface. The default implementation
         of this function does NOTHING.
      */
     virtual void signaled() throw();

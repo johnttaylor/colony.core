@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at           
 * http://integerfox.com/colony.core/license.txt
 *                                                                               
-* Copyright (c) 2014, 2015  John T. Taylor                                        
+* Copyright (c) 2014-2018  John T. Taylor                                        
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
@@ -35,7 +35,7 @@ MailboxServer::MailboxServer( unsigned long timingTickInMsec ) throw()
 /////////////////////
 void MailboxServer::appRun()
     {
-    // Applicaiton hook
+    // Application hook
     initialize();
 
     // Get the initial starting time
@@ -72,7 +72,7 @@ void MailboxServer::appRun()
         // Process Local Timers
         if ( m_timeout )
             {
-            // Calcualte the elasped time in milliseconds
+            // Calculate the elapsed time in milliseconds
             m_timeNow               = Cpl::System::ElapsedTime::milliseconds();
             unsigned long deltaTime = Cpl::System::ElapsedTime::deltaMilliseconds( timeMark, m_timeNow );
 
@@ -122,7 +122,7 @@ void MailboxServer::pleaseStop()
     m_run = false;
     m_flock.unlock();
 
-    // Signal myself incase the thread is blocked waiting for the 'next message'
+    // Signal myself in case the thread is blocked waiting for the 'next message'
     m_sema.signal();
     }
 

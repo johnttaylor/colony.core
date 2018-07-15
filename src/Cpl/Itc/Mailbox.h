@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at           
 * http://integerfox.com/colony.core/license.txt
 *                                                                               
-* Copyright (c) 2014, 2015  John T. Taylor                                        
+* Copyright (c) 2014-2018  John T. Taylor                                        
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
@@ -34,7 +34,7 @@ namespace Cpl { namespace Itc {
     number of messages that can be stored in the queue at any given
     time since the FIFO queue and the messages uses the intrusive
     container mechanisms from the Cpl::Container namespace.  The
-    implementaiton provides support for implementing (by a child
+    implementation provides support for implementing (by a child
     class) a time source for Local Timers (Cpl::Timer::Local)
  */
 
@@ -62,7 +62,7 @@ public:
         has expired. When this operation completes, either a pointer to 
         a message, or zero is returned. A zero pointer indicates that 
         the mailbox was signaled or a timeout occurred before a message 
-        was posted to the mailox. The caller can use the 'wasTimeout'
+        was posted to the mailbox. The caller can use the 'wasTimeout'
         argument to differentiate between the mailbox being signaled
         and a timeout occurred.
      */
@@ -89,7 +89,7 @@ protected:
     /// Mutex used to protect my list
     Cpl::System::FastLock   m_flock;
 
-    /// Semaphore associated with the mailbox (note: the Thread semaphore is used for managing syncrhonous ITC calls)
+    /// Semaphore associated with the mailbox (note: the Thread semaphore is used for managing synchronous ITC calls)
     Cpl::System::Semaphore  m_sema;
 
     /// Timeout period for waiting on the next message
