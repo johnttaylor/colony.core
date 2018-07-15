@@ -27,7 +27,7 @@ namespace Cpl { namespace Io {
 
     NOTE: The LineWriter class does NOT provide any multi-thread mechanisms
           and/or protections.  In addition, using an instance of the 
-          AtomicOutputApi interace as the underlying Output stream will NOT 
+          AtomicOutputApi interface as the underlying Output stream will NOT 
           make output of the println() calls atomic! The intended way to
           have an 'Atomic' LineWriter is to use the AtomicOutput callback
           mechanism (i.e. requestOutputs()) and within the callback create

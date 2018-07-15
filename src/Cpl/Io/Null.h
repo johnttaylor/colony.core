@@ -21,7 +21,7 @@ namespace Cpl { namespace Io {
 
 /** This concrete class implements a NULL InputOutput stream - that all of its
     input operations return 'End-of-Stream' (i.e. return false) and all output 
-    is dropped in the preverbal bit-bucket and goes no where!  Note: The write() 
+    is dropped in the 'bit-bucket' and goes no where!  Note: The write() 
     methods always return true (i.e. no error).
  */
 class Null: public InputOutput

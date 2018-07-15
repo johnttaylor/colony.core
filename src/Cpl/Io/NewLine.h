@@ -30,7 +30,7 @@
 namespace Cpl { namespace Io { 
 
 
-/** This interface defines the the 'newline' character(s).  There is a 
+/** This interface defines the 'newline' character(s).  There is a 
     standardized (within Colony.*) newline character which is "\n". In addition
     there is a native (to target's OS) newline character(s).  The recommendation
     is to build your application to ALWAYS use the 'standardized' newline 

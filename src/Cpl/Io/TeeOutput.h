@@ -25,13 +25,13 @@ namespace Cpl { namespace Io {
     the data to MANY (or none) output streams. The write() methods will
     return false when at least of the Output stream(s) had an error.  There
     are methods provided (firstFailed(), nextFailed()) which returns a list of 
-    all currently failed Output streams.  Once a streamhas been marked as failed 
+    all currently failed Output streams.  Once a stream has been marked as failed 
     it will not be added back to the list of "good/active" streams.  The user 
-    must explicity delete the stream and then re-add it. NOTE: There is no 
-    guaranty of order or 'atomiciticy' with respect to other streams when 
+    must explicitly delete the stream and then re-add it. NOTE: There is no 
+    guaranty of order or 'atomicity' with respect to other streams when 
     writing to multiple streams. 
 
-    NOTE: The implementaiton is NOT thread safe.  The application must provide
+    NOTE: The implementation is NOT thread safe.  The application must provide
           its own locking/critical section logic if calling a TeeOutput instance
           from multiple threads.
  */

@@ -249,7 +249,7 @@ public:
      */
     virtual int compare( const char* string ) const = 0;
 
-    /// Same as compare(), but case insenstive.
+    /// Same as compare(), but case insensitive.
     virtual int compareIgnoreCase( const char* string ) const = 0;
 
     /** Compares the specified substring with the specified string.  Substring

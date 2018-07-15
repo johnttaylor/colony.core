@@ -18,7 +18,7 @@
 ///
 namespace Cpl { namespace Itc {
 
-/** This class represents a refined message, which is posted to a mailbox-server 
+/** This class represents a defined message, which is posted to a mailbox-server 
     as a request. It includes members which enable the client to be notified when
     the server thread has completed the request.
  */

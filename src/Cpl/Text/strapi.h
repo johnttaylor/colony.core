@@ -18,7 +18,7 @@
     the ISO standards - however there are some compilers (VS comes to mind)
     that still do no compile with C99 or C99 support as part of C++11.  It
     also facilities solutions for embedded platforms that need alternate
-    implementation of snprinf.
+    implementation of snprintf.
 
  */
 
@@ -62,7 +62,7 @@
 
 
 /** Converts the entire string to lower case letters. Returns the
-    converted string (i.e. same pointerthat is/was passed in)
+    converted string (i.e. same pointer that is/was passed in)
 
     \b Prototype:
         char* strlwr( char* s1 );
@@ -72,7 +72,7 @@
 #endif
 
 /** Fill a string with a given character. Returns the
-    converted string (i.e. same pointerthat is/was passed in)
+    converted string (i.e. same pointer that is/was passed in)
 
     \b Prototype:
         char* strset( char* s1, int fill );
@@ -82,7 +82,7 @@
 #endif
 
 /** Fill a string with a given character, to a given length. Returns the
-    converted string (i.e. same pointerthat is/was passed in)
+    converted string (i.e. same pointer that is/was passed in)
 
     \b Prototype:
         char* strnset( char* s1, int fill, size_t len );
@@ -103,7 +103,7 @@
 #endif
 
 /** Break a string into tokens, i.e. same as strtok(), but strtok_r is a 
-    reentrant implemenation. 'lasts' is the address of a pointer to a 
+    reentrant implementation. 'lasts' is the address of a pointer to a 
     character, which the function can use to store information necessary 
     for it to continue scanning the same string.
 
@@ -114,7 +114,7 @@
 #define strtok_r            strtok_r_MAP
 #endif
 
-/** Same functionality as sprintf(), except at most 'count-1' character 
+/** Same functionality as snprintf(), except at most 'count-1' character 
     will be stored in the output string.  The result is guaranteed to be 
     null terminated.
 

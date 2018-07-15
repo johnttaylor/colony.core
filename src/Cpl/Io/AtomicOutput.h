@@ -21,7 +21,7 @@ namespace Cpl { namespace Io {
 
 
 /** This concrete template class implements the AtomicOutputApi using a mutex
-    to enforce the 'atomicness' of the operation, i.e. all output operations
+    to enforce the 'atomic-ness' of the operation, i.e. all output operations
     occur synchronously in the caller's thread.
 
     The template arg - CONTEXT - is the class that implements the callback

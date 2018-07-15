@@ -12,16 +12,6 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "colony_config.h"
-
-
-/** Specifies the default newline character(s) as a string constant.
- */
-#ifndef OPTION_CPL_SYSTEM_NEWLINE
-#define OPTION_CPL_SYSTEM_NEWLINE    "\n"
-#endif
-
-
 
 /// 
 namespace Cpl {
