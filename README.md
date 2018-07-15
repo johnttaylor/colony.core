@@ -45,3 +45,4 @@ Documentation is located in the top/ directory and/or availabe at: www.integerfo
 To build/use Colony.Core within the Outcast model - see the installation instrucation at: www.integerfox.com/outcast/start_here.html#Installing
 
 Colony.Core is licensed with a BSD licensing agreement (see the top/ directory).
+
