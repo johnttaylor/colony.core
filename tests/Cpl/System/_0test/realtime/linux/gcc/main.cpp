@@ -12,7 +12,7 @@ extern void link_elaspedtime(void);
 extern void link_shell(void);
 
 
-int main( int argc, char* const argv[] )
+int main( int argc, char* argv[] )
     {
     // Initialize Colony
     Cpl::System::Api::initialize();
