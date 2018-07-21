@@ -184,9 +184,9 @@ public:
      */
     static Thread* create( Runnable&   runnable, 
                            const char* name, 
-                           int         priority  = CPL_SYSTEM_THREAD_PRIORITY_NORMAL,
-                           int         stackSize = 0,
-                           void*       stackPtr  = 0,
+                           int         priority      = CPL_SYSTEM_THREAD_PRIORITY_NORMAL,
+                           int         stackSize     = 0,
+                           void*       stackPtr      = 0,
                            bool        allowSimTicks = true
                          );
 

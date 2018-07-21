@@ -16,7 +16,7 @@
 #include "Cpl/System/Signable.h"
 
 
-/// Defer the definition of the a raw sema type to the application's 'platform'
+/// Defer the definition of the a raw semaphore type to the application's 'platform'
 #define Cpl_System_Sema_T          Cpl_System_Sema_T_MAP
 
 
@@ -34,7 +34,7 @@ namespace Cpl { namespace System {
 class Semaphore: public Signable
 {
 public:
-    /** Constructor.  The semaphore is created with the specificed
+    /** Constructor.  The semaphore is created with the specified
         'initialCount'.  A count of zero, will cause an immediate
         call to 'wait()' to block.
      */ 
@@ -62,7 +62,7 @@ public:
     /** This method is the same as wait(), except that if the semaphore 
         count is zero, the method returns immediately and has a return code
         of false.  If the semaphore count is greater than zero, the count
-        is decrement and the method returns immediatly and has a return code
+        is decrement and the method returns immediately and has a return code
         of true.
      */
     bool tryWait(void) throw();
@@ -77,7 +77,7 @@ public:
 
 
 protected:
-    /// Raw Sema handle/instance/pointer
+    /// Raw Semaphore handle/instance/pointer
     Cpl_System_Sema_T  m_sema;
         
 
@@ -89,10 +89,10 @@ protected:
     bool timedWaitInRealTime( unsigned long timeout ) throw();
 
 private:
-    /// Prevent access to the copy constructor -->semphores can not be copied!
+    /// Prevent access to the copy constructor -->semaphores can not be copied!
     Semaphore( const Semaphore& m );
 
-    /// Prevent access to the assignment operator -->semphores can not be copied!
+    /// Prevent access to the assignment operator -->semaphores can not be copied!
     const Semaphore& operator=( const Semaphore& m );
 
 

@@ -17,7 +17,7 @@
     abstraction interfaces to a null/empty implementation
 
     DO NOT include this file directly! Instead include the generic BSP
-    interface - //colony.core/src/Bsp/Api.h.
+    interface - //colony.bsp/src/Bsp/Api.h.
 
 
 *----------------------------------------------------------------------------*/ 

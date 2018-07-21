@@ -18,7 +18,7 @@
 
 
 /** Specifies the default value used for the application exit code when
-    terminating 'succesfully'
+    terminating 'successfully'
  */
 #ifndef OPTION_CPL_SYSTEM_SHUTDOWN_SUCCESS_ERROR_CODE
 #define OPTION_CPL_SYSTEM_SHUTDOWN_SUCCESS_ERROR_CODE       0
@@ -39,15 +39,15 @@ namespace Cpl { namespace System {
 
 /** This class defines methods for forcibly terminating the application.
     How gracefully (or not) the shutdown is dependent on the actual platform 
-    implemenation. In addition, what 'shutdown' means is also platform
+    implementation. In addition, what 'shutdown' means is also platform
     dependent, e.g. on an embedded platform it may invoke a reboot and/or
-    restart of the applicaiton.
+    restart of the application.
     
     Since this is a forcibly shutdown there are no guaranties with respect to 
     releasing resources.  
     
     The interface does provide for callback method(s) to be called on shutdown.
-    These methods are guarentied to be called (or at least attempted to be 
+    These methods are guaranteed to be called (or at least attempted to be 
     called in the case of true code failure).  
  */
 class Shutdown
@@ -59,11 +59,11 @@ public:
     class Handler: public Cpl::Container::Item
     {
     public:
-        /** This method is called when the applicaiton is shutting down. The
+        /** This method is called when the application is shutting down. The
             method is passed 'exit_code' which is the exit code provided by the
             application when called the Shutdown interface.  The return value 
             from the handler will be used as the application shutdown exit code.  
-            To leave the exit code unalter - return the passed in 'exit_code'.  
+            To leave the exit code un-alter - return the passed in 'exit_code'.  
             
             Notes:
              
@@ -91,7 +91,7 @@ public:
 
     /** This function will force a shutdown of the application with a 'failure'
         exit code.  The caller can optional specify an exit code. What 'forced' 
-        means is dependent on the actual platforn.  All registered callback 
+        means is dependent on the actual platform.  All registered callback 
         methods will be called before exiting the application. The returned 
         value - assuming the method actually returns - will be the 'final'
         exit code (the passed in exit_code can be alter by registered Shutdown
@@ -109,7 +109,7 @@ public:
         when success() or failure() is called and before the application exits. 
         There is NO guaranteed order on when the register callback methods
         (when there is multiple register callbacks) will be called OR with 
-        respect to application code running. The only guarentee is that the
+        respect to application code running. The only guarantee is that the
         callbacks will be called AFTER the above methods are called and BEFORE 
         the application shutdown.
 

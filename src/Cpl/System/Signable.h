@@ -18,7 +18,7 @@
 ///
 namespace Cpl { namespace System {
 
-/** This abstact class defines the interface by which a client
+/** This abstract class defines the interface by which a client
     can cause an object that is waiting-on-a-signal to become
     unblocked.  
  */

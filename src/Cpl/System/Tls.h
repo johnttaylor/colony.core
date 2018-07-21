@@ -72,7 +72,7 @@ public:
 
 
 protected:
-    /// Raw TLS key/hanlde/index 
+    /// Raw TLS key/handle/index 
     Cpl_System_TlsKey_T  m_key;
         
 

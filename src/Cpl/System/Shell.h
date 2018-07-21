@@ -46,12 +46,12 @@ public:
 
 
 /*
-** PRIVATE SYMBOLS.  The applicaiton should NEVER directly use/references these symbols.
+** PRIVATE SYMBOLS.  The application should NEVER directly use/references these symbols.
 */
-/// Defer the definition of the target specifc 'null device' to the application's 'platform'
+/// Defer the definition of the target specific 'null device' to the application's 'platform'
 #define CPL_SYSTEM_SHELL_NULL_DEVICE_           CPL_SYSTEM_SHELL_NULL_DEVICE_x_MAP
 
-/// Defer the decision to support/not-support this interface to the applicaiton;s 'platform'
+/// Defer the decision to support/not-support this interface to the application's 'platform'
 #define CPL_SYSTEM_SHELL_SUPPORTED_             CPL_SYSTEM_SHELL_SUPPORTED_x_MAP
 
 

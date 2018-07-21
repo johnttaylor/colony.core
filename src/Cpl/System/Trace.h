@@ -78,8 +78,8 @@ namespace Cpl { namespace System {
                                     }                
 
     CPL_SYSTEM_TRACEMSG() - This macro is for the programmer/application to 
-                            generate formatted message that are outputed to the 
-                            "trace media." The marco has printf() semantics.  
+                            generate formatted message that are outputted to the 
+                            "trace media." The macro has printf() semantics.  
                             The problem is that ANSI C++03 does not directly 
                             support var_args in a macro - so you HAVE TO USE AN 
                             EXTRA SET OF '()'.
@@ -109,15 +109,15 @@ public:
     ~Trace();
 
 public:
-    /** This enum is used to globally control the amount of 'Prolog' information
+    /** This enum is used to globally control the amount of 'Prologue' information
         that is prepended to the Trace log messages.  The specifics of what
         information is added is platform specific.
      */
-    enum InfoLevel_T { eNONE=0,         //!< Turns off ALL prolog info
+    enum InfoLevel_T { eNONE=0,         //!< Turns off ALL prologue info
                        eBRIEF,          //!< Default setting 
-                       eINFO,           //!< Additional prolog info
-                       eVERBOSE,        //!< more prolog info  
-                       eMAX             //!< Maximum prolog info
+                       eINFO,           //!< Additional prologue info
+                       eVERBOSE,        //!< more prologue info  
+                       eMAX             //!< Maximum prologue info
                      };            
 
 public:
@@ -174,7 +174,7 @@ public:
     static InfoLevel_T getInfoLevel_(void) throw();
 
     /** This method enables the output/logging of trace message at run-time for 
-        the specificed 'section'.  A 'section' name can NOT contain any white
+        the specified 'section'.  A 'section' name can NOT contain any white
         space.  The method returns true if the section was enabled; else false 
         is return, i.e. exceeded max active enabled sections.
         
@@ -277,7 +277,7 @@ public:
 public:
     /** This PRIVATE internal method provides the Output stream to the Trace 
         Engine.  The Output stream instance MUST be created statically. However,
-        the Output stream does not necessarily need to fully  'operational' when
+        the Output stream does not necessarily need to fully 'operational' when
         statically constructed - it just need to be  "operationally" by the time
         Cpl::System::Api::initialize() is called.
     
@@ -309,7 +309,7 @@ protected:
 #ifdef USE_CPL_SYSTEM_TRACE
 
 
-// PRETTY_FUNCTION marco is non-standard
+// PRETTY_FUNCTION macro is non-standard
 #if defined(__GNUC__)
 /// Take advantage of GCC's pretty function symbol
 #define CPL_SYSTEM_TRACE_PRETTY_FUNCNAME    __PRETTY_FUNCTION__
