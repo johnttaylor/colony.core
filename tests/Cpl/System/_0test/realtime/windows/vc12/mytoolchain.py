@@ -37,7 +37,7 @@ FINAL_OUTPUT_NAME = 'a.exe'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags = '/W3 /WX /EHsc'  # /EHsc enables exceptions
+base_release.cflags = '/W3 /WX /EHsc /D "CATCH_CONFIG_FAST_COMPILE"'  # /EHsc enables exceptions
 
 # Set project specific 'optimzed' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
