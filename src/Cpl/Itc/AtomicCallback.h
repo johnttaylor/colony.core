@@ -36,7 +36,7 @@ public:
 
 
 public:
-    /** This is a call-back method that is implmented by the client.
+    /** This is a call-back method that is implemented by the client.
         This method will run under the server's thread context and
         all method(s) called on the supplied API are atomic with
         respect to the server.

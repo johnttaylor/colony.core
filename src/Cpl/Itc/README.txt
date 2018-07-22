@@ -46,7 +46,7 @@ characteristics:
 
 The ITC Event Flags mechanism has the following characteristics:
 
-    o Each thread supports up to 31 unique event flags. Event flags are not 
+    o Each thread supports up to N unique event flags. Event flags are not 
       unique across threads, i.e. The semantics associated with event flag1 
       for Thread A, is independent/different than the semantics associated with 
       event flag1 for Thread B.

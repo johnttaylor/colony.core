@@ -24,7 +24,7 @@ namespace Cpl { namespace Itc {
     as a member variable of this class is posted to the mailbox referenced as
     a member variable of this class. It is expected that the referenced mailbox
     belongs to the client (i.e. the sender of the original message), and that
-    the message contains a reference to the orignal message, such that the
+    the message contains a reference to the original message, such that the
     original message can be released by the client.
  */
 class AsyncReturnHandler : public ReturnHandler 

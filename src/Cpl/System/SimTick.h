@@ -1,15 +1,15 @@
 #ifndef Cpl_System_SimTick_h_
 #define Cpl_System_SimTick_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2018  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 
@@ -34,44 +34,44 @@
 #ifndef OPTION_CPL_SYSTEM_SIM_TICK_NO_ACTIVITY_LIMIT
 #define OPTION_CPL_SYSTEM_SIM_TICK_NO_ACTIVITY_LIMIT    (2*1000)
 #endif
-     
+
 
 #ifdef USE_CPL_SYSTEM_SIM_TICK
-/** This macro is a wrapper for the topLevelWait() call. The macro allows the 
-    call to be compiled-out when simulate time is NOT enabled.
- */
+  /** This macro is a wrapper for the topLevelWait() call. The macro allows the
+      call to be compiled-out when simulate time is NOT enabled.
+   */
 #define CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT()            Cpl::System::SimTick::topLevelWait()
 
 
-/** This macro is a wrapper for the applicationWait() call.  The macro allows the
-    call to be compiled out when simulated time is NOT enabled
- */
+   /** This macro is a wrapper for the applicationWait() call.  The macro allows the
+       call to be compiled out when simulated time is NOT enabled
+    */
 #define CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT()          Cpl::System::SimTick::applicationWait()
 
 
-/** This macro is a wrapper for the usingSimTicks() call. The macro allows the call 
-    to be compiled-out when simulate time is NOT enabled.
- */
+    /** This macro is a wrapper for the usingSimTicks() call. The macro allows the call
+        to be compiled-out when simulate time is NOT enabled.
+     */
 #define CPL_SYSTEM_SIM_TICK_USING_SIM_TICKS()           Cpl::System::SimTick::usingSimTicks()
 
 
-/** This PRIVATE macro is a wrapper for threadInit_() call.  The macro allows the 
-    call to be compiled-out when simulate time is NOT enabled. NOTE: The
-    application SHOULD NEVER use this macro
- */
+     /** This PRIVATE macro is a wrapper for threadInit_() call.  The macro allows the
+         call to be compiled-out when simulate time is NOT enabled. NOTE: The
+         application SHOULD NEVER use this macro
+      */
 #define CPL_SYSTEM_SIM_TICK_THREAD_INIT_(f)             Cpl::System::SimTick::threadInit_(f)
 
 
-/** This PRIVATE macro is a wrapper for onThreadExit_() call.  The macro allows the 
-    call to be compiled-out when simulate time is NOT enabled. NOTE: The
-    application SHOULD NEVER use this macro
- */
+      /** This PRIVATE macro is a wrapper for onThreadExit_() call.  The macro allows the
+          call to be compiled-out when simulate time is NOT enabled. NOTE: The
+          application SHOULD NEVER use this macro
+       */
 #define CPL_SYSTEM_SIM_TICK_ON_THREAD_EXIT_()           Cpl::System::SimTick::onThreadExit_()
 
 
 
 #else
-/// Simulate Tick disabled
+  /// Simulate Tick disabled
 #define CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT()
 
 /// Simulate Tick disabled
@@ -96,20 +96,22 @@
 
 
 /// 
-namespace Cpl { namespace System { 
+namespace Cpl {
+/// 
+namespace System {
 
 
-/** This class define the interface to provide a simulates system tick (in 
+/** This class define the interface to provide a simulates system tick (in
     milliseconds) to the application. The goal is provide a mechanism for
     an application to run in 'simulate time' instead of real time. The
     simulated tick mechanism is for the most part transparent an application,
     i.e. the application programmer does NOT have to be aware or design
     his code differently to be able to run in simulate tick mode.  The
-    'intrusions points' are detailed below. The typical uses cases for using 
-    simulated time are: 
+    'intrusions points' are detailed below. The typical uses cases for using
+    simulated time are:
 @htmlonly
-<pre>    
-    
+<pre>
+
         o Testing.  A simulated system tick allows the test harness to have
           deterministic control of the application's time.  In addition, time
           can be singled stepped, paused, accelerated (i.e. run N days in
@@ -128,24 +130,24 @@ namespace Cpl { namespace System {
 
     NOTES:
     ------
-        o All timing sources, e.g. Cpl::Api::sleep(), provided by Colony.Core 
-          have support for simulated ticks build in.
- 
-        o All of the Colony.Core's ITC message queues/mailbox servers, etc. also 
+        o All timing sources, e.g. Cpl::Api::sleep(), provided by Colony.Core
           have support for simulated ticks build in.
 
-        o With respect to threads that are using simulated time, There needs to 
+        o All of the Colony.Core's ITC message queues/mailbox servers, etc. also
+          have support for simulated ticks build in.
+
+        o With respect to threads that are using simulated time, There needs to
           be at least one thread (at any given time) that is a 'timing' source,
           e.g. waiting on sleep(), timedWait(), etc.  If your application uses
-          a Cpl::Itc::MailboxServer instance - then this requirement has been 
+          a Cpl::Itc::MailboxServer instance - then this requirement has been
           met. Worse case you a create a thread that forever loops on sleep().
-          
+
         o This interface is independent of the underlaying platform, i.e works
           on ALL platforms.
 
         o NOT all threads and/or parts of an application need or should use
           simulated time.  For example the test harness (or communication
-          interface to a simulation tool) that provide the stimulus to 
+          interface to a simulation tool) that provide the stimulus to
           advance the simulated tick need to run in real-time.  It is the
           Application responsibility to properly selected what is and is
           not using simulated time.
@@ -154,12 +156,12 @@ namespace Cpl { namespace System {
               call to SimTick::wait() never blocks.  Also any Api::sleep()
               calls from the native/main thread are redirected to the
               Api::sleepInRealTime().
-                      
-        o THREADING: This interface provides ONLY a functional simulation of 
+
+        o THREADING: This interface provides ONLY a functional simulation of
           system ticks. These means the actual runtime timing of threads and/or
-          sequence of execution will NOT be the same as the 'live' 
-          non-simulated application. 
-  
+          sequence of execution will NOT be the same as the 'live'
+          non-simulated application.
+
             - When using simulated ticks with multi-threaded applications, the
               timing of the threads using the simulated ticks behavior is 'better'
               if the thread supplying the ticks has LOWER priority than the
@@ -169,11 +171,11 @@ namespace Cpl { namespace System {
               execute at the SAME time on multi-core boxes, the timing between
               the tick source thread and the simulated-tick threads and between
               simulated-tick threads is UNPREDICTABLE.  The tick sequencing
-              is guaranteed, but the order within a tick OR timing relations to 
+              is guaranteed, but the order within a tick OR timing relations to
               the tick source OR inter-tick timing is NOT guaranteed.
 
-            - Not all use cases using a simulated tick and threading will work 
-              and/or are supported.  The following threading 'paradigm(s)' are 
+            - Not all use cases using a simulated tick and threading will work
+              and/or are supported.  The following threading 'paradigm(s)' are
               supported:
 
               o Individual threads having a top level "forever" loop with or without
@@ -183,30 +185,30 @@ namespace Cpl { namespace System {
                 i.e. mutex can ALWAYS be successfully acquired and release within
                 the context of single simulated tick
 
-            - Be careful about deleting threads when using Simulated Ticks - 
-              brute force terminating threads in this scenario has unpredictable 
-              and/or improper behavior. Always have threads run to completion 
+            - Be careful about deleting threads when using Simulated Ticks -
+              brute force terminating threads in this scenario has unpredictable
+              and/or improper behavior. Always have threads run to completion
               when using Simulate Ticks.
 
         o The DEFAULT implementation of this interface assumes that one
-          system tick EQUALS one millisecond.    
+          system tick EQUALS one millisecond.
 
 
     HOW TO ADD SIMULATED TICK SUPPORT
     ---------------------------------
     o Enabling Simulated time is done at compile done.  The following steps
       are required:
-        1) Compile with the preprocessor symbol USE_CPL_SYSTEM_SIM_TICK 
+        1) Compile with the preprocessor symbol USE_CPL_SYSTEM_SIM_TICK
            defined.
 
-        2) Compile & Link the src/Cpl/System/_simtick directory.  Also do NOT 
-           compile/link the Src/Cpl/System/xxx/_realtime directories 
+        2) Compile & Link the src/Cpl/System/_simtick directory.  Also do NOT
+           compile/link the Src/Cpl/System/xxx/_realtime directories
 
     o Typically thats all that needs to be done. The only additional work is if
       application creates thread(s) that have an application specific (i.e. not
       a Colony.Core message queue, mailbox server, etc.) 'forever' loop AND it
-      is desired for the thread(s) to use 'simulated time'.  For this scenario 
-      the application must add a call to this interface at the top of the 
+      is desired for the thread(s) to use 'simulated time'.  For this scenario
+      the application must add a call to this interface at the top of the
       forever loop.  See the example below:
 
         void myThreadEntryFunction( void* arg )
@@ -222,10 +224,10 @@ namespace Cpl { namespace System {
             }
          }
 
-</pre>    
+</pre>
 @endhtmlonly
  */
-class SimTick: public Cpl::Container::Item
+class SimTick : public Cpl::Container::Item
 {
 public:
     /** This method will cause the current thread to block UNTIL one
@@ -234,34 +236,34 @@ public:
         at the very most top level of a thread's 'forever' loop.  The method
         applicationWait() is used for supporting blocking calls within a thread's
         loop iteration.
-        
-        For example: if OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS is set to 
-                     1, and advance(5) is called then this method will return 
-                     (i.e. not block) 5 times and then on the sixth call to 
+
+        For example: if OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS is set to
+                     1, and advance(5) is called then this method will return
+                     (i.e. not block) 5 times and then on the sixth call to
                      this method it will block until the next simulated tick.
 
         What is 'OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS'? This compile
         time constant defines the 'number of iterations' of a thread's main
-        loop is executed per simulated tick. This parameter attempts to 
-        functional simulate the execution time that occurs between system 
-        ticks. 
+        loop is executed per simulated tick. This parameter attempts to
+        functional simulate the execution time that occurs between system
+        ticks.
 
-        For example: if OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS is set to 
-                     3, and advance(5) is called then this method will return 
-                     (i.e. not block) 15 (5*3) times and then on the sixteenth 
-                     call to this method it will block until the next simulated 
+        For example: if OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS is set to
+                     3, and advance(5) is called then this method will return
+                     (i.e. not block) 15 (5*3) times and then on the sixteenth
+                     call to this method it will block until the next simulated
                      tick.
 
         This method SHOULD NEVER be called directly, but via the preprocessor
-        macro CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT().  This allows the simulate 
+        macro CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT().  This allows the simulate
         tick code to be compiled out of production versions of the application.
      */
     static void topLevelWait( unsigned iterCount=OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS ) throw();
 
     /** This method returns true if the current thread is using 'simulated time'
-    
+
         This method SHOULD NEVER called directly, but via the preprocessor
-        macro CPL_SYSTEM_SIM_TICK_USING_SIM_TICKS().  This allows the simulate tick 
+        macro CPL_SYSTEM_SIM_TICK_USING_SIM_TICKS().  This allows the simulate tick
         code to be compiled out of production versions of the application.
      */
     static bool usingSimTicks( void ) throw();
@@ -272,31 +274,31 @@ public:
         it is waiting on the application logic.
 
         This method SHOULD NEVER called directly, but via the preprocessor
-        macro CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT().  This allows the simulate 
+        macro CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT().  This allows the simulate
         tick code to be compiled out of production versions of the application.
-     */ 
+     */
     static void applicationWait( void ) throw();
 
 
     /** This method returns the current simulated tick count
      */
-    static size_t current(void) throw();
+    static size_t current( void ) throw();
 
 
 public:
     /** Calling this method advances the application's time by 'numTicks'. This
         method should ONLY called by a test harness or some other module that
-        is typically not part of the application, i.e. the caller of this 
+        is typically not part of the application, i.e. the caller of this
         method must be 'executing' in real time.  Internally the simulated
         time is advance at one tick at time.
 
         The method returns true after completing advancing the internal tick
-        count by the amount specified.  False is only returned when the 
-        simulate tick engine has detected that there a NO simulated-tick-threads 
+        count by the amount specified.  False is only returned when the
+        simulate tick engine has detected that there a NO simulated-tick-threads
         executing OR that ALL simulated-tick-threads are dead locked.
      */
     static bool advance( size_t numTicks ) throw();
-    
+
 
     /** This method returns true if the specified thread (by Thread ID) is
         blocked waiting on the next simulate tick.  While this method is
@@ -308,14 +310,14 @@ public:
 
 public:
     /** This PRIVATE method is used during thread creation to insert the
-        necessary hooks (per thread) for the simulate tick engine.  If 
-        'useSimTicks' is false then thread does NOT use simulated time. This 
+        necessary hooks (per thread) for the simulate tick engine.  If
+        'useSimTicks' is false then thread does NOT use simulated time. This
         method SHOULD NEVER be called by the application.
      */
-    static void threadInit_( bool useSimTicks=true ) throw();    
+    static void threadInit_( bool useSimTicks=true ) throw();
 
     /** This PRIVATE method is used during thread deletion to insert the
-        necessary hooks (per thread) for the simulate tick engine. This 
+        necessary hooks (per thread) for the simulate tick engine. This
         method SHOULD NEVER be called by the application.
      */
     static void onThreadExit_( void ) throw();
@@ -327,7 +329,7 @@ protected:
 
     /// Semaphore used to wait on a simulated tick
     Semaphore m_waiter;
-    
+
     /// The thread's current iteration count
     unsigned  m_iterCount;
 
@@ -349,7 +351,7 @@ protected:
     static unsigned wakeUpWaiters( void ) throw();
 
     /// Friend(s)
-    friend class ElapsedTime;  
+    friend class ElapsedTime;
     friend class Api;
 };
 
@@ -360,4 +362,3 @@ protected:
 
 
 
-                                                                                                                                                            

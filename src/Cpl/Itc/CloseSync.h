@@ -19,7 +19,7 @@
 ///
 namespace Cpl { namespace Itc {
 
-/** This partailly concrete class implements the synchronous ITC close
+/** This partially concrete class implements the synchronous ITC close
     call for the CloseApi.  The subclass is still required to implement the ITC 
     request() method.
     

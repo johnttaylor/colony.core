@@ -1,22 +1,24 @@
 #ifndef Cpl_System_Shell_h_
 #define Cpl_System_Shell_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2018  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 
 #include "colony_map.h"
 
 /// 
-namespace Cpl { namespace System { 
+namespace Cpl {
+/// 
+namespace System {
 
 
 /** This class defines methods for interfacing with the Platform native OS to
@@ -29,14 +31,14 @@ namespace Cpl { namespace System {
 class Shell
 {
 public:
-    /** Executes the System Shell command as specified by 'cmdstring'.  If 
+    /** Executes the System Shell command as specified by 'cmdstring'.  If
         noEchoStdOut is set to true then the standard output of the shell command
         is set to the system's NUL device.  If noEchoStdErr is set to true then
         the standard error output of the shell command is set to the system's
-        NUL device. The method returns -1 if unable to execute the command, 
+        NUL device. The method returns -1 if unable to execute the command,
         else returns the result code of the command executed.
      */
-    static int execute( const char* cmdstring, bool noEchoStdOut = true, bool noEchoStdErr = true ); 
+    static int execute( const char* cmdstring, bool noEchoStdOut = true, bool noEchoStdErr = true );
 
     /** Returns true if the system command shell is available.
      */

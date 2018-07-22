@@ -74,8 +74,6 @@ public:
     /// See Cpl::Timer::Api
     void start( unsigned long timerDurationInMilliseconds ) throw();
 
-    /// See Cpl::Timer::Api
-    void restart( unsigned long timerDurationInMilliseconds ) throw();
 
     /// See Cpl::Timer::Api
     void stop() throw();
@@ -119,15 +117,9 @@ Local<CONTEXT>::Local
 template <class CONTEXT>
 void Local<CONTEXT>::start( unsigned long timerDurationInMilliseconds ) throw()
     {
+    m_countSource.detach(*this);
     m_count = m_countSource.msecToCounts( timerDurationInMilliseconds );
     m_countSource.attach(*this);
-    }
-
-template <class CONTEXT>
-void Local<CONTEXT>::restart( unsigned long timerDurationInMilliseconds ) throw()
-    {
-    m_countSource.detach(*this);
-    start(timerDurationInMilliseconds);
     }
 
 template <class CONTEXT>

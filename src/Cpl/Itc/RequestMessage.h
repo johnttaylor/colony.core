@@ -25,7 +25,7 @@ namespace Cpl { namespace Itc {
     services this message. This is the interface that the message uses to invoke
     the message operation. By definition, the SERVER must have a member function
     named "request" that returns nothing (void) and has a signature whose argument
-    is a reference to the the message defined by this template. 
+    is a reference to the message defined by this template. 
  */
 template <class SERVER, class PAYLOAD>
 class RequestMessage: public ServiceMessage 
@@ -44,7 +44,7 @@ public:
     /// Constructor
     RequestMessage(SAP<SERVER>& sapsrv, PAYLOAD& payload, ReturnHandler& returnHandler);
 
-    /// Destrcutor
+    /// Destructor
     virtual ~RequestMessage();
 
 public: 

@@ -22,7 +22,7 @@ namespace Cpl { namespace Itc {
     ITC server object executes its ITC requests in).  The close call
     is a SYNCHRONOUS ITC call.  This has the following effects/requirements:
 
-    1) The caller MUST be in a different thread than the thead of the object 
+    1) The caller MUST be in a different thread than the thread of the object 
        being closed.
 
     2) The thread of the caller will block until the ITC server object

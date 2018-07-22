@@ -20,7 +20,7 @@
 namespace Cpl { namespace Itc {
 
 
-/** This partailly concrete class implements the synchronous ITC open
+/** This partially concrete class implements the synchronous ITC open
     call for the OpenApi.  The subclass is still required to implement the ITC 
     request() method.
  */

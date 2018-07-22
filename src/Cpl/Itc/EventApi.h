@@ -12,40 +12,99 @@
 *----------------------------------------------------------------------------*/ 
 /** @file */
 
+#include "colony_config.h"
+#include <stdint.h>
+
+/// Default the Event Flags data type to 31 Events flags (32-1)
+#ifndef Cpl_Itc_EventFlags_T
+#define Cpl_Itc_EventFlags_T            uint32_t
+#endif
 
 ///
 namespace Cpl { namespace Itc {
 
 
 
-/** This abstract class represents an 'the interface used to send
-    messages to a mailbox. In a client-server relationship
-    this interface is always invoked by the client.
+/** This abstract class defines the interface to generated 'Event Flags'. Event
+    Flags are used to indicate that an 'event' has occurred.  Each Event Flag
+    is represent by a bit the Cpl_Itc_Event_Flags_T data type.  However, one
+    Event flag (the MSb) is reserved for internal use.  For example, if
+    Cpl_Itc_Event_Flags_T is defined as uint32_t, the application has 31 Event
+    Flags (per thread/runnable object) at its disposal. 
+
+    Individual event flags can be viewed as binary semaphores with respect 
+    to be signaled/waiting (though waiting is done on the thread's entire set 
+    of event flags).
+
+    A thread (runnable object) can wait for at least one event to be signaled.
+    When the thread is waiting on event(s) and it is then signaled - all of
+    Events that were in the signaled state when the thread was unblock are
+    cleared. 
  */
 
-class PostApi 
+class EventApi
 {
 public:
-    /** This operation is called by clients, which wish to send a message
-        to the owner of this mailbox. The message is threaded into the
-        mailbox queue for the mailbox owner to receive, and the operation
-        returns immediately. The client relinquishes ownership of the memory
-        until the message's returnToSender() function is invoked.
-     */
-    virtual void post(Message& msg) throw()=0;
+    /** This operation is called by clients to set one or more Event Flags.  
+        Each bit in 'events' is different Event Flag.  The number of Event
+        Flags that can be set are the total number of bits in Cpl_Itc_EventFlags_T
+        minus 1.  The MSb of Cpl_Itc_EventFlags_T is reserved and should NEVER
+        set by the application.  If the application attempts to set the MSb of 
+        'events' then the function will generate a fatal error.  
 
-    /** This operation is called by clients which wish to send a message
-        to the owner of this mailbox, and then block on the client's thread
-        semaphore. First, the message is threaded into the mailbox queue
-        for the mailbox owner to receive. Next, the client waits on its
-        thread semaphore until the semaphore is signaled. 
+        This method can ONLY be called from a thread context.
      */
-    virtual void postSync(Message& msg) throw()=0;
+    virtual void notifyEvents( Cpl_Itc_EventFlags_T events ) throw();
+
+    /** This operation is similar to notifyEvents(), except that it sets one 
+        event flags.  The 'eventNumber' is the bit number (zero based) of the 
+        Event Flag to set.  This method will generate a fatal error if the MSb 
+        bit number is specified (see limitations of notifyEvents()
+
+        This method can ONLY be called from a thread context.
+     */
+    virtual void notify( uint8_t eventNumber  ) throw();
+
+
+public:
+    /** This method is same as notifyEvents() EXCEPT this method can ONLY be 
+        called from supervisor mode and/or ISR contexts. 
+     */
+    virtual void su_notifyEvents( Cpl_Itc_EventFlags_T events ) throw();
+
+    /** This method is same as notify() EXCEPT this method can ONLY be 
+        called from supervisor mode and/or ISR contexts. 
+     */
+    virtual void su_notify( uint8_t eventNumber ) throw();
+
+
+public:
+    /** This method is PRIVATE, it is only made public to avoid the tight
+        coupling of the 'friend mechanism' for friending current and future
+        concrete thread classes.  The application SHOULD NEVER call/use this
+        method.
+
+        This internal method can set any/all Event Flags, including the 
+        MSb event flag.
+
+        This method can ONLY be called from a thread context.
+     */
+    virtual void internalNotify_( Cpl_Itc_EventFlags_T events ) throw()=0;
+
+    /** This method is PRIVATE, it is only made public to avoid the tight
+        coupling of the 'friend mechanism' for friending current and future
+        concrete thread classes.  The application SHOULD NEVER call/use this
+        method.
+        
+        This method is same as internalNotify_() EXCEPT this method can ONLY be 
+        called from supervisor mode and/or ISR contexts. 
+     */
+    virtual void su_internalNotify_( Cpl_Itc_EventFlags_T events ) throw()=0;
 
 
 public:
 	/// Virtual destructor
-	virtual ~PostApi(){}
+	virtual ~EventApi(){}
 };
 
 };      // end namespaces

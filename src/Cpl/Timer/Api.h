@@ -26,18 +26,15 @@ class Api
 {
 public:
     /** Starts the timer with an initial count down count duration of 
-        'timerDurationInMilliseconds'
+        'timerDurationInMilliseconds'.  If the timer is currently, the timer
+        is first stopped, and then restarted.
      */
     virtual void start( unsigned long timerDurationInMilliseconds ) throw() = 0;
 
-    /** Effectively performs a stop() followed by a start() call 
-     */
-    virtual void restart( unsigned long timerDurationInMilliseconds ) throw() = 0;
-
     /** Stops the timer. It is okay to call stop() even after the timer has
-        previously expired or explicity stopped.  Note: The behavior for the use 
+        previously expired or explicitly stopped.  Note: The behavior for the use 
         case of: timer-expired-notification-in-progress when stop() is called is 
-        dependent on the actual timer implementaiton (in-thread vs. inter-thread).
+        dependent on the actual timer implementation (in-thread vs. inter-thread).
      */
     virtual void stop() throw() = 0;
 

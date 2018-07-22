@@ -22,7 +22,7 @@ namespace Cpl { namespace Itc {
     ITC server object executes its ITC requests in).  The open call
     is a SYNCHRONOUS ITC call.  This has the following effects/requirements:
 
-    1) The caller MUST be in a different thread than the thead of the object 
+    1) The caller MUST be in a different thread than the thread of the object 
        being  opened.
 
     2) The thread of the caller will block until the ITC server object
@@ -32,7 +32,7 @@ namespace Cpl { namespace Itc {
 class OpenApi
 {
 public:
-	/** Synchronously opens/intiailizes the called object. Returns true
+	/** Synchronously opens/initializes the called object. Returns true
         if the open operation was successful
      */
     virtual bool open( void ) = 0;

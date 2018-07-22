@@ -1,13 +1,13 @@
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2018  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 
 #include "MailboxServer.h"
 #include "Cpl/System/Thread.h"
@@ -25,16 +25,16 @@ using namespace Cpl::Itc;
 
 /////////////////////
 MailboxServer::MailboxServer( unsigned long timingTickInMsec ) throw()
-:Mailbox( timingTickInMsec ),
- m_timeNow( 0 ),
- m_run(true)
-    {
-    }
+    :Mailbox( timingTickInMsec ),
+    m_timeNow( 0 ),
+    m_run( true )
+{
+}
 
 
 /////////////////////
 void MailboxServer::appRun()
-    {
+{
     // Application hook
     initialize();
 
@@ -42,8 +42,8 @@ void MailboxServer::appRun()
     unsigned long timeMark = Cpl::System::ElapsedTime::milliseconds();
 
     // Process messages forever (or until told to stop)
-    for(;;)
-        {
+    for ( ;;)
+    {
         // Support simulated ticks
         CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT();
 
@@ -52,69 +52,74 @@ void MailboxServer::appRun()
         bool stayRunning = m_run;
         m_flock.unlock();
         if ( !stayRunning )
-            {
+        {
             break;
-            }
+        }
 
-        // Wait/get the next-message to process
-        bool wasTimeout = false;
-        Message* msgPtr = waitNext( wasTimeout );
+        // Wait for something to happen...
+        bool                 wasTimeout = false;
+        Cpl_Itc_EventFlags_T events     = 0;
+        Message*             msgPtr     = waitNext( wasTimeout, events );
 
-        // Trap my exit/please-stop condition AGAIN since alot could have happen while I was waiting....
+        // Trap my exit/please-stop condition AGAIN since a lot could have happen while I was waiting....
         m_flock.lock();
         stayRunning = m_run;
         m_flock.unlock();
         if ( !stayRunning )
-            {
+        {
             break;
-            }
+        }
 
         // Process Local Timers
         if ( m_timeout )
-            {
+        {
             // Calculate the elapsed time in milliseconds
             m_timeNow               = Cpl::System::ElapsedTime::milliseconds();
             unsigned long deltaTime = Cpl::System::ElapsedTime::deltaMilliseconds( timeMark, m_timeNow );
 
             // Update my timers
-            CPL_SYSTEM_TRACE_MSG( SECT_, (" @@ START TICK: %lu, now=%lu, [timeMark=%lu]", deltaTime, m_timeNow, timeMark ));
+            CPL_SYSTEM_TRACE_MSG( SECT_, (" @@ START TICK: %lu, now=%lu, [timeMark=%lu]", deltaTime, m_timeNow, timeMark) );
             tick( deltaTime );
             timeMark = m_timeNow;
-            CPL_SYSTEM_TRACE_MSG( SECT_, (" @@ TICK COMPLETE..., timeMark=%lu", timeMark ));
+            CPL_SYSTEM_TRACE_MSG( SECT_, (" @@ TICK COMPLETE..., timeMark=%lu", timeMark) );
             tickComplete();
-            }
+        }
 
-        // No next-message 
-        if ( !msgPtr )
+        // Process Event Flags
+        if ( events )
+        {
+            Cpl_Itc_EventFlags_T eventMask   = 1;
+            uint8_t              eventNumber = 0;
+            for ( ; eventMask; eventMask <<= 1, eventNumber++ )
             {
-            // The mailbox was signaled
-            if ( !wasTimeout )
+                if ( (events & eventMask) )
                 {
-                signaled();
+                    processEventFlag( eventNumber );
                 }
-            }
-
-        // Process the next-message
-        else 
-            {
-            msgPtr->process();
             }
         }
 
-    // Application hook
-    cleanup();
+        // Process the next-message
+        if ( msgPtr )
+        {
+            msgPtr->process();
+        }
+
+        // Application hook
+        cleanup();
     }
+}
 
 unsigned long MailboxServer::msecToCounts( unsigned long durationInMsecs ) throw()
-    {
+{
     unsigned long delta = Cpl::System::ElapsedTime::deltaMilliseconds( m_timeNow );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("duration IN=%lu, count out=%lu",durationInMsecs, durationInMsecs +  delta ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("duration IN=%lu, count out=%lu", durationInMsecs, durationInMsecs + delta) );
     return durationInMsecs + delta;
-    }
+}
 
 /////////////////////
 void MailboxServer::pleaseStop()
-    {
+{
     CPL_SYSTEM_TRACE_FUNC( SECT_ );
 
     // Set my flag/state to exit my top level thread loop
@@ -124,19 +129,25 @@ void MailboxServer::pleaseStop()
 
     // Signal myself in case the thread is blocked waiting for the 'next message'
     m_sema.signal();
-    }
+}
 
 
 /////////////////////
 void MailboxServer::initialize() throw()
-    {
-    }
+{
+}
 
 void MailboxServer::cleanup() throw()
-    {
-    }
+{
+}
 
 void MailboxServer::signaled() throw()
-    {
+{
     // Default is to do: NOTHING
-    }
+}
+
+void MailboxServer::processEventFlag( uint8_t eventNumber ) throw()
+{
+    // Default is to do: NOTHING
+}
+

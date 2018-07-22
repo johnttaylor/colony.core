@@ -25,8 +25,8 @@ namespace Cpl { namespace Itc {
     a client to invoke multiple operation on a server/service as one
     single atomic operation.
 
-    The server typically inherents this class and implements the 'ACCESS_API'.
-    The client is repsonble for implementing the AtomicCallback interface.
+    The server typically inherits this class and implements the 'ACCESS_API'.
+    The client is responsible for implementing the AtomicCallback interface.
 
     TEMPLATE ARGS: ACCESS_API - API that the client uses to accomplish its
                                 "Atomic Operation"
