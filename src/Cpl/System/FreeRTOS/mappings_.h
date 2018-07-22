@@ -25,28 +25,28 @@
 
 
 
-///
+/// Mapping
 #define Cpl_System_Thread_NativeHdl_T_MAP       TaskHandle_t  
 
-///
+/// Mapping
 #define Cpl_System_Mutex_T_MAP                  SemaphoreHandle_t
 
-///
+/// Mapping
 #define Cpl_System_FastLock_T_MAP               uint8_t // Note: Not really used, but need something or the code won't compile
                                                 
-///
+/// Mapping
 #define Cpl_System_Sema_T_MAP                   SemaphoreHandle_t
 
-///
+/// Mapping
 #define Cpl_System_TlsKey_T_MAP                 uint8_t
 
-/// 
+/// Mapping 
 #define CPL_SYSTEM_SHELL_NULL_DEVICE_x_MAP      "" // Since the 'shell' is not support -->the value has no meaning
 
-/// 
+/// Mapping 
 #define CPL_SYSTEM_SHELL_SUPPORTED_x_MAP        0
 
-///
+/// Mapping
 #define CPL_IO_NEW_LINE_NATIVE_MAP              "\n"
 //
 /////
@@ -64,10 +64,15 @@
 //    The highest priority is 'configMAX_PRIORITIES - 1', the lowest
 //    priority is 1.
 //
+/// Mapping
 #define CPL_SYSTEM_THREAD_PRIORITY_HIGHEST_MAP      (configMAX_PRIORITIES - 1)
+/// Mapping
 #define CPL_SYSTEM_THREAD_PRIORITY_NORMAL_MAP       (configMAX_PRIORITIES/2)
+/// Mapping
 #define CPL_SYSTEM_THREAD_PRIORITY_LOWEST_MAP       1
+/// Mapping
 #define CPL_SYSTEM_THREAD_PRIORITY_RAISE_MAP        (1)
+/// Mapping
 #define CPL_SYSTEM_THREAD_PRIORITY_LOWER_MAP        (-1)
 
 

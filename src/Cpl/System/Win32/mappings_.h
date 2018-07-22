@@ -61,19 +61,19 @@
 #define CPL_IO_FILE_MAX_NAME_MAP                _MAX_PATH
 
 
-/// Thread Priorites
+/// Thread Priorities
 #define CPL_SYSTEM_THREAD_PRIORITY_HIGHEST_MAP      15
 
-/// Thread Priorites
+/// Thread Priorities
 #define CPL_SYSTEM_THREAD_PRIORITY_NORMAL_MAP       0
 
-/// Thread Priorites
+/// Thread Priorities
 #define CPL_SYSTEM_THREAD_PRIORITY_LOWEST_MAP       -15
 
-/// Thread Priorites
+/// Thread Priorities
 #define CPL_SYSTEM_THREAD_PRIORITY_RAISE_MAP        (+1)
 
-/// Thread Priorites
+/// Thread Priorities
 #define CPL_SYSTEM_THREAD_PRIORITY_LOWER_MAP        (-1)
 
 

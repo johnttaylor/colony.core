@@ -147,7 +147,7 @@ protected:
 
 
 public:
-    ///
+    /// Converts the native thread to a CPL thread
     MakeCurrentThreadACplThread( const char* threadName="main" )
         {
         // Create a thread object for the native thread

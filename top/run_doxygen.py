@@ -42,8 +42,7 @@ def filter_warnings( output ):
         exit(0)
     else:
         print
-        # exit(1)
-        exit(0)
+        exit(1)
         
 #------------------------------------------------------------------------------
 print "Running doxygen..."     

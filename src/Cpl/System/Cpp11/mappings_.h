@@ -17,7 +17,7 @@
 
  */
 
-#include "colony_config.h"  // Note: Yet another work around for managing OS specific items not covered by C++11, e.g. the native directory seperator
+#include "colony_config.h"  // Note: Yet another work around for managing OS specific items not covered by C++11, e.g. the native directory separator
 
 
 #include <mutex>
@@ -68,19 +68,19 @@ typedef struct Cpl_System_Cpp11_Sema_Tag
 #endif
 
 
-/// Thread Priorites
+/// Thread Priorities
 #define CPL_SYSTEM_THREAD_PRIORITY_HIGHEST_MAP      0
 
-/// Thread Priorites
+/// Thread Priorities
 #define CPL_SYSTEM_THREAD_PRIORITY_NORMAL_MAP       0
 
-/// Thread Priorites
+/// Thread Priorities
 #define CPL_SYSTEM_THREAD_PRIORITY_LOWEST_MAP       0
 
-/// Thread Priorites
+/// Thread Priorities
 #define CPL_SYSTEM_THREAD_PRIORITY_RAISE_MAP        0
 
-/// Thread Priorites
+/// Thread Priorities
 #define CPL_SYSTEM_THREAD_PRIORITY_LOWER_MAP        0
 
 

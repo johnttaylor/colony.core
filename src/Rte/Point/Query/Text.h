@@ -23,13 +23,14 @@ namespace Rte { namespace Point { namespace Query {
 
 /** This concrete class implements the Query Point interface that returns
     the result in a generic ASCII text string.  The result format is:
+    @code
 
     "{(<tuple>)[,(<tuple>)]*}"
 
     where <tuple>: elem[,elem]* 
 
         - All 'text' element are bounded within quotes.  'text' elements are
-          defined as elements whos ASCII text values could contain special
+          defined as elements who's ASCII text values could contain special
           characters such as commas, spaces, '!', parentheses, etc.    
         - Boolean values are encoded as "T" (true) and "F" (false)
         - If the element is in the locked state, then it is prefixed with
@@ -47,7 +48,7 @@ namespace Rte { namespace Point { namespace Query {
         {(T,!3.1415,?32), (!"My Label",!?)}   
         {([T],32,"Fred")}
 
-
+    @endcode
  */
 class Text: public Api
 {
