@@ -307,7 +307,8 @@ protected:
     const char* m_scope;
 };
 
-
+};
+};      // end namespaces
 
 //////////////////////////////////////////////////////////////////////////////
 #ifdef USE_CPL_SYSTEM_TRACE
@@ -498,7 +499,7 @@ protected:
 
 /** String literal that is the final suffix for all trace messages
  */
-def OPTION_CPL_SYSTEM_TRACE_SUFFIX_STRING
+#ifndef OPTION_CPL_SYSTEM_TRACE_SUFFIX_STRING
 #define OPTION_CPL_SYSTEM_TRACE_SUFFIX_STRING           "\n"
 #endif
 
@@ -516,8 +517,5 @@ def OPTION_CPL_SYSTEM_TRACE_SUFFIX_STRING
 #endif
 
 
-
-};      // end namespaces
-};
 #endif  // end header latch
 

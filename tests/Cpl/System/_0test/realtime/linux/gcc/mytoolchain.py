@@ -141,5 +141,5 @@ from nqbplib.toolchains.linux.gcc.console_exe import ToolChain
 
 # Function that instantiates an instance of the toolchain
 def create():
-    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "posix" )
+    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "posix64" )
     return tc 

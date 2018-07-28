@@ -13,7 +13,7 @@
 /** @file */
 
 
-/** This abstact class define a interface that allows a client to perform
+/** This abstract class define a interface that allows a client to perform
     a read-modify-write operation on the server's (aka model) data.
  */
 class ReadModifyWrite

@@ -21,11 +21,11 @@ namespace Cpl { namespace Text { namespace Frame {
 
 
 
-/** This concrete template class provide a basic implemenation of the 
+/** This concrete template class provide a basic implementation of the 
     Frame::Decoder interface that uses Cpl::Io::Input stream as the input
     source.  In addition this class only accepts PRINTABLE ASCII characters 
     within the frame; AND the start-of-frame character is ANY printable ASCII;
-    AND the end-of-frame charcater is a newline character ('\r' or '\n'); AND
+    AND the end-of-frame character is a newline character (`\r` or `\n`); AND
     there is NO escape sequence since the escape sequence is need to embedded
     EOF characters - but in this case EOF (newline) is NOT a printable ASCII
     character -->so an escape sequence is not meaningful.

@@ -1,21 +1,21 @@
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2018  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "EventApi.h"
 #include "Cpl/System/FatalError.h"
 
 
-#define RESERVED_BIT_NUM        ((sizeof(Cpl_Itc_EventFlags_T)*4)-1)
-#define RESERVED_BIT_MASK       (1<<RESERVED_BIT_NUM)
+#define RESERVED_BIT_NUM        ((Cpl_Itc_EventFlags_T)((sizeof(Cpl_Itc_EventFlags_T)*8)-1))
+#define RESERVED_BIT_MASK       ((Cpl_Itc_EventFlags_T)(1<<RESERVED_BIT_NUM))
 
 
 /// 

@@ -73,7 +73,7 @@ Message* Mailbox::waitNext( bool& wasTimeout, Cpl_Itc_EventFlags_T& eventFlags )
             eventFlags = m_events;
             m_events   = 0;
             m_flock.unlock();       // END the critical section
-            break;                  
+            break;
         }
 
         // Remember that I am waiting for a next message
@@ -112,10 +112,8 @@ Message* Mailbox::waitNext( bool& wasTimeout, Cpl_Itc_EventFlags_T& eventFlags )
 
 
 ////////////////////////////////////////////////////////////////////////////////
-int Mailbox::internalNotify_( Cpl_Itc_EventFlags_T events ) throw()
+void Mailbox::internalNotify_( Cpl_Itc_EventFlags_T events ) throw()
 {
-    int result = 0;
-
     // Mark that I was signaled and capture my 'waiting-on-message' state
     m_flock.lock();
     m_events    |= events;
@@ -129,18 +127,14 @@ int Mailbox::internalNotify_( Cpl_Itc_EventFlags_T events ) throw()
     // Wake myself up (if I was waiting for a next-message)
     if ( waiting )
     {
-        result = m_sema.signal();
+        m_sema.signal();
     }
-
-    return result;
 }
 
 
 // NOTE: Same logic as signal(), EXCEPT no critical section is used -->this is because su_signal() is called from an ISR and no mutex is required (and mutexes don't work in from ISRs anyway)
-int Mailbox::su_internalNotify_( Cpl_Itc_EventFlags_T events ) throw()
+void Mailbox::su_internalNotify_( Cpl_Itc_EventFlags_T events ) throw()
 {
-    int result = 0;
-
     // Mark that I was signaled and capture my 'waiting-on-message' state
     m_events    |= events;
     bool waiting = m_waiting;
@@ -152,10 +146,8 @@ int Mailbox::su_internalNotify_( Cpl_Itc_EventFlags_T events ) throw()
     // Wake myself up (if I was waiting for a next-message)
     if ( waiting )
     {
-        result = m_sema.su_signal();
+        m_sema.su_signal();
     }
-
-    return result;
 }
 
 

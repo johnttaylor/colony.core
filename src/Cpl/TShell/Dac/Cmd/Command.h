@@ -19,7 +19,7 @@
 #include "Cpl/Text/String.h"
 
 
-/** This symbol defines the default <esc> character for expanding text
+/** This symbol defines the default `<esc>` character for expanding text
  */
 #ifndef OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_
 #define OPTION_CPL_TSHELL_DAC_CMD_VAR_ESCAPE_CHAR_     "$"

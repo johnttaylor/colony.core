@@ -112,7 +112,7 @@ public:
             delete masterRunPtr;
             delete testPtr;
             
-            // Test done -->flash LED to indicate succesful test (i.e. not stuck in the FatalError handler)
+            // Test done -->flash LED to indicate successful test (i.e. not stuck in the FatalError handler)
             CPL_SYSTEM_TRACE_MSG( SECT_, ( "All threads to destroyed!" ));
             for(i=0; i<4*2; i++)
                 {

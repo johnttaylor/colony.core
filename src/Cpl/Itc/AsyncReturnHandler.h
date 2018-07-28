@@ -1,22 +1,24 @@
 #ifndef Cpl_Itc_AsyncReturnHandler_h_
 #define Cpl_Itc_AsyncReturnHandler_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2018  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "Cpl/Itc/ReturnHandler.h"
 #include "Cpl/Itc/PostApi.h"
 
 ///
-namespace Cpl { namespace Itc {
+namespace Cpl {
+///
+namespace Itc {
 
 
 /** This class implements an asynchronous ReturnHandler. When the rts() method
@@ -27,12 +29,12 @@ namespace Cpl { namespace Itc {
     the message contains a reference to the original message, such that the
     original message can be released by the client.
  */
-class AsyncReturnHandler : public ReturnHandler 
+class AsyncReturnHandler : public ReturnHandler
 {
 protected:
     /** Refers to the mailbox to which the response message will be posted.
      */
-    PostApi&    m_mbox;
+    PostApi & m_mbox;
 
     /** Refers to the response message to be posted to the response mailbox.
      */
@@ -41,7 +43,7 @@ protected:
 public:
     /** The constructor initializes the response mailbox and message references.
      */
-    AsyncReturnHandler(PostApi& mbox, Message& msg);
+    AsyncReturnHandler( PostApi& mbox, Message& msg );
 
 
 public:
