@@ -32,7 +32,7 @@ class DictItem: public ExtendedItem
 {                      
 protected:
     /** This method returns a reference to the Item's Key instance.  The
-        appliciation is responsible for implementing this method.
+        application is responsible for implementing this method.
      */
     virtual const Key& getKey() const throw() = 0;
 

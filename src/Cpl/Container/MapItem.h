@@ -20,7 +20,7 @@ namespace  Cpl { namespace Container {
 
 
 /** This abstract class represents a item that can be contained in
-    an Map (aka a sorted list implmented using an AVL treee).  The client 
+    an Map (aka a sorted list implemented using an AVL tree).  The client 
     sub-class is required to implement the 'getKey()' method (from the
     parent class DictItem).
 
@@ -68,13 +68,13 @@ protected: // Helper methods
     inline void        setParent( MapItem* n )   { m_parentPtr_ = n; }    
 
     /// Get tree connection/pointer
-    inline MapItem* getLeft() const              { return (MapItem*) m_prevPtr_; };
+    inline MapItem*    getLeft() const           { return (MapItem*) m_prevPtr_; };
 
     /// Set tree connection/pointer
     inline void        setLeft( MapItem* n )     { m_prevPtr_ = n; }    
 
     /// Get tree connection/pointer
-    inline MapItem* getRight() const             { return (MapItem*) m_nextPtr_; };
+    inline MapItem*    getRight() const          { return (MapItem*) m_nextPtr_; };
 
     /// Set tree connection/pointer
     inline void        setRight( MapItem* n )    { m_nextPtr_ = n; }    

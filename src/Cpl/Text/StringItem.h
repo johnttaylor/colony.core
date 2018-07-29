@@ -21,7 +21,7 @@ namespace Cpl { namespace Text {
 
 
 
-/** This paritally concrete provides a wrapper class that allows a String
+/** This partially concrete provides a wrapper class that allows a String
     object to be stored directly in one the CPL Containers.  A StringItem
     can be stored in a SList, DList, Dictionary, and Map.
       
@@ -32,7 +32,7 @@ namespace Cpl { namespace Text {
           and Map) the application MUST NOT change the value of the internal
           string since it is the 'key' value that is used to determine its
           placement in the Dictionary/Map. Modifying the internal String while
-          the StringItem is in a Diciontary/Map will CORRUPT the Container.
+          the StringItem is in a Dictionary/Map will CORRUPT the Container.
         o StringItem instances CANNOT be copied.  This is to avoid potential
           Container corruption since the individual Items contain the memory
           for the Containers' linkage, i.e. a copied container Item is 

@@ -75,7 +75,7 @@ public: ///@name Operations to manage items in the Dictionary
      */
     bool removeItem( ITEM& node );
 
-    /** Searchs for a item with a matching key.  Returns the node that
+    /** Searches for a item with a matching key.  Returns the node that
         matches, else 0.
      */
     ITEM* find( const Key& keyToFind ) const;
