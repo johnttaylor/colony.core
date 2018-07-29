@@ -44,7 +44,6 @@ class ModelPoint :
     public Cpl::Container::DictItem
 {
 public:
-
     /// Force levels
     enum Force_T
     {
@@ -59,10 +58,12 @@ public:
         eFORCE_LEVEL8 = 8,       //!< Highest possible force level
     };
 
+
+public:
     /** This class defines the callback interface for a Read-Modify-Write
         operation.
      */
-    class RmwCallback
+    class RmwCallbackApi
     {
     public:
         /// Possible results of the read-modify-write callback function
@@ -81,10 +82,50 @@ public:
         virtual Result_T modelPointRmwCallback( Point& data, bool isValid ) throw() = 0;
     };
 
+    /** This template class implements the RmwCallbackApi interface that is context
+        independent and allows for a single context to contain many Read-Modify-Write
+        callbacks.
+
+        The Read-Modify-Write executes in the thread that called readModifyWrite().
+
+        Template args:
+            CONTEXT   Type of the Class that implements the context for the Callback
+      */
+    template <class CONTEXT>
+    class RmwCallback : public RmwCallbackApi
+    {
+    public:
+        /// Definition of the context/client call-back method 
+        typedef void (CONTEXT::* RmwFunction_T)(Point& data, bool isValid) throw();
+
+    private:
+        ///
+        RmwFunction_T  m_callback;
+        ///
+        CONTEXT&       m_context;
+
+    public:
+        /// Constructor
+        RmwCallback( CONTEXT& contextInstance, RmwFunction_T rmwCallbackFunc )
+            :m_callback( rmwCallbackFunc ), m_context( contextInstance ) {}
+
+
+    private: // RmwCallbackApi
+        ///
+        void modelPointRmwCallback( Point& data, bool isValid ) throw()
+        {
+            (m_context.*m_callback)(data, isValid);
+        }
+    };
+
+
+public:
     /** Magic value to use when registering for a change notification and
-        application does not 'know' the current value of the Model Point.
+        application does not 'know' the current sequence number value of the 
+        Model Point.
      */
     static const uint16_t SEQUENCE_NUMBER_UNKNOW = 0;
+
 
 public:
     /** This method returns the Model Point's name as a null terminated string.
@@ -167,14 +208,14 @@ protected:
               specific read, write, read-modify-write method in addition or in
               lieu of the read/write method in this interface.
      */
-    virtual uint16_t readModifyWrite( RmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED ) = 0;
+    virtual uint16_t readModifyWrite( RmwCallbackApi& callbackClient, Force_T forceLevel = eNOT_FORCED ) = 0;
 
     /** This method does NOT alter the MP's data or set, but unconditionally
-        triggers the MP change notification(s). The method returns the Model 
+        triggers the MP change notification(s). The method returns the Model
         Point's sequence number after the method completes.
      */
     virtual uint16_t touch() throw() = 0;
-        
+
     /** This method sets the Model Point's state to invalid. Note: Any write
         operation will set the Model Point's state to valid.
 
@@ -189,38 +230,38 @@ protected:
 
 
 public:
-    /** This method unconditionally removes all force levels from the MP, but 
-        does not change the MP data/state.. If the MP is currently not in a 
-        forced state - nothing is done.  This method never triggers change 
+    /** This method unconditionally removes all force levels from the MP, but
+        does not change the MP data/state.. If the MP is currently not in a
+        forced state - nothing is done.  This method never triggers change
         notification(s).
 
         NOTE: The Application is responsible for enforcing its own force level
-              usage constraints, e.g. who should/allowed-to be calling the 
+              usage constraints, e.g. who should/allowed-to be calling the
               remove force level methods?
     */
     virtual void removeAllForceLevels() throw() = 0;
 
     /** This method removes a single force level from the MP, but does not
-        change the MP data/state. If the MP is currently not in a forced state 
-        or the specified force level is not active - nothing is done.  This 
+        change the MP data/state. If the MP is currently not in a forced state
+        or the specified force level is not active - nothing is done.  This
         method never triggers change notification(s).
 
-        NOTE: Essential a 'list' of all active force level is maintained. 
+        NOTE: Essential a 'list' of all active force level is maintained.
               This means than when removing the highest active force level,
-              the MP's force level reverts to the next active highest force 
+              the MP's force level reverts to the next active highest force
               level set.
      */
     virtual void removeForceLevel( Force_T forceLevelToRemove ) throw() = 0;
 
-    /** This method removes a single force level from the MP AND potentially 
+    /** This method removes a single force level from the MP AND potentially
         updates the MP's data in a single atomic operation. See the truth table
-        for additional details.  The method returns the MP's sequence number 
-        (after the updated occurred) if the MP data was updated; else if the MP 
-        data was NOT updated then SEQUENCE_NUMBER_UNKNOW is returned.  
-        
+        for additional details.  The method returns the MP's sequence number
+        (after the updated occurred) if the MP data was updated; else if the MP
+        data was NOT updated then SEQUENCE_NUMBER_UNKNOW is returned.
+
         Note: the 'forceLevelToRemove' is ALWAYS removed, regardless of whether
               or not the MP was updated
-        
+
 
         <pre>
 
@@ -231,9 +272,9 @@ public:
               1-8                   < activeLevel   |    false
 
         </pre>
-        
+
         This method will only trigger change notification(s) when it returns
-        a valid sequence number (i.e. not SEQUENCE_NUMBER_UNKNOW) AND there was 
+        a valid sequence number (i.e. not SEQUENCE_NUMBER_UNKNOW) AND there was
         actual change in the MP data/state.
      */
     virtual uint16_t removeForceLevel( Force_T forceLevelToRemove, const Point& src ) throw() = 0;

@@ -79,19 +79,19 @@ uint16_t ModelPointCommon::write( const Point& src, Force_T forceLevel ) throw()
     return result;
 }
 
-uint16_t ModelPointCommon::readModifyWrite( RmwCallback& callbackClient, Force_T forceLevel )
+uint16_t ModelPointCommon::readModifyWrite( RmwCallbackApi& callbackClient, Force_T forceLevel )
 {
     m_modelBase.lock();
     if ( testAndSetForceLevel( forceLevel ) )
     {
         // Invoke the client's callback function
-        RmwCallback::Result_T result = callbackClient.modelPointRmwCallback( m_data, m_valid );
+        RmwCallbackApi::Result_T result = callbackClient.modelPointRmwCallback( m_data, m_valid );
 
         // Do nothing if the callback did not change anything
-        if ( result != RmwCallback::eNO_CHANGE )
+        if ( result != RmwCallbackApi::eNO_CHANGE )
         {
             // Handle request to invalidate the MP data
-            if ( result == RmwCallback::eINVALIDATE )
+            if ( result == RmwCallbackApi::eINVALIDATE )
             {
                 if ( m_valid )
                 {

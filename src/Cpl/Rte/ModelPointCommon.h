@@ -69,7 +69,7 @@ protected:
     uint16_t write( const Point& src, Force_T forceLevel = eNOT_FORCED ) throw();
 
     /// See Cpl::Rte::ModelPoint
-    uint16_t readModifyWrite( RmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED );
+    uint16_t readModifyWrite( RmwCallbackApi& callbackClient, Force_T forceLevel = eNOT_FORCED );
 
     /// See Cpl::Rte::ModelPoint
     uint16_t touch() throw();
