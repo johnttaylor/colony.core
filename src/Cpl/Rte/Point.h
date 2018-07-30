@@ -32,7 +32,6 @@ namespace Rte {
  */
 class Point
 {
-
 public:
     /** This method is used to unconditionally update the Point's data.
 

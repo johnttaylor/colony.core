@@ -13,7 +13,6 @@
 /** @file */
 
 
-#include "Cpl/Rte/Point.h"
 #include "Cpl/Container/Item.h"
 
 ///
@@ -21,61 +20,127 @@ namespace Cpl {
 ///
 namespace Rte {
 
+/// Forward reference to a Model point -->used to avoid circular dependencies
+class ModelPoint;
 
-/** This partially concrete class defines the Subscriber - for change 
-    notifications - interface to a Model Points data/state
+/// Forward reference to the RTE Mailbox server -->used to avoid circular dependencies
+class MailboxServer;
+
+
+/** This mostly concrete class defines the Subscriber interface - for change
+    notifications - to a Model Points data/state
  */
-class SubscriberApi: public Cpl::Container::Item
+class Subscriber : public Cpl::Container::ExtendedItem
 {
-public:
-    /// This method notifies the client that MP was changed
-    virtual void modelPointChanged( Point& pointThatChanged ) throw() = 0;
+protected:
+    /// Internal state of the subscriber.  Note: The state is actual managed by the Model Point
+    int                 m_state;
 
-    // TODO: add data members to support the notification
+    /// Pointer to the Model Point the instance is subscribed to
+    ModelPoint*         m_point;
 
-public:
-    /// Virtual destructor
-    virtual ~SubscriberApi() {}
-};
+    /// Reference to subscriber's EventFlag/Mailbox server
+    MailboxServer&      m_mailboxHdl;
 
-/** This template class implements the SubscriberApi interface that is context
-    independent and allows for a single context to contain many Subscriber
-    callbacks.
-
-    The change notification's executes in the thread that was running when
-    the application subscribed for the changed notification.  The callback is
-    performed as part of the Rte::MailboxServer asynchronous notifications.
-
-    Template args:
-        CONTEXT   Type of the Class that implements the context for the Subscriber
-  */
-template <class CONTEXT>
-class Subscriber : public SubscriberApi
-{
-public:
-    /// Definition of the context/client call-back method 
-    typedef void (CONTEXT::* ModelPointChangedFunction_T)(Point& pointThatChanged) throw();
-
-private:
-    ///
-    ModelPointChangedFunction_T  m_callback;
-    ///
-    CONTEXT&                     m_context;
-
+    /// Sequence number of the subscriber
+    uint16_t            m_seqNumber;
 
 public:
     /// Constructor
-    Subscriber( CONTEXT& contextInstance, ModelPointChangedFunction_T mpChangedCallbackFunc )
-        :m_callback( mpChangedCallbackFunc ), m_context( contextInstance ) {}
+    Subscriber( Cpl::Rte::MailboxServer& myMailbox );
+
+public:
+    /** This method is the client callback function for a MP change
+        notification.  This method is called in as part of the asynchronous
+        notification mechanism of the client Mailbox Server, i.e. executes in
+        the thread associated m_mailBoxHdl
+     */
+    virtual void modelPointChanged( Point& pointThatChanged ) throw() = 0;
 
 
-private: // SubscriberApi
-    ///
-    void modelPointChanged( Point& pointThatChanged ) throw()
+public:
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Rte namespace.  The Application should
+        NEVER call this method.
+
+        This method returns a pointer to the Subscriber's mailbox
+      */
+    inline Cpl::Rte::MailboxServer& getMailbox_() const throw()
     {
-        (m_context.*m_callback)(pointThatChanged);
+        return m_mailboxHdl;
     }
+
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Rte namespace.  The Application should
+        NEVER call this method.
+
+        This method is use to set the Subscriber's Model Point reference
+      */
+    inline void setModelPoint_( ModelPoint& modelPoint ) throw()
+    {
+        m_point = &modelPoint;
+    }
+
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Rte namespace.  The Application should
+        NEVER call this method.
+
+        This method is use to get the Subscriber's Model Point reference.
+
+        Note: If this method is called BEFORE the setModelPoint() method is
+              called then a Fatal Error will be generated.
+      */
+    ModelPoint& getModelPoint_() throw();
+
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Rte namespace.  The Application should
+        NEVER call this method.
+
+        This method is use to get the Subscriber's internal state
+      */
+    inline int getState_() const throw()
+    {
+        return m_state;
+    }
+
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Rte namespace.  The Application should
+        NEVER call this method.
+
+        This method is use to set the Subscriber's internal state
+      */
+    inline void setState_( int newState ) throw()
+    {
+        m_state = newState;
+    }
+
+   /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Rte namespace.  The Application should
+        NEVER call this method.
+
+        This method is use to get the Subscriber's sequence number
+      */
+    inline uint16_t getSequenceNumber_() const throw()
+    {
+        return m_seqNumber;
+    }
+
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Rte namespace.  The Application should
+        NEVER call this method.
+
+        This method is use to set the Subscriber's sequence number
+      */
+    inline void setSequenceNumber_( uint16_t newSeqNumber ) throw()
+    {
+        m_seqNumber = newSeqNumber;
+    }
+
+public:
+    /// Virtual destructor
+    virtual ~Subscriber() {}
 };
+
 
 
 };      // end namespaces

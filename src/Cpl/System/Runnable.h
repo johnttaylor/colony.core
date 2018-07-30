@@ -57,7 +57,7 @@ public:
                method.
             2) This method is an attempted work-around for terminating
                threads by having the thread run itself to completion.
-               Not all OSs support a polite way (i.e. reclaiming
+               Not all OSes support a polite way (i.e. reclaiming
                resource, memory, etc.) of killing threads.
      */
     virtual void pleaseStop() {}

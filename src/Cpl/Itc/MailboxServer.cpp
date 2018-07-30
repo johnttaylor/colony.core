@@ -57,9 +57,9 @@ void MailboxServer::appRun()
         }
 
         // Wait for something to happen...
-        bool                 wasTimeout = false;
-        Cpl_Itc_EventFlags_T events     = 0;
-        Message*             msgPtr     = waitNext( wasTimeout, events );
+        bool                 wasTimeout;
+        Cpl_Itc_EventFlags_T events;
+        Message*             msgPtr = waitNext( wasTimeout, events );
 
         // Trap my exit/please-stop condition AGAIN since a lot could have happen while I was waiting....
         m_flock.lock();
@@ -104,10 +104,10 @@ void MailboxServer::appRun()
         {
             msgPtr->process();
         }
-
-        // Application hook
-        cleanup();
     }
+
+    // Application hook
+    cleanup();
 }
 
 unsigned long MailboxServer::msecToCounts( unsigned long durationInMsecs ) throw()
@@ -135,13 +135,10 @@ void MailboxServer::pleaseStop()
 /////////////////////
 void MailboxServer::initialize() throw()
 {
+    // Default is to do: NOTHING
 }
 
 void MailboxServer::cleanup() throw()
-{
-}
-
-void MailboxServer::signaled() throw()
 {
     // Default is to do: NOTHING
 }

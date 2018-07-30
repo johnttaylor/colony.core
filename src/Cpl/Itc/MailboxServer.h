@@ -35,7 +35,10 @@ namespace Itc {
        1. The timers and their callbacks (if any timers have expired) are
           processed.
        2. Event Flags are processed.  Events are processed in LSb order.
-       3. The ITC message (if one was received) is processed.
+       3. A Single ITC message (if one was received) is processed.
+       4. The loop is repeated until there are no expired timers, no event
+          flags, no ITC messages - at which point the thread blocks and wait
+          for any of the above asynchronous actions to wake up the thread.
 
     The timing source for mailbox server is based on timed-wait operations
     of a semaphore and should not be considered a deterministic timing
@@ -100,14 +103,6 @@ protected:
         i.e. even when pleaseStop() is called.
      */
     virtual void cleanup() throw();
-
-    /** This operation is called when there are no messages in the
-        mailbox, but the mailbox's thread semaphore is signaled. This can
-        happen, for example, when a timer is associated with the
-        mailbox "Signal-able" interface. The default implementation
-        of this function does NOTHING.
-     */
-    virtual void signaled() throw();
 
     /** This method is used (by the concrete child class(es)) to process one
         or more Event Flags.  This method is called when the mailbox is

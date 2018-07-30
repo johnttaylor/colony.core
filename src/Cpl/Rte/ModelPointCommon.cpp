@@ -10,9 +10,20 @@
 *----------------------------------------------------------------------------*/
 
 #include "ModelPointCommon.h"
+#include "MailboxServer.h"
 
 ///
 using namespace Cpl::Rte;
+
+/// Subscriber States
+enum State_T
+{
+    eSTATE_UNSUBSCRIBED = 0,          // Not subscribed to any model point
+    eSTATE_IDLE,                      // Subscribed and waiting for a change
+    eSTATE_NOTIFY_PENDING,            // Subscribed and waiting for next change notification dispatch cycle
+    eSTATE_NOTIFY_NOTIFYING,          // The Client change notification callback is being executed
+    eSTATE_NOTIFY_PENDING_DETACH,     // The subscription was requested to be cancelled during the change notification callback 
+};
 
 
 ////////////////////////
@@ -79,19 +90,19 @@ uint16_t ModelPointCommon::write( const Point& src, Force_T forceLevel ) throw()
     return result;
 }
 
-uint16_t ModelPointCommon::readModifyWrite( RmwCallbackApi& callbackClient, Force_T forceLevel )
+uint16_t ModelPointCommon::readModifyWrite( RmwCallback& callbackClient, Force_T forceLevel )
 {
     m_modelBase.lock();
     if ( testAndSetForceLevel( forceLevel ) )
     {
         // Invoke the client's callback function
-        RmwCallbackApi::Result_T result = callbackClient.modelPointRmwCallback( m_data, m_valid );
+        RmwCallback::Result_T result = callbackClient.modelPointRmwCallback( m_data, m_valid );
 
         // Do nothing if the callback did not change anything
-        if ( result != RmwCallbackApi::eNO_CHANGE )
+        if ( result != RmwCallback::eNO_CHANGE )
         {
             // Handle request to invalidate the MP data
-            if ( result == RmwCallbackApi::eINVALIDATE )
+            if ( result == RmwCallback::eINVALIDATE )
             {
                 if ( m_valid )
                 {
@@ -186,12 +197,144 @@ const void* ModelPointCommon::getRawKey( unsigned* returnRawKeyLenPtr ) const
     return m_staticInfo->getRawKey( returnRawKeyLenPtr );
 }
 
+
+
 /////////////////
 void ModelPointCommon::processDataChanged() throw()
 {
     m_valid = true;
 }
 
+/////////////////
+void ModelPointCommon::processSubscriptionEvent( Subscriber& subscriber, Event_T event, uint16_t mpSeqNumber=ModelPoint::SEQUENCE_NUMBER_UNKNOW ) throw()
+{
+    m_modelBase.lock();
+
+    switch ( (State_T) subscriber.getState_() )
+    {
+        case eSTATE_UNSUBSCRIBED:
+            switch ( event )
+            {
+                case eATTACH:
+                    transitionToSubscribed( subscriber );
+                    break;
+
+                    // Ignore all other events
+                default:
+                    break;
+            }
+            break;
+
+        case eSTATE_IDLE:
+            switch ( event )
+            {
+                case eATTACH:
+                    transitionToSubscribed( subscriber );
+                    break;
+
+                case eDETACH:
+                    m_subscribers.remove( subscriber );
+                    subscriber.setState_( eSTATE_UNSUBSCRIBED );
+                    break;
+
+                case eDATA_CHANGED:
+                    // NOTE: By definition if the eDATA_CHANGED event was generated - the subscriber is NOT in the MP's subscribers list
+                    transitionToNotifyPending( subscriber );
+                    break;
+
+
+                    // Ignore all other events
+                default:
+                    break;
+            }
+            break;
+
+        case eSTATE_NOTIFY_PENDING:
+            switch ( event )
+            {
+                case eATTACH:
+                    subscriber.getMailbox_().removePendingChangingNotification_( subscriber );
+                    transitionToSubscribed( subscriber );
+                    break;
+
+                case eDETACH:
+                    subscriber.getMailbox_().removePendingChangingNotification_( subscriber );
+                    subscriber.setState_( eSTATE_UNSUBSCRIBED );
+                    break;
+
+                case eNOTIFYING:
+                    subscriber.setSequenceNumber_( m_seqNum );
+                    subscriber.setState_( eSTATE_NOTIFY_NOTIFYING );
+                    break;
+
+                    // Ignore all other events
+                default:
+                    break;
+            }
+            break;
+
+        case eSTATE_NOTIFY_NOTIFYING:
+            switch ( event )
+            {
+                case eDETACH:
+                    subscriber.setState_( eSTATE_NOTIFY_PENDING_DETACH );
+                    break;
+
+                case eNOTIFY_COMPLETE:
+                    transitionToSubscribed( subscriber );
+                    break;
+
+                    // Ignore all other events
+                default:
+                    break;
+            }
+            break;
+
+        case eSTATE_NOTIFY_PENDING_DETACH:
+            switch ( event )
+            {
+                case eATTACH:
+                    subscriber.setState_( eSTATE_NOTIFY_NOTIFYING );
+                    break;
+
+                case eNOTIFY_COMPLETE:
+                    subscriber.setState_( eSTATE_UNSUBSCRIBED );
+                    break;
+
+                    // Ignore all other events
+                default:
+                    break;
+            }
+            break;
+    }
+
+    m_modelBase.unlock();
+}
+
+void ModelPointCommon::transitionToSubscribed( Subscriber& subscriber ) throw()
+{
+    // Ensure that I am not already list (this can happen if subscribe when I am already subscribed)
+    m_subscribers.remove( subscriber );
+
+    if ( m_seqNum == subscriber.getSequenceNumber_() )
+    {
+        subscriber.setState_( eSTATE_IDLE );
+        m_subscribers.put( subscriber );
+    }
+    else
+    {
+        return transitionToNotifyPending( subscriber );
+    }
+}
+
+void ModelPointCommon::transitionToNotifyPending( Subscriber& subscriber ) throw()
+{
+    subscriber.getMailbox_().addPendingChangingNotification_( subscriber );
+    subscriber.setState_( eSTATE_NOTIFY_PENDING );
+}
+
+
+/////////////////
 bool ModelPointCommon::testAndSetForceLevel( Force_T forceLevel ) throw()
 {
     bool result = false;

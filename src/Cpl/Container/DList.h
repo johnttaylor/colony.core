@@ -133,7 +133,7 @@ public: ///@name View as Ordered List
     void   putLast(ITEM& item) throw();
 	
     /** Remove specified ITEM element from the list. 
-        Returns true, if the specified element was foumd and
+        Returns true, if the specified element was found and
         removed from the list, else false.
      */
     bool   remove(ITEM& item) throw();

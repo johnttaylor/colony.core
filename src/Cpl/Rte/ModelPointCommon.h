@@ -15,6 +15,8 @@
 
 #include "Cpl/Rte/ModelPoint.h"
 #include "Cpl/Rte/ModelBase.h"
+#include "Cpl/Container/DList.h"
+
 
 ///
 namespace Cpl {
@@ -27,23 +29,26 @@ namespace Rte {
 class ModelPointCommon : public ModelPoint
 {
 protected:
+    /// List of Active Subscribers
+    Cpl::Container::DList<Subscriber>   m_subscribers;
+
     /// Pointer to the Model Point's static information
-    const StaticInfo*   m_staticInfo;
+    const StaticInfo*                   m_staticInfo;
 
     /// Reference to the containing Model Base
-    ModelBase&          m_modelBase;
+    ModelBase&                          m_modelBase;
 
     /// Reference to my Data
-    Point&              m_data;
+    Point&                              m_data;
 
     /// Sequence number used for tracking changes in the Point data
-    uint16_t            m_seqNum;
+    uint16_t                            m_seqNum;
 
     /// Force level
-    uint8_t             m_forceLevel;
+    uint8_t                             m_forceLevel;
 
     /// Internal valid/invalid state
-    bool                m_valid;
+    bool                                m_valid;
 
 
 protected:
@@ -69,7 +74,7 @@ protected:
     uint16_t write( const Point& src, Force_T forceLevel = eNOT_FORCED ) throw();
 
     /// See Cpl::Rte::ModelPoint
-    uint16_t readModifyWrite( RmwCallbackApi& callbackClient, Force_T forceLevel = eNOT_FORCED );
+    uint16_t readModifyWrite( RmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED );
 
     /// See Cpl::Rte::ModelPoint
     uint16_t touch() throw();
@@ -86,13 +91,17 @@ protected:
     /// See Cpl::Rte::ModelPoint
     uint16_t removeForceLevel( Force_T forceLevelToRemove, const Point& src ) throw();
 
-
 public:
     /// See Cpl::Container::Key
     int compareKey( const Key& key ) const;
 
     /// See Cpl::Container::Key
     const void* getRawKey( unsigned* returnRawKeyLenPtr = 0 ) const;
+
+
+public:
+    /// See Cpl::Rte::ModelPoint
+    void processSubscriptionEvent( Subscriber& subscriber, Event_T event, uint16_t mpSeqNumber=ModelPoint::SEQUENCE_NUMBER_UNKNOW ) throw();
 
 
 protected:
@@ -127,6 +136,16 @@ protected:
         This method is NOT thread safe.
      */
     Force_T ModelPointCommon::getHighestForceLevel() const throw();
+
+
+protected:
+
+    /// Helper FSM method
+    void transitionToNotifyPending( Subscriber& subscriber ) throw();
+
+    /// Helper FSM method
+    void transitionToSubscribed( Subscriber& subscriber ) throw();
+
 };
 
 };      // end namespaces

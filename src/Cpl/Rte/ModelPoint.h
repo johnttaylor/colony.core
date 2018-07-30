@@ -17,6 +17,7 @@
 #include "Cpl/Text/String.h"
 #include "Cpl/Rte/StaticInfo.h"
 #include "Cpl/Rte/Point.h"
+#include "Cpl/Rte/Subscriber.h"
 #include <stdint.h>
 
 ///
@@ -63,7 +64,7 @@ public:
     /** This class defines the callback interface for a Read-Modify-Write
         operation.
      */
-    class RmwCallbackApi
+    class RmwCallback
     {
     public:
         /// Possible results of the read-modify-write callback function
@@ -82,42 +83,7 @@ public:
         virtual Result_T modelPointRmwCallback( Point& data, bool isValid ) throw() = 0;
     };
 
-    /** This template class implements the RmwCallbackApi interface that is context
-        independent and allows for a single context to contain many Read-Modify-Write
-        callbacks.
-
-        The Read-Modify-Write executes in the thread that called readModifyWrite().
-
-        Template args:
-            CONTEXT   Type of the Class that implements the context for the Callback
-      */
-    template <class CONTEXT>
-    class RmwCallback : public RmwCallbackApi
-    {
-    public:
-        /// Definition of the context/client call-back method 
-        typedef void (CONTEXT::* RmwFunction_T)(Point& data, bool isValid) throw();
-
-    private:
-        ///
-        RmwFunction_T  m_callback;
-        ///
-        CONTEXT&       m_context;
-
-    public:
-        /// Constructor
-        RmwCallback( CONTEXT& contextInstance, RmwFunction_T rmwCallbackFunc )
-            :m_callback( rmwCallbackFunc ), m_context( contextInstance ) {}
-
-
-    private: // RmwCallbackApi
-        ///
-        void modelPointRmwCallback( Point& data, bool isValid ) throw()
-        {
-            (m_context.*m_callback)(data, isValid);
-        }
-    };
-
+ 
 
 public:
     /** Magic value to use when registering for a change notification and
@@ -208,7 +174,7 @@ protected:
               specific read, write, read-modify-write method in addition or in
               lieu of the read/write method in this interface.
      */
-    virtual uint16_t readModifyWrite( RmwCallbackApi& callbackClient, Force_T forceLevel = eNOT_FORCED ) = 0;
+    virtual uint16_t readModifyWrite( RmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED ) = 0;
 
     /** This method does NOT alter the MP's data or set, but unconditionally
         triggers the MP change notification(s). The method returns the Model
@@ -279,6 +245,24 @@ public:
      */
     virtual uint16_t removeForceLevel( Force_T forceLevelToRemove, const Point& src ) throw() = 0;
 
+
+public:
+    /// Subscriber events
+    enum Event_T
+    {
+        eATTACH,            //!< The Application is requesting to subscribe to a model point
+        eDETACH,            //!< The Application is requesting to un-subscribe from the model point
+        eDATA_CHANGED,      //!< The model point's data/state has change a pending change notification is needed
+        eNOTIFYING,         //!< The subscriber's change notification callback is being called
+        eNOTIFY_COMPLETE    //!< The subscriber's change notification callback has been completed
+    };
+
+    /** This method is used by Model Point to process events related to the 
+        subscription/change-notification process
+
+        This method is Thread Safe
+     */
+    virtual void processSubscriptionEvent( Subscriber& subscriber, Event_T event, uint16_t mpSeqNumber=ModelPoint::SEQUENCE_NUMBER_UNKNOW ) throw() =0;
 
 public:
     /// Virtual destructor to make the compiler happy
