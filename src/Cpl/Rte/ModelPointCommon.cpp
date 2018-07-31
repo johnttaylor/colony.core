@@ -31,7 +31,7 @@ ModelPointCommon::ModelPointCommon( ModelBase& myModelBase, Point& myData, Stati
     : m_staticInfo( staticInfo )
     , m_modelBase( myModelBase )
     , m_data( myData )
-    , m_seqNum( SEQUENCE_NUMBER_UNKNOW )
+    , m_seqNum( SEQUENCE_NUMBER_UNKNOWN )
     , m_valid( isValid )
     , m_forceLevel( 0 )
 {
@@ -81,7 +81,7 @@ uint16_t ModelPointCommon::write( const Point& src, Force_T forceLevel ) throw()
         if ( !m_valid || m_data.isEqual( src ) == false )
         {
             m_data.copyFrom( src );
-            processDataChanged();
+            processDataUpdated();
         }
     }
     uint16_t result = m_seqNum;
@@ -107,17 +107,16 @@ uint16_t ModelPointCommon::readModifyWrite( RmwCallback& callbackClient, Force_T
                 if ( m_valid )
                 {
                     m_valid = false;
-                    processDataChanged();
+                    processChangeNotifications();
                 }
             }
 
             // Handle the CHANGED use case
             else
             {
-                processDataChanged();
+                processDataUpdated();
             }
         }
-
     }
 
     uint16_t result = m_seqNum;
@@ -129,7 +128,7 @@ uint16_t ModelPointCommon::readModifyWrite( RmwCallback& callbackClient, Force_T
 uint16_t ModelPointCommon::touch() throw()
 {
     m_modelBase.lock();
-    processDataChanged();
+    processChangeNotifications();
     uint16_t result = m_seqNum;
     m_modelBase.unlock();
     return result;
@@ -141,7 +140,7 @@ uint16_t ModelPointCommon::setInvalid() throw()
     if ( m_valid )
     {
         m_valid = false;
-        processDataChanged();
+        processChangeNotifications();
     }
 
     uint16_t result = m_seqNum;
@@ -176,7 +175,7 @@ uint16_t ModelPointCommon::removeForceLevel( Force_T forceLevelToRemove, const P
         if ( !m_valid || m_data.isEqual( src ) == false )
         {
             m_data.copyFrom( src );
-            processDataChanged();
+            processDataUpdated();
         }
     }
     uint16_t result = m_seqNum;
@@ -200,13 +199,47 @@ const void* ModelPointCommon::getRawKey( unsigned* returnRawKeyLenPtr ) const
 
 
 /////////////////
-void ModelPointCommon::processDataChanged() throw()
+void ModelPointCommon::processDataUpdated() throw()
 {
+    // By definition - Point now has valid date
     m_valid = true;
+    processChangeNotifications();
+}
+
+void ModelPointCommon::processChangeNotifications() throw()
+{
+    // Increment my sequence number (when rolling over -->do not allow the 'unknown' value)
+    m_seqNum++;
+    if ( m_seqNum == SEQUENCE_NUMBER_UNKNOWN )
+    {
+        m_seqNum = SEQUENCE_NUMBER_UNKNOWN + 1;
+    }
+
+    // Generate change notifications 
+    Subscriber* item = m_subscribers.get();
+    while ( item )
+    {
+        processSubscriptionEvent_( *item, eDATA_CHANGED );
+        item = m_subscribers.get();
+    }
 }
 
 /////////////////
-void ModelPointCommon::processSubscriptionEvent( Subscriber& subscriber, Event_T event, uint16_t mpSeqNumber=ModelPoint::SEQUENCE_NUMBER_UNKNOW ) throw()
+void ModelPointCommon::attach( Subscriber& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw()
+{
+    observer.setSequenceNumber_( initialSeqNumber );
+    observer.setModelPoint_( this );
+    processSubscriptionEvent_( observer, eATTACH );
+}
+
+void ModelPointCommon::detach( Subscriber& observer ) throw()
+{
+    processSubscriptionEvent_( observer, eDETACH );
+    observer.setModelPoint_( 0 );
+}
+
+/////////////////
+void ModelPointCommon::processSubscriptionEvent_( Subscriber& subscriber, Event_T event ) throw()
 {
     m_modelBase.lock();
 
@@ -253,12 +286,12 @@ void ModelPointCommon::processSubscriptionEvent( Subscriber& subscriber, Event_T
             switch ( event )
             {
                 case eATTACH:
-                    subscriber.getMailbox_().removePendingChangingNotification_( subscriber );
+                    subscriber.getMailbox_()->removePendingChangingNotification_( subscriber );
                     transitionToSubscribed( subscriber );
                     break;
 
                 case eDETACH:
-                    subscriber.getMailbox_().removePendingChangingNotification_( subscriber );
+                    subscriber.getMailbox_()->removePendingChangingNotification_( subscriber );
                     subscriber.setState_( eSTATE_UNSUBSCRIBED );
                     break;
 
@@ -313,7 +346,7 @@ void ModelPointCommon::processSubscriptionEvent( Subscriber& subscriber, Event_T
 
 void ModelPointCommon::transitionToSubscribed( Subscriber& subscriber ) throw()
 {
-    // Ensure that I am not already list (this can happen if subscribe when I am already subscribed)
+    // Ensure that I am not already in the Model Point's list of subscribers (this can happen if subscribe when I am already subscribed)
     m_subscribers.remove( subscriber );
 
     if ( m_seqNum == subscriber.getSequenceNumber_() )

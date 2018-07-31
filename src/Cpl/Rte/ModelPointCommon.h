@@ -65,17 +65,6 @@ public:
     /// See Cpl::Rte::ModelPoint
     bool isValid() const throw();
 
-
-protected:
-    /// See Cpl::Rte::ModelPoint
-    uint16_t read( Point& dst, bool& isValid ) const throw();
-
-    /// See Cpl::Rte::ModelPoint
-    uint16_t write( const Point& src, Force_T forceLevel = eNOT_FORCED ) throw();
-
-    /// See Cpl::Rte::ModelPoint
-    uint16_t readModifyWrite( RmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED );
-
     /// See Cpl::Rte::ModelPoint
     uint16_t touch() throw();
 
@@ -88,8 +77,25 @@ protected:
     /// See Cpl::Rte::ModelPoint
     void removeForceLevel( Force_T forceLevelToRemove ) throw();
 
+
+protected:
+    /// See Cpl::Rte::ModelPoint
+    uint16_t read( Point& dst, bool& isValid ) const throw();
+
+    /// See Cpl::Rte::ModelPoint
+    uint16_t write( const Point& src, Force_T forceLevel = eNOT_FORCED ) throw();
+
+    /// See Cpl::Rte::ModelPoint
+    uint16_t readModifyWrite( RmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED );
+
     /// See Cpl::Rte::ModelPoint
     uint16_t removeForceLevel( Force_T forceLevelToRemove, const Point& src ) throw();
+
+    /// See Cpl::Rte::ModelPoint
+    void attach( Subscriber& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
+
+    /// See Cpl::Rte::ModelPoint 
+    void detach( Subscriber& observer ) throw();
 
 public:
     /// See Cpl::Container::Key
@@ -101,16 +107,24 @@ public:
 
 public:
     /// See Cpl::Rte::ModelPoint
-    void processSubscriptionEvent( Subscriber& subscriber, Event_T event, uint16_t mpSeqNumber=ModelPoint::SEQUENCE_NUMBER_UNKNOW ) throw();
+    void processSubscriptionEvent_( Subscriber& subscriber, Event_T event ) throw();
 
 
 protected:
-    /** Internal helper method that handle generating change notifications
+    /** Internal helper method that completes the data update process as well
+        as ensuring any change notifications get generated.  Note: This method
+        ALWAYS sets the MP's state to 'valid'
+
+        This method is NOT thread safe.
+     */
+    void processDataUpdated() throw();
+
+    /** Internal helper method that handles generating change notifications
         when the Model Point's data/state has changed.
 
         This method is NOT thread safe.
      */
-    void processDataChanged() throw();
+    void processChangeNotifications() throw();
 
     /** Internal helper method that checks if the specified force level has
         sufficient privileges to write to the Model Point's data and returns

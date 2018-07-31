@@ -65,9 +65,9 @@ public:
 
         This method returns a pointer to the Subscriber's mailbox
       */
-    inline Cpl::Rte::MailboxServer& getMailbox_() const throw()
+    inline Cpl::Rte::MailboxServer* getMailbox_() const throw()
     {
-        return m_mailboxHdl;
+        return &m_mailboxHdl;
     }
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
@@ -76,9 +76,9 @@ public:
 
         This method is use to set the Subscriber's Model Point reference
       */
-    inline void setModelPoint_( ModelPoint& modelPoint ) throw()
+    inline void setModelPoint_( ModelPoint* modelPoint ) throw()
     {
-        m_point = &modelPoint;
+        m_point = modelPoint;
     }
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
@@ -90,7 +90,7 @@ public:
         Note: If this method is called BEFORE the setModelPoint() method is
               called then a Fatal Error will be generated.
       */
-    ModelPoint& getModelPoint_() throw();
+    ModelPoint* getModelPoint_() throw();
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Rte namespace.  The Application should

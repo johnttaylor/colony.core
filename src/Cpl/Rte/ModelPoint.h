@@ -90,7 +90,7 @@ public:
         application does not 'know' the current sequence number value of the 
         Model Point.
      */
-    static const uint16_t SEQUENCE_NUMBER_UNKNOW = 0;
+    static const uint16_t SEQUENCE_NUMBER_UNKNOWN = 0;
 
 
 public:
@@ -111,6 +111,47 @@ public:
     /** This method returns true when the MP data is invalid.
      */
     virtual bool isNotValid() const throw() = 0;
+
+    /** This method does NOT alter the MP's data or set, but unconditionally
+        triggers the MP change notification(s). The method returns the Model
+        Point's sequence number after the method completes.
+     */
+    virtual uint16_t touch() throw() = 0;
+
+    /** This method sets the Model Point's state to invalid. Note: Any write
+        operation will set the Model Point's state to valid.
+
+        Calling this method when the Model Point's state is already invalid,
+        the method has no effect, e.g. the Model Point's sequence number is not
+        changed.
+
+        Change Notification(s) will be triggered any time there is a transition
+        in the MP state (valid <--> invalid).
+     */
+    virtual uint16_t setInvalid() throw() = 0;
+
+    /** This method unconditionally removes all force levels from the MP, but
+        does not change the MP data/state. If the MP is currently not in a
+        forced state - nothing is done.  This method never triggers change
+        notification(s).
+
+        NOTE: The Application is responsible for enforcing its own force level
+              usage constraints, e.g. who should/allowed-to be calling the
+              remove force level methods?
+    */
+    virtual void removeAllForceLevels() throw() = 0;
+
+    /** This method removes a single force level from the MP, but does not
+        change the MP data/state. If the MP is currently not in a forced state
+        or the specified force level is not active - nothing is done.  This
+        method never triggers change notification(s).
+
+        NOTE: Essential a 'list' of all active force level is maintained.
+              This means than when removing the highest active force level,
+              the MP's force level reverts to the next active highest force
+              level set.
+     */
+    virtual void removeForceLevel( Force_T forceLevelToRemove ) throw() = 0;
 
 
 protected:
@@ -168,67 +209,22 @@ protected:
         prohibitive.
 
         NOTE: THE USE OF THIS METHOD IS STRONGLY DISCOURAGED because it has
-              potential to lockout access to the Model Point for an
+              potential to lockout access to the ENTIRE Model Base for an
               indeterminate amount of time.  And alternative is to have the
               concrete Model Point leaf classes provide the application
-              specific read, write, read-modify-write method in addition or in
+              specific read, write, read-modify-write methods in addition or in
               lieu of the read/write method in this interface.
      */
     virtual uint16_t readModifyWrite( RmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED ) = 0;
-
-    /** This method does NOT alter the MP's data or set, but unconditionally
-        triggers the MP change notification(s). The method returns the Model
-        Point's sequence number after the method completes.
-     */
-    virtual uint16_t touch() throw() = 0;
-
-    /** This method sets the Model Point's state to invalid. Note: Any write
-        operation will set the Model Point's state to valid.
-
-        Calling this method when the Model Point's state is already invalid,
-        the method has no effect, e.g. the Model Point's sequence number is not
-        changed.
-
-        Change Notification(s) will be triggered any time there is a transition
-        in the MP state (valid <--> invalid).
-     */
-    virtual uint16_t setInvalid() throw() = 0;
-
-
-public:
-    /** This method unconditionally removes all force levels from the MP, but
-        does not change the MP data/state.. If the MP is currently not in a
-        forced state - nothing is done.  This method never triggers change
-        notification(s).
-
-        NOTE: The Application is responsible for enforcing its own force level
-              usage constraints, e.g. who should/allowed-to be calling the
-              remove force level methods?
-    */
-    virtual void removeAllForceLevels() throw() = 0;
-
-    /** This method removes a single force level from the MP, but does not
-        change the MP data/state. If the MP is currently not in a forced state
-        or the specified force level is not active - nothing is done.  This
-        method never triggers change notification(s).
-
-        NOTE: Essential a 'list' of all active force level is maintained.
-              This means than when removing the highest active force level,
-              the MP's force level reverts to the next active highest force
-              level set.
-     */
-    virtual void removeForceLevel( Force_T forceLevelToRemove ) throw() = 0;
 
     /** This method removes a single force level from the MP AND potentially
         updates the MP's data in a single atomic operation. See the truth table
         for additional details.  The method returns the MP's sequence number
         (after the updated occurred) if the MP data was updated; else if the MP
-        data was NOT updated then SEQUENCE_NUMBER_UNKNOW is returned.
+        data was NOT updated then SEQUENCE_NUMBER_UNKNOWN is returned.
 
         Note: the 'forceLevelToRemove' is ALWAYS removed, regardless of whether
               or not the MP was updated
-
-
         <pre>
 
         MP active force level   forceLevelToRemove  | MP data updated
@@ -240,10 +236,53 @@ public:
         </pre>
 
         This method will only trigger change notification(s) when it returns
-        a valid sequence number (i.e. not SEQUENCE_NUMBER_UNKNOW) AND there was
+        a valid sequence number (i.e. not SEQUENCE_NUMBER_UNKNOWN) AND there was
         actual change in the MP data/state.
      */
     virtual uint16_t removeForceLevel( Force_T forceLevelToRemove, const Point& src ) throw() = 0;
+
+    /** This method is used to attach a subscriber to a Model Point.  Once 
+        attached the Subscriber will receive a change notification (aka a 
+        callback) every time the Model Point's data/state changes. Once, a
+        Subscriber is attached - it will stay attached to the application
+        calls detach().
+
+        There is no limit to the number of Subscribers that can attach to
+        a Model Point.
+
+        The attach() method can be called even if the Subscriber is already 
+        attached.  When this happens, the attach process is 'restarted', i.e.
+        the 'initialSeqNumber' is used for the Subscriber's sequence number.
+
+        The change-detect mechanism uses a sequence number.  Each Model Point
+        and each Subscriber has sequence number.  When the Subscriber's sequence
+        number does not equals the Model Point's sequence number - the Subscriber
+        receives a change notification and the Subscriber's sequence number is
+        updated to match the Model Point's sequence number at the time of
+        change notification.  When a Subscriber attaches to Model Point with
+        an the 'seqNumber' argument set to SEQUENCE_NUMBER_UNKNOWN, the
+        Subscriber will get an 'immediate' change notification.
+
+        The callbacks for the Change Notifications are called as part of the 
+        RTE's Mailbox server.  As part of the asynchronous processing (timers,
+        ITC, EventFlags, etc.) of the RTE Mailbox server will also process
+        all pending Change Notification and invoke the call backs.  What does
+        that all mean?  The Change notifications are "local" the Subscribers
+        thread very similar to how the Cpl::Timers work.  It also means that
+        no change notification callback will be called till the Mailbox server
+        loops back to the "top" of its forever loop.
+     */
+    virtual void attach( Subscriber& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw() = 0;
+
+    /** This method is used to detach a Subscriber to a Model Point.  See the
+        attach() method for more details about the Subscription/Change 
+        Notification mechanism.
+
+        The detach() method can be called even if the Subscriber is NOT
+        currently attached.  The detach() method can be called within the
+        Change Notification callback.
+     */
+    virtual void detach( Subscriber& observer ) throw() = 0;
 
 
 public:
@@ -257,12 +296,16 @@ public:
         eNOTIFY_COMPLETE    //!< The subscriber's change notification callback has been completed
     };
 
-    /** This method is used by Model Point to process events related to the 
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Rte namespace.  The Application should
+        NEVER call this method.
+        
+        This method is used by Model Point to process events related to the 
         subscription/change-notification process
 
         This method is Thread Safe
      */
-    virtual void processSubscriptionEvent( Subscriber& subscriber, Event_T event, uint16_t mpSeqNumber=ModelPoint::SEQUENCE_NUMBER_UNKNOW ) throw() =0;
+    virtual void processSubscriptionEvent_( Subscriber& subscriber, Event_T event ) throw() =0;
 
 public:
     /// Virtual destructor to make the compiler happy

@@ -24,11 +24,11 @@ Subscriber::Subscriber( Cpl::Rte::MailboxServer& myMailbox )
     : m_state( 0 )
     , m_point( 0 )
     , m_mailboxHdl( myMailbox )
-    , m_seqNumber( ModelPoint::SEQUENCE_NUMBER_UNKNOW )
+    , m_seqNumber( ModelPoint::SEQUENCE_NUMBER_UNKNOWN )
 {
 }
 
-ModelPoint& Subscriber::getModelPoint_() throw()
+ModelPoint* Subscriber::getModelPoint_() throw()
 {
     if ( m_point == 0 )
     {
@@ -36,5 +36,5 @@ ModelPoint& Subscriber::getModelPoint_() throw()
         return;
     }
 
-    return *m_point;
+    return m_point;
 }
