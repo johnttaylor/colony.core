@@ -15,7 +15,7 @@
 #include "Cpl/Itc/MailboxServer.h"
 #include "Cpl/System/Thread.h"
 #include "Cpl/Container/DList.h"
-#include "Cpl/Rte/Subscriber.h"
+#include "Cpl/Rte/SubscriberApi.h"
 
 
 ///
@@ -78,13 +78,15 @@ public:
         NEVER call this method.
 
         This method is used add a new 'change notification' to its list
-        of pending change notifications
+        of pending change notifications.  Calling this method will the 
+        subscriber is already registered for change notification will cause
+        a fatal error.
 
         NOTE: If the Subscriber's mailbox does not match this instance a
               fatal error is generated.  The requirements/semantics of Model
               Point subscription is that Subscription/Notifications/Cancel-of-
               Subscriptions all happen in a SINGLE thread and that the
-              Subscriber object has reference to that thread's mailbox server.
+              Subscriber object has reference to its thread's mailbox server.
      */
     void addPendingChangingNotification_( Subscriber& subscriber ) throw();
 
@@ -93,13 +95,14 @@ public:
     NEVER call this method.
 
     This method is used remove a pending 'change notification' from its list
-    of pending change notifications
+    of pending change notifications.  It is okay to call this method even if
+    the Subscriber is not current registered for change notifications.
 
     NOTE: If the Subscriber's mailbox does not match this instance a
           fatal error is generated.  The requirements/semantics of Model
           Point subscription is that Subscription/Notifications/Cancel-of-
           Subscriptions all happen in a SINGLE thread and that the
-          Subscriber object has reference to that thread's mailbox server.
+          Subscriber object has reference to its thread's mailbox server.
  */
     void removePendingChangingNotification_( Subscriber& subscriber ) throw();
 

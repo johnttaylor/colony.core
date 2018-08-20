@@ -36,7 +36,7 @@ public:
         This method locks the Model Base.  For every call to lock() there must
         be corresponding call to unlock();
     */
-    virtual void lock() throw() = 0;
+    virtual void lock_() throw() = 0;
 
     /** This method has 'PACKAGE Scope' in that is should only be called by 
         other classes in the Cpl::Rte namespace.  It is ONLY public to avoid 
@@ -44,7 +44,7 @@ public:
 
         This method unlocks the Model Base.
     */
-    virtual void unlock() throw() = 0;
+    virtual void unlock_() throw() = 0;
 
 
 public:

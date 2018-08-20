@@ -15,6 +15,7 @@
 
 #include "Cpl/Rte/ModelPoint.h"
 #include "Cpl/Rte/ModelBase.h"
+#include "Cpl/Rte/SubscriberApi.h"
 #include "Cpl/Container/DList.h"
 
 
@@ -30,25 +31,25 @@ class ModelPointCommon : public ModelPoint
 {
 protected:
     /// List of Active Subscribers
-    Cpl::Container::DList<Subscriber>   m_subscribers;
+    Cpl::Container::DList<SubscriberApi>    m_subscribers;
 
     /// Pointer to the Model Point's static information
-    const StaticInfo*                   m_staticInfo;
+    const StaticInfo*                       m_staticInfo;
 
     /// Reference to the containing Model Base
-    ModelBase&                          m_modelBase;
+    ModelBase&                              m_modelBase;
 
     /// Reference to my Data
-    Point&                              m_data;
+    Point&                                  m_data;
 
     /// Sequence number used for tracking changes in the Point data
-    uint16_t                            m_seqNum;
+    uint16_t                                m_seqNum;
 
     /// Force level
-    uint8_t                             m_forceLevel;
+    uint8_t                                 m_forceLevel;
 
     /// Internal valid/invalid state
-    bool                                m_valid;
+    bool                                    m_valid;
 
 
 protected:
@@ -86,16 +87,16 @@ protected:
     uint16_t write( const Point& src, Force_T forceLevel = eNOT_FORCED ) throw();
 
     /// See Cpl::Rte::ModelPoint
-    uint16_t readModifyWrite( RmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED );
+    uint16_t readModifyWrite( GenericRmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED );
 
     /// See Cpl::Rte::ModelPoint
     uint16_t removeForceLevel( Force_T forceLevelToRemove, const Point& src ) throw();
 
     /// See Cpl::Rte::ModelPoint
-    void attach( Subscriber& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
+    void attach( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
 
     /// See Cpl::Rte::ModelPoint 
-    void detach( Subscriber& observer ) throw();
+    void detach( SubscriberApi& observer ) throw();
 
 public:
     /// See Cpl::Container::Key
@@ -107,7 +108,7 @@ public:
 
 public:
     /// See Cpl::Rte::ModelPoint
-    void processSubscriptionEvent_( Subscriber& subscriber, Event_T event ) throw();
+    void processSubscriptionEvent_( SubscriberApi& subscriber, Event_T event ) throw();
 
 
 protected:
@@ -155,10 +156,10 @@ protected:
 protected:
 
     /// Helper FSM method
-    void transitionToNotifyPending( Subscriber& subscriber ) throw();
+    void transitionToNotifyPending( SubscriberApi& subscriber ) throw();
 
     /// Helper FSM method
-    void transitionToSubscribed( Subscriber& subscriber ) throw();
+    void transitionToSubscribed( SubscriberApi& subscriber ) throw();
 
 };
 

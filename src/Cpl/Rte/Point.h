@@ -12,7 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-
+#include "Cpl/Text/String.h"
 #include <stdint.h>
 
 ///
@@ -27,36 +27,16 @@ namespace Rte {
     NOTES:
         1) The concrete leaf classes are responsible for ensuring type
            safety.
-        3) All methods in this class are NOT thread Safe unless explicitly
+        2) All methods in this class are NOT thread Safe unless explicitly
            documented otherwise.
  */
 class Point
 {
 public:
-    /** This method is used to unconditionally update the Point's data.
-
-        Notes:
-        1) The assumption is that Point instance and 'src' are the of the same
-           leaf class type.
-        2) The internal data size of the Point instance is ALWAYS honored when
-           coping the data from 'src'
-        3) The Point's sequence number is not changed.
-    */
-
-    virtual void copyFrom( const Point& src ) throw() = 0;
-
-    /** This method compares the Point's data to the data of 'other' and
-        returns true if the data of both points are the same. It is assumed
-        that Point instance and 'other' are the of the same leaf class type.
-     */
-    virtual bool isEqual( const Point& other ) const throw() = 0;
-
     /** This method returns the RAM size, in bytes, of the Point's data.
       */
     virtual size_t getSize() const throw() = 0;
 
-
-public:
     /** This method converts the Point's data to a a string value and copies
         the resultant string into 'dst'.  If the Point's data cannot be
         represented as a string then the contents of 'dst' is set to an empty
@@ -84,12 +64,12 @@ public:
 
         If the conversion is successful a pointer to next character after the
         last 'consumed' charactered is returned.  If the contents of the 'src'
-        is invalid OR the Point does not support a full/complete conversion
-        from Text to binary then the method returns 0.  When the conversion
-        fails, the optional 'errorMsg' argument is updated with a plain text
-        error message.
+        is invalid, OR the Point does not support a full/complete conversion
+        from Text to binary, OR the conversion fails then the method returns 0.  
+        When the conversion fails, the optional 'errorMsg' argument is updated 
+        with a plain text error message.
      */
-    virtual bool fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0 ) throw() = 0;
+    virtual const char* fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0 ) throw() = 0;
 
     /** This method returns the maximum size, in bytes not including the null
         terminator, of the string returned by the toString() method.
@@ -123,6 +103,34 @@ public:
      */
     virtual size_t getExternalSize( void ) const = 0;
     
+
+public:
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Rte namespace.  The Application should
+        NEVER call this method.
+
+        This method is used to unconditionally update the Point's data.
+
+        Notes:
+        1) The assumption is that Point instance and 'src' are the of the same
+           leaf class type.
+        2) The internal data size of the Point instance is ALWAYS honored when
+           coping the data from 'src'
+        3) The Point's sequence number is not changed.
+    */
+
+    virtual void copyFrom_( const Point& src ) throw() = 0;
+
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Rte namespace.  The Application should
+        NEVER call this method.
+
+        This method compares the Point's data to the data of 'other' and
+        returns true if the data of both points are the same. It is assumed
+        that Point instance and 'other' are the of the same leaf class type.
+     */
+    virtual bool isEqual_( const Point& other ) const throw() = 0;
+
 
 public:
     /// Virtual destructor to make the compiler happy

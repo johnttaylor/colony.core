@@ -42,7 +42,7 @@ void MailboxServer::processEventFlag( uint8_t eventNumber ) throw()
     }
 }
 
-void MailboxServer::addPendingChangingNotification_( Subscriber& subscriber ) throw()
+void MailboxServer::addPendingChangingNotification_( SubscriberApi& subscriber ) throw()
 {
     // Check for invalid Subscription semantics
     if ( subscriber.getMailbox_() != this )
@@ -56,7 +56,7 @@ void MailboxServer::addPendingChangingNotification_( Subscriber& subscriber ) th
     internalNotify_( MP_EVENT_BIT_MASK );
 }
 
-void MailboxServer::removePendingChangingNotification_( Subscriber& subscriber ) throw()
+void MailboxServer::removePendingChangingNotification_( SubscriberApi& subscriber ) throw()
 {
     // Check for invalid Subscription semantics
     if ( subscriber.getMailbox_() != this )
@@ -65,7 +65,7 @@ void MailboxServer::removePendingChangingNotification_( Subscriber& subscriber )
         return;
     }
 
-    // Add the notification to my list and send myself an Event to wake up the mailbox
+    // Remove the subscriber from the notification
     m_pendingMpNotifications.remove( subscriber );
 }
 

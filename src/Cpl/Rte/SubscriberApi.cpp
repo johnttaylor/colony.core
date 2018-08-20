@@ -11,16 +11,15 @@
 /** @file */
 
 
-#include "Subscriber.h"
+#include "SubscriberApi.h"
 #include "Cpl/System/FatalError.h"
-#include "ModelPoint.h"
 
 using namespace Cpl::Rte;
 
 
 
 /////////////////////////////
-Subscriber::Subscriber( Cpl::Rte::MailboxServer& myMailbox )
+SubscriberApi::SubscriberApi( Cpl::Rte::MailboxServer& myMailbox )
     : m_state( 0 )
     , m_point( 0 )
     , m_mailboxHdl( myMailbox )
@@ -28,7 +27,7 @@ Subscriber::Subscriber( Cpl::Rte::MailboxServer& myMailbox )
 {
 }
 
-ModelPoint* Subscriber::getModelPoint_() throw()
+ModelPoint* SubscriberApi::getModelPoint_() throw()
 {
     if ( m_point == 0 )
     {

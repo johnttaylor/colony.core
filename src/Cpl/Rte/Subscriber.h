@@ -12,137 +12,75 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-
-#include "Cpl/Container/Item.h"
+#include "Cpl/Rte/SubscriberApi.h"
 
 ///
 namespace Cpl {
 ///
 namespace Rte {
 
-/// Forward reference to a Model point -->used to avoid circular dependencies
-class ModelPoint;
 
-/// Forward reference to the RTE Mailbox server -->used to avoid circular dependencies
-class MailboxServer;
+/** This template class is a composer pattern/class that manages the Change
+    notification callback function for a Model Point's Subscriber.  It also
+    provides a concrete Subscriber
 
+    A Composer is a structural pattern that may be used to employ composition
+    when implementing an interface rather than using multiple inheritance. This
+    allows a single concrete object to receive the Change Notification callbacks
+    from many Model Points.
 
-/** This mostly concrete class defines the Subscriber interface - for change
-    notifications - to a Model Points data/state
+    Template Arguments:
+        CONTEXT - The class that implements the Change Notification Callback function
+        MP      - The concrete Model Point Type
  */
-class Subscriber : public Cpl::Container::ExtendedItem
+template <class CONTEXT, class MP>
+class Subscriber : public SubscriberApi
 {
+public:
+    /** Define Change Notification callback method function
+     */
+    typedef void (CONTEXT::*ModifyFunc_T)( MP& modelPoint ) throw();
+
+
 protected:
-    /// Internal state of the subscriber.  Note: The state is actual managed by the Model Point
-    int                 m_state;
+    /// Reference to my containing instance
+    CONTEXT&                    m_context;
 
-    /// Pointer to the Model Point the instance is subscribed to
-    ModelPoint*         m_point;
+    /// Method (in my Context) to call to perform the modify operation
+    ModifyFunc_T                m_modifyCb;
 
-    /// Reference to subscriber's EventFlag/Mailbox server
-    MailboxServer&      m_mailboxHdl;
-
-    /// Sequence number of the subscriber
-    uint16_t            m_seqNumber;
 
 public:
     /// Constructor
-    Subscriber( Cpl::Rte::MailboxServer& myMailbox );
+    Subscriber( CONTEXT&       context,
+                ModifyFunc_T   modifyCallback );
 
-public:
-    /** This method is the client callback function for a MP change
-        notification.  This method is called in as part of the asynchronous
-        notification mechanism of the client Mailbox Server, i.e. executes in
-        the thread associated m_mailBoxHdl
-     */
-    virtual void modelPointChanged( Point& pointThatChanged ) throw() = 0;
-
-
-public:
-    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
-        by other classes in the Cpl::Rte namespace.  The Application should
-        NEVER call this method.
-
-        This method returns a pointer to the Subscriber's mailbox
-      */
-    inline Cpl::Rte::MailboxServer* getMailbox_() const throw()
-    {
-        return &m_mailboxHdl;
-    }
-
-    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
-        by other classes in the Cpl::Rte namespace.  The Application should
-        NEVER call this method.
-
-        This method is use to set the Subscriber's Model Point reference
-      */
-    inline void setModelPoint_( ModelPoint* modelPoint ) throw()
-    {
-        m_point = modelPoint;
-    }
-
-    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
-        by other classes in the Cpl::Rte namespace.  The Application should
-        NEVER call this method.
-
-        This method is use to get the Subscriber's Model Point reference.
-
-        Note: If this method is called BEFORE the setModelPoint() method is
-              called then a Fatal Error will be generated.
-      */
-    ModelPoint* getModelPoint_() throw();
-
-    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
-        by other classes in the Cpl::Rte namespace.  The Application should
-        NEVER call this method.
-
-        This method is use to get the Subscriber's internal state
-      */
-    inline int getState_() const throw()
-    {
-        return m_state;
-    }
-
-    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
-        by other classes in the Cpl::Rte namespace.  The Application should
-        NEVER call this method.
-
-        This method is use to set the Subscriber's internal state
-      */
-    inline void setState_( int newState ) throw()
-    {
-        m_state = newState;
-    }
-
-   /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
-        by other classes in the Cpl::Rte namespace.  The Application should
-        NEVER call this method.
-
-        This method is use to get the Subscriber's sequence number
-      */
-    inline uint16_t getSequenceNumber_() const throw()
-    {
-        return m_seqNumber;
-    }
-
-    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
-        by other classes in the Cpl::Rte namespace.  The Application should
-        NEVER call this method.
-
-        This method is use to set the Subscriber's sequence number
-      */
-    inline void setSequenceNumber_( uint16_t newSeqNumber ) throw()
-    {
-        m_seqNumber = newSeqNumber;
-    }
-
-public:
-    /// Virtual destructor
-    virtual ~Subscriber() {}
+protected:
+    /// See Cpl::Rte::SubscriberApi
+    void genericModelPointChanged( ModelPoint& modelPointThatChanged ) throw();
 };
 
+/////////////////////////////////////////////////////////////////////////////
+//                  INLINE IMPLEMENTAION
+/////////////////////////////////////////////////////////////////////////////
+template <class CONTEXT, class MP>
+Cpl::Rte::Subscriber<CONTEXT, MP>::Subscriber( CONTEXT&       context,
+                                               ModifyFunc_T   modifyCallback )
+    : m_context( context )
+    , m_modifyCb( modifyCallback )
+{
+}
+
+/////////////////
+template <class CONTEXT, class MP>
+void Cpl::Rte::Subscriber<CONTEXT, MP>::genericModelPointChanged( ModelPoint& modelPointThatChanged ) throw()
+{
+    // Notify context
+    (m_context.*m_modifyCb)( *((MP*)&modelPointThatChanged) );
+}
 
 
 };      // end namespaces
+};
 };
 #endif  // end header latch

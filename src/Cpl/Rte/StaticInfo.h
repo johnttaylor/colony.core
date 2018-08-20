@@ -21,14 +21,14 @@ namespace Cpl {
 namespace Rte {
 
 
-/** This class defines an interface for a Point to store its constant/static 
+/** This class defines an interface for a Model Point to store its constant/static 
     data in program memory.  Concrete leaf classes can extended this class
     to provide additional constant parameters.  
 
     How to extend:
-    1) A new child class is defined and must inherit from StaticInfo.  This 
+    1) A new child class is defined and must inherit from StaticInfo.  The new 
        class contains additional static parameters, e.g. Units, Range limits,
-       Network Name, etc.
+       Network Name, etc. per the needs of the Application.
     2) The constructor for a concrete Model Point class takes a static reference to 
        the class defined in step 1.
     3) The concrete Model Point class implementation can safely 'down cast' the

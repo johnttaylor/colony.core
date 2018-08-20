@@ -61,33 +61,31 @@ public:
 
 
 public:
-    /** This class defines the callback interface for a Read-Modify-Write
-        operation.
-     */
-    class RmwCallback
+    /// Possible results of the read-modify-write callback function
+    enum RmwCallbackResult_T
     {
-    public:
-        /// Possible results of the read-modify-write callback function
-        enum Result_T
-        {
-            eNO_CHANGE,         //!< Indicates the callback function has NOT modify the Model Point's data.
-            eCHANGED,           //!< Indicates the callback function has modify the Model Point's data
-            eINVALIDATE,        //!< Request that the Model Point's data state be set to eINVALID
-        };
-
-    public:
-        /** The callback function for the read-modify-write operation.  The
-            function is responsible for being 'accurate' with respect to the
-            result code.
-         */
-        virtual Result_T modelPointRmwCallback( Point& data, bool isValid ) throw() = 0;
+        eNO_CHANGE,         //!< Indicates the callback function has NOT modify the Model Point's data.
+        eCHANGED,           //!< Indicates the callback function has modify the Model Point's data
+        eINVALIDATE,        //!< Request that the Model Point's data state be set to eINVALID
     };
 
- 
+public:
+    /// Defines the generic, non-type safe read-modify-write client callback interface
+    class GenericRmwCallback
+    {
+    public:
+        // Generic callback for the readModifyWrite() operation
+        virtual RmwCallbackResult_T genericCallback( Point& data, bool isValid ) throw() = 0;
+
+    public:
+        /// Virtual destructor
+        ~GenericRmwCallback() {}
+    };
+
 
 public:
     /** Magic value to use when registering for a change notification and
-        application does not 'know' the current sequence number value of the 
+        application does not 'know' the current sequence number value of the
         Model Point.
      */
     static const uint16_t SEQUENCE_NUMBER_UNKNOWN = 0;
@@ -213,9 +211,9 @@ protected:
               indeterminate amount of time.  And alternative is to have the
               concrete Model Point leaf classes provide the application
               specific read, write, read-modify-write methods in addition or in
-              lieu of the read/write method in this interface.
+              lieu of the read/write methods in this interface.
      */
-    virtual uint16_t readModifyWrite( RmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED ) = 0;
+    virtual uint16_t readModifyWrite( GenericRmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED ) = 0;
 
     /** This method removes a single force level from the MP AND potentially
         updates the MP's data in a single atomic operation. See the truth table
@@ -235,14 +233,14 @@ protected:
 
         </pre>
 
-        This method will only trigger change notification(s) when it returns
-        a valid sequence number (i.e. not SEQUENCE_NUMBER_UNKNOWN) AND there was
-        actual change in the MP data/state.
+        The method returns the Model Point's sequence number after the method
+        completes.  The sequence number will have only changed if the MP was
+        updated.
      */
     virtual uint16_t removeForceLevel( Force_T forceLevelToRemove, const Point& src ) throw() = 0;
 
-    /** This method is used to attach a subscriber to a Model Point.  Once 
-        attached the Subscriber will receive a change notification (aka a 
+    /** This method is used to attach a subscriber to a Model Point.  Once
+        attached the Subscriber will receive a change notification (aka a
         callback) every time the Model Point's data/state changes. Once, a
         Subscriber is attached - it will stay attached to the application
         calls detach().
@@ -250,7 +248,7 @@ protected:
         There is no limit to the number of Subscribers that can attach to
         a Model Point.
 
-        The attach() method can be called even if the Subscriber is already 
+        The attach() method can be called even if the Subscriber is already
         attached.  When this happens, the attach process is 'restarted', i.e.
         the 'initialSeqNumber' is used for the Subscriber's sequence number.
 
@@ -263,11 +261,11 @@ protected:
         an the 'seqNumber' argument set to SEQUENCE_NUMBER_UNKNOWN, the
         Subscriber will get an 'immediate' change notification.
 
-        The callbacks for the Change Notifications are called as part of the 
+        The callbacks for the Change Notifications are called as part of the
         RTE's Mailbox server.  As part of the asynchronous processing (timers,
         ITC, EventFlags, etc.) of the RTE Mailbox server will also process
         all pending Change Notification and invoke the call backs.  What does
-        that all mean?  The Change notifications are "local" the Subscribers
+        that all mean?  The Change notifications are "local" to the Subscriber's
         thread very similar to how the Cpl::Timers work.  It also means that
         no change notification callback will be called till the Mailbox server
         loops back to the "top" of its forever loop.
@@ -275,7 +273,7 @@ protected:
     virtual void attach( Subscriber& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw() = 0;
 
     /** This method is used to detach a Subscriber to a Model Point.  See the
-        attach() method for more details about the Subscription/Change 
+        attach() method for more details about the Subscription/Change
         Notification mechanism.
 
         The detach() method can be called even if the Subscriber is NOT
@@ -299,8 +297,8 @@ public:
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Rte namespace.  The Application should
         NEVER call this method.
-        
-        This method is used by Model Point to process events related to the 
+
+        This method is used by Model Point to process events related to the
         subscription/change-notification process
 
         This method is Thread Safe

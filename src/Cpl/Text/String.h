@@ -326,9 +326,9 @@ public:
     ///@{
     /** Allows "printf" formatting of the string. NOTE: Since the
         amount of information being written to the string is variable,
-        this method does NOT guarentee how much, if any, of the 
+        this method does NOT guarantee how much, if any, of the 
         information is actually written to the string.  The method
-        does guarentee that the string's internal storage will NOT
+        does guarantee that the string's internal storage will NOT
         be exceeded.
 
         NOTE: if 'format' is null, then nothing is done

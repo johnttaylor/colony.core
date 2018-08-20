@@ -15,7 +15,7 @@
 ///
 using namespace Cpl::Rte;
 
-/// Subscriber States
+/// SubscriberApi States
 enum State_T
 {
     eSTATE_UNSUBSCRIBED = 0,          // Not subscribed to any model point
@@ -45,64 +45,64 @@ const char* ModelPointCommon::getName() const throw()
 
 uint16_t ModelPointCommon::getSequenceNumber() const throw()
 {
-    m_modelBase.lock();
+    m_modelBase.lock_();
     uint16_t result = m_seqNum;
-    m_modelBase.unlock();
+    m_modelBase.unlock_();
     return result;
 }
 
 bool ModelPointCommon::isValid() const throw()
 {
-    m_modelBase.lock();
+    m_modelBase.lock_();
     bool result = m_valid;
-    m_modelBase.unlock();
+    m_modelBase.unlock_();
     return result;
 }
 
 uint16_t ModelPointCommon::read( Point& dst, bool& isValid ) const throw()
 {
-    m_modelBase.lock();
+    m_modelBase.lock_();
     isValid = m_valid;
     if ( isValid )
     {
-        dst.copyFrom( m_data );
+        dst.copyFrom_( m_data );
     }
     uint16_t result = m_seqNum;
-    m_modelBase.unlock();
+    m_modelBase.unlock_();
 
     return result;
 }
 
 uint16_t ModelPointCommon::write( const Point& src, Force_T forceLevel ) throw()
 {
-    m_modelBase.lock();
+    m_modelBase.lock_();
     if ( testAndSetForceLevel( forceLevel ) )
     {
-        if ( !m_valid || m_data.isEqual( src ) == false )
+        if ( !m_valid || m_data.isEqual_( src ) == false )
         {
-            m_data.copyFrom( src );
+            m_data.copyFrom_( src );
             processDataUpdated();
         }
     }
     uint16_t result = m_seqNum;
-    m_modelBase.unlock();
+    m_modelBase.unlock_();
 
     return result;
 }
 
-uint16_t ModelPointCommon::readModifyWrite( RmwCallback& callbackClient, Force_T forceLevel )
+uint16_t ModelPointCommon::readModifyWrite( GenericRmwCallback& callbackClient, Force_T forceLevel )
 {
-    m_modelBase.lock();
+    m_modelBase.lock_();
     if ( testAndSetForceLevel( forceLevel ) )
     {
         // Invoke the client's callback function
-        RmwCallback::Result_T result = callbackClient.modelPointRmwCallback( m_data, m_valid );
+        RmwCallbackResult_T result = callbackClient.genericCallback( m_data, m_valid );
 
         // Do nothing if the callback did not change anything
-        if ( result != RmwCallback::eNO_CHANGE )
+        if ( result != RmwCallbackResult_T::eNO_CHANGE )
         {
             // Handle request to invalidate the MP data
-            if ( result == RmwCallback::eINVALIDATE )
+            if ( result == RmwCallbackResult_T::eINVALIDATE )
             {
                 if ( m_valid )
                 {
@@ -120,23 +120,23 @@ uint16_t ModelPointCommon::readModifyWrite( RmwCallback& callbackClient, Force_T
     }
 
     uint16_t result = m_seqNum;
-    m_modelBase.unlock();
+    m_modelBase.unlock_();
 
     return result;
 }
 
 uint16_t ModelPointCommon::touch() throw()
 {
-    m_modelBase.lock();
+    m_modelBase.lock_();
     processChangeNotifications();
     uint16_t result = m_seqNum;
-    m_modelBase.unlock();
+    m_modelBase.unlock_();
     return result;
 }
 
 uint16_t ModelPointCommon::setInvalid() throw()
 {
-    m_modelBase.lock();
+    m_modelBase.lock_();
     if ( m_valid )
     {
         m_valid = false;
@@ -144,16 +144,16 @@ uint16_t ModelPointCommon::setInvalid() throw()
     }
 
     uint16_t result = m_seqNum;
-    m_modelBase.unlock();
+    m_modelBase.unlock_();
     return result;
 }
 
 /////////////////
 void ModelPointCommon::removeAllForceLevels() throw()
 {
-    m_modelBase.lock();
+    m_modelBase.lock_();
     m_forceLevel = 0;
-    m_modelBase.unlock();
+    m_modelBase.unlock_();
 }
 
 void ModelPointCommon::removeForceLevel( Force_T forceLevelToRemove ) throw()
@@ -161,25 +161,25 @@ void ModelPointCommon::removeForceLevel( Force_T forceLevelToRemove ) throw()
     if ( forceLevelToRemove != eNOT_FORCED )
     {
         uint8_t bitMask = 1 << (forceLevelToRemove - 1);
-        m_modelBase.lock();
+        m_modelBase.lock_();
         m_forceLevel &= ~bitMask;
-        m_modelBase.unlock();
+        m_modelBase.unlock_();
     }
 }
 
 uint16_t ModelPointCommon::removeForceLevel( Force_T forceLevelToRemove, const Point& src ) throw()
 {
-    m_modelBase.lock();
+    m_modelBase.lock_();
     if ( testAndClearForceLevel( forceLevelToRemove ) )
     {
-        if ( !m_valid || m_data.isEqual( src ) == false )
+        if ( !m_valid || m_data.isEqual_( src ) == false )
         {
-            m_data.copyFrom( src );
+            m_data.copyFrom_( src );
             processDataUpdated();
         }
     }
     uint16_t result = m_seqNum;
-    m_modelBase.unlock();
+    m_modelBase.unlock_();
 
     return result;
 }
@@ -216,7 +216,7 @@ void ModelPointCommon::processChangeNotifications() throw()
     }
 
     // Generate change notifications 
-    Subscriber* item = m_subscribers.get();
+    SubscriberApi* item = m_subscribers.get();
     while ( item )
     {
         processSubscriptionEvent_( *item, eDATA_CHANGED );
@@ -225,23 +225,23 @@ void ModelPointCommon::processChangeNotifications() throw()
 }
 
 /////////////////
-void ModelPointCommon::attach( Subscriber& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw()
+void ModelPointCommon::attach( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw()
 {
     observer.setSequenceNumber_( initialSeqNumber );
     observer.setModelPoint_( this );
     processSubscriptionEvent_( observer, eATTACH );
 }
 
-void ModelPointCommon::detach( Subscriber& observer ) throw()
+void ModelPointCommon::detach( SubscriberApi& observer ) throw()
 {
     processSubscriptionEvent_( observer, eDETACH );
     observer.setModelPoint_( 0 );
 }
 
 /////////////////
-void ModelPointCommon::processSubscriptionEvent_( Subscriber& subscriber, Event_T event ) throw()
+void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Event_T event ) throw()
 {
-    m_modelBase.lock();
+    m_modelBase.lock_();
 
     switch ( (State_T) subscriber.getState_() )
     {
@@ -341,12 +341,12 @@ void ModelPointCommon::processSubscriptionEvent_( Subscriber& subscriber, Event_
             break;
     }
 
-    m_modelBase.unlock();
+    m_modelBase.unlock_();
 }
 
-void ModelPointCommon::transitionToSubscribed( Subscriber& subscriber ) throw()
+void ModelPointCommon::transitionToSubscribed( SubscriberApi& subscriber ) throw()
 {
-    // Ensure that I am not already in the Model Point's list of subscribers (this can happen if subscribe when I am already subscribed)
+    // Ensure that I am not already in the Model Point's list of subscribers (this can happen if subscribing when I am already subscribed)
     m_subscribers.remove( subscriber );
 
     if ( m_seqNum == subscriber.getSequenceNumber_() )
@@ -360,9 +360,9 @@ void ModelPointCommon::transitionToSubscribed( Subscriber& subscriber ) throw()
     }
 }
 
-void ModelPointCommon::transitionToNotifyPending( Subscriber& subscriber ) throw()
+void ModelPointCommon::transitionToNotifyPending( SubscriberApi& subscriber ) throw()
 {
-    subscriber.getMailbox_().addPendingChangingNotification_( subscriber );
+    subscriber.getMailbox_()->addPendingChangingNotification_( subscriber );
     subscriber.setState_( eSTATE_NOTIFY_PENDING );
 }
 

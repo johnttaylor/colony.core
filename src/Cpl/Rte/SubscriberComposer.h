@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_RmwComposer_h_
-#define Cpl_Rte_RmwComposer_h_
+#ifndef Cpl_Rte_SubscriberComposer_h_
+#define Cpl_Rte_SubscriberComposer_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -12,7 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Cpl/Rte/ModelPoint.h"
+#include "Cpl/Rte/Subscriber.h"
 
 ///
 namespace Cpl {
@@ -20,20 +20,21 @@ namespace Cpl {
 namespace Rte {
 
 
-/** This template class is a composer pattern/class that manages the callback
-    function for a Model Point's read-modify-write operation.  
+/** This template class is a composer pattern/class that manages the Change
+    notification callback function for a Model Point's Subscriber
 
     A Composer is a structural pattern that may be used to employ composition
     when implementing an interface rather than using multiple inheritance. This
-    allows a single concrete object to receive the RMW callbacks from many
-    Model Points.
+    allows a single concrete object to receive the Change Notification callbacks 
+    from many Model Points.
 
     Template Arguments:
-        CONTEXT - The class that implements the Callback function
+        CONTEXT - The class that implements the Change Notification Callback function
+        MP      - The concrete Model Point Type
         POINT   - The Model Point's concrete Point Type.
  */
-template <class CONTEXT, class POINT>
-class RmwComposer : public ModelPoint::GenericRmwCallback
+template <class CONTEXT, class MP, class POINT>
+class SubscriberComposer : public MP::RmwCallback
 {
 public:
     /** Define a callback method function for the Modify Point callback (See
@@ -43,6 +44,10 @@ public:
 
 
 protected:
+    /// Reference to the Model point being modified
+    MP&                         m_modelPoint;
+
+    /// Reference to my containing instance
     CONTEXT&                    m_context;
 
     /// Method (in my Context) to call to perform the modify operation
@@ -51,33 +56,38 @@ protected:
 
 public:
     /// Constructor
-    RmwComposer( CONTEXT&       context,
+    SubscriberComposer( MP&            modelPoint,
+                 CONTEXT&       context,
                  ModifyFunc_T   modifyCallback );
+
+    );
 
 
 protected:
-    /// See Cpl::Rte::ModelPoint::GenericRmwCallback
-    ModelPoint::RmwCallbackResult_T genericCallback( Point& data, bool isValid ) throw();
+    /// See Cpl::Rte::ModelPoint::RmwCallback
+    Result_T rmwCallback( POINT& data, bool isValid ) throw();
 
 };
 
 /////////////////////////////////////////////////////////////////////////////
 //                  INLINE IMPLEMENTAION
 /////////////////////////////////////////////////////////////////////////////
-template <class CONTEXT, class POINT>
-Cpl::Rte::RmwComposer<CONTEXT, POINT>::RmwComposer( CONTEXT&       context,
-                                                    ModifyFunc_T   modifyCallback )
-    :m_context( context )
+template <class CONTEXT, class MP, class POINT>
+Cpl::Rte::SubscriberComposer<CONTEXT, MP, POINT>::SubscriberComposer( MP&            modelPoint,
+                                                        CONTEXT&       context,
+                                                        ModifyFunc_T   modifyCallback )
+    :m_modelPoint( modelPoint )
+    , m_context( context )
     , m_modifyCb( modifyCallback )
 {
 }
 
 /////////////////
-template <class CONTEXT, class POINT>
-Cpl::Rte::ModelPoint::RmwCallbackResult_T Cpl::Rte::RmwComposer<CONTEXT, POINT>::genericCallback( Point& data, bool isValid ) throw()
+template <class CONTEXT, class MP, class POINT>
+Cpl::Rte::ModelPoint::RmwCallback::Result_T Cpl::Rte::SubscriberComposer<CONTEXT, MP, POINT>::rmwCallback( POINT& data, bool isValid ) throw()
 {
     // Notify context
-    return (m_context.*m_modifyCb)( *((POINT*)&data), isValid );
+    return (m_context.*m_modifyCb)( data, isValid );
 }
 
 
