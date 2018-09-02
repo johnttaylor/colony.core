@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Point_Int64_h_
-#define Cpl_Rte_Point_Int64_h_
+#ifndef Cpl_Rte_Point_Double_h_
+#define Cpl_Rte_Point_Double_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -23,19 +23,12 @@ namespace Rte {
 namespace Point {
 
 
-
-/** This class provides a concrete implementation for a Point who's data is a 
-    int64_t.
-
-    NOTES:
-        1) All methods in this class are NOT thread Safe unless explicitly
-           documented otherwise.
- */
-class Int64 : public PointBasic<int64_t>
+///////////////////////////////////////////////////////////////////////////////
+class Double : public PointBasic<double>
 {
 public:
     /// Constructor
-    Int64( int64_t initialValue = 0 );
+    Double( double initialValue = 0.0 );
 
 public:
     /// See Cpl::Rte::Point.
@@ -43,6 +36,10 @@ public:
 
     /// See Cpl::Rte::Point.
     const char* fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0 ) throw();
+
+protected:
+    /// See Cpl::Rte::Point.
+    bool isEqual_( const Point& other ) const throw();
 };
 
 

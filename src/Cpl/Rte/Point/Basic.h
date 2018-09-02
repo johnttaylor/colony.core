@@ -106,8 +106,16 @@ protected:
     /// See Cpl::Rte::Point.  The default implementation is for integers
     bool isEqual_( const Point& other ) const throw()
     {
-        return m_data == other.m_data;
+        ELEMTYPE left = *((ELEMTYPE*) other.getDataPointer());
+        return m_data == left;
     }
+
+    /// See Cpl::Rte::Point.  
+    void* getDataPointer() const throw()
+    {
+        return &m_data;
+    }
+
 };
 
 

@@ -131,6 +131,16 @@ public:
      */
     virtual bool isEqual_( const Point& other ) const throw() = 0;
 
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Rte namespace.  The Application should
+        NEVER call this method.
+
+        This method returns a pointer to the Point's data.  BE VERY CAREFULL
+        on how the pointer is used!
+     */
+    virtual void* getDataPointer() const throw() = 0;
+
+
 
 public:
     /// Virtual destructor to make the compiler happy

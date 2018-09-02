@@ -97,6 +97,10 @@ Cpl::TShell::Dac::Command::Result_T Loop::execute( Cpl::TShell::Dac::Context_& c
                     }
                 else
                     {
+                    // FIXME: As of 8/21/2018
+                    // FIXME: Believe a call to: context.enableFilter( *this ); is needed
+                    // FIXME: Believe a call to: context.enableFilter( *this ); is needed
+                    // FIXME: Believe a call to: context.enableFilter( *this ); is needed
                     m_level--;
                     }
                 }

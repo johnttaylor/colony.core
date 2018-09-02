@@ -11,38 +11,45 @@
 /** @file */
 
 
-#include "Int64.h"
+#include "Float.h"
 #include "Cpl/Text/atob.h"
+#include "Cpl/Math/real.h"
 
 ///
 using namespace Cpl::Rte::Point;
 
 ///////////////////////////////////////////////////////////////////////////////
-Int64::Int64( int64_t initialValue )
-    :PointBasic( initialValue ) 
+Float::Float( float initialValue )
+    :PointBasic( initialValue )
 {
 }
 
-
-bool Int64::toString( Cpl::Text::String& dst, bool append=false ) const throw()
+bool Float::isEqual_( const Point& other ) const throw()
 {
-    dst.formatOpt( append, "%lld", (long long) m_data );
+    float left = *((float*) other.getDataPointer());
+    return Cpl::Math::areFloatsEqual( m_data, left );
+}
+
+bool Float::toString( Cpl::Text::String& dst, bool append=false ) const throw()
+{
+    dst.formatOpt( append, "%g", (double) m_data );
     return true;
 }
 
-const char* Int64::fromString( const char* src, const char* terminationChars, Cpl::Text::String* errorMsg ) throw()
+const char* Float::fromString( const char* src, const char* terminationChars, Cpl::Text::String* errorMsg ) throw()
 {
     const char* endptr;
-    long long   value;
-    if ( Cpl::Text::a2ll( value, src, 10, terminationChars, &endptr ) )
+    double      value;
+
+    if ( Cpl::Text::a2d( value, src, terminationChars, &endptr ) )
     {
-            m_data = (int64_t) value;
-            return endptr;
+        m_data = (float) value;
+        return endptr;
     }
 
     if ( errorMsg )
     {
-        *errorMsg = "Conversion to a int64_t failed.";
+        *errorMsg = "Conversion to a float failed.";
     }
     return 0;
 }

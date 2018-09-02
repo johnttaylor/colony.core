@@ -11,38 +11,38 @@
 /** @file */
 
 
-#include "Int64.h"
+#include "Int32.h"
 #include "Cpl/Text/atob.h"
 
 ///
 using namespace Cpl::Rte::Point;
 
 ///////////////////////////////////////////////////////////////////////////////
-Int64::Int64( int64_t initialValue )
-    :PointBasic( initialValue ) 
+Int32::Int32( int32_t initialValue )
+    :PointBasic( initialValue )
 {
 }
 
-
-bool Int64::toString( Cpl::Text::String& dst, bool append=false ) const throw()
+bool Int32::toString( Cpl::Text::String& dst, bool append=false ) const throw()
 {
-    dst.formatOpt( append, "%lld", (long long) m_data );
+    dst.formatOpt( append, "%ld", (long) m_data );
     return true;
 }
 
-const char* Int64::fromString( const char* src, const char* terminationChars, Cpl::Text::String* errorMsg ) throw()
+const char* Int32::fromString( const char* src, const char* terminationChars, Cpl::Text::String* errorMsg ) throw()
 {
     const char* endptr;
-    long long   value;
-    if ( Cpl::Text::a2ll( value, src, 10, terminationChars, &endptr ) )
+    long        value;
+    if ( Cpl::Text::a2l( value, src, 10, terminationChars, &endptr ) )
     {
-            m_data = (int64_t) value;
+            m_data = (int32_t) value;
             return endptr;
     }
 
     if ( errorMsg )
     {
-        *errorMsg = "Conversion to a int64_t failed.";
+        *errorMsg = "Conversion to a int32_t failed.";
     }
     return 0;
 }
+
