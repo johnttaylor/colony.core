@@ -14,9 +14,10 @@
 
 
 #include "Cpl/Rte/ModelPoint.h"
-#include "Cpl/Rte/ModelBase.h"
+#include "Cpl/Rte/ModelDatabase.h"
 #include "Cpl/Rte/SubscriberApi.h"
 #include "Cpl/Container/DList.h"
+#include <stdint.h>
 
 
 ///
@@ -37,10 +38,10 @@ protected:
     const StaticInfo*                       m_staticInfo;
 
     /// Reference to the containing Model Base
-    ModelBase&                              m_modelBase;
+    ModelDatabase&                          m_modelDatabase;
 
     /// Reference to my Data
-    Point&                                  m_data;
+    void*                                   m_dataPtr;
 
     /// Sequence number used for tracking changes in the Point data
     uint16_t                                m_seqNum;
@@ -49,12 +50,12 @@ protected:
     uint8_t                                 m_forceLevel;
 
     /// Internal valid/invalid state
-    bool                                    m_valid;
+    int8_t                                  m_validState;
 
 
 protected:
     /// Constructor
-    ModelPointCommon( ModelBase& myModelBase, Point& myData, StaticInfo* staticInfo, bool isValid = false );
+    ModelPointCommon( ModelDatabase& myModelBase, void* myDataPtr, StaticInfo* staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
 
 public:
     /// See Cpl::Rte::ModelPoint
@@ -64,13 +65,13 @@ public:
     uint16_t getSequenceNumber() const throw();
 
     /// See Cpl::Rte::ModelPoint
-    bool isValid() const throw();
-
-    /// See Cpl::Rte::ModelPoint
     uint16_t touch() throw();
 
     /// See Cpl::Rte::ModelPoint
-    uint16_t setInvalid() throw();
+    uint16_t setInvalidState( int8_t newInvalidState ) throw();
+    
+    /// See Cpl::Rte::ModelPoint
+    int8_t getValidState( void ) const throw();
 
     /// See Cpl::Rte::ModelPoint
     void removeAllForceLevels() throw();
@@ -81,22 +82,32 @@ public:
 
 protected:
     /// See Cpl::Rte::ModelPoint
-    uint16_t read( Point& dst, bool& isValid ) const throw();
+    uint16_t read( void* dstData, size_t dstSize, int8_t& validState ) const throw();
 
     /// See Cpl::Rte::ModelPoint
-    uint16_t write( const Point& src, Force_T forceLevel = eNOT_FORCED ) throw();
+    uint16_t write( const void* srcData, Force_T forceLevel = eNOT_FORCED ) throw();
 
     /// See Cpl::Rte::ModelPoint
     uint16_t readModifyWrite( GenericRmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED );
 
     /// See Cpl::Rte::ModelPoint
-    uint16_t removeForceLevel( Force_T forceLevelToRemove, const Point& src ) throw();
+    uint16_t removeForceLevel( Force_T forceLevelToRemove, const void* srcData ) throw();
 
     /// See Cpl::Rte::ModelPoint
     void attach( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
 
     /// See Cpl::Rte::ModelPoint 
     void detach( SubscriberApi& observer ) throw();
+
+    /// See Cpl::Rte::ModelPoint 
+    size_t export(void* dstDataStream, uint16_t* retSequenceNumber = 0 ) const throw();
+
+    /// See Cpl::Rte::ModelPoint 
+    size_t import( const void* srcDataStream, uint16_t* retSequenceNumber = 0 ) throw();
+
+    /// See Cpl::Rte::ModelPoint 
+    size_t getExternalSize() const throw();
+
 
 public:
     /// See Cpl::Container::Key

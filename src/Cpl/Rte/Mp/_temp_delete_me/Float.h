@@ -37,7 +37,7 @@ public:
     /// See Cpl::Rte::Point.
     const char* fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0 ) throw();
 
-protected:
+public:
     /// See Cpl::Rte::Point.
     bool isEqual_( const Point& other ) const throw();
 };

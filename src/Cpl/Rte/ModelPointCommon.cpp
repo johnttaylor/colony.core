@@ -27,12 +27,12 @@ enum State_T
 
 
 ////////////////////////
-ModelPointCommon::ModelPointCommon( ModelBase& myModelBase, Point& myData, StaticInfo* staticInfo, bool isValid )
+ModelPointCommon::ModelPointCommon( ModelDatabase& myModelBase, void* myDataPtr, StaticInfo* staticInfo, int8_t validState )
     : m_staticInfo( staticInfo )
-    , m_modelBase( myModelBase )
-    , m_data( myData )
+    , m_modelDatabase( myModelBase )
+    , m_dataPtr( myDataPtr )
     , m_seqNum( SEQUENCE_NUMBER_UNKNOWN )
-    , m_valid( isValid )
+    , m_validState( validState )
     , m_forceLevel( 0 )
 {
 }
@@ -45,58 +45,84 @@ const char* ModelPointCommon::getName() const throw()
 
 uint16_t ModelPointCommon::getSequenceNumber() const throw()
 {
-    m_modelBase.lock_();
+    m_modelDatabase.lock_();
     uint16_t result = m_seqNum;
-    m_modelBase.unlock_();
+    m_modelDatabase.unlock_();
     return result;
 }
 
-bool ModelPointCommon::isValid() const throw()
+int8_t ModelPointCommon::getValidState( void ) const throw()
 {
-    m_modelBase.lock_();
-    bool result = m_valid;
-    m_modelBase.unlock_();
+    m_modelDatabase.lock_();
+    int8_t result = m_validState;
+    m_modelDatabase.unlock_();
     return result;
 }
 
-uint16_t ModelPointCommon::read( Point& dst, bool& isValid ) const throw()
+uint16_t ModelPointCommon::setInvalidState( int8_t newInvalidState ) throw()
 {
-    m_modelBase.lock_();
-    isValid = m_valid;
-    if ( isValid )
+    // Force a 'valid Invalid State value
+    if ( newInvalidState <= 0 )
     {
-        dst.copyFrom_( m_data );
+        newInvalidState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID;
+    }
+
+    m_modelDatabase.lock_();
+    if ( IS_VALID( m_validState ) )
+    {
+        m_validState = newInvalidState;
+        processChangeNotifications();
+    }
+
+    // Note: Update my state even if there was NO valid-->invalid transition - since there are many 'invalid states'
+    else
+    {
+        m_validState = newInvalidState;
+    }
+
+    uint16_t result = m_seqNum;
+    m_modelDatabase.unlock_();
+    return result;
+}
+
+uint16_t ModelPointCommon::read( void* dstData, size_t dstSize, int8_t& validState ) const throw()
+{
+    m_modelDatabase.lock_();
+    validState = m_validState;
+    if ( IS_VALID( validState ) )
+    {
+        copyDataTo_( m_dataPtr, dstSize );
     }
     uint16_t result = m_seqNum;
-    m_modelBase.unlock_();
+    m_modelDatabase.unlock_();
 
     return result;
 }
 
-uint16_t ModelPointCommon::write( const Point& src, Force_T forceLevel ) throw()
+uint16_t ModelPointCommon::write( const void* srcData, Force_T forceLevel ) throw()
 {
-    m_modelBase.lock_();
+    m_modelDatabase.lock_();
     if ( testAndSetForceLevel( forceLevel ) )
     {
-        if ( !m_valid || m_data.isEqual_( src ) == false )
+        if ( !IS_VALID( m_validState ) || isDataEqual_( srcData ) == false )
         {
-            m_data.copyFrom_( src );
+            copyDataFrom_( srcData );
             processDataUpdated();
         }
     }
     uint16_t result = m_seqNum;
-    m_modelBase.unlock_();
+    m_modelDatabase.unlock_();
 
     return result;
 }
 
 uint16_t ModelPointCommon::readModifyWrite( GenericRmwCallback& callbackClient, Force_T forceLevel )
 {
-    m_modelBase.lock_();
+    m_modelDatabase.lock_();
     if ( testAndSetForceLevel( forceLevel ) )
     {
         // Invoke the client's callback function
-        RmwCallbackResult_T result = callbackClient.genericCallback( m_data, m_valid );
+        RmwCallbackResult_T result = callbackClient.genericCallback( m_dataPtr, m_validState );
 
         // Do nothing if the callback did not change anything
         if ( result != RmwCallbackResult_T::eNO_CHANGE )
@@ -104,9 +130,9 @@ uint16_t ModelPointCommon::readModifyWrite( GenericRmwCallback& callbackClient, 
             // Handle request to invalidate the MP data
             if ( result == RmwCallbackResult_T::eINVALIDATE )
             {
-                if ( m_valid )
+                if ( IS_VALID( m_validState ) )
                 {
-                    m_valid = false;
+                    m_validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID;
                     processChangeNotifications();
                 }
             }
@@ -120,40 +146,27 @@ uint16_t ModelPointCommon::readModifyWrite( GenericRmwCallback& callbackClient, 
     }
 
     uint16_t result = m_seqNum;
-    m_modelBase.unlock_();
+    m_modelDatabase.unlock_();
 
     return result;
 }
 
 uint16_t ModelPointCommon::touch() throw()
 {
-    m_modelBase.lock_();
+    m_modelDatabase.lock_();
     processChangeNotifications();
     uint16_t result = m_seqNum;
-    m_modelBase.unlock_();
+    m_modelDatabase.unlock_();
     return result;
 }
 
-uint16_t ModelPointCommon::setInvalid() throw()
-{
-    m_modelBase.lock_();
-    if ( m_valid )
-    {
-        m_valid = false;
-        processChangeNotifications();
-    }
-
-    uint16_t result = m_seqNum;
-    m_modelBase.unlock_();
-    return result;
-}
 
 /////////////////
 void ModelPointCommon::removeAllForceLevels() throw()
 {
-    m_modelBase.lock_();
+    m_modelDatabase.lock_();
     m_forceLevel = 0;
-    m_modelBase.unlock_();
+    m_modelDatabase.unlock_();
 }
 
 void ModelPointCommon::removeForceLevel( Force_T forceLevelToRemove ) throw()
@@ -161,27 +174,88 @@ void ModelPointCommon::removeForceLevel( Force_T forceLevelToRemove ) throw()
     if ( forceLevelToRemove != eNOT_FORCED )
     {
         uint8_t bitMask = 1 << (forceLevelToRemove - 1);
-        m_modelBase.lock_();
+        m_modelDatabase.lock_();
         m_forceLevel &= ~bitMask;
-        m_modelBase.unlock_();
+        m_modelDatabase.unlock_();
     }
 }
 
-uint16_t ModelPointCommon::removeForceLevel( Force_T forceLevelToRemove, const Point& src ) throw()
+uint16_t ModelPointCommon::removeForceLevel( Force_T forceLevelToRemove, const void* srcData ) throw()
 {
-    m_modelBase.lock_();
+    m_modelDatabase.lock_();
     if ( testAndClearForceLevel( forceLevelToRemove ) )
     {
-        if ( !m_valid || m_data.isEqual_( src ) == false )
+        if ( !IS_VALID( m_validState ) || isDataEqual_( srcData ) == false )
         {
-            m_data.copyFrom_( src );
+            copyDataFrom_( srcData );
             processDataUpdated();
         }
     }
     uint16_t result = m_seqNum;
-    m_modelBase.unlock_();
+    m_modelDatabase.unlock_();
 
     return result;
+}
+
+/////////////////
+size_t ModelPointCommon::export(void* dstDataStream, uint16_t* retSeqNum ) const throw()
+{
+    size_t result = 0;
+    if ( dstDataStream )
+    {
+        m_modelDatabase.lock_();
+        
+        // Export Data
+        size_t dataSize = getSize();
+        memcpy( dstDataStream, getDataPointer_(), dataSize );
+        
+        // Export Valid State
+        uint8_t* ptr = (uint8_t*) dstDataStream;
+        memcpy( ptr+dataSize, &m_validState, sizeof( m_validState ) );
+
+        // Return the Sequence number when requested
+        if ( retSeqNum )
+        {
+            *retSeqNum = m_seqNum;
+        }
+
+        m_modelDatabase.unlock_();
+        result = getExternalSize();
+    }
+    return result;
+}
+
+size_t ModelPointCommon::import( const void* srcDataStream, uint16_t* retSeqNum ) throw()
+{
+    size_t result = 0;
+    if ( srcDataStream )
+    {
+        m_modelDatabase.lock_();
+
+        // Import Data
+        size_t dataSize = getSize();
+        memcpy( getDataPointer_(), srcDataStream, dataSize );
+
+        // Import Valid State
+        uint8_t* ptr = (uint8_t*) srcDataStream;
+        memcpy( &m_validState, ptr+dataSize, sizeof( m_validState ) );
+
+        // Generate change notifications and return the Sequence number when requested
+        processDataUpdated();
+        if ( retSeqNum )
+        {
+            *retSeqNum = m_seqNum;
+        }
+
+        m_modelDatabase.unlock_();
+        result = getExternalSize();
+    }
+    return result;
+}
+
+size_t ModelPointCommon::getExternalSize() const throw()
+{
+    return getSize() + sizeof( m_validState );
 }
 
 
@@ -202,7 +276,7 @@ const void* ModelPointCommon::getRawKey( unsigned* returnRawKeyLenPtr ) const
 void ModelPointCommon::processDataUpdated() throw()
 {
     // By definition - Point now has valid date
-    m_valid = true;
+    m_validState = MODEL_POINT_STATE_VALID;
     processChangeNotifications();
 }
 
@@ -241,7 +315,7 @@ void ModelPointCommon::detach( SubscriberApi& observer ) throw()
 /////////////////
 void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Event_T event ) throw()
 {
-    m_modelBase.lock_();
+    m_modelDatabase.lock_();
 
     switch ( (State_T) subscriber.getState_() )
     {
@@ -341,7 +415,7 @@ void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Eve
             break;
     }
 
-    m_modelBase.unlock_();
+    m_modelDatabase.unlock_();
 }
 
 void ModelPointCommon::transitionToSubscribed( SubscriberApi& subscriber ) throw()

@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Point_Basic_h_
-#define Cpl_Rte_Point_Basic_h_
+#ifndef Cpl_Rte_Mp_Basic_h_
+#define Cpl_Rte_Mp_Basic_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -13,7 +13,8 @@
 /** @file */
 
 
-#include "Cpl/Rte/Point.h"
+#include "Cpl/Rte/ModelPoint.h"
+#include "Cpl/System/Assert.h"
 #include <string.h>
 
 ///
@@ -21,18 +22,18 @@ namespace Cpl {
 ///
 namespace Rte {
 ///
-namespace Point {
+namespace Mp {
 
 
-/** This template class provides a mostly concrete implementation for a Point
-    who's data is a C primitive type of type: 'ELEMTYPE'.
+/** This template class provides a mostly concrete implementation for a Model 
+    Point who's data is a C primitive type of type: 'ELEMTYPE'.
 
     NOTES:
         1) All methods in this class are NOT thread Safe unless explicitly
            documented otherwise.
  */
 template<class ELEMTYPE>
-class PointBasic : public Cpl::Rte::Point
+class Basic : public Cpl::Rte::ModelPoint
 {
 protected:
     /// The element's value
@@ -41,43 +42,13 @@ protected:
 
 public:
     /// Constructor
-    PointBasic( ELEMTYPE initialValue = (ELEMTYPE) 0 )
+    Basic( ELEMTYPE initialValue = (ELEMTYPE) 0 )
         :m_data( initialValue ) {}
 
 
 public:
-    /// See Cpl::Rte::Point
+    /// See Cpl::Rte::ModelPoint
     size_t getSize() const throw()
-    {
-        return sizeof( ELEMTYPE );
-    }
-
-    /// See Cpl::Rte::Point
-    size_t export(void* dstDataStream) const throw()
-    {   
-        size_t result = 0;
-        if ( dstDataStream )
-        {
-            result = sizeof( data );
-            memcpy( dstDataStream, &m_data, result );
-        }
-        return result;
-    }
-
-    /// See Cpl::Rte::Point
-    size_t import( const void* srcDataStream ) throw()
-    {   
-        size_t result = 0;
-        if ( srcDataStream )
-        {
-            result = sizeof( data );
-            memcpy( &m_data, srcDataStream, result );
-        }
-        return result;
-    }
-
-    /// See Cpl::Rte::Point
-    virtual size_t getExternalSize( void ) const
     {
         return sizeof( ELEMTYPE );
     }
@@ -96,22 +67,35 @@ public:
     }
 
 
-protected:
-    /// See Cpl::Rte::Point
-    void copyFrom_( const Point& src ) throw()
+public:
+    /// See Cpl::Rte::ModelPoint
+    void copyDataFrom_( const void* srcData ) throw()
     {
-        m_data = src.m_data;
+        m_data = *((ELEMTYPE*) srcData);
+    }
+
+    /// See Cpl::Rte::ModelPoint
+    void copyDataTo_( void* dstData, size_t dstSize ) const throw()
+    {
+        CPL_SYSTEM_ASSERT( dstSize == sizeof( ELEMTYPE ) );
+        *((ELEMTYPE*) dstData) = m_data;
+    }
+
+    /// See Cpl::Rte::ModelPoint
+    void copyDataFrom_( void* srcData) throw()
+    {
+        m_data = *((ELEMTYPE*) srcData);
     }
 
     /// See Cpl::Rte::Point.  The default implementation is for integers
-    bool isEqual_( const Point& other ) const throw()
+    bool isDataEqual_( const void* otherData ) const throw()
     {
-        ELEMTYPE left = *((ELEMTYPE*) other.getDataPointer());
+        ELEMTYPE left = *((ELEMTYPE*) otherData);
         return m_data == left;
     }
 
     /// See Cpl::Rte::Point.  
-    void* getDataPointer() const throw()
+    void* getDataPointer_() const throw()
     {
         return &m_data;
     }

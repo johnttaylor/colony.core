@@ -21,9 +21,11 @@
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "task.h"
+#include "Cpl/System/FatalError.h"
 
 
-
+/// Mapping
+#define CPL_SYSTEM_ASSERT_MAP(e)                if (!(e)) { Cpl::System::FatalError::logf( "ASSERT Failed at: file=%s, line=%d, func=%s\n", __FILE__, __LINE__, __FUNC__ );}
 
 /// Mapping
 #define Cpl_System_Thread_NativeHdl_T_MAP       TaskHandle_t  

@@ -22,6 +22,11 @@
 #include <time.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <assert.h>
+
+
+/// Win32 Mapping
+#define CPL_SYSTEM_ASSERT_MAP(e)                assert(e)
 
 /// Win32 Mapping
 #define Cpl_System_Thread_NativeHdl_T_MAP       HANDLE  

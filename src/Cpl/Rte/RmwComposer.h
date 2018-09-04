@@ -30,16 +30,16 @@ namespace Rte {
 
     Template Arguments:
         CONTEXT - The class that implements the Callback function
-        POINT   - The Model Point's concrete Point Type.
+        DATA    - The type of the Model Point Data instance.
  */
-template <class CONTEXT, class POINT>
+template <class CONTEXT, class DATA>
 class RmwComposer : public ModelPoint::GenericRmwCallback
 {
 public:
     /** Define a callback method function for the Modify Point callback (See
         Cpl::Rte::ModelPoint::RmwCallback for additional details)
      */
-    typedef void (CONTEXT::*ModifyFunc_T)(POINT& data, bool isValid) throw();
+    typedef void (CONTEXT::*ModifyFunc_T)(DATA& data, int8_t validState) throw();
 
 
 protected:
@@ -57,27 +57,27 @@ public:
 
 protected:
     /// See Cpl::Rte::ModelPoint::GenericRmwCallback
-    ModelPoint::RmwCallbackResult_T genericCallback( Point& data, bool isValid ) throw();
+    ModelPoint::RmwCallbackResult_T genericCallback( void* data, int8_t validState ) throw();
 
 };
 
 /////////////////////////////////////////////////////////////////////////////
 //                  INLINE IMPLEMENTAION
 /////////////////////////////////////////////////////////////////////////////
-template <class CONTEXT, class POINT>
-Cpl::Rte::RmwComposer<CONTEXT, POINT>::RmwComposer( CONTEXT&       context,
-                                                    ModifyFunc_T   modifyCallback )
+template <class CONTEXT, class DATA>
+Cpl::Rte::RmwComposer<CONTEXT, DATA>::RmwComposer( CONTEXT&       context,
+                                                   ModifyFunc_T   modifyCallback )
     :m_context( context )
     , m_modifyCb( modifyCallback )
 {
 }
 
 /////////////////
-template <class CONTEXT, class POINT>
-Cpl::Rte::ModelPoint::RmwCallbackResult_T Cpl::Rte::RmwComposer<CONTEXT, POINT>::genericCallback( Point& data, bool isValid ) throw()
+template <class CONTEXT, class DATA>
+Cpl::Rte::ModelPoint::RmwCallbackResult_T Cpl::Rte::RmwComposer<CONTEXT, DATA>::genericCallback( void* data, int8_t validState) throw()
 {
     // Notify context
-    return (m_context.*m_modifyCb)( *((POINT*)&data), isValid );
+    return (m_context.*m_modifyCb)( *((DATA*)data), validState );
 }
 
 

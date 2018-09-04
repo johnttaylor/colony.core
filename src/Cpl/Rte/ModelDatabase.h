@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_ModelBase_h_
-#define Cpl_Rte_ModelBase_h_
+#ifndef Cpl_Rte_ModelDatabase_h_
+#define Cpl_Rte_ModelDatabase_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -20,12 +20,12 @@ namespace Rte {
 
 
 /** This class defines the basic operations that can be performed on a Model
-    Base.  A Model base is a collection of instantiated Model Points.
+    Base.  A Model Database is a collection of instantiated Model Points.
 
     All methods in this class are thread Safe unless explicitly documented 
     otherwise.
  */
-class ModelBase
+class ModelDatabase
 {
 
 public:
@@ -33,7 +33,7 @@ public:
         other classes in the Cpl::Rte namespace.  It is ONLY public to avoid 
         the tight coupling of C++ friend mechanism.
 
-        This method locks the Model Base.  For every call to lock() there must
+        This method locks the Model Database.  For every call to lock() there must
         be corresponding call to unlock();
     */
     virtual void lock_() throw() = 0;
@@ -42,14 +42,14 @@ public:
         other classes in the Cpl::Rte namespace.  It is ONLY public to avoid 
         the tight coupling of C++ friend mechanism.
 
-        This method unlocks the Model Base.
+        This method unlocks the Model Database.
     */
     virtual void unlock_() throw() = 0;
 
 
 public:
     /// Virtual destructor to make the compiler happy
-    virtual ~ModelBase() {}
+    virtual ~ModelDatabase() {}
 };
 
 

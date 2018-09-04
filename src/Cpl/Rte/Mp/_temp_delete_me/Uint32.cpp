@@ -11,45 +11,35 @@
 /** @file */
 
 
-#include "Float.h"
+#include "Uint32.h"
 #include "Cpl/Text/atob.h"
-#include "Cpl/Math/real.h"
 
 ///
 using namespace Cpl::Rte::Point;
 
 ///////////////////////////////////////////////////////////////////////////////
-Float::Float( float initialValue )
-    :PointBasic( initialValue )
-{
-}
+Uint32::Uint32( uint32_t initialValue ):PointBasic( initialValue ) {}
 
-bool Float::isEqual_( const Point& other ) const throw()
+bool Uint32::toString( Cpl::Text::String& dst, bool append=false ) const throw()
 {
-    float left = *((float*) other.getDataPointer());
-    return Cpl::Math::areFloatsEqual( m_data, left );
-}
-
-bool Float::toString( Cpl::Text::String& dst, bool append=false ) const throw()
-{
-    dst.formatOpt( append, "%g", (double) m_data );
+    dst.formatOpt( append, "%lu", (unsigned long) m_data );
     return true;
 }
 
-const char* Float::fromString( const char* src, const char* terminationChars, Cpl::Text::String* errorMsg ) throw()
+const char* Uint32::fromString( const char* src, const char* terminationChars, Cpl::Text::String* errorMsg ) throw()
 {
-    const char* endptr;
-    double      value;
-
-    if ( Cpl::Text::a2d( value, src, terminationChars, &endptr ) )
+    const char*   endptr;
+    unsigned long value;
+    if ( Cpl::Text::a2ul( value, src, 10, terminationChars, &endptr ) )
     {
-        m_data = (float) value;
+        m_data = (uint32_t) value;
         return endptr;
     }
 
     if ( errorMsg )
     {
-        *errorMsg = "Conversion to a float failed.";
+        *errorMsg = "Conversion to a uint32_t failed.";
     }
     return 0;
 }
+

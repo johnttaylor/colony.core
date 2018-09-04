@@ -22,7 +22,11 @@
 #include <semaphore.h>
 #include <time.h>
 #include <limits.h>
+#include <assert.h>
 
+
+/// Mapping
+#define CPL_SYSTEM_ASSERT_MAP(e)                assert(e)
 
 /// Mapping
 #define Cpl_System_Thread_NativeHdl_T_MAP       pthread_t

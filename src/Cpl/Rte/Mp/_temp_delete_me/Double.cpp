@@ -26,7 +26,7 @@ Double::Double( double initialValue )
 
 bool Double::isEqual_( const Point& other ) const throw()
 {
-    double left = *((float*) other.getDataPointer());
+    double left = *((float*) other.getDataPointer_());
     return Cpl::Math::areDoublesEqual( m_data, left );
 }
 

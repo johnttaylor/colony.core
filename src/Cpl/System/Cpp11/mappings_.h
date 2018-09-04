@@ -25,8 +25,10 @@
 #include <time.h>
 #include <stdlib.h>
 #include <thread>
+#include <assert.h>
 
-
+/// C++11  Mapping
+#define CPL_SYSTEM_ASSERT_MAP(e)                assert(e)
 
 /// C++11 Mapping
 #define Cpl_System_Thread_NativeHdl_T_MAP       std::thread::native_handle_type
