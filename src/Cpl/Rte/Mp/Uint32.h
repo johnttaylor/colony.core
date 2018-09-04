@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Point_Uint32_h_
-#define Cpl_Rte_Point_Uint32_h_
+#ifndef Cpl_Rte_Mp_Uint32_h_
+#define Cpl_Rte_Mp_Uint32_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -13,34 +13,34 @@
 /** @file */
 
 
-#include "Cpl/Rte/Point/Basic.h"
+#include "Cpl/Rte/Mp/Basic.h"
 
 ///
 namespace Cpl {
 ///
 namespace Rte {
 ///
-namespace Point {
+namespace Mp {
 
 
 /** This class provides a concrete implementation for a Point who's data is a 
     uint32_t.
-
-    NOTES:
-        1) All methods in this class are NOT thread Safe unless explicitly
-           documented otherwise.
  */
-class Uint32 : public PointBasic<uint32_t>
+class Uint32 : public Basic<uint32_t>
 {
+protected:
+    /// Flag for to/from string() method
+    bool m_decimal;
+
 public:
     /// Constructor
-    Uint32( uint32_t initialValue = 0 );
+    Uint32( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo* staticInfo, bool decimalFormat=true, uint32_t initialValue = 0, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
 
 public:
-    /// See Cpl::Rte::Point.
+    /// See Cpl::Rte::ModelPoint.
     bool toString( Cpl::Text::String& dst, bool append=false ) const throw();
 
-    /// See Cpl::Rte::Point.
+    /// See Cpl::Rte::ModelPoint.
     const char* fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0 ) throw();
 };
 

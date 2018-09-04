@@ -46,8 +46,8 @@ protected:
     /// Sequence number used for tracking changes in the Point data
     uint16_t                                m_seqNum;
 
-    /// Force level
-    uint8_t                                 m_forceLevel;
+    /// Locked state
+    bool                                    m_locked;
 
     /// Internal valid/invalid state
     int8_t                                  m_validState;
@@ -74,10 +74,10 @@ public:
     int8_t getValidState( void ) const throw();
 
     /// See Cpl::Rte::ModelPoint
-    void removeAllForceLevels() throw();
+    bool isLocked() const throw();
 
     /// See Cpl::Rte::ModelPoint
-    void removeForceLevel( Force_T forceLevelToRemove ) throw();
+    void removeLock() throw();
 
 
 protected:
@@ -85,13 +85,10 @@ protected:
     uint16_t read( void* dstData, size_t dstSize, int8_t& validState ) const throw();
 
     /// See Cpl::Rte::ModelPoint
-    uint16_t write( const void* srcData, Force_T forceLevel = eNOT_FORCED ) throw();
+    uint16_t write( const void* srcData, LockRequest_T lockRequest = eNO_REQUEST  ) throw();
 
     /// See Cpl::Rte::ModelPoint
-    uint16_t readModifyWrite( GenericRmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED );
-
-    /// See Cpl::Rte::ModelPoint
-    uint16_t removeForceLevel( Force_T forceLevelToRemove, const void* srcData ) throw();
+    uint16_t readModifyWrite( GenericRmwCallback& callbackClient, LockRequest_T lockRequest = eNO_REQUEST  );
 
     /// See Cpl::Rte::ModelPoint
     void attach( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
@@ -138,30 +135,23 @@ protected:
      */
     void processChangeNotifications() throw();
 
-    /** Internal helper method that checks if the specified force level has
-        sufficient privileges to write to the Model Point's data and returns
-        true if it does. In addition, when the method returns trues AND the
-        specified force level is eFORCE_LEVEL0 or higher privilege the internal
-        force level is updated to the new specified force level.
+    /** Internal helper method that manages testing and updating the locked
+        state.
+        
+        Rules:
+        1) If 'lockRequest' is eNO_REQUEST, the method only returns true if
+           the MP is in the unlocked state
+        2) If 'lockRequest' is eLOCK, the method only returns if the MP is in
+           the unlocked state.  In addition, when true is returned the MP is
+           put into the locked state.
+        3) If 'lockRequest' is eUNLOCK, the method always returns true and
+           the MP is left in the unlocked state.
 
         This method is NOT thread safe.
      */
-    bool testAndSetForceLevel( Force_T forceLevel ) throw();
+    bool testAndUpdateLock( LockRequest_T lockRequest ) throw();
 
-    /** Internal helper method that checks if the specified force level has
-        sufficient privileges to write to the Model Point's data and returns
-        true if it does. In addition the method ALWAYS clears the specified
-        'forceLevel'
 
-        This method is NOT thread safe.
-     */
-    bool testAndClearForceLevel( Force_T forceLevel ) throw();
-
-    /** Helper method that returns the highest actively set force level.
-
-        This method is NOT thread safe.
-     */
-    Force_T ModelPointCommon::getHighestForceLevel() const throw();
 
 
 protected:

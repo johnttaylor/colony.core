@@ -21,12 +21,57 @@
 
 /** This symbol provides the default 'Invalid' state value for a Model Point. 
     The application is free define/apply its own meaning to the set of 
-    'invalid-values'.  NOTE: All 'State' values MUST be a POSITIVE integer, 
-    i.e. between 0 and 127.  Negative values ARE Reserved by the RTE Engine.  
+    'invalid-values'.  NOTE: All 'Invalid' values MUST be greater than zero, 
+    i.e. between 1 and 127.  Zero and negative values ARE Reserved by the RTE 
+    Engine.  
  */
 #ifndef OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID
-#define OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID   1
+#define OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID     1
 #endif
+
+/** Quote character used for ALL "text" elements when encoding/decoding to text.
+    A "text" element is an Element that whose value when converted to text can 
+    contain special ASCII characters such as commas, spaces, quotes, question 
+    mark, dollar sign, semi-colon, etc.
+ */
+#ifndef OPTION_CPL_RTE_MODEL_POINT_QUOTE_CHAR
+#define OPTION_CPL_RTE_MODEL_POINT_QUOTE_CHAR        '"'
+#endif
+
+
+/// Escape character used for ALL String element when encoding/decoding to text.
+#ifndef OPTION_CPL_RTE_MODEL_POINT_ESCAPE_CHAR
+#define OPTION_CPL_RTE_MODEL_POINT_ESCAPE_CHAR       '`'
+#endif
+
+
+/** Locked character.  This character is used to prefix ALL values (when converted
+    to text) when the current value is locked.  The lock character is also used
+    to lock the element's value on the setToText() calls - when it is FIRST character
+    in the source text string.
+ */
+#ifndef OPTION_CPL_RTE_MODEL_POINT_LOCK_CHAR
+#define OPTION_CPL_RTE_MODEL_POINT_LOCK_CHAR        '!'
+#endif
+
+
+/** Unlocked character.  This character is used to unlock the element's value on
+    the setToText() calls - when it is the FIRST and ONLY character in the source
+    text string.
+ */
+#ifndef OPTION_CPL_RTE_MODEL_POINT_UNLOCK_CHAR
+#define OPTION_CPL_RTE_MODEL_POINT_UNLOCK_CHAR      '^'
+#endif
+
+
+/** Invalid State character.  This character is used in place of an actual value
+    (when the element's value is converted to text) when the element is in the
+    invalid state
+ */
+#ifndef OPTION_CPL_RTE_MODEL_POINT_INVALID_CHAR
+#define OPTION_CPL_RTE_MODEL_POINT_INVALID_CHAR     '?'
+#endif
+
 
 
 ///
@@ -54,28 +99,20 @@ class ModelPoint :
     public Cpl::Container::DictItem
 {
 public:
-    /// Force levels
-    enum Force_T
+    /// Options related to the Model Point's locked state
+    enum LockRequest_T
     {
-        eNOT_FORCED   = 0,       //!< No 'force level' is applied (i.e. nominal write operations)
-        eFORCE_LEVEL1 = 1,       //!< Lowest possible force level
-        eFORCE_LEVEL2 = 2,       //!< Next highest force level
-        eFORCE_LEVEL3 = 3,       //!< Next highest force level
-        eFORCE_LEVEL4 = 4,       //!< Next highest force level
-        eFORCE_LEVEL5 = 5,       //!< Next highest force level
-        eFORCE_LEVEL6 = 6,       //!< Next highest force level
-        eFORCE_LEVEL7 = 7,       //!< Next highest force level
-        eFORCE_LEVEL8 = 8,       //!< Highest possible force level
+        eNO_REQUEST,            //!< No change in the MP's lock state is requested
+        eLOCK,                  //!< Request to lock the MP.  If the MP is already lock - the request is ignored and the update operation silent fails
+        eUNLOCK,                //!< Request to unlock the MP.  If the MP is already unlocked - the request is ignored and the update operation is completed
     };
 
-
-public:
     /// Possible results of the read-modify-write callback function
     enum RmwCallbackResult_T
     {
-        eNO_CHANGE,         //!< Indicates the callback function has NOT modify the Model Point's data.
-        eCHANGED,           //!< Indicates the callback function has modify the Model Point's data
-        eINVALIDATE,        //!< Request that the Model Point's data state be set to eINVALID
+        eNO_CHANGE,             //!< Indicates the callback function has NOT modify the Model Point's data.
+        eCHANGED,               //!< Indicates the callback function has modify the Model Point's data
+        eINVALIDATE,            //!< Request that the Model Point's data state be set to eINVALID
     };
 
 public:
@@ -201,36 +238,27 @@ public:
      */
     virtual const char* fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t retSequenceNumber=0 ) throw() = 0;
 
-    /** This method returns the maximum size, in bytes not including the null
-        terminator, of the string returned by the toString() method.
+    /** This method returns a string identifier for the Element's data type.
+        This value is NOT guaranteed to be unique, it is provided to help
+        the 'human' when using the to/from String interface to view/set
+        Model Point values.
      */
-    virtual size_t getToStringMaxSize() throw() = 0;
-
+     virtual const char* getTypeAsText() const throw() = 0;
 
 
 public:
-    /** This method unconditionally removes all force levels from the MP, but
-        does not change the MP data/state. If the MP is currently not in a
-        forced state - nothing is done.  This method never triggers change
-        notification(s).
-
-        NOTE: The Application is responsible for enforcing its own force level
-              usage constraints, e.g. who should/allowed-to be calling the
-              remove force level methods?
-    */
-    virtual void removeAllForceLevels() throw() = 0;
-
-    /** This method removes a single force level from the MP, but does not
-        change the MP data/state. If the MP is currently not in a forced state
-        or the specified force level is not active - nothing is done.  This
-        method never triggers change notification(s).
-
-        NOTE: Essential a 'list' of all active force level is maintained.
-              This means than when removing the highest active force level,
-              the MP's force level reverts to the next active highest force
-              level set.
+    /** This method returns true if the Model Point is in the locked state.
+        In the locked state - ALL WRITE/UPDATE OPERATIONS (except for changing 
+        the locked state) are silently ignored/dropped.
      */
-    virtual void removeForceLevel( Force_T forceLevelToRemove ) throw() = 0;
+    virtual bool isLocked() const throw() = 0;
+
+    /** This method unconditionally removes the lock from the MP, but
+        does not change the MP data/state. If the MP is currently not in the
+        locked state - nothing is done.  This method never triggers change
+        notification(s).
+     */
+    virtual void removeLock() throw() = 0;
 
 
 public:
@@ -268,7 +296,6 @@ public:
     virtual size_t getExternalSize() const = 0;
     
 
-
 protected:
     /** This method copies the Model Point's content to the caller's Point
         instance. The method returns the Model Point's sequence number after
@@ -290,12 +317,11 @@ protected:
         internal data.  The method returns the Model Point's sequence number
         after the method completes.
 
-        Model Point supports the concept of a client 'forcing' the MP's data
-        value.  When a MP's data has been forced - any attempted writes to the
-        MP will SILENTLY fail.  Once the MP's data is locked - only write calls
-        with the original forceLevel or higher can update the MP's data.  The
-        Application uses the removeForce() command to undo/remove a active
-        force level.
+        Model Point supports the concept of a client 'locking' the MP's data
+        value.  When a MP's data has been locked - any attempted writes to the
+        MP will SILENTLY fail.  The Application uses the removeLock() method 
+        or the 'eUNLOCK' lock request to remove the locked state from the MP's
+        data.
 
         Notes:
         1) The assumption is that Model Point's internal data and 'srcData' are 
@@ -303,17 +329,24 @@ protected:
         2) The data size of the Model Points data instance is ALWAYS honored
            when coping the data from 'srcData'
      */
-    virtual uint16_t write( const void* srcData, Force_T forceLevel = eNOT_FORCED ) throw() = 0;
+    virtual uint16_t write( const void* srcData, LockRequest_T lockRequest = eNO_REQUEST ) throw() = 0;
 
     /** This method is used to perform a Read-Modify-Write operation on the
         Model Point's data.  The method returns the Model Point's sequence
         number after the method completes.
 
-        The callback will not be called (and no update to the MP data occurs)
-        if the specified 'forceLevel' is not sufficient to allow a write
-        operation.  When the callback method is called, the specified force
-        level will only be applied to the MP if the callback methods returns
-        eCHANGED or eINVALIDATE.
+        The following describe the behavior of the 'lockRequest' argument:
+        1) The callback will not be called (and no update to the MP data occurs)
+           if the Model Point is in the currently in the locked state and 
+           'lockRequest' is NOT equal to eUNLOCK.
+        2) The callback is always called when 'lockRequest' is equal to 
+           eUNLOCK. At the end of the callback, the model point will be put
+           into the unlocked state.
+        3) The callback will be called when 'lockRequest' is eNO_REQUEST and
+           the Model Point is in the unlocked state.
+        4) The callback will be called when 'lockRequest' is eLOCK and the 
+           Model Point is in the unlocked state.  At the end of callback, the
+           model point will be put into the locked state.
 
         This method allows a caller to read, write, read/write all or potions
         of the Model Point's data. The caller's callback function should be
@@ -331,32 +364,10 @@ protected:
               specific read, write, read-modify-write methods in addition or in
               lieu of the read/write methods in this interface.
      */
-    virtual uint16_t readModifyWrite( GenericRmwCallback& callbackClient, Force_T forceLevel = eNOT_FORCED ) = 0;
+    virtual uint16_t readModifyWrite( GenericRmwCallback& callbackClient, LockRequest_T lockRequest = eNO_REQUEST ) = 0;
 
-    /** This method removes a single force level from the MP AND potentially
-        updates the MP's data in a single atomic operation. See the truth table
-        for additional details.  The method returns the MP's sequence number
-        (after the updated occurred) if the MP data was updated; else if the MP
-        data was NOT updated then SEQUENCE_NUMBER_UNKNOWN is returned.
 
-        Note: the 'forceLevelToRemove' is ALWAYS removed, regardless of whether
-              or not the MP was updated
-        <pre>
-
-        MP active force level   forceLevelToRemove  | MP data updated
-        ---------------------   ------------------  | ----------------
-              not-forced            1-8             |    true
-              1-8                   >= activeLevel  |    true
-              1-8                   < activeLevel   |    false
-
-        </pre>
-
-        The method returns the Model Point's sequence number after the method
-        completes.  The sequence number will have only changed if the MP was
-        updated.
-     */
-    virtual uint16_t removeForceLevel( Force_T forceLevelToRemove, const void* srcData ) throw() = 0;
-
+protected:
     /** This method is used to attach a subscriber to a Model Point.  Once
         attached the Subscriber will receive a change notification (aka a
         callback) every time the Model Point's data/state changes. Once, a

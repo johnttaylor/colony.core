@@ -32,8 +32,8 @@ ModelPointCommon::ModelPointCommon( ModelDatabase& myModelBase, void* myDataPtr,
     , m_modelDatabase( myModelBase )
     , m_dataPtr( myDataPtr )
     , m_seqNum( SEQUENCE_NUMBER_UNKNOWN )
+    , m_locked( false )
     , m_validState( validState )
-    , m_forceLevel( 0 )
 {
 }
 
@@ -99,10 +99,10 @@ uint16_t ModelPointCommon::read( void* dstData, size_t dstSize, int8_t& validSta
     return result;
 }
 
-uint16_t ModelPointCommon::write( const void* srcData, Force_T forceLevel ) throw()
+uint16_t ModelPointCommon::write( const void* srcData, LockRequest_T lockRequest  ) throw()
 {
     m_modelDatabase.lock_();
-    if ( testAndSetForceLevel( forceLevel ) )
+    if ( testAndUpdateLock( lockRequest ) )
     {
         if ( !IS_VALID( m_validState ) || isDataEqual_( srcData ) == false )
         {
@@ -116,10 +116,10 @@ uint16_t ModelPointCommon::write( const void* srcData, Force_T forceLevel ) thro
     return result;
 }
 
-uint16_t ModelPointCommon::readModifyWrite( GenericRmwCallback& callbackClient, Force_T forceLevel )
+uint16_t ModelPointCommon::readModifyWrite( GenericRmwCallback& callbackClient, LockRequest_T lockRequest  )
 {
     m_modelDatabase.lock_();
-    if ( testAndSetForceLevel( forceLevel ) )
+    if ( testAndUpdateLock( lockRequest ) )
     {
         // Invoke the client's callback function
         RmwCallbackResult_T result = callbackClient.genericCallback( m_dataPtr, m_validState );
@@ -162,40 +162,21 @@ uint16_t ModelPointCommon::touch() throw()
 
 
 /////////////////
-void ModelPointCommon::removeAllForceLevels() throw()
+void ModelPointCommon::removeLock() throw()
 {
     m_modelDatabase.lock_();
-    m_forceLevel = 0;
+    m_locked = false;
     m_modelDatabase.unlock_();
 }
 
-void ModelPointCommon::removeForceLevel( Force_T forceLevelToRemove ) throw()
-{
-    if ( forceLevelToRemove != eNOT_FORCED )
-    {
-        uint8_t bitMask = 1 << (forceLevelToRemove - 1);
-        m_modelDatabase.lock_();
-        m_forceLevel &= ~bitMask;
-        m_modelDatabase.unlock_();
-    }
-}
-
-uint16_t ModelPointCommon::removeForceLevel( Force_T forceLevelToRemove, const void* srcData ) throw()
+bool ModelPointCommon::isLocked() const throw()
 {
     m_modelDatabase.lock_();
-    if ( testAndClearForceLevel( forceLevelToRemove ) )
-    {
-        if ( !IS_VALID( m_validState ) || isDataEqual_( srcData ) == false )
-        {
-            copyDataFrom_( srcData );
-            processDataUpdated();
-        }
-    }
-    uint16_t result = m_seqNum;
+    bool result = m_locked;
     m_modelDatabase.unlock_();
-
     return result;
 }
+
 
 /////////////////
 size_t ModelPointCommon::export(void* dstDataStream, uint16_t* retSeqNum ) const throw()
@@ -442,65 +423,30 @@ void ModelPointCommon::transitionToNotifyPending( SubscriberApi& subscriber ) th
 
 
 /////////////////
-bool ModelPointCommon::testAndSetForceLevel( Force_T forceLevel ) throw()
+bool ModelPointCommon::testAndUpdateLock( LockRequest_T lockRequest ) throw()
 {
     bool result = false;
-    if ( m_forceLevel == 0 )
+    if ( lockRequest == eUNLOCK )
     {
-        result = true;
-        if ( forceLevel != eNOT_FORCED )
+        m_locked = false;
+        result   = true;
+    }
+    else if ( lockRequest == eLOCK )
+    {
+        if ( m_locked == false )
         {
-            m_forceLevel = 1 << (forceLevel - 1);
+            m_locked = true;
+            result   = true;
         }
     }
     else
     {
-        // Check if the new force level is sufficient
-        if ( forceLevel >= getHighestForceLevel() )
-        {
-            result        = true;
-            m_forceLevel |= 1 << (forceLevel - 1);
-        }
-    }
-
-    return result;
-}
-
-bool ModelPointCommon::testAndClearForceLevel( Force_T forceLevel ) throw()
-{
-    bool result = false;
-    if ( m_forceLevel == 0 )
-    {
-        result = true;
-    }
-    else
-    {
-        // Check if the new force level is sufficient
-        if ( forceLevel >= getHighestForceLevel() )
+        if ( m_locked == false )
         {
             result = true;
         }
     }
 
-    // Clear the force level
-    uint8_t bitMask = 1 << (forceLevel - 1);
-    m_forceLevel &= ~bitMask;
-
     return result;
 }
 
-ModelPoint::Force_T ModelPointCommon::getHighestForceLevel() const throw()
-{
-    // Find the highest force level that is current set
-    unsigned mask;
-    int      idx;
-    for ( mask=0x80, idx=8; idx > 0; idx--, mask >>= 1 )
-    {
-        if ( (m_forceLevel & mask) == mask )
-        {
-            return (Force_T) idx;
-        }
-    }
-
-    return eNOT_FORCED;
-}

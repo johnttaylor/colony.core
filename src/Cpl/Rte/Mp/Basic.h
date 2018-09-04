@@ -13,7 +13,7 @@
 /** @file */
 
 
-#include "Cpl/Rte/ModelPoint.h"
+#include "Cpl/Rte/ModelPointCommon.h"
 #include "Cpl/System/Assert.h"
 #include <string.h>
 
@@ -33,7 +33,7 @@ namespace Mp {
            documented otherwise.
  */
 template<class ELEMTYPE>
-class Basic : public Cpl::Rte::ModelPoint
+class Basic : public Cpl::Rte::ModelPointCommon
 {
 protected:
     /// The element's value
@@ -42,8 +42,9 @@ protected:
 
 public:
     /// Constructor
-    Basic( ELEMTYPE initialValue = (ELEMTYPE) 0 )
-        :m_data( initialValue ) {}
+    Basic( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo* staticInfo, ELEMTYPE initialValue = (ELEMTYPE) 0, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+        :ModelPoint(myModelBase, &m_data, staticInfo, validState )
+        , m_data( initialValue ) {}
 
 
 public:
@@ -55,13 +56,13 @@ public:
 
 public:
     /// Data accessor
-    ELEMTYPE getValue()
+    virtual ELEMTYPE getValue()
     {
         return m_data;
     }
 
     /// Data accessor
-    void setValue( ELEMTYPE newValue )
+    virtual void setValue( ELEMTYPE newValue )
     {
         m_data = newValue;
     }
