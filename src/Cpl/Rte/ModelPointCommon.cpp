@@ -11,6 +11,8 @@
 
 #include "ModelPointCommon.h"
 #include "MailboxServer.h"
+#include "Cpl/Text/strip.h"
+#include "Cpl/Text/atob.h"
 
 ///
 using namespace Cpl::Rte;
@@ -59,7 +61,7 @@ int8_t ModelPointCommon::getValidState( void ) const throw()
     return result;
 }
 
-uint16_t ModelPointCommon::setInvalidState( int8_t newInvalidState ) throw()
+uint16_t ModelPointCommon::setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest ) throw()
 {
     // Force a 'valid Invalid State value
     if ( newInvalidState <= 0 )
@@ -68,16 +70,19 @@ uint16_t ModelPointCommon::setInvalidState( int8_t newInvalidState ) throw()
     }
 
     m_modelDatabase.lock_();
-    if ( IS_VALID( m_validState ) )
+    if ( testAndUpdateLock( lockRequest ) )
     {
-        m_validState = newInvalidState;
-        processChangeNotifications();
-    }
+        if ( IS_VALID( m_validState ) )
+        {
+            m_validState = newInvalidState;
+            processChangeNotifications();
+        }
 
-    // Note: Update my state even if there was NO valid-->invalid transition - since there are many 'invalid states'
-    else
-    {
-        m_validState = newInvalidState;
+        // Note: Update my state even if there was NO valid-->invalid transition - since there are many 'invalid states'
+        else
+        {
+            m_validState = newInvalidState;
+        }
     }
 
     uint16_t result = m_seqNum;
@@ -99,7 +104,7 @@ uint16_t ModelPointCommon::read( void* dstData, size_t dstSize, int8_t& validSta
     return result;
 }
 
-uint16_t ModelPointCommon::write( const void* srcData, LockRequest_T lockRequest  ) throw()
+uint16_t ModelPointCommon::write( const void* srcData, LockRequest_T lockRequest ) throw()
 {
     m_modelDatabase.lock_();
     if ( testAndUpdateLock( lockRequest ) )
@@ -116,7 +121,7 @@ uint16_t ModelPointCommon::write( const void* srcData, LockRequest_T lockRequest
     return result;
 }
 
-uint16_t ModelPointCommon::readModifyWrite( GenericRmwCallback& callbackClient, LockRequest_T lockRequest  )
+uint16_t ModelPointCommon::readModifyWrite( GenericRmwCallback& callbackClient, LockRequest_T lockRequest )
 {
     m_modelDatabase.lock_();
     if ( testAndUpdateLock( lockRequest ) )
@@ -162,11 +167,20 @@ uint16_t ModelPointCommon::touch() throw()
 
 
 /////////////////
-void ModelPointCommon::removeLock() throw()
+uint16_t ModelPointCommon::setLockState( LockRequest_T lockRequest ) throw()
 {
     m_modelDatabase.lock_();
-    m_locked = false;
+    if ( lockRequest == eLOCK )
+    {
+        m_locked = true;
+    }
+    else if ( lockRequest == eUNLOCK )
+    {
+        m_locked = false;
+    }
+    uint16_t result = m_seqNum;
     m_modelDatabase.unlock_();
+    return result;
 }
 
 bool ModelPointCommon::isLocked() const throw()
@@ -179,20 +193,20 @@ bool ModelPointCommon::isLocked() const throw()
 
 
 /////////////////
-size_t ModelPointCommon::export(void* dstDataStream, uint16_t* retSeqNum ) const throw()
+size_t ModelPointCommon::export(void* dstDataStream, uint16_t* retSeqNum) const throw()
 {
     size_t result = 0;
     if ( dstDataStream )
     {
         m_modelDatabase.lock_();
-        
+
         // Export Data
         size_t dataSize = getSize();
         memcpy( dstDataStream, getDataPointer_(), dataSize );
-        
+
         // Export Valid State
         uint8_t* ptr = (uint8_t*) dstDataStream;
-        memcpy( ptr+dataSize, &m_validState, sizeof( m_validState ) );
+        memcpy( ptr + dataSize, &m_validState, sizeof( m_validState ) );
 
         // Return the Sequence number when requested
         if ( retSeqNum )
@@ -219,7 +233,7 @@ size_t ModelPointCommon::import( const void* srcDataStream, uint16_t* retSeqNum 
 
         // Import Valid State
         uint8_t* ptr = (uint8_t*) srcDataStream;
-        memcpy( &m_validState, ptr+dataSize, sizeof( m_validState ) );
+        memcpy( &m_validState, ptr + dataSize, sizeof( m_validState ) );
 
         // Generate change notifications and return the Sequence number when requested
         processDataUpdated();
@@ -450,3 +464,124 @@ bool ModelPointCommon::testAndUpdateLock( LockRequest_T lockRequest ) throw()
     return result;
 }
 
+
+/////////////////
+const char* ModelPointCommon::fromString( const char* srcText, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
+{
+    // Trap prefix operation that apply to the Data 
+    LockRequest_T lockAction    = eNO_REQUEST;
+    int8_t        invalidAction = -1;
+    srcText                     = parsePrefixOps( srcText, lockAction, invalidAction, terminationChars );
+
+    // Invalidate request
+    if ( invalidAction > 0 )
+    {
+
+        uint16_t seqnum = setInvalidState( invalidAction, lockAction );
+        if ( retSequenceNumber )
+        {
+            *retSequenceNumber = seqnum;
+        }
+    }
+
+    // Write action
+    else
+    {
+        // No 'new value'
+        if ( Cpl::Text::isCharInString( terminationChars, *srcText ) )
+        {
+            // Apply the lock request
+            uint16_t seqnum = setLockState( lockAction );
+            if ( retSequenceNumber )
+            {
+                *retSequenceNumber = seqnum;
+            }
+        }
+
+        // New value
+        else
+        {
+            // Set the element's value based on the source text
+            srcText = setFromText( srcText, lockAction, terminationChars, errorMsg, retSequenceNumber );
+        }
+    }
+
+    // Return the remaining 'un-parsed' text (or ZERO if any error)
+    return srcText;
+}
+
+const char* ModelPointCommon::parsePrefixOps( const char* source, LockRequest_T& lockRequest, int8_t& invalidAction, const char* terminationChars )
+{
+    // Do nothing when there is NO 'source'
+    if ( source == 0 || *source == '\0' )
+    {
+        return source;
+    }
+
+    // Remove leading whitespace
+    source = Cpl::Text::stripSpace( source );
+
+    // check for lock/unlock operations
+    if ( *source == OPTION_CPL_RTE_MODEL_POINT_LOCK_CHAR )
+    {
+        lockRequest = eLOCK;
+        source++;
+    }
+    else if ( *source == OPTION_CPL_RTE_MODEL_POINT_UNLOCK_CHAR )
+    {
+        lockRequest = eUNLOCK;
+        source++;
+    }
+    else
+    {
+        lockRequest = eNO_REQUEST;
+    }
+
+    // Check for invalidate operation
+    if ( *source == OPTION_CPL_RTE_MODEL_POINT_INVALID_CHAR )
+    {
+        const char* endPtr  = 0;
+        int invalid         = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID;
+        if ( !Cpl::Text::a2i( invalid, source + 1, 10, terminationChars, &endPtr ) || invalid < 1 || invalid > 127 )
+        {
+            // Force the default invalid state value on error (or when missing numeric value)
+            invalid = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID;
+        }
+
+        invalidAction = (int8_t) invalid;
+        source        = endPtr;
+    }
+
+    // Return the next 'un-parsed' character
+    return source;
+}
+
+bool ModelPointCommon::convertStateToText( Cpl::Text::String& dstMemory, bool& append, bool isLocked, int8_t validState ) const throw()
+{
+    // Indicate locked state
+    if ( isLocked )
+    {
+        dstMemory.formatOpt( append, "%c", OPTION_CPL_RTE_MODEL_POINT_LOCK_CHAR );
+        append = true;
+    }
+
+    // All done if the element has a valid value
+    if ( IS_VALID( validState ) )
+    {
+        return true;
+    }
+
+    // Invalid -->default invalid state
+    if ( validState == OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+    {
+        dstMemory.formatOpt( append, "%c", OPTION_CPL_RTE_MODEL_POINT_INVALID_CHAR );
+    }
+
+    // Invalid -->application specific value
+    else
+    {
+        dstMemory.formatOpt( append, "%c%d", OPTION_CPL_RTE_MODEL_POINT_INVALID_CHAR, validState );
+    }
+
+    return false;
+}

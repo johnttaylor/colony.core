@@ -19,6 +19,7 @@
 #include "Cpl/Rte/SubscriberApi.h"
 #include <stdint.h>
 
+
 /** This symbol provides the default 'Invalid' state value for a Model Point. 
     The application is free define/apply its own meaning to the set of 
     'invalid-values'.  NOTE: All 'Invalid' values MUST be greater than zero, 
@@ -29,8 +30,8 @@
 #define OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID     1
 #endif
 
-/** Quote character used for ALL "text" elements when encoding/decoding to text.
-    A "text" element is an Element that whose value when converted to text can 
+/** Quote character used for ALL "text" element when encoding/decoding to text.
+    A "text" element is an C string that whose value when converted to text can 
     contain special ASCII characters such as commas, spaces, quotes, question 
     mark, dollar sign, semi-colon, etc.
  */
@@ -39,7 +40,7 @@
 #endif
 
 
-/// Escape character used for ALL String element when encoding/decoding to text.
+/// Escape character used for ALL text elements when encoding/decoding to text.
 #ifndef OPTION_CPL_RTE_MODEL_POINT_ESCAPE_CHAR
 #define OPTION_CPL_RTE_MODEL_POINT_ESCAPE_CHAR       '`'
 #endif
@@ -119,7 +120,7 @@ public:
     /// Defines the generic, non-type safe read-modify-write client callback interface
     class GenericRmwCallback
     {
-    public:
+    protected:
         // Generic callback for the readModifyWrite() operation
         virtual RmwCallbackResult_T genericCallback( void* data, int8_t validState ) throw() = 0;
 
@@ -184,9 +185,11 @@ public:
         2) Change Notification(s) will ONLY be triggered when there is valid to
            invalid state transition (i.e. if the Model Point is already in 
            the invalid state - no change notification will be triggered).
+        3) If the Model Point is locked the invalidate operation silently fails,
+           i.e. nothing is done.
 
      */
-    virtual uint16_t setInvalidState( int8_t newInvalidState ) throw() = 0;
+    virtual uint16_t setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest = eNO_REQUEST ) throw() = 0;
 
     /// Returns the Model Point's actual Valid/Invalid state value
     virtual int8_t getValidState(void) const throw() = 0;
@@ -194,8 +197,11 @@ public:
     /// This method returns true when the MP data is invalid.
     inline bool isNotValid() const throw()  { return getValidState() != MODEL_POINT_STATE_VALID; }
 
-    /// This method is used to mark the element's data as invalid
-    inline void setInvalid(void) throw()    { setInvalidState(OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID); }
+    /** This method is used to mark the element's data as invalid.  Note: if
+        the Model Point is locked the invalidate operation silently fails,
+        i.e. nothing is done.
+     */
+    inline void setInvalid(LockRequest_T lockRequest = eNO_REQUEST) throw()    { setInvalidState(OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, lockRequest); }
 
     /** Short-hand method to improve readability for testing the a return invalid
         state for 'valid'
@@ -212,10 +218,25 @@ public:
         However, it is strongly recommended that the output of this method be 
         the same format that is expected for the fromString() method.
        
+        The method optional returns - via 'retSequenceNumber' - the Model Point's
+        sequence at the time of the conversion.
+
         NOTE: If the converted string is larger than the memory allocated by
               'dst' then the string result in 'dst' will be truncated. The
               caller is required to check the truncated() method of 'dst' to
               check for the truncated scenario.
+
+
+        The default output format: 
+        
+        [!][?[<invalid_val>]][<data>]
+        
+        where: '!' indicates the MP is locked,
+               '?' indicates the MP is invalid, with an optional <invalid_val>
+                   (when <invalid_val> is not the default invalid value).
+
+
+
      */
     virtual bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const throw() = 0;
 
@@ -223,6 +244,9 @@ public:
         its binary format and copies the result to the Model Point's internal 
         data. The expected format of the string is specific to the concrete 
         leaf class.
+
+        The method optional returns - via 'retSequenceNumber' - the Model Point's
+        sequence after the conversion.
 
         When 'terminationChars' is not 0, the conversion from text to binary is
         stopped if one of characters in 'terminationChars' is encountered.
@@ -235,10 +259,18 @@ public:
         from Text to binary, OR the conversion fails then the method returns 0.  
         When the conversion fails, the optional 'errorMsg' argument is updated 
         with a plain text error message.
-     */
-    virtual const char* fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t retSequenceNumber=0 ) throw() = 0;
 
-    /** This method returns a string identifier for the Element's data type.
+        The default input format: 
+        
+        [!|^][?[<invalid_val>]][<data>]
+        
+        where: '!' is a lock request,
+               '^' is an unlock request,
+               '?' is an invalidate request with an optional <invalid_val>.
+     */
+    virtual const char* fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw() = 0;
+
+    /** This method returns a string identifier for the Model Point's data type.
         This value is NOT guaranteed to be unique, it is provided to help
         the 'human' when using the to/from String interface to view/set
         Model Point values.
@@ -253,12 +285,24 @@ public:
      */
     virtual bool isLocked() const throw() = 0;
 
-    /** This method unconditionally removes the lock from the MP, but
-        does not change the MP data/state. If the MP is currently not in the
-        locked state - nothing is done.  This method never triggers change
-        notification(s).
+    /** This updates the lock state of the Model Point. Model Points support 
+        the concept of a client 'locking' the MP's data value.  When a MP's 
+        data has been locked - any attempted writes/updated operation to the
+        MP will SILENTLY fail.  The Application uses the 'eUNLOCK' lock request 
+        to remove the locked state from the MP's data.
+        
+        This method never triggers change notification(s).
+
+        The method returns the MP's sequence number at the time of when then
+        lock request was applied.
      */
-    virtual void removeLock() throw() = 0;
+    virtual uint16_t setLockState( LockRequest_T lockRequest ) throw() = 0;
+
+    /// Short hand for unconditionally removing the lock from the MP
+    inline void removeLock() throw() { setLockState( eUNLOCK ); }
+
+    /// Short hand for putting the MP into the locked state
+    inline void applyLock() throw() { setLockState( eLOCK ); }
 
 
 public:
@@ -495,6 +539,31 @@ public:
     /// Virtual destructor to make the compiler happy
     virtual ~ModelPoint() {}
 };
+
+
+/////////////////////////////////////////////////////////////////////////////
+
+/** This template class defines a type safe Read-Modify Callback handler
+
+    Template Arguments:
+        DATA    - The type of the Model Point Data instance.
+ */
+template <class DATA>
+class ModelPointRmwCallback : public ModelPoint::GenericRmwCallback
+{
+public:
+    /// Type safe change read-modify-write function.  See Cpl::Rte::ModelPoint
+    virtual ModelPoint::RmwCallbackResult_T callback( DATA& data, int8_t validState ) throw() = 0;
+
+public:
+    /// Constructor
+    ModelPointRmwCallback() {}
+
+protected:
+    /// See Cpl::Rte::ModelPoint
+    ModelPoint::RmwCallbackResult_T genericCallback( void* data, int8_t validState ) throw() { return callback( *((DATA*)data), validState ); }
+};
+
 
 };      // end namespaces
 };

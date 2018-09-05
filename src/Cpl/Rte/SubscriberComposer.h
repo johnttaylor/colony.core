@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_RmwComposer_h_
-#define Cpl_Rte_RmwComposer_h_
+#ifndef Cpl_Rte_SubscriberComposer_h_
+#define Cpl_Rte_SubscriberComposer_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -12,7 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Cpl/Rte/ModelPoint.h"
+#include "Cpl/Rte/SubscriberApi.h"
 
 ///
 namespace Cpl {
@@ -21,7 +21,7 @@ namespace Rte {
 
 
 /** This template class is a composer pattern/class that manages the callback
-    function for a Model Point's read-modify-write operation.  
+    function for a Model Point's Subscribers/Observers change notification
 
     A Composer is a structural pattern that may be used to employ composition
     when implementing an interface rather than using multiple inheritance. This
@@ -30,55 +30,55 @@ namespace Rte {
 
     Template Arguments:
         CONTEXT - The class that implements the Callback function
-        DATA    - The type of the Model Point Data instance.
+        MP       - The concrete Model Point type.
  */
-template <class CONTEXT, class DATA>
-class RmwComposer : public ModelPointRmwCallback<DATA>
+template <class CONTEXT, class MP>
+class SubscriberComposer : public Subscriber<MP>
 {
 public:
-    /** Define a callback method function for the Modify Point callback (See
-        Cpl::Rte::ModelPoint::RmwCallback for additional details)
+    /** Define a callback method function for the Change Notification callback (See
+        Cpl::Rte::Subscriber<MP>::modelPointChanged for additional details)
      */
-    typedef void (CONTEXT::*ModifyFunc_T)(DATA& data, int8_t validState) throw();
+    typedef void (CONTEXT::*NotificationFunc_T)(MP& modelPointThatChanged) throw();
 
 
 protected:
     /// Class the implement the callback
     CONTEXT&                    m_context;
 
-    /// Method (in my Context) to call to perform the modify operation
-    ModifyFunc_T                m_modifyCb;
+    /// Method (in my Context) to call for the change notification
+    NotificationFunc_T          m_notificationCb;
 
 
 public:
     /// Constructor
-    RmwComposer( CONTEXT&       context,
-                 ModifyFunc_T   modifyCallback );
+    SubscriberComposer( CONTEXT&            context,
+                        NotificationFunc_T  notifyCallback );
 
 
 public:
-    /// See Cpl::Rte::ModelPointRmwCallback<DATA>
-    ModelPoint::RmwCallbackResult_T callback( DATA& data, int8_t validState ) throw();
+    /// See Cpl::Rte::Subscriber<MP>
+    void modelPointChanged( MP& modelPointThatChanged ) throw();
 
 };
 
 /////////////////////////////////////////////////////////////////////////////
 //                  INLINE IMPLEMENTAION
 /////////////////////////////////////////////////////////////////////////////
-template <class CONTEXT, class DATA>
-Cpl::Rte::RmwComposer<CONTEXT, DATA>::RmwComposer( CONTEXT&       context,
-                                                   ModifyFunc_T   modifyCallback )
+template <class CONTEXT, class MP>
+Cpl::Rte::SubscriberComposer<CONTEXT, MP>::SubscriberComposer( CONTEXT&           context,
+                                                               NotificationFunc_T notifyCallback )
     :m_context( context )
-    , m_modifyCb( modifyCallback )
+    , m_notificationCb( notifyCallback )
 {
 }
 
 /////////////////
-template <class CONTEXT, class DATA>
-Cpl::Rte::ModelPoint::RmwCallbackResult_T Cpl::Rte::RmwComposer<CONTEXT, DATA>::callback( DATA& data, int8_t validState) throw()
+template <class CONTEXT, class MP>
+void Cpl::Rte::SubscriberComposer<CONTEXT, MP>::modelPointChanged( MP& modelPointThatChanged ) throw()
 {
     // Notify context
-    return (m_context.*m_modifyCb)( data, validState );
+    return (m_context.*m_notificationCb)(modelPointThatChanged);
 }
 
 

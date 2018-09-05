@@ -68,7 +68,7 @@ public:
     uint16_t touch() throw();
 
     /// See Cpl::Rte::ModelPoint
-    uint16_t setInvalidState( int8_t newInvalidState ) throw();
+    uint16_t setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest = eNO_REQUEST ) throw();
     
     /// See Cpl::Rte::ModelPoint
     int8_t getValidState( void ) const throw();
@@ -77,7 +77,10 @@ public:
     bool isLocked() const throw();
 
     /// See Cpl::Rte::ModelPoint
-    void removeLock() throw();
+    uint16_t setLockState( LockRequest_T lockRequest ) throw();
+    
+    /// See Cpl::Rte::ModelPoint
+    const char* fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw();
 
 
 protected:
@@ -161,6 +164,21 @@ protected:
 
     /// Helper FSM method
     void transitionToSubscribed( SubscriberApi& subscriber ) throw();
+
+protected:
+    /** Helper method for encoding Invalid & Locked states.  Returns false
+        when the MP's value is invalid; else true is returned.
+     */
+    virtual bool convertStateToText( Cpl::Text::String& dstMemory, bool& append, bool isLocked, int8_t validState  ) const throw();
+
+    /// Helper method that handles the lock/unlock/invalidate requests
+    virtual const char* parsePrefixOps( const char* source, LockRequest_T& lockRequest, int8_t& invalidAction, const char* terminationChars );
+
+    /** Helper method that set's the MP Data value from a text string.  Has the 
+        semantics of fromString() method.  This method MUST be implemented by 
+        the leaf child classes.
+     */
+    virtual const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw() = 0;
 
 };
 

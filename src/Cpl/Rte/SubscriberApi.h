@@ -49,7 +49,7 @@ public:
     /// Constructor
     SubscriberApi( Cpl::Rte::MailboxServer& myMailbox );
 
-public:
+protected:
     /** This method is the client's callback function for a MP change
         notification.  This method is called in as part of the asynchronous
         notification mechanism of the subscriber's Mailbox Server, i.e. executes 
@@ -139,6 +139,29 @@ public:
 public:
     /// Virtual destructor
     virtual ~SubscriberApi() {}
+};
+
+/////////////////////////////////////////////////////////////////////////////
+
+/** This template class defines a type safe Subscriber
+
+    Template Arguments:
+        MP      - The concrete Model Point Type
+ */
+template <class MP>
+class Subscriber : public SubscriberApi
+{
+public:
+    /// Type safe change notification.  See Cpl::Rte::SubscriberApi
+    virtual void modelPointChanged( MP& modelPointThatChanged ) throw() = 0;
+
+public:
+    /// Constructor
+    Subscriber() {}
+
+protected:
+    /// See Cpl::Rte::SubscriberApi
+    void genericModelPointChanged( ModelPoint& modelPointThatChanged ) throw() { modelPointChanged( *((MP*) &modelPointThatChanged) ); }
 };
 
 
