@@ -39,7 +39,7 @@ public:
     /** Define a callback method function for the Modify Point callback (See
         Cpl::Rte::ModelPoint::RmwCallback for additional details)
      */
-    typedef void (CONTEXT::*ModifyFunc_T)(DATA& data, int8_t validState);
+    typedef ModelPoint::RmwCallbackResult_T (CONTEXT::*ModifyFunc_T)(DATA& data, int8_t validState);
 
 
 protected:
@@ -83,6 +83,5 @@ Cpl::Rte::ModelPoint::RmwCallbackResult_T Cpl::Rte::RmwComposer<CONTEXT, DATA>::
 
 
 };      // end namespaces
-};
 };
 #endif  // end header latch

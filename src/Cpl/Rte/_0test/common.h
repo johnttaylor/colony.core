@@ -13,6 +13,7 @@
 
 #include "Cpl/Rte/MailboxServer.h"
 #include "Cpl/Rte/SubscriberComposer.h"
+#include "Cpl/Rte/RmwComposer.h"
 #include "Cpl/Rte/Mp/Uint32.h"
 #include "Cpl/Itc/CloseSync.h"
 #include "Cpl/System/Thread.h"
@@ -99,7 +100,7 @@ public:
         }
 
         CPL_SYSTEM_TRACE_MSG( SECT_, ("VIEWER(%p): Closing... ", this) );
- 
+
         // Un-subscribe to my model point
         m_mp1.detach( m_observerMp1 );
         m_opened = false;
@@ -129,11 +130,12 @@ public:
         {
             if ( m_done )
             {
-                CPL_SYSTEM_TRACE_MSG( SECT_, ("Viewer::mp1_changed(%p): Received Change notification after signaling the master thread, may or may not be an error. Prev: value=%lu, state=%d, seqNum=%u.  Rcvd: value=%lu, state=%d, seqNum=%u.  read_seq_num=%u, notifyCount=%d", this, prevValue, prevState, prevSeqNum, m_lastValue, m_lastValidState, m_lastSeqNumber, seqNum, m_mpNotificationCount1 ) );
+                CPL_SYSTEM_TRACE_MSG( SECT_, ("Viewer::mp1_changed(%p): Received Change notification after signaling the master thread, may or may not be an error. Prev: value=%lu, state=%d, seqNum=%u.  Rcvd: value=%lu, state=%d, seqNum=%u.  read_seq_num=%u, notifyCount=%d", this, prevValue, prevState, prevSeqNum, m_lastValue, m_lastValidState, m_lastSeqNumber, seqNum, m_mpNotificationCount1) );
             }
             else
             {
                 CPL_SYSTEM_TRACE_MSG( SECT_, ("Viewer::mp1_changed(%p): Signaling master thread", this) );
+                m_mp1.detach( m_observerMp1 );
                 m_masterThread.signal();
                 m_done = true;
             }
@@ -242,4 +244,111 @@ public:
     }
 };
 
+/////////////////////////////////////////////////////////////////
+class Rmw : public Cpl::Itc::CloseSync
+{
+public:
+    ///
+    volatile bool                       m_opened;
+    ///
+    Cpl::System::Thread&                m_masterThread;
+    ///
+    Mp::Uint32&                         m_mp1;
+    ///
+    unsigned long                       m_intervalMsec;
+    ///
+    uint32_t                            m_writeCount;
+    ///
+    uint32_t                            m_currentValue;
+    ///
+    uint32_t                            m_endValue;
+    ///
+    uint32_t                            m_stepSize;
+    ///
+    Cpl::Timer::Local<Rmw>              m_timer;
+    ///
+    RmwComposer<Rmw, uint32_t>          m_rmwHandler;
+
+    /// Constructor
+    Rmw( MailboxServer& myMbox, Cpl::System::Thread& masterThread, Mp::Uint32& mp1, unsigned long intervalMsec, uint32_t startValue, uint32_t endValue, uint32_t stepSize )
+        :Cpl::Itc::CloseSync( myMbox )
+        , m_opened( false )
+        , m_masterThread( masterThread )
+        , m_mp1( mp1 )
+        , m_intervalMsec( intervalMsec )
+        , m_writeCount( 0 )
+        , m_currentValue( startValue )
+        , m_endValue( endValue )
+        , m_stepSize( stepSize )
+        , m_timer( myMbox, *this, &Rmw::timerExpired )
+        , m_rmwHandler( *this, &Rmw::readModifyWriteCallback )
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("RMW(%p). mp1=%s, endVal=%lu, interval=%lu", this, mp1.getName(), endValue, intervalMsec) );
+    }
+
+public:
+    ///
+    void request( Cpl::Itc::OpenRequest::OpenMsg& msg )
+    {
+        if ( m_opened )
+        {
+            FAIL( "OPENING RMW more than ONCE" );
+        }
+
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("RMW(%p): Starting interval timer (%lu)", this, m_intervalMsec) );
+        m_opened = true;
+        m_timer.start( m_intervalMsec );
+        msg.returnToSender();
+    }
+
+    ///
+    void request( Cpl::Itc::CloseRequest::CloseMsg& msg )
+    {
+        if ( !m_opened )
+        {
+            FAIL( "CLOSING RMW more than ONCE" );
+        }
+
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("RMW(%p): Closing... ", this) );
+
+        // Stop my writ timer
+        m_opened = false;
+        m_timer.stop();
+        msg.returnToSender();
+    }
+
+
+public:
+    ///
+    ModelPoint::RmwCallbackResult_T readModifyWriteCallback( uint32_t& data, int8_t validState )
+    {
+        if ( data >= m_endValue )
+        {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("RMW::readModifyWriteCallback(%p): Signaling master thread", this) );
+            m_masterThread.signal();
+        }
+        else
+        {
+            data += m_stepSize;
+            m_timer.start( m_intervalMsec );
+        }
+
+        m_currentValue = data;
+        return ModelPoint::eCHANGED;
+    }
+
+    ///
+    void timerExpired( void )
+    {
+        if ( m_opened )
+        {
+            m_writeCount++;
+            m_mp1.readModifyWrite( m_rmwHandler );
+        }
+        else
+        {
+            FAIL( "RMW: SHOULDED HAPPEN - The interval timer expired before the RMW was opened" );
+        }
+    }
+};
 #endif

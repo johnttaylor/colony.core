@@ -31,9 +31,9 @@ void link_mvc( void ) {}
    - One master thread (which the main thread)
 */
 // Create my RTE mailboxes
-static MailboxServer     viewerMbox_;
-static MailboxServer     writerMbox_;
-static MailboxServer     readerModifywriterMbox_;
+static MailboxServer     t1Mbox_;
+static MailboxServer     t2Mbox_;
+static MailboxServer     t3Mbox_;
 
 // Allocate/create my Model Database
 static ModelDatabase    modelDb_;
@@ -52,7 +52,11 @@ static StaticInfo       info_mp_plum_( "PLUM" );
 static Mp::Uint32       mp_plum_( modelDb_, info_mp_plum_ );
 
 
-#define VIEWER_APPLE1_END_VALUE  101
+#define VIEWER_APPLE1_END_VALUE     101
+#define VIEWER_APPLE2_END_VALUE     (VIEWER_APPLE1_END_VALUE/2)
+#define VIEWER_ORANGE1_END_VALUE    101
+#define VIEWER_CHERRY1_END_VALUE    11
+#define VIEWER_PLUM1_END_VALUE      101
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "mvc", "[mvc]" )
@@ -60,37 +64,78 @@ TEST_CASE( "mvc", "[mvc]" )
     CPL_SYSTEM_TRACE_FUNC( SECT_ );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
-    Cpl::System::Thread* t1 = Cpl::System::Thread::create( viewerMbox_, "Viewers" );
-    Cpl::System::Thread* t2 = Cpl::System::Thread::create( writerMbox_, "Writers" );
-    //Cpl::System::Thread* t3 = Cpl::System::Thread::create( readerModifywriterMbox_, "ReaderModifyWriters" );
+    Cpl::System::Thread* t1 = Cpl::System::Thread::create( t1Mbox_, "T1" );
+    Cpl::System::Thread* t2 = Cpl::System::Thread::create( t2Mbox_, "T2" );
+    //Cpl::System::Thread* t3 = Cpl::System::Thread::create( t3Mbox_, "ReaderModifyWriters" );
 
     // Create my viewers, writers
-    Viewer viewer_apple1( viewerMbox_, Cpl::System::Thread::getCurrent(), mp_apple_, VIEWER_APPLE1_END_VALUE );
-    Writer writer_apple1( writerMbox_, Cpl::System::Thread::getCurrent(), mp_apple_, 10, 1, VIEWER_APPLE1_END_VALUE, 1 );
-    Writer writer_apple2( viewerMbox_, Cpl::System::Thread::getCurrent(), mp_apple_, 0, 1, 100, 1 );
+#define NUM_INSTANCES   11
+    Viewer viewer_apple1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_, VIEWER_APPLE1_END_VALUE );
+    Viewer viewer_apple2( t2Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_, VIEWER_APPLE2_END_VALUE );
+    Writer writer_apple1( t2Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_, 10, 1, VIEWER_APPLE1_END_VALUE, 1 );
+    Writer writer_apple2( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_, 0, 1, VIEWER_APPLE1_END_VALUE - 1, 1 );
+
+    Viewer viewer_orange1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_orange_, VIEWER_ORANGE1_END_VALUE );
+    Writer writer_orange1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_orange_, 0, 1, VIEWER_ORANGE1_END_VALUE, 1 );
+    Rmw rmw_orange2( t2Mbox_, Cpl::System::Thread::getCurrent(), mp_orange_, 0, 1, VIEWER_ORANGE1_END_VALUE, 1 );
+
+    Viewer viewer_cherry1( t2Mbox_, Cpl::System::Thread::getCurrent(), mp_cherry_, VIEWER_CHERRY1_END_VALUE );
+    Writer writer_cherry1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_cherry_, 100, 1, VIEWER_CHERRY1_END_VALUE, 1 );
+
+    Viewer viewer_plum1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_plum_, VIEWER_PLUM1_END_VALUE );
+    Rmw rmw_plum1( t2Mbox_, Cpl::System::Thread::getCurrent(), mp_plum_, 1, 1, VIEWER_PLUM1_END_VALUE * 2, 1 );
+
 
     // Open my viewers, writers
     viewer_apple1.open();
+    viewer_apple2.open();
+    viewer_orange1.open();
+    viewer_cherry1.open();
+    viewer_plum1.open();
     writer_apple1.open();
     writer_apple2.open();
+    writer_orange1.open();
+    rmw_orange2.open();
+    writer_cherry1.open();
+    rmw_plum1.open();
 
 
-    // Wait for each viewer, writer, to finish
-    Cpl::System::Thread::wait();
-    Cpl::System::Thread::wait();
-    Cpl::System::Thread::wait();
+    // Wait for everything to finish
+    for ( int i=0; i < NUM_INSTANCES; i++ )
+    {
+        Cpl::System::Thread::wait();
+    }
 
     REQUIRE( viewer_apple1.m_lastValue == VIEWER_APPLE1_END_VALUE );
+    REQUIRE( viewer_apple2.m_lastValue >= VIEWER_APPLE2_END_VALUE );
+    REQUIRE( viewer_orange1.m_lastValue == VIEWER_ORANGE1_END_VALUE );
+    REQUIRE( viewer_cherry1.m_lastValue == VIEWER_CHERRY1_END_VALUE );
+    REQUIRE( viewer_plum1.m_lastValue >= VIEWER_PLUM1_END_VALUE );
+
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("viewer_apple1(%p). m_lastValue=%lu (expected == %lu)", &viewer_apple1, viewer_apple1.m_lastValue, VIEWER_APPLE1_END_VALUE) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("viewer_apple2(%p). m_lastValue=%lu (expected >= %lu)", &viewer_apple2, viewer_apple2.m_lastValue, VIEWER_APPLE2_END_VALUE) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("viewer_orange1(%p). m_lastValue=%lu (expected == %lu)", &viewer_orange1, viewer_orange1.m_lastValue, VIEWER_ORANGE1_END_VALUE) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("viewer_cherry1(%p). m_lastValue=%lu (expected == %lu)", &viewer_cherry1, viewer_cherry1.m_lastValue, VIEWER_CHERRY1_END_VALUE) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("viewer_plum1(%p). m_lastValue=%lu (expected >= %lu)", &viewer_plum1, viewer_plum1.m_lastValue, VIEWER_PLUM1_END_VALUE) );
 
     // Close my viewers, writers, 
     viewer_apple1.close();
+    viewer_apple2.close();
+    viewer_orange1.close();
+    viewer_cherry1.close();
+    viewer_plum1.close();
     writer_apple1.close();
     writer_apple2.close();
+    writer_orange1.close();
+    rmw_orange2.close();
+    writer_cherry1.close();
+    rmw_plum1.close();
+
 
     // Shutdown threads
-    viewerMbox_.pleaseStop();
-    writerMbox_.pleaseStop();
-    //readerModifywriterMbox_.pleaseStop();
+    t1Mbox_.pleaseStop();
+    t2Mbox_.pleaseStop();
+    //t3Mbox_.pleaseStop();
     Cpl::System::Api::sleep( 100 ); // allow time for threads to stop
     REQUIRE( t1->isRunning() == false );
     REQUIRE( t2->isRunning() == false );
