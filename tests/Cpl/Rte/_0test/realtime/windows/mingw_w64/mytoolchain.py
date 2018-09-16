@@ -114,7 +114,7 @@ win64_opts = { 'user_base':base_win64,
                
         
 # Add new variant option dictionary to # dictionary of 
-# build varaints
+# build variants
 build_variants = { 'win32':release_opts,
                    'win64':win64_opts,
                    'cpp11':cpp11_opts,
@@ -138,6 +138,6 @@ from nqbplib.toolchains.windows.mingw_w64.console_exe import ToolChain
 
 # Function that instantiates an instance of the toolchain
 def create():
-    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "win64" )
+    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "win32" )
     return tc 
 

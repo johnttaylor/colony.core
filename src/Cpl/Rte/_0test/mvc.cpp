@@ -59,7 +59,6 @@ TEST_CASE( "mvc", "[mvc]" )
 {
     CPL_SYSTEM_TRACE_FUNC( SECT_ );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
-    //CPL_SYSTEM_TRACE_ENABLE_SECTION("Cpl::Timer");
 
     Cpl::System::Thread* t1 = Cpl::System::Thread::create( viewerMbox_, "Viewers" );
     Cpl::System::Thread* t2 = Cpl::System::Thread::create( writerMbox_, "Writers" );
@@ -68,7 +67,7 @@ TEST_CASE( "mvc", "[mvc]" )
     // Create my viewers, writers
     Viewer viewer_apple1( viewerMbox_, Cpl::System::Thread::getCurrent(), mp_apple_, VIEWER_APPLE1_END_VALUE );
     Writer writer_apple1( writerMbox_, Cpl::System::Thread::getCurrent(), mp_apple_, 10, 1, VIEWER_APPLE1_END_VALUE, 1 );
-    Writer writer_apple2( writerMbox_, Cpl::System::Thread::getCurrent(), mp_apple_, 0, 1, 100, 1 );
+    Writer writer_apple2( viewerMbox_, Cpl::System::Thread::getCurrent(), mp_apple_, 0, 1, 100, 1 );
 
     // Open my viewers, writers
     viewer_apple1.open();
