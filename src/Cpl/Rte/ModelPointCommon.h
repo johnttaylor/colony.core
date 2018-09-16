@@ -14,7 +14,7 @@
 
 
 #include "Cpl/Rte/ModelPoint.h"
-#include "Cpl/Rte/ModelDatabase.h"
+#include "Cpl/Rte/ModelDatabaseApi.h"
 #include "Cpl/Rte/SubscriberApi.h"
 #include "Cpl/Container/DList.h"
 #include <stdint.h>
@@ -35,10 +35,10 @@ protected:
     Cpl::Container::DList<SubscriberApi>    m_subscribers;
 
     /// Pointer to the Model Point's static information
-    const StaticInfo*                       m_staticInfo;
+    const StaticInfo&                       m_staticInfo;
 
     /// Reference to the containing Model Base
-    ModelDatabase&                          m_modelDatabase;
+    ModelDatabaseApi&                       m_modelDatabase;
 
     /// Reference to my Data
     void*                                   m_dataPtr;
@@ -55,7 +55,7 @@ protected:
 
 protected:
     /// Constructor
-    ModelPointCommon( ModelDatabase& myModelBase, void* myDataPtr, StaticInfo* staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
+    ModelPointCommon( ModelDatabaseApi& myModelBase, void* myDataPtr, StaticInfo& staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
 
 public:
     /// See Cpl::Rte::ModelPoint
@@ -100,10 +100,10 @@ protected:
     void detach( SubscriberApi& observer ) throw();
 
     /// See Cpl::Rte::ModelPoint 
-    size_t export(void* dstDataStream, uint16_t* retSequenceNumber = 0 ) const throw();
+    size_t exportData(void* dstDataStream, size_t maxDstLength, uint16_t* retSequenceNumber = 0 ) const throw();
 
     /// See Cpl::Rte::ModelPoint 
-    size_t import( const void* srcDataStream, uint16_t* retSequenceNumber = 0 ) throw();
+    size_t importData( const void* srcDataStream, size_t srcLength, uint16_t* retSequenceNumber = 0 ) throw();
 
     /// See Cpl::Rte::ModelPoint 
     size_t getExternalSize() const throw();
@@ -116,6 +116,8 @@ public:
     /// See Cpl::Container::Key
     const void* getRawKey( unsigned* returnRawKeyLenPtr = 0 ) const;
 
+    /// See Cpl::Container::DictItem
+    const Key& getKey() const throw();
 
 public:
     /// See Cpl::Rte::ModelPoint
@@ -158,7 +160,6 @@ protected:
 
 
 protected:
-
     /// Helper FSM method
     void transitionToNotifyPending( SubscriberApi& subscriber ) throw();
 

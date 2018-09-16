@@ -29,8 +29,8 @@ namespace Mp {
     Point who's data is a C primitive type of type: 'ELEMTYPE'.
 
     NOTES:
-        1) All methods in this class are NOT thread Safe unless explicitly
-           documented otherwise.
+        1) All methods in this class are NOT thread Safe unless explicitly 
+        documented otherwise.
  */
 template<class ELEMTYPE>
 class Basic : public Cpl::Rte::ModelPointCommon
@@ -42,31 +42,17 @@ protected:
 
 public:
     /// Constructor
-    Basic( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo* staticInfo, ELEMTYPE initialValue = (ELEMTYPE) 0, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
-        :ModelPoint(myModelBase, &m_data, staticInfo, validState )
+    Basic( Cpl::Rte::ModelDatabaseApi& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue = (ELEMTYPE) 0, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+        :ModelPointCommon(myModelBase, &m_data, staticInfo, validState )
         , m_data( initialValue ) {}
 
 
 public:
-    /// See Cpl::Rte::ModelPoint
+    /// See Cpl::Rte::ModelPoint.  This method IS thread safe.
     size_t getSize() const throw()
     {
         return sizeof( ELEMTYPE );
     }
-
-public:
-    /// Data accessor
-    virtual ELEMTYPE getValue()
-    {
-        return m_data;
-    }
-
-    /// Data accessor
-    virtual void setValue( ELEMTYPE newValue )
-    {
-        m_data = newValue;
-    }
-
 
 public:
     /// See Cpl::Rte::ModelPoint
@@ -98,7 +84,7 @@ public:
     /// See Cpl::Rte::Point.  
     void* getDataPointer_() const throw()
     {
-        return &m_data;
+        return (void*)(&m_data);
     }
 
 };

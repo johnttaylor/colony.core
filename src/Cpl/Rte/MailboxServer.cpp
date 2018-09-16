@@ -10,6 +10,8 @@
 *----------------------------------------------------------------------------*/
 
 #include "MailboxServer.h"
+#include "SubscriberApi.h"
+#include "ModelPoint.h"
 #include "Cpl/System/Trace.h"
 
 
@@ -32,41 +34,65 @@ MailboxServer::MailboxServer( unsigned long timingTickInMsec ) throw()
 /////////////////////
 void MailboxServer::processEventFlag( uint8_t eventNumber ) throw()
 {
+    // Pass through all events EXCEPT for the Model Point Change Notification event
+    // NOTE: The fact that the thread was woken-up is sufficient for the MP Change
+    //       notification mechanism to work (i.e. no action needed here for
+    //       the actual MP Change Notification event).
     if ( eventNumber != MP_EVENT_BIT_NUM )
     {
         appProcessEventFlag( eventNumber );
     }
-    else
+}
+
+bool MailboxServer::isPendingActions() throw()
+{
+    m_lock.lock();
+    void* item = m_pendingMpNotifications.first();
+    m_lock.unlock();
+    return item != 0;
+
+}
+
+void MailboxServer::endOfLoopProcessing() throw()
+{
+    // Get the next pending change notification
+    m_lock.lock();
+    SubscriberApi* subscriberPtr = m_pendingMpNotifications.get();
+    m_lock.unlock();
+
+    // Execute - at MOST one - the change notification callback
+    if ( subscriberPtr )
     {
-        // process change notification
+        // Get the model point that changed
+        ModelPoint& modelPoint = *(subscriberPtr->getModelPoint_()); // NOTE: getModelPoint_() is guaranteed to return a valid pointer
+
+        // Update the subscriber's state
+        modelPoint.processSubscriptionEvent_( *subscriberPtr, ModelPoint::eNOTIFYING );
+
+        // Execute the callback
+        subscriberPtr->genericModelPointChanged_( modelPoint );
+
+        // Update the subscriber's state
+        modelPoint.processSubscriptionEvent_( *subscriberPtr, ModelPoint::eNOTIFY_COMPLETE );
     }
 }
 
 void MailboxServer::addPendingChangingNotification_( SubscriberApi& subscriber ) throw()
 {
-    // Check for invalid Subscription semantics
-    if ( subscriber.getMailbox_() != this )
-    {
-        Cpl::System::FatalError::logf( "Cpl::Rte::MailboxServer::addPendingChangingNotification(). Protocol Error. Adding a MP Subscriber (%p) that was configure to use a different MailboxServer (%p)", subscriber.getMailbox_(), this );
-        return;
-    }
-
     // Add the notification to my list and send myself an Event to wake up the mailbox
+    m_lock.lock();
     m_pendingMpNotifications.put( subscriber );
+    m_lock.unlock();
+
     internalNotify_( MP_EVENT_BIT_MASK );
 }
 
 void MailboxServer::removePendingChangingNotification_( SubscriberApi& subscriber ) throw()
 {
-    // Check for invalid Subscription semantics
-    if ( subscriber.getMailbox_() != this )
-    {
-        Cpl::System::FatalError::logf( "Cpl::Rte::MailboxServer::removePendingChangingNotification_(). Protocol Error. Removing a MP Subscriber (%p) that was configure to use a different MailboxServer (%p)", subscriber.getMailbox_(), this );
-        return;
-    }
-
     // Remove the subscriber from the notification
+    m_lock.lock();
     m_pendingMpNotifications.remove( subscriber );
+    m_lock.unlock();
 }
 
 void MailboxServer::appProcessEventFlag( uint8_t eventNumber ) throw()

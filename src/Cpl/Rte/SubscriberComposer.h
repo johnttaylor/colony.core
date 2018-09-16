@@ -39,7 +39,7 @@ public:
     /** Define a callback method function for the Change Notification callback (See
         Cpl::Rte::Subscriber<MP>::modelPointChanged for additional details)
      */
-    typedef void (CONTEXT::*NotificationFunc_T)(MP& modelPointThatChanged) throw();
+    typedef void (CONTEXT::*NotificationFunc_T)(MP& modelPointThatChanged);
 
 
 protected:
@@ -52,8 +52,9 @@ protected:
 
 public:
     /// Constructor
-    SubscriberComposer( CONTEXT&            context,
-                        NotificationFunc_T  notifyCallback );
+    SubscriberComposer( Cpl::Rte::MailboxServer& myMailbox,
+                        CONTEXT&                 context,
+                        NotificationFunc_T       notifyCallback );
 
 
 public:
@@ -66,9 +67,11 @@ public:
 //                  INLINE IMPLEMENTAION
 /////////////////////////////////////////////////////////////////////////////
 template <class CONTEXT, class MP>
-Cpl::Rte::SubscriberComposer<CONTEXT, MP>::SubscriberComposer( CONTEXT&           context,
-                                                               NotificationFunc_T notifyCallback )
-    :m_context( context )
+Cpl::Rte::SubscriberComposer<CONTEXT, MP>::SubscriberComposer( Cpl::Rte::MailboxServer& myMailbox,
+                                                               CONTEXT&                 context,
+                                                               NotificationFunc_T       notifyCallback )
+    :Subscriber<MP>( myMailbox )
+    , m_context( context )
     , m_notificationCb( notifyCallback )
 {
 }
@@ -83,6 +86,5 @@ void Cpl::Rte::SubscriberComposer<CONTEXT, MP>::modelPointChanged( MP& modelPoin
 
 
 };      // end namespaces
-};
 };
 #endif  // end header latch

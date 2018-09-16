@@ -37,7 +37,7 @@ protected:
 
 public:
     /// Constructor
-    Uint32( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo* staticInfo, bool decimalFormat=true, uint32_t initialValue = 0, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
+    Uint32( Cpl::Rte::ModelDatabaseApi& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true, uint32_t initialValue = 0, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint
@@ -81,8 +81,7 @@ public:
 
 protected:
     /// See Cpl::Rte::ModelPointCommon.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw() = 0;
-
+    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw();
 };
 
 

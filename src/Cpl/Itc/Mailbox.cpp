@@ -53,6 +53,11 @@ void Mailbox::postSync( Message& msg ) throw()
     Cpl::System::Thread::wait();
 }
 
+bool Mailbox::isPendingActions() throw()
+{
+    return false;
+}
+
 Message* Mailbox::waitNext( bool& wasTimeout, Cpl_Itc_EventFlags_T& eventFlags ) throw()
 {
     Message* msgPtr = 0;
@@ -67,8 +72,8 @@ Message* Mailbox::waitNext( bool& wasTimeout, Cpl_Itc_EventFlags_T& eventFlags )
         // Get the next message
         msgPtr = get();
 
-        // EXIT the wait loop IF I received message OR an Event Flag was set
-        if ( msgPtr || m_events )
+        // EXIT the wait loop IF I received message OR an Event Flag was set OR a child implementation has at least on pending action
+        if ( msgPtr || m_events || isPendingActions() )
         {
             eventFlags = m_events;
             m_events   = 0;
@@ -132,7 +137,7 @@ void Mailbox::internalNotify_( Cpl_Itc_EventFlags_T events ) throw()
 }
 
 
-// NOTE: Same logic as signal(), EXCEPT no critical section is used -->this is because su_signal() is called from an ISR and no mutex is required (and mutexes don't work in from ISRs anyway)
+// NOTE: Same logic as internalNotify_(), EXCEPT no critical section is used -->this is because su_signal() is called from an ISR and no mutex is required (and mutexes don't work in from ISRs anyway)
 void Mailbox::su_internalNotify_( Cpl_Itc_EventFlags_T events ) throw()
 {
     // Mark that I was signaled and capture my 'waiting-on-message' state

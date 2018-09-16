@@ -63,7 +63,7 @@ public:
 
 
 public:
-    /// Return Cpl::Container::Key (used with Maps and Dictionaries)
+    /// Return Cpl::Container::DictItem (used with Maps and Dictionaries)
     const Cpl::Container::Key& getKey() const throw() { return m_myString; }
 
 

@@ -29,11 +29,11 @@ enum State_T
 
 
 ////////////////////////
-ModelPointCommon::ModelPointCommon( ModelDatabase& myModelBase, void* myDataPtr, StaticInfo* staticInfo, int8_t validState )
+ModelPointCommon::ModelPointCommon( ModelDatabaseApi& myModelBase, void* myDataPtr, StaticInfo& staticInfo, int8_t validState )
     : m_staticInfo( staticInfo )
     , m_modelDatabase( myModelBase )
     , m_dataPtr( myDataPtr )
-    , m_seqNum( SEQUENCE_NUMBER_UNKNOWN )
+    , m_seqNum( SEQUENCE_NUMBER_UNKNOWN+1 )
     , m_locked( false )
     , m_validState( validState )
 {
@@ -42,7 +42,7 @@ ModelPointCommon::ModelPointCommon( ModelDatabase& myModelBase, void* myDataPtr,
 /////////////////
 const char* ModelPointCommon::getName() const throw()
 {
-    return m_staticInfo->getName();
+    return m_staticInfo.getName();
 }
 
 uint16_t ModelPointCommon::getSequenceNumber() const throw()
@@ -193,57 +193,67 @@ bool ModelPointCommon::isLocked() const throw()
 
 
 /////////////////
-size_t ModelPointCommon::export(void* dstDataStream, uint16_t* retSeqNum) const throw()
+size_t ModelPointCommon::exportData(void* dstDataStream, size_t maxDstLength, uint16_t* retSeqNum) const throw()
 {
     size_t result = 0;
     if ( dstDataStream )
     {
         m_modelDatabase.lock_();
 
-        // Export Data
-        size_t dataSize = getSize();
-        memcpy( dstDataStream, getDataPointer_(), dataSize );
-
-        // Export Valid State
-        uint8_t* ptr = (uint8_t*) dstDataStream;
-        memcpy( ptr + dataSize, &m_validState, sizeof( m_validState ) );
-
-        // Return the Sequence number when requested
-        if ( retSeqNum )
+        // Do nothing if there is not enough space left in the destination stream
+        if ( maxDstLength >= getExternalSize() )
         {
-            *retSeqNum = m_seqNum;
+            // Export Data
+            size_t dataSize = getSize();
+            memcpy( dstDataStream, getDataPointer_(), dataSize );
+
+            // Export Valid State
+            uint8_t* ptr = (uint8_t*) dstDataStream;
+            memcpy( ptr + dataSize, &m_validState, sizeof( m_validState ) );
+
+            // Return the Sequence number when requested
+            if ( retSeqNum )
+            {
+                *retSeqNum = m_seqNum;
+            }
+
+            result = getExternalSize();
         }
 
         m_modelDatabase.unlock_();
-        result = getExternalSize();
     }
     return result;
 }
 
-size_t ModelPointCommon::import( const void* srcDataStream, uint16_t* retSeqNum ) throw()
+size_t ModelPointCommon::importData( const void* srcDataStream, size_t srcLength, uint16_t* retSeqNum ) throw()
 {
     size_t result = 0;
     if ( srcDataStream )
     {
         m_modelDatabase.lock_();
 
-        // Import Data
+        // Fail the import when there is not enough data left in the input stream
         size_t dataSize = getSize();
-        memcpy( getDataPointer_(), srcDataStream, dataSize );
-
-        // Import Valid State
-        uint8_t* ptr = (uint8_t*) srcDataStream;
-        memcpy( &m_validState, ptr + dataSize, sizeof( m_validState ) );
-
-        // Generate change notifications and return the Sequence number when requested
-        processDataUpdated();
-        if ( retSeqNum )
+        if ( dataSize <= srcLength )
         {
-            *retSeqNum = m_seqNum;
+            // Import Data
+            memcpy( getDataPointer_(), srcDataStream, dataSize );
+
+            // Import Valid State
+            uint8_t* ptr = (uint8_t*) srcDataStream;
+            memcpy( &m_validState, ptr + dataSize, sizeof( m_validState ) );
+
+            // Generate change notifications and return the Sequence number when requested
+            processDataUpdated();
+            if ( retSeqNum )
+            {
+                *retSeqNum = m_seqNum;
+            }
+
+            result = getExternalSize();
         }
 
         m_modelDatabase.unlock_();
-        result = getExternalSize();
     }
     return result;
 }
@@ -257,12 +267,17 @@ size_t ModelPointCommon::getExternalSize() const throw()
 /////////////////
 int ModelPointCommon::compareKey( const Key& key ) const
 {
-    return m_staticInfo->compareKey( key );
+    return m_staticInfo.compareKey( key );
 }
 
 const void* ModelPointCommon::getRawKey( unsigned* returnRawKeyLenPtr ) const
 {
-    return m_staticInfo->getRawKey( returnRawKeyLenPtr );
+    return m_staticInfo.getRawKey( returnRawKeyLenPtr );
+}
+
+const Cpl::Container::Key& ModelPointCommon::getKey() const throw()
+{
+    return m_staticInfo;
 }
 
 
@@ -294,7 +309,7 @@ void ModelPointCommon::processChangeNotifications() throw()
 }
 
 /////////////////
-void ModelPointCommon::attach( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw()
+void ModelPointCommon::attach( SubscriberApi& observer, uint16_t initialSeqNumber ) throw()
 {
     observer.setSequenceNumber_( initialSeqNumber );
     observer.setModelPoint_( this );

@@ -12,6 +12,9 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
+#include "Cpl/Rte/ModelDatabaseApi.h"
+#include "Cpl/System/Mutex.h"
+
 
 ///
 namespace Cpl {
@@ -19,37 +22,20 @@ namespace Cpl {
 namespace Rte {
 
 
-/** This class defines the basic operations that can be performed on a Model
-    Base.  A Model Database is a collection of instantiated Model Points.
-
-    All methods in this class are thread Safe unless explicitly documented 
-    otherwise.
+/** This concrete class implements a simple Model Database
  */
-class ModelDatabase
+class ModelDatabase: public ModelDatabaseApi, Cpl::System::Mutex
 {
+public:
+    /// Constructor
+    ModelDatabase() {}
 
 public:
-    /** This method has 'PACKAGE Scope' in that is should only be called by 
-        other classes in the Cpl::Rte namespace.  It is ONLY public to avoid 
-        the tight coupling of C++ friend mechanism.
+    /// Set Cpl::Rte::ModelDatabaseApi
+    void lock_() throw() { lock(); };
 
-        This method locks the Model Database.  For every call to lock() there must
-        be corresponding call to unlock();
-    */
-    virtual void lock_() throw() = 0;
-
-    /** This method has 'PACKAGE Scope' in that is should only be called by 
-        other classes in the Cpl::Rte namespace.  It is ONLY public to avoid 
-        the tight coupling of C++ friend mechanism.
-
-        This method unlocks the Model Database.
-    */
-    virtual void unlock_() throw() = 0;
-
-
-public:
-    /// Virtual destructor to make the compiler happy
-    virtual ~ModelDatabase() {}
+    /// Set Cpl::Rte::ModelDatabaseApi
+    void unlock_() throw() { unlock(); };
 };
 
 

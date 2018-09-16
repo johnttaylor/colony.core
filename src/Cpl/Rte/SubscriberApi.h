@@ -34,31 +34,33 @@ class SubscriberApi : public Cpl::Container::ExtendedItem
 {
 protected:
     /// Internal state of the subscriber.  Note: The state is actual managed by the Model Point
-    int                 m_state;
+    int                             m_state;
 
     /// Pointer to the Model Point the instance is subscribed to
-    ModelPoint*         m_point;
+    ModelPoint*                     m_point;
 
     /// Reference to subscriber's EventFlag/Mailbox server
-    MailboxServer&      m_mailboxHdl;
+    Cpl::Rte::MailboxServer&        m_mailboxHdl;
 
     /// Sequence number of the subscriber
-    uint16_t            m_seqNumber;
+    uint16_t                        m_seqNumber;
 
 public:
     /// Constructor
     SubscriberApi( Cpl::Rte::MailboxServer& myMailbox );
 
-protected:
-    /** This method is the client's callback function for a MP change
+public:
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Rte namespace.  The Application should
+        NEVER call this method.
+
+        This method is the client's callback function for a MP change
         notification.  This method is called in as part of the asynchronous
         notification mechanism of the subscriber's Mailbox Server, i.e. executes 
         in the thread associated m_mailBoxHdl
      */
-    virtual void genericModelPointChanged( ModelPoint& modelPointThatChanged ) throw() = 0;
+    virtual void genericModelPointChanged_( ModelPoint& modelPointThatChanged ) throw() = 0;
 
-
-public:
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Rte namespace.  The Application should
         NEVER call this method.
@@ -115,11 +117,11 @@ public:
     }
 
    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
-        by other classes in the Cpl::Rte namespace.  The Application should
-        NEVER call this method.
+       by other classes in the Cpl::Rte namespace.  The Application should
+       NEVER call this method.
 
-        This method is use to get the Subscriber's sequence number
-      */
+       This method is use to get the Subscriber's sequence number
+     */
     inline uint16_t getSequenceNumber_() const throw()
     {
         return m_seqNumber;
@@ -157,11 +159,11 @@ public:
 
 public:
     /// Constructor
-    Subscriber() {}
+    Subscriber( Cpl::Rte::MailboxServer& myMailbox ):SubscriberApi(myMailbox) {}
 
 protected:
     /// See Cpl::Rte::SubscriberApi
-    void genericModelPointChanged( ModelPoint& modelPointThatChanged ) throw() { modelPointChanged( *((MP*) &modelPointThatChanged) ); }
+    void genericModelPointChanged_( ModelPoint& modelPointThatChanged ) throw() { modelPointChanged( *((MP*) &modelPointThatChanged) ); }
 };
 
 

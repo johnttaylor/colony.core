@@ -41,7 +41,7 @@ public:
 
 
 public:
-    /// See Cpl::Container::Key
+    /// See Cpl::Container::DictItem
     const Cpl::Container::Key& getKey() const throw() { return m_name; }
 
 

@@ -17,6 +17,7 @@
 #include "Cpl/Text/String.h"
 #include "Cpl/Rte/StaticInfo.h"
 #include "Cpl/Rte/SubscriberApi.h"
+#include <stddef.h>
 #include <stdint.h>
 
 
@@ -120,7 +121,7 @@ public:
     /// Defines the generic, non-type safe read-modify-write client callback interface
     class GenericRmwCallback
     {
-    protected:
+    public:
         // Generic callback for the readModifyWrite() operation
         virtual RmwCallbackResult_T genericCallback( void* data, int8_t validState ) throw() = 0;
 
@@ -156,7 +157,7 @@ public:
      */
     virtual uint16_t getSequenceNumber() const throw() = 0;
 
-    /** This method does NOT alter the MP's data or set, but unconditionally
+    /** This method does NOT alter the MP's data or state, but unconditionally
         triggers the MP change notification(s). The method returns the Model
         Point's sequence number after the method completes.
      */
@@ -174,8 +175,8 @@ public:
         'OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID'. 
         
         The application is free define/apply its own meaning to the set of 
-        'invalid-values'.  The value MUST be a POSITIVE integer, i.e. between
-        0 and 127.  Zero and negative values ARE Reserved by the RTE Engine.
+        'invalid-values'.  The value MUST be greater than zero, i.e. between
+        1 and 127.  Zero and negative values ARE Reserved by the RTE Engine.
 
         The method returns the Model Point's sequence number after updating
         the valid state.
@@ -219,7 +220,7 @@ public:
         the same format that is expected for the fromString() method.
        
         The method optional returns - via 'retSequenceNumber' - the Model Point's
-        sequence at the time of the conversion.
+        sequence number at the time of the conversion.
 
         NOTE: If the converted string is larger than the memory allocated by
               'dst' then the string result in 'dst' will be truncated. The
@@ -233,7 +234,7 @@ public:
         
         where: '!' indicates the MP is locked,
                '?' indicates the MP is invalid, with an optional <invalid_val>
-                   (when <invalid_val> is not the default invalid value).
+                   when <invalid_val> is not the default invalid value.
 
 
 
@@ -246,7 +247,7 @@ public:
         leaf class.
 
         The method optional returns - via 'retSequenceNumber' - the Model Point's
-        sequence after the conversion.
+        sequence number after the conversion.
 
         When 'terminationChars' is not 0, the conversion from text to binary is
         stopped if one of characters in 'terminationChars' is encountered.
@@ -255,10 +256,10 @@ public:
 
         If the conversion is successful a pointer to next character after the
         last 'consumed' charactered is returned.  If the contents of the 'src'
-        is invalid, OR the Point does not support a full/complete conversion
-        from Text to binary, OR the conversion fails then the method returns 0.  
-        When the conversion fails, the optional 'errorMsg' argument is updated 
-        with a plain text error message.
+        is not parse-able, OR the Point does not support a full/complete 
+        conversion from Text to binary, OR the conversion fails then the method 
+        returns 0.  When the conversion fails, the optional 'errorMsg' argument 
+        is updated with a plain text error message.
 
         The default input format: 
         
@@ -299,10 +300,10 @@ public:
     virtual uint16_t setLockState( LockRequest_T lockRequest ) throw() = 0;
 
     /// Short hand for unconditionally removing the lock from the MP
-    inline void removeLock() throw() { setLockState( eUNLOCK ); }
+    inline uint16_t removeLock() throw() { return setLockState( eUNLOCK ); }
 
     /// Short hand for putting the MP into the locked state
-    inline void applyLock() throw() { setLockState( eLOCK ); }
+    inline uint16_t applyLock() throw() { return setLockState( eLOCK ); }
 
 
 public:
@@ -314,8 +315,8 @@ public:
         The method optionally return the Model Point's sequence number at the
         time of the export.
      */
-    virtual size_t export(void* dstDataStream, uint16_t* retSequenceNumber=0 ) const throw() = 0;
-
+    virtual size_t exportData(void* dstDataStream, size_t maxDstLength, uint16_t* retSequenceNumber=0 ) const throw() = 0;
+    
     /** This method is used to populate the Model Point's data content from the 
         a raw data stream/pointer.  It is the responsibility of the caller to 
         ensure that the data stream is appropriate for element type and that 
@@ -328,7 +329,7 @@ public:
 
         The method ALWAYS triggers a change notification(s) for the Model Point
      */
-    virtual size_t import( const void* srcDataStream, uint16_t* retSequenceNumber=0 ) throw() = 0;
+    virtual size_t importData( const void* srcDataStream, size_t srcLength, uint16_t* retSequenceNumber=0 ) throw() = 0;
 
     /** Returns the size, in bytes, of the element's data content.
 
@@ -362,10 +363,10 @@ protected:
         after the method completes.
 
         Model Point supports the concept of a client 'locking' the MP's data
-        value.  When a MP's data has been locked - any attempted writes to the
-        MP will SILENTLY fail.  The Application uses the removeLock() method 
-        or the 'eUNLOCK' lock request to remove the locked state from the MP's
-        data.
+        value.  When a MP's data has been locked - ALL attempted writes to the
+        MP will SILENTLY fail (even when lockReequest is eLOCK).  The 
+        Application uses the removeLock() method or the 'eUNLOCK' lock request 
+        to remove the locked state from the MP's data.
 
         Notes:
         1) The assumption is that Model Point's internal data and 'srcData' are 
@@ -486,6 +487,8 @@ public:
 
         This method is used to unconditionally update the Model Point's data.
 
+        This method is NOT Thread Safe.
+ 
         Notes:
         1) The assumption is that Model Point Data instance and 'src' are the 
            of the same type.
@@ -503,6 +506,8 @@ public:
 
         This method is used update's the caller's 'Point Data' with the Model 
         Point's data.
+ 
+        This method is NOT Thread Safe.
 
         Notes:
         1) The assumption is that Model Point Data instance and 'dst' are the 
@@ -518,6 +523,8 @@ public:
         by other classes in the Cpl::Rte namespace.  The Application should
         NEVER call this method.
 
+        This method is NOT Thread Safe.
+
         This method compares the Model Point's data to the data of 'other' Model
         Point and returns true if the data of both points are the same. It is 
         assumed that Model Point instance and 'other' are the of the same leaf 
@@ -528,6 +535,8 @@ public:
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Rte namespace.  The Application should
         NEVER call this method.
+
+        This method is NOT Thread Safe.
 
         This method returns a pointer to the Model Point's data.  BE VERY 
         CAREFULL on how the pointer is used!

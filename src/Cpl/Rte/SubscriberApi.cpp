@@ -12,6 +12,7 @@
 
 
 #include "SubscriberApi.h"
+#include "ModelPoint.h"
 #include "Cpl/System/FatalError.h"
 
 using namespace Cpl::Rte;
@@ -32,7 +33,7 @@ ModelPoint* SubscriberApi::getModelPoint_() throw()
     if ( m_point == 0 )
     {
         Cpl::System::FatalError::logf( "Cpl::Rte::Subscriber().  Protocol Error.  getModelPoint() was called before setModelPoint()" );
-        return;
+        return 0;
     }
 
     return m_point;

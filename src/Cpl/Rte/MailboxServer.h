@@ -16,6 +16,7 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/Container/DList.h"
 #include "Cpl/Rte/SubscriberApi.h"
+#include "Cpl/System/Mutex.h"
 
 
 ///
@@ -31,11 +32,11 @@ namespace Rte {
        1. The timers and their callbacks (if any timers have expired) are
           processed.
        2. Event Flags are processed.  Events are processed in LSb order.
-       3. A single Model Point Change notification (if there is one pending) is
+       3. A single ITC message (if one was received) is processed.
+       4. A single Model Point Change notification (if there is one pending) is
           processed.
-       4. A single ITC message (if one was received) is processed.
        5. The loop is repeated until there are no expired timers, no event
-          flags, no MP change notifications, and no ITC messages - at which
+          flags, no ITC messages, and no MP change notifications - at which
           point the thread blocks and wait for any of the above asynchronous
           actions to wake up the thread.
 
@@ -44,7 +45,10 @@ class MailboxServer : public Cpl::Itc::MailboxServer
 {
 protected:
     /// List of pending Model Point Change Notifications
-    Cpl::Container::DList<Subscriber>   m_pendingMpNotifications;
+    Cpl::Container::DList<SubscriberApi>   m_pendingMpNotifications;
+
+    /// Mutex used to protect the pending MP Change notifications
+    Cpl::System::Mutex                     m_lock;
 
 
 public:
@@ -58,18 +62,26 @@ public:
 
 
 protected:
-    /** This method is responsible for processing Model Point change
-        notifications.  If the Application needs to extend this class to
+    /** This method is responsible for processing the Model Point change
+        notifications event.  If the Application needs to extend this class to
         process Event Flags - it should override the appProcessEventFlag()
         method (which this method calls)
      */
-    void processEventFlag( uint8_t eventNumber ) throw();
+    virtual void processEventFlag( uint8_t eventNumber ) throw();
 
     /** This method is used by a child class to provide application
         processing of the Mailbox's Event Flags.  The default implementation
         does nothing.
      */
     virtual void appProcessEventFlag( uint8_t eventNumber ) throw();
+
+    /** See Cpl::Itc::MailboxServer.  Note: This method performs the actual 
+        Model Point change notifications.
+     */
+    void endOfLoopProcessing() throw();
+    
+    /// See Cpl::Itc::Mailbox
+    bool isPendingActions() throw();
 
 
 public:
@@ -78,18 +90,19 @@ public:
         NEVER call this method.
 
         This method is used add a new 'change notification' to its list
-        of pending change notifications.  Calling this method will the 
+        of pending change notifications.  Calling this method when the 
         subscriber is already registered for change notification will cause
-        a fatal error.
+        a FATAL ERROR.
 
-        NOTE: If the Subscriber's mailbox does not match this instance a
-              fatal error is generated.  The requirements/semantics of Model
-              Point subscription is that Subscription/Notifications/Cancel-of-
-              Subscriptions all happen in a SINGLE thread and that the
-              Subscriber object has reference to its thread's mailbox server.
+        This method IS thread safe.
+
+        NOTE: The requirements and/or semantics of Model Point subscription is 
+              that Subscriptions, Notifications, and Cancel-of-Subscriptions 
+              all happen in a SINGLE thread and that thread is the 'Subscribers' 
+              thread.
      */
-    void addPendingChangingNotification_( Subscriber& subscriber ) throw();
-
+    void addPendingChangingNotification_( SubscriberApi& subscriber ) throw();
+    
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
     by other classes in the Cpl::Rte namespace.  The Application should
     NEVER call this method.
@@ -98,13 +111,14 @@ public:
     of pending change notifications.  It is okay to call this method even if
     the Subscriber is not current registered for change notifications.
 
-    NOTE: If the Subscriber's mailbox does not match this instance a
-          fatal error is generated.  The requirements/semantics of Model
-          Point subscription is that Subscription/Notifications/Cancel-of-
-          Subscriptions all happen in a SINGLE thread and that the
-          Subscriber object has reference to its thread's mailbox server.
- */
-    void removePendingChangingNotification_( Subscriber& subscriber ) throw();
+     This method IS thread safe.
+
+     NOTE: The requirements and/or semantics of Model Point subscription is 
+           that Subscriptions, Notifications, and Cancel-of-Subscriptions 
+           all happen in a SINGLE thread and that thread is the 'Subscribers' 
+           thread.
+     */
+    void removePendingChangingNotification_( SubscriberApi& subscriber ) throw();
 
 };
 

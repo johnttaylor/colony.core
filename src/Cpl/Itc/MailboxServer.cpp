@@ -25,9 +25,11 @@ using namespace Cpl::Itc;
 
 /////////////////////
 MailboxServer::MailboxServer( unsigned long timingTickInMsec ) throw()
-    :Mailbox( timingTickInMsec ),
-    m_timeNow( 0 ),
-    m_run( true )
+    :Mailbox( timingTickInMsec )
+    , m_myThreadPtr( 0 )
+    , m_timeNow( 0 )
+    , m_run( true )
+
 {
 }
 
@@ -104,11 +106,15 @@ void MailboxServer::appRun()
         {
             msgPtr->process();
         }
+
+        // Perform end-of-loop (if there is any)
+        endOfLoopProcessing();
     }
 
     // Application hook
     cleanup();
 }
+
 
 unsigned long MailboxServer::msecToCounts( unsigned long durationInMsecs ) throw()
 {
@@ -118,6 +124,11 @@ unsigned long MailboxServer::msecToCounts( unsigned long durationInMsecs ) throw
 }
 
 /////////////////////
+void MailboxServer::setThreadOfExecution_( Cpl::System::Thread* myThreadPtr )
+{
+    m_myThreadPtr = myThreadPtr;
+}
+
 void MailboxServer::pleaseStop()
 {
     CPL_SYSTEM_TRACE_FUNC( SECT_ );
@@ -147,4 +158,10 @@ void MailboxServer::processEventFlag( uint8_t eventNumber ) throw()
 {
     // Default is to do: NOTHING
 }
+
+void MailboxServer::endOfLoopProcessing() throw()
+{
+    // Default is to do: NOTHING
+}
+
 

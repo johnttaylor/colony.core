@@ -42,7 +42,8 @@ namespace Itc {
     time source for Local Timers (Cpl::Timer::Local)
  */
 
-class Mailbox : public PostApi,
+class Mailbox : 
+    public PostApi,
     public EventApi,
     public Cpl::Container::SList<Message>
 {
@@ -76,6 +77,13 @@ public:
      */
     virtual Message* waitNext( bool& wasTimeout, Cpl_Itc_EventFlags_T& eventFlags ) throw();
 
+
+protected:
+    /** This method is optional function that returns true for: the mailbox 
+        should NOT block when the waitNext() function is called.  The default 
+        implementation ALWAYS returns false.
+     */
+    virtual bool isPendingActions() throw();
 
 public:
     /// See Cpl::Itc::PostApi

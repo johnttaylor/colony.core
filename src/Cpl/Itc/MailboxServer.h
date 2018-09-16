@@ -50,7 +50,8 @@ namespace Itc {
     to NOT expire early with respect to the specified timer duration.
 
  */
-class MailboxServer : public Mailbox,
+class MailboxServer :
+    public Mailbox,
     public Cpl::System::Runnable,
     public Cpl::Timer::CounterList
 {
@@ -86,7 +87,6 @@ protected:
     /// See Cpl::System::Runnable
     void appRun();
 
-
 protected:
     /** This initialization function is called before the server
         enters its main loop. The default implementation does nothing.
@@ -117,13 +117,29 @@ protected:
      */
     virtual void processEventFlag( uint8_t eventNumber ) throw();
 
+    /** This method provide a hook for the child classes to do additional
+        processing and the 'end' of the loop processing, i.e. this method is
+        called after the ITC message processing.
+
+        The default implementation of this method does NOTHING.
+     */
+    virtual void endOfLoopProcessing() throw();
 
 protected:
     /// See Cpl::Timer::CounterSource
     unsigned long msecToCounts( unsigned long durationInMsecs ) throw();
 
+private:
+    /** NOTE This a 'private' method see Cpl::System::Runnable for more 
+        details.
+     */
+    void setThreadOfExecution_( Cpl::System::Thread* myThreadPtr );
+
 
 protected:
+    /// My thread pointer
+    Cpl::System::Thread* m_myThreadPtr;
+
     /// Time of the current tick cycle
     unsigned long m_timeNow;
 
