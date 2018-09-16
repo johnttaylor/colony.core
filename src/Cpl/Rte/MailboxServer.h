@@ -16,7 +16,6 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/Container/DList.h"
 #include "Cpl/Rte/SubscriberApi.h"
-#include "Cpl/System/Mutex.h"
 
 
 ///
@@ -46,9 +45,6 @@ class MailboxServer : public Cpl::Itc::MailboxServer
 protected:
     /// List of pending Model Point Change Notifications
     Cpl::Container::DList<SubscriberApi>   m_pendingMpNotifications;
-
-    /// Mutex used to protect the pending MP Change notifications
-    Cpl::System::Mutex                     m_lock;
 
 
 public:

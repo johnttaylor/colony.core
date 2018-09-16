@@ -33,7 +33,7 @@ ModelPointCommon::ModelPointCommon( ModelDatabaseApi& myModelBase, void* myDataP
     : m_staticInfo( staticInfo )
     , m_modelDatabase( myModelBase )
     , m_dataPtr( myDataPtr )
-    , m_seqNum( SEQUENCE_NUMBER_UNKNOWN+1 )
+    , m_seqNum( SEQUENCE_NUMBER_UNKNOWN + 1 )
     , m_locked( false )
     , m_validState( validState )
 {
@@ -96,7 +96,7 @@ uint16_t ModelPointCommon::read( void* dstData, size_t dstSize, int8_t& validSta
     validState = m_validState;
     if ( IS_VALID( validState ) )
     {
-        copyDataTo_( m_dataPtr, dstSize );
+        copyDataTo_( dstData, dstSize );
     }
     uint16_t result = m_seqNum;
     m_modelDatabase.unlock_();
@@ -104,14 +104,14 @@ uint16_t ModelPointCommon::read( void* dstData, size_t dstSize, int8_t& validSta
     return result;
 }
 
-uint16_t ModelPointCommon::write( const void* srcData, LockRequest_T lockRequest ) throw()
+uint16_t ModelPointCommon::write( const void* srcData, size_t srcSize, LockRequest_T lockRequest ) throw()
 {
     m_modelDatabase.lock_();
     if ( testAndUpdateLock( lockRequest ) )
     {
         if ( !IS_VALID( m_validState ) || isDataEqual_( srcData ) == false )
         {
-            copyDataFrom_( srcData );
+            copyDataFrom_( srcData, srcSize );
             processDataUpdated();
         }
     }
@@ -193,7 +193,7 @@ bool ModelPointCommon::isLocked() const throw()
 
 
 /////////////////
-size_t ModelPointCommon::exportData(void* dstDataStream, size_t maxDstLength, uint16_t* retSeqNum) const throw()
+size_t ModelPointCommon::exportData( void* dstDataStream, size_t maxDstLength, uint16_t* retSeqNum ) const throw()
 {
     size_t result = 0;
     if ( dstDataStream )
@@ -311,15 +311,19 @@ void ModelPointCommon::processChangeNotifications() throw()
 /////////////////
 void ModelPointCommon::attach( SubscriberApi& observer, uint16_t initialSeqNumber ) throw()
 {
+    m_modelDatabase.lock_();
     observer.setSequenceNumber_( initialSeqNumber );
     observer.setModelPoint_( this );
     processSubscriptionEvent_( observer, eATTACH );
+    m_modelDatabase.unlock_();
 }
 
 void ModelPointCommon::detach( SubscriberApi& observer ) throw()
 {
+    m_modelDatabase.lock_();
     processSubscriptionEvent_( observer, eDETACH );
     observer.setModelPoint_( 0 );
+    m_modelDatabase.unlock_();
 }
 
 /////////////////
@@ -334,6 +338,10 @@ void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Eve
             {
                 case eATTACH:
                     transitionToSubscribed( subscriber );
+                    break;
+
+                case eDATA_CHANGED:
+                    Cpl::System::FatalError::logf( "ModelPointCommon::processSubscriptionEvent_(): Data changed received when in the eSTATE_UNSUBSCRIBED state!" );
                     break;
 
                     // Ignore all other events
@@ -359,7 +367,6 @@ void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Eve
                     transitionToNotifyPending( subscriber );
                     break;
 
-
                     // Ignore all other events
                 default:
                     break;
@@ -384,6 +391,10 @@ void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Eve
                     subscriber.setState_( eSTATE_NOTIFY_NOTIFYING );
                     break;
 
+                case eDATA_CHANGED:
+                    Cpl::System::FatalError::logf( "ModelPointCommon::processSubscriptionEvent_(): Data changed received when in the eSTATE_NOTIFY_PENDING state!" );
+                    break;
+
                     // Ignore all other events
                 default:
                     break;
@@ -401,6 +412,10 @@ void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Eve
                     transitionToSubscribed( subscriber );
                     break;
 
+                case eDATA_CHANGED:
+                    Cpl::System::FatalError::logf( "ModelPointCommon::processSubscriptionEvent_(): Data changed received when in the eSTATE_NOTIFY_NOTIFYING state!" );
+                    break;
+
                     // Ignore all other events
                 default:
                     break;
@@ -416,6 +431,10 @@ void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Eve
 
                 case eNOTIFY_COMPLETE:
                     subscriber.setState_( eSTATE_UNSUBSCRIBED );
+                    break;
+
+                 case eDATA_CHANGED:
+                    Cpl::System::FatalError::logf( "ModelPointCommon::processSubscriptionEvent_(): Data changed received when in the eSTATE_NOTIFY_PENDING_DETACH state!" );
                     break;
 
                     // Ignore all other events

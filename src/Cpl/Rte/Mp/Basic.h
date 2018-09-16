@@ -69,8 +69,9 @@ public:
     }
 
     /// See Cpl::Rte::ModelPoint
-    void copyDataFrom_( void* srcData) throw()
+    void copyDataFrom_( const void* srcData, size_t srcSize ) throw()
     {
+        CPL_SYSTEM_ASSERT( srcSize == sizeof( ELEMTYPE ) );
         m_data = *((ELEMTYPE*) srcData);
     }
 

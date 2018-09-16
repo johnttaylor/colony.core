@@ -88,7 +88,7 @@ protected:
     uint16_t read( void* dstData, size_t dstSize, int8_t& validState ) const throw();
 
     /// See Cpl::Rte::ModelPoint
-    uint16_t write( const void* srcData, LockRequest_T lockRequest = eNO_REQUEST  ) throw();
+    uint16_t write( const void* srcData, size_t srcSize, LockRequest_T lockRequest = eNO_REQUEST  ) throw();
 
     /// See Cpl::Rte::ModelPoint
     uint16_t readModifyWrite( GenericRmwCallback& callbackClient, LockRequest_T lockRequest = eNO_REQUEST  );

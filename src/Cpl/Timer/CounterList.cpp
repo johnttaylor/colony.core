@@ -91,12 +91,6 @@ void CounterList::tickComplete( void ) throw()
 /////////////////////////
 void CounterList::attach( CounterCallback& clientToCallback ) throw()
 {
-    // Trap the case of the counter is ALREADY zero
-    if ( clientToCallback.count() == 0 )
-    {
-        clientToCallback.expired();
-        return;
-    }
 
     // Do NOT add to my active timer list while I am processing tick(s)!
     if ( m_inTickCall )

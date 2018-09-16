@@ -26,14 +26,14 @@ Uint32::Uint32( Cpl::Rte::ModelDatabaseApi& myModelBase, Cpl::Rte::StaticInfo& s
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-uint16_t Uint32::read( uint32_t dstData, int8_t& validState ) const throw()
+uint16_t Uint32::read( uint32_t& dstData, int8_t& validState ) const throw()
 {
     return ModelPointCommon::read( &dstData, sizeof( uint32_t ), validState );
 }
 
 uint16_t Uint32::write( uint32_t newValue, LockRequest_T lockRequest ) throw()
 {
-    return ModelPointCommon::write( &newValue, lockRequest );
+    return ModelPointCommon::write( &newValue, sizeof( uint32_t ), lockRequest );
 }
 
 uint16_t Uint32::readModifyWrite( Client& callbackClient, LockRequest_T lockRequest )

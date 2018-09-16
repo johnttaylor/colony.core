@@ -13,6 +13,7 @@
 #include "SubscriberApi.h"
 #include "ModelPoint.h"
 #include "Cpl/System/Trace.h"
+#include "Cpl/System/Assert.h"
 
 
 #define SECT_ "Cpl::Rte"
@@ -46,9 +47,9 @@ void MailboxServer::processEventFlag( uint8_t eventNumber ) throw()
 
 bool MailboxServer::isPendingActions() throw()
 {
-    m_lock.lock();
+    m_flock.lock();
     void* item = m_pendingMpNotifications.first();
-    m_lock.unlock();
+    m_flock.unlock();
     return item != 0;
 
 }
@@ -56,15 +57,17 @@ bool MailboxServer::isPendingActions() throw()
 void MailboxServer::endOfLoopProcessing() throw()
 {
     // Get the next pending change notification
-    m_lock.lock();
+    m_flock.lock();
     SubscriberApi* subscriberPtr = m_pendingMpNotifications.get();
-    m_lock.unlock();
+    m_flock.unlock();
 
     // Execute - at MOST one - the change notification callback
     if ( subscriberPtr )
     {
         // Get the model point that changed
-        ModelPoint& modelPoint = *(subscriberPtr->getModelPoint_()); // NOTE: getModelPoint_() is guaranteed to return a valid pointer
+        ModelPoint* mpPtr = subscriberPtr->getModelPoint_();
+        CPL_SYSTEM_ASSERT( mpPtr != 0 );   // NOTE: getModelPoint_() is guaranteed to return a valid pointer, but just in case...
+        ModelPoint& modelPoint = *mpPtr; 
 
         // Update the subscriber's state
         modelPoint.processSubscriptionEvent_( *subscriberPtr, ModelPoint::eNOTIFYING );
@@ -80,9 +83,9 @@ void MailboxServer::endOfLoopProcessing() throw()
 void MailboxServer::addPendingChangingNotification_( SubscriberApi& subscriber ) throw()
 {
     // Add the notification to my list and send myself an Event to wake up the mailbox
-    m_lock.lock();
+    m_flock.lock();
     m_pendingMpNotifications.put( subscriber );
-    m_lock.unlock();
+    m_flock.unlock();
 
     internalNotify_( MP_EVENT_BIT_MASK );
 }
@@ -90,9 +93,9 @@ void MailboxServer::addPendingChangingNotification_( SubscriberApi& subscriber )
 void MailboxServer::removePendingChangingNotification_( SubscriberApi& subscriber ) throw()
 {
     // Remove the subscriber from the notification
-    m_lock.lock();
+    m_flock.lock();
     m_pendingMpNotifications.remove( subscriber );
-    m_lock.unlock();
+    m_flock.unlock();
 }
 
 void MailboxServer::appProcessEventFlag( uint8_t eventNumber ) throw()

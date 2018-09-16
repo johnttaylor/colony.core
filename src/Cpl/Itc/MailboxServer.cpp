@@ -72,20 +72,16 @@ void MailboxServer::appRun()
             break;
         }
 
-        // Process Local Timers
-        if ( m_timeout )
-        {
-            // Calculate the elapsed time in milliseconds
-            m_timeNow               = Cpl::System::ElapsedTime::milliseconds();
-            unsigned long deltaTime = Cpl::System::ElapsedTime::deltaMilliseconds( timeMark, m_timeNow );
+        // Calculate the elapsed time in milliseconds since we last checked the timers
+        m_timeNow               = Cpl::System::ElapsedTime::milliseconds();
+        unsigned long deltaTime = Cpl::System::ElapsedTime::deltaMilliseconds( timeMark, m_timeNow );
 
-            // Update my timers
-            CPL_SYSTEM_TRACE_MSG( SECT_, (" @@ START TICK: %lu, now=%lu, [timeMark=%lu]", deltaTime, m_timeNow, timeMark) );
-            tick( deltaTime );
-            timeMark = m_timeNow;
-            CPL_SYSTEM_TRACE_MSG( SECT_, (" @@ TICK COMPLETE..., timeMark=%lu", timeMark) );
-            tickComplete();
-        }
+        // Update my timers
+        CPL_SYSTEM_TRACE_MSG( SECT_, (" @@ START TICK: %lu, now=%lu, [timeMark=%lu]", deltaTime, m_timeNow, timeMark) );
+        tick( deltaTime );
+        timeMark = m_timeNow;
+        CPL_SYSTEM_TRACE_MSG( SECT_, (" @@ TICK COMPLETE..., timeMark=%lu", timeMark) );
+        tickComplete();
 
         // Process Event Flags
         if ( events )

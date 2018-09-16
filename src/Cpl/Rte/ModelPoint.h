@@ -374,7 +374,7 @@ protected:
         2) The data size of the Model Points data instance is ALWAYS honored
            when coping the data from 'srcData'
      */
-    virtual uint16_t write( const void* srcData, LockRequest_T lockRequest = eNO_REQUEST ) throw() = 0;
+    virtual uint16_t write( const void* srcData, size_t srcSize, LockRequest_T lockRequest = eNO_REQUEST ) throw() = 0;
 
     /** This method is used to perform a Read-Modify-Write operation on the
         Model Point's data.  The method returns the Model Point's sequence
@@ -443,6 +443,13 @@ protected:
         thread very similar to how the Cpl::Timers work.  It also means that
         no change notification callback will be called till the Mailbox server
         loops back to the "top" of its forever loop.
+
+        NOTE: The Change Notification mechanism does NOT guarantee that a 
+              client will receive a notification for EVERY change to a Model
+              Point (i.e. 'fast edges' could/will be missed).  What is guaranteed
+              is that once a Model Point's value has 'settle' all registered
+              subscribers will have received change notification for the Model
+              Point's current value.
      */
     virtual void attach( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw() = 0;
 
@@ -497,7 +504,7 @@ public:
         3) The Model Point's sequence number is not changed.
     */
 
-    virtual void copyDataFrom_( const void* srcData ) throw() = 0;
+    virtual void copyDataFrom_( const void* srcData, size_t srcSize ) throw() = 0;
 
  
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible

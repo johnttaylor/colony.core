@@ -38,7 +38,7 @@ FINAL_OUTPUT_NAME = 'a.exe'
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
 base_release.cflags  = '/W3 /WX /EHsc'  # /EHsc enables exceptions
-base_release.cflags += ' /D "CATCH_CONFIG_FAST_COMPILE" /D "CATCH_CONFIG_DISABLE_MATCHERS" '
+base_release.cflags += ' /D "USE_CPL_SYSTEM_ASSERT_MACROS" /D "CATCH_CONFIG_FAST_COMPILE" /D "CATCH_CONFIG_DISABLE_MATCHERS" '
 
 # Set project specific 'optimzed' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
@@ -62,7 +62,7 @@ debug_cpp11    = BuildValues()
 
 # Set 'base' options
 base_cpp11.cflags  = '/W3 /WX /EHsc'  # /EHsc enables exceptions
-base_cpp11.cflags += ' /D "CATCH_CONFIG_FAST_COMPILE" /D "CATCH_CONFIG_DISABLE_MATCHERS" '
+base_cpp11.cflags += ' /D "USE_CPL_SYSTEM_ASSERT_MACROS" /D "CATCH_CONFIG_FAST_COMPILE" /D "CATCH_CONFIG_DISABLE_MATCHERS" '
 
 # Set 'Optimized' options
 optimzed_cpp11.cflags = '/O2'
@@ -78,14 +78,14 @@ optimzed_cpp11.cflags = '/O2'
 #-------------------------------------------------
 
 release_opts = { 'user_base':base_release, 
-                 'user_optimized':optimzed_release, 
+                 'user_optimzed':optimzed_release, 
                  'user_debug':debug_release
                }
                
                
 # Add new dictionary of for new build configuraiton options
 cpp11_opts = { 'user_base':base_cpp11, 
-               'user_optimized':optimzed_cpp11, 
+               'user_optimzed':optimzed_cpp11, 
                'user_debug':debug_cpp11
              }
   

@@ -66,6 +66,12 @@ Message* Mailbox::waitNext( bool& wasTimeout, Cpl_Itc_EventFlags_T& eventFlags )
 
     for ( ;;)
     {
+        // Get the indicator for any pending action(s).
+        // NOTE: This must be DONE OUTSIDE of the fast-lock since the parent
+        //       class cannot enforce the semantics (e.g. non-recursive) of 
+        //       the FastLock on the child class(es)
+        bool pendingActions = isPendingActions();
+
         // START critical section
         m_flock.lock();
 
@@ -73,7 +79,7 @@ Message* Mailbox::waitNext( bool& wasTimeout, Cpl_Itc_EventFlags_T& eventFlags )
         msgPtr = get();
 
         // EXIT the wait loop IF I received message OR an Event Flag was set OR a child implementation has at least on pending action
-        if ( msgPtr || m_events || isPendingActions() )
+        if ( msgPtr || m_events || pendingActions )
         {
             eventFlags = m_events;
             m_events   = 0;

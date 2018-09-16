@@ -17,7 +17,7 @@
 #include "Cpl/Itc/EventApi.h"
 #include "Cpl/System/Semaphore.h"
 #include "Cpl/System/FastLock.h"
-#include "Cpl/Container/SList.h"
+#include "Cpl/Container/DList.h"
 
 
 /** Specifies the default timeout period for waiting on message.
@@ -45,7 +45,7 @@ namespace Itc {
 class Mailbox : 
     public PostApi,
     public EventApi,
-    public Cpl::Container::SList<Message>
+    public Cpl::Container::DList<Message>
 {
 public:
     /** Constructor. The 'timeOutPeriodInMsec' parameter specifies how
