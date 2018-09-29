@@ -19,7 +19,7 @@
 using namespace Cpl::Rte::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
-Uint32::Uint32( Cpl::Rte::ModelDatabaseApi& myModelBase, Cpl::Rte::StaticInfo& staticInfo, bool decimalFormat, uint32_t initialValue, int8_t validState )
+Uint32::Uint32( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, bool decimalFormat, uint32_t initialValue, int8_t validState )
     :Basic<uint32_t>( myModelBase, staticInfo, initialValue, validState )
     , m_decimal( decimalFormat )
 {
@@ -28,27 +28,27 @@ Uint32::Uint32( Cpl::Rte::ModelDatabaseApi& myModelBase, Cpl::Rte::StaticInfo& s
 ///////////////////////////////////////////////////////////////////////////////
 uint16_t Uint32::read( uint32_t& dstData, int8_t& validState ) const throw()
 {
-    return ModelPointCommon::read( &dstData, sizeof( uint32_t ), validState );
+    return ModelPointCommon_::read( &dstData, sizeof( uint32_t ), validState );
 }
 
 uint16_t Uint32::write( uint32_t newValue, LockRequest_T lockRequest ) throw()
 {
-    return ModelPointCommon::write( &newValue, sizeof( uint32_t ), lockRequest );
+    return ModelPointCommon_::write( &newValue, sizeof( uint32_t ), lockRequest );
 }
 
 uint16_t Uint32::readModifyWrite( Client& callbackClient, LockRequest_T lockRequest )
 {
-    return ModelPointCommon::readModifyWrite( callbackClient, lockRequest );
+    return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
 }
 
 void Uint32::attach( Observer& observer, uint16_t initialSeqNumber ) throw()
 {
-    ModelPointCommon::attach( observer, initialSeqNumber );
+    ModelPointCommon_::attach( observer, initialSeqNumber );
 }
 
 void Uint32::detach( Observer& observer ) throw()
 {
-    ModelPointCommon::detach( observer );
+    ModelPointCommon_::detach( observer );
 }
 
 
@@ -77,7 +77,7 @@ bool Uint32::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenc
         }
         else
         {
-            dst.formatOpt( append, "%lX", (unsigned long) value );
+            dst.formatOpt( append, "0x%lX", (unsigned long) value );
         }
     }
 

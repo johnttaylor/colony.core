@@ -13,7 +13,8 @@
 /** @file */
 
 
-#include "Cpl/Container/DictItem.h"
+#include "colony_config.h"
+#include "Cpl/Container/MapItem.h"
 #include "Cpl/Text/String.h"
 #include "Cpl/Rte/StaticInfo.h"
 #include "Cpl/Rte/SubscriberApi.h"
@@ -96,9 +97,7 @@ namespace Rte {
         3) All methods in this class ARE thread Safe unless explicitly
            documented otherwise.
  */
-class ModelPoint :
-    public Cpl::Container::Key,
-    public Cpl::Container::DictItem
+class ModelPoint : public Cpl::Container::MapItem
 {
 public:
     /// Options related to the Model Point's locked state
@@ -136,10 +135,10 @@ public:
         application does not 'know' the current sequence number value of the
         Model Point.
      */
-    static const uint16_t SEQUENCE_NUMBER_UNKNOWN = 0;
+    static const uint16_t SEQUENCE_NUMBER_UNKNOWN;
 
     /// This symbol defines the 'Valid' state value for a Model Point
-    static const int8_t MODEL_POINT_STATE_VALID   = 0;
+    static const int8_t MODEL_POINT_STATE_VALID;
 
 
 public:
@@ -202,7 +201,7 @@ public:
         the Model Point is locked the invalidate operation silently fails,
         i.e. nothing is done.
      */
-    inline void setInvalid(LockRequest_T lockRequest = eNO_REQUEST) throw()    { setInvalidState(OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, lockRequest); }
+    inline uint16_t setInvalid(LockRequest_T lockRequest = eNO_REQUEST) throw()    { return setInvalidState(OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, lockRequest); }
 
     /** Short-hand method to improve readability for testing the a return invalid
         state for 'valid'
@@ -312,6 +311,9 @@ public:
         that there is sufficient memory available for the data being exported.
         The method returns the number of bytes exported.
 
+        If the number of returns bytes equals zero then the export operation 
+        encountered an error.
+
         The method optionally return the Model Point's sequence number at the
         time of the export.
      */
@@ -323,6 +325,9 @@ public:
         the data stream content was originally created by the corresponding 
         export() method. The method returns the number of bytes consumed from 
         the data stream.
+
+        If the number of returns bytes equals zero then the import operation 
+        encountered an error.
 
         The method optionally return the Model Point's sequence number once the
         import has completed.

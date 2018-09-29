@@ -14,7 +14,7 @@
 
 
 #include "Cpl/Rte/ModelPoint.h"
-#include "Cpl/Rte/ModelDatabaseApi.h"
+#include "Cpl/Rte/ModelDatabase.h"
 #include "Cpl/Rte/SubscriberApi.h"
 #include "Cpl/Container/DList.h"
 #include <stdint.h>
@@ -28,7 +28,7 @@ namespace Rte {
 
 /** This concrete class provide common infrastructure for a Model Point.
  */
-class ModelPointCommon : public ModelPoint
+class ModelPointCommon_ : public ModelPoint
 {
 protected:
     /// List of Active Subscribers
@@ -38,7 +38,7 @@ protected:
     const StaticInfo&                       m_staticInfo;
 
     /// Reference to the containing Model Base
-    ModelDatabaseApi&                       m_modelDatabase;
+    ModelDatabase&                          m_modelDatabase;
 
     /// Reference to my Data
     void*                                   m_dataPtr;
@@ -55,7 +55,7 @@ protected:
 
 protected:
     /// Constructor
-    ModelPointCommon( ModelDatabaseApi& myModelBase, void* myDataPtr, StaticInfo& staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
+    ModelPointCommon_( ModelDatabase& myModelBase, void* myDataPtr, StaticInfo& staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
 
 public:
     /// See Cpl::Rte::ModelPoint
@@ -69,7 +69,7 @@ public:
 
     /// See Cpl::Rte::ModelPoint
     uint16_t setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest = eNO_REQUEST ) throw();
-    
+
     /// See Cpl::Rte::ModelPoint
     int8_t getValidState( void ) const throw();
 
@@ -78,9 +78,18 @@ public:
 
     /// See Cpl::Rte::ModelPoint
     uint16_t setLockState( LockRequest_T lockRequest ) throw();
-    
+
     /// See Cpl::Rte::ModelPoint
     const char* fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw();
+
+    /// See Cpl::Rte::ModelPoint 
+    size_t getExternalSize() const throw();
+
+    /// See Cpl::Rte::ModelPoint.  Note: The implementation does NOT account for Endianess, i.e. assumes the 'platform' is the same for export/import
+    size_t exportData( void* dstDataStream, size_t maxDstLength, uint16_t* retSequenceNumber = 0 ) const throw();
+
+    /// See Cpl::Rte::ModelPoint.  Note: The implementation does NOT account for Endianess, i.e. assumes the 'platform' is the same for export/import
+    size_t importData( const void* srcDataStream, size_t srcLength, uint16_t* retSequenceNumber = 0 ) throw();
 
 
 protected:
@@ -88,10 +97,10 @@ protected:
     uint16_t read( void* dstData, size_t dstSize, int8_t& validState ) const throw();
 
     /// See Cpl::Rte::ModelPoint
-    uint16_t write( const void* srcData, size_t srcSize, LockRequest_T lockRequest = eNO_REQUEST  ) throw();
+    uint16_t write( const void* srcData, size_t srcSize, LockRequest_T lockRequest = eNO_REQUEST ) throw();
 
     /// See Cpl::Rte::ModelPoint
-    uint16_t readModifyWrite( GenericRmwCallback& callbackClient, LockRequest_T lockRequest = eNO_REQUEST  );
+    uint16_t readModifyWrite( GenericRmwCallback& callbackClient, LockRequest_T lockRequest = eNO_REQUEST );
 
     /// See Cpl::Rte::ModelPoint
     void attach( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
@@ -99,25 +108,10 @@ protected:
     /// See Cpl::Rte::ModelPoint 
     void detach( SubscriberApi& observer ) throw();
 
-    /// See Cpl::Rte::ModelPoint 
-    size_t exportData(void* dstDataStream, size_t maxDstLength, uint16_t* retSequenceNumber = 0 ) const throw();
-
-    /// See Cpl::Rte::ModelPoint 
-    size_t importData( const void* srcDataStream, size_t srcLength, uint16_t* retSequenceNumber = 0 ) throw();
-
-    /// See Cpl::Rte::ModelPoint 
-    size_t getExternalSize() const throw();
-
 
 public:
-    /// See Cpl::Container::Key
-    int compareKey( const Key& key ) const;
-
-    /// See Cpl::Container::Key
-    const void* getRawKey( unsigned* returnRawKeyLenPtr = 0 ) const;
-
     /// See Cpl::Container::DictItem
-    const Key& getKey() const throw();
+    const Cpl::Container::Key& getKey() const throw();
 
 public:
     /// See Cpl::Rte::ModelPoint
@@ -142,7 +136,7 @@ protected:
 
     /** Internal helper method that manages testing and updating the locked
         state.
-        
+
         Rules:
         1) If 'lockRequest' is eNO_REQUEST, the method only returns true if
            the MP is in the unlocked state
@@ -170,13 +164,13 @@ protected:
     /** Helper method for encoding Invalid & Locked states.  Returns false
         when the MP's value is invalid; else true is returned.
      */
-    virtual bool convertStateToText( Cpl::Text::String& dstMemory, bool& append, bool isLocked, int8_t validState  ) const throw();
+    virtual bool convertStateToText( Cpl::Text::String& dstMemory, bool& append, bool isLocked, int8_t validState ) const throw();
 
     /// Helper method that handles the lock/unlock/invalidate requests
     virtual const char* parsePrefixOps( const char* source, LockRequest_T& lockRequest, int8_t& invalidAction, const char* terminationChars );
 
-    /** Helper method that set's the MP Data value from a text string.  Has the 
-        semantics of fromString() method.  This method MUST be implemented by 
+    /** Helper method that set's the MP Data value from a text string.  Has the
+        semantics of fromString() method.  This method MUST be implemented by
         the leaf child classes.
      */
     virtual const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw() = 0;

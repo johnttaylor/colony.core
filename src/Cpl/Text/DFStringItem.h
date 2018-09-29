@@ -34,7 +34,7 @@ public:
     /// Constructor.  The new instance uses the 'memSize' of 'string'
     DFStringItem(const String& string):StringItem(m_internalString),m_internalString(string){}
 
-     /// Constructor.  'memSize' is the max length of the string storage WITHOUT the null terminator.  If 'memSize' is zero, the storage is defaulted to OPTION_CPL_TEXT_DFSTRING_ALLOC_BLOCK_SIZE - 1. 
+    /// Constructor.  'memSize' is the max length of the string storage WITHOUT the null terminator.  If 'memSize' is zero, the storage is defaulted to OPTION_CPL_TEXT_DFSTRING_ALLOC_BLOCK_SIZE - 1. 
     DFStringItem(size_t memSize, const char* string=""):StringItem(m_internalString),m_internalString(memSize,string){}
 
     /// Constructor.

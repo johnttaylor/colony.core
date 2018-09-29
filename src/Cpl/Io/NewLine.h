@@ -14,6 +14,7 @@
 
 
 #include "colony_map.h"
+#include "colony_config.h"
 
 
 /// The standard newline is "\n", but allow the application to override/change it

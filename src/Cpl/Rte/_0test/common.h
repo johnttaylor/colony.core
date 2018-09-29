@@ -351,4 +351,29 @@ public:
         }
     }
 };
+
+class RmwUint32 : public Mp::Uint32::Client
+{
+public:
+    ///
+    int m_callbackCount;
+    ///
+    ModelPoint::RmwCallbackResult_T m_returnResult;
+    ///
+    uint32_t                        m_incValue;
+public:
+    ///
+    RmwUint32():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue(0) {}
+    ///
+    ModelPoint::RmwCallbackResult_T callback( uint32_t& data, int8_t validState ) throw()
+    {
+        m_callbackCount++;
+        if ( m_returnResult != ModelPoint::eNO_CHANGE )
+        {
+            data += m_incValue;
+        }
+        return m_returnResult;
+    }
+};
+
 #endif

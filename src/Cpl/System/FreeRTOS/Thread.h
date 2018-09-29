@@ -12,6 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
+#include "colony_config.h"
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Tls.h"
 #include "Cpl/Text/FString.h"

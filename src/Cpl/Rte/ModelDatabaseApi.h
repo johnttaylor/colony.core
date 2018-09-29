@@ -18,6 +18,8 @@ namespace Cpl {
 ///
 namespace Rte {
 
+/// Forward reference to a Model point -->used to avoid circular dependencies
+class ModelPoint;
 
 /** This class defines the basic operations that can be performed on a Model
     Base.  A Model Database is a collection of instantiated Model Points.
@@ -27,24 +29,23 @@ namespace Rte {
  */
 class ModelDatabaseApi
 {
-
 public:
-    /** This method has 'PACKAGE Scope' in that is should only be called by 
-        other classes in the Cpl::Rte namespace.  It is ONLY public to avoid 
-        the tight coupling of C++ friend mechanism.
+    /** This method looks-up the model point instance by name and returns a
+        pointer to the instance.  If the model point name cannot be found, the
+        method returns 0.
 
-        This method locks the Model Database.  For every call to lock() there must
-        be corresponding call to unlock();
-    */
-    virtual void lock_() throw() = 0;
+        NOTE: The ModelPoint returned is a generic Model Point in that any
+              operations that require the concrete data type of the Model 
+              Point ARE NOT available.  It is 'okay' for the caller (IF AND ONLY
+              IF the caller 'knows' what the concrete type is) to down cast the 
+              returned pointer to a type specific child class instance of the 
+              Model Point.
 
-    /** This method has 'PACKAGE Scope' in that is should only be called by 
-        other classes in the Cpl::Rte namespace.  It is ONLY public to avoid 
-        the tight coupling of C++ friend mechanism.
-
-        This method unlocks the Model Database.
-    */
-    virtual void unlock_() throw() = 0;
+        NOTE: There is no 'add' method.  This is because Model Points self
+              register with their assigned Model Database when the Model Points
+              are created.
+     */
+    virtual ModelPoint* lookupModelPoint( const char* modelPointName ) const throw() = 0;
 
 
 public:

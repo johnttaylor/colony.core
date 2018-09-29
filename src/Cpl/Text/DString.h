@@ -33,7 +33,7 @@ namespace Cpl { namespace Text {
     All memory is allocated from the heap.  For memory allocation errors, 
     the following happens:
     1) The _truncated flag is set to true.
-    2) If the error occured in the constructor, then the internal string 
+    2) If the error occurred in the constructor, then the internal string 
        is set an empty string. If the error occurred because of a requested 
        size increase, the internal string is simply truncated.
  */
@@ -51,14 +51,14 @@ protected:
 public: 
     /** Constructor.  The amount of storage initially allocated for the string is
         the maximum of the size of the source string AND the value of initialSize.
-        Whatever value is choosen, it is then rounded up to the nearest blocksize
+        Whatever value is chosen, it is then rounded up to the nearest block size
         multiple.  There are two main reasons to specify an intialSize. 1) To
         reduce the number of malloc/free that occur over the life of the String. 
         If you supply a large enough initialSize - no additional mallocs will be
         needed.  2) If you plan to use the format(..) methods.  The format()
         methods will NOT allocate additional storage.  To prevent the format()
         methods from truncating, you must start with a large enough 'buffer'.
-        The blocksize parameter can be used to control the size of the 'chunks'
+        The block size parameter can be used to control the size of the 'chunks'
         memory is allocated in.  This 'blocking' paradigm helps to reduce 
         fragmentation and number of internal malloc/free operations.
 

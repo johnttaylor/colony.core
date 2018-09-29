@@ -9,7 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
-#include "ModelPointCommon.h"
+#include "ModelPointCommon_.h"
 #include "MailboxServer.h"
 #include "Cpl/Text/strip.h"
 #include "Cpl/Text/atob.h"
@@ -29,7 +29,7 @@ enum State_T
 
 
 ////////////////////////
-ModelPointCommon::ModelPointCommon( ModelDatabaseApi& myModelBase, void* myDataPtr, StaticInfo& staticInfo, int8_t validState )
+ModelPointCommon_::ModelPointCommon_( ModelDatabase& myModelBase, void* myDataPtr, StaticInfo& staticInfo, int8_t validState )
     : m_staticInfo( staticInfo )
     , m_modelDatabase( myModelBase )
     , m_dataPtr( myDataPtr )
@@ -37,15 +37,17 @@ ModelPointCommon::ModelPointCommon( ModelDatabaseApi& myModelBase, void* myDataP
     , m_locked( false )
     , m_validState( validState )
 {
+    // Automagically add myself to the Model Database
+    myModelBase.insert( *this );
 }
 
 /////////////////
-const char* ModelPointCommon::getName() const throw()
+const char* ModelPointCommon_::getName() const throw()
 {
     return m_staticInfo.getName();
 }
 
-uint16_t ModelPointCommon::getSequenceNumber() const throw()
+uint16_t ModelPointCommon_::getSequenceNumber() const throw()
 {
     m_modelDatabase.lock_();
     uint16_t result = m_seqNum;
@@ -53,7 +55,7 @@ uint16_t ModelPointCommon::getSequenceNumber() const throw()
     return result;
 }
 
-int8_t ModelPointCommon::getValidState( void ) const throw()
+int8_t ModelPointCommon_::getValidState( void ) const throw()
 {
     m_modelDatabase.lock_();
     int8_t result = m_validState;
@@ -61,7 +63,7 @@ int8_t ModelPointCommon::getValidState( void ) const throw()
     return result;
 }
 
-uint16_t ModelPointCommon::setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest ) throw()
+uint16_t ModelPointCommon_::setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest ) throw()
 {
     // Force a 'valid Invalid State value
     if ( newInvalidState <= 0 )
@@ -90,7 +92,7 @@ uint16_t ModelPointCommon::setInvalidState( int8_t newInvalidState, LockRequest_
     return result;
 }
 
-uint16_t ModelPointCommon::read( void* dstData, size_t dstSize, int8_t& validState ) const throw()
+uint16_t ModelPointCommon_::read( void* dstData, size_t dstSize, int8_t& validState ) const throw()
 {
     m_modelDatabase.lock_();
     validState = m_validState;
@@ -104,7 +106,7 @@ uint16_t ModelPointCommon::read( void* dstData, size_t dstSize, int8_t& validSta
     return result;
 }
 
-uint16_t ModelPointCommon::write( const void* srcData, size_t srcSize, LockRequest_T lockRequest ) throw()
+uint16_t ModelPointCommon_::write( const void* srcData, size_t srcSize, LockRequest_T lockRequest ) throw()
 {
     m_modelDatabase.lock_();
     if ( testAndUpdateLock( lockRequest ) )
@@ -121,7 +123,7 @@ uint16_t ModelPointCommon::write( const void* srcData, size_t srcSize, LockReque
     return result;
 }
 
-uint16_t ModelPointCommon::readModifyWrite( GenericRmwCallback& callbackClient, LockRequest_T lockRequest )
+uint16_t ModelPointCommon_::readModifyWrite( GenericRmwCallback& callbackClient, LockRequest_T lockRequest )
 {
     m_modelDatabase.lock_();
     if ( testAndUpdateLock( lockRequest ) )
@@ -156,7 +158,7 @@ uint16_t ModelPointCommon::readModifyWrite( GenericRmwCallback& callbackClient, 
     return result;
 }
 
-uint16_t ModelPointCommon::touch() throw()
+uint16_t ModelPointCommon_::touch() throw()
 {
     m_modelDatabase.lock_();
     processChangeNotifications();
@@ -167,7 +169,7 @@ uint16_t ModelPointCommon::touch() throw()
 
 
 /////////////////
-uint16_t ModelPointCommon::setLockState( LockRequest_T lockRequest ) throw()
+uint16_t ModelPointCommon_::setLockState( LockRequest_T lockRequest ) throw()
 {
     m_modelDatabase.lock_();
     if ( lockRequest == eLOCK )
@@ -183,7 +185,7 @@ uint16_t ModelPointCommon::setLockState( LockRequest_T lockRequest ) throw()
     return result;
 }
 
-bool ModelPointCommon::isLocked() const throw()
+bool ModelPointCommon_::isLocked() const throw()
 {
     m_modelDatabase.lock_();
     bool result = m_locked;
@@ -193,7 +195,7 @@ bool ModelPointCommon::isLocked() const throw()
 
 
 /////////////////
-size_t ModelPointCommon::exportData( void* dstDataStream, size_t maxDstLength, uint16_t* retSeqNum ) const throw()
+size_t ModelPointCommon_::exportData( void* dstDataStream, size_t maxDstLength, uint16_t* retSeqNum ) const throw()
 {
     size_t result = 0;
     if ( dstDataStream )
@@ -225,7 +227,7 @@ size_t ModelPointCommon::exportData( void* dstDataStream, size_t maxDstLength, u
     return result;
 }
 
-size_t ModelPointCommon::importData( const void* srcDataStream, size_t srcLength, uint16_t* retSeqNum ) throw()
+size_t ModelPointCommon_::importData( const void* srcDataStream, size_t srcLength, uint16_t* retSeqNum ) throw()
 {
     size_t result = 0;
     if ( srcDataStream )
@@ -233,10 +235,10 @@ size_t ModelPointCommon::importData( const void* srcDataStream, size_t srcLength
         m_modelDatabase.lock_();
 
         // Fail the import when there is not enough data left in the input stream
-        size_t dataSize = getSize();
-        if ( dataSize <= srcLength )
+        if ( getExternalSize() <= srcLength )
         {
             // Import Data
+            size_t dataSize = getSize();
             memcpy( getDataPointer_(), srcDataStream, dataSize );
 
             // Import Valid State
@@ -244,7 +246,7 @@ size_t ModelPointCommon::importData( const void* srcDataStream, size_t srcLength
             memcpy( &m_validState, ptr + dataSize, sizeof( m_validState ) );
 
             // Generate change notifications and return the Sequence number when requested
-            processDataUpdated();
+            processChangeNotifications();
             if ( retSeqNum )
             {
                 *retSeqNum = m_seqNum;
@@ -258,24 +260,14 @@ size_t ModelPointCommon::importData( const void* srcDataStream, size_t srcLength
     return result;
 }
 
-size_t ModelPointCommon::getExternalSize() const throw()
+size_t ModelPointCommon_::getExternalSize() const throw()
 {
     return getSize() + sizeof( m_validState );
 }
 
 
 /////////////////
-int ModelPointCommon::compareKey( const Key& key ) const
-{
-    return m_staticInfo.compareKey( key );
-}
-
-const void* ModelPointCommon::getRawKey( unsigned* returnRawKeyLenPtr ) const
-{
-    return m_staticInfo.getRawKey( returnRawKeyLenPtr );
-}
-
-const Cpl::Container::Key& ModelPointCommon::getKey() const throw()
+const Cpl::Container::Key& ModelPointCommon_::getKey() const throw()
 {
     return m_staticInfo;
 }
@@ -283,14 +275,14 @@ const Cpl::Container::Key& ModelPointCommon::getKey() const throw()
 
 
 /////////////////
-void ModelPointCommon::processDataUpdated() throw()
+void ModelPointCommon_::processDataUpdated() throw()
 {
     // By definition - Point now has valid date
     m_validState = MODEL_POINT_STATE_VALID;
     processChangeNotifications();
 }
 
-void ModelPointCommon::processChangeNotifications() throw()
+void ModelPointCommon_::processChangeNotifications() throw()
 {
     // Increment my sequence number (when rolling over -->do not allow the 'unknown' value)
     m_seqNum++;
@@ -309,7 +301,7 @@ void ModelPointCommon::processChangeNotifications() throw()
 }
 
 /////////////////
-void ModelPointCommon::attach( SubscriberApi& observer, uint16_t initialSeqNumber ) throw()
+void ModelPointCommon_::attach( SubscriberApi& observer, uint16_t initialSeqNumber ) throw()
 {
     m_modelDatabase.lock_();
     observer.setSequenceNumber_( initialSeqNumber );
@@ -318,7 +310,7 @@ void ModelPointCommon::attach( SubscriberApi& observer, uint16_t initialSeqNumbe
     m_modelDatabase.unlock_();
 }
 
-void ModelPointCommon::detach( SubscriberApi& observer ) throw()
+void ModelPointCommon_::detach( SubscriberApi& observer ) throw()
 {
     m_modelDatabase.lock_();
     processSubscriptionEvent_( observer, eDETACH );
@@ -327,7 +319,7 @@ void ModelPointCommon::detach( SubscriberApi& observer ) throw()
 }
 
 /////////////////
-void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Event_T event ) throw()
+void ModelPointCommon_::processSubscriptionEvent_( SubscriberApi& subscriber, Event_T event ) throw()
 {
     m_modelDatabase.lock_();
 
@@ -341,7 +333,7 @@ void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Eve
                     break;
 
                 case eDATA_CHANGED:
-                    Cpl::System::FatalError::logf( "ModelPointCommon::processSubscriptionEvent_(): Data changed received when in the eSTATE_UNSUBSCRIBED state!" );
+                    Cpl::System::FatalError::logf( "ModelPointCommon_::processSubscriptionEvent_(): Data changed received when in the eSTATE_UNSUBSCRIBED state!" );
                     break;
 
                     // Ignore all other events
@@ -392,7 +384,7 @@ void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Eve
                     break;
 
                 case eDATA_CHANGED:
-                    Cpl::System::FatalError::logf( "ModelPointCommon::processSubscriptionEvent_(): Data changed received when in the eSTATE_NOTIFY_PENDING state!" );
+                    Cpl::System::FatalError::logf( "ModelPointCommon_::processSubscriptionEvent_(): Data changed received when in the eSTATE_NOTIFY_PENDING state!" );
                     break;
 
                     // Ignore all other events
@@ -413,7 +405,7 @@ void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Eve
                     break;
 
                 case eDATA_CHANGED:
-                    Cpl::System::FatalError::logf( "ModelPointCommon::processSubscriptionEvent_(): Data changed received when in the eSTATE_NOTIFY_NOTIFYING state!" );
+                    Cpl::System::FatalError::logf( "ModelPointCommon_::processSubscriptionEvent_(): Data changed received when in the eSTATE_NOTIFY_NOTIFYING state!" );
                     break;
 
                     // Ignore all other events
@@ -433,8 +425,8 @@ void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Eve
                     subscriber.setState_( eSTATE_UNSUBSCRIBED );
                     break;
 
-                 case eDATA_CHANGED:
-                    Cpl::System::FatalError::logf( "ModelPointCommon::processSubscriptionEvent_(): Data changed received when in the eSTATE_NOTIFY_PENDING_DETACH state!" );
+                case eDATA_CHANGED:
+                    Cpl::System::FatalError::logf( "ModelPointCommon_::processSubscriptionEvent_(): Data changed received when in the eSTATE_NOTIFY_PENDING_DETACH state!" );
                     break;
 
                     // Ignore all other events
@@ -447,7 +439,7 @@ void ModelPointCommon::processSubscriptionEvent_( SubscriberApi& subscriber, Eve
     m_modelDatabase.unlock_();
 }
 
-void ModelPointCommon::transitionToSubscribed( SubscriberApi& subscriber ) throw()
+void ModelPointCommon_::transitionToSubscribed( SubscriberApi& subscriber ) throw()
 {
     // Ensure that I am not already in the Model Point's list of subscribers (this can happen if subscribing when I am already subscribed)
     m_subscribers.remove( subscriber );
@@ -463,7 +455,7 @@ void ModelPointCommon::transitionToSubscribed( SubscriberApi& subscriber ) throw
     }
 }
 
-void ModelPointCommon::transitionToNotifyPending( SubscriberApi& subscriber ) throw()
+void ModelPointCommon_::transitionToNotifyPending( SubscriberApi& subscriber ) throw()
 {
     subscriber.getMailbox_()->addPendingChangingNotification_( subscriber );
     subscriber.setState_( eSTATE_NOTIFY_PENDING );
@@ -471,7 +463,7 @@ void ModelPointCommon::transitionToNotifyPending( SubscriberApi& subscriber ) th
 
 
 /////////////////
-bool ModelPointCommon::testAndUpdateLock( LockRequest_T lockRequest ) throw()
+bool ModelPointCommon_::testAndUpdateLock( LockRequest_T lockRequest ) throw()
 {
     bool result = false;
     if ( lockRequest == eUNLOCK )
@@ -500,7 +492,7 @@ bool ModelPointCommon::testAndUpdateLock( LockRequest_T lockRequest ) throw()
 
 
 /////////////////
-const char* ModelPointCommon::fromString( const char* srcText, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
+const char* ModelPointCommon_::fromString( const char* srcText, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
 {
     // Trap prefix operation that apply to the Data 
     LockRequest_T lockAction    = eNO_REQUEST;
@@ -510,7 +502,6 @@ const char* ModelPointCommon::fromString( const char* srcText, const char* termi
     // Invalidate request
     if ( invalidAction > 0 )
     {
-
         uint16_t seqnum = setInvalidState( invalidAction, lockAction );
         if ( retSequenceNumber )
         {
@@ -522,7 +513,7 @@ const char* ModelPointCommon::fromString( const char* srcText, const char* termi
     else
     {
         // No 'new value'
-        if ( Cpl::Text::isCharInString( terminationChars, *srcText ) )
+        if ( (terminationChars == 0 && *srcText == '\0') || (terminationChars != 0 && Cpl::Text::isCharInString( terminationChars, *srcText )) )
         {
             // Apply the lock request
             uint16_t seqnum = setLockState( lockAction );
@@ -544,7 +535,7 @@ const char* ModelPointCommon::fromString( const char* srcText, const char* termi
     return srcText;
 }
 
-const char* ModelPointCommon::parsePrefixOps( const char* source, LockRequest_T& lockRequest, int8_t& invalidAction, const char* terminationChars )
+const char* ModelPointCommon_::parsePrefixOps( const char* source, LockRequest_T& lockRequest, int8_t& invalidAction, const char* terminationChars )
 {
     // Do nothing when there is NO 'source'
     if ( source == 0 || *source == '\0' )
@@ -590,7 +581,7 @@ const char* ModelPointCommon::parsePrefixOps( const char* source, LockRequest_T&
     return source;
 }
 
-bool ModelPointCommon::convertStateToText( Cpl::Text::String& dstMemory, bool& append, bool isLocked, int8_t validState ) const throw()
+bool ModelPointCommon_::convertStateToText( Cpl::Text::String& dstMemory, bool& append, bool isLocked, int8_t validState ) const throw()
 {
     // Indicate locked state
     if ( isLocked )

@@ -36,7 +36,7 @@ static MailboxServer     t2Mbox_;
 static MailboxServer     t3Mbox_;
 
 // Allocate/create my Model Database
-static ModelDatabase    modelDb_;
+static ModelDatabase    modelDb_("ignoreThisParameter_usedToInvokeTheStackConstructor");
 
 // Allocate my Model Points
 static StaticInfo       info_mp_apple_( "APPLE" );
@@ -61,7 +61,7 @@ static Mp::Uint32       mp_plum_( modelDb_, info_mp_plum_ );
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "mvc", "[mvc]" )
 {
-    CPL_SYSTEM_TRACE_FUNC( SECT_ );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "MVC test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     Cpl::System::Thread* t1 = Cpl::System::Thread::create( t1Mbox_, "T1" );

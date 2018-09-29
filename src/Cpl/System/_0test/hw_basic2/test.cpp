@@ -9,6 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
+#include "colony_config.h"
 #include "Bsp/Api.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Thread.h"

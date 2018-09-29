@@ -8,6 +8,8 @@
 
 // External references
 extern void link_mvc(void);
+extern void link_basic(void);
+extern void link_uint32(void);
 
 
 int main( int argc, char* argv[] )
@@ -25,6 +27,8 @@ int main( int argc, char* argv[] )
     // test cases and how NQBP links by libraries.  Short version is do NOT
     // remove these call(s).
     link_mvc();
+    link_basic();
+    link_uint32();
 
     // Run the test(s)
     int result = Catch::Session().run( argc, argv );
