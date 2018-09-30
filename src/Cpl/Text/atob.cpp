@@ -31,7 +31,7 @@ static bool conversionOk( const char* originalString, char* endPtr, const char* 
         return true;
     }
 
-    // At least a partial conversion occured, determine if it is OK
+    // At least a partial conversion occurred, determine if it is OK
     while ( validStopChars && *validStopChars != '\0' )
     {
         if ( *endPtr == *validStopChars )
@@ -154,7 +154,7 @@ bool Cpl::Text::a2ll( long long& convertedValue, const char* string, int base, c
     // Only update the client's variable if the conversion was successful
     if ( conversionOk( string, endPtr, validStopChars ) )
     {
-        value = value;
+        convertedValue = value;
         return true;
     }
 

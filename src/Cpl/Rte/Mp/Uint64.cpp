@@ -11,7 +11,7 @@
 /** @file */
 
 
-#include "Uint32.h"
+#include "Uint64.h"
 #include "Cpl/Text/atob.h"
 #include <limits.h>
 
@@ -19,50 +19,50 @@
 using namespace Cpl::Rte::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
-Uint32::Uint32( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, bool decimalFormat, uint32_t initialValue, int8_t validState )
-    :Basic<uint32_t>( myModelBase, staticInfo, initialValue, validState )
+Uint64::Uint64( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, bool decimalFormat, uint64_t initialValue, int8_t validState )
+    :Basic<uint64_t>( myModelBase, staticInfo, initialValue, validState )
     , m_decimal( decimalFormat )
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-uint16_t Uint32::read( uint32_t& dstData, int8_t& validState ) const throw()
+uint16_t Uint64::read( uint64_t& dstData, int8_t& validState ) const throw()
 {
-    return ModelPointCommon_::read( &dstData, sizeof( uint32_t ), validState );
+    return ModelPointCommon_::read( &dstData, sizeof( uint64_t ), validState );
 }
 
-uint16_t Uint32::write( uint32_t newValue, LockRequest_T lockRequest ) throw()
+uint16_t Uint64::write( uint64_t newValue, LockRequest_T lockRequest ) throw()
 {
-    return ModelPointCommon_::write( &newValue, sizeof( uint32_t ), lockRequest );
+    return ModelPointCommon_::write( &newValue, sizeof( uint64_t ), lockRequest );
 }
 
-uint16_t Uint32::readModifyWrite( Client& callbackClient, LockRequest_T lockRequest )
+uint16_t Uint64::readModifyWrite( Client& callbackClient, LockRequest_T lockRequest )
 {
     return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
 }
 
-void Uint32::attach( Observer& observer, uint16_t initialSeqNumber ) throw()
+void Uint64::attach( Observer& observer, uint16_t initialSeqNumber ) throw()
 {
     ModelPointCommon_::attach( observer, initialSeqNumber );
 }
 
-void Uint32::detach( Observer& observer ) throw()
+void Uint64::detach( Observer& observer ) throw()
 {
     ModelPointCommon_::detach( observer );
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-const char* Uint32::getTypeAsText() const throw()
+const char* Uint64::getTypeAsText() const throw()
 {
-    return "UINT32";
+    return "UINT64";
 }
 
-bool Uint32::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
+bool Uint64::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
 {
     // Get a snapshot of the my data and state
     m_modelDatabase.lock_();
-    uint32_t value  = m_data;
+    uint64_t value  = m_data;
     uint16_t seqnum = m_seqNum;
     int8_t   valid  = m_validState;
     bool     locked = m_locked;
@@ -73,11 +73,11 @@ bool Uint32::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenc
     {
         if ( m_decimal )
         {
-            dst.formatOpt( append, "%lu", (unsigned long) value );
+            dst.formatOpt( append, "%llu", (unsigned long long) value );
         }
         else
         {
-            dst.formatOpt( append, "0x%lX", (unsigned long) value );
+            dst.formatOpt( append, "0x%llX", (unsigned long long) value );
         }
     }
 
@@ -89,13 +89,13 @@ bool Uint32::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenc
     return true;
 }
 
-const char* Uint32::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
+const char* Uint64::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
 {
-    const char*   result = 0;
-    uint16_t      seqnum = SEQUENCE_NUMBER_UNKNOWN;
-    const char*   endptr;
-    unsigned long value;
-    if ( Cpl::Text::a2ul( value, srcText, m_decimal ? 10 : 16, terminationChars, &endptr ) && value <= ULONG_MAX )
+    const char*        result = 0;
+    uint16_t           seqnum = SEQUENCE_NUMBER_UNKNOWN;
+    const char*        endptr;
+    unsigned long long value;
+    if ( Cpl::Text::a2ull( value, srcText, m_decimal ? 10 : 16, terminationChars, &endptr ) )
     {
         seqnum = write( value, lockAction );
         result = endptr;
@@ -106,7 +106,7 @@ const char* Uint32::setFromText( const char* srcText, LockRequest_T lockAction, 
     {
         if ( errorMsg )
         {
-            errorMsg->format( "Conversion of ([%s], base=%d) to a uint32_t failed OR value too great.", srcText, m_decimal ? 10 : 16 );
+            errorMsg->format( "Conversion of ([%s], base=%d) to a uint64_t failed.", srcText, m_decimal ? 10 : 16 );
         }
     }
 

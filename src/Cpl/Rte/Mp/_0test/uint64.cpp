@@ -12,17 +12,19 @@
 #include "Catch/catch.hpp"
 #include "Cpl/System/_testsupport/Shutdown_TS.h"
 #include "Cpl/System/Trace.h"
+#include "Cpl/System/Thread.h"
+#include "Cpl/System/Api.h"
 #include "Cpl/Text/FString.h"
 #include "Cpl/Text/DString.h"
 #include "Cpl/Rte/ModelDatabase.h"
-#include "Cpl/Rte/Mp/Uint32.h"
+#include "Cpl/Rte/Mp/Uint64.h"
 #include "common.h"
 #include <string.h>
 
 /// This method is used as part of 'forcing' this object to being actually 
 /// linked during the NQBP link process (it is artifact of linking libraries 
 /// and how CATCH auto-registers (via static objects) test case)
-void link_uint32( void ) {}
+void link_uint64( void ) {}
 
 
 
@@ -33,16 +35,57 @@ void link_uint32( void ) {}
 static ModelDatabase    modelDb_( "ignoreThisParameter_usedToInvokeTheStackConstructor" );
 
 // Allocate my Model Points
-static StaticInfo       info_mp_apple_( "APPLE" );
-static Mp::Uint32       mp_apple_( modelDb_, info_mp_apple_ );
+static StaticInfo      info_mp_apple_( "APPLE" );
+static Mp::Uint64      mp_apple_( modelDb_, info_mp_apple_ );
 
-static StaticInfo       info_mp_orange_( "ORANGE" );
-static Mp::Uint32       mp_orange_( modelDb_, info_mp_orange_, false );
+static StaticInfo      info_mp_orange_( "ORANGE" );
+static Mp::Uint64      mp_orange_( modelDb_, info_mp_orange_, false );
 
 ////////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "uint32-get", "[uint32-get]" )
+TEST_CASE( "uint64-readwrite", "[uint64-readwrite]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT32-GET test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT64-READWRITE test" );
+    Cpl::System::Shutdown_TS::clearAndUseCounter();
+
+    // Read
+    uint64_t value;
+    int8_t   valid;
+    uint16_t seqNum = mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == false );
+
+    // Write
+    uint16_t seqNum2 = mp_apple_.write( 10 );
+    mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( value == 10 );
+    REQUIRE( seqNum + 1 == seqNum2 );
+
+    // Read-Modify-Write with Lock
+    RmwUint64 callbackClient;
+    callbackClient.m_callbackCount  = 0;
+    callbackClient.m_incValue       = 1;
+    callbackClient.m_returnResult   = ModelPoint::eCHANGED;
+    mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
+    mp_apple_.read( value, valid );
+    REQUIRE( mp_apple_.isNotValid() == false );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    bool locked = mp_apple_.isLocked();
+    REQUIRE( locked == true );
+    REQUIRE( value == 10 + 1 );
+    REQUIRE( callbackClient.m_callbackCount == 1 );
+
+    // Invalidate with Unlock
+    mp_apple_.setInvalidState( 112, ModelPoint::eUNLOCK );
+    REQUIRE( mp_apple_.isNotValid() == true );
+    valid = mp_apple_.getValidState();
+    REQUIRE( ModelPoint::IS_VALID( valid ) == false );
+    REQUIRE( valid == 112 );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+TEST_CASE( "uint64-get", "[uint64-get]" )
+{
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT64-GET test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     // Gets...
@@ -52,18 +95,18 @@ TEST_CASE( "uint32-get", "[uint32-get]" )
     REQUIRE( strcmp( name, "ORANGE" ) == 0 );
 
     size_t s = mp_apple_.getSize();
-    REQUIRE( s == sizeof( uint32_t ) );
+    REQUIRE( s == sizeof( uint64_t ) );
     s = mp_orange_.getSize();
-    REQUIRE( s == sizeof( uint32_t ) );
+    REQUIRE( s == sizeof( uint64_t ) );
 
     s = mp_apple_.getExternalSize();
-    REQUIRE( s == sizeof( uint32_t ) + sizeof( int8_t ) );
+    REQUIRE( s == sizeof( uint64_t ) + sizeof( int8_t ) );
     s = mp_orange_.getExternalSize();
-    REQUIRE( s == sizeof( uint32_t ) + sizeof( int8_t ) );
+    REQUIRE( s == sizeof( uint64_t ) + sizeof( int8_t ) );
 
     const char* mpType = mp_apple_.getTypeAsText();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s])", mpType) );
-    REQUIRE( strcmp( mpType, "UINT32" ) == 0 );
+    REQUIRE( strcmp( mpType, "UINT64" ) == 0 );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
@@ -71,9 +114,9 @@ TEST_CASE( "uint32-get", "[uint32-get]" )
 ////////////////////////////////////////////////////////////////////////////////
 #define STREAM_BUFFER_SIZE  100
 
-TEST_CASE( "uint32-export", "[uint32-export]" )
+TEST_CASE( "uint64-export", "[uint64-export]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT32-EXPORT test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT64-EXPORT test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     //  Export/Import Buffer
@@ -91,14 +134,14 @@ TEST_CASE( "uint32-export", "[uint32-export]" )
     REQUIRE( seqNum == seqNum2 );
 
     // Update the MP
-    seqNum = mp_apple_.write( 42 );
+    seqNum = mp_apple_.write( -42 );
     REQUIRE( seqNum == seqNum2 + 1 );
-    uint32_t value;
+    uint64_t value;
     int8_t   valid;
     mp_apple_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
-    REQUIRE( value == 42 );
+    REQUIRE( value == -42 );
 
     // Import...
     b = mp_apple_.importData( streamBuffer, sizeof( streamBuffer ), &seqNum2 );
@@ -147,11 +190,11 @@ TEST_CASE( "uint32-export", "[uint32-export]" )
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-#define MAX_STR_LENG    20
+#define MAX_STR_LENG    40
 
-TEST_CASE( "uint32-tostring", "[uint32-tostring]" )
+TEST_CASE( "uint64-tostring", "[uint64-tostring]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT32-TOSTRING test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT64-TOSTRING test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     // Invalid (Default value)
@@ -219,9 +262,9 @@ TEST_CASE( "uint32-tostring", "[uint32-tostring]" )
 
 
 ///////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "uint32-fromstring", "[uint32-fromstring]" )
+TEST_CASE( "uint64-fromstring", "[uint64-fromstring]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT32-FROMSTRING test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT64-FROMSTRING test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     // Start with MP in the invalid state
@@ -238,7 +281,7 @@ TEST_CASE( "uint32-fromstring", "[uint32-fromstring]" )
     REQUIRE( nextChar != 0 );
     REQUIRE( *nextChar == '\0' );
     REQUIRE( seqNum2 == seqNum + 1 );
-    uint32_t value;
+    uint64_t value;
     int8_t   valid;
     seqNum = mp_apple_.read( value, valid );
     REQUIRE( seqNum == seqNum2 );
@@ -333,7 +376,36 @@ TEST_CASE( "uint32-fromstring", "[uint32-fromstring]" )
     REQUIRE( mp_orange_.isLocked() == false );
     mp_orange_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE( value == 0x4321);
+    REQUIRE( value == 0x4321 );
+
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+static Cpl::Rte::MailboxServer     t1Mbox_;
+
+TEST_CASE( "uint64-observer", "[uint64-observer]" )
+{
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT64-OBSERVER test" );
+    Cpl::System::Shutdown_TS::clearAndUseCounter();
+
+    Cpl::System::Thread* t1 = Cpl::System::Thread::create( t1Mbox_, "T1" );
+    ViewerUint64 viewer1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_ );
+
+    // Open, write a value, wait for Viewer to see the change, then close
+    mp_apple_.removeLock();
+    viewer1.open();
+    uint16_t seqNum = mp_apple_.write( 33 );
+    Cpl::System::Thread::wait();
+    viewer1.close();
+    REQUIRE( viewer1.m_lastSeqNumber == seqNum );
+
+    // Shutdown threads
+    t1Mbox_.pleaseStop();
+    Cpl::System::Api::sleep( 100 ); // allow time for threads to stop
+    REQUIRE( t1->isRunning() == false );
+    Cpl::System::Thread::destroy( *t1 );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
