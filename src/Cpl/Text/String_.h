@@ -20,7 +20,7 @@ namespace Cpl { namespace Text {
 
 
 /** This partially concrete class implements the portions of the String Api 
-    that is independent of the internal storage mechnicisms.
+    that is independent of the internal storage mechanisms.
  */
 
 class String_: public String

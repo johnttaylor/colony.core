@@ -14,7 +14,7 @@
 
     This file contains a collection of methods that provide basic building
     blocks for parsing 'tokens' with in a null terminated string. It also 
-    provide funcitons for removing leading/trailing whitespace.
+    provide functions for removing leading/trailing whitespace.
  
  */
 
@@ -42,7 +42,7 @@ const char* stripSpace(const char* s);
         o If 's' is null, then null is returned.
 
 
-    This method is usefull in finding the 'next' token in a string, for example: <pre>
+    This method is useful in finding the 'next' token in a string, for example: <pre>
 
         // Returns a pointer to the first token in 'input'
         const char* token = stripSpace(input)

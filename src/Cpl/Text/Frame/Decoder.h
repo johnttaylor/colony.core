@@ -64,8 +64,8 @@ class Decoder
 {
 public:
     /** This method reads from an Input source (which is defined/provided by
-        the concrete implemenation) until a valid frame is found or an error 
-        occured.  If a valid frame was found, true will be returned and the 
+        the concrete implementation) until a valid frame is found or an error 
+        occurred.  If a valid frame was found, true will be returned and the 
         frame will be stored 'frame'.  The length, in bytes, of the frame found 
         is returned via 'frameSize'.  False is returned if a error was 
         encountered while reading the Input source.

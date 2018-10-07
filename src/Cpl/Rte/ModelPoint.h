@@ -553,7 +553,7 @@ public:
         This method returns a pointer to the Model Point's data.  BE VERY 
         CAREFULL on how the pointer is used!
      */
-    virtual void* getDataPointer_() const throw() = 0;
+    virtual void* getDataPointer_() throw() = 0;
 
 
 public:

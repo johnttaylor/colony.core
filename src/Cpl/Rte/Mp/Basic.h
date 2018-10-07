@@ -56,12 +56,6 @@ public:
 
 public:
     /// See Cpl::Rte::ModelPoint
-    void copyDataFrom_( const void* srcData ) throw()
-    {
-        m_data = *((ELEMTYPE*) srcData);
-    }
-
-    /// See Cpl::Rte::ModelPoint
     void copyDataTo_( void* dstData, size_t dstSize ) const throw()
     {
         CPL_SYSTEM_ASSERT( dstSize == sizeof( ELEMTYPE ) );
@@ -83,7 +77,7 @@ public:
     }
 
     /// See Cpl::Rte::Point.  
-    void* getDataPointer_() const throw()
+    void* getDataPointer_() throw()
     {
         return (void*)(&m_data);
     }
