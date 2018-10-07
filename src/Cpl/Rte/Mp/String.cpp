@@ -12,10 +12,12 @@
 
 
 #include "String.h"
-#include "Cpl/System/FatalError.h"
+#include "Cpl/System/Assert.h"
 #include "Cpl/Text/strip.h"
 #include "Cpl/Text/Frame/StringDecoder.h"
 #include "Cpl/Text/Frame/StringEncoder.h"
+#include "Cpl/Memory/Allocator.h"
+#include <string.h>
 
 
 ///
@@ -23,23 +25,42 @@ using namespace Cpl::Rte::Mp;
 
 char String::g_buffer[OPTION_CPL_RTE_MP_STRING_MAX_LENGTH_FROM_STRING_BUFFER];
 
+static char emptyString_[1] = { '\0' };
+
 ///////////////////////////////////////////////////////////////////////////////
 String::String( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, size_t maxLength, const char* initialValue, int8_t validState )
     :ModelPointCommon_( myModelBase, &m_data, staticInfo, validState )
-    , m_data( maxLength, initialValue )
+    , m_data( new(std::nothrow) char[maxLength + 1] )
+    , m_maxLength( maxLength )
 {
+    // Trapped failed to allocate memory -->silent fail and set string size to zero
+    if ( m_data == 0 )
+    {
+        m_data      = emptyString_;
+        m_maxLength = 0;
+    }
+
+    // Set the initial value
+    if ( initialValue )
+    {
+        strncpy( m_data, initialValue, maxLength );
+        m_data[maxLength] = '\0';
+    }
+
+    // Null pointer for initial value -->set initial value to an empty string
+    else
+    {
+        m_data[0] = '\0';
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 uint16_t String::read( Cpl::Text::String& dstData, int8_t& validState ) const throw()
 {
     m_modelDatabase.lock_();
-    validState = m_validState;
-    if ( IS_VALID( validState ) )
-    {
-        dstData = m_data;
-    }
-    uint16_t result = m_seqNum;
+    int      dstLength;
+    char*    dstPtr = dstData.getBuffer( dstLength );
+    uint16_t result =  ModelPointCommon_::read( dstPtr, dstLength+1, validState );
     m_modelDatabase.unlock_();
 
     return result;
@@ -61,19 +82,7 @@ uint16_t String::write( const char* newValue, LockRequest_T lockRequest ) throw(
 
 uint16_t String::write( const char* srcData, size_t srcLen, LockRequest_T lockRequest = eNO_REQUEST ) throw()
 {
-    m_modelDatabase.lock_();
-    if ( srcData && testAndUpdateLock( lockRequest ) )
-    {
-        if ( !IS_VALID( m_validState ) || m_data != srcData )
-        {
-            m_data.copyIn( srcData, srcLen );
-            processDataUpdated();
-        }
-    }
-    uint16_t result = m_seqNum;
-    m_modelDatabase.unlock_();
-
-    return result;
+    return ModelPointCommon_::write( srcData, srcLen+1, lockRequest );
 }
 
 uint16_t String::readModifyWrite( Client& callbackClient, LockRequest_T lockRequest )
@@ -91,23 +100,23 @@ void String::detach( Observer& observer ) throw()
     ModelPointCommon_::detach( observer );
 }
 
-/// Function 'not supported' for this class.  In theory only called by the Base class write() method which is overloaded for this class
 bool String::isDataEqual_( const void* otherData ) const throw()
 {
-    Cpl::System::FatalError::logf( "Implementation Error!  The Cpl::Rte::Mp::String class does not support the isDataEqual_() method!" );
-    return false;
+    size_t otherLen = strlen( (char*) otherData );
+    size_t myLen    = strlen( m_data );
+    return otherLen == myLen && strcmp( m_data, (char*) otherData ) == 0;
 }
 
-/// Function 'not supported' for this class.  In theory only called by the Base class read() method which is overloaded for this class
 void String::copyDataTo_( void* dstData, size_t dstSize ) const throw()
 {
-    Cpl::System::FatalError::logf( "Implementation Error!  The Cpl::Rte::Mp::String class does not support the copyDataTo_() method!" );
+    CPL_SYSTEM_ASSERT( dstSize >= m_maxLength + 1 );
+    memcpy( dstData, m_data, m_maxLength + 1 );
 }
 
-/// Function 'not supported' for this class.  In theory only called by the Base class write() method which is overloaded for this class
 void String::copyDataFrom_( const void* srcData, size_t srcSize ) throw()
 {
-    Cpl::System::FatalError::logf( "Implementation Error!  The Cpl::Rte::Mp::String class does not support the copyDataFrom_() method!" );
+    CPL_SYSTEM_ASSERT( srcSize <= m_maxLength + 1 );
+    memcpy( m_data, srcData, srcSize );
 }
 
 
@@ -119,30 +128,18 @@ const char* String::getTypeAsText() const throw()
 
 size_t String::getSize() const throw()
 {
-    return m_data.maxLength();
+    return m_maxLength + 1;
 }
+
+size_t String::getInternalSize_() const throw()
+{
+    return m_maxLength + 1;
+}
+
 
 void* String::getDataPointer_() throw()
 {
-    int dummy;
-    return m_data.getBuffer( dummy );
-}
-
-size_t String::importData( const void* srcDataStream, size_t srcLength, uint16_t* retSeqNum ) throw()
-{
-    m_modelDatabase.lock_();
-    size_t result = ModelPointCommon_::importData( srcDataStream, srcLength, retSeqNum );
-
-    // Ensure that my imported value is null terminated
-    if ( result > 0 )
-    {
-        int   maxLength;
-        char* rawPtr      = m_data.getBuffer( maxLength );
-        rawPtr[maxLength] = '\0';
-    }
-    m_modelDatabase.unlock_();
-
-    return result;
+    return m_data;
 }
 
 bool String::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
@@ -157,7 +154,7 @@ bool String::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenc
         // Output as a "Text String"
         Cpl::Text::Frame::StringEncoder encoder( dst, OPTION_CPL_RTE_MODEL_POINT_QUOTE_CHAR, OPTION_CPL_RTE_MODEL_POINT_QUOTE_CHAR, OPTION_CPL_RTE_MODEL_POINT_ESCAPE_CHAR, false, append );
         encoder.startFrame();
-        encoder.output( m_data.getString() );
+        encoder.output( m_data );
         encoder.endFrame();
     }
 

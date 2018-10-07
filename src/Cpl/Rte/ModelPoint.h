@@ -508,7 +508,6 @@ public:
            when coping the data from 'src'
         3) The Model Point's sequence number is not changed.
     */
-
     virtual void copyDataFrom_( const void* srcData, size_t srcSize ) throw() = 0;
 
  
@@ -554,6 +553,19 @@ public:
         CAREFULL on how the pointer is used!
      */
     virtual void* getDataPointer_() throw() = 0;
+
+     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+     by other classes in the Cpl::Rte namespace.  The Application should
+     NEVER call this method.
+
+     This method is NOT Thread Safe.
+ 
+     This method returns the "internal size" of the Model Point's data point.
+     This length (when applicable) includes any 'meta/extra' data that is
+     not exposed to the Model Point consumers - but is used with the
+     internal import()/export() methods.
+    */
+    virtual size_t getInternalSize_() const throw() = 0;
 
 
 public:

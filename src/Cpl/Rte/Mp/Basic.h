@@ -82,6 +82,10 @@ public:
         return (void*)(&m_data);
     }
 
+    size_t getInternalSize_() const throw()
+    {
+        return sizeof( ELEMTYPE );
+    }
 };
 
 

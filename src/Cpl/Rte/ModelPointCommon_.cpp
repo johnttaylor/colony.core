@@ -96,7 +96,7 @@ uint16_t ModelPointCommon_::read( void* dstData, size_t dstSize, int8_t& validSt
 {
     m_modelDatabase.lock_();
     validState = m_validState;
-    if ( IS_VALID( validState ) )
+    if ( dstData && IS_VALID( validState ) )
     {
         copyDataTo_( dstData, dstSize );
     }
@@ -109,9 +109,9 @@ uint16_t ModelPointCommon_::read( void* dstData, size_t dstSize, int8_t& validSt
 uint16_t ModelPointCommon_::write( const void* srcData, size_t srcSize, LockRequest_T lockRequest ) throw()
 {
     m_modelDatabase.lock_();
-    if ( testAndUpdateLock( lockRequest ) )
+    if ( srcData && testAndUpdateLock( lockRequest ) )
     {
-        if ( !IS_VALID( m_validState ) || isDataEqual_( srcData ) == false )
+        if ( !IS_VALID( m_validState ) ||isDataEqual_( srcData ) == false )
         {
             copyDataFrom_( srcData, srcSize );
             processDataUpdated();
@@ -206,7 +206,7 @@ size_t ModelPointCommon_::exportData( void* dstDataStream, size_t maxDstLength, 
         if ( maxDstLength >= getExternalSize() )
         {
             // Export Data
-            size_t dataSize = getSize();
+            size_t dataSize = getInternalSize_();
             memcpy( dstDataStream, getDataPointer_(), dataSize );
 
             // Export Valid State
@@ -238,7 +238,7 @@ size_t ModelPointCommon_::importData( const void* srcDataStream, size_t srcLengt
         if ( getExternalSize() <= srcLength )
         {
             // Import Data
-            size_t dataSize = getSize();
+            size_t dataSize = getInternalSize_();
             memcpy( getDataPointer_(), srcDataStream, dataSize );
 
             // Import Valid State
@@ -262,7 +262,7 @@ size_t ModelPointCommon_::importData( const void* srcDataStream, size_t srcLengt
 
 size_t ModelPointCommon_::getExternalSize() const throw()
 {
-    return getSize() + sizeof( m_validState );
+    return getInternalSize_() + sizeof( m_validState );
 }
 
 

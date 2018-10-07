@@ -33,7 +33,9 @@ namespace Mp {
 
 
 /** This class provides a concrete implementation for a Point who's data is a
-    Cpl::Text::String (and the underlying storage is a Cpl::Text::DFString).
+    null terminated string.  The storage for the internal string storage is
+    done once when the instance is constructed, i.e. fixed length (per instance)
+    storage.
 
     NOTE: All methods in this class ARE thread Safe unless explicitly
           documented otherwise.
@@ -42,12 +44,14 @@ class String : public Cpl::Rte::ModelPointCommon_
 {
 protected:
     ///
-    Cpl::Text::DFString m_data;
+    char*               m_data;
     ///
-    static char g_buffer[OPTION_CPL_RTE_MP_STRING_MAX_LENGTH_FROM_STRING_BUFFER];
+    size_t              m_maxLength;
+    ///
+    static char         g_buffer[OPTION_CPL_RTE_MP_STRING_MAX_LENGTH_FROM_STRING_BUFFER];
 
 public:
-    /// Constructor
+    /// Constructor.  The 'maxLength' specifies the size, in bytes, of the string storage EXCLUDING the null terminator
     String( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t maxLength, const char* initialValue = "", int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
 
 public:
@@ -93,7 +97,7 @@ public:
     ///  See Cpl::Rte::ModelPoint.
     const char* getTypeAsText() const throw();
 
-    /// See Cpl::Rte::ModelPoint.  Note: the returned sized does NOT include the null terminator
+    /// See Cpl::Rte::ModelPoint.  Note: the returned sized does INCLUDE the null terminator
     size_t getSize() const throw();
 
 
@@ -104,10 +108,10 @@ protected:
     /// See Cpl::Rte::ModelPoint.  Note: Use the system wide default epsilon of CPL_MATH_REAL_FLOAT_EPSILON when testing for equality
     bool isDataEqual_( const void* otherData ) const throw();
 
-    /// See Cpl::Rte::ModelPoint
+    /// See Cpl::Rte::ModelPoint. Note: dstSize MUST include the null terminator
     void copyDataTo_( void* dstData, size_t dstSize ) const throw();
 
-    /// See Cpl::Rte::ModelPoint
+    /// See Cpl::Rte::ModelPoint.  Note: srcSize MUST include the null terminator
     void copyDataFrom_( const void* srcData, size_t srcSize ) throw();
 
     /// See Cpl::Rte::ModelPoint.  
@@ -117,8 +121,7 @@ protected:
     void* getDataPointer_() throw();
 
     /// See Cpl::Rte::ModelPoint.  
-    size_t importData( const void* srcDataStream, size_t srcLength, uint16_t* retSeqNum ) throw();
-
+    size_t getInternalSize_() const throw();
 };
 
 
