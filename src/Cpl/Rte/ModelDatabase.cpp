@@ -32,3 +32,13 @@ ModelPoint * ModelDatabase::lookupModelPoint( const char* modelPointName ) const
     Cpl::Container::KeyLiteralString myKey( modelPointName );
     return find( myKey );
 }
+
+ModelPoint* ModelDatabase::getFirstByName() const throw()
+{
+    return first();
+}
+
+ModelPoint* ModelDatabase::getNextByName( ModelPoint& currentModelPoint ) const throw()
+{
+    return next( currentModelPoint );
+}

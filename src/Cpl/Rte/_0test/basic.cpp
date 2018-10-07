@@ -345,5 +345,11 @@ TEST_CASE( "runtime_db", "[runtime_db]" )
     mp = ( Mp::Uint32*) myDb.lookupModelPoint( "PLUM1" );
     REQUIRE( mp == 0 );
 
+    // Traverse the Database
+    ModelPoint* mpPtr = myDb.getFirstByName();
+    REQUIRE( strcmp( mpPtr->getName(), "APPLE1") == 0 );
+    mpPtr = myDb.getNextByName( *mpPtr );
+    REQUIRE( strcmp( mpPtr->getName(), "CHERRY1") == 0 );
+
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }

@@ -75,7 +75,7 @@ public:
         m_data = *((ELEMTYPE*) srcData);
     }
 
-    /// See Cpl::Rte::Point.  The default implementation is for integers
+    /// See Cpl::Rte::ModelPoint.  The default implementation is for integers
     bool isDataEqual_( const void* otherData ) const throw()
     {
         ELEMTYPE left = *((ELEMTYPE*) otherData);

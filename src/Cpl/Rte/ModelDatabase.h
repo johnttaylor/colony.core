@@ -48,6 +48,12 @@ public:
 public:
     /// See Cpl::Rte::ModelDatabaseApi
     ModelPoint * lookupModelPoint( const char* modelPointName ) const throw();
+    
+    /// See Cpl::Rte::ModelDatabaseApi
+    ModelPoint* getFirstByName() const throw();
+
+    /// See Cpl::Rte::ModelDatabaseApi
+    ModelPoint* getNextByName( ModelPoint& currentModelPoint ) const throw();
 
 public:
     /** This method has 'PACKAGE Scope' in that is should only be called by 

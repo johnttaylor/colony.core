@@ -49,6 +49,20 @@ public:
 
 
 public:
+    /** This method returns a pointer to the first Model Point in the Database.
+        The model points are traversed in order by model point name.  If there
+        are not Model Points in the Database, the method returns 0.
+     */
+    virtual ModelPoint* getFirstByName() const throw() = 0;
+
+    /** This method returns the next (in sorted order) Model Point in the
+        Database. If the current model point is the last Model Point in the
+        Database the method returns 0.
+     */
+    virtual ModelPoint* getNextByName( ModelPoint& currentModelPoint ) const throw() = 0;
+
+
+public:
     /// Virtual destructor to make the compiler happy
     virtual ~ModelDatabaseApi() {}
 };

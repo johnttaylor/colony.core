@@ -23,6 +23,8 @@
 #include "Cpl/Rte/Mp/Uint64.h"
 #include "Cpl/Rte/Mp/Int64.h"
 #include "Cpl/Rte/Mp/Bool.h"
+#include "Cpl/Rte/Mp/Float.h"
+#include "Cpl/Rte/Mp/Double.h"
 
 /// 
 using namespace Cpl::Rte;
@@ -394,6 +396,155 @@ public:
         if ( m_returnResult != ModelPoint::eNO_CHANGE )
         {
             data = m_nextValue;
+        }
+        return m_returnResult;
+    }
+};
+
+
+/////////////////////////////////////////////////////////////////
+class ViewerFloat : public ViewerBase, public Mp::Float::Observer
+{
+public:
+    ///
+    Mp::Float&  m_mp1;
+
+    /// Constructor
+    ViewerFloat( MailboxServer& myMbox, Cpl::System::Thread& masterThread, Mp::Float& mp1 )
+        :ViewerBase( myMbox, masterThread )
+        , Mp::Float::Observer( myMbox )
+        , m_mp1( mp1 )
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerFloat(%p). mp1=%s", this, mp1.getName()) );
+    }
+
+public:
+    ///
+    void subscribe() { m_mp1.attach( *this ); }
+    ///
+    void unsubscribe() { m_mp1.detach( *this ); }
+    ///
+    void modelPointChanged( Mp::Float& modelPointThatChanged ) throw()
+    {
+        if ( m_done != true )
+        {
+            m_notif_count++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerFloat(%p) Changed!: count=%lu", this, (unsigned long) m_notif_count) );
+
+            m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
+            m_lastValidState = modelPointThatChanged.getValidState();
+
+            if ( m_pendingOpenMsgPtr != 0 && m_notif_count == 1 )
+            {
+                m_pendingOpenMsgPtr->returnToSender();
+                m_opened            = true;
+                m_pendingOpenMsgPtr = 0;
+                CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerFloat(%p) Returning Open Msg.") );
+            }
+
+            if ( m_notif_count >= 2 )
+            {
+                m_masterThread.signal();
+                m_done = true;
+            }
+        }
+    }
+};
+
+class RmwFloat : public Mp::Float::Client
+{
+public:
+    ///
+    int m_callbackCount;
+    ///
+    ModelPoint::RmwCallbackResult_T m_returnResult;
+    ///
+    float                           m_incValue;
+
+public:
+    ///
+    RmwFloat():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0.0 ) {}
+    ///
+    ModelPoint::RmwCallbackResult_T callback( float& data, int8_t validState ) throw()
+    {
+        m_callbackCount++;
+        if ( m_returnResult != ModelPoint::eNO_CHANGE )
+        {
+            data += m_incValue;
+        }
+        return m_returnResult;
+    }
+};
+
+/////////////////////////////////////////////////////////////////
+class ViewerDouble : public ViewerBase, public Mp::Double::Observer
+{
+public:
+    ///
+    Mp::Double&  m_mp1;
+
+    /// Constructor
+    ViewerDouble( MailboxServer& myMbox, Cpl::System::Thread& masterThread, Mp::Double& mp1 )
+        :ViewerBase( myMbox, masterThread )
+        , Mp::Double::Observer( myMbox )
+        , m_mp1( mp1 )
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerDouble(%p). mp1=%s", this, mp1.getName()) );
+    }
+
+public:
+    ///
+    void subscribe() { m_mp1.attach( *this ); }
+    ///
+    void unsubscribe() { m_mp1.detach( *this ); }
+    ///
+    void modelPointChanged( Mp::Double& modelPointThatChanged ) throw()
+    {
+        if ( m_done != true )
+        {
+            m_notif_count++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerDouble(%p) Changed!: count=%lu", this, (unsigned long) m_notif_count) );
+
+            m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
+            m_lastValidState = modelPointThatChanged.getValidState();
+
+            if ( m_pendingOpenMsgPtr != 0 && m_notif_count == 1 )
+            {
+                m_pendingOpenMsgPtr->returnToSender();
+                m_opened            = true;
+                m_pendingOpenMsgPtr = 0;
+                CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerDouble(%p) Returning Open Msg.") );
+            }
+
+            if ( m_notif_count >= 2 )
+            {
+                m_masterThread.signal();
+                m_done = true;
+            }
+        }
+    }
+};
+
+class RmwDouble : public Mp::Double::Client
+{
+public:
+    ///
+    int m_callbackCount;
+    ///
+    ModelPoint::RmwCallbackResult_T m_returnResult;
+    ///
+    double                           m_incValue;
+
+public:
+    ///
+    RmwDouble():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0.0 ) {}
+    ///
+    ModelPoint::RmwCallbackResult_T callback( double& data, int8_t validState ) throw()
+    {
+        m_callbackCount++;
+        if ( m_returnResult != ModelPoint::eNO_CHANGE )
+        {
+            data += m_incValue;
         }
         return m_returnResult;
     }
