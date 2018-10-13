@@ -250,7 +250,7 @@ const char* String::setFromText( const char* srcText, LockRequest_T lockAction, 
         {
             // Update the Model Point
             seqnum = write( g_buffer, decodedSize, lockAction );
-            endPtr = decoder.getRemainder();
+            result = decoder.getRemainder();
         }
         m_modelDatabase.unlock_();
     }
