@@ -125,14 +125,14 @@ protected:
 
         This method is NOT thread safe.
      */
-    void processDataUpdated() throw();
+    virtual void processDataUpdated() throw();
 
     /** Internal helper method that handles generating change notifications
         when the Model Point's data/state has changed.
 
         This method is NOT thread safe.
      */
-    void processChangeNotifications() throw();
+    virtual void processChangeNotifications() throw();
 
     /** Internal helper method that manages testing and updating the locked
         state.
@@ -148,17 +148,24 @@ protected:
 
         This method is NOT thread safe.
      */
-    bool testAndUpdateLock( LockRequest_T lockRequest ) throw();
+    virtual bool testAndUpdateLock( LockRequest_T lockRequest ) throw();
 
 
+    /** Internal helper method that completes the data update process as well
+        as ensuring any change notifications get generated AFTER a read-modify-
+        write callback.
+
+        This method is NOT thread safe.
+     */
+    virtual void processRmwCallbackResult( RmwCallbackResult_T result ) throw();
 
 
 protected:
     /// Helper FSM method
-    void transitionToNotifyPending( SubscriberApi& subscriber ) throw();
+    virtual void transitionToNotifyPending( SubscriberApi& subscriber ) throw();
 
     /// Helper FSM method
-    void transitionToSubscribed( SubscriberApi& subscriber ) throw();
+    virtual void transitionToSubscribed( SubscriberApi& subscriber ) throw();
 
 protected:
     /** Helper method for encoding Invalid & Locked states.  Returns false

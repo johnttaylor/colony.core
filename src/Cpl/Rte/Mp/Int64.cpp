@@ -19,7 +19,7 @@
 using namespace Cpl::Rte::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
-Int64::Int64( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, bool decimalFormat, int64_t initialValue, int8_t validState )
+Int64::Int64( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, bool decimalFormat, int8_t validState, int64_t initialValue )
     :Basic<int64_t>( myModelBase, staticInfo, initialValue, validState )
     , m_decimal( decimalFormat )
 {

@@ -33,7 +33,7 @@ class Float : public Basic<float>
 {
 public:
     /// Constructor
-    Float( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, float initialValue = 0, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
+    Float( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, float initialValue = 0 );
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint

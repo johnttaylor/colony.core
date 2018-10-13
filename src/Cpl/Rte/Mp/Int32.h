@@ -37,7 +37,7 @@ protected:
 
 public:
     /// Constructor
-    Int32( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true, int32_t initialValue = 0, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
+    Int32( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, int32_t initialValue = 0 );
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint

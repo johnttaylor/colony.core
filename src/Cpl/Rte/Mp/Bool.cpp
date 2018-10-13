@@ -19,7 +19,7 @@
 using namespace Cpl::Rte::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
-Bool::Bool( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, bool decimalFormat, bool initialValue, int8_t validState )
+Bool::Bool( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, int8_t validState, bool initialValue )
     :Basic<bool>( myModelBase, staticInfo, initialValue, validState )
 {
 }

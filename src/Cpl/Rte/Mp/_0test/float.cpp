@@ -40,7 +40,7 @@ static StaticInfo      info_mp_apple_( "APPLE" );
 static Mp::Float       mp_apple_( modelDb_, info_mp_apple_ );
 
 static StaticInfo      info_mp_orange_( "ORANGE" );
-static Mp::Float       mp_orange_( modelDb_, info_mp_orange_, false );
+static Mp::Float       mp_orange_( modelDb_, info_mp_orange_, ModelPoint::MODEL_POINT_STATE_VALID, 3.14F  );
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "float-readwrite", "[float-readwrite]" )
@@ -51,7 +51,10 @@ TEST_CASE( "float-readwrite", "[float-readwrite]" )
     // Read
     float    value;
     int8_t   valid;
-    uint16_t seqNum = mp_apple_.read( value, valid );
+    uint16_t seqNum = mp_orange_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE_FLOAT_EQUAL( value, 3.14F );
+    seqNum = mp_apple_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Write

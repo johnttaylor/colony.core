@@ -527,7 +527,6 @@ public:
            Model Point's data to 'dst'
         3) The Model Point's sequence number is not changed.
     */
-
     virtual void copyDataTo_( void* dstData, size_t dstSize ) const throw() = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
@@ -552,20 +551,20 @@ public:
         This method returns a pointer to the Model Point's data.  BE VERY 
         CAREFULL on how the pointer is used!
      */
-    virtual void* getDataPointer_() throw() = 0;
+    virtual const void* getDataPointer_() const throw() = 0;
 
      /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
-     by other classes in the Cpl::Rte namespace.  The Application should
-     NEVER call this method.
+         by other classes in the Cpl::Rte namespace.  The Application should
+         NEVER call this method.
 
-     This method is NOT Thread Safe.
+         This method is NOT Thread Safe.
  
-     This method returns the "internal size" of the Model Point's data point.
-     This length (when applicable) includes any 'meta/extra' data that is
-     not exposed to the Model Point consumers - but is used with the
-     internal import()/export() methods.
+         This method returns the "internal size" of the Model Point's data point.
+         This length (when applicable) includes any 'meta/extra' data that is
+         not exposed to the Model Point consumers - but is used with the
+         internal import()/export() methods.
     */
-    virtual size_t getInternalSize_() const throw() = 0;
+    virtual size_t getImportExportSize_() const throw() = 0;
 
 
 public:
@@ -592,7 +591,7 @@ public:
     /// Constructor
     ModelPointRmwCallback() {}
 
-protected:
+public:
     /// See Cpl::Rte::ModelPoint
     ModelPoint::RmwCallbackResult_T genericCallback( void* data, int8_t validState ) throw() { return callback( *((DATA*)data), validState ); }
 };

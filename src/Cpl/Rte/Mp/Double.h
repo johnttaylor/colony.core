@@ -33,7 +33,7 @@ class Double : public Basic<double>
 {
 public:
     /// Constructor
-    Double( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, double initialValue = 0, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
+    Double( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, double initialValue = 0 );
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint

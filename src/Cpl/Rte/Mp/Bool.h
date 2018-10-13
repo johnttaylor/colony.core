@@ -33,7 +33,7 @@ class Bool : public Basic<bool>
 {
 public:
     /// Constructor
-    Bool( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true, bool initialValue = false, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
+    Bool( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, bool initialValue = false );
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint

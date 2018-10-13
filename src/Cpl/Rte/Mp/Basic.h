@@ -77,12 +77,12 @@ public:
     }
 
     /// See Cpl::Rte::Point.  
-    void* getDataPointer_() throw()
+    const void* getDataPointer_() const throw()
     {
-        return (void*)(&m_data);
+        return (const void*)(&m_data);
     }
 
-    size_t getInternalSize_() const throw()
+    size_t getImportExportSize_() const throw()
     {
         return sizeof( ELEMTYPE );
     }

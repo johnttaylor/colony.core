@@ -18,16 +18,15 @@
 #include "Cpl/Text/FString.h"
 #include "Cpl/Text/DString.h"
 #include "Cpl/Rte/ModelDatabase.h"
-#include "Cpl/Rte/Mp/Float.h"
+#include "Cpl/Rte/Mp/String.h"
 #include "common.h"
 #include <string.h>
 
 /// This method is used as part of 'forcing' this object to being actually 
 /// linked during the NQBP link process (it is artifact of linking libraries 
 /// and how CATCH auto-registers (via static objects) test case)
-void link_float( void ) {}
+void link_string( void ) {}
 
-#define REQUIRE_FLOAT_EQUAL(l,r)    REQUIRE( Cpl::Math::areFloatsEqual((l),(r)) == true )
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,34 +36,59 @@ static ModelDatabase    modelDb_( "ignoreThisParameter_usedToInvokeTheStackConst
 
 // Allocate my Model Points
 static StaticInfo      info_mp_apple_( "APPLE" );
-static Mp::Float       mp_apple_( modelDb_, info_mp_apple_ );
+static Mp::String       mp_apple_( modelDb_, info_mp_apple_, 10 );
 
 static StaticInfo      info_mp_orange_( "ORANGE" );
-static Mp::Float       mp_orange_( modelDb_, info_mp_orange_, false );
+static Mp::String      mp_orange_( modelDb_, info_mp_orange_, 15, ModelPoint::MODEL_POINT_STATE_VALID, "bobs yours uncle (should get truncated)" );
 
 ////////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "float-readwrite", "[float-readwrite]" )
+TEST_CASE( "string-readwrite", "[string-readwrite]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "FLOAT-READWRITE test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "STRING-READWRITE test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
-    // Read
-    float    value;
-    int8_t   valid;
-    uint16_t seqNum = mp_apple_.read( value, valid );
+    // Read1
+    char             myDataMemory[5];
+    Mp::String::Data myData = { myDataMemory, 0, sizeof( myDataMemory ) -1 };
+    int8_t           valid;
+    uint16_t         seqNum = mp_orange_.read( myData, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( strcmp( myData.stringPtr, "bobs" ) == 0 );
+
+    // Read2
+    Cpl::Text::FString<32> value;
+    seqNum = mp_orange_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( value == "bobs yours uncl" );
+    seqNum = mp_apple_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
-    // Write
-    uint16_t seqNum2 = mp_apple_.write( -10.1234F );
+    // Write1
+    uint16_t seqNum2 = mp_apple_.write( "-10.1234F" );
     mp_apple_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-    REQUIRE_FLOAT_EQUAL( value, -10.1234F );
+    REQUIRE( value == "-10.1234F" );
     REQUIRE( seqNum + 1 == seqNum2 );
 
-    // Read-Modify-Write with Lock
-    RmwFloat callbackClient;
+    // Write2
+    seqNum = mp_apple_.write( "-10.1234F", 3 );
+    mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( value == "-10" );
+    REQUIRE( seqNum == seqNum2 + 1);
+
+    // Write3
+    Mp::String::Data myData2 = { (char*)"bob was here today", 18, 18 };
+    seqNum2 = mp_apple_.write( myData2 );
+    mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( value == "bob was he" );
+    REQUIRE( seqNum+1 == seqNum2 );
+
+    // Read-Modify-Write with Lock (with too long of string)
+    RmwString callbackClient;
     callbackClient.m_callbackCount  = 0;
-    callbackClient.m_incValue       = 1;
+    callbackClient.m_valueToWrite   = "Hello bob.!";
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
     mp_apple_.read( value, valid );
@@ -72,7 +96,21 @@ TEST_CASE( "float-readwrite", "[float-readwrite]" )
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     bool locked = mp_apple_.isLocked();
     REQUIRE( locked == true );
-    REQUIRE_FLOAT_EQUAL( value, -10.1234F + 1 );
+    REQUIRE( value == "Hello bob." );
+    REQUIRE( callbackClient.m_callbackCount == 1 );
+
+    // Read-Modify-Write with Lock 
+    mp_apple_.removeLock();
+    callbackClient.m_callbackCount  = 0;
+    callbackClient.m_valueToWrite   = "Hello bob!";
+    callbackClient.m_returnResult   = ModelPoint::eCHANGED;
+    mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
+    mp_apple_.read( value, valid );
+    REQUIRE( mp_apple_.isNotValid() == false );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    locked = mp_apple_.isLocked();
+    REQUIRE( locked == true );
+    REQUIRE( value == "Hello bob!" );
     REQUIRE( callbackClient.m_callbackCount == 1 );
 
     // Invalidate with Unlock
@@ -83,10 +121,11 @@ TEST_CASE( "float-readwrite", "[float-readwrite]" )
     REQUIRE( valid == 112 );
 }
 
+#if 0
 ////////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "float-get", "[float-get]" )
+TEST_CASE( "string-get", "[string-get]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "FLOAT-GET test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "STRING-GET test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     // Gets...
@@ -115,9 +154,9 @@ TEST_CASE( "float-get", "[float-get]" )
 ////////////////////////////////////////////////////////////////////////////////
 #define STREAM_BUFFER_SIZE  100
 
-TEST_CASE( "float-export", "[float-export]" )
+TEST_CASE( "string-export", "[string-export]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "FLOAT-EXPORT test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "STRING-EXPORT test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     //  Export/Import Buffer
@@ -193,9 +232,9 @@ TEST_CASE( "float-export", "[float-export]" )
 ///////////////////////////////////////////////////////////////////////////////
 #define MAX_STR_LENG    20
 
-TEST_CASE( "float-tostring", "[float-tostring]" )
+TEST_CASE( "string-tostring", "[string-tostring]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "FLOAT-TOSTRING test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "STRING-TOSTRING test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     // Invalid (Default value)
@@ -249,9 +288,9 @@ TEST_CASE( "float-tostring", "[float-tostring]" )
 
 
 ///////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "float-fromstring", "[float-fromstring]" )
+TEST_CASE( "string-fromstring", "[string-fromstring]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "FLOAT-FROMSTRING test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "STRING-FROMSTRING test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     // Start with MP in the invalid state
@@ -363,13 +402,13 @@ TEST_CASE( "float-fromstring", "[float-fromstring]" )
 
 static Cpl::Rte::MailboxServer     t1Mbox_;
 
-TEST_CASE( "float-observer", "[float-observer]" )
+TEST_CASE( "string-observer", "[string-observer]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "FLOAT-OBSERVER test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "STRING-OBSERVER test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     Cpl::System::Thread* t1 = Cpl::System::Thread::create( t1Mbox_, "T1" );
-    ViewerFloat viewer1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_ );
+    ViewerString viewer1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_ );
 
     // Open, write a value, wait for Viewer to see the change, then close
     mp_apple_.removeLock();
@@ -387,3 +426,5 @@ TEST_CASE( "float-observer", "[float-observer]" )
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
+
+#endif

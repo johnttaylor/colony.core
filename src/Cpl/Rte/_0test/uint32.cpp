@@ -37,7 +37,7 @@ static StaticInfo       info_mp_apple_( "APPLE" );
 static Mp::Uint32       mp_apple_( modelDb_, info_mp_apple_ );
 
 static StaticInfo       info_mp_orange_( "ORANGE" );
-static Mp::Uint32       mp_orange_( modelDb_, info_mp_orange_, false );
+static Mp::Uint32       mp_orange_( modelDb_, info_mp_orange_, false, ModelPoint::MODEL_POINT_STATE_VALID, 32 );
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "uint32-get", "[uint32-get]" )

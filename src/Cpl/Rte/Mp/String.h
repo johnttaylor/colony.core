@@ -24,7 +24,7 @@
 #endif
 
 
-///
+ ///
 namespace Cpl {
 ///
 namespace Rte {
@@ -42,30 +42,49 @@ namespace Mp {
  */
 class String : public Cpl::Rte::ModelPointCommon_
 {
+public:
+    /** The MP's Data container.
+        NOTE: The client(s) are RESPONSIBLE for honoring the max string length
+              and ensuring that the resultant string is properly null
+              terminated and the stringLen field is set correctly
+     */
+    typedef struct
+    {
+        char*  stringPtr;       //!< Pointer to the string data.  MUST ALWAYS point to a null terminated string!
+        size_t stringLen;       //!< Length, in bytes, of the string data.  Does NOT include the null terminator.
+        size_t maxLength;       //!< Maximum length, in bytes, for the string data NOT including the null terminator
+    } Data;
+
 protected:
     ///
-    char*               m_data;
-    ///
-    size_t              m_maxLength;
+    Data                m_data;
     ///
     static char         g_buffer[OPTION_CPL_RTE_MP_STRING_MAX_LENGTH_FROM_STRING_BUFFER];
 
 public:
     /// Constructor.  The 'maxLength' specifies the size, in bytes, of the string storage EXCLUDING the null terminator
-    String( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t maxLength, const char* initialValue = "", int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
+    String( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t maxLength, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, const char* initialValue = "" );
+
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint
+    virtual uint16_t read( Data& dstData, int8_t& validState ) const throw();
+
+    /// Type safe read. See Cpl::Rte::ModelPoint
     virtual uint16_t read( Cpl::Text::String& dstData, int8_t& validState ) const throw();
 
+
     /// Type safe write. See Cpl::Rte::ModelPoint
+    virtual uint16_t write( const Data& srcData, LockRequest_T lockRequest = eNO_REQUEST ) throw();
+
+    /// Type safe write of a null terminated string. See Cpl::Rte::ModelPoint
     virtual uint16_t write( const char* srcData, LockRequest_T lockRequest = eNO_REQUEST ) throw();
 
     /// Same as write(), except only writes at most 'srcLen' bytes
     virtual uint16_t write( const char* srcData, size_t srcLen, LockRequest_T lockRequest = eNO_REQUEST ) throw();
 
     /// Type safe read-modify-write client callback interface
-    typedef Cpl::Rte::ModelPointRmwCallback<Cpl::Text::String> Client;
+    typedef Cpl::Rte::ModelPointRmwCallback<Data> Client;
 
     /** Type safe read-modify-write. See Cpl::Rte::ModelPoint
 
@@ -77,7 +96,6 @@ public:
              lieu of the read/write methods in this interface.
      */
     virtual uint16_t readModifyWrite( Client& callbackClient, LockRequest_T lockRequest = eNO_REQUEST );
-
 
 public:
     /// Type safe subscriber
@@ -97,7 +115,7 @@ public:
     ///  See Cpl::Rte::ModelPoint.
     const char* getTypeAsText() const throw();
 
-    /// See Cpl::Rte::ModelPoint.  Note: the returned sized does INCLUDE the null terminator
+    /// See Cpl::Rte::ModelPoint.  Note: the returned sized does DOES NOT the null terminator
     size_t getSize() const throw();
 
 
@@ -105,23 +123,20 @@ protected:
     /// See Cpl::Rte::ModelPointCommon_.
     const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw();
 
-    /// See Cpl::Rte::ModelPoint.  Note: Use the system wide default epsilon of CPL_MATH_REAL_FLOAT_EPSILON when testing for equality
-    bool isDataEqual_( const void* otherData ) const throw();
-
-    /// See Cpl::Rte::ModelPoint. Note: dstSize MUST include the null terminator
+    /// See Cpl::Rte::ModelPoint. Note: dstSize DOES NOT include the null terminator
     void copyDataTo_( void* dstData, size_t dstSize ) const throw();
 
-    /// See Cpl::Rte::ModelPoint.  Note: srcSize MUST include the null terminator
+    /// See Cpl::Rte::ModelPoint.  Note: srcSize DOES NOT include the null terminator
     void copyDataFrom_( const void* srcData, size_t srcSize ) throw();
 
     /// See Cpl::Rte::ModelPoint.  
     bool isDataEqual_( const void* otherData ) const throw();
 
     /// See Cpl::Rte::ModelPoint.  
-    void* getDataPointer_() throw();
+    const void* getDataPointer_() const throw();
 
     /// See Cpl::Rte::ModelPoint.  
-    size_t getInternalSize_() const throw();
+    size_t getImportExportSize_() const throw();
 };
 
 

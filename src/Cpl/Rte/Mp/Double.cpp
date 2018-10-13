@@ -20,7 +20,7 @@
 using namespace Cpl::Rte::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
-Double::Double( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, double initialValue, int8_t validState )
+Double::Double( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, int8_t validState,  double initialValue )
     :Basic<double>( myModelBase, staticInfo, initialValue, validState )
 {
 }

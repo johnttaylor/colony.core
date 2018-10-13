@@ -13,6 +13,7 @@ extern void link_uint64(void);
 extern void link_bool(void);
 extern void link_float(void);
 extern void link_double(void);
+extern void link_string(void);
 
 
 int main( int argc, char* argv[] )
@@ -35,6 +36,7 @@ int main( int argc, char* argv[] )
     link_bool();
     link_float();
     link_double();
+    link_string();
 
     // Run the test(s)
     int result = Catch::Session().run( argc, argv );

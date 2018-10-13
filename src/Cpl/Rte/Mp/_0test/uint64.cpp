@@ -39,7 +39,7 @@ static StaticInfo      info_mp_apple_( "APPLE" );
 static Mp::Uint64      mp_apple_( modelDb_, info_mp_apple_ );
 
 static StaticInfo      info_mp_orange_( "ORANGE" );
-static Mp::Uint64      mp_orange_( modelDb_, info_mp_orange_, false );
+static Mp::Uint64      mp_orange_( modelDb_, info_mp_orange_, false,  ModelPoint::MODEL_POINT_STATE_VALID, 64 );
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "uint64-readwrite", "[uint64-readwrite]" )
@@ -50,7 +50,10 @@ TEST_CASE( "uint64-readwrite", "[uint64-readwrite]" )
     // Read
     uint64_t value;
     int8_t   valid;
-    uint16_t seqNum = mp_apple_.read( value, valid );
+    uint16_t seqNum = mp_orange_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( value == 64 );
+    seqNum = mp_apple_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Write

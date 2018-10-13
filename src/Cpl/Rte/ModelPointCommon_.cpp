@@ -111,7 +111,7 @@ uint16_t ModelPointCommon_::write( const void* srcData, size_t srcSize, LockRequ
     m_modelDatabase.lock_();
     if ( srcData && testAndUpdateLock( lockRequest ) )
     {
-        if ( !IS_VALID( m_validState ) ||isDataEqual_( srcData ) == false )
+        if ( !IS_VALID( m_validState ) || isDataEqual_( srcData ) == false )
         {
             copyDataFrom_( srcData, srcSize );
             processDataUpdated();
@@ -129,33 +129,36 @@ uint16_t ModelPointCommon_::readModifyWrite( GenericRmwCallback& callbackClient,
     if ( testAndUpdateLock( lockRequest ) )
     {
         // Invoke the client's callback function
-        RmwCallbackResult_T result = callbackClient.genericCallback( m_dataPtr, m_validState );
-
-        // Do nothing if the callback did not change anything
-        if ( result != RmwCallbackResult_T::eNO_CHANGE )
-        {
-            // Handle request to invalidate the MP data
-            if ( result == RmwCallbackResult_T::eINVALIDATE )
-            {
-                if ( IS_VALID( m_validState ) )
-                {
-                    m_validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID;
-                    processChangeNotifications();
-                }
-            }
-
-            // Handle the CHANGED use case
-            else
-            {
-                processDataUpdated();
-            }
-        }
+        processRmwCallbackResult( callbackClient.genericCallback( m_dataPtr, m_validState ) );
     }
 
     uint16_t result = m_seqNum;
     m_modelDatabase.unlock_();
 
     return result;
+}
+
+void ModelPointCommon_::processRmwCallbackResult( RmwCallbackResult_T result ) throw()
+{
+    // Do nothing if the callback did not change anything
+    if ( result != RmwCallbackResult_T::eNO_CHANGE )
+    {
+        // Handle request to invalidate the MP data
+        if ( result == RmwCallbackResult_T::eINVALIDATE )
+        {
+            if ( IS_VALID( m_validState ) )
+            {
+                m_validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID;
+                processChangeNotifications();
+            }
+        }
+
+        // Handle the CHANGED use case
+        else
+        {
+            processDataUpdated();
+        }
+    }
 }
 
 uint16_t ModelPointCommon_::touch() throw()
@@ -206,7 +209,7 @@ size_t ModelPointCommon_::exportData( void* dstDataStream, size_t maxDstLength, 
         if ( maxDstLength >= getExternalSize() )
         {
             // Export Data
-            size_t dataSize = getInternalSize_();
+            size_t dataSize = getImportExportSize_();
             memcpy( dstDataStream, getDataPointer_(), dataSize );
 
             // Export Valid State
@@ -238,8 +241,8 @@ size_t ModelPointCommon_::importData( const void* srcDataStream, size_t srcLengt
         if ( getExternalSize() <= srcLength )
         {
             // Import Data
-            size_t dataSize = getInternalSize_();
-            memcpy( getDataPointer_(), srcDataStream, dataSize );
+            size_t dataSize = getImportExportSize_();
+            memcpy( (void*) getDataPointer_(), srcDataStream, dataSize );
 
             // Import Valid State
             uint8_t* ptr = (uint8_t*) srcDataStream;
@@ -262,7 +265,7 @@ size_t ModelPointCommon_::importData( const void* srcDataStream, size_t srcLengt
 
 size_t ModelPointCommon_::getExternalSize() const throw()
 {
-    return getInternalSize_() + sizeof( m_validState );
+    return getImportExportSize_() + sizeof( m_validState );
 }
 
 

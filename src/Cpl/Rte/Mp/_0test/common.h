@@ -25,6 +25,7 @@
 #include "Cpl/Rte/Mp/Bool.h"
 #include "Cpl/Rte/Mp/Float.h"
 #include "Cpl/Rte/Mp/Double.h"
+#include "Cpl/Rte/Mp/String.h"
 
 /// 
 using namespace Cpl::Rte;
@@ -550,4 +551,81 @@ public:
     }
 };
 
+/////////////////////////////////////////////////////////////////
+class ViewerString : public ViewerBase, public Mp::String::Observer
+{
+public:
+    ///
+    Mp::String&  m_mp1;
+
+    /// Constructor
+    ViewerString( MailboxServer& myMbox, Cpl::System::Thread& masterThread, Mp::String& mp1 )
+        :ViewerBase( myMbox, masterThread )
+        , Mp::String::Observer( myMbox )
+        , m_mp1( mp1 )
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerString(%p). mp1=%s", this, mp1.getName()) );
+    }
+
+public:
+    ///
+    void subscribe() { m_mp1.attach( *this ); }
+    ///
+    void unsubscribe() { m_mp1.detach( *this ); }
+    ///
+    void modelPointChanged( Mp::String& modelPointThatChanged ) throw()
+    {
+        if ( m_done != true )
+        {
+            m_notif_count++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerString(%p) Changed!: count=%lu", this, (unsigned long) m_notif_count) );
+
+            m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
+            m_lastValidState = modelPointThatChanged.getValidState();
+
+            if ( m_pendingOpenMsgPtr != 0 && m_notif_count == 1 )
+            {
+                m_pendingOpenMsgPtr->returnToSender();
+                m_opened            = true;
+                m_pendingOpenMsgPtr = 0;
+                CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerString(%p) Returning Open Msg.") );
+            }
+
+            if ( m_notif_count >= 2 )
+            {
+                m_masterThread.signal();
+                m_done = true;
+            }
+        }
+    }
+};
+
+class RmwString : public Mp::String::Client
+{
+public:
+    ///
+    int                             m_callbackCount;
+    ///
+    ModelPoint::RmwCallbackResult_T m_returnResult;
+    ///
+    const char*                     m_valueToWrite;
+
+public:
+    ///
+    RmwString():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_valueToWrite( 0 ) {}
+    ///
+    ModelPoint::RmwCallbackResult_T callback( Mp::String::Data& data, int8_t validState ) throw()
+    {
+        m_callbackCount++;
+        if ( m_returnResult != ModelPoint::eNO_CHANGE )
+        {
+            size_t newLen  = strlen( m_valueToWrite );
+            newLen         = data.maxLength >= newLen ? newLen : data.maxLength;
+            data.stringLen = newLen;
+            strncpy( data.stringPtr, m_valueToWrite, newLen );
+            data.stringPtr[newLen] = '\0';
+        }
+        return m_returnResult;
+    }
+};
 #endif
