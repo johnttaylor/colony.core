@@ -106,7 +106,7 @@ const char* Int32::setFromText( const char* srcText, LockRequest_T lockAction, c
     {
         if ( errorMsg )
         {
-            errorMsg->format( "Conversion of [%s] (base=%d) to a int32_t failed OR value too great.", srcText, m_decimal ? 10 : 16 );
+            errorMsg->format( "Conversion of %s[%s] (base=%d) to a int32_t failed OR value too great.", getTypeAsText(), srcText, m_decimal ? 10 : 16 );
         }
     }
 

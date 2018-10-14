@@ -104,7 +104,7 @@ const char* Float::setFromText( const char* srcText, LockRequest_T lockAction, c
     {
         if ( errorMsg )
         {
-            errorMsg->format( "Conversion of [%s] to a float failed OR value out-of-range.", srcText );
+            errorMsg->format( "Conversion of %s[%s] to a float failed OR value out-of-range.", getTypeAsText(), srcText );
         }
     }
 

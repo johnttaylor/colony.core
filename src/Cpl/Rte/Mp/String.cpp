@@ -62,9 +62,9 @@ uint16_t String::read( Cpl::Text::String& dstData, int8_t& validState ) const th
     m_modelDatabase.lock_();
     Data dst;
     int  bufferMaxLength;
-    dst.stringPtr   = dstData.getBuffer( bufferMaxLength  );
+    dst.stringPtr   = dstData.getBuffer( bufferMaxLength );
     dst.maxLength   = bufferMaxLength;
-    uint16_t result = ModelPointCommon_::read( &dst, sizeof(Data), validState );
+    uint16_t result = ModelPointCommon_::read( &dst, sizeof( Data ), validState );
     m_modelDatabase.unlock_();
 
     return result;
@@ -73,7 +73,7 @@ uint16_t String::read( Cpl::Text::String& dstData, int8_t& validState ) const th
 uint16_t String::read( Data& dstData, int8_t& validState ) const throw()
 {
     m_modelDatabase.lock_();
-    uint16_t result =  ModelPointCommon_::read( &dstData, sizeof(Data), validState );
+    uint16_t result =  ModelPointCommon_::read( &dstData, sizeof( Data ), validState );
     m_modelDatabase.unlock_();
 
     return result;
@@ -110,8 +110,8 @@ uint16_t String::write( const char* newValue, LockRequest_T lockRequest ) throw(
 
 uint16_t String::write( const char* srcData, size_t srcLen, LockRequest_T lockRequest ) throw()
 {
-    Data src ={ (char*)srcData, srcLen, srcLen };
-    return ModelPointCommon_::write( &src, sizeof(Data), lockRequest );
+    Data src = { (char*) srcData, srcLen, srcLen };
+    return ModelPointCommon_::write( &src, sizeof( Data ), lockRequest );
 }
 
 uint16_t String::readModifyWrite( Client& callbackClient, LockRequest_T lockRequest )
@@ -141,7 +141,7 @@ void String::copyDataTo_( void* dstData, size_t dstSize ) const throw()
     CPL_SYSTEM_ASSERT( dstSize == sizeof( Data ) );
     Data* dataDstPtr = (Data*) dstData;
 
-    dstSize = dataDstPtr->maxLength >= m_data.stringLen ? m_data.stringLen: dataDstPtr->maxLength;
+    dstSize = dataDstPtr->maxLength >= m_data.stringLen ? m_data.stringLen : dataDstPtr->maxLength;
     memcpy( dataDstPtr->stringPtr, m_data.stringPtr, dstSize );
     dataDstPtr->stringPtr[dstSize] = '\0';
     dataDstPtr->stringLen          = dstSize;
@@ -251,6 +251,13 @@ const char* String::setFromText( const char* srcText, LockRequest_T lockAction, 
             // Update the Model Point
             seqnum = write( g_buffer, decodedSize, lockAction );
             result = decoder.getRemainder();
+        }
+        else
+        {
+            if ( errorMsg )
+            {
+                errorMsg->format( "Conversion of %s as a \"Text_String\"[%s] to a string failed.", getTypeAsText(), srcText );
+            }
         }
         m_modelDatabase.unlock_();
     }

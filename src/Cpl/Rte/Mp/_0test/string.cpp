@@ -32,7 +32,7 @@ void link_string( void ) {}
 ////////////////////////////////////////////////////////////////////////////////
 
 // Allocate/create my Model Database
-static ModelDatabase    modelDb_( "ignoreThisParameter_usedToInvokeTheStackConstructor" );
+static ModelDatabase    modelDb_( "ignoreThisParameter_usedToInvokeTheStaticConstructor" );
 
 // Allocate my Model Points
 #define APPLE_MAX_SIZE  10
@@ -405,6 +405,17 @@ TEST_CASE( "string-fromstring", "[string-fromstring]" )
     mp_orange_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == "4\".321 and,more" );
+
+    // Test ERROR in a "Text Strings"
+    errorMsg = "noerror";
+    nextChar = mp_orange_.fromString( "\"0x1234", 0, &errorMsg );
+    REQUIRE( nextChar == 0 );
+    mp_orange_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) );
+    REQUIRE( value == "4\".321 and,more" );
+    REQUIRE( errorMsg != "noerror" );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("fromString FAILED: errorMsg=[%s])", errorMsg.getString()) );
+
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }

@@ -285,7 +285,7 @@ void ModelPointCommon_::processDataUpdated() throw()
     processChangeNotifications();
 }
 
-void ModelPointCommon_::processChangeNotifications() throw()
+void ModelPointCommon_::advanceSequenceNumber() throw()
 {
     // Increment my sequence number (when rolling over -->do not allow the 'unknown' value)
     m_seqNum++;
@@ -293,6 +293,12 @@ void ModelPointCommon_::processChangeNotifications() throw()
     {
         m_seqNum = SEQUENCE_NUMBER_UNKNOWN + 1;
     }
+}
+
+void ModelPointCommon_::processChangeNotifications() throw()
+{
+    // Increment the sequence number
+    advanceSequenceNumber();
 
     // Generate change notifications 
     SubscriberApi* item = m_subscribers.get();

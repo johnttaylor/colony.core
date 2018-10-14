@@ -20,7 +20,7 @@
 using namespace Cpl::Rte::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
-Double::Double( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, int8_t validState,  double initialValue )
+Double::Double( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, int8_t validState, double initialValue )
     :Basic<double>( myModelBase, staticInfo, initialValue, validState )
 {
 }
@@ -104,7 +104,7 @@ const char* Double::setFromText( const char* srcText, LockRequest_T lockAction, 
     {
         if ( errorMsg )
         {
-            errorMsg->format( "Conversion of [%s] to a double failed OR value out-of-range.", srcText );
+            errorMsg->format( "Conversion of %s[%s] to a double failed OR value out-of-range.", getTypeAsText(), srcText );
         }
     }
 

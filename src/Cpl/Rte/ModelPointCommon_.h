@@ -134,6 +134,13 @@ protected:
      */
     virtual void processChangeNotifications() throw();
 
+    /** Internal helper method that advances/updates the Model Point's
+        sequence number.
+
+        This method is NOT thread safe.
+     */
+    virtual void advanceSequenceNumber() throw();
+
     /** Internal helper method that manages testing and updating the locked
         state.
 

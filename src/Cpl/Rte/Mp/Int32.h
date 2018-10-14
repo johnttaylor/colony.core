@@ -36,7 +36,11 @@ protected:
     bool m_decimal;
 
 public:
-    /// Constructor
+    /** Constructor.  Note: the 'decimalFormat' argument applies to the 
+        toString()/fromString() methods.   When set to true, the input/output
+        values must be decimal numbers; else hexadecimal numbers (as defined
+        by standard C library strtol() function).
+     */
     Int32( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, int32_t initialValue = 0 );
 
 public:

@@ -87,7 +87,7 @@ const char* Bool::setFromText( const char* srcText, LockRequest_T lockAction, co
     uint16_t      seqnum = SEQUENCE_NUMBER_UNKNOWN;
     const char*   endptr;
     bool          value;
-    if ( Cpl::Text::a2b( value, srcText, "true", "false",  &endptr ) )
+    if ( Cpl::Text::a2b( value, srcText, "true", "false", &endptr ) )
     {
         seqnum = write( value, lockAction );
         result = endptr;
@@ -98,7 +98,7 @@ const char* Bool::setFromText( const char* srcText, LockRequest_T lockAction, co
     {
         if ( errorMsg )
         {
-            errorMsg->format( "Conversion of ([%s]) to a bool failed.", srcText );
+            errorMsg->format( "Conversion of %s[%s] to a bool failed.", getTypeAsText(), srcText );
         }
     }
 

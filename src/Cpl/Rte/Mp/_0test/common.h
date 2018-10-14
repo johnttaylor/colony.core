@@ -26,6 +26,7 @@
 #include "Cpl/Rte/Mp/Float.h"
 #include "Cpl/Rte/Mp/Double.h"
 #include "Cpl/Rte/Mp/String.h"
+#include "Cpl/Rte/Mp/RefCounter.h"
 
 /// 
 using namespace Cpl::Rte;
@@ -50,7 +51,7 @@ public:
     ///
     bool                                m_done;
     ///
-    uint32_t                            m_notif_count;
+    uint32_t                            m_notifCount;
 
     /// Constructor
     ViewerBase( MailboxServer& myMbox, Cpl::System::Thread& masterThread )
@@ -61,7 +62,7 @@ public:
         , m_lastSeqNumber( ModelPoint::SEQUENCE_NUMBER_UNKNOWN )
         , m_lastValidState( OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
         , m_done( false )
-        , m_notif_count( 0 )
+        , m_notifCount( 0 )
     {
     }
 
@@ -78,7 +79,7 @@ public:
             FAIL( "OPENING ViewerBase more than ONCE" );
         }
 
-        m_notif_count       = 0;
+        m_notifCount       = 0;
         m_done              = false;
         m_pendingOpenMsgPtr = &msg;
         CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerBase::SUBSCRIBING (%p) for Change notification.", this) );
@@ -132,13 +133,13 @@ public:
     {
         if ( m_done != true )
         {
-            m_notif_count++;
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerInt32(%p) Changed!: count=%lu", this, (unsigned long) m_notif_count) );
+            m_notifCount++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerInt32(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
 
             m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
             m_lastValidState = modelPointThatChanged.getValidState();
 
-            if ( m_pendingOpenMsgPtr != 0 && m_notif_count == 1 )
+            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
             {
                 m_pendingOpenMsgPtr->returnToSender();
                 m_opened            = true;
@@ -146,7 +147,7 @@ public:
                 CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerInt32(%p) Returning Open Msg.") );
             }
 
-            if ( m_notif_count >= 2 )
+            if ( m_notifCount >= 2 )
             {
                 m_masterThread.signal();
                 m_done = true;
@@ -206,13 +207,13 @@ public:
     {
         if ( m_done != true )
         {
-            m_notif_count++;
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerInt64(%p) Changed!: count=%lu", this, (unsigned long) m_notif_count) );
+            m_notifCount++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerInt64(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
 
             m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
             m_lastValidState = modelPointThatChanged.getValidState();
 
-            if ( m_pendingOpenMsgPtr != 0 && m_notif_count == 1 )
+            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
             {
                 m_pendingOpenMsgPtr->returnToSender();
                 m_opened            = true;
@@ -220,7 +221,7 @@ public:
                 CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerInt64(%p) Returning Open Msg.") );
             }
 
-            if ( m_notif_count >= 2 )
+            if ( m_notifCount >= 2 )
             {
                 m_masterThread.signal();
                 m_done = true;
@@ -280,13 +281,13 @@ public:
     {
         if ( m_done != true )
         {
-            m_notif_count++;
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerUint64(%p) Changed!: count=%lu", this, (unsigned long) m_notif_count) );
+            m_notifCount++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerUint64(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
 
             m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
             m_lastValidState = modelPointThatChanged.getValidState();
 
-            if ( m_pendingOpenMsgPtr != 0 && m_notif_count == 1 )
+            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
             {
                 m_pendingOpenMsgPtr->returnToSender();
                 m_opened            = true;
@@ -294,7 +295,7 @@ public:
                 CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerUint64(%p) Returning Open Msg.") );
             }
 
-            if ( m_notif_count >= 2 )
+            if ( m_notifCount >= 2 )
             {
                 m_masterThread.signal();
                 m_done = true;
@@ -354,13 +355,13 @@ public:
     {
         if ( m_done != true )
         {
-            m_notif_count++;
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerBool(%p) Changed!: count=%lu", this, (unsigned long) m_notif_count) );
+            m_notifCount++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerBool(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
 
             m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
             m_lastValidState = modelPointThatChanged.getValidState();
 
-            if ( m_pendingOpenMsgPtr != 0 && m_notif_count == 1 )
+            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
             {
                 m_pendingOpenMsgPtr->returnToSender();
                 m_opened            = true;
@@ -368,7 +369,7 @@ public:
                 CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerBool(%p) Returning Open Msg.") );
             }
 
-            if ( m_notif_count >= 2 )
+            if ( m_notifCount >= 2 )
             {
                 m_masterThread.signal();
                 m_done = true;
@@ -429,13 +430,13 @@ public:
     {
         if ( m_done != true )
         {
-            m_notif_count++;
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerFloat(%p) Changed!: count=%lu", this, (unsigned long) m_notif_count) );
+            m_notifCount++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerFloat(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
 
             m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
             m_lastValidState = modelPointThatChanged.getValidState();
 
-            if ( m_pendingOpenMsgPtr != 0 && m_notif_count == 1 )
+            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
             {
                 m_pendingOpenMsgPtr->returnToSender();
                 m_opened            = true;
@@ -443,7 +444,7 @@ public:
                 CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerFloat(%p) Returning Open Msg.") );
             }
 
-            if ( m_notif_count >= 2 )
+            if ( m_notifCount >= 2 )
             {
                 m_masterThread.signal();
                 m_done = true;
@@ -503,13 +504,13 @@ public:
     {
         if ( m_done != true )
         {
-            m_notif_count++;
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerDouble(%p) Changed!: count=%lu", this, (unsigned long) m_notif_count) );
+            m_notifCount++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerDouble(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
 
             m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
             m_lastValidState = modelPointThatChanged.getValidState();
 
-            if ( m_pendingOpenMsgPtr != 0 && m_notif_count == 1 )
+            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
             {
                 m_pendingOpenMsgPtr->returnToSender();
                 m_opened            = true;
@@ -517,7 +518,7 @@ public:
                 CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerDouble(%p) Returning Open Msg.") );
             }
 
-            if ( m_notif_count >= 2 )
+            if ( m_notifCount >= 2 )
             {
                 m_masterThread.signal();
                 m_done = true;
@@ -577,13 +578,13 @@ public:
     {
         if ( m_done != true )
         {
-            m_notif_count++;
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerString(%p) Changed!: count=%lu", this, (unsigned long) m_notif_count) );
+            m_notifCount++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerString(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
 
             m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
             m_lastValidState = modelPointThatChanged.getValidState();
 
-            if ( m_pendingOpenMsgPtr != 0 && m_notif_count == 1 )
+            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
             {
                 m_pendingOpenMsgPtr->returnToSender();
                 m_opened            = true;
@@ -591,7 +592,7 @@ public:
                 CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerString(%p) Returning Open Msg.") );
             }
 
-            if ( m_notif_count >= 2 )
+            if ( m_notifCount >= 2 )
             {
                 m_masterThread.signal();
                 m_done = true;
@@ -626,6 +627,58 @@ public:
             data.stringPtr[newLen] = '\0';
         }
         return m_returnResult;
+    }
+};
+
+/////////////////////////////////////////////////////////////////
+class ViewerRefCounter : public ViewerBase, public Mp::RefCounter::Observer
+{
+public:
+    ///
+    Mp::RefCounter&  m_mp1;
+    ///
+    uint32_t         m_expectedNotifyCount;
+
+    /// Constructor
+    ViewerRefCounter( MailboxServer& myMbox, Cpl::System::Thread& masterThread, Mp::RefCounter& mp1, uint32_t expectedCount )
+        :ViewerBase( myMbox, masterThread )
+        , Mp::RefCounter::Observer( myMbox )
+        , m_mp1( mp1 )
+        , m_expectedNotifyCount( expectedCount )
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerRefCounter(%p). mp1=%s", this, mp1.getName()) );
+    }
+
+public:
+    ///
+    void subscribe() { m_mp1.attach( *this ); }
+    ///
+    void unsubscribe() { m_mp1.detach( *this ); }
+    ///
+    void modelPointChanged( Mp::RefCounter& modelPointThatChanged ) throw()
+    {
+        if ( m_done != true )
+        {
+            m_notifCount++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerRefCounter(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
+
+            m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
+            m_lastValidState = modelPointThatChanged.getValidState();
+
+            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
+            {
+                m_pendingOpenMsgPtr->returnToSender();
+                m_opened            = true;
+                m_pendingOpenMsgPtr = 0;
+                CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerRefCounter(%p) Returning Open Msg.") );
+            }
+
+            if ( m_notifCount >= m_expectedNotifyCount )
+            {
+                m_masterThread.signal();
+                m_done = true;
+            }
+        }
     }
 };
 #endif

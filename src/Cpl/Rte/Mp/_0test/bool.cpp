@@ -32,7 +32,7 @@ void link_bool( void ) {}
 ////////////////////////////////////////////////////////////////////////////////
 
 // Allocate/create my Model Database
-static ModelDatabase    modelDb_( "ignoreThisParameter_usedToInvokeTheStackConstructor" );
+static ModelDatabase    modelDb_( "ignoreThisParameter_usedToInvokeTheStaticConstructor" );
 
 // Allocate my Model Points
 static StaticInfo       info_mp_apple_( "APPLE" );
@@ -263,7 +263,7 @@ TEST_CASE( "bool-fromstring", "[bool-fromstring]" )
 
     // Start with MP in the invalid state
     Cpl::Text::FString<MAX_STR_LENG> string;
-    Cpl::Text::DString               errorMsg( "noerror" );
+    Cpl::Text::DString               errorMsg( "noerror", 1024 );
     mp_apple_.removeLock();
     mp_orange_.removeLock();
     mp_orange_.setInvalid();

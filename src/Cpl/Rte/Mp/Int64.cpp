@@ -106,7 +106,7 @@ const char* Int64::setFromText( const char* srcText, LockRequest_T lockAction, c
     {
         if ( errorMsg )
         {
-            errorMsg->format( "Conversion of [%s] (base=%d) to a int64_t failed.", srcText, m_decimal ? 10 : 16 );
+            errorMsg->format( "Conversion of %s[%s] (base=%d) to a int64_t failed.", getTypeAsText(), srcText, m_decimal ? 10 : 16 );
         }
     }
 

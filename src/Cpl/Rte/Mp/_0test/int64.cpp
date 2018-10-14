@@ -32,7 +32,7 @@ void link_int64( void ) {}
 ////////////////////////////////////////////////////////////////////////////////
 
 // Allocate/create my Model Database
-static ModelDatabase    modelDb_( "ignoreThisParameter_usedToInvokeTheStackConstructor" );
+static ModelDatabase    modelDb_( "ignoreThisParameter_usedToInvokeTheStaticConstructor" );
 
 // Allocate my Model Points
 static StaticInfo      info_mp_apple_( "APPLE" );

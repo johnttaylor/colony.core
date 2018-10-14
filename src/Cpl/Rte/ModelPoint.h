@@ -229,7 +229,7 @@ public:
 
         The default output format: 
         
-        [!][?[<invalid_val>]][<data>]
+        [!] ([?[<invalid_val>]] | [<data>])
         
         where: '!' indicates the MP is locked,
                '?' indicates the MP is invalid, with an optional <invalid_val>
@@ -262,7 +262,7 @@ public:
 
         The default input format: 
         
-        [!|^][?[<invalid_val>]][<data>]
+        [!|^] ([?[<invalid_val>]] | [<data>])
         
         where: '!' is a lock request,
                '^' is an unlock request,

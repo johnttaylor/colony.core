@@ -14,20 +14,19 @@
 #include "Cpl/System/Trace.h"
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Api.h"
-#include "Cpl/Math/real.h"
 #include "Cpl/Text/FString.h"
 #include "Cpl/Text/DString.h"
 #include "Cpl/Rte/ModelDatabase.h"
-#include "Cpl/Rte/Mp/Float.h"
+#include "Cpl/Rte/Mp/RefCounter.h"
 #include "common.h"
 #include <string.h>
 
 /// This method is used as part of 'forcing' this object to being actually 
 /// linked during the NQBP link process (it is artifact of linking libraries 
 /// and how CATCH auto-registers (via static objects) test case)
-void link_float( void ) {}
+void link_refcounter( void ) {}
 
-#define REQUIRE_FLOAT_EQUAL(l,r)    REQUIRE( Cpl::Math::areFloatsEqual((l),(r)) == true )
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,46 +36,88 @@ static ModelDatabase    modelDb_( "ignoreThisParameter_usedToInvokeTheStaticCons
 
 // Allocate my Model Points
 static StaticInfo      info_mp_apple_( "APPLE" );
-static Mp::Float       mp_apple_( modelDb_, info_mp_apple_ );
+static Mp::RefCounter  mp_apple_( modelDb_, info_mp_apple_ );
 
 static StaticInfo      info_mp_orange_( "ORANGE" );
-static Mp::Float       mp_orange_( modelDb_, info_mp_orange_, ModelPoint::MODEL_POINT_STATE_VALID, 3.14F  );
+static Mp::RefCounter  mp_orange_( modelDb_, info_mp_orange_, ModelPoint::MODEL_POINT_STATE_VALID, 64 );
 
 ////////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "float-readwrite", "[float-readwrite]" )
+TEST_CASE( "refcounter-readwrite", "[refcounter-readwrite]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "FLOAT-READWRITE test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "REFCOUNTER-READWRITE test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     // Read
-    float    value;
+    uint32_t value;
     int8_t   valid;
     uint16_t seqNum = mp_orange_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-    REQUIRE_FLOAT_EQUAL( value, 3.14F );
+    REQUIRE( value == 64 );
     seqNum = mp_apple_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
-    // Write
-    uint16_t seqNum2 = mp_apple_.write( -10.1234F );
+    // Write (reset). -->Count = 0
+    uint16_t seqNum2 = mp_apple_.reset();
     mp_apple_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-    REQUIRE_FLOAT_EQUAL( value, -10.1234F );
+    REQUIRE( value == 0 );
     REQUIRE( seqNum + 1 == seqNum2 );
 
-    // Read-Modify-Write with Lock
-    RmwFloat callbackClient;
-    callbackClient.m_callbackCount  = 0;
-    callbackClient.m_incValue       = 1;
-    callbackClient.m_returnResult   = ModelPoint::eCHANGED;
-    mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
+    // Write (decrement)  -->Count = 0
+    seqNum = mp_apple_.decrement();
     mp_apple_.read( value, valid );
-    REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-    bool locked = mp_apple_.isLocked();
-    REQUIRE( locked == true );
-    REQUIRE_FLOAT_EQUAL( value, -10.1234F + 1 );
-    REQUIRE( callbackClient.m_callbackCount == 1 );
+    REQUIRE( value == 0 );
+    REQUIRE( seqNum == seqNum2 );
+
+    // Write (increment)  -->Count = 1
+    seqNum2 = mp_apple_.increment();
+    mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( value == 1 );
+    REQUIRE( seqNum + 1 == seqNum2 );
+
+    // Write (decrement) -->Count = 0
+    seqNum = mp_apple_.decrement();
+    mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( value == 0 );
+    REQUIRE( seqNum == seqNum2 + 1 );
+
+    // Write (decrement) -->Count = 0
+    seqNum2 = mp_apple_.decrement();
+    mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( value == 0 );
+    REQUIRE( seqNum == seqNum2 );       // No a change  transition -->so no change in the sequence number
+
+    // Write (increment)  -->Count = max value
+    seqNum2 = mp_apple_.increment( (uint32_t) -1 );
+    mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( value == (uint32_t) -1 );
+    REQUIRE( seqNum + 1 == seqNum2 );
+
+    // Write (increment) -->Count = max value
+    seqNum = mp_apple_.increment();
+    mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( value == (uint32_t) -1 );
+    REQUIRE( seqNum == seqNum2 );
+
+    // Write with lock (decrement) -->Count = 2
+    seqNum2 = mp_apple_.decrement( (uint32_t) -3, ModelPoint::eLOCK );
+    mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( value == 2 );
+    REQUIRE( seqNum == seqNum2 );   // No a change  transition -->so no change in the sequence number
+
+    // Write (increment) -->Count = 2
+    seqNum = mp_apple_.increment();
+    mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+    REQUIRE( value == 2 );
+    REQUIRE( seqNum == seqNum2 );
 
     // Invalidate with Unlock
     mp_apple_.setInvalidState( 112, ModelPoint::eUNLOCK );
@@ -87,9 +128,9 @@ TEST_CASE( "float-readwrite", "[float-readwrite]" )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "float-get", "[float-get]" )
+TEST_CASE( "refcounter-get", "[refcounter-get]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "FLOAT-GET test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "REFCOUNTER-GET test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     // Gets...
@@ -99,18 +140,18 @@ TEST_CASE( "float-get", "[float-get]" )
     REQUIRE( strcmp( name, "ORANGE" ) == 0 );
 
     size_t s = mp_apple_.getSize();
-    REQUIRE( s == sizeof( float ) );
+    REQUIRE( s == sizeof( uint32_t ) );
     s = mp_orange_.getSize();
-    REQUIRE( s == sizeof( float ) );
+    REQUIRE( s == sizeof( uint32_t ) );
 
     s = mp_apple_.getExternalSize();
-    REQUIRE( s == sizeof( float ) + sizeof( int8_t ) );
+    REQUIRE( s == sizeof( uint32_t ) + sizeof( int8_t ) );
     s = mp_orange_.getExternalSize();
-    REQUIRE( s == sizeof( float ) + sizeof( int8_t ) );
+    REQUIRE( s == sizeof( uint32_t ) + sizeof( int8_t ) );
 
     const char* mpType = mp_apple_.getTypeAsText();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s])", mpType) );
-    REQUIRE( strcmp( mpType, "FLOAT" ) == 0 );
+    REQUIRE( strcmp( mpType, "REFCOUNTER" ) == 0 );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
@@ -118,9 +159,9 @@ TEST_CASE( "float-get", "[float-get]" )
 ////////////////////////////////////////////////////////////////////////////////
 #define STREAM_BUFFER_SIZE  100
 
-TEST_CASE( "float-export", "[float-export]" )
+TEST_CASE( "refcounter-export", "[refcounter-export]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "FLOAT-EXPORT test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "REFCOUNTER-EXPORT test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     //  Export/Import Buffer
@@ -138,14 +179,14 @@ TEST_CASE( "float-export", "[float-export]" )
     REQUIRE( seqNum == seqNum2 );
 
     // Update the MP
-    seqNum = mp_apple_.write( -42.14159F );
+    seqNum = mp_apple_.reset( 42 );
     REQUIRE( seqNum == seqNum2 + 1 );
-    float value;
+    uint32_t value;
     int8_t   valid;
     mp_apple_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
-    REQUIRE_FLOAT_EQUAL( value, -42.14159F );
+    REQUIRE( value == 42 );
 
     // Import...
     b = mp_apple_.importData( streamBuffer, sizeof( streamBuffer ), &seqNum2 );
@@ -159,12 +200,12 @@ TEST_CASE( "float-export", "[float-export]" )
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Update the MP
-    seqNum = mp_apple_.write( 13.99F );
+    seqNum = mp_apple_.reset( 13 );
     REQUIRE( seqNum == seqNum2 + 1 );
     mp_apple_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
-    REQUIRE_FLOAT_EQUAL( value, 13.99F );
+    REQUIRE( value == 13 );
 
     // Export...
     REQUIRE( mp_apple_.isNotValid() == false );
@@ -188,17 +229,16 @@ TEST_CASE( "float-export", "[float-export]" )
     mp_apple_.read( value, valid );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-    REQUIRE_FLOAT_EQUAL( value, 13.99F );
+    REQUIRE( value == 13 );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
-
 ///////////////////////////////////////////////////////////////////////////////
-#define MAX_STR_LENG    20
+#define MAX_STR_LENG    128
 
-TEST_CASE( "float-tostring", "[float-tostring]" )
+TEST_CASE( "refcounter-tostring", "[refcounter-tostring]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "FLOAT-TOSTRING test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "REFCOUNTER-TOSTRING test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     // Invalid (Default value)
@@ -233,28 +273,27 @@ TEST_CASE( "float-tostring", "[float-tostring]" )
     REQUIRE( string == "!?100" );
 
     // Value 
-    mp_apple_.write( 127.14F, ModelPoint::eUNLOCK );
+    mp_apple_.reset( 127, ModelPoint::eUNLOCK );
     mp_apple_.toString( string, false, &seqNum2 );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
     REQUIRE( seqNum2 == seqNum + 1 );
-    REQUIRE( string == "127.14" );
+    REQUIRE( string == "127" );
 
     // Value + Lock
     mp_apple_.applyLock();
     mp_apple_.toString( string, false, &seqNum2 );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
     REQUIRE( seqNum2 == seqNum + 1 );
-    REQUIRE( string == "!127.14" );
-    mp_apple_.removeLock();
+    REQUIRE( string == "!127" );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "float-fromstring", "[float-fromstring]" )
+TEST_CASE( "refcounter-fromstring", "[refcounter-fromstring]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "FLOAT-FROMSTRING test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "REFCOUNTER-FROMSTRING test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     // Start with MP in the invalid state
@@ -263,31 +302,32 @@ TEST_CASE( "float-fromstring", "[float-fromstring]" )
     mp_apple_.removeLock();
     mp_orange_.removeLock();
     mp_orange_.setInvalid();
-    uint16_t seqNum = mp_apple_.setInvalid();
+    uint16_t seqNum = mp_apple_.reset(3);
     uint16_t seqNum2;
 
-    // Write value
-    const char* nextChar = mp_apple_.fromString( "12.34", 0, &errorMsg, &seqNum2 );
+    // Increment the value
+    const char* nextChar = mp_apple_.fromString( "+2", 0, &errorMsg, &seqNum2 );
     REQUIRE( nextChar != 0 );
     REQUIRE( *nextChar == '\0' );
-    REQUIRE( seqNum2 == seqNum + 1 );
-    float value;
+    REQUIRE( seqNum2 == seqNum );       // Note: No 'change' because transition from 3 -> 5
+    uint32_t value;
     int8_t   valid;
     seqNum = mp_apple_.read( value, valid );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE_FLOAT_EQUAL( value, 12.34F );
+    REQUIRE( value == 5 );
     REQUIRE( errorMsg == "noerror" );
 
-    // Write value- Fail case
-    nextChar = mp_apple_.fromString( "0a1234", 0, &errorMsg, &seqNum2 );
-    REQUIRE( nextChar == 0 );
-    seqNum2 = mp_apple_.read( value, valid );
-    REQUIRE( ModelPoint::IS_VALID( valid ) );
+    // Decrement the value
+    nextChar = mp_apple_.fromString( "-1", 0, &errorMsg, &seqNum2 );
+    REQUIRE( nextChar != 0 );
+    REQUIRE( *nextChar == '\0' );
+    REQUIRE( seqNum2 == seqNum );       // Note: No 'change' because transition from 5 -> 4
+    seqNum = mp_apple_.read( value, valid );
     REQUIRE( seqNum == seqNum2 );
-    REQUIRE_FLOAT_EQUAL( value, 12.34F );
-    REQUIRE( errorMsg != "noerror" );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("fromString FAILED: errorMsg=[%s])", errorMsg.getString()) );
+    REQUIRE( ModelPoint::IS_VALID( valid ) );
+    REQUIRE( value == 4 );
+    REQUIRE( errorMsg == "noerror" );
 
     // Set Invalid
     nextChar = mp_apple_.fromString( "?", 0, 0, &seqNum2 );
@@ -304,17 +344,20 @@ TEST_CASE( "float-fromstring", "[float-fromstring]" )
     REQUIRE( mp_orange_.isNotValid() == true );
     REQUIRE( mp_orange_.isLocked() == true );
 
-    // Write with Lock
-    nextChar = mp_apple_.fromString( "!111.3", 0, 0, &seqNum );
+    // Increment with Lock
+    nextChar = mp_apple_.fromString( "!+6", 0, 0, &seqNum );
     REQUIRE( nextChar != 0 );
     REQUIRE( *nextChar == '\0' );
-    REQUIRE( seqNum2 + 1 == seqNum );
+    REQUIRE( seqNum2 + 1 == seqNum );       
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( mp_apple_.isLocked() == true );
+    mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) );
+    REQUIRE( value == 6 );      // NOTE: Transition from invalid to valid which means the counter:= 0 + 6
 
-    // Write while locked
+    // Decrement while locked
     errorMsg = "noerror";
-    nextChar = mp_apple_.fromString( "112.01", 0, &errorMsg, &seqNum2 );
+    nextChar = mp_apple_.fromString( "-5", 0, &errorMsg, &seqNum2 );
     REQUIRE( nextChar != 0 );
     REQUIRE( *nextChar == '\0' );
     REQUIRE( seqNum2 == seqNum );
@@ -323,21 +366,22 @@ TEST_CASE( "float-fromstring", "[float-fromstring]" )
     seqNum = mp_apple_.read( value, valid );
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE_FLOAT_EQUAL( value, 111.3F );
+    mp_apple_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) );
+    REQUIRE( value == 6 );
     REQUIRE( mp_apple_.isLocked() == true );
     REQUIRE( errorMsg == "noerror" );
 
-    // Write with unlock
+    // Reset/Set with unlock
     REQUIRE( mp_orange_.isLocked() == true );
-    nextChar = mp_orange_.fromString( "^3.14159", 0, &errorMsg );
+    nextChar = mp_orange_.fromString( "^4", 0, &errorMsg );
     REQUIRE( nextChar != 0 );
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
     mp_orange_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE_FLOAT_EQUAL( value, 3.14159F );
-
+    REQUIRE( value == 4 );
 
     // Just lock
     nextChar = mp_orange_.fromString( "!", 0, &errorMsg );
@@ -347,37 +391,95 @@ TEST_CASE( "float-fromstring", "[float-fromstring]" )
     REQUIRE( mp_orange_.isLocked() == true );
     mp_orange_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE_FLOAT_EQUAL( value, 3.14159F );
+    REQUIRE( value == 4 );
 
-    // Test termination characters
-    nextChar = mp_orange_.fromString( "^4.321,", ": ,;", &errorMsg );
+    // Test termination characters AND 'reset'
+    nextChar = mp_orange_.fromString( "^11,", ": ,;", &errorMsg, &seqNum );
     REQUIRE( nextChar != 0 );
     REQUIRE( *nextChar == ',' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
     mp_orange_.read( value, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE_FLOAT_EQUAL( value, 4.321F );
+    REQUIRE( value == 11 );
+
+    // Write Fail case
+    errorMsg = "noerror";
+    nextChar = mp_orange_.fromString( "+", 0, &errorMsg, &seqNum2 );
+    REQUIRE( nextChar == 0 );
+    seqNum2 = mp_orange_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) );
+    REQUIRE( seqNum == seqNum2 );
+    REQUIRE( value == 11 );
+    REQUIRE( errorMsg != "noerror" );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("fromString FAILED: errorMsg=[%s]", errorMsg.getString()) );
+
+    // Write Fail case2
+    errorMsg = "noerror";
+    nextChar = mp_orange_.fromString( "+2.", 0, &errorMsg, &seqNum2 );
+    REQUIRE( nextChar == 0 );
+    seqNum2 = mp_orange_.read( value, valid );
+    REQUIRE( ModelPoint::IS_VALID( valid ) );
+    REQUIRE( seqNum == seqNum2 );
+    REQUIRE( value == 11 );
+    REQUIRE( errorMsg != "noerror" );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("fromString FAILED: errorMsg=[%s]", errorMsg.getString()) );
+
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
 static Cpl::Rte::MailboxServer     t1Mbox_;
 
-TEST_CASE( "float-observer", "[float-observer]" )
+#define NUM_CHANGE_NOTIFICATIONS    5 // Register, Invalid ->1, 1->0, 0->Invalid
+#define DELAY_TO_NOT_MISS_EDGES     100
+
+TEST_CASE( "refcounter-observer", "[refcounter-observer]" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "FLOAT-OBSERVER test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "REFCOUNTER-OBSERVER test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     Cpl::System::Thread* t1 = Cpl::System::Thread::create( t1Mbox_, "T1" );
-    ViewerFloat viewer1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_ );
+    ViewerRefCounter viewer1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_, NUM_CHANGE_NOTIFICATIONS );
 
     // Open, write a value, wait for Viewer to see the change, then close
     mp_apple_.removeLock();
+    mp_apple_.setInvalid();
     viewer1.open();
-    uint16_t seqNum = mp_apple_.write( 33 );
+
+    // Invalid ->1..4
+    uint16_t seqNum = mp_apple_.increment();
+    Cpl::System::Api::sleep( DELAY_TO_NOT_MISS_EDGES );
+    seqNum = mp_apple_.increment();
+    Cpl::System::Api::sleep( DELAY_TO_NOT_MISS_EDGES );
+    seqNum = mp_apple_.increment();
+    Cpl::System::Api::sleep( DELAY_TO_NOT_MISS_EDGES );
+    seqNum = mp_apple_.increment();
+    Cpl::System::Api::sleep( DELAY_TO_NOT_MISS_EDGES );
+
+    // 4..1 ->0
+    seqNum = mp_apple_.decrement();
+    Cpl::System::Api::sleep( DELAY_TO_NOT_MISS_EDGES );
+    seqNum = mp_apple_.decrement();
+    Cpl::System::Api::sleep( DELAY_TO_NOT_MISS_EDGES );
+    seqNum = mp_apple_.decrement();
+    Cpl::System::Api::sleep( DELAY_TO_NOT_MISS_EDGES );
+    seqNum = mp_apple_.decrement();
+    Cpl::System::Api::sleep( DELAY_TO_NOT_MISS_EDGES );
+
+    // 0 -> 0 (no change notification)
+    seqNum = mp_apple_.decrement();
+    Cpl::System::Api::sleep( DELAY_TO_NOT_MISS_EDGES );
+
+    // 0 -> 1
+    seqNum = mp_apple_.increment();
+    Cpl::System::Api::sleep( DELAY_TO_NOT_MISS_EDGES );
+
+    // 1 -> Invalid
+    seqNum = mp_apple_.setInvalid();
+    Cpl::System::Api::sleep( DELAY_TO_NOT_MISS_EDGES );
+
     Cpl::System::Thread::wait();
     viewer1.close();
     REQUIRE( viewer1.m_lastSeqNumber == seqNum );
