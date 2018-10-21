@@ -76,7 +76,7 @@ public:
         array will be initialized to zero.   Note: 'srcData' MUST contain
         at least 'numElements' elements.
      */
-    ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, bool decimalFormat = true, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, uint8_t* srcData=0 );
+    ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, bool decimalFormat = true, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, const uint8_t* srcData=0 );
 
 public:
     /** Type safe read. See Cpl::Rte::ModelPoint.
@@ -94,8 +94,11 @@ public:
         the size of the MP's data then the write operation will be truncated
 
         NOTE: The application/caller is responsible for what a 'partial write'
-              means to the integrity of the MP's data.  CAUTION: Think before
-              doing a partial write.
+              means to the integrity of the MP's data.  WARNING: Think before
+              doing a partial write!  For example, if the MP is in the invalid
+              state and a partial write is done - then the MP's data/array is
+              only partially initialized AND then MP is now in the valid 
+              state!
       */
 
     virtual uint16_t write( uint8_t* srcData, size_t srcNumElements, LockRequest_T lockRequest = eNO_REQUEST, size_t dstIndex=0 ) throw();
@@ -118,7 +121,7 @@ public:
 
 public:
     /// Type safe subscriber
-    typedef Cpl::Rte::Subscriber<Data> Observer;
+    typedef Cpl::Rte::Subscriber<ArrayUint8> Observer;
 
     /// Type safe register observer
     virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();

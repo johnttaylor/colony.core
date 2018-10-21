@@ -15,6 +15,7 @@ extern void link_float(void);
 extern void link_double(void);
 extern void link_string(void);
 extern void link_refcounter(void);
+extern void link_arrayuint8(void);
 
 
 
@@ -40,6 +41,7 @@ int main( int argc, char* argv[] )
     link_double();
     link_string();
     link_refcounter();
+    link_arrayuint8();
 
     // Run the test(s)
     int result = Catch::Session().run( argc, argv );

@@ -22,7 +22,7 @@ using namespace Cpl::Rte::Mp;
 
 
 ///////////////////////////////////////////////////////////////////////////////
-ArrayUint8::ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, size_t numElements, bool decimalFormat, int8_t validState , uint8_t* srcData )
+ArrayUint8::ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, size_t numElements, bool decimalFormat, int8_t validState, const uint8_t* srcData )
     :Array<uint8_t>( myModelBase, staticInfo, numElements, validState, srcData )
     , m_decimal( decimalFormat )
 {
@@ -32,13 +32,13 @@ ArrayUint8::ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticIn
 ///////////////////////////////////////////////////////////////////////////////
 uint16_t ArrayUint8::read( uint8_t* dstData, size_t dstNumElements, int8_t& validState, size_t srcIndex ) const throw()
 {
-    InternalData dst = { dstData, dstNumElements, srcIndex };
+    InternalData dst ={ dstData, dstNumElements, srcIndex };
     return ModelPointCommon_::read( &dst, sizeof( dst ), validState );
 }
 
 uint16_t ArrayUint8::write( uint8_t* srcData, size_t srcNumElements, LockRequest_T lockRequest, size_t dstIndex ) throw()
 {
-    InternalData src = { srcData, srcNumElements, dstIndex };
+    InternalData src ={ srcData, srcNumElements, dstIndex };
     return ModelPointCommon_::write( &src, sizeof( src ), lockRequest );
 }
 
@@ -112,8 +112,9 @@ const char* ArrayUint8::setFromText( const char* srcText, LockRequest_T lockActi
     // Parse the number of elements and starting index 
     unsigned long numElements;
     unsigned long startIndex;
-    srcText = parseNumElementsAndStartingIndex( srcText, errorMsg, retSequenceNumber, numElements, startIndex );
-    if ( srcText == 0 )
+    const char*   fullSrcText = srcText;
+    const char*   srcTextPtr  = parseNumElementsAndStartingIndex( srcText, errorMsg, retSequenceNumber, numElements, startIndex );
+    if ( srcTextPtr == 0 )
     {
         return 0;
     }
@@ -122,60 +123,70 @@ const char* ArrayUint8::setFromText( const char* srcText, LockRequest_T lockActi
     ModelDatabase::globalLock_();
     uint8_t*      tempArray = (uint8_t*) ModelDatabase::g_parseBuffer_;
     unsigned long elemIndex = startIndex;
+    unsigned long elemNum   = 0;
 
     // DECIMAL parse
     if ( m_decimal )
     {
-        unsigned long elemNum = 0;
-        while ( elemIndex < m_data.numElements && *srcText != '\0' && strchr( terminationChars, *srcText ) == 0 )
+        while ( elemIndex < m_data.numElements && *srcTextPtr != '\0' && (terminationChars == 0 || strchr( terminationChars, *srcTextPtr ) == 0) )
         {
             // Parse the next element
-            char        tempTermChars[2] = { OPTION_CPL_RTE_MODEL_POINT_ELEM_DELIMITER_CHAR, '\0' };
+            char        tempTermChars[2] ={ OPTION_CPL_RTE_MODEL_POINT_ELEM_DELIMITER_CHAR, '\0' };
             unsigned    elemValue;
             const char* endptr;
-            if ( Cpl::Text::a2ui( elemValue, srcText, 10, tempTermChars, &endptr ) == false )
+            if ( Cpl::Text::a2ui( elemValue, srcTextPtr, 10, tempTermChars, &endptr ) == false )
             {
-                return processError( errorMsg, retSequenceNumber, "Failed to parse element number %lu. [%s]", elemNum, srcText );
+                return processError( errorMsg, retSequenceNumber, "Failed to parse element number %lu. [%s]", elemNum, fullSrcText );
             }
 
             // Update the Model Point's data
             else
             {
                 tempArray[elemNum] = (uint8_t) elemValue;
-                srcText             = endptr;
+                srcTextPtr         = endptr + 1;
                 elemIndex++;
                 elemNum++;
             }
 
         }
+
+        // If I get here, the I was successful in parsing the string , however
+        // the srcTextPtr is pointing past the null terminate (because the loop
+        // logic is expecting a trailing ':' on the last element) - so 
+        // correct the srcTextPtr pointer
+        srcTextPtr--;
     }
 
     // HEX Parse
     else
     {
-        unsigned long elemNum = 0;
-        while ( elemIndex < m_data.numElements && *srcText != '\0' && strchr( terminationChars, *srcText ) == 0 )
+        while ( elemIndex < m_data.numElements && *srcTextPtr != '\0' && (terminationChars == 0 || strchr( terminationChars, *srcTextPtr ) == 0) )
         {
             // Parse the next element
-            char        tempText[3] = { *srcText, *(srcText + 1), '\0' };
+            char        tempText[3] ={ *srcTextPtr, *(srcTextPtr + 1), '\0' };
             unsigned    elemValue;
             const char* endptr;
             if ( Cpl::Text::a2ui( elemValue, tempText, 16, 0, &endptr ) == false )
             {
-                return processError( errorMsg, retSequenceNumber, "Failed to parse element number %lu. [%s]", elemNum, srcText );
+                return processError( errorMsg, retSequenceNumber, "Failed to parse element number %lu. [%s]", elemNum, fullSrcText );
             }
 
             // Update the Model Point's data
             else
             {
                 tempArray[elemNum] = (uint8_t) elemValue;
-                srcText           += 2;
+                srcTextPtr        += 2;
                 elemIndex++;
                 elemNum++;
             }
         }
     }
 
+    // Check for correct number of elements
+    if ( elemNum != numElements )
+    {
+        return processError( errorMsg, retSequenceNumber, "Missing elements. Num elements found=%lu, expected=%lu [%s]", elemNum, numElements, fullSrcText );
+    }
 
     // Update the Model Point and release my lock on the global parse buffer
     uint16_t seqnum = write( tempArray, numElements, lockAction, startIndex );
@@ -188,7 +199,7 @@ const char* ArrayUint8::setFromText( const char* srcText, LockRequest_T lockActi
     }
 
     // Return the remaining string
-    return srcText;
+    return srcTextPtr;
 }
 
 

@@ -27,6 +27,7 @@
 #include "Cpl/Rte/Mp/Double.h"
 #include "Cpl/Rte/Mp/String.h"
 #include "Cpl/Rte/Mp/RefCounter.h"
+#include "Cpl/Rte/Mp/ArrayUint8.h"
 
 /// 
 using namespace Cpl::Rte;
@@ -681,4 +682,81 @@ public:
         }
     }
 };
+
+/////////////////////////////////////////////////////////////////
+class ViewerArrayUint8 : public ViewerBase, public Mp::ArrayUint8::Observer
+{
+public:
+    ///
+    Mp::ArrayUint8&  m_mp1;
+
+    /// Constructor
+    ViewerArrayUint8( MailboxServer& myMbox, Cpl::System::Thread& masterThread, Mp::ArrayUint8& mp1 )
+        :ViewerBase( myMbox, masterThread )
+        , Mp::ArrayUint8::Observer( myMbox )
+        , m_mp1( mp1 )
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerArrayUint8(%p). mp1=%s", this, mp1.getName()) );
+    }
+
+public:
+    ///
+    void subscribe() { m_mp1.attach( *this ); }
+    ///
+    void unsubscribe() { m_mp1.detach( *this ); }
+    ///
+    void modelPointChanged( Mp::ArrayUint8& modelPointThatChanged ) throw()
+    {
+        if ( m_done != true )
+        {
+            m_notifCount++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerArrayUint8(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
+
+            m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
+            m_lastValidState = modelPointThatChanged.getValidState();
+
+            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
+            {
+                m_pendingOpenMsgPtr->returnToSender();
+                m_opened            = true;
+                m_pendingOpenMsgPtr = 0;
+                CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerArrayUint8(%p) Returning Open Msg.") );
+            }
+
+            if ( m_notifCount >= 2 )
+            {
+                m_masterThread.signal();
+                m_done = true;
+            }
+        }
+    }
+};
+
+class RmwArrayUint8 : public Mp::ArrayUint8::Client
+{
+public:
+    ///
+    int                              m_callbackCount;
+    ///
+    ModelPoint::RmwCallbackResult_T  m_returnResult;
+    ///
+    unsigned                         m_index;
+    ///
+    uint8_t                          m_newValue;
+public:
+    ///
+    RmwArrayUint8():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_index( 0 ), m_newValue(0) {}
+    ///
+    ModelPoint::RmwCallbackResult_T callback( Mp::ArrayUint8::Data& data, int8_t validState ) throw()
+    {
+        m_callbackCount++;
+        if ( m_returnResult != ModelPoint::eNO_CHANGE && m_index < data.numElements )
+        {
+            data.firstElemPtr[m_index] = m_newValue;
+        }
+        return m_returnResult;
+    }
+};
+
+
 #endif

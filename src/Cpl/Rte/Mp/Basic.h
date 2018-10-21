@@ -122,7 +122,7 @@ public:
         array will be initialized to zero.   Note: 'srcData' MUST contain
         at least 'numElements' elements.
      */
-    Array( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, ELEMTYPE* srcData=0 )
+    Array( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, const ELEMTYPE* srcData=0 )
         :ModelPointCommon_( myModelBase, &m_data, staticInfo, validState )
         , m_data( { new(std::nothrow) ELEMTYPE[numElements], numElements, 0 } )
     {
@@ -138,11 +138,14 @@ public:
             m_data.numElements = 0;
         }
 
-        // Initialize the Array when being initialized to the VALID state
-        if ( ModelPoint::IS_VALID( validState ) && m_data.numElements != 0 )
+        // Initialize the Array 
+        if ( m_data.numElements != 0 )
         {
-            // Zero the array if no data provide
-            if ( srcData == 0 )
+            // Zero the array if no data provide OR if the initial state is invalid.  
+            // Setting the invalid-initial state to zero is to at least always provide 
+            // consist initial values for the MP if the first write that the application 
+            // does is a PARTIAL write (another reason to NOT do partial writes)
+            if ( srcData == 0 ||  ModelPoint::IS_VALID( validState ) == false )
             {
                 memset( m_data.elemPtr, 0, m_data.numElements * sizeof( ELEMTYPE ) );
             }
