@@ -63,7 +63,11 @@ TEST_CASE( "uint32-get", "[uint32-get]" )
 
     const char* mpType = mp_apple_.getTypeAsText();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s])", mpType) );
-    REQUIRE( strcmp( mpType, "Cpl::Rte::Mp::Uint32" ) == 0 );
+    REQUIRE( strcmp( mpType, "Cpl::Rte::Mp::Uint32-dec" ) == 0 );
+
+    mpType = mp_orange_.getTypeAsText();
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s])", mpType) );
+    REQUIRE( strcmp( mpType, "Cpl::Rte::Mp::Uint32-hex" ) == 0 );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }

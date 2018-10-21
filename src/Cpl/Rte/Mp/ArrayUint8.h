@@ -30,7 +30,7 @@ namespace Mp {
     NOT be changed.
 
     For the fromString() operation the expected data formats are:
-        <numElems>:<mpIndex>:<d0>,<d1>[,..]
+        <numElems>:<mpIndex>:<d0>:<d1>[:..]
         <numElems>:<mpIndex>:<h0><h1>[..]
 
         where:
@@ -41,7 +41,7 @@ namespace Mp {
                        decimal or hex depending on how the MP was constructed
 
         examples:
-            3:7:32,33,34    -->writes the three elements {32,33,34} to the
+            3:7:32:33:34    -->writes the three values {32,33,34} to the
                                Model Point's array at indexes 7,8,9 respectively
             3:7:202122      -->same as above except that the element data is
                                in hex format.
@@ -137,6 +137,9 @@ public:
 protected:
     /// See Cpl::Rte::ModelPointCommon_.
     const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw();
+
+
+
 };
 
 

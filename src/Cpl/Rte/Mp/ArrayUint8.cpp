@@ -14,6 +14,7 @@
 #include "ArrayUint8.h"
 #include "Cpl/Text/format.h"
 #include "Cpl/Text/atob.h"
+#include <stdarg.h>
 
 
 ///
@@ -21,7 +22,7 @@ using namespace Cpl::Rte::Mp;
 
 
 ///////////////////////////////////////////////////////////////////////////////
-ArrayUint8::ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, bool decimalFormat, int8_t validState, uint8_t* srcData )
+ArrayUint8::ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, size_t numElements, bool decimalFormat, int8_t validState , uint8_t* srcData )
     :Array<uint8_t>( myModelBase, staticInfo, numElements, validState, srcData )
     , m_decimal( decimalFormat )
 {
@@ -75,29 +76,22 @@ bool ArrayUint8::toString( Cpl::Text::String& dst, bool append, uint16_t* retSeq
     if ( convertStateToText( dst, append, m_locked, m_validState ) )
     {
         // Output the element count and starting index
-        dst.formatOpt( append, "%lu:0:", (unsigned long) m_data.numElements );
+        dst.formatOpt( append, "%lu%c0", (unsigned long) m_data.numElements, OPTION_CPL_RTE_MODEL_POINT_ELEM_DELIMITER_CHAR );
 
         // DECIMAL format
         if ( m_decimal )
         {
             // Output the elements
-            size_t idx;
-            for ( idx=0; idx < m_data.numElements; idx++ )
+            for ( size_t idx=0; idx < m_data.numElements; idx++ )
             {
-                if ( idx == 0 )
-                {
-                    dst.formatOpt( true, "%d", m_data.elemPtr[idx] );
-                }
-                else
-                {
-                    dst.formatOpt( true, ",%d", m_data.elemPtr[idx] );
-                }
+                dst.formatOpt( true, "%c%d", OPTION_CPL_RTE_MODEL_POINT_ELEM_DELIMITER_CHAR, m_data.elemPtr[idx] );
             }
         }
 
         // HEX format
         else
         {
+            dst += OPTION_CPL_RTE_MODEL_POINT_ELEM_DELIMITER_CHAR;
             Cpl::Text::bufferToAsciiHex( m_data.elemPtr, m_data.numElements /* * sizeof(uint8_t) */, dst, true, true );
         }
     }
@@ -115,69 +109,41 @@ bool ArrayUint8::toString( Cpl::Text::String& dst, bool append, uint16_t* retSeq
 
 const char* ArrayUint8::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
 {
-    // Lock the database 
-    m_modelDatabase.lock_();
-
-    // Default the returned sequence number to the current value (before any update)
-    if ( retSequenceNumber )
-    {
-        *retSequenceNumber = m_seqNum;
-    }
-
-    // Parse numElements and starting index
-    const char*   endptr;
+    // Parse the number of elements and starting index 
     unsigned long numElements;
-    if ( Cpl::Text::a2ul( numElements, srcText, 10, ":", &endptr ) == false )
-    {
-        if ( errorMsg )
-        {
-            errorMsg->format( "Unable to parse the numElems field.  Format is: <numElems>:<mpIndex>:<e0> [%s]", srcText );
-        }
-        return 0;
-    }
-    const char*   endptr2;
     unsigned long startIndex;
-    if ( Cpl::Text::a2ul( startIndex, endptr, 10, ":", &endptr2 ) == false )
+    srcText = parseNumElementsAndStartingIndex( srcText, errorMsg, retSequenceNumber, numElements, startIndex );
+    if ( srcText == 0 )
     {
-        if ( errorMsg )
-        {
-            errorMsg->format( "Unable to parse the mpIndex field.  Format is: <numElems>:<mpIndex>:<e0> [%s]", srcText );
-        }
         return 0;
     }
-    if ( numElements + startIndex > m_data.numElements )
-    {
-        if ( errorMsg )
-        {
-            errorMsg->format( "Unable to parse the numElems+mpIndex exceeds the size of the array (array size=%lu) [%s]", (unsigned long) m_data.numElements, srcText );
-        }
-        return 0;
-    }
+
+    // Get exclusive access to the global parse buffer
+    ModelDatabase::globalLock_();
+    uint8_t*      tempArray = (uint8_t*) ModelDatabase::g_parseBuffer_;
+    unsigned long elemIndex = startIndex;
 
     // DECIMAL parse
-    const char* dataPtr = endptr2;
     if ( m_decimal )
     {
         unsigned long elemNum = 0;
-        while ( startIndex < m_data.numElements && *dataPtr != '\0' && strchr( terminationChars, *dataPtr ) != 0 )
+        while ( elemIndex < m_data.numElements && *srcText != '\0' && strchr( terminationChars, *srcText ) == 0 )
         {
             // Parse the next element
-            unsigned elemValue;
-            if ( Cpl::Text::a2ui( elemValue, dataPtr, 10, ",", &endptr ) == false )
+            char        tempTermChars[2] = { OPTION_CPL_RTE_MODEL_POINT_ELEM_DELIMITER_CHAR, '\0' };
+            unsigned    elemValue;
+            const char* endptr;
+            if ( Cpl::Text::a2ui( elemValue, srcText, 10, tempTermChars, &endptr ) == false )
             {
-                if ( errorMsg )
-                {
-                    errorMsg->format( "Failed to parse element number %lu.  Note: A partial write can/did occurred [%s]", elemNum, srcText );
-                }
-                break;
+                return processError( errorMsg, retSequenceNumber, "Failed to parse element number %lu. [%s]", elemNum, srcText );
             }
 
             // Update the Model Point's data
             else
             {
-                m_data.elemPtr[startIndex] = (uint8_t) elemValue;
-                dataPtr                    = endptr;
-                startIndex++;
+                tempArray[elemNum] = (uint8_t) elemValue;
+                srcText             = endptr;
+                elemIndex++;
                 elemNum++;
             }
 
@@ -187,29 +153,42 @@ const char* ArrayUint8::setFromText( const char* srcText, LockRequest_T lockActi
     // HEX Parse
     else
     {
-    }
-    Cpl::Text::Frame::StringDecoder decoder( OPTION_CPL_RTE_MODEL_POINT_QUOTE_CHAR, OPTION_CPL_RTE_MODEL_POINT_QUOTE_CHAR, OPTION_CPL_RTE_MODEL_POINT_ESCAPE_CHAR, srcText );
-    size_t                          decodedSize = 0;
-
-    if ( decoder.scan( OPTION_CPL_RTE_MP_STRING_MAX_LENGTH_FROM_STRING_BUFFER, g_buffer, decodedSize ) )
-    {
-        // Update the Model Point
-        seqnum = write( g_buffer, decodedSize, lockAction );
-        result = decoder.getRemainder();
-    }
-    else
-    {
-        if ( errorMsg )
+        unsigned long elemNum = 0;
+        while ( elemIndex < m_data.numElements && *srcText != '\0' && strchr( terminationChars, *srcText ) == 0 )
         {
-            errorMsg->format( "Conversion of %s as a \"Text_String\"[%s] to a string failed.", getTypeAsText(), srcText );
+            // Parse the next element
+            char        tempText[3] = { *srcText, *(srcText + 1), '\0' };
+            unsigned    elemValue;
+            const char* endptr;
+            if ( Cpl::Text::a2ui( elemValue, tempText, 16, 0, &endptr ) == false )
+            {
+                return processError( errorMsg, retSequenceNumber, "Failed to parse element number %lu. [%s]", elemNum, srcText );
+            }
+
+            // Update the Model Point's data
+            else
+            {
+                tempArray[elemNum] = (uint8_t) elemValue;
+                srcText           += 2;
+                elemIndex++;
+                elemNum++;
+            }
         }
     }
-    m_modelDatabase.unlock_();
 
-    // Housekeeping
+
+    // Update the Model Point and release my lock on the global parse buffer
+    uint16_t seqnum = write( tempArray, numElements, lockAction, startIndex );
+    ModelDatabase::globalLock_();
+
+    // Set the return sequence number
     if ( retSequenceNumber )
     {
         *retSequenceNumber = seqnum;
     }
-    return result;
+
+    // Return the remaining string
+    return srcText;
 }
+
+

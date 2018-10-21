@@ -29,7 +29,7 @@
     Engine.  
  */
 #ifndef OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID
-#define OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID     1
+#define OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID            1
 #endif
 
 /** Quote character used for ALL "text" element when encoding/decoding to text.
@@ -38,13 +38,13 @@
     mark, dollar sign, semi-colon, etc.
  */
 #ifndef OPTION_CPL_RTE_MODEL_POINT_QUOTE_CHAR
-#define OPTION_CPL_RTE_MODEL_POINT_QUOTE_CHAR        '"'
+#define OPTION_CPL_RTE_MODEL_POINT_QUOTE_CHAR               '"'
 #endif
 
 
 /// Escape character used for ALL text elements when encoding/decoding to text.
 #ifndef OPTION_CPL_RTE_MODEL_POINT_ESCAPE_CHAR
-#define OPTION_CPL_RTE_MODEL_POINT_ESCAPE_CHAR       '`'
+#define OPTION_CPL_RTE_MODEL_POINT_ESCAPE_CHAR              '`'
 #endif
 
 
@@ -54,7 +54,7 @@
     in the source text string.
  */
 #ifndef OPTION_CPL_RTE_MODEL_POINT_LOCK_CHAR
-#define OPTION_CPL_RTE_MODEL_POINT_LOCK_CHAR        '!'
+#define OPTION_CPL_RTE_MODEL_POINT_LOCK_CHAR                '!'
 #endif
 
 
@@ -63,7 +63,7 @@
     text string.
  */
 #ifndef OPTION_CPL_RTE_MODEL_POINT_UNLOCK_CHAR
-#define OPTION_CPL_RTE_MODEL_POINT_UNLOCK_CHAR      '^'
+#define OPTION_CPL_RTE_MODEL_POINT_UNLOCK_CHAR              '^'
 #endif
 
 
@@ -72,10 +72,16 @@
     invalid state
  */
 #ifndef OPTION_CPL_RTE_MODEL_POINT_INVALID_CHAR
-#define OPTION_CPL_RTE_MODEL_POINT_INVALID_CHAR     '?'
+#define OPTION_CPL_RTE_MODEL_POINT_INVALID_CHAR             '?'
 #endif
 
-
+/** The 'element delimiter' character.  This character is used to separate
+    individual elements of a Model Point's data when using the fromString() and
+    toString() methods.
+ */
+#ifndef OPTION_CPL_RTE_MODEL_POINT_ELEM_DELIMITER_CHAR
+#define OPTION_CPL_RTE_MODEL_POINT_ELEM_DELIMITER_CHAR      ':'
+#endif
 
 ///
 namespace Cpl {

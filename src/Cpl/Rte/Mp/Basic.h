@@ -15,6 +15,8 @@
 
 #include "Cpl/Rte/ModelPointCommon_.h"
 #include "Cpl/System/Assert.h"
+#include "Cpl/System/FatalError.h"
+#include "Cpl/Text/atob.h"
 #include <string.h>
 
 ///
@@ -124,6 +126,12 @@ public:
         :ModelPointCommon_( myModelBase, &m_data, staticInfo, validState )
         , m_data( { new(std::nothrow) ELEMTYPE[numElements], numElements, 0 } )
     {
+        // Throw a fatal error if global parse buffer is too small
+        if ( OPTION_CPL_RTE_MODEL_DATABASE_MAX_LENGTH_FROM_STRING_BUFFER < numElements * sizeof( ELEMTYPE ) )
+        {
+            Cpl::System::FatalError::logf( "Cpl::Rte::Array().  Creating a Array of size %lu which is greater than the fromString() parser buffer", numElements * sizeof( ELEMTYPE ) );
+        }
+
         // Check for the case of failed memory allocation
         if ( m_data.elemPtr == 0 )
         {
@@ -134,9 +142,9 @@ public:
         if ( ModelPoint::IS_VALID( validState ) && m_data.numElements != 0 )
         {
             // Zero the array if no data provide
-            if ( srcData == 0  )
+            if ( srcData == 0 )
             {
-                memset( data.elemPtr, 0, m_data.NumElements );
+                memset( m_data.elemPtr, 0, m_data.numElements * sizeof( ELEMTYPE ) );
             }
 
             // Initialize the array to the provided values
@@ -164,8 +172,8 @@ public:
     /// See Cpl::Rte::ModelPoint
     void copyDataTo_( void* dstData, size_t dstSize ) const throw()
     {
-        CPL_SYSTEM_ASSERT( dstSize == sizeof( Data ) );
-        InternalData* dstInfo = (InternalData*) dstDst;
+        CPL_SYSTEM_ASSERT( dstSize == sizeof( m_data ) );
+        InternalData* dstInfo = (InternalData*) dstData;
 
         // Make sure we don't read past the m_data storage
         if ( m_data.numElements == 0 )
@@ -174,7 +182,7 @@ public:
         }
         else if ( dstInfo->elemIndex + dstInfo->numElements > m_data.numElements )
         {
-            dstInfo->numElements = m_data.numElements - dstInfo->elemIndex
+            dstInfo->numElements = m_data.numElements - dstInfo->elemIndex;
         }
 
         // Copy the data to 'dst'
@@ -204,19 +212,19 @@ public:
     /// See Cpl::Rte::ModelPoint.  
     bool isDataEqual_( const void* otherData ) const throw()
     {
-        InternalData* otherInfo = (InternalData*) srcData;
+        InternalData* otherInfo = (InternalData*) otherData;
 
         // Make sure we don't compare past the m_data storage
         if ( m_data.numElements == 0 )
         {
             otherInfo->numElements = 0;
         }
-        else if ( srcInfo->elemIndex + srcInfo->numElements > m_data.numElements )
+        else if ( otherInfo->elemIndex + otherInfo->numElements > m_data.numElements )
         {
             otherInfo->numElements = m_data.numElements - otherInfo->elemIndex;
         }
 
-        return memcmp( &(m_data.elemPtr[srcInfo->elemIndex]), otherInfo->elemPtr, otherInfo->numElements * sizeof( ELEMTYPE ) ) == 0;
+        return memcmp( &(m_data.elemPtr[otherInfo->elemIndex]), otherInfo->elemPtr, otherInfo->numElements * sizeof( ELEMTYPE ) ) == 0;
     }
 
     /// See Cpl::Rte::Point.  
@@ -229,6 +237,60 @@ public:
     {
         return m_data.numElements * sizeof( ELEMTYPE );
     }
+
+
+protected:
+    /// Helper method when processing errors that occur during setFromText() method
+    const char* processError( Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber, const char* errorFormatText, ... )
+    {
+        // Update the Caller's error Message (if provided)
+        va_list ap;
+        va_start( ap, errorFormatText );
+        if ( errorMsg )
+        {
+            errorMsg->vformat( errorFormatText, ap );
+        }
+
+        va_end( ap );
+
+        // Lock the database 
+        m_modelDatabase.lock_();
+
+        // Update the caller's sequence number (if provided)
+        if ( retSequenceNumber )
+        {
+            *retSequenceNumber = m_seqNum;
+        }
+
+        m_modelDatabase.unlock_();
+
+        // Return 'parse failed'
+        return 0;
+    }
+
+    /// Helper method to for setFromText() implementation
+    const char* parseNumElementsAndStartingIndex( const char* srcText, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber, unsigned long& numElements, unsigned long& startIndex ) throw()
+    {
+        // Parse numElements and starting index
+        const char*   endptr;
+        char          tempTermChars[2] = { OPTION_CPL_RTE_MODEL_POINT_ELEM_DELIMITER_CHAR, '\0' };
+        if ( Cpl::Text::a2ul( numElements, srcText, 10, tempTermChars, &endptr ) == false )
+        {
+            return processError( errorMsg, retSequenceNumber, "Unable to parse the numElems field.  Format is: <numElems>:<mpIndex>:<e0> [%s]", srcText );
+        }
+        const char*   endptr2;
+        if ( Cpl::Text::a2ul( startIndex, endptr+1, 10, tempTermChars, &endptr2 ) == false )
+        {
+            return processError( errorMsg, retSequenceNumber, "Unable to parse the mpIndex field.  Format is: <numElems>:<mpIndex>:<e0> [%s]", srcText );
+        }
+        if ( numElements + startIndex > m_data.numElements )
+        {
+            return processError( errorMsg, retSequenceNumber, "Unable to parse the numElems+mpIndex exceeds the size of the array (array size=%lu) [%s]", (unsigned long) m_data.numElements, srcText );
+        }
+
+        return endptr2+1;
+    }
+
 };
 
 

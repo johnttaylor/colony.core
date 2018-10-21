@@ -18,8 +18,8 @@
 using namespace Cpl::Rte;
 
 // global lock
-Cpl::System::Mutex globalMutex_;
-
+static Cpl::System::Mutex globalMutex_;
+char ModelDatabase::g_parseBuffer_[OPTION_CPL_RTE_MODEL_DATABASE_MAX_LENGTH_FROM_STRING_BUFFER];
 
 ModelDatabase::ModelDatabase() throw()
     : Cpl::Container::Map<ModelPoint>()
