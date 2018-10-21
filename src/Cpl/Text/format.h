@@ -28,7 +28,7 @@ namespace Cpl { namespace Text {
 /** This method will take a raw data buffer and convert it to an 'viewable'
     string.  Non-printable values will displayed as '.'.  Note: The default
     operation is to clear the destString before the conversion.  The method
-    will return if buffer was succesfully converted, i.e. the ENTIRE buffer
+    will return if buffer was successfully converted, i.e. the ENTIRE buffer
     was converted; else false is returned (this include the cases of null 
     'buffer' pointer, 'len' equals zero, or not enough memory in 'destString' 
     to contain the final result).
@@ -38,7 +38,7 @@ bool bufferToString( const void* buffer, int len, String& destString, bool appen
 
 /** This method will convert a binary buffer to 'ASCII HEX', e.g.
     given the binary data of { 12, F2, 54 }, destString:= "12F254". The  
-    method will return if buffer was succesfully converted, i.e. the ENTIRE
+    method will return true if buffer was successfully converted, i.e. the ENTIRE
     buffer was converted to a string; else false is returned (this include the 
     cases of null 'buffer' pointer, 'len' equals zero, or not enough memory
     in 'destString' to contain the final result).

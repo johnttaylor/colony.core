@@ -210,7 +210,7 @@ size_t ModelPointCommon_::exportData( void* dstDataStream, size_t maxDstLength, 
         {
             // Export Data
             size_t dataSize = getImportExportSize_();
-            memcpy( dstDataStream, getDataPointer_(), dataSize );
+            memcpy( dstDataStream, getImportExportDataPointer_(), dataSize );
 
             // Export Valid State
             uint8_t* ptr = (uint8_t*) dstDataStream;
@@ -242,7 +242,7 @@ size_t ModelPointCommon_::importData( const void* srcDataStream, size_t srcLengt
         {
             // Import Data
             size_t dataSize = getImportExportSize_();
-            memcpy( (void*) getDataPointer_(), srcDataStream, dataSize );
+            memcpy( (void*) getImportExportDataPointer_(), srcDataStream, dataSize );
 
             // Import Valid State
             uint8_t* ptr = (uint8_t*) srcDataStream;

@@ -60,7 +60,7 @@ bool Double::isDataEqual_( const void* otherData ) const throw()
 ///////////////////////////////////////////////////////////////////////////////
 const char* Double::getTypeAsText() const throw()
 {
-    return "DOUBLE";
+    return "Cpl::Rte::Mp::Double";
 }
 
 bool Double::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()

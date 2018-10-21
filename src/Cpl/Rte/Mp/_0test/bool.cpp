@@ -108,7 +108,7 @@ TEST_CASE( "bool-get", "[bool-get]" )
 
     const char* mpType = mp_apple_.getTypeAsText();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s])", mpType) );
-    REQUIRE( strcmp( mpType, "BOOL" ) == 0 );
+    REQUIRE( strcmp( mpType, "Cpl::Rte::Mp::Bool" ) == 0 );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
@@ -171,9 +171,10 @@ TEST_CASE( "bool-export", "[bool-export]" )
     REQUIRE( b == mp_apple_.getExternalSize() );
     REQUIRE( seqNum == seqNum2 );
 
-    // Invalidate the MP
+    // set a new value AND invalidate the MP
+    mp_apple_.write( true );
     seqNum = mp_apple_.setInvalid();
-    REQUIRE( seqNum == seqNum2 + 1 );
+    REQUIRE( seqNum == seqNum2 + 2 );
     REQUIRE( mp_apple_.isNotValid() == true );
 
     // Import...

@@ -30,7 +30,7 @@ namespace Cpl { namespace Text { namespace Tokenizer {
 
     The tokenizer replaces the delimiter and terminator characters with an '\0'
     character. The tokenizer supports the parameter fields being "text strings".
-    In addtion, any leading and trailing whitespace is removed from each
+    In addition, any leading and trailing whitespace is removed from each
     parameter. Note: no whitespace is altered/removed from the contents of a
     text string.
 

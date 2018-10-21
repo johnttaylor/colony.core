@@ -60,7 +60,7 @@ bool Float::isDataEqual_( const void* otherData ) const throw()
 ///////////////////////////////////////////////////////////////////////////////
 const char* Float::getTypeAsText() const throw()
 {
-    return "FLOAT";
+    return "Cpl::Rte::Mp::Float";
 }
 
 bool Float::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()

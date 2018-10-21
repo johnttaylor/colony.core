@@ -55,7 +55,7 @@ void Uint64::detach( Observer& observer ) throw()
 ///////////////////////////////////////////////////////////////////////////////
 const char* Uint64::getTypeAsText() const throw()
 {
-    return "UINT64";
+    return m_decimal? "Cpl::Rte::Mp::Uint64-dec": "Cpl::Rte::Mp::Uint64-hex";
 }
 
 bool Uint64::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()

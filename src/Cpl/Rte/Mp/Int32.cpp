@@ -55,7 +55,7 @@ void Int32::detach( Observer& observer ) throw()
 ///////////////////////////////////////////////////////////////////////////////
 const char* Int32::getTypeAsText() const throw()
 {
-    return "INT32";
+    return m_decimal? "Cpl::Rte::Mp::Int32-dec": "Cpl::Rte::Mp::Int32-hex";
 }
 
 bool Int32::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()

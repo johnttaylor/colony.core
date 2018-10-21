@@ -12,10 +12,20 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
+#include "colony_config.h"
 #include "Cpl/Rte/ModelDatabaseApi.h"
 #include "Cpl/System/Mutex.h"
 #include "Cpl/Container/Map.h"
 
+
+/** This symbol defines the size, in bytes, of a single/global parse buffer
+    that is used for the fromString() operations so that the input strings
+    can be parsed without directly updating a model point's data. Only one 
+    instance of this buffer is allocated.
+ */
+#ifndef OPTION_CPL_RTE_MODEL_DATABASE_MAX_LENGTH_FROM_STRING_BUFFER
+#define OPTION_CPL_RTE_MODEL_DATABASE_MAX_LENGTH_FROM_STRING_BUFFER      1024
+#endif
 
 ///
 namespace Cpl {
@@ -72,6 +82,40 @@ public:
         This method unlocks the Model Database.
     */
     virtual void unlock_() throw() { unlock(); }
+
+
+
+public:
+    /** This method has 'PACKAGE Scope' in that is should only be called by 
+        other classes in the Cpl::Rte namespace.  It is ONLY public to avoid 
+        the tight coupling of C++ friend mechanism.
+
+        This method provides a single global lock for ALL Model Database 
+        instances. The method is used to protect global Model Database (e.g.
+        the global parse buffer). 
+        
+        This method locks the global Model Database lock. For every call to 
+        globalLock_() there must be corresponding call to globalUnlock_();
+    */
+    static void globalLock_() throw();
+
+    /** This method has 'PACKAGE Scope' in that is should only be called by 
+        other classes in the Cpl::Rte namespace.  It is ONLY public to avoid 
+        the tight coupling of C++ friend mechanism.
+
+        This method unlocks the global Model Database lock
+    */
+    static void globalUnlock_() throw();
+
+    /** This variable has 'PACKAGE Scope' in that is should only be called by 
+        other classes in the Cpl::Rte namespace.  It is ONLY public to avoid 
+        the tight coupling of C++ friend mechanism.
+        
+        Global/single instance of the fromString() parse buffer. Model Point's
+        need to have acquired the global lock before using this buffer
+     */
+    static char g_parseBuffer_[OPTION_CPL_RTE_MODEL_DATABASE_MAX_LENGTH_FROM_STRING_BUFFER];
+
 };
 
 

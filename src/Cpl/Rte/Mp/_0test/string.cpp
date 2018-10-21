@@ -147,7 +147,7 @@ TEST_CASE( "string-get", "[string-get]" )
 
     const char* mpType = mp_apple_.getTypeAsText();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s])", mpType) );
-    REQUIRE( strcmp( mpType, "STRING" ) == 0 );
+    REQUIRE( strcmp( mpType, "Cpl::Rte::Mp::String" ) == 0 );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
@@ -165,7 +165,7 @@ TEST_CASE( "string-export", "[string-export]" )
     REQUIRE( mp_apple_.getExternalSize() <= STREAM_BUFFER_SIZE );
 
 
-    // Export...
+    // Export invalid...
     REQUIRE( mp_apple_.isNotValid() == true );
     uint16_t seqNum  = mp_apple_.getSequenceNumber();
     uint16_t seqNum2 = mp_apple_.getSequenceNumber();
@@ -210,9 +210,10 @@ TEST_CASE( "string-export", "[string-export]" )
     REQUIRE( b == mp_apple_.getExternalSize() );
     REQUIRE( seqNum == seqNum2 );
 
-    // Invalidate the MP
+    // Set a new value AND invalidate the MP
+    mp_apple_.write( "bob's here" );
     seqNum = mp_apple_.setInvalid();
-    REQUIRE( seqNum == seqNum2 + 1 );
+    REQUIRE( seqNum == seqNum2 + 2 );
     REQUIRE( mp_apple_.isNotValid() == true );
 
     // Import...

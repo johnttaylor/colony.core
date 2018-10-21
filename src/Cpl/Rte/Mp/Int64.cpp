@@ -55,7 +55,7 @@ void Int64::detach( Observer& observer ) throw()
 ///////////////////////////////////////////////////////////////////////////////
 const char* Int64::getTypeAsText() const throw()
 {
-    return "INT64";
+    return m_decimal? "Cpl::Rte::Mp::Int64-dec": "Cpl::Rte::Mp::Int64-hex";
 }
 
 bool Int64::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()

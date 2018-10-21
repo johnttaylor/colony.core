@@ -17,6 +17,10 @@
 ///
 using namespace Cpl::Rte;
 
+// global lock
+Cpl::System::Mutex globalMutex_;
+
+
 ModelDatabase::ModelDatabase() throw()
     : Cpl::Container::Map<ModelPoint>()
 {
@@ -41,4 +45,14 @@ ModelPoint* ModelDatabase::getFirstByName() const throw()
 ModelPoint* ModelDatabase::getNextByName( ModelPoint& currentModelPoint ) const throw()
 {
     return next( currentModelPoint );
+}
+
+void ModelDatabase::globalLock_() throw()
+{
+    globalMutex_.lock();
+}
+
+void ModelDatabase::globalUnlock_() throw()
+{
+    globalMutex_.unlock();
 }

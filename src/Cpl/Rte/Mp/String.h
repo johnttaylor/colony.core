@@ -15,13 +15,6 @@
 #include "Cpl/Rte/ModelPointCommon_.h"
 #include "Cpl/Text/DFString.h"
 
-/** This symbol defines the size, in bytes (not including the NULL terminator)
-    of the input buffer that is used to contain results of parsing the 'input'
-    for the fromString() method.  Only one instance of this buffer is allocated.
- */
-#ifndef OPTION_CPL_RTE_MP_STRING_MAX_LENGTH_FROM_STRING_BUFFER
-#define OPTION_CPL_RTE_MP_STRING_MAX_LENGTH_FROM_STRING_BUFFER      1024
-#endif
 
 
  ///
@@ -34,8 +27,30 @@ namespace Mp {
 
 /** This class provides a concrete implementation for a Point who's data is a
     null terminated string.  The storage for the internal string storage is
-    done once when the instance is constructed, i.e. fixed length (per instance)
-    storage.
+    allocated (from the heap) ONCE when the instance is constructed, i.e. fixed 
+    length (per instance) storage.
+
+    For the fromString() operation the expected data formats are:
+        <simple-text>
+        "<text-string>"
+
+        where:
+            <simple-text> is a string containing no whitespace AND does NOT
+                          contain any 'special characters' with respect to the
+                          application's source stream.
+            <text-string> is a string bounded with double quotes and can contain
+                          any printable character.  The Cpl::Text::Frame::StringDecoder
+                          class is used with the framing/special characters 
+                          defined in the Cpl/Rte/ModelPoint.h header file
+
+
+        examples:
+            noWhitespace 
+            "I have white space and `"quote`" characters"
+    
+    The toString() function outputs in the same data format as the expected 
+    fromString() function - except the toString() always output the string
+    as a <text-string>
 
     NOTE: All methods in this class ARE thread Safe unless explicitly
           documented otherwise.
@@ -58,13 +73,13 @@ public:
 protected:
     ///
     Data                m_data;
-    ///
-    static char         g_buffer[OPTION_CPL_RTE_MP_STRING_MAX_LENGTH_FROM_STRING_BUFFER];
 
 public:
     /// Constructor.  The 'maxLength' specifies the size, in bytes, of the string storage EXCLUDING the null terminator
     String( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t maxLength, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, const char* initialValue = "" );
 
+    /// Destructor (free up allocate array memory)
+    ~String();
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint
@@ -133,7 +148,7 @@ protected:
     bool isDataEqual_( const void* otherData ) const throw();
 
     /// See Cpl::Rte::ModelPoint.  
-    const void* getDataPointer_() const throw();
+    const void* getImportExportDataPointer_() const throw();
 
     /// See Cpl::Rte::ModelPoint.  
     size_t getImportExportSize_() const throw();

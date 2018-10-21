@@ -271,12 +271,16 @@ public:
     virtual const char* fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw() = 0;
 
     /** This method returns a string identifier for the Model Point's data type.
-        This value is NOT guaranteed to be unique, it is provided to help
-        the 'human' when using the to/from String interface to view/set
-        Model Point values.
+        This value IS GUARANTEED to be unique (within an Application).  The 
+        format of the string is the Model Point's fully qualified namespace and 
+        class type as a string. For example, the for Cpl::Rte::Mp::Uint32 Model 
+        Point the function would return "Cpl::Rte::Mp::Uint32"
+
+        Note: The type string can contain additional information, but adding
+              a '-' character followed by the extra info.  For example:
+              "Cpl::Rte::Mp::Uint32-hex"
      */
      virtual const char* getTypeAsText() const throw() = 0;
-
 
 public:
     /** This method returns true if the Model Point is in the locked state.
@@ -548,10 +552,10 @@ public:
 
         This method is NOT Thread Safe.
 
-        This method returns a pointer to the Model Point's data.  BE VERY 
-        CAREFULL on how the pointer is used!
+        This method returns a pointer to the Model Point's data for Import/Export
+        operations.  BE VERY CAREFULL on how the pointer is used!
      */
-    virtual const void* getDataPointer_() const throw() = 0;
+    virtual const void* getImportExportDataPointer_() const throw() = 0;
 
      /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
          by other classes in the Cpl::Rte namespace.  The Application should

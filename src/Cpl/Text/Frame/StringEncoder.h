@@ -48,7 +48,7 @@ public:
         NOTES: 
         
             o If 'startOfFrame' is '\0', then Encoder will begin the
-              frame WITHOUT inserting a SOF chracter.  This is useful
+              frame WITHOUT inserting a SOF character.  This is useful
               when there application desires/has multiple start-of-frame
               characters for a given frame.
 

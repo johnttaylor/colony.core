@@ -110,7 +110,7 @@ TEST_CASE( "double-get", "[double-get]" )
 
     const char* mpType = mp_apple_.getTypeAsText();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s])", mpType) );
-    REQUIRE( strcmp( mpType, "DOUBLE" ) == 0 );
+    REQUIRE( strcmp( mpType, "Cpl::Rte::Mp::Double" ) == 0 );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
@@ -173,9 +173,10 @@ TEST_CASE( "double-export", "[double-export]" )
     REQUIRE( b == mp_apple_.getExternalSize() );
     REQUIRE( seqNum == seqNum2 );
 
-    // Invalidate the MP
+    // set a new value AND invalidate the MP
+    mp_apple_.write( 66.66 );
     seqNum = mp_apple_.setInvalid();
-    REQUIRE( seqNum == seqNum2 + 1 );
+    REQUIRE( seqNum == seqNum2 + 2 );
     REQUIRE( mp_apple_.isNotValid() == true );
 
     // Import...

@@ -124,7 +124,7 @@ void RefCounter::detach( Observer& observer ) throw()
 ///////////////////////////////////////////////////////////////////////////////
 const char* RefCounter::getTypeAsText() const throw()
 {
-    return "REFCOUNTER";
+    return "Cpl::Rte::Mp::RefCounter";
 }
 
 bool RefCounter::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()

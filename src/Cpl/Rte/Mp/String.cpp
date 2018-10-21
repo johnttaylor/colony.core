@@ -13,17 +13,15 @@
 
 #include "String.h"
 #include "Cpl/System/Assert.h"
+#include "Cpl/System/FatalError.h"
 #include "Cpl/Text/strip.h"
 #include "Cpl/Text/Frame/StringDecoder.h"
 #include "Cpl/Text/Frame/StringEncoder.h"
-#include "Cpl/Memory/Allocator.h"
 #include <string.h>
 
 
 ///
 using namespace Cpl::Rte::Mp;
-
-char String::g_buffer[OPTION_CPL_RTE_MP_STRING_MAX_LENGTH_FROM_STRING_BUFFER];
 
 static char emptyString_[1] = { '\0' };
 
@@ -32,6 +30,12 @@ String::String( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& stat
     :ModelPointCommon_( myModelBase, &m_data, staticInfo, validState )
     , m_data( { new(std::nothrow) char[maxLength + 1], 0, maxLength } )
 {
+    // Throw a fatal error if global parse buffer is too small
+    if ( OPTION_CPL_RTE_MODEL_DATABASE_MAX_LENGTH_FROM_STRING_BUFFER < maxLength )
+    {
+        Cpl::System::FatalError::logf( "Cpl::Rte::String().  Creating a string of size %lu which is greater than the fromString() parser buffer", maxLength );
+    }
+
     // Trapped failed to allocate memory -->silent fail and set string size to zero
     if ( m_data.stringPtr == 0 )
     {
@@ -56,25 +60,30 @@ String::String( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& stat
     m_data.stringLen = strlen( m_data.stringPtr );
 }
 
+String::~String()
+{
+    // Free up the memory IF it was allocated from the heap
+    if ( m_data.maxLength > 0 )
+    {
+        delete m_data.stringPtr;
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 uint16_t String::read( Cpl::Text::String& dstData, int8_t& validState ) const throw()
 {
-    m_modelDatabase.lock_();
     Data dst;
     int  bufferMaxLength;
     dst.stringPtr   = dstData.getBuffer( bufferMaxLength );
     dst.maxLength   = bufferMaxLength;
     uint16_t result = ModelPointCommon_::read( &dst, sizeof( Data ), validState );
-    m_modelDatabase.unlock_();
 
     return result;
 }
 
 uint16_t String::read( Data& dstData, int8_t& validState ) const throw()
 {
-    m_modelDatabase.lock_();
     uint16_t result =  ModelPointCommon_::read( &dstData, sizeof( Data ), validState );
-    m_modelDatabase.unlock_();
 
     return result;
 }
@@ -162,7 +171,7 @@ void String::copyDataFrom_( const void* srcData, size_t srcSize ) throw()
 ///////////////////////////////////////////////////////////////////////////////
 const char* String::getTypeAsText() const throw()
 {
-    return "STRING";
+    return "Cpl::Rte::Mp::String";
 }
 
 size_t String::getSize() const throw()
@@ -176,9 +185,9 @@ size_t String::getImportExportSize_() const throw()
 }
 
 
-const void* String::getDataPointer_() const throw()
+const void* String::getImportExportDataPointer_() const throw()
 {
-    return &m_data;
+    return m_data.stringPtr;
 }
 
 bool String::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
@@ -244,12 +253,12 @@ const char* String::setFromText( const char* srcText, LockRequest_T lockAction, 
         Cpl::Text::Frame::StringDecoder decoder( OPTION_CPL_RTE_MODEL_POINT_QUOTE_CHAR, OPTION_CPL_RTE_MODEL_POINT_QUOTE_CHAR, OPTION_CPL_RTE_MODEL_POINT_ESCAPE_CHAR, srcText );
         size_t                          decodedSize = 0;
 
-        // Lock the database since I have ONLY ONE instance of g_buffer
-        m_modelDatabase.lock_();
-        if ( decoder.scan( OPTION_CPL_RTE_MP_STRING_MAX_LENGTH_FROM_STRING_BUFFER, g_buffer, decodedSize ) )
+        // Lock the database since there is ONLY ONE instance of g_buffer
+        ModelDatabase::globalLock_();
+        if ( decoder.scan( OPTION_CPL_RTE_MODEL_DATABASE_MAX_LENGTH_FROM_STRING_BUFFER, ModelDatabase::g_parseBuffer_, decodedSize ) )
         {
             // Update the Model Point
-            seqnum = write( g_buffer, decodedSize, lockAction );
+            seqnum = write( ModelDatabase::g_parseBuffer_, decodedSize, lockAction );
             result = decoder.getRemainder();
         }
         else
@@ -259,7 +268,7 @@ const char* String::setFromText( const char* srcText, LockRequest_T lockAction, 
                 errorMsg->format( "Conversion of %s as a \"Text_String\"[%s] to a string failed.", getTypeAsText(), srcText );
             }
         }
-        m_modelDatabase.unlock_();
+        ModelDatabase::globalUnlock_();
     }
 
     // Housekeeping

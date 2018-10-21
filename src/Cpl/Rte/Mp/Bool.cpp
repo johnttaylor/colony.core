@@ -54,7 +54,7 @@ void Bool::detach( Observer& observer ) throw()
 ///////////////////////////////////////////////////////////////////////////////
 const char* Bool::getTypeAsText() const throw()
 {
-    return "BOOL";
+    return "Cpl::Rte::Mp::Bool";
 }
 
 bool Bool::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
