@@ -46,12 +46,14 @@ public:
     /// Constructor: Invalid MP
     Basic( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo )
         :ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
-         {}
+    {}
 
     /// Constructor: Valid MP (requires initial value)
     Basic( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue )
         :ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Rte::ModelPoint::MODEL_POINT_STATE_VALID )
-        , m_data( initialValue ) {}
+    {
+        m_data = initialValue;
+    }
 
 public:
     /// See Cpl::Rte::ModelPoint.  This method IS thread safe.
@@ -144,8 +146,8 @@ public:
     }
 
 
-    /** Constructor.  Valid MP.  Requires an initial value.  If the 'srcData' 
-        pointer is set to zero, then the entire array will be initialized to 
+    /** Constructor.  Valid MP.  Requires an initial value.  If the 'srcData'
+        pointer is set to zero, then the entire array will be initialized to
         zero.   Note: 'srcData' MUST contain at least 'numElements' elements.
      */
     Array( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, const ELEMTYPE* srcData )
@@ -305,7 +307,7 @@ protected:
             return processError( errorMsg, retSequenceNumber, "Unable to parse the numElems field.  Format is: <numElems>:<mpIndex>:<e0> [%s]", srcText );
         }
         const char*   endptr2;
-        if ( Cpl::Text::a2ul( startIndex, endptr+1, 10, tempTermChars, &endptr2 ) == false )
+        if ( Cpl::Text::a2ul( startIndex, endptr + 1, 10, tempTermChars, &endptr2 ) == false )
         {
             return processError( errorMsg, retSequenceNumber, "Unable to parse the mpIndex field.  Format is: <numElems>:<mpIndex>:<e0> [%s]", srcText );
         }
@@ -314,7 +316,7 @@ protected:
             return processError( errorMsg, retSequenceNumber, "Unable to parse the numElems+mpIndex exceeds the size of the array (array size=%lu) [%s]", (unsigned long) m_data.numElements, srcText );
         }
 
-        return endptr2+1;
+        return endptr2 + 1;
     }
 
 };

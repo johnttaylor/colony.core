@@ -28,6 +28,9 @@
 #include "Cpl/Rte/Mp/String.h"
 #include "Cpl/Rte/Mp/RefCounter.h"
 #include "Cpl/Rte/Mp/ArrayUint8.h"
+#include "Cpl/Rte/Mp/Enum.h"
+#include "Cpl/Type/enum.h"
+
 
 /// 
 using namespace Cpl::Rte;
@@ -745,7 +748,7 @@ public:
     uint8_t                          m_newValue;
 public:
     ///
-    RmwArrayUint8():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_index( 0 ), m_newValue(0) {}
+    RmwArrayUint8():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_index( 0 ), m_newValue( 0 ) {}
     ///
     ModelPoint::RmwCallbackResult_T callback( Mp::ArrayUint8::Data& data, int8_t validState ) throw()
     {
@@ -753,6 +756,125 @@ public:
         if ( m_returnResult != ModelPoint::eNO_CHANGE && m_index < data.numElements )
         {
             data.firstElemPtr[m_index] = m_newValue;
+        }
+        return m_returnResult;
+    }
+};
+
+/////////////////////////////////////////////////////////////////
+namespace Cpl {
+namespace Rte {
+BETTER_ENUM( MyEnum, int, eDOGS, eCATS, ePIGS );
+
+class MpMyEnum : public Mp::Enum<MyEnum>
+{
+public:
+    /// Constructor. 
+    MpMyEnum( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo )
+        :Mp::Enum<MyEnum>( myModelBase, staticInfo )
+    {
+    }
+
+    /// Constructor. 
+    MpMyEnum( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, MyEnum initialValue )
+        :Mp::Enum<MyEnum>( myModelBase, staticInfo, initialValue )
+    {
+    }
+
+    // Type
+    const char* getTypeAsText() const throw()
+    {
+        return "Cpl::Rte::Mp::_0test::MyEnum";
+    }
+
+public:
+    /// Type safe subscriber
+    typedef Cpl::Rte::Subscriber<MpMyEnum> Observer;
+
+    /// Type safe register observer
+    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw()
+    {
+        ModelPointCommon_::attach( observer, initialSeqNumber );
+    }
+
+    /// Type safe un-register observer
+    virtual void detach( Observer& observer ) throw()
+    {
+        ModelPointCommon_::detach( observer );
+    }
+};
+
+};
+};
+
+class ViewerMyEnum : public ViewerBase, public MpMyEnum::Observer
+{
+public:
+    ///
+    MpMyEnum & m_mp1;
+
+    /// Constructor
+    ViewerMyEnum( MailboxServer& myMbox, Cpl::System::Thread& masterThread, MpMyEnum& mp1 )
+        :ViewerBase( myMbox, masterThread )
+        , MpMyEnum::Observer( myMbox )
+        , m_mp1( mp1 )
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerMyEnum(%p). mp1=%s", this, mp1.getName()) );
+    }
+
+public:
+    ///
+    void subscribe() { m_mp1.attach( *this ); }
+    ///
+    void unsubscribe() { m_mp1.detach( *this ); }
+    ///
+    void modelPointChanged( MpMyEnum& modelPointThatChanged ) throw()
+    {
+        if ( m_done != true )
+        {
+            m_notifCount++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerMyEnum(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
+
+            m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
+            m_lastValidState = modelPointThatChanged.getValidState();
+
+            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
+            {
+                m_pendingOpenMsgPtr->returnToSender();
+                m_opened            = true;
+                m_pendingOpenMsgPtr = 0;
+                CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerMyEnum(%p) Returning Open Msg.") );
+            }
+
+            if ( m_notifCount >= 2 )
+            {
+                m_masterThread.signal();
+                m_done = true;
+            }
+        }
+    }
+};
+
+class RmwMyEnum : public MpMyEnum::Client
+{
+public:
+    ///
+    int                             m_callbackCount;
+    ///
+    ModelPoint::RmwCallbackResult_T m_returnResult;
+    ///
+    int                             m_incValue;
+
+public:
+    ///
+    RmwMyEnum():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0 ) {}
+    ///
+    ModelPoint::RmwCallbackResult_T callback( MyEnum& data, int8_t validState ) throw()
+    {
+        m_callbackCount++;
+        if ( m_returnResult != ModelPoint::eNO_CHANGE )
+        {
+            data = MyEnum::_from_integral_unchecked( data + m_incValue );
         }
         return m_returnResult;
     }
