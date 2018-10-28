@@ -14,6 +14,7 @@
 
 
 #include "Cpl/Rte/ModelPointCommon_.h"
+#include "Cpl/System/Assert.h"
 
 ///
 namespace Cpl {

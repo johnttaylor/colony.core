@@ -40,6 +40,7 @@ static MpMyEnum        mp_apple_( modelDb_, info_mp_apple_ );
 static StaticInfo      info_mp_orange_( "ORANGE" );
 static MpMyEnum        mp_orange_( modelDb_, info_mp_orange_, MyEnum::eCATS );
 
+
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "enum-readwrite", "[enum-readwrite]" )
 {
@@ -100,14 +101,14 @@ TEST_CASE( "enum-get", "[enum-get]" )
     REQUIRE( strcmp( name, "ORANGE" ) == 0 );
 
     size_t s = mp_apple_.getSize();
-    REQUIRE( s == sizeof( int32_t ) );
+    REQUIRE( s == sizeof( int ) );
     s = mp_orange_.getSize();
-    REQUIRE( s == sizeof( int32_t ) );
+    REQUIRE( s == sizeof( int ) );
 
     s = mp_apple_.getExternalSize();
-    REQUIRE( s == sizeof( int32_t ) + sizeof( int8_t ) );
+    REQUIRE( s == sizeof( int ) + sizeof( int8_t ) );
     s = mp_orange_.getExternalSize();
-    REQUIRE( s == sizeof( int32_t ) + sizeof( int8_t ) );
+    REQUIRE( s == sizeof( int ) + sizeof( int8_t ) );
 
     const char* mpType = mp_apple_.getTypeAsText();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s])", mpType) );
