@@ -54,8 +54,11 @@ namespace Mp {
 class RefCounter : public Basic<uint32_t>
 {
 public:
-    /// Constructor
-    RefCounter( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, uint32_t initialValue = 0 );
+    /// Constructor. Invalid MP
+    RefCounter( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo  );
+
+    /// Constructor. Valid MP.  Requires an initial value
+    RefCounter( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, uint32_t initialValue  );
 
 public:
     /**  See Cpl::Rte::ModelPoint.

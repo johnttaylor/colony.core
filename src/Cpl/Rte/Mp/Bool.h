@@ -32,8 +32,11 @@ namespace Mp {
 class Bool : public Basic<bool>
 {
 public:
-    /// Constructor
-    Bool( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, bool initialValue = false );
+    /// Constructor. Invalid MP. 
+    Bool( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo );
+
+    /// Constructor. Valid MP.  Requires an initial value
+    Bool( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool initialValue );
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint

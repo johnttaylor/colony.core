@@ -32,8 +32,11 @@ namespace Mp {
 class Float : public Basic<float>
 {
 public:
-    /// Constructor
-    Float( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, float initialValue = 0 );
+    /// Constructor. Invalid MP. 
+    Float( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo );
+
+    /// Constructor. Valid MP.  Requires an initial value
+    Float( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, float initialValue );
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint

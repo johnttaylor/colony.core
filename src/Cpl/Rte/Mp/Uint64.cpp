@@ -19,8 +19,14 @@
 using namespace Cpl::Rte::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
-Uint64::Uint64( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, bool decimalFormat, int8_t validState, uint64_t initialValue )
-    :Basic<uint64_t>( myModelBase, staticInfo, initialValue, validState )
+Uint64::Uint64( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, bool decimalFormat )
+    :Basic<uint64_t>( myModelBase, staticInfo )
+    , m_decimal( decimalFormat )
+{
+}
+
+Uint64::Uint64( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, uint64_t initialValue, bool decimalFormat )
+    : Basic<uint64_t>( myModelBase, staticInfo, initialValue )
     , m_decimal( decimalFormat )
 {
 }
@@ -55,7 +61,7 @@ void Uint64::detach( Observer& observer ) throw()
 ///////////////////////////////////////////////////////////////////////////////
 const char* Uint64::getTypeAsText() const throw()
 {
-    return m_decimal? "Cpl::Rte::Mp::Uint64-dec": "Cpl::Rte::Mp::Uint64-hex";
+    return m_decimal ? "Cpl::Rte::Mp::Uint64-dec" : "Cpl::Rte::Mp::Uint64-hex";
 }
 
 bool Uint64::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()

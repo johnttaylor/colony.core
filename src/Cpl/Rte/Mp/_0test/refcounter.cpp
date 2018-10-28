@@ -39,7 +39,7 @@ static StaticInfo      info_mp_apple_( "APPLE" );
 static Mp::RefCounter  mp_apple_( modelDb_, info_mp_apple_ );
 
 static StaticInfo      info_mp_orange_( "ORANGE" );
-static Mp::RefCounter  mp_orange_( modelDb_, info_mp_orange_, ModelPoint::MODEL_POINT_STATE_VALID, 64 );
+static Mp::RefCounter  mp_orange_( modelDb_, info_mp_orange_, 64 );
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "refcounter-readwrite", "[refcounter-readwrite]" )

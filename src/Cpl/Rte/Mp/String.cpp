@@ -26,8 +26,32 @@ using namespace Cpl::Rte::Mp;
 static char emptyString_[1] = { '\0' };
 
 ///////////////////////////////////////////////////////////////////////////////
-String::String( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, size_t maxLength, int8_t validState, const char* initialValue )
-    :ModelPointCommon_( myModelBase, &m_data, staticInfo, validState )
+String::String( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, size_t maxLength )
+    :ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+    , m_data( { new(std::nothrow) char[maxLength + 1], 0, maxLength } )
+{
+    // Throw a fatal error if global parse buffer is too small
+    if ( OPTION_CPL_RTE_MODEL_DATABASE_MAX_LENGTH_FROM_STRING_BUFFER < maxLength )
+    {
+        Cpl::System::FatalError::logf( "Cpl::Rte::String().  Creating a string of size %lu which is greater than the fromString() parser buffer", maxLength );
+    }
+
+    // Trapped failed to allocate memory -->silent fail and set string size to zero
+    if ( m_data.stringPtr == 0 )
+    {
+        m_data.stringPtr = emptyString_;
+        m_data.maxLength = 0;
+    }
+    else
+    {
+        // For deterministic value - initialize data to 'empty string'Null pointer for initial value -->set initial value to an empty string
+        m_data.stringPtr[0] = '\0';
+        m_data.stringLen    = 0;
+    }
+}
+
+String::String( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, size_t maxLength, const char* initialValue )
+    :ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Rte::ModelPoint::MODEL_POINT_STATE_VALID )
     , m_data( { new(std::nothrow) char[maxLength + 1], 0, maxLength } )
 {
     // Throw a fatal error if global parse buffer is too small

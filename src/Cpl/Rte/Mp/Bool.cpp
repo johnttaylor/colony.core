@@ -19,10 +19,17 @@
 using namespace Cpl::Rte::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
-Bool::Bool( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, int8_t validState, bool initialValue )
-    :Basic<bool>( myModelBase, staticInfo, initialValue, validState )
+Bool::Bool( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo )
+    :Basic<bool>( myModelBase, staticInfo )
 {
 }
+
+
+Bool::Bool( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, bool initialValue )
+    :Basic<bool>( myModelBase, staticInfo, initialValue )
+{
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 uint16_t Bool::read( bool& dstData, int8_t& validState ) const throw()

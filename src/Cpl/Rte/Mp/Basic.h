@@ -43,11 +43,15 @@ protected:
 
 
 public:
-    /// Constructor
-    Basic( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue = (ELEMTYPE) 0, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
-        :ModelPointCommon_( myModelBase, &m_data, staticInfo, validState )
-        , m_data( initialValue ) {}
+    /// Constructor: Invalid MP
+    Basic( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo )
+        :ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+         {}
 
+    /// Constructor: Valid MP (requires initial value)
+    Basic( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue )
+        :ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Rte::ModelPoint::MODEL_POINT_STATE_VALID )
+        , m_data( initialValue ) {}
 
 public:
     /// See Cpl::Rte::ModelPoint.  This method IS thread safe.
@@ -118,12 +122,34 @@ protected:
     InternalData     m_data;
 
 public:
-    /** Constructor.  If the 'srcData' pointer is set to zero, then the entire
-        array will be initialized to zero.   Note: 'srcData' MUST contain
-        at least 'numElements' elements.
+    /// Constructor: Invalid MP
+    Array( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements )
+        :ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+        , m_data( { new(std::nothrow) ELEMTYPE[numElements], numElements, 0 } )
+    {
+        // Throw a fatal error if global parse buffer is too small
+        if ( OPTION_CPL_RTE_MODEL_DATABASE_MAX_LENGTH_FROM_STRING_BUFFER < numElements * sizeof( ELEMTYPE ) )
+        {
+            Cpl::System::FatalError::logf( "Cpl::Rte::Array().  Creating a Array of size %lu which is greater than the fromString() parser buffer", numElements * sizeof( ELEMTYPE ) );
+        }
+
+        // Check for the case of failed memory allocation
+        if ( m_data.elemPtr == 0 )
+        {
+            m_data.numElements = 0;
+        }
+
+        // Initialize the array to all zero - so as to have deterministic 'invalid' value 
+        memset( m_data.elemPtr, 0, m_data.numElements * sizeof( ELEMTYPE ) );
+    }
+
+
+    /** Constructor.  Valid MP.  Requires an initial value.  If the 'srcData' 
+        pointer is set to zero, then the entire array will be initialized to 
+        zero.   Note: 'srcData' MUST contain at least 'numElements' elements.
      */
-    Array( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, const ELEMTYPE* srcData=0 )
-        :ModelPointCommon_( myModelBase, &m_data, staticInfo, validState )
+    Array( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, const ELEMTYPE* srcData )
+        :ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Rte::ModelPoint::MODEL_POINT_STATE_VALID )
         , m_data( { new(std::nothrow) ELEMTYPE[numElements], numElements, 0 } )
     {
         // Throw a fatal error if global parse buffer is too small
@@ -141,11 +167,8 @@ public:
         // Initialize the Array 
         if ( m_data.numElements != 0 )
         {
-            // Zero the array if no data provide OR if the initial state is invalid.  
-            // Setting the invalid-initial state to zero is to at least always provide 
-            // consist initial values for the MP if the first write that the application 
-            // does is a PARTIAL write (another reason to NOT do partial writes)
-            if ( srcData == 0 ||  ModelPoint::IS_VALID( validState ) == false )
+            // Zero the array if no data provide 
+            if ( srcData == 0 )
             {
                 memset( m_data.elemPtr, 0, m_data.numElements * sizeof( ELEMTYPE ) );
             }

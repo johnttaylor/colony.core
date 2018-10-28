@@ -36,12 +36,15 @@ protected:
     bool m_decimal;
 
 public:
-     /** Constructor.  Note: the 'decimalFormat' argument applies to the 
+    /** Constructor. Invalid MP.  Note: the 'decimalFormat' argument applies to the 
         toString()/fromString() methods.   When set to true, the input/output
         values must be decimal numbers; else hexadecimal numbers (as defined
         by standard C library strtol() function).
      */
-    Uint32( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, uint32_t initialValue = 0 );
+    Uint32( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, bool decimalFormat=true );
+
+    /// Constructor. Valid MP.  Requires an initial value
+    Uint32( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, uint32_t initialValue, bool decimalFormat=true );
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint

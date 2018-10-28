@@ -43,7 +43,7 @@ static Mp::ArrayUint8  mp_apple_( modelDb_, info_mp_apple_, APPLE_NUM_ELEMENTS )
 
 static StaticInfo      info_mp_orange_( "ORANGE" );
 static const uint8_t   orange_init_values[ORANGE_NUM_ELEMENTS] ={ 3, 2, 1 };
-static Mp::ArrayUint8  mp_orange_( modelDb_, info_mp_orange_, ORANGE_NUM_ELEMENTS, false, ModelPoint::MODEL_POINT_STATE_VALID, orange_init_values );
+static Mp::ArrayUint8  mp_orange_( modelDb_, info_mp_orange_, ORANGE_NUM_ELEMENTS, orange_init_values, false );
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "arrayuint8-readwrite", "[arrayuint8-readwrite]" )

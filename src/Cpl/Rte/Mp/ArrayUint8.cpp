@@ -22,8 +22,14 @@ using namespace Cpl::Rte::Mp;
 
 
 ///////////////////////////////////////////////////////////////////////////////
-ArrayUint8::ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, size_t numElements, bool decimalFormat, int8_t validState, const uint8_t* srcData )
-    :Array<uint8_t>( myModelBase, staticInfo, numElements, validState, srcData )
+ArrayUint8::ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, size_t numElements, bool decimalFormat)
+:Array<uint8_t>( myModelBase, staticInfo, numElements )
+, m_decimal( decimalFormat )
+{
+}
+
+ArrayUint8::ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, size_t numElements, const uint8_t* srcData, bool decimalFormat )
+    :Array<uint8_t>( myModelBase, staticInfo, numElements, srcData )
     , m_decimal( decimalFormat )
 {
 }

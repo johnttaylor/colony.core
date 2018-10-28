@@ -32,8 +32,11 @@ namespace Mp {
 class Double : public Basic<double>
 {
 public:
-    /// Constructor
-    Double( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, double initialValue = 0 );
+    /// Constructor. Invalid MP. 
+    Double( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo );
+
+    /// Constructor. Valid MP.  Requires an initial value
+    Double( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, double initialValue  );
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint

@@ -39,7 +39,7 @@ static StaticInfo       info_mp_apple_( "APPLE" );
 static Mp::Bool         mp_apple_( modelDb_, info_mp_apple_ );
 
 static StaticInfo       info_mp_orange_( "ORANGE" );
-static Mp::Bool         mp_orange_( modelDb_, info_mp_orange_, ModelPoint::MODEL_POINT_STATE_VALID, true  );
+static Mp::Bool         mp_orange_( modelDb_, info_mp_orange_, true  );
 
 TEST_CASE( "bool-readwrite", "[bool-readwrite]" )
 {

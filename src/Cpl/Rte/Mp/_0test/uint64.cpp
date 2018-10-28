@@ -39,7 +39,7 @@ static StaticInfo      info_mp_apple_( "APPLE" );
 static Mp::Uint64      mp_apple_( modelDb_, info_mp_apple_ );
 
 static StaticInfo      info_mp_orange_( "ORANGE" );
-static Mp::Uint64      mp_orange_( modelDb_, info_mp_orange_, false,  ModelPoint::MODEL_POINT_STATE_VALID, 64 );
+static Mp::Uint64      mp_orange_( modelDb_, info_mp_orange_, 64, false );
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "uint64-readwrite", "[uint64-readwrite]" )

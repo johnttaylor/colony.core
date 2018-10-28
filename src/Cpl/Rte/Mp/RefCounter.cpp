@@ -19,10 +19,16 @@
 using namespace Cpl::Rte::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
-RefCounter::RefCounter( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, int8_t validState, uint32_t initialValue )
-    :Basic<uint32_t>( myModelBase, staticInfo, initialValue, validState )
+RefCounter::RefCounter( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo )
+    :Basic<uint32_t>( myModelBase, staticInfo )
 {
 }
+
+RefCounter::RefCounter( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, uint32_t initialValue )
+    : Basic<uint32_t>( myModelBase, staticInfo, initialValue )
+{
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 uint16_t RefCounter::read( uint32_t& dstData, int8_t& validState ) const throw()

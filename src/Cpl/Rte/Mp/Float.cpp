@@ -20,8 +20,13 @@
 using namespace Cpl::Rte::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
-Float::Float( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, int8_t validState, float initialValue )
-    :Basic<float>( myModelBase, staticInfo, initialValue, validState )
+Float::Float( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo )
+    :Basic<float>( myModelBase, staticInfo )
+{
+}
+
+Float::Float( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, float initialValue )
+    :Basic<float>( myModelBase, staticInfo, initialValue )
 {
 }
 

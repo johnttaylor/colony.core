@@ -40,7 +40,7 @@ static StaticInfo      info_mp_apple_( "APPLE" );
 static Mp::Double      mp_apple_( modelDb_, info_mp_apple_ );
 
 static StaticInfo      info_mp_orange_( "ORANGE" );
-static Mp::Double      mp_orange_( modelDb_, info_mp_orange_, ModelPoint::MODEL_POINT_STATE_VALID, 3.14 );
+static Mp::Double      mp_orange_( modelDb_, info_mp_orange_, 3.14 );
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "double-readwrite", "[double-readwrite]" )

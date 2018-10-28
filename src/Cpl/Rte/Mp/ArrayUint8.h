@@ -72,11 +72,15 @@ protected:
 
 
 public:
-    /** Constructor.  If the 'srcData' pointer is set to zero, then the entire
-        array will be initialized to zero.   Note: 'srcData' MUST contain
-        at least 'numElements' elements.
+    /** Constructor.  Invalid MP. 
      */
-    ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, bool decimalFormat = true, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, const uint8_t* srcData=0 );
+    ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, bool decimalFormat = true);
+
+    /** Constructor.  Valid MP.  Requires an initial value. If the 'srcData' 
+        pointer is set to zero, then the entire array will be initialized to 
+        zero.   Note: 'srcData' MUST contain at least 'numElements' elements.
+     */
+    ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, const uint8_t* srcData, bool decimalFormat = true );
 
 public:
     /** Type safe read. See Cpl::Rte::ModelPoint.

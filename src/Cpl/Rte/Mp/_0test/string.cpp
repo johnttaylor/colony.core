@@ -41,7 +41,7 @@ static Mp::String      mp_apple_( modelDb_, info_mp_apple_, APPLE_MAX_SIZE );
 
 #define ORANGE_MAX_SIZE 15
 static StaticInfo      info_mp_orange_( "ORANGE" );
-static Mp::String      mp_orange_( modelDb_, info_mp_orange_, ORANGE_MAX_SIZE, ModelPoint::MODEL_POINT_STATE_VALID, "bobs yours uncle (should get truncated)" );
+static Mp::String      mp_orange_( modelDb_, info_mp_orange_, ORANGE_MAX_SIZE, "bobs yours uncle (should get truncated)" );
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "string-readwrite", "[string-readwrite]" )
