@@ -71,14 +71,14 @@ public:
     } Data;
 
 protected:
-    ///
+    /// Storage for the MP's data
     Data                m_data;
 
 public:
     /// Constructor.  Invalid MP. The 'maxLength' specifies the size, in bytes, of the string storage EXCLUDING the null terminator
     String( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t maxLength );
 
-    /// Constructor.  Valid MP. Requires an intial value. The 'maxLength' specifies the size, in bytes, of the string storage EXCLUDING the null terminator
+    /// Constructor.  Valid MP. Requires an initial value. The 'maxLength' specifies the size, in bytes, of the string storage EXCLUDING the null terminator
     String( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t maxLength, const char* initialValue  );
 
     /// Destructor (free up allocate array memory)

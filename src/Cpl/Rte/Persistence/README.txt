@@ -43,7 +43,8 @@ features:
       media (i.e. all IO is done through the Cpl::Io interfaces).
 
     o Each Cpl::Rte::DatabaseApi instance has its own persistent 'file' and
-      it owns persistent storage 'server' instance.
+      it owns persistent storage 'server' instance. A persistent file contains
+      one or more Records.
 
 
 </pre>    

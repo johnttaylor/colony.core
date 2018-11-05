@@ -30,6 +30,8 @@ namespace Mp {
     NOT be changed.
 
     For the fromString() operation the expected data formats are:
+    \code    
+
         <numElems>:<mpIndex>:<d0>:<d1>[:..]
         <numElems>:<mpIndex>:<h0><h1>[..]
 
@@ -46,6 +48,7 @@ namespace Mp {
             3:7:202122      -->same as above except that the element data is
                                in hex format.
     
+    \endcode
     The toString() function outputs in the same data format as the expected 
     fromString() function.
 

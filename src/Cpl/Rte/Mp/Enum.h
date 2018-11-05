@@ -125,6 +125,7 @@ public:
         return (const void*) (&m_data);
     }
 
+    /// See Cpl::Rte::Point.  
     size_t getImportExportSize_() const throw()
     {
         return sizeof( BETTERENUM_TYPE );

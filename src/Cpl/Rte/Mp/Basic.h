@@ -90,6 +90,7 @@ public:
         return (const void*) (&m_data);
     }
 
+    /// See Cpl::Rte::Point.  
     size_t getImportExportSize_() const throw()
     {
         return sizeof( ELEMTYPE );
@@ -261,6 +262,7 @@ public:
         return (const void*) m_data.elemPtr;
     }
 
+    /// See Cpl::Rte::Point.  
     size_t getImportExportSize_() const throw()
     {
         return m_data.numElements * sizeof( ELEMTYPE );

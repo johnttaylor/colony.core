@@ -127,7 +127,7 @@ public:
     class GenericRmwCallback
     {
     public:
-        // Generic callback for the readModifyWrite() operation
+        /// Generic callback for the readModifyWrite() operation
         virtual RmwCallbackResult_T genericCallback( void* data, int8_t validState ) throw() = 0;
 
     public:
@@ -234,7 +234,8 @@ public:
 
 
         The default output format: 
-        
+        \code
+
         [!] ([?[<invalid_val>]] | [<data>])
         
         where: '!' indicates the MP is locked,
@@ -242,7 +243,7 @@ public:
                    when <invalid_val> is not the default invalid value.
 
 
-
+        \endcode
      */
     virtual bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const throw() = 0;
 
@@ -267,12 +268,15 @@ public:
         is updated with a plain text error message.
 
         The default input format: 
-        
+        \code
+
         [!|^] ([?[<invalid_val>]] | [<data>])
         
         where: '!' is a lock request,
                '^' is an unlock request,
                '?' is an invalidate request with an optional <invalid_val>.
+        
+        \endcode
      */
     virtual const char* fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw() = 0;
 

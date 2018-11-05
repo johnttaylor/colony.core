@@ -23,7 +23,8 @@ namespace Rte {
 namespace Persistence {
 namespace Record {
 
-
+/** Concrete Model Point for publishing the Record Server's current state
+ */
 class MpServerStatus : public Cpl::Rte::Mp::Enum<Cpl::Rte::Persistence::Record::ServerStatus>
 {
 public:

@@ -1,15 +1,15 @@
-#ifndef Rte_Db_Chunk_Handle_h_
-#define Rte_Db_Chunk_Handle_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+#ifndef Cpl_Rte_Persistent_Chunk_Handle_h_
+#define Cpl_Rte_Persistent_Chunk_Handle_h_
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2018  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 
@@ -17,20 +17,23 @@
 
 
 ///
-namespace Rte { namespace Db { namespace Chunk {
+namespace Cpl {
+namespace Rte {
+namespace Persistence {
+namespace Chunk {
 
 
-/** This concrete class is data structure that is identifies a specific
-    chunk in the database file
+/** This concrete class is data structure that identifies a specific chunk in 
+    the Media file
  */
 class Handle
 {
 public:
     /// File offset to the start of the chunk (i.e. ptr to the 'chunk len' field)
-    unsigned long   m_offset;       
+    unsigned long   m_offset;
 
     /// Length of the chunk (does not include Chunk framing fields)
-    uint32_t        m_len;            
+    uint32_t        m_len;
 
     /** The Handles 'generation'.  A Generation of '0' is used to indicate
         the handle has not be associated with a physical chunk in the database
@@ -42,17 +45,18 @@ public:
 
 
 public:
-    /// Default constructor -->sets the handle to "not assocaited"
-    Handle(void)
-        :m_offset(0)
-        ,m_len(0)
-        ,m_generation(0)
-            {}
+    /// Default constructor -->sets the handle to "not associated"
+    Handle( void )
+        :m_offset( 0 )
+        , m_len( 0 )
+        , m_generation( 0 )
+    {}
 
-};                  
+};
 
 
 };      // end namespaces
+};
 };
 };
 #endif  // end header latch
