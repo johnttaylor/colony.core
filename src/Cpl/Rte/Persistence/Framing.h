@@ -12,7 +12,6 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include <stdint.h>
 
 
 ///
@@ -69,5 +68,6 @@ enum Framing_T
 
 
 };      // end namespaces
+};
 };
 #endif  // end header latch

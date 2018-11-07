@@ -13,8 +13,6 @@
 /** @file */
 
 
-#include <stdint.h>
-
 
 ///
 namespace Cpl {

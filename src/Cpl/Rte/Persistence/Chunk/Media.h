@@ -23,15 +23,15 @@ namespace Persistence {
 namespace Chunk {
 
 
-/** This abstract class defines the interface for opening/closing a Media
-    'file'.  This allows the Chunk Server/Layer to be decoupled from the
+/** This abstract class defines the interface for opening/closing a Storage
+    Media 'file'.  This allows the Chunk Server/Layer to be decoupled from the
     specifics of opening traditional file system "files". This allows the 
     Chunk Layer to work with a non file-system based persistent storage.
  */
 class Media
 {
 public:
-    /** This method opens the Media 'file' that is associated with the
+    /** This method opens the Storage Media 'file' that is associated with the
         instance of this interface. The method returns a pointer to an IO Stream
         upon success; else zero is returned.  The concrete implementation of
         this interface is responsible for managing the life cycle/memory of the
@@ -44,15 +44,15 @@ public:
     virtual Cpl::Io::File::InputOutputApi* openFile( bool& newfile ) throw() = 0;
 
 
-    /** This method closes the associated media file.  If this method is
-        called when the media file is not in the open state - no error is
-        generated.
+    /** This method closes the associated storage media file.  If this method 
+        is called when the storage media file is not in the open state - no 
+        error is generated.
      */
     virtual void closeFile() throw() = 0;
 
 
 public:
-    /** This method is used to delete the associated media file. The
+    /** This method is used to delete the associated storage media file. The
         Chunk Layer is responsible for ONLY calling this method when the
         media file is in the CLOSED state. The method returns true if
         successful; else false is returned.

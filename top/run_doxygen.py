@@ -28,6 +28,10 @@ def filter_warnings( output ):
             continue
 
         # Filter
+        if ( re.search( r"^.*src/.*warning: argument .* of command @param is not found in the argument list of .*BETTER_ENUM.*", line ) ):
+            continue
+
+        # Filter
         #if ( re.search( r"src/Cpl/Text/Frame/LineDecoder.h:.*warning: Found unknown command.*\\r", line ) ):
         #    continue
  

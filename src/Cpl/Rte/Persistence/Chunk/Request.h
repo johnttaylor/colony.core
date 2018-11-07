@@ -12,12 +12,10 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-
+#include "Cpl/Rte/Persistence/Chunk/Handle.h"
 #include "Cpl/Itc/ResponseMessage.h"
 #include "Cpl/Itc/SAP.h"
-#include "Cpl/Rte/Persistence/Chunk/Handle.h"
 #include "Cpl/Type/enum.h"
-#include <stdint.h>
 
 
 ///
@@ -26,29 +24,20 @@ namespace Rte {
 namespace Persistence {
 namespace Chunk {
 
-/// This enum/class defines the possible results code ITC Request to Chunk Server.
+/** This enum/class defines the possible results code ITC Request to Chunk Server.
+    \param ServerResult             - Class name for the ITC Result codes enum 
+    \param int                      - storage type of the enum
+    \param eSUCCESS                 - Request operation succeeded
+    \param eEOF                     - EOF was reached
+    \param eCORRUPT_DATA            - The chunk read did not pass its CRC check
+    \param eWRONG_SCHEMA            - The specified Media file's signature (schema identifier) does not match the expected signature
+    \param eERR_FILEIO              - A file operation failed and the operation was aborted
+    \param eERR_OPEN                - Unable to open the specified Media file
+    \param eERR_NOT_A_MEDIA_FILE    - The specified Media file is NOT a Persistent file
+ */
 BETTER_ENUM( ServerResult, int, eSUCCESS, eEOF, eCORRUPT_DATA, eWRONG_SCHEMA, eERR_FILEIO, eERR_OPEN, eERR_NOT_A_MEDIA_FILE );
-//BETTER_ENUM( ServerResult,          /*!< ITC Result codes enum */
-//             int,                   /*!< storage type of the enum */
-//             eSUCCESS,              /*!< Request operation succeeded */
-//             eEOF,                  /*!< EOF was reached */
-//             eCORRUPT_DATA,         /*!< The chunk read did not pass its CRC check */
-//             eWRONG_SCHEMA,         /*!< The specified Media file's signature (schema identifier) does not match the expected signature */
-//             eERR_FILEIO,           /*!< A file operation failed and the operation was aborted */
-//             eERR_OPEN,             /*!< Unable to open the specified Media file */
-//             eERR_NOT_A_MEDIA_FILE  /*!< The specified Media file is NOT a Persistent file */
-//);
 
-};      // end namespaces
-};
-};
-};
 
-///
-namespace Cpl {
-namespace Rte {
-namespace Persistence {
-namespace Chunk {
 /** This abstract class define message types and payloads for the set of ITC
     services used by a Chunk Server. A Chunk Server (or Chunk Layer) is
     responsible for checking/providing data  integrity for the Db's
@@ -163,14 +152,14 @@ public:
         uint32_t        m_bufferLen;
 
         /// Pointer The Client's/Caller's Chunk Handle (not required for all Chunk actions)
-        Handle*         m_handlePtr;
+        Handle*    m_handlePtr;
 
 
     public:
         /// Constructor: 
-        ReadPayload( uint8_t* buffer,
-                     uint32_t bufferMaxSize,
-                     Handle&  clientChunkHandle
+        ReadPayload( uint8_t*  buffer,
+                     uint32_t  bufferMaxSize,
+                     Handle&   clientChunkHandle
         )
             :m_result( ServerResult::eSUCCESS )
             , m_buffer( buffer )
@@ -203,14 +192,14 @@ public:
         uint32_t        m_bufferLen;
 
         /// Pointer The Client's/Caller's Chunk Handle (not required for all Chunk actions)
-        Handle*         m_handlePtr;
+        Handle*    m_handlePtr;
 
 
     public:
         /// Constructor: 
-        WritePayload( uint8_t* buffer,
-                      uint32_t dataLen,
-                      Handle&  clientChunkHandle
+        WritePayload( uint8_t*  buffer,
+                      uint32_t  dataLen,
+                      Handle&   clientChunkHandle
         )
             :m_result( ServerResult::eSUCCESS )
             , m_buffer( buffer )

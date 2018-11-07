@@ -29,8 +29,7 @@ namespace Chunk {
     actual persistent storage driver/class/file-interface has not been
     implemented.
  */
-class Null : public Media,
-    public Cpl::Io::File::Null
+class Null : public Media, public Cpl::Io::File::Null
 {
 public:
     /// Constructor
