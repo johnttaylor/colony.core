@@ -14,7 +14,5 @@ src/Cpl/Itc
 src/Cpl/Timer
 src/Cpl/Checksum
 src/Cpl/Io/File
-src/Cpl/Io/File/_win32
-src/Cpl/Io/File/_win32/_api
 
 

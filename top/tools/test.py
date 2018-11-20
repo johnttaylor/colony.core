@@ -51,5 +51,5 @@ def _use_outcast():
 # Uncomment out the following line if using the Outcast Chuck test tool
 _use_outcast()
 
-# Delete this line if using the Outcast default namespace algorihtm
+# Delete this line if using the Outcast default namespace algorithm
 #print "Testing...."

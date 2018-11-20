@@ -47,6 +47,18 @@ features:
       one or more Records.
 
 
+Threading Model:
+    The Persistent sub-system consists of two layers: 1) Record layer and 2)
+    Chunk layer.  The Record layer manages the loading and defaulting of the
+    record contents.  The Chunk layer manages the low level reads/writes of the
+    record data from/to persistent media.  The Record layer and the Chunk layer
+    are designed to execute in DIFFERENT threads.  The Record layer can execute 
+    in any application thread.  Multiple Record Servers can share a common 
+    thread.  The Chunk layer can execute in the same thread as the Record Layer,
+    but this is NOT recommended since the read/write times from/to persistent
+    Media can vary greatly.   Multiple Chunk servers can ran in the same
+    thread.
+
 </pre>    
 @endhtmlonly
 */  

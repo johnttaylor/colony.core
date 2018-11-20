@@ -15,7 +15,6 @@
 #include "Cpl/System/Runnable.h"
 #include "Cpl/Itc/Mailbox.h"
 #include "Cpl/Timer/CounterList.h"
-#include "Cpl/Timer/CounterList.h"
 
 
 ///

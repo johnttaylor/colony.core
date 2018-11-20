@@ -165,7 +165,7 @@ void Server::request( WriteFileMsg& msg )
         Cpl::System::FatalError::logf( "Cpl::Rte::Persistence::Chunk::Server::request( WriteMsg ) - media file NOT opened." );
     }
 
-    // Check if handle is of the correct DB generation
+    // Check if handle is of the correct Media File generation
     if ( operation.m_handlePtr->m_generation == m_generation )
     {
         m_fdPtr->setAbsolutePos( operation.m_handlePtr->m_offset );
@@ -199,7 +199,7 @@ void Server::openFile( ServerResult& result, uint8_t* bufferPtr, uint32_t buffer
         return;
     }
 
-    // Open the database file
+    // Open the media file
     bool newfile  = false;
     m_fdPtr       = m_file.openFile( newfile );
     if ( !m_fdPtr )
@@ -209,7 +209,7 @@ void Server::openFile( ServerResult& result, uint8_t* bufferPtr, uint32_t buffer
         return;
     }
 
-    // Increment the generation number every time the DB is opened
+    // Increment the generation number every time the Media File is opened
     if ( ++m_generation == 0 )
     {
         m_generation = 1;   // The Chunk server's generation number is required to never be zero
@@ -284,7 +284,7 @@ bool Server::writeChunk( ServerResult& result, uint8_t* bufferPtr, uint32_t buff
     m_crc.accumulate( bufferPtr, bufferLen );
     m_crc.finalize( &crc );
 
-    // Writ the CRC
+    // Write the CRC
     if ( !m_fdPtr->write( &crc, Cpl::Rte::Persistence::eCCRC_SIZE ) )
     {
         result = ServerResult::eERR_FILEIO;

@@ -44,7 +44,7 @@ Cpl::Io::File::InputOutputApi* FileSystem::openFile( bool& newfile ) throw()
     {
         newfile = false;
 
-        // make the specified db file IS a file and IS writable
+        // make sure that the specified media file IS a file and IS writable
         if ( !Cpl::Io::File::Api::isFile( m_fname ) || !Cpl::Io::File::Api::isWriteable( m_fname ) )
         {
             return 0;

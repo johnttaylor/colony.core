@@ -84,7 +84,7 @@ void dumpPayload( Cpl::Rte::Persistence::Chunk::Request::CloseFilePayload& paylo
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("") );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("# CLOSE PAYLOAD: %s. %s", msg1, msg2) );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("#  result        = %s", payload.m_result._to_string) ) ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("#  result        = %s", payload.m_result._to_string() ));
 }
 
 void dumpPayload( Cpl::Rte::Persistence::Chunk::Request::ClearFilePayload& payload, const char* msg1, const char* msg2="" )
@@ -310,7 +310,7 @@ TEST_CASE( "chunk", "[chunk]" )
         Cpl::Rte::Persistence::Chunk::Request::ClearFileMsg      msg( chunkServer2_, payload, srh );
         chunkMailbox_.postSync( msg );
         dumpPayload( payload, "CLEAR FILE" );
-        REQUIRE( payload.m_result == Cpl::Rte::Persistence::Chunk::Request::eSUCCESS );
+        REQUIRE( payload.m_result == +Cpl::Rte::Persistence::Chunk::ServerResult::eSUCCESS );
     }
 
     // Open the database
