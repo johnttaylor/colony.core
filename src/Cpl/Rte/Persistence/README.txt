@@ -32,12 +32,11 @@ features:
       upgrade an existing persistent 'file' when 'additive' changes are made to 
       the data being persistently stored.
 
-    o The sub-system supports deleting Records or deleting Model Points from 
-      an existing Record without a change to its schema, i.e. automatically 
-      upgrade an existing persistent 'file' when 'depreciative' changes are 
-      made to the data being persistently stored.   Note: the 'deletions' must
-      truly be depreciative, i.e. NO CONVERSION OF ANY KIND will happen when
-      a Record/Model Point is deleted.
+    o The sub-system supports deleting Records without a change to its schema, 
+      i.e. automatically upgrade an existing persistent 'file' when 
+      'depreciative' changes are made to the data being persistently stored.   
+      Note: the 'deletions' must truly be depreciative, i.e. NO CONVERSION OF 
+      ANY KIND will happen when a Record is deleted.
 
     o The sub-system independent of the physical persistent storage
       media (i.e. all IO is done through the Cpl::Io interfaces).

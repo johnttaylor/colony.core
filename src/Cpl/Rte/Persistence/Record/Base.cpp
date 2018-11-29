@@ -12,6 +12,7 @@
 #include "Base.h"
 #include "Cpl/Itc/SyncReturnHandler.h"
 #include "Cpl/System/Trace.h"
+#include "Cpl/Rte/Persistence/Framing.h"
 
 #define SECT_   "Cpl::Rte::Persistence::Record"
 
@@ -37,7 +38,7 @@ Base::Base( Cpl::Container::Map<Api_>&     myRecordList,
     , m_loadIsGood( false )
     , m_dirty( false )
 {
-    /// Add myself to the Set list
+    /// Add myself to the Record list
     myRecordList.insert( *this );
 
     // Initialize my FSM
@@ -47,6 +48,11 @@ Base::Base( Cpl::Container::Map<Api_>&     myRecordList,
 
 
 /////////////////////////////////////////
+void Base::registerModelPoint( Cpl::Rte::ModelPoint& mpToAdd )
+{
+    m_points.put( mpToAdd );
+}
+
 const Cpl::Container::Key& Base::getKey() const throw()
 {
     return m_name;
@@ -117,8 +123,118 @@ void Base::setChunkHandle( Cpl::Rte::Persistence::Chunk::Handle& src )
     m_chunkHdl = src;
 }
 
+uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
+{
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. maxDataSize=%lu", m_name(), maxDataSize) );
 
+    // Serialize my Record's data (one MP at a time)
+    Cpl::Rte::ModelPoint* pointPtr  = m_points.getFirst();
+    uint8_t*              dstPtr    = (uint8_t*) dstBuffer;
+    uint32_t              filledLen = 0;
+    while ( pointPtr )
+    {
+        // Write the MP's name to the record
+        const char* mpName    = pointPtr->getName();
+        uint16_t    mpNameLen = strlen( mpName );
+        if ( filledLen + Cpl::Rte::Persistence::eNLEN_SIZE + mpNameLen > maxDataSize )
+        {
+            Cpl::System::FatalError::logf( "Cpl::Rte::Persistence::Record::Base::fillWriteBuffer[%s] - Buffer length Error when writing MP(%s) name.", m_name(), mpName );
+        }
+        memcpy( dstPtr, &mpNameLen, Cpl::Rte::Persistence::eNLEN_SIZE );
+        memcpy( dstPtr + Cpl::Rte::Persistence::eNLEN_SIZE, mpName, mpNameLen );
+        dstPtr    += Cpl::Rte::Persistence::eNLEN_SIZE + mpNameLen;
+        filledLen += Cpl::Rte::Persistence::eNLEN_SIZE + mpNameLen;
 
+        // Write the MP's data/state to the record
+        size_t bytesWritten = pointPtr->exportData( dstPtr, maxDataSize - filledLen );
+        if ( bytesWritten == 0 )
+        {
+            Cpl::System::FatalError::logf( "Cpl::Rte::Persistence::Record::Base::fillWriteBuffer[%s] - Buffer length Error when writing MP(%s) data.", m_name(), mpName );
+        }
+        dstPtr    += bytesWritten;
+        filledLen += bytesWritten;
+
+        // Get the next MP to write
+        pointPtr = m_points.next( *pointPtr );
+    }
+
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. filledLen=%lu", m_name(), filledLen) );
+    return filledLen;
+}
+
+bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
+{
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. inlen=%lu", m_name(), dataLen) );
+
+    // De-serialize the raw record data one MP at a time
+    bool                  result   = true;
+    uint8_t*              srcPtr   = (uint8_t*) srcBuffer;
+    Cpl::Rte::ModelPoint* pointPtr = m_points.getFirst();
+    while ( pointPtr )
+    {
+        // Get the expected Name
+        const char* expectedMpName    = pointPtr->getName();
+        uint16_t    expectedMpNameLen = strlen( expectedMpName );
+
+        // In theory this is the case of 'appending' new Model Point(s) to an existing Record
+        // NOTE: In this scenario we do NOT 'fail' the read so that all previously read MP(s) retain their values from the raw record data
+        if ( dataLen == 0 )
+        {
+            m_mismatched = true;
+            m_logger.warning( "Cpl::Rte::Persistence::Record::Base::notifyRead[%s] - Minor upgrade to Record (raw record missing mp(%s))", m_name(), expectedMpName );
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. Minor upgrade to Record (raw record missing %d mp(%s))", m_name(), expectedMpName) );
+            break;
+        }
+
+        // Get actual MP name
+        if ( dataLen < expectedMpNameLen + Cpl::Rte::Persistence::eNLEN_SIZE )
+        {
+            m_mismatched = true;
+            result       = false;
+            m_logger.warning( "Cpl::Rte::Persistence::Record::Base::notifyRead[%s] - Bad raw record length, unable to read MP name field (expected name=%s)", m_name(), expectedMpName );
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. Bad raw record length, unable to read MP name field (expected name=%s)", m_name(), expectedMpName) );
+            break;
+        }
+
+        // Is this the expected MP?
+        if ( memcmp( srcPtr + Cpl::Rte::Persistence::eNLEN_SIZE, expectedMpName, expectedMpNameLen ) != 0 )
+        {
+            m_mismatched = true;
+            result       = false;
+            m_logger.warning( "Cpl::Rte::Persistence::Record::Base::notifyRead[%s] - Unexpected MP name (%.*s) (expected name=%s)", m_name(), srcPtr + Cpl::Rte::Persistence::eNLEN_SIZE, expectedMpName );
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. Unexpected MP name (%.*s) (expected name=%s)", m_name(), srcPtr + Cpl::Rte::Persistence::eNLEN_SIZE, expectedMpName) );
+            break;
+        }
+
+        // Read the MP's data
+        srcPtr          += Cpl::Rte::Persistence::eNLEN_SIZE + expectedMpNameLen;
+        dataLen         -= Cpl::Rte::Persistence::eNLEN_SIZE + expectedMpNameLen;
+        size_t bytesRead = pointPtr->importData( srcPtr, dataLen );
+        if ( bytesRead == 0 )
+        {
+            m_mismatched = true;
+            result       = false;
+            m_logger.warning( "Cpl::Rte::Persistence::Record::Base::notifyRead[%s] - Bad Record - missing MP (expected name=%s)", m_name(), expectedMpName );
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. Bad Record - missing MP (expected name=%s)", m_name(), expectedMpName) );
+            break;
+        }
+
+        // Get next MP to read
+        srcPtr  += bytesRead;
+        dataLen -= bytesRead;
+        pointPtr = m_points.next( *pointPtr );
+    }
+
+    // Default the record if there was a read failure, i.e. guarentee the state of the Record if a read error occurred
+    if ( result == false )
+    {
+        defaultData();
+    }
+    
+    // Kick my FSM now that I am done with read and return my read-sucess result to the Record Handler
+    generateEvent( Fsm_evReadDone );
+    return result;
+}
 /////////////////////////////////////////
 void Base::issueWrite() throw()
 {

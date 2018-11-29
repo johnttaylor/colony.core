@@ -17,7 +17,9 @@
 #include "Cpl/Rte/Persistence/Record/FsmEventQueue_.h"
 #include "Cpl/Rte/Persistence/Record/HandlerApi_.h"
 #include "Cpl/Rte/Persistence/Chunk/Handle.h"
+#include "Cpl/Rte/ModelPoint.h"
 #include "Cpl/Container/Map.h"
+#include "Cpl/Container/SList.h"
 #include "Cpl/Timer/Local.h"
 #include "Cpl/Itc/MailboxServer.h"
 #include "Cpl/Log/Loggers.h"
@@ -33,14 +35,25 @@ namespace Record {
 
 /** This class implements the core functionality of a Record Instance.  Each
     Record instance interacts with the Record Handler to perform the initial
-    read of the Record data (which is only done once) and writes to the 
+    read of the Record data (which is only done once) and writes to the
     Pesistence storage when the Record's data is modified.
+
+    The concrete Record classes are required to the implemented the:
+    void defaultData() throw() method.  This method is responsible for updating
+    all of the concrete Record's Model Point's to the appropriate default
+    values.  Note: A Model Point can be defaulted to the "invalid state" since
+    each Model Point's valid/invalid state is stored as part of the persisent
+    record.
  */
-class Base : public Api_,
+class Base :
+    public Api_,
     public ApiWriter_,
     public FsmEventQueue_
 {
 protected:
+    /// List of model points in the Record
+    Cpl::Container::SList<Cpl::Rte::ModelPoint> m_points;
+
     /// Chunk handle (i.e. contains details about where my data is stored in the DB file)
     Cpl::Rte::Persistence::Chunk::Handle        m_chunkHdl;
 
@@ -62,7 +75,7 @@ protected:
     /// Event Logger
     Cpl::Log::Api&                              m_logger;
 
-    /// Flag that track if the initial read did not match exactly (i.e. the len to less/more than expected)
+    /// Flag that track if the initial read did not match exactly (i.e. the record length was less/more than expected)
     bool                                        m_mismatched;
 
     /// Status of the initial load
@@ -99,6 +112,8 @@ public:
     /// See Cpl::Rte::Persistence::Record::ApiWriter_
     void notifyWriteDone( void );
 
+    /// See Cpl::Rte::Persistence::Record::ApiWriter_
+    uint32_t fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize );
 
 public:
     /// See Cpl::Rte::Persistence::Record::Api_
@@ -112,6 +127,9 @@ public:
 
     /// See Cpl::Rte::Persistence::Record::Api
     Cpl::Rte::Persistence::Chunk::Handle& getChunkHandle( void );
+
+    /// See Cpl::Rte::Persistence::Record::Api_
+    bool notifyRead( void* srcBuffer, uint32_t dataLen );
 
     /// See Cpl::Rte::Persistence::Record::Api_
     void notifyLoadCompleted( void );
@@ -165,6 +183,17 @@ protected:
     /// See Cpl::Rte::Persistence::Record::FsmContext_
     bool isLoadGood() throw();
 
+protected:
+    /** This method is used by the concrete Record class to 'register' all of
+        its Model Point(s).
+
+        NOTE: ORDER IS IMPORTANT - the first register MP is the first MP stored
+              in the record.  This means that if the application/child class
+              changes the registration order - then on next start-up cycle
+              the expected order and the order in media won't match and the
+              record will be defaulted (i.e. lose its persistent values)
+     */
+    void registerModelPoint( Cpl::Rte::ModelPoint& mpToAdd );
 
 protected:
     /// Helper method: FSM Timer expired
