@@ -63,7 +63,7 @@ public:
 
 public:
     /// This method is used to set the contents of the record's chunk handle
-    virtual void setChunkHandle( Cpl::Rte::Pesistence::Chunk::Handle& src ) = 0;
+    virtual void setChunkHandle( Cpl::Rte::Persistence::Chunk::Handle& src ) = 0;
 
     /** Provides the notification that the record data has been
         read from the non-volatile media.  The record data is

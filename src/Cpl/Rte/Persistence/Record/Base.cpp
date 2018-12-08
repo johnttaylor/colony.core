@@ -30,6 +30,7 @@ Base::Base( Cpl::Container::Map<Api_>&     myRecordList,
 )
     :m_mbox( recordLayerMbox )
     , m_recLayerPtr( 0 )
+  //  , m_timer( *((Cpl::Timer::CounterSource*)&recordLayerMbox), *this, &Base::timerExpired )
     , m_timer( recordLayerMbox, *this, &Base::timerExpired )
     , m_writeDelay( delayWriteTimeInMsec )
     , m_name( name )
@@ -125,11 +126,6 @@ void Base::setChunkHandle( Cpl::Rte::Persistence::Chunk::Handle& src )
     m_chunkHdl = src;
 }
 
-void Base::disconnectFromModel() throw()
-{
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::disconnectFromModel() [%s]", m_name()) );
-}
-
 uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. maxDataSize=%lu", m_name(), maxDataSize) );
@@ -142,7 +138,7 @@ uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
     {
         // Write the MP's name to the record
         const char* mpName    = pointPtr->getName();
-        uint16_t    mpNameLen = strlen( mpName );
+        uint16_t    mpNameLen = (uint16_t) strlen( mpName );
         if ( filledLen + Cpl::Rte::Persistence::eNLEN_SIZE + mpNameLen > maxDataSize )
         {
             Cpl::System::FatalError::logf( "Cpl::Rte::Persistence::Record::Base::fillWriteBuffer[%s] - Buffer length Error when writing MP(%s) name.", m_name(), mpName );
@@ -181,7 +177,7 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
     {
         // Get the expected Name
         const char* expectedMpName    = pointPtr->getName();
-        uint16_t    expectedMpNameLen = strlen( expectedMpName );
+        uint16_t    expectedMpNameLen = (uint16_t)strlen( expectedMpName );
 
         // In theory this is the case of 'appending' new Model Point(s) to an existing Record
         // NOTE: In this scenario we do NOT 'fail' the read so that all previously read MP(s) retain their values from the raw record data
@@ -194,7 +190,7 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
         }
 
         // Get actual MP name
-        if ( dataLen < expectedMpNameLen + Cpl::Rte::Persistence::eNLEN_SIZE )
+        if ( dataLen < ((uint32_t)(expectedMpNameLen + Cpl::Rte::Persistence::eNLEN_SIZE)) )
         {
             m_mismatched = true;
             result       = false;
