@@ -152,7 +152,7 @@ public:
         uint32_t        m_bufferLen;
 
         /// Pointer The Client's/Caller's Chunk Handle (not required for all Chunk actions)
-        Handle*    m_handlePtr;
+        Handle*         m_handlePtr;
 
 
     public:
@@ -192,7 +192,7 @@ public:
         uint32_t        m_bufferLen;
 
         /// Pointer The Client's/Caller's Chunk Handle (not required for all Chunk actions)
-        Handle*    m_handlePtr;
+        Handle*         m_handlePtr;
 
 
     public:

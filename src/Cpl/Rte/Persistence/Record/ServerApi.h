@@ -20,6 +20,12 @@ namespace Rte {
 namespace Persistence {
 namespace Record {
 
+/** This symbol defines the maximum size, in bytes, of record name.  Note: the
+    length does NOT include a null terminator.
+ */
+#ifndef OPTION_CPL_RTE_PERSISTENCE_RECORD_MAX_RECORD_NAME_LEN
+#define OPTION_CPL_RTE_PERSISTENCE_RECORD_MAX_RECORD_NAME_LEN   31
+#endif
 
 /** This class defines the interface for the Application to interact with a
     Record Server (aka the Record Layer).  The Record Server manages the loading
@@ -29,6 +35,16 @@ namespace Record {
     NOTE: The current health/status of a Record Server is reported via a
           MpServerStatus Model Point (that the application provides when 
           constructing a concrete Record Server).
+
+    NOTE: The application can default the entire Model Datbase (or a specified
+          individual record) by writing an "*" (or record name) to the the
+          String Model Point (that the application provides when constructing
+          a concrete Record Server).  The Record server writes a empty string
+          to the String MP when it initiates the default action.  The actual 
+          state of the Record(s) (and it Model Points) my still be 'in-flux' 
+          when the String MP is updated, i.e. 'when' the data is changed and/or 
+          persistent media is updated is dependent on the Record instance and 
+          the performance of the overall system.. 
 
     NOTE: The method(s) in this class are synchronous wrapper to ITC message
           requests, i.e. the method(s) can ONLY be called from Application
@@ -41,26 +57,11 @@ namespace Record {
 class ServerApi : public Cpl::Itc::CloseSync
 {
 public:
-    /** This method is used to default the data contents of ALL Records to their
-        default value(s).
-     */
-    virtual void defaultAllRecordsContent() throw() = 0;
+    /// Constructor
+    ServerApi( Cpl::Itc::PostApi& myMailbox ): CloseSync( myMailbox ) {}
 
-    /** This method is used to default a single Record.  The method returns
-        true if the specified record name was found and that it's defaultContent()
-        method was called.  Note: The actual state of the Record (and it Model
-        Points) my still be 'in-flux' when this method returns, i.e. 'when' the
-        data is changed and/or persistent media is updated is dependent on
-        the Record instance and the performance of the overall system.
-     */
-    virtual bool defaultRecord( const char* recordNameToDefault ) throw() = 0;
-
-
-public:
     /// Virtual destructor to keep the compiler happy
     virtual ~ServerApi( void ) {}
-
-
 };
 
 

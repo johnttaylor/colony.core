@@ -82,7 +82,7 @@ Size="2000 1000">
 <State id="r71"
 Pos="16600 -11200"
 Size="2500 1000">
-<Text>ClearingDb</Text>
+<Text>ClearingFile</Text>
 </State>
 <State id="r140"
 Pos="10200 -9100"
@@ -119,7 +119,7 @@ Pos="3800 -4400">
 Pos="4551 -4200"
 Origin="4">
 <Text>evStart/<p/>
-requestDbOpen();</Text>
+requestFileOpen();</Text>
 </FreeText>
 </Anchor>
 </Segment>
@@ -144,7 +144,7 @@ Pos="3000 -18300">
 Pos="3167 -18500"
 Origin="2">
 <Text>evStop/<p/>
-requestDbClose();</Text>
+requestFileClose();</Text>
 </FreeText>
 </Anchor>
 </Segment>
@@ -203,7 +203,7 @@ Pos="900 -10100">
 Pos="900 -12503"
 Origin="1">
 <Text>evStopped/<p/>
-ackDbStopped();<p/>
+ackFileStopped();<p/>
 clearWriteQue();</Text>
 </FreeText>
 </Anchor>
@@ -225,7 +225,7 @@ Pos="18300 -4600">
 <FreeText id="r38"
 Pos="18551 -3897"
 Origin="4">
-<Text>evResponse[isDbError()]/<p/>
+<Text>evResponse[isFileError()]/<p/>
 reportFileReadError();<p/>
 nakOpenDone();<p/>
 inspectWriteQue();</Text>
@@ -257,8 +257,8 @@ Pos="13203.225806451614 -7100">
 <FreeText id="r58"
 Pos="15186 -6600"
 Origin="3">
-<Text>evResponse[isDbSuccess()]/<p/>
-requestDbRead();</Text>
+<Text>evResponse[isFileSuccess()]/<p/>
+requestFileRead();</Text>
 </FreeText>
 </Anchor>
 </Segment>
@@ -307,7 +307,7 @@ Pos="19200 -6600">
 <FreeText id="r70"
 Pos="19500 -6797"
 Origin="4">
-<Text>evResponse[isDbSuccess()]/<p/>
+<Text>evResponse[isFileSuccess()]/<p/>
 ackRead();</Text>
 </FreeText>
 </Anchor>
@@ -335,10 +335,10 @@ Pos="17400 -11200">
 <FreeText id="r77"
 Pos="17564 -9602"
 Origin="4">
-<Text>evResponse[isDbBadData()]/<p/>
+<Text>evResponse[isFileBadData()]/<p/>
 reportDataCorruptError();<p/>
 nakOpenDone();<p/>
-requestDbClear();</Text>
+requestFileClear();</Text>
 </FreeText>
 </Anchor>
 </Segment>
@@ -360,7 +360,7 @@ Pos="14012.871164842503 -8658.3708871098861">
 <FreeText id="r83"
 Pos="14070 -8823"
 Origin="3">
-<Text>evResponse[isDbEof()]/<p/>
+<Text>evResponse[isFileEof()]/<p/>
 verifyOpen();</Text>
 </FreeText>
 </Anchor>
@@ -395,7 +395,7 @@ Pos="22700 -17100">
 <FreeText id="r139"
 Pos="23651 -17303"
 Origin="2">
-<Text>evResponse[!isDbSuccess()]/<p/>
+<Text>evResponse[!isFileSuccess()]/<p/>
 nakWrite();<p/>
 reportFileWriteError();<p/>
 inspectWriteQue();</Text>
@@ -426,7 +426,7 @@ Pos="12640.325550255249 -14931.726504309985">
 <FreeText id="r104"
 Pos="14342 -14131"
 Origin="3">
-<Text>evResponse[!isDbError()]/<p/>
+<Text>evResponse[!isFileError()]/<p/>
 inspectWriteQue();</Text>
 </FreeText>
 </Anchor>
@@ -448,7 +448,7 @@ Pos="8500 -11700">
 <FreeText id="r110"
 Pos="8358 -11900"
 Origin="2">
-<Text>evResponse[isDbEof()]/<p/>
+<Text>evResponse[isFileEof()]/<p/>
 ackOpenDone();<p/>
 inspectWriteQue();</Text>
 </FreeText>
@@ -472,7 +472,7 @@ Pos="14400 -17000">
 Pos="13700 -16800"
 Origin="4">
 <Text>evWrite/<p/>
-requestDbWrite();</Text>
+requestFileWrite();</Text>
 </FreeText>
 </Anchor>
 </Segment>
@@ -496,7 +496,7 @@ Pos="15500 -18700">
 <FreeText id="r122"
 Pos="15183 -18600"
 Origin="3">
-<Text>evResponse[isDbSuccess()]/<p/>
+<Text>evResponse[isFileSuccess()]/<p/>
 ackWrite();<p/>
 inspectWriteQue();</Text>
 </FreeText>
@@ -679,7 +679,7 @@ Origin="4">
 <Text>evIncompleteLoad/<p/>
 reportMinorUpgrade();<p/>
 nakOpenDone();<p/>
-requestDbClear();</Text>
+requestFileClear();</Text>
 </FreeText>
 </Anchor>
 </Segment>
@@ -724,7 +724,7 @@ Type="2"/>
 <Note id="r206"
 Pos="19700 -100"
 Size="6100 1300">
-<Text>The ackRead action internally calls requestDbRead when there are no client read errors.</Text>
+<Text>The ackRead action internally calls requestFileRead when there are no client read errors.</Text>
 <NoteConnector id="r207">
 <SourceEnd id="r208"
 Pos="23400 -1400"/>

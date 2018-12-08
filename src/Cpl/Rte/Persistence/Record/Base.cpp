@@ -25,7 +25,7 @@ using namespace Cpl::Rte::Persistence::Record;
 Base::Base( Cpl::Container::Map<Api_>&     myRecordList,
             unsigned long                  delayWriteTimeInMsec,
             const char*                    name,
-            Cpl::Itc::MailboxServer&       recordLayerMbox,
+            Cpl::Rte::MailboxServer&       recordLayerMbox,
             Cpl::Log::Api&                 eventLogger
 )
     :m_mbox( recordLayerMbox )
@@ -86,6 +86,8 @@ void Base::start( HandlerApi_& recordLayer ) throw()
     m_recLayerPtr   = &recordLayer;
     m_mismatched    = false;
     m_loadIsGood    = false;
+    resetHistoryStarting();         // Ensure the History states/status gets reset when re-starting
+    resetHistoryActive();
     generateEvent( Fsm_evStart );
 }
 
@@ -121,6 +123,11 @@ void Base::setChunkHandle( Cpl::Rte::Persistence::Chunk::Handle& src )
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::setChunkHandle() [%s]", m_name()) );
     m_chunkHdl = src;
+}
+
+void Base::disconnectFromModel() throw()
+{
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::disconnectFromModel() [%s]", m_name()) );
 }
 
 uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
@@ -235,6 +242,7 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
     generateEvent( Fsm_evReadDone );
     return result;
 }
+
 /////////////////////////////////////////
 void Base::issueWrite() throw()
 {

@@ -20,12 +20,98 @@
 #include "Cpl/Itc/CloseSync.h"
 #include "Cpl/Timer/Local.h"
 #include "Cpl/Rte/Persistence/Record/MpServerStatus.h"
+#include "Cpl/Rte/Persistence/Record/Base.h"
+#include "Cpl/Rte/SubscriberComposer.h"
+#include "Cpl/Rte/Mp/String.h"
 
 /// 
 using namespace Cpl::Rte;
 
 #define SECT_   "_0test"
 
+
+/////////////////////////////////////////////////////////////////
+class MyRecord : public Cpl::Rte::Persistence::Record::Base
+{
+public:
+    ///
+    SubscriberComposer<MyRecord, Cpl::Rte::Mp::String>  m_observer1;
+    ///
+    SubscriberComposer<MyRecord, Cpl::Rte::Mp::String>  m_observer2;
+    ///
+    SubscriberComposer<MyRecord, Cpl::Rte::Mp::String>  m_observer3;
+    ///
+    Cpl::Rte::Mp::String&   m_mp1;
+    ///
+    Cpl::Rte::Mp::String&   m_mp2;
+    ///
+    Cpl::Rte::Mp::String&   m_mp3;
+    ///
+    const char*             m_default1;
+    ///
+    const char*             m_default2;
+    ///
+    const char*             m_default3;
+
+public:
+    /// Constructor.  Note: Record names must be unique within a Model Database
+    MyRecord( Cpl::Container::Map<Api_>&     myRecordList,
+              unsigned long                  delayWriteTimeInMsec,
+              const char*                    name,
+              Cpl::Rte::MailboxServer&       recordLayerMbox,
+              Cpl::Rte::Mp::String&          modelPoint1,
+              Cpl::Rte::Mp::String&          modelPoint2,
+              Cpl::Rte::Mp::String&          modelPoint3,
+              const char*                    defaultValueMp1 = "MP1 default",
+              const char*                    defaultValueMp2 = "MP2 default",
+              const char*                    defaultValueMp3 = "MP3 default",
+              Cpl::Log::Api&                 eventLogger = Cpl::Log::Loggers::application()
+    )
+        :Base( myRecordList, delayWriteTimeInMsec, name, recordLayerMbox, eventLogger )
+        , m_observer1( recordLayerMbox, *this, &MyRecord::modelPointNChanged )
+        , m_observer2( recordLayerMbox, *this, &MyRecord::modelPointNChanged )
+        , m_observer3( recordLayerMbox, *this, &MyRecord::modelPointNChanged )
+        , m_mp1(modelPoint1)
+        , m_mp2(modelPoint2)
+        , m_mp3(modelPoint3)
+        , m_default1( defaultValueMp1 )
+        , m_default2( defaultValueMp2 )
+        , m_default3( defaultValueMp3 )
+    {
+    }
+
+    /// FSM Action
+    void connectToModel() throw()
+    {
+        m_mp1.attach( m_observer1 );
+        m_mp2.attach( m_observer2 );
+        m_mp3.attach( m_observer3 );
+    }
+
+    /// FSM Action
+    void defaultData() throw()
+    {
+        m_mp1.write( m_default1 );
+        m_mp3.write( m_default2 );
+        m_mp3.write( m_default3 );
+    }
+
+
+    /// FSM Action
+    void disconnectFromModel() throw()
+    {
+        m_mp1.detach( m_observer1 );
+        m_mp2.detach( m_observer2 );
+        m_mp3.detach( m_observer3 );
+    }
+
+    // Change notfication
+    void modelPointNChanged( Cpl::Rte::Mp::String& modelPointThatChanged ) throw()
+    {
+        generateEvent( Cpl::Rte::Persistence::Record::Fsm_evDataModified );
+    }
+
+};
 
 /////////////////////////////////////////////////////////////////
 class ViewerBase : public Cpl::Itc::CloseSync

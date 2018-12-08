@@ -42,9 +42,9 @@ void HandlerFsmEventQueue_::generateEvent( HANDLERFSM_EVENT_T msg )
             CPL_SYSTEM_TRACE_MSG( SECT_, ("Processing event:= %s, current state=%s ...", getNameByEvent(msg), getNameByState(getInnermostActiveState())) );
             if ( processEvent(msg) == 0 )
                 {
-                CPL_SYSTEM_TRACE_MSG( SECT_, ("Event IGNORED:= %s", getNameByEvent(msg)) );
+                CPL_SYSTEM_TRACE_MSG( SECT_, ("  Event IGNORED:= %s", getNameByEvent(msg)) );
                 }
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("Event Completed:= %s, end state=%s", getNameByEvent(msg), getNameByState(getInnermostActiveState())) );
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("Event Completed:=  %s, end state=%s", getNameByEvent(msg), getNameByState(getInnermostActiveState())) );
             }
 
         m_processingFsmEvent = false;

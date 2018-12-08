@@ -25,10 +25,10 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
     /* State names */
     const char states[]=
-        "Verifying\0NoPersistence\0Reading\0Idle\0Opening\0Active\0Writeable\0Stopping\0ClearingDb\0WaitingToOpen\0Writing\0";
+        "Verifying\0NoPersistence\0Reading\0Idle\0Opening\0Active\0Writeable\0Stopping\0ClearingFile\0WaitingToOpen\0Writing\0";
 
     const unsigned short state_idx[]={
-        0,10,24,32,37,45,52,62,71,82,96,104};
+        0,10,24,32,37,45,52,62,71,84,98,106};
 
     /* Event names */
     const char events[]=
@@ -66,7 +66,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
     bool HandlerFsm::isInActive(void) const {return(((stateVars.stateVar== Active)) ? (true) : (false));}
     bool HandlerFsm::isInWriteable(void) const {return(((stateVars.stateVarActive== Writeable)&&(stateVars.stateVar== Active)) ? (true) : (false));}
     bool HandlerFsm::isInStopping(void) const {return(((stateVars.stateVar== Stopping)) ? (true) : (false));}
-    bool HandlerFsm::isInClearingDb(void) const {return(((stateVars.stateVarOpening== ClearingDb)&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
+    bool HandlerFsm::isInClearingFile(void) const {return(((stateVars.stateVarOpening== ClearingFile)&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
     bool HandlerFsm::isInWaitingToOpen(void) const {return(((stateVars.stateVarOpening== WaitingToOpen)&&(stateVars.stateVarActive== Opening)&&(stateVars.stateVar== Active)) ? (true) : (false));}
     bool HandlerFsm::isInWriting(void) const {return(((stateVars.stateVarActive== Writing)&&(stateVars.stateVar== Active)) ? (true) : (false));}
 
@@ -75,8 +75,8 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
     unsigned short HandlerFsm::getInnermostActiveState(void) const {
         if(isInWaitingToOpen()){
             return WaitingToOpen;
-        }else if(isInClearingDb()){
-            return ClearingDb;
+        }else if(isInClearingFile()){
+            return ClearingFile;
         }else if(isInReading()){
             return Reading;
         }else if(isInVerifying()){
@@ -140,7 +140,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
                     evConsumed=1;
 
                     /* Action code for transition  */
-                    requestDbOpen();
+                    requestFileOpen();
 
 
                     stateVarsCopy.stateVarActive = Opening;/* entry chain  */
@@ -174,7 +174,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
                             evConsumed=1;
 
                             /* Action code for transition  */
-                            requestDbWrite();
+                            requestFileWrite();
 
 
                             /* adjust state variables  */
@@ -210,7 +210,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             case WaitingToOpen:
                                 if(msg==HandlerFsm_evResponse){
-                                    if(isDbEof()){
+                                    if(isFileEof()){
                                         /* Transition from WaitingToOpen to Writeable */
                                         evConsumed=1;
 
@@ -223,12 +223,12 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarActive = Writeable;
                                         HandlerFsmTraceEvent(10);
-                                    }else if(isDbSuccess()){
+                                    }else if(isFileSuccess()){
                                         /* Transition from WaitingToOpen to Reading */
                                         evConsumed=1;
 
                                         /* Action code for transition  */
-                                        requestDbRead();
+                                        requestFileRead();
 
 
                                         /* adjust state variables  */
@@ -244,7 +244,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             case Reading:
                                 if(msg==HandlerFsm_evResponse){
-                                    if(isDbEof()){
+                                    if(isFileEof()){
                                         /* Transition from Reading to Verifying */
                                         evConsumed=1;
 
@@ -255,20 +255,20 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
                                         /* adjust state variables  */
                                         stateVarsCopy.stateVarOpening = Verifying;
                                         HandlerFsmTraceEvent(10);
-                                    }else if(isDbBadData()){
-                                        /* Transition from Reading to ClearingDb */
+                                    }else if(isFileBadData()){
+                                        /* Transition from Reading to ClearingFile */
                                         evConsumed=1;
 
                                         /* Action code for transition  */
                                         reportDataCorruptError();
                                         nakOpenDone();
-                                        requestDbClear();
+                                        requestFileClear();
 
 
                                         /* adjust state variables  */
-                                        stateVarsCopy.stateVarOpening = ClearingDb;
+                                        stateVarsCopy.stateVarOpening = ClearingFile;
                                         HandlerFsmTraceEvent(9);
-                                    }else if(isDbSuccess()){
+                                    }else if(isFileSuccess()){
                                         /* Transition from Reading to Reading */
                                         evConsumed=1;
 
@@ -287,10 +287,10 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
                                 } /*end of event selection */
                             break; /* end of case Reading  */
 
-                            case ClearingDb:
+                            case ClearingFile:
                                 if(msg==HandlerFsm_evResponse){
-                                    if(!isDbError()){
-                                        /* Transition from ClearingDb to Writeable */
+                                    if(!isFileError()){
+                                        /* Transition from ClearingFile to Writeable */
                                         evConsumed=1;
 
 
@@ -307,21 +307,21 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
                                 }else{
                                     /* Intentionally left blank */
                                 } /*end of event selection */
-                            break; /* end of case ClearingDb  */
+                            break; /* end of case ClearingFile  */
 
                             case Verifying:
                                 if(msg==HandlerFsm_evIncompleteLoad){
-                                    /* Transition from Verifying to ClearingDb */
+                                    /* Transition from Verifying to ClearingFile */
                                     evConsumed=1;
 
                                     /* Action code for transition  */
                                     reportMinorUpgrade();
                                     nakOpenDone();
-                                    requestDbClear();
+                                    requestFileClear();
 
 
                                     /* adjust state variables  */
-                                    stateVarsCopy.stateVarOpening = ClearingDb;
+                                    stateVarsCopy.stateVarOpening = ClearingFile;
                                     HandlerFsmTraceEvent(6);
                                 }else if(msg==HandlerFsm_evVerified){
                                     /* Transition from Verifying to Writeable */
@@ -365,7 +365,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
                                     stateVarsCopy.stateVarActive = NoPersistence;/* Default in entry chain  */
 
                                     HandlerFsmTraceEvent(13);
-                                }else if(isDbError()){
+                                }else if(isFileError()){
                                     /* Transition from Opening to Active */
                                     evConsumed=1;
                                 
@@ -400,7 +400,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                     case Writing:
                         if(msg==HandlerFsm_evResponse){
-                            if(isDbSuccess()){
+                            if(isFileSuccess()){
                                 /* Transition from Writing to Writeable */
                                 evConsumed=1;
 
@@ -412,7 +412,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
                                 /* adjust state variables  */
                                 stateVarsCopy.stateVarActive = Writeable;
                                 HandlerFsmTraceEvent(8);
-                            }else if(!isDbSuccess()){
+                            }else if(!isFileSuccess()){
                                 /* Transition from Writing to Active */
                                 evConsumed=1;
 
@@ -462,7 +462,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
                         }
 
                         /* Action code for transition  */
-                        requestDbClose();
+                        requestFileClose();
 
 
                         /* adjust state variables  */
@@ -480,7 +480,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
                     evConsumed=1;
 
                     /* Action code for transition  */
-                    ackDbStopped();
+                    ackFileStopped();
                     clearWriteQue();
 
 

@@ -19,7 +19,7 @@ class HandlerFsmContext_
 {
 public:
     /// Action
-    virtual void ackDbStopped() throw() = 0;
+    virtual void ackFileStopped() throw() = 0;
 
     /// Action
     virtual void ackOpenDone() throw() = 0;
@@ -67,19 +67,19 @@ public:
     virtual void reportMinorUpgrade() throw() = 0;
 
     /// Action
-    virtual void requestDbClear() throw() = 0;
+    virtual void requestFileClear() throw() = 0;
 
     /// Action
-    virtual void requestDbClose() throw() = 0;
+    virtual void requestFileClose() throw() = 0;
 
     /// Action
-    virtual void requestDbOpen() throw() = 0;
+    virtual void requestFileOpen() throw() = 0;
 
     /// Action
-    virtual void requestDbRead() throw() = 0;
+    virtual void requestFileRead() throw() = 0;
 
     /// Action
-    virtual void requestDbWrite() throw() = 0;
+    virtual void requestFileWrite() throw() = 0;
 
     /// Action
     virtual void verifyOpen() throw() = 0;
@@ -87,16 +87,16 @@ public:
 
 public:
     /// Guard
-    virtual bool isDbBadData() throw() = 0;
+    virtual bool isFileBadData() throw() = 0;
 
     /// Guard
-    virtual bool isDbEof() throw() = 0;
+    virtual bool isFileEof() throw() = 0;
 
     /// Guard
-    virtual bool isDbError() throw() = 0;
+    virtual bool isFileError() throw() = 0;
 
     /// Guard
-    virtual bool isDbSuccess() throw() = 0;
+    virtual bool isFileSuccess() throw() = 0;
 
     /// Guard
     virtual bool isNotCompatible() throw() = 0;

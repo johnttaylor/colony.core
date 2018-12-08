@@ -31,12 +31,12 @@ const char* const HandlerFsmTraceEvents[] = {
     "",
     "HandlerFsm_evVerified",
     "HandlerFsm_evIncompleteLoad",
-    "HandlerFsm_evResponse[isDbError()]",
-    "HandlerFsm_evResponse[isDbSuccess()]",
-    "HandlerFsm_evResponse[isDbBadData()]",
-    "HandlerFsm_evResponse[isDbEof()]",
-    "HandlerFsm_evResponse[!isDbSuccess()]",
-    "HandlerFsm_evResponse[!isDbError()]",
+    "HandlerFsm_evResponse[isFileError()]",
+    "HandlerFsm_evResponse[isFileSuccess()]",
+    "HandlerFsm_evResponse[isFileBadData()]",
+    "HandlerFsm_evResponse[isFileEof()]",
+    "HandlerFsm_evResponse[!isFileSuccess()]",
+    "HandlerFsm_evResponse[!isFileError()]",
     "HandlerFsm_evResponse[isNotCompatible()]"
 };
 

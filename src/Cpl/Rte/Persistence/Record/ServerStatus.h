@@ -34,7 +34,6 @@ namespace Record {
     \param eCLOSED                  - The Persistent is in the closed state
     \param eUNKNOWN                 - Unknown status.  This state is typically used by the Monitor for its initial/assumed state
  */
- /// The following enum/class defines the status of a Record Server.
 BETTER_ENUM( ServerStatus, int, eOPENING, eRUNNING, eRUNNING_MINOR_UPGRADE, eRUNNING_CORRUPTED_INPUT, eNO_STORAGE_MEDIA_ERR, eNO_STORAGE_WRONG_SCHEMA, eCLOSING, eCLOSED, eUNKNOWN );
 
 

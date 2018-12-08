@@ -38,12 +38,24 @@ namespace Record {
     read of the Record data (which is only done once) and writes to the
     Pesistence storage when the Record's data is modified.
 
-    The concrete Record classes are required to the implemented the:
-    void defaultData() throw() method.  This method is responsible for updating
-    all of the concrete Record's Model Point's to the appropriate default
-    values.  Note: A Model Point can be defaulted to the "invalid state" since
-    each Model Point's valid/invalid state is stored as part of the persisent
-    record.
+    The concrete Record classes are required to the implemented the following
+    methods:
+            void defaultData() throw()
+            void connectToModel() throw()
+            void disconnectFromModel() throw()
+
+    The defaultData() method is responsible for updating all of the concrete 
+    Record's Model Point's to the appropriate default values.  Note: A Model 
+    Point can be defaulted to the "invalid state" since each Model Point's 
+    valid/invalid state is stored as part of the persisent record.
+
+    The connectToModel() method is responsible for registering each individual
+    model point for change notifications.  In the callback for the change 
+    notifications, the concrete class is required to generate the evDataModified
+    event.  Note: No other actions are required in the callback methods.
+
+    The disconnectFromModel() method is responsible for cancelling the change
+    notification registrations
  */
 class Base :
     public Api_,
@@ -58,7 +70,7 @@ protected:
     Cpl::Rte::Persistence::Chunk::Handle        m_chunkHdl;
 
     /// My ITC mailbox
-    Cpl::Itc::PostApi&                          m_mbox;
+    Cpl::Rte::MailboxServer&                    m_mbox;
 
     /// Handle to the Record Layer
     Cpl::Rte::Persistence::Record::HandlerApi_* m_recLayerPtr;
@@ -91,7 +103,7 @@ public:
     Base( Cpl::Container::Map<Api_>&     myRecordList,
           unsigned long                  delayWriteTimeInMsec,
           const char*                    name,
-          Cpl::Itc::MailboxServer&       recordLayerMbox,
+          Cpl::Rte::MailboxServer&       recordLayerMbox,
           Cpl::Log::Api&                 eventLogger = Cpl::Log::Loggers::application()
     );
 
@@ -139,15 +151,6 @@ public:
 
 
 protected:
-    /// See Cpl::Rte::Persistence::Record::FsmContext_
-    void connectToModel() throw();
-
-    /// See Cpl::Rte::Persistence::Record::FsmContext_
-    void defaultData() throw();
-
-    /// See Cpl::Rte::Persistence::Record::FsmContext_
-    void disconnectFromModel() throw();
-
     /// See Cpl::Rte::Persistence::Record::FsmContext_
     void issueWrite() throw();
 
