@@ -122,12 +122,6 @@ State="r5"
 Type="2"/>
 </Transition>
 
-<State id="r7"
-Pos="300 -11600"
-Size="2000 1000">
-<Text>Stopping</Text>
-</State>
-
 <Note id="r13"
 Pos="5300 -400"
 Size="8600 1000">
@@ -178,28 +172,6 @@ tellInitialized();</Text>
 <End id="r25"
 Pos="6600 -6800"
 State="r20"
-Type="2"/>
-</Transition>
-
-<Transition id="r23">
-<End id="r48"
-Pos="1300 -11600"
-State="r7"
-Type="1"/>
-<Segment id="r47">
-<Anchor id="r29"
-Pos="1300 -10100">
-<FreeText id="r30"
-Pos="1500 -9734"
-Origin="4">
-<Text>evDisconnected/<p/>
-tellStopped();</Text>
-</FreeText>
-</Anchor>
-</Segment>
-<End id="r28"
-Pos="1300 -4900"
-State="r4"
 Type="2"/>
 </Transition>
 
@@ -510,7 +482,8 @@ Pos="4200 -13600"
 Origin="4">
 <Text>evStop/<p/>
 disconnectFromModel();<p/>
-stopTimer();</Text>
+stopTimer();<p/>
+tellStopped();;</Text>
 </FreeText>
 </Anchor>
 </Segment>
@@ -518,8 +491,8 @@ stopTimer();</Text>
 Pos="1200 -13700"/>
 <Segment id="r71"/>
 <End id="r72"
-Pos="1200 -12600"
-State="r7"
+Pos="1200 -4900"
+State="r4"
 Type="2"/>
 </Transition>
 

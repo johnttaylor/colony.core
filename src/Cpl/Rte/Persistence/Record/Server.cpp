@@ -251,15 +251,14 @@ void Server::notifyRecordStarted( void )
 
         // Update my status
         m_statusMp.write( m_localStatus );
+
+        // Register for change notifications on the 'Default Request Action' MP
+        m_defaultRequestMp.attach( *this );
+
+        // Return the OpenMsg now that ALL Records are 'opened'
+        m_openMsgPtr->returnToSender();
+        m_openMsgPtr = 0;
     }
-
-
-    // Register for change notifications on the 'Default Request Action' MP
-    m_defaultRequestMp.attach( *this );
-
-    // Return the OpenMsg now that ALL Records are 'opened'
-    m_openMsgPtr->returnToSender();
-    m_openMsgPtr = 0;
 }
 
 
@@ -267,7 +266,7 @@ void Server::notifyRecordStarted( void )
 void Server::response( OpenFileMsg& msg )
 {
     m_fileResult = msg.getRequestMsg().getPayload().m_result;
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( OpenFileMsg& msg ): result=%s",  m_fileResult._to_string()) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( OpenFileMsg& msg ): result=%s", m_fileResult._to_string()) );
 
     generateEvent( HandlerFsm_evResponse );
 }

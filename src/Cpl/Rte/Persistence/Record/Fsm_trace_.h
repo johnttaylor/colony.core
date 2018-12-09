@@ -27,7 +27,6 @@ const char* const FsmTraceEvents[] = {
     "Fsm_evStart",
     "Fsm_evStop",
     "Fsm_evReadDone",
-    "Fsm_evDisconnected",
     "Fsm_evLoadDone",
     "Fsm_evDefault",
     "Fsm_evWriteDone",

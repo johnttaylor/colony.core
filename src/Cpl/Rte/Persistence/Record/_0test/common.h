@@ -31,6 +31,7 @@ using namespace Cpl::Rte;
 
 
 /////////////////////////////////////////////////////////////////
+
 class MyRecord : public Cpl::Rte::Persistence::Record::Base
 {
 public:
@@ -40,6 +41,14 @@ public:
     SubscriberComposer<MyRecord, Cpl::Rte::Mp::String>  m_observer2;
     ///
     SubscriberComposer<MyRecord, Cpl::Rte::Mp::String>  m_observer3;
+    ///
+    ModelPointReference_t   m_mpRef1;
+    ///
+    ModelPointReference_t   m_mpRef2;
+    ///
+    ModelPointReference_t   m_mpRef3;
+
+    /// Note: For an 'real' Application the following 'members' are typically hardwire into the concrete class, i.e. typically not data members
     ///
     Cpl::Rte::Mp::String&   m_mp1;
     ///
@@ -66,11 +75,14 @@ public:
               const char*                    defaultValueMp2 = "MP2 default",
               const char*                    defaultValueMp3 = "MP3 default",
               Cpl::Log::Api&                 eventLogger = Cpl::Log::Loggers::application()
-    )
+              )
         :Base( myRecordList, delayWriteTimeInMsec, name, recordLayerMbox, eventLogger )
         , m_observer1( recordLayerMbox, *this, &MyRecord::modelPointNChanged )
         , m_observer2( recordLayerMbox, *this, &MyRecord::modelPointNChanged )
         , m_observer3( recordLayerMbox, *this, &MyRecord::modelPointNChanged )
+        , m_mpRef1(modelPoint1)
+        , m_mpRef2(modelPoint2)
+        , m_mpRef3(modelPoint3)
         , m_mp1(modelPoint1)
         , m_mp2(modelPoint2)
         , m_mp3(modelPoint3)
@@ -78,21 +90,24 @@ public:
         , m_default2( defaultValueMp2 )
         , m_default3( defaultValueMp3 )
     {
+        registerModelPoint( m_mpRef1 );
+        registerModelPoint( m_mpRef2 );
+        registerModelPoint( m_mpRef3 );
     }
 
     /// FSM Action
     void connectToModel() throw()
     {
-        m_mp1.attach( m_observer1 );
-        m_mp2.attach( m_observer2 );
-        m_mp3.attach( m_observer3 );
+        m_mp1.attach( m_observer1, m_mp1.getSequenceNumber() );
+        m_mp2.attach( m_observer2, m_mp2.getSequenceNumber()  );
+        m_mp3.attach( m_observer3, m_mp3.getSequenceNumber()  );
     }
 
     /// FSM Action
     void defaultData() throw()
     {
         m_mp1.write( m_default1 );
-        m_mp3.write( m_default2 );
+        m_mp2.write( m_default2 );
         m_mp3.write( m_default3 );
     }
 
@@ -105,7 +120,7 @@ public:
         m_mp3.detach( m_observer3 );
     }
 
-    // Change notfication
+    // Change notification
     void modelPointNChanged( Cpl::Rte::Mp::String& modelPointThatChanged ) throw()
     {
         generateEvent( Cpl::Rte::Persistence::Record::Fsm_evDataModified );

@@ -26,7 +26,6 @@ ranksep=.4;
 "Idle"->"defaultStarting"[labeldistance = 2.0, taillabel=<evStart / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>tellStarting();<br ALIGN="LEFT"/>defaultData();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterStarting];//Idle Starting
 "defaultStarting"->"Idle"[labeldistance=2.0, headlabel=<evStop / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>tellStopped();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black ltail=clusterStarting];//Starting Idle
 "WaitingOnRead"->"Initialized"[label=<evReadDone / <br ALIGN="LEFT"/>tellInitialized();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingOnRead Initialized
-"Stopping"->"Idle"[label=<evDisconnected / <br ALIGN="LEFT"/>tellStopped();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Stopping Idle
 "WaitingOnRead"->"WritingRecord"[label=<evLoadDone / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>issueWrite();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingOnRead WritingRecord
 "WaitingOnRead"->"ReadDefaulting"[label=<evDefault<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //WaitingOnRead ReadDefaulting
 "ReadDefaulting"->"Defaulting"[label=<evReadDone / <br ALIGN="LEFT"/>tellInitialized();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //ReadDefaulting Defaulting
@@ -39,7 +38,7 @@ ranksep=.4;
 "__C0"->"defaultActive"[labeldistance = 2.0, taillabel=<[isLoadGood()] / <br ALIGN="LEFT"/>connectToModel();<br ALIGN="LEFT"/>markClean();<br ALIGN="LEFT"/>t...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive];//__C0 Active
 "defaultStarting"->"WaitingOnRead"[label=<  > style=dotted];
 "WritingRecord"->"defaultActive"[labeldistance = 2.0, taillabel=<evWriteDone / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>connectToModel();<br ALIGN="LEFT"/>markClean();<br ALIGN="LEFT"/>t...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black lhead=clusterActive];//WritingRecord Active
-"defaultActive"->"Stopping"[labeldistance=2.0, headlabel=<evStop / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>disconnectFromModel();<br ALIGN="LEFT"/>stopTimer...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black ltail=clusterActive];//Active Stopping
+"defaultActive"->"Idle"[labeldistance=2.0, headlabel=<evStop / <br ALIGN="LEFT"/><br ALIGN="LEFT"/>disconnectFromModel();<br ALIGN="LEFT"/>stopTimer...<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black ltail=clusterActive];//Active Idle
 "Clean"->"DelayingWrite"[label=<evDataModified / <br ALIGN="LEFT"/>startTimer();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //Clean DelayingWrite
 "DelayingWrite"->"DelayingWrite"[label=<evDataModified<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //DelayingWrite DelayingWrite
 "DelayingWrite"->"Writing"[label=<evTimerExpired / <br ALIGN="LEFT"/>issueWrite();<br ALIGN="LEFT"/>markClean();<br ALIGN="LEFT"/>>  color=black, fontname=arial, fontcolor=black]; //DelayingWrite Writing
@@ -56,7 +55,7 @@ color=black; style="rounded";
 label=<Starting<br ALIGN="LEFT"/><br ALIGN="LEFT"/>>;
 "WaitingOnRead"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>WaitingOnRead</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"Initialized"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Initialized</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"WritingRecord"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>WritingRecord</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"ReadDefaulting"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>ReadDefaulting</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"Defaulting"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Defaulting</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"defaultStarting"[label=< >,shape=circle, fontsize=8, fixedsize=true, height=0.2, width=0.2, fillcolor=black, style=filled];
 "WriteDefaulting"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>WriteDefaulting</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];};
-"Stopping"[shape=record, color=black, fontname=arial, style=rounded, label=<{<B>Stopping</B><br ALIGN="LEFT"/>|<br ALIGN="LEFT"/>}>];"defaultroot"[label=< >,shape=circle, fontsize=8, fixedsize=true, height=0.2, width=0.2, fillcolor=black, style=filled];
+"defaultroot"[label=< >,shape=circle, fontsize=8, fixedsize=true, height=0.2, width=0.2, fillcolor=black, style=filled];
 subgraph "clusterActive"{fontname=arial; fontsize=8
 color=black; style="rounded";
 label=<Active(H)<br ALIGN="LEFT"/><br ALIGN="LEFT"/>>;
@@ -98,7 +97,6 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
             bool isInIdle(void) const;
             bool isInStarting(void) const;
             bool isInDefaulting(void) const;
-            bool isInStopping(void) const;
             bool isInActive(void) const;
 
 
@@ -124,7 +122,6 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
                 Idle,
                 Starting,
                 Defaulting,
-                Stopping,
                 Active,
                 NUM_STATES  // number of states in the machine
             };

@@ -25,17 +25,17 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
     /* State names */
     const char states[]=
-        "Clean\0DelayingWrite\0Writing\0WaitingOnRead\0Initialized\0WriteDefaulting\0WritingRecord\0ReadDefaulting\0Idle\0Starting\0Defaulting\0Stopping\0Active\0";
+        "Clean\0DelayingWrite\0Writing\0WaitingOnRead\0Initialized\0WriteDefaulting\0WritingRecord\0ReadDefaulting\0Idle\0Starting\0Defaulting\0Active\0";
 
     const unsigned short state_idx[]={
-        0,6,20,28,42,54,70,84,99,104,113,124,133,140};
+        0,6,20,28,42,54,70,84,99,104,113,124,131};
 
     /* Event names */
     const char events[]=
-        "Fsm_evLoadDone\0Fsm_evDisconnected\0Fsm_evDefault\0Fsm_evTimerExpired\0Fsm_evStart\0Fsm_evDataModified\0Fsm_evReadDone\0Fsm_evStop\0Fsm_evWriteDone\0NO_MSG\0";
+        "Fsm_evLoadDone\0Fsm_evDefault\0Fsm_evTimerExpired\0Fsm_evStart\0Fsm_evDataModified\0Fsm_evReadDone\0Fsm_evStop\0Fsm_evWriteDone\0NO_MSG\0";
 
     const unsigned short evt_idx[]={
-        0,15,34,48,67,79,98,113,124,140};
+        0,15,29,48,60,79,94,105,121};
 
     const char* Fsm::getNameByState(unsigned short state) const {
         return states+state_idx[state];
@@ -69,7 +69,6 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
     bool Fsm::isInIdle(void) const {return(((stateVars.stateVar== Idle)) ? (true) : (false));}
     bool Fsm::isInStarting(void) const {return(((stateVars.stateVar== Starting)) ? (true) : (false));}
     bool Fsm::isInDefaulting(void) const {return(((stateVars.stateVarStarting== Defaulting)&&(stateVars.stateVar== Starting)) ? (true) : (false));}
-    bool Fsm::isInStopping(void) const {return(((stateVars.stateVar== Stopping)) ? (true) : (false));}
     bool Fsm::isInActive(void) const {return(((stateVars.stateVar== Active)) ? (true) : (false));}
 
     // Helper to get id of innermost active state
@@ -93,8 +92,6 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
             return DelayingWrite;
         }else if(isInClean()){
             return Clean;
-        }else if(isInStopping()){
-            return Stopping;
         }else if(isInIdle()){
             return Idle;
         }else{
@@ -170,7 +167,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = ReadDefaulting;
-                            FsmTraceEvent(5);
+                            FsmTraceEvent(4);
                         }else if(msg==Fsm_evLoadDone){
                             /* Transition from WaitingOnRead to WritingRecord */
                             evConsumed=1;
@@ -182,7 +179,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = WritingRecord;
-                            FsmTraceEvent(4);
+                            FsmTraceEvent(3);
                         }else if(msg==Fsm_evReadDone){
                             /* Transition from WaitingOnRead to Initialized */
                             evConsumed=1;
@@ -207,7 +204,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = Defaulting;
-                            FsmTraceEvent(5);
+                            FsmTraceEvent(4);
                         }else if(msg==Fsm_evLoadDone){
                             if(isLoadGood()){
                                 /* Transition from Initialized to Active */
@@ -224,7 +221,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                                 /* adjust state variables  */
                                 stateVarsCopy.stateVarStarting = WaitingOnRead;
-                                FsmTraceEvent(9);
+                                FsmTraceEvent(8);
                             }else{
                                 /* Transition from Initialized to WritingRecord */
                                 evConsumed=1;
@@ -236,7 +233,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                                 /* adjust state variables  */
                                 stateVarsCopy.stateVarStarting = WritingRecord;
-                                FsmTraceEvent(10);
+                                FsmTraceEvent(9);
                             } /*end of event selection */
                         }else{
                             /* Intentionally left blank */
@@ -251,7 +248,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = WriteDefaulting;
-                            FsmTraceEvent(5);
+                            FsmTraceEvent(4);
                         }else if(msg==Fsm_evWriteDone){
                             /* Transition from WritingRecord to Active */
                             evConsumed=1;
@@ -266,7 +263,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = WaitingOnRead;
-                            FsmTraceEvent(6);
+                            FsmTraceEvent(5);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */
@@ -284,7 +281,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = WritingRecord;
-                            FsmTraceEvent(4);
+                            FsmTraceEvent(3);
                         }else if(msg==Fsm_evReadDone){
                             /* Transition from ReadDefaulting to Defaulting */
                             evConsumed=1;
@@ -313,7 +310,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = WritingRecord;
-                            FsmTraceEvent(4);
+                            FsmTraceEvent(3);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */
@@ -331,7 +328,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarStarting = WritingRecord;
-                            FsmTraceEvent(6);
+                            FsmTraceEvent(5);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */
@@ -362,23 +359,6 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
                 }
             break; /* end of case Starting  */
 
-            case Stopping:
-                if(msg==Fsm_evDisconnected){
-                    /* Transition from Stopping to Idle */
-                    evConsumed=1;
-
-                    /* Action code for transition  */
-                    tellStopped();
-
-
-                    /* adjust state variables  */
-                    stateVarsCopy.stateVar = Idle;
-                    FsmTraceEvent(3);
-                }else{
-                    /* Intentionally left blank */
-                } /*end of event selection */
-            break; /* end of case Stopping  */
-
             case Active:
 
                 switch (stateVars.stateVarActive) {
@@ -394,7 +374,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarActive = DelayingWrite;
-                            FsmTraceEvent(7);
+                            FsmTraceEvent(6);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */
@@ -408,7 +388,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarActive = DelayingWrite;
-                            FsmTraceEvent(7);
+                            FsmTraceEvent(6);
                         }else if(msg==Fsm_evTimerExpired){
                             /* Transition from DelayingWrite to Writing */
                             evConsumed=1;
@@ -420,7 +400,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarActive = Writing;
-                            FsmTraceEvent(8);
+                            FsmTraceEvent(7);
                         }else{
                             /* Intentionally left blank */
                         } /*end of event selection */
@@ -437,7 +417,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                             /* adjust state variables  */
                             stateVarsCopy.stateVarActive = Writing;
-                            FsmTraceEvent(7);
+                            FsmTraceEvent(6);
                         }else if(msg==Fsm_evWriteDone){
                             if(isDirty()){
                                 /* Transition from Writing to DelayingWrite */
@@ -450,7 +430,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                                 /* adjust state variables  */
                                 stateVarsCopy.stateVarActive = DelayingWrite;
-                                FsmTraceEvent(11);
+                                FsmTraceEvent(10);
                             }else{
                                 /* Transition from Writing to Clean */
                                 evConsumed=1;
@@ -458,7 +438,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                                 /* adjust state variables  */
                                 stateVarsCopy.stateVarActive = Clean;
-                                FsmTraceEvent(12);
+                                FsmTraceEvent(11);
                             } /*end of event selection */
                         }else{
                             /* Intentionally left blank */
@@ -482,18 +462,19 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
                         stateVarsCopy.stateVar = Active;/* entry chain  */
 
-                        FsmTraceEvent(5);
+                        FsmTraceEvent(4);
                     }else if(msg==Fsm_evStop){
-                        /* Transition from Active to Stopping */
+                        /* Transition from Active to Idle */
                         evConsumed=1;
                         
                         /* Action code for transition  */
                         disconnectFromModel();
                         stopTimer();
+                        tellStopped();;
 
 
                         /* adjust state variables  */
-                        stateVarsCopy.stateVar = Stopping;
+                        stateVarsCopy.stateVar = Idle;
                         FsmTraceEvent(1);
                     }else{
                         /* Intentionally left blank */

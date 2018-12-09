@@ -21,6 +21,7 @@
 #include "Cpl/Rte/Persistence/Record/Server.h"
 #include "Cpl/Rte/Persistence/Chunk/FileSystem.h"
 #include "Cpl/Rte/Persistence/Chunk/Server.h"
+#include "Cpl/Io/File/Api.h"
 
 #include "common.h"
 #include <string.h>
@@ -83,19 +84,19 @@ static Cpl::Itc::MailboxServer                  chunkMailbox_;
 static Persistence::Chunk::Request::SAP         chunkSap_( chunkServer_, chunkMailbox_ );
 
 static uint8_t                                          recordLayerbuffer_[MAX_BUF_SIZE_];
-static Cpl::Container::Map<Persistence::Record::Api_>&  recordList_;
+static Cpl::Container::Map<Persistence::Record::Api_>   recordList_;
 static Cpl::Rte::MailboxServer                          recordServerMailbox_;
 static Persistence::Record::Server                      recordServer_( recordLayerbuffer_,
-                                                                       sizeof( recordLayerBuffer_ ),
-                                                                       chunkSap_
+                                                                       sizeof( recordLayerbuffer_ ),
+                                                                       chunkSap_,
                                                                        recordServerMailbox_,
                                                                        recordList_,
                                                                        mp_recordServerStatus_,
                                                                        mp_recordDefaultActionRequest_ );
 
-static MyRecord                                 record1_( recordList_, 0, recordServerMailbox_, mp_rec1Mp1_, mp_rec1Mp2_, mp_rec1Mp3_ );
-static MyRecord                                 record2_( recordList_, 0, recordServerMailbox_, mp_rec2Mp1_, mp_rec2Mp2_, mp_rec2Mp3_ );
-static MyRecord                                 record2_( recordList_, 0, recordServerMailbox_, mp_rec3Mp1_, mp_rec3Mp2_, mp_rec3Mp3_ );
+static MyRecord                                 record1_( recordList_, 0, "Record1", recordServerMailbox_, mp_rec1Mp1_, mp_rec1Mp2_, mp_rec1Mp3_, "Rec1Mp1Default", "Rec1Mp2Default", "Rec1Mp3Default" );
+static MyRecord                                 record2_( recordList_, 0, "Record2", recordServerMailbox_, mp_rec2Mp1_, mp_rec2Mp2_, mp_rec2Mp3_, "Rec2Mp1Default", "Rec2Mp2Default", "Rec2Mp3Default" );
+static MyRecord                                 record3_( recordList_, 0, "Record3", recordServerMailbox_, mp_rec3Mp1_, mp_rec3Mp2_, mp_rec3Mp3_, "Rec3Mp1Default", "Rec3Mp2Default", "Rec3Mp3Default" );
 
 ////////////////////////////////////////////////////////////////////////////////
 static void invalidate_all_records_mps( void )
@@ -129,32 +130,88 @@ static bool are_all_records_mps_valid( void )
     return true;
 }
 
+static bool are_record_values_match( MyRecord& record, const char* mp1Value, const char* mp2Value, const char* mp3Value )
+{
+    int8_t                         mpState;
+    Cpl::Text::FString<MP_MAX_LEN> value;
+    record.m_mp1.read( value, mpState ); if ( Cpl::Rte::ModelPoint::IS_VALID( mpState ) == false || value != mp1Value ) return false;
+    record.m_mp2.read( value, mpState ); if ( Cpl::Rte::ModelPoint::IS_VALID( mpState ) == false || value != mp2Value ) return false;
+    record.m_mp3.read( value, mpState ); if ( Cpl::Rte::ModelPoint::IS_VALID( mpState ) == false || value != mp3Value ) return false;
+    return true;
+}
+
+static Cpl::System::Thread* t1_;
+static Cpl::System::Thread* t2_;
+
 TEST_CASE( "recordserver-open", "[recordserver-open]" )
 {
     CPL_SYSTEM_TRACE_SCOPE( SECT_, "SERVERSTATUS-OPEN test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
+    // Ensure starting conditions
+    Cpl::Io::File::Api::remove( MEDIA_FNAME_ );
     invalidate_all_records_mps();
 
-    Cpl::System::Thread* t1 = Cpl::System::Thread::create( chunkMailbox_, "Chunk" );
-    Cpl::System::Thread* t2 = Cpl::System::Thread::create( recordServerMailbox_, "Record" );
+    t1_ = Cpl::System::Thread::create( chunkMailbox_, "Chunk" );
+    t2_ = Cpl::System::Thread::create( recordServerMailbox_, "Record" );
 
     REQUIRE( are_all_records_mps_valid() == false );
 
     // Load the records
     recordServer_.open();
+    Cpl::System::Api::sleep( 500 );
     REQUIRE( are_all_records_mps_valid() == true );
+    REQUIRE( are_record_values_match( record1_, "Rec1Mp1Default", "Rec1Mp2Default", "Rec1Mp3Default" ) );
+    REQUIRE( are_record_values_match( record2_, "Rec2Mp1Default", "Rec2Mp2Default", "Rec2Mp3Default" ) );
+    REQUIRE( are_record_values_match( record3_, "Rec3Mp1Default", "Rec3Mp2Default", "Rec3Mp3Default" ) );
     recordServer_.close();
 
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+}
+
+TEST_CASE( "recordserver-write", "[recordserver-write]" )
+{
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "SERVERSTATUS-WRITE test" );
+    Cpl::System::Shutdown_TS::clearAndUseCounter();
+
+    // Ensure starting conditions
+    invalidate_all_records_mps();
+
+    REQUIRE( are_all_records_mps_valid() == false );
+
+    // Load the records
+    recordServer_.open();
+    Cpl::System::Api::sleep( 500 );
+    REQUIRE( are_all_records_mps_valid() == true );
+    REQUIRE( are_record_values_match( record1_, "Rec1Mp1Default", "Rec1Mp2Default", "Rec1Mp3Default" ) );
+    REQUIRE( are_record_values_match( record2_, "Rec2Mp1Default", "Rec2Mp2Default", "Rec2Mp3Default" ) );
+    REQUIRE( are_record_values_match( record3_, "Rec3Mp1Default", "Rec3Mp2Default", "Rec3Mp3Default" ) );
+
+    // Update records...
+    record1_.m_mp1.write( "Bob-Rec1Mp1" );
+    record1_.m_mp2.write( "Bob-Rec1Mp2" );
+    record3_.m_mp3.write( "Bob-Rec3Mp3" );
+    Cpl::System::Api::sleep( 500 );
+    REQUIRE( are_record_values_match( record1_, "Bob-Rec1Mp1", "Bob-Rec1Mp2", "Rec1Mp3Default" ) );
+    REQUIRE( are_record_values_match( record2_, "Rec2Mp1Default", "Rec2Mp2Default", "Rec2Mp3Default" ) );
+    REQUIRE( are_record_values_match( record3_, "Rec3Mp1Default", "Rec3Mp2Default", "Bob-Rec3Mp3" ) );
+
+    recordServer_.close();
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+}
+
+TEST_CASE( "recordserver-last", "[recordserver-last]" )
+{
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "SERVERSTATUS-LAST test" );
 
     // Shutdown threads
     chunkMailbox_.pleaseStop();
     recordServerMailbox_.pleaseStop();
     Cpl::System::Api::sleep( 200 ); // allow time for threads to stop
-    REQUIRE( t1->isRunning() == false );
-    REQUIRE( t2->isRunning() == false );
-    Cpl::System::Thread::destroy( *t1 );
-    Cpl::System::Thread::destroy( *t2 );
+    REQUIRE( t1_->isRunning() == false );
+    REQUIRE( t2_->isRunning() == false );
+    Cpl::System::Thread::destroy( *t1_ );
+    Cpl::System::Thread::destroy( *t2_ );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }

@@ -17,7 +17,6 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record  {
 
 enum FSM_EVENT_T {
     Fsm_evLoadDone=0U,
-    Fsm_evDisconnected,
     Fsm_evDefault,
     Fsm_evTimerExpired,
     Fsm_evStart,

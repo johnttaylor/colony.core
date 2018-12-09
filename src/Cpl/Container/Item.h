@@ -107,6 +107,34 @@ protected:
 };
 
 
+/** This template class defines wrapper class - that is makes a reference 
+    'listable'. This class is useful when the Application needs to put a
+    single entity into multiple containers.
+
+    Template Arguments:
+        REFITEM    - The type of the Reference being wrapped.
+        ITEMTYPE   - The Item/Container type
+
+
+ */
+template <class REFITEM, class ITEMTYPE>
+class ReferenceItem : public ITEMTYPE
+{
+public:
+    /// Reference to the item that is being 'containerized'
+    REFITEM & m_reference;
+
+    /// Constructor
+    ReferenceItem( REFITEM& item ): ITEMTYPE(), m_reference( item ) {}
+
+    /** Constructor used ONLY with the child class MapItem: -->special 
+        constructor to allow a Map to be statically allocated.  Only the Map 
+        itself should ever use this constructor -->not intended for Items in a 
+        Map
+     */
+    ReferenceItem( REFITEM& item, const char* ignoreThisParameter_usedToCreateAUniqueConstructor ): ITEMTYPE(ignoreThisParameter_usedToCreateAUniqueConstructor), m_reference( item ) {}
+};
+
 };      // end namespaces
 };
 #endif  // end header latch

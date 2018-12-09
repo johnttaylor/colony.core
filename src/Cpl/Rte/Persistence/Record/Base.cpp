@@ -48,7 +48,7 @@ Base::Base( Cpl::Container::Map<Api_>&     myRecordList,
 
 
 /////////////////////////////////////////
-void Base::registerModelPoint( Cpl::Rte::ModelPoint& mpToAdd )
+void Base::registerModelPoint( ModelPointReference_t& mpToAdd )
 {
     m_points.put( mpToAdd );
 }
@@ -130,13 +130,15 @@ uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. maxDataSize=%lu", m_name(), maxDataSize) );
 
     // Serialize my Record's data (one MP at a time)
-    Cpl::Rte::ModelPoint* pointPtr  = m_points.getFirst();
-    uint8_t*              dstPtr    = (uint8_t*) dstBuffer;
-    uint32_t              filledLen = 0;
-    while ( pointPtr )
+    ModelPointReference_t* mpRefPtr = m_points.getFirst();
+    uint8_t*               dstPtr    = (uint8_t*) dstBuffer;
+    uint32_t               filledLen = 0;
+    while ( mpRefPtr )
     {
+        Cpl::Rte::ModelPoint& mp = mpRefPtr->m_reference;
+
         // Write the MP's name to the record
-        const char* mpName    = pointPtr->getName();
+        const char* mpName    = mp.getName();
         uint16_t    mpNameLen = (uint16_t) strlen( mpName );
         if ( filledLen + Cpl::Rte::Persistence::eNLEN_SIZE + mpNameLen > maxDataSize )
         {
@@ -148,7 +150,7 @@ uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
         filledLen += Cpl::Rte::Persistence::eNLEN_SIZE + mpNameLen;
 
         // Write the MP's data/state to the record
-        size_t bytesWritten = pointPtr->exportData( dstPtr, maxDataSize - filledLen );
+        size_t bytesWritten = mp.exportData( dstPtr, maxDataSize - filledLen );
         if ( bytesWritten == 0 )
         {
             Cpl::System::FatalError::logf( "Cpl::Rte::Persistence::Record::Base::fillWriteBuffer[%s] - Buffer length Error when writing MP(%s) data.", m_name(), mpName );
@@ -157,7 +159,7 @@ uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
         filledLen += bytesWritten;
 
         // Get the next MP to write
-        pointPtr = m_points.next( *pointPtr );
+        mpRefPtr = m_points.next( *mpRefPtr );
     }
 
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. filledLen=%lu", m_name(), filledLen) );
@@ -169,13 +171,15 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. inlen=%lu", m_name(), dataLen) );
 
     // De-serialize the raw record data one MP at a time
-    bool                  result   = true;
-    uint8_t*              srcPtr   = (uint8_t*) srcBuffer;
-    Cpl::Rte::ModelPoint* pointPtr = m_points.getFirst();
-    while ( pointPtr )
+    bool                   result   = true;
+    uint8_t*               srcPtr   = (uint8_t*) srcBuffer;
+    ModelPointReference_t* mpRefPtr = m_points.getFirst();
+    while ( mpRefPtr )
     {
+        Cpl::Rte::ModelPoint& mp = mpRefPtr->m_reference;
+        
         // Get the expected Name
-        const char* expectedMpName    = pointPtr->getName();
+        const char* expectedMpName    = mp.getName();
         uint16_t    expectedMpNameLen = (uint16_t)strlen( expectedMpName );
 
         // In theory this is the case of 'appending' new Model Point(s) to an existing Record
@@ -211,7 +215,7 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
         // Read the MP's data
         srcPtr          += Cpl::Rte::Persistence::eNLEN_SIZE + expectedMpNameLen;
         dataLen         -= Cpl::Rte::Persistence::eNLEN_SIZE + expectedMpNameLen;
-        size_t bytesRead = pointPtr->importData( srcPtr, dataLen );
+        size_t bytesRead = mp.importData( srcPtr, dataLen );
         if ( bytesRead == 0 )
         {
             m_mismatched = true;
@@ -224,7 +228,7 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
         // Get next MP to read
         srcPtr  += bytesRead;
         dataLen -= bytesRead;
-        pointPtr = m_points.next( *pointPtr );
+        mpRefPtr = m_points.next( *mpRefPtr );
     }
 
     // Default the record if there was a read failure, i.e. guarentee the state of the Record if a read error occurred

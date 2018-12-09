@@ -38,6 +38,9 @@ namespace Record {
     read of the Record data (which is only done once) and writes to the
     Pesistence storage when the Record's data is modified.
 
+    The concrete Record classes to call registerModelPoint() - for each of
+    their Model Points - in their constrcutor.
+    
     The concrete Record classes are required to the implemented the following
     methods:
             void defaultData() throw()
@@ -52,7 +55,10 @@ namespace Record {
     The connectToModel() method is responsible for registering each individual
     model point for change notifications.  In the callback for the change 
     notifications, the concrete class is required to generate the evDataModified
-    event.  Note: No other actions are required in the callback methods.
+    event.  When registering for the change notification, the concrete class 
+    needs to register with the MP's current sequence number (do NOT use 'UNKNOWN'
+    for the sequence number value. Note: No other actions are required in the 
+    callback methods.
 
     The disconnectFromModel() method is responsible for cancelling the change
     notification registrations
@@ -62,9 +68,13 @@ class Base :
     public ApiWriter_,
     public FsmEventQueue_
 {
+public:
+    /// Type for a 'private' list of Model Points (See Cpl::Container namespace for constraints about items being in more than one list)
+    typedef Cpl::Container::ReferenceItem<Cpl::Rte::ModelPoint, Cpl::Container::Item> ModelPointReference_t;
+
 protected:
     /// List of model points in the Record
-    Cpl::Container::SList<Cpl::Rte::ModelPoint> m_points;
+    Cpl::Container::SList<ModelPointReference_t> m_points;
 
     /// Chunk handle (i.e. contains details about where my data is stored in the DB file)
     Cpl::Rte::Persistence::Chunk::Handle        m_chunkHdl;
@@ -196,7 +206,7 @@ protected:
               the expected order and the order in media won't match and the
               record will be defaulted (i.e. lose its persistent values)
      */
-    void registerModelPoint( Cpl::Rte::ModelPoint& mpToAdd );
+    void registerModelPoint( ModelPointReference_t& mpToAdd );
 
 protected:
     /// Helper method: FSM Timer expired
