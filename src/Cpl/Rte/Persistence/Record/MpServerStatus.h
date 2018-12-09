@@ -15,7 +15,7 @@
 
 #include "Cpl/Rte/Persistence/Record/ServerStatus.h"
 #include "Cpl/Rte/Mp/Enum.h"
-
+#include "Cpl/Rte/Subscriber.h"
 
 ///
 namespace Cpl {

@@ -24,31 +24,14 @@ namespace Rte {
 class ModelPoint;
 
 /// Forward reference to the RTE Mailbox server -->used to avoid circular dependencies
-class MailboxServer;
+class NotificationApi_;
 
 
-/** This mostly concrete class defines the Subscriber interface - for change
+/** This abstract class defines the Subscriber interface - for change
     notifications - to a Model Points data/state
  */
 class SubscriberApi : public Cpl::Container::ExtendedItem
 {
-protected:
-    /// Internal state of the subscriber.  Note: The state is actual managed by the Model Point
-    int                             m_state;
-
-    /// Pointer to the Model Point the instance is subscribed to
-    ModelPoint*                     m_point;
-
-    /// Reference to subscriber's EventFlag/Mailbox server
-    Cpl::Rte::MailboxServer&        m_mailboxHdl;
-
-    /// Sequence number of the subscriber
-    uint16_t                        m_seqNumber;
-
-public:
-    /// Constructor
-    SubscriberApi( Cpl::Rte::MailboxServer& myMailbox );
-
 public:
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Rte namespace.  The Application should
@@ -67,10 +50,7 @@ public:
 
         This method returns a pointer to the Subscriber's mailbox
       */
-    inline Cpl::Rte::MailboxServer* getMailbox_() const throw()
-    {
-        return &m_mailboxHdl;
-    }
+    virtual NotificationApi_* getNotificationApi_() const throw() = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Rte namespace.  The Application should
@@ -78,10 +58,7 @@ public:
 
         This method is use to set the Subscriber's Model Point reference
       */
-    inline void setModelPoint_( ModelPoint* modelPoint ) throw()
-    {
-        m_point = modelPoint;
-    }
+    virtual void setModelPoint_( ModelPoint* modelPoint ) throw() = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Rte namespace.  The Application should
@@ -92,7 +69,7 @@ public:
         Note: If this method is called BEFORE the setModelPoint() method is
               called then a Fatal Error will be generated.
       */
-    ModelPoint* getModelPoint_() throw();
+    virtual ModelPoint* getModelPoint_() throw() = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Rte namespace.  The Application should
@@ -100,10 +77,7 @@ public:
 
         This method is use to get the Subscriber's internal state
       */
-    inline int getState_() const throw()
-    {
-        return m_state;
-    }
+    virtual int getState_() const throw() = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Rte namespace.  The Application should
@@ -111,10 +85,7 @@ public:
 
         This method is use to set the Subscriber's internal state
       */
-    inline void setState_( int newState ) throw()
-    {
-        m_state = newState;
-    }
+    virtual void setState_( int newState ) throw() = 0;
 
    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
        by other classes in the Cpl::Rte namespace.  The Application should
@@ -122,10 +93,7 @@ public:
 
        This method is use to get the Subscriber's sequence number
      */
-    inline uint16_t getSequenceNumber_() const throw()
-    {
-        return m_seqNumber;
-    }
+    virtual uint16_t getSequenceNumber_() const throw() = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Rte namespace.  The Application should
@@ -133,37 +101,12 @@ public:
 
         This method is use to set the Subscriber's sequence number
       */
-    inline void setSequenceNumber_( uint16_t newSeqNumber ) throw()
-    {
-        m_seqNumber = newSeqNumber;
-    }
+    virtual void setSequenceNumber_( uint16_t newSeqNumber ) throw() = 0;
+
 
 public:
     /// Virtual destructor
     virtual ~SubscriberApi() {}
-};
-
-/////////////////////////////////////////////////////////////////////////////
-
-/** This template class defines a type safe Subscriber
-
-    Template Arguments:
-        MP      - The concrete Model Point Type
- */
-template <class MP>
-class Subscriber : public SubscriberApi
-{
-public:
-    /// Type safe change notification.  See Cpl::Rte::SubscriberApi
-    virtual void modelPointChanged( MP& modelPointThatChanged ) throw() = 0;
-
-public:
-    /// Constructor
-    Subscriber( Cpl::Rte::MailboxServer& myMailbox ):SubscriberApi(myMailbox) {}
-
-protected:
-    /// See Cpl::Rte::SubscriberApi
-    void genericModelPointChanged_( ModelPoint& modelPointThatChanged ) throw() { modelPointChanged( *((MP*) &modelPointThatChanged) ); }
 };
 
 

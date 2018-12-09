@@ -12,7 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Cpl/Rte/SubscriberApi.h"
+#include "Cpl/Rte/Subscriber.h"
 
 ///
 namespace Cpl {

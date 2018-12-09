@@ -11,8 +11,7 @@
 /** @file */
 
 
-#include "SubscriberApi.h"
-#include "ModelPoint.h"
+#include "Subscriber.h"
 #include "Cpl/System/FatalError.h"
 
 using namespace Cpl::Rte;
@@ -20,7 +19,7 @@ using namespace Cpl::Rte;
 
 
 /////////////////////////////
-SubscriberApi::SubscriberApi( Cpl::Rte::MailboxServer& myMailbox )
+SubscriberBase::SubscriberBase( Cpl::Rte::MailboxServer& myMailbox )
     : m_state( 0 )
     , m_point( 0 )
     , m_mailboxHdl( myMailbox )
@@ -28,7 +27,37 @@ SubscriberApi::SubscriberApi( Cpl::Rte::MailboxServer& myMailbox )
 {
 }
 
-ModelPoint* SubscriberApi::getModelPoint_() throw()
+NotificationApi_* SubscriberBase::getNotificationApi_() const throw()
+{
+    return &m_mailboxHdl;
+}
+
+void SubscriberBase::setModelPoint_( ModelPoint* modelPoint ) throw()
+{
+    m_point = modelPoint;
+}
+
+int SubscriberBase::getState_() const throw()
+{
+    return m_state;
+}
+
+void SubscriberBase::setState_( int newState ) throw()
+{
+    m_state = newState;
+}
+
+uint16_t SubscriberBase::getSequenceNumber_() const throw()
+{
+    return m_seqNumber;
+}
+
+void SubscriberBase::setSequenceNumber_( uint16_t newSeqNumber ) throw()
+{
+    m_seqNumber = newSeqNumber;
+}
+
+ModelPoint* SubscriberBase::getModelPoint_() throw()
 {
     if ( m_point == 0 )
     {

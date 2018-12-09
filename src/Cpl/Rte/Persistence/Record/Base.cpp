@@ -30,7 +30,6 @@ Base::Base( Cpl::Container::Map<Api_>&     myRecordList,
 )
     :m_mbox( recordLayerMbox )
     , m_recLayerPtr( 0 )
-  //  , m_timer( *((Cpl::Timer::CounterSource*)&recordLayerMbox), *this, &Base::timerExpired )
     , m_timer( recordLayerMbox, *this, &Base::timerExpired )
     , m_writeDelay( delayWriteTimeInMsec )
     , m_name( name )

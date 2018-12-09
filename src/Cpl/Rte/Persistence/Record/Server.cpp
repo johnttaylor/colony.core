@@ -267,7 +267,7 @@ void Server::notifyRecordStarted( void )
 void Server::response( OpenFileMsg& msg )
 {
     m_fileResult = msg.getRequestMsg().getPayload().m_result;
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( OpenFileMsg& msg ): result=%s", Cpl::Rte::Persistence::Chunk::Request::resultToString( m_fileResult )) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( OpenFileMsg& msg ): result=%s",  m_fileResult._to_string()) );
 
     generateEvent( HandlerFsm_evResponse );
 }
@@ -275,7 +275,7 @@ void Server::response( OpenFileMsg& msg )
 void Server::response( CloseFileMsg& msg )
 {
     m_fileResult = msg.getRequestMsg().getPayload().m_result;
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( CloseFileMsg& msg ): result=%s", Cpl::Rte::Persistence::Chunk::Request::resultToString( m_fileResult )) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( CloseFileMsg& msg ): result=%s", m_fileResult._to_string()) );
 
     generateEvent( HandlerFsm_evStopped );
 }
@@ -283,7 +283,7 @@ void Server::response( CloseFileMsg& msg )
 void Server::response( ClearFileMsg& msg )
 {
     m_fileResult = msg.getRequestMsg().getPayload().m_result;
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( ClearFileMsg& msg ): result=%s", Cpl::Rte::Persistence::Chunk::Request::resultToString( m_fileResult )) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( ClearFileMsg& msg ): result=%s", m_fileResult._to_string()) );
 
     generateEvent( HandlerFsm_evResponse );
 }
@@ -292,7 +292,7 @@ void Server::response( ReadFileMsg& msg )
 {
     m_fileResult  = msg.getRequestMsg().getPayload().m_result;
     m_fileDataLen = msg.getRequestMsg().getPayload().m_handlePtr->m_len;
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( ReadMsg& msg ): result=%s, inLen=%lu", Cpl::Rte::Persistence::Chunk::Request::resultToString( m_fileResult ), m_fileDataLen) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( ReadMsg& msg ): result=%s, inLen=%lu", m_fileResult._to_string(), m_fileDataLen) );
 
     generateEvent( HandlerFsm_evResponse );
 }
@@ -301,7 +301,7 @@ void Server::response( WriteFileMsg& msg )
 {
     m_fileResult  = msg.getRequestMsg().getPayload().m_result;
     m_fileDataLen = msg.getRequestMsg().getPayload().m_handlePtr->m_len;
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( WriteMsg& msg ): result=%s, outLen=%lu", Cpl::Rte::Persistence::Chunk::Request::resultToString( m_fileResult ), m_fileDataLen) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::response( WriteMsg& msg ): result=%s, outLen=%lu", m_fileResult._to_string(), m_fileDataLen) );
 
     generateEvent( HandlerFsm_evResponse );
 }

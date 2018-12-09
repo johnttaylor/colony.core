@@ -378,12 +378,12 @@ void ModelPointCommon_::processSubscriptionEvent_( SubscriberApi& subscriber, Ev
             switch ( event )
             {
                 case eATTACH:
-                    subscriber.getMailbox_()->removePendingChangingNotification_( subscriber );
+                    subscriber.getNotificationApi_()->removePendingChangingNotification_( subscriber );
                     transitionToSubscribed( subscriber );
                     break;
 
                 case eDETACH:
-                    subscriber.getMailbox_()->removePendingChangingNotification_( subscriber );
+                    subscriber.getNotificationApi_()->removePendingChangingNotification_( subscriber );
                     subscriber.setState_( eSTATE_UNSUBSCRIBED );
                     break;
 
@@ -466,7 +466,7 @@ void ModelPointCommon_::transitionToSubscribed( SubscriberApi& subscriber ) thro
 
 void ModelPointCommon_::transitionToNotifyPending( SubscriberApi& subscriber ) throw()
 {
-    subscriber.getMailbox_()->addPendingChangingNotification_( subscriber );
+    subscriber.getNotificationApi_()->addPendingChangingNotification_( subscriber );
     subscriber.setState_( eSTATE_NOTIFY_PENDING );
 }
 

@@ -15,7 +15,7 @@
 
 #include "Cpl/Rte/ModelPoint.h"
 #include "Cpl/Rte/ModelDatabase.h"
-#include "Cpl/Rte/SubscriberApi.h"
+#include "Cpl/Rte/Subscriber.h"
 #include "Cpl/Container/DList.h"
 #include <stdint.h>
 

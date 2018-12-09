@@ -16,6 +16,7 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/Container/DList.h"
 #include "Cpl/Rte/SubscriberApi.h"
+#include "Cpl/Rte/NotificationApi_.h"
 
 
 ///
@@ -40,7 +41,7 @@ namespace Rte {
           actions to wake up the thread.
 
  */
-class MailboxServer : public Cpl::Itc::MailboxServer
+class MailboxServer : public Cpl::Itc::MailboxServer, public NotificationApi_
 {
 protected:
     /// List of pending Model Point Change Notifications
@@ -71,11 +72,11 @@ protected:
      */
     virtual void appProcessEventFlag( uint8_t eventNumber ) throw();
 
-    /** See Cpl::Itc::MailboxServer.  Note: This method performs the actual 
+    /** See Cpl::Itc::MailboxServer.  Note: This method performs the actual
         Model Point change notifications.
      */
     void endOfLoopProcessing() throw();
-    
+
     /// See Cpl::Itc::Mailbox
     bool isPendingActions() throw();
 
@@ -86,19 +87,19 @@ public:
         NEVER call this method.
 
         This method is used add a new 'change notification' to its list
-        of pending change notifications.  Calling this method when the 
+        of pending change notifications.  Calling this method when the
         subscriber is already registered for change notification will cause
         a FATAL ERROR.
 
         This method IS thread safe.
 
-        NOTE: The requirements and/or semantics of Model Point subscription is 
-              that Subscriptions, Notifications, and Cancel-of-Subscriptions 
-              all happen in a SINGLE thread and that thread is the 'Subscribers' 
+        NOTE: The requirements and/or semantics of Model Point subscription is
+              that Subscriptions, Notifications, and Cancel-of-Subscriptions
+              all happen in a SINGLE thread and that thread is the 'Subscribers'
               thread.
      */
     void addPendingChangingNotification_( SubscriberApi& subscriber ) throw();
-    
+
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
     by other classes in the Cpl::Rte namespace.  The Application should
     NEVER call this method.
@@ -109,9 +110,9 @@ public:
 
      This method IS thread safe.
 
-     NOTE: The requirements and/or semantics of Model Point subscription is 
-           that Subscriptions, Notifications, and Cancel-of-Subscriptions 
-           all happen in a SINGLE thread and that thread is the 'Subscribers' 
+     NOTE: The requirements and/or semantics of Model Point subscription is
+           that Subscriptions, Notifications, and Cancel-of-Subscriptions
+           all happen in a SINGLE thread and that thread is the 'Subscribers'
            thread.
      */
     void removePendingChangingNotification_( SubscriberApi& subscriber ) throw();
