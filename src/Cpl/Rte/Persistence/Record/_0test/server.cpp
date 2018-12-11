@@ -188,13 +188,13 @@ TEST_CASE( "recordserver-write", "[recordserver-write]" )
     REQUIRE( are_record_values_match( record3_, "Rec3Mp1Default", "Rec3Mp2Default", "Rec3Mp3Default" ) );
 
     // Update records...
-    record1_.m_mp1.write( "Bob-Rec1Mp1" );
-    record1_.m_mp2.write( "Bob-Rec1Mp2" );
-    record3_.m_mp3.write( "Bob-Rec3Mp3" );
-    Cpl::System::Api::sleep( 500 );
-    REQUIRE( are_record_values_match( record1_, "Bob-Rec1Mp1", "Bob-Rec1Mp2", "Rec1Mp3Default" ) );
+    record1_.m_mp1.write( "BOB-Rec1Mp1" );
+    record1_.m_mp2.write( "BOB-Rec1Mp2" );
+    record3_.m_mp3.write( "BOB-Rec3Mp3" );
+    Cpl::System::Api::sleep( 100 );
+    REQUIRE( are_record_values_match( record1_, "BOB-Rec1Mp1", "BOB-Rec1Mp2", "Rec1Mp3Default" ) );
     REQUIRE( are_record_values_match( record2_, "Rec2Mp1Default", "Rec2Mp2Default", "Rec2Mp3Default" ) );
-    REQUIRE( are_record_values_match( record3_, "Rec3Mp1Default", "Rec3Mp2Default", "Bob-Rec3Mp3" ) );
+    REQUIRE( are_record_values_match( record3_, "Rec3Mp1Default", "Rec3Mp2Default", "BOB-Rec3Mp3" ) );
 
     recordServer_.close();
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );

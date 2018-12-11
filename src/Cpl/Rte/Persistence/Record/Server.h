@@ -51,6 +51,9 @@ private:
     /// Remember if at least one set performed a 'conversion'
     bool                                        m_conversion;
 
+    /// Number of Registered records
+    unsigned                                    m_totalRecordCount;
+
     /// Number of Records that have NOT been succesfully initialized
     unsigned                                    m_recordCount;
 

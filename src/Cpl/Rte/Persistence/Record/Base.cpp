@@ -130,7 +130,7 @@ uint32_t Base::fillWriteBuffer( void* dstBuffer, uint32_t maxDataSize )
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::fillWriteBuffer() [%s]. maxDataSize=%lu", m_name(), maxDataSize) );
 
     // Serialize my Record's data (one MP at a time)
-    ModelPointReference_t* mpRefPtr = m_points.getFirst();
+    ModelPointReference_t* mpRefPtr = m_points.head();
     uint8_t*               dstPtr    = (uint8_t*) dstBuffer;
     uint32_t               filledLen = 0;
     while ( mpRefPtr )
@@ -173,7 +173,7 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
     // De-serialize the raw record data one MP at a time
     bool                   result   = true;
     uint8_t*               srcPtr   = (uint8_t*) srcBuffer;
-    ModelPointReference_t* mpRefPtr = m_points.getFirst();
+    ModelPointReference_t* mpRefPtr = m_points.head();
     while ( mpRefPtr )
     {
         Cpl::Rte::ModelPoint& mp = mpRefPtr->m_reference;

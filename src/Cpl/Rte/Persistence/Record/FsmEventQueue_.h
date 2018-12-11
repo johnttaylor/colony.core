@@ -21,7 +21,7 @@ namespace Cpl { namespace Rte { namespace Persistence { namespace Record {
 /// Event Queue for FSM events.
 class FsmEventQueue_: public Fsm, public Cpl::Container::RingBuffer<FSM_EVENT_T>
 {
-private:
+protected:
     /// Memory for Event queue
     FSM_EVENT_T m_eventQueMemory[4];
 

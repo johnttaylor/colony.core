@@ -35,6 +35,7 @@ Server::Server( uint8_t*                                    recordLayerBuffer,
     :ServerApi( recordLayerMbox )
     , Subscriber<Cpl::Rte::Mp::String>( recordLayerMbox )
     , m_conversion( false )
+    , m_totalRecordCount( 0 )
     , m_recordCount( 0 )
     , m_openCount( 0 )
     , m_closeCount( 0 )
@@ -110,22 +111,32 @@ void Server::request( Cpl::Itc::OpenRequest::OpenMsg& msg )
     }
 
     // Housekeeping
-    m_conversion    = false;
-    m_recordCount   = 0;
-    m_openCount     = 0;
-    m_openMsgPtr    = &msg;
-    m_localStatus    = ServerStatus::eOPENING;
+    m_conversion       = false;
+    m_totalRecordCount = 0;
+    m_recordCount      = 0;
+    m_openMsgPtr       = &msg;
+    m_localStatus      = ServerStatus::eOPENING;
     m_statusMp.write( m_localStatus );
 
-    // Start all registered records 
+    // Determine the number of registered records
     Api_* recordPtr = m_records.first();
     while ( recordPtr )
     {
-        m_openCount++;
+        m_totalRecordCount++;
+        recordPtr = m_records.next( *recordPtr );
+    }
+    m_openCount  = m_totalRecordCount;
+    m_closeCount = m_totalRecordCount;
+
+    // Start all registered records (MUST be done AFTER I have obtained my total record count) 
+    recordPtr = m_records.first();
+    while ( recordPtr )
+    {
         recordPtr->start( *this );
         recordPtr = m_records.next( *recordPtr );
     }
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request::OpenMsg - record count=%d", m_openCount) );
+
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request::OpenMsg - record count=%d", m_totalRecordCount) );
 
 
     // Start the Record Handler
@@ -140,7 +151,7 @@ void Server::request( Cpl::Itc::OpenRequest::OpenMsg& msg )
 
 void Server::request( Cpl::Itc::CloseRequest::CloseMsg& msg )
 {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request::CloseMsg") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request::CloseMsg. m_closeCount=%d", m_closeCount) );
 
     // Something is BAD if trying to close an already closed DB
     if ( getInnermostActiveState() == Idle )
@@ -149,7 +160,6 @@ void Server::request( Cpl::Itc::CloseRequest::CloseMsg& msg )
     }
 
     // Housekeeping
-    m_closeCount  = 0;
     m_closeMsgPtr = &msg;
     m_statusMp.write( ServerStatus::eCLOSING );
     m_defaultRequestMp.detach( *this );
@@ -158,10 +168,11 @@ void Server::request( Cpl::Itc::CloseRequest::CloseMsg& msg )
     Api_* recordPtr = m_records.first();
     while ( recordPtr )
     {
-        m_closeCount++;
         recordPtr->stop();
         recordPtr = m_records.next( *recordPtr );
     }
+
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request::CloseMsg. m_closeCount=%d", m_closeCount) );
 }
 
 /////////////////////////////////
@@ -204,7 +215,7 @@ void Server::notifyRecordConverted( void )
 
 void Server::notifyRecordStopped( void )
 {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::notifyRecordStopped") );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::notifyRecordStopped. m_closeCount=%d", m_closeCount) );
 
     // Something is BAD if my record is stopped and the Record Handler has NOT be requested to stop
     if ( !m_closeMsgPtr )
