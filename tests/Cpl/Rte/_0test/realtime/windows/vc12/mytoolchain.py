@@ -40,6 +40,9 @@ base_release = BuildValues()        # Do NOT comment out this line
 base_release.cflags  = '/W3 /WX /EHsc'  # /EHsc enables exceptions
 base_release.cflags += ' /D "USE_CPL_SYSTEM_ASSERT_MACROS" /D "CATCH_CONFIG_FAST_COMPILE" /D "CATCH_CONFIG_DISABLE_MATCHERS" '
 
+# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
+base_release.firstobjs = r'..\src\Cpl\Rte\_0test\*.obj'
+
 # Set project specific 'optimzed' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
 optimzed_release.cflags = '/O2'

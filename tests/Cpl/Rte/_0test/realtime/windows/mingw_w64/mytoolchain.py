@@ -22,6 +22,8 @@
 
 # get definition of the Options strcuture
 from nqbplib.base import BuildValues
+from nqbplib.utils import source_list_to_object_list
+from nqbplib.my_globals import NQBP_PKG_ROOT
 
 
 #===================================================
@@ -37,6 +39,9 @@ base_release.cflags    = '-m32 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -
 base_release.cflags   += ' -DCATCH_CONFIG_FAST_COMPILE -DCATCH_CONFIG_DISABLE_MATCHERS '
 base_release.linkflags = '-m32 -fprofile-arcs'
 base_release.linklibs  = '-lgcov'
+
+# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
+base_release.firstobjs = source_list_to_object_list( NQBP_PKG_ROOT(), r'src\Cpl\Rte\_0test', ['c','cpp'], 'o', '..')
 
 # Set project specific 'optimzed' options
 optimzed_release = BuildValues()    # Do NOT comment out this line

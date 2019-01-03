@@ -34,12 +34,17 @@ FINAL_OUTPUT_NAME = 'a.out'
 #
 # For build config/variant: "Release" (aka posix build variant)
 #
+# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
+testobjs = r'../src/Cpl/Rte/_0test/*.o'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
 base_release.cflags    = '-m32 -std=c++11 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
 base_release.linkflags = '-m32 -fprofile-arcs'
 base_release.linklibs  = '-lgcov -lpthread'
+
+# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
+base_release.firstobjs = testobjs
 
 # Set project specific 'optimzed' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
@@ -66,6 +71,9 @@ base_cpp11.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++ -fprofile-arcs -ft
 base_cpp11.linkflags  = '-m64 -fprofile-arcs -std=c++11'
 base_cpp11.linklibs   = '-lgcov -lpthread'
 
+# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
+base_cpp11.firstobjs =  testobjs
+
 # Set 'Optimized' options
 optimzed_cpp11.cflags = '-O3'
 
@@ -86,6 +94,9 @@ debug_posix64    = BuildValues()
 base_posix64.cflags    = '-m64 -std=c++11 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
 base_posix64.linkflags = '-fprofile-arcs'
 base_posix64.linklibs  = '-lgcov -lpthread'
+
+# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
+base_posix64.firstobjs =  testobjs
 
 # Set project specific 'optimzed' options
 optimzed_posix64.cflags = '-O3'
