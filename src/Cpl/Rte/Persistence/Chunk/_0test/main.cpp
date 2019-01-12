@@ -25,12 +25,6 @@
 #include "Cpl/Rte/Persistence/Chunk/Handle.h"
 
 
-/// This method is used as part of 'forcing' this object to being actually 
-/// linked during the NQBP link process (it is artifact of linking libraries 
-/// and how CATCH auto-registers (via static objects) test case
-void link_chunk( void ) {}
-
-
 #define SECT_     "_0test"
 
 
