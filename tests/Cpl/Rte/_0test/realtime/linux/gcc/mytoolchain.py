@@ -35,7 +35,7 @@ FINAL_OUTPUT_NAME = 'a.out'
 # For build config/variant: "Release" (aka posix build variant)
 #
 # Link unittest directory by object module so that Catch's self-registration mechansim 'works'
-testobjs = r'../src/Cpl/Rte/_0test/*.o'
+testobjs = '_BUILT_DIR_.src/Cpl/Rte/_0test'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line

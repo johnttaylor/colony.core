@@ -22,8 +22,6 @@
 
 # get definition of the Options strcuture
 from nqbplib.base import BuildValues
-from nqbplib.utils import source_list_to_object_list
-from nqbplib.my_globals import NQBP_PKG_ROOT
 
 
 #===================================================
@@ -33,6 +31,9 @@ from nqbplib.my_globals import NQBP_PKG_ROOT
 # Set the name for the final output item
 FINAL_OUTPUT_NAME = 'a.exe'
 
+# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
+unit_test_objects = '_BUILT_DIR_.src/Cpl/Rte/_0test'
+
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
 base_release.cflags    = '-m32 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
@@ -40,8 +41,7 @@ base_release.cflags   += ' -DCATCH_CONFIG_FAST_COMPILE -DCATCH_CONFIG_DISABLE_MA
 base_release.linkflags = '-m32 -fprofile-arcs'
 base_release.linklibs  = '-lgcov'
 
-# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
-base_release.firstobjs = source_list_to_object_list( NQBP_PKG_ROOT(), r'src\Cpl\Rte\_0test', ['c','cpp'], 'o', '..')
+base_release.firstobjs = unit_test_objects
 
 # Set project specific 'optimzed' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
@@ -70,6 +70,8 @@ base_cpp11.cflags    += ' -DCATCH_CONFIG_FAST_COMPILE -DCATCH_CONFIG_DISABLE_MAT
 base_cpp11.linkflags  = '-m32 -fprofile-arcs'
 base_cpp11.linklibs   = '-lgcov'
 
+base_cpp11.firstobjs = unit_test_objects
+
 # Set 'Optimized' options
 optimzed_cpp11.cflags = '-O3'
 
@@ -90,6 +92,8 @@ base_win64.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -f
 base_win64.cflags    += ' -DCATCH_CONFIG_FAST_COMPILE -DCATCH_CONFIG_DISABLE_MATCHERS '
 base_win64.linkflags  = '-m64 -fprofile-arcs'
 base_win64.linklibs   = '-lgcov'
+
+base_win64.firstobjs = unit_test_objects
 
 # Set 'Optimized' options
 optimzed_cpp11.cflags = '-O3'
