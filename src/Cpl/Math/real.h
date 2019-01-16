@@ -51,17 +51,18 @@ namespace Cpl { namespace Math {
 template <class T>
 bool almostEquals( T a, T b, T epsilon )
     {
+    // Filter out NaN (always return false since by the IEEE standard NaN != NaN)
+    if ( std::isnan(a) || std::isnan(b) )
+        {
+        return false;
+        }
+
     // Try the 'quick' case (also handles infinites)
     if ( a == b )
         {
         return true;
         }
 
-    // Filter out NaN (always return false since by the IEEE standard NaN != NaN)
-    if ( std::isnan(a) || std::isnan(b) )
-        {
-        return false;
-        }
 
     // Handle the case of one of the arguments being zero or close to zero
     T diff = std::abs( a - b );
