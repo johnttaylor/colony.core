@@ -20,7 +20,7 @@
 #           
 #---------------------------------------------------------------------------
 
-# get definition of the Options strcuture
+# get definition of the Options structure
 from nqbplib.base import BuildValues
 
 
@@ -41,7 +41,7 @@ base_release.linkflags = '-m32 -fprofile-arcs'
 base_release.linklibs  = '-lgcov'
 base_release.firstobjs = unit_test_objects
 
-# Set project specific 'optimzed' options
+# Set project specific 'optimized' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
 optimzed_release.cflags = '-O3'
 
@@ -103,13 +103,13 @@ release_opts = { 'user_base':base_release,
                  'user_debug':debug_release
                }
                
-# Add new dictionary of for new build configuraiton options
+# Add new dictionary of for new build configuration options
 cpp11_opts = { 'user_base':base_cpp11, 
                'user_optimized':optimzed_cpp11, 
                'user_debug':debug_cpp11
              }
   
-# Add new dictionary of for new build configuraiton options
+# Add new dictionary of for new build configuration options
 win64_opts = { 'user_base':base_win64,
                'user_optimized':optimzed_win64,
                'user_debug':debug_win64
@@ -117,7 +117,7 @@ win64_opts = { 'user_base':base_win64,
                
         
 # Add new variant option dictionary to # dictionary of 
-# build varaints
+# build variants
 build_variants = { 'win32':release_opts,
                    'win64':win64_opts,
                    'cpp11':cpp11_opts,
