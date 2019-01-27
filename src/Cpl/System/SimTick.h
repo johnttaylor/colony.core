@@ -27,10 +27,10 @@
 #endif
 
 
-/** The amount of (real) time, in milliseconds, for the simulated-tick engine to
-    wait for at least one response from a simulated-tick-thread before aborting
-    an advance() command (i.e. declaring all threads terminated OR deadlocked)
- */
+ /** The amount of (real) time, in milliseconds, for the simulated-tick engine to
+     wait for at least one response from a simulated-tick-thread before aborting
+     an advance() command (i.e. declaring all threads terminated OR deadlocked)
+  */
 #ifndef OPTION_CPL_SYSTEM_SIM_TICK_NO_ACTIVITY_LIMIT
 #define OPTION_CPL_SYSTEM_SIM_TICK_NO_ACTIVITY_LIMIT    (2*1000)
 #endif
@@ -202,7 +202,7 @@ namespace System {
            defined.
 
         2) Compile & Link the src/Cpl/System/_simtick directory.  Also do NOT
-           compile/link the Src/Cpl/System/xxx/_realtime directories
+           compile/link the src/Cpl/System/xxx/_realtime directories
 
     o Typically thats all that needs to be done. The only additional work is if
       application creates thread(s) that have an application specific (i.e. not
@@ -309,14 +309,14 @@ public:
 
 
 public:
-    /** This PRIVATE method is used during thread creation to insert the
+    /** This COMPONENT Scoped method is used during thread creation to insert the
         necessary hooks (per thread) for the simulate tick engine.  If
         'useSimTicks' is false then thread does NOT use simulated time. This
         method SHOULD NEVER be called by the application.
      */
     static void threadInit_( bool useSimTicks=true ) throw();
 
-    /** This PRIVATE method is used during thread deletion to insert the
+    /** This COMPONENT Scoped method is used during thread deletion to insert the
         necessary hooks (per thread) for the simulate tick engine. This
         method SHOULD NEVER be called by the application.
      */

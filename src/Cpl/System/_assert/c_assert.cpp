@@ -9,31 +9,14 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
-#include "Cpl/System/FastLock.h"
+#include "c_assert.h"
+#include "Cpl/System/FatalError.h"
 
-
-//////////////////////////////////////////////////////////////////////////////
-Cpl::System::FastLock::FastLock( void )
+void cpl_system_assert_c_wrapper( bool true_expression, const char* file, unsigned line, const char* func )
 {
+    if ( !true_expression )
+    { 
+        Cpl::System::FatalError::logf( "ASSERT Failed at: file=%s, line=%d, func=%s\n", file, line, func );
+    }
 }
-
-
-Cpl::System::FastLock::~FastLock( void )
-{
-}
-
-//////////////////////////////////////////////////////////////////////////////
-void Cpl::System::FastLock::lock( void )
-{
-    m_flock.lock();
-}
-
-
-void Cpl::System::FastLock::unlock( void )
-{
-    m_flock.unlock();
-}
-
-
-
 

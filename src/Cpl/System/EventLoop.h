@@ -1,5 +1,5 @@
-#ifndef Cpl_System_Framework_h_
-#define Cpl_System_Framework_h_
+#ifndef Cpl_System_EventLoop_h_
+#define Cpl_System_EventLoop_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -26,7 +26,7 @@
 #define OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD       1  //!< 1 msec timeout, aka 1 msec timer resolution for Software Timers
 #endif
 
- ///
+///
 namespace Cpl {
 ///
 namespace System {
@@ -36,7 +36,7 @@ namespace System {
     an event (and after the timer and event flags have been processed).
 
     Other event processing modules can signal/wake-up the Event Loop at any
-    time (with no unintended side effects) by signaling the Event Loop 
+    time (with no unintended side effects) by signaling the Event Loop
     instance.
  */
 class EventLoopCallback
@@ -66,7 +66,7 @@ public:
     2) A Software Timer expiring (Cpl::System::Timer)
     3) A Event Flag was set( Cpl::System::EventFlag)
 
-    To receive a callbacks when Event Flags are set, the application must create 
+    To receive a callbacks when Event Flags are set, the application must create
     a child class and provide its own implementation of the processEventFlag()
     method.
 
@@ -86,18 +86,18 @@ class EventLoop : public Runnable, public EventFlag, public Signable, public Tim
 public:
     /** Constructor. The 'timeOutPeriodInMsec' parameter specifies how
         long the EventLoop will wait for an event before timing out and
-        processing the software timers.  The value of 'timeOutPeriodInMsec' is 
+        processing the software timers.  The value of 'timeOutPeriodInMsec' is
         the resolution of the timing source for the Software Timers, i.e. the
-        event loop will 'wake-up' at least every 'timeOutPeriodInMsec' 
+        event loop will 'wake-up' at least every 'timeOutPeriodInMsec'
         milliseconds.
 
-        A fatal error is generated if 'timeOutPeriodInMsec' is set to zero.  
+        A fatal error is generated if 'timeOutPeriodInMsec' is set to zero.
 
         The event processing can be extended up to 3 additional event processors.
         The extra event processors are called every event cycle AFTER the
         Event Flag and Timers are processed.
      */
-    EventLoop( unsigned long      timeOutPeriodInMsec  = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD, 
+    EventLoop( unsigned long      timeOutPeriodInMsec  = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD,
                EventLoopCallback* extraEventProcessor1 = 0,
                EventLoopCallback* extraEventProcessor2 = 0,
                EventLoopCallback* extraEventProcessor3 = 0 );
@@ -109,8 +109,8 @@ public:
 protected:
     /** This method is used (by the concrete child class(es)) to process one
         or more Event Flags.  This method is called when at least one Event
-        Flag was set. The method is called N consecutive times - one call for 
-        each Event Flag that is set.  The 'eventNumber' (which is zero based) 
+        Flag was set. The method is called N consecutive times - one call for
+        each Event Flag that is set.  The 'eventNumber' (which is zero based)
         identifies which Event Flag is/was set.
 
         The default implementation of this method does NOTHING.
@@ -128,7 +128,7 @@ public:
 public:
     /// See Cpl::System::Runnable
     void pleaseStop();
-    
+
 
 protected:
     /// See Cpl::System::Runnable
@@ -154,7 +154,7 @@ protected:
 
     /// Semaphore associated with the mailbox (note: the Thread semaphore is NOT used)
     Cpl::System::Semaphore  m_sema;
-    
+
     /// Additional event processing
     EventLoopCallback*      m_processor1;
 

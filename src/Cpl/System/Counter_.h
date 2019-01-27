@@ -1,31 +1,33 @@
 #ifndef Cpl_System_Counter_h_
 #define Cpl_System_Counter_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2018  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "Cpl/Container/Item.h"
 
 
 ///
-namespace Cpl { namespace System {
+namespace Cpl {
+///
+namespace System {
 
 
 /** This abstract class defines the call-back interface for a Counter object.
     A Counter object is used to maintain a counter down mechanism for tracking
-    the time remaining for an individual timer.  
-    
-    The Counter interface is NOT inherently thread safe.  milliseconds 
+    the time remaining for an individual timer.
+
+    The Counter interface is NOT inherently thread safe.  milliseconds
  */
-class CounterCallback_: public Cpl::Container::ExtendedItem
+class CounterCallback_ : public Cpl::Container::ExtendedItem
 {
 public:
     /// Notification of the count reaching zero
@@ -57,7 +59,7 @@ public:
     /// Register for notification
     virtual void attach( CounterCallback_& clientToCallback ) throw() = 0;
 
-    /** Unregister for notification.  Returns true if the client was currently 
+    /** Unregister for notification.  Returns true if the client was currently
         attached/registered; else false is returned.
      */
     virtual bool detach( CounterCallback_& clientToCallback ) throw() = 0;
@@ -66,7 +68,7 @@ public:
         counter ticks.
      */
     virtual unsigned long msecToCounts( unsigned long durationInMsecs ) throw() = 0;
-    
+
 public:
     /// Virtual Destructor
     virtual ~CounterSource_() {}

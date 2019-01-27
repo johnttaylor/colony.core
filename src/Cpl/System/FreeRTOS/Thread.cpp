@@ -36,7 +36,7 @@ static void removeThreadFromActiveList_( Thread& thread );
 #ifdef USE_CPL_SYSTEM_FREERTOS_NATIVE_THREAD 
 namespace {
 
-    /// This class is used to turn the entry/native/main thread into a Cpl::System::Thread (i.e. add the thread semaphore)    
+/// This class is used to turn the entry/native/main thread into a Cpl::System::Thread (i.e. add the thread semaphore)    
 class RegisterInitHandler_ : public Cpl::System::StartupHook_,
     public Cpl::System::Runnable
 {
@@ -51,14 +51,14 @@ protected:
 
 public:
     ///
-    RegisterInitHandler_() :StartupHook_( eSYSTEM ) {}
+    RegisterInitHandler_():StartupHook_( eSYSTEM ) {}
 
 
 protected:
     ///
     void notify( InitLevel_T init_level )
     {
-    // Create a thread object for the native thread
+        // Create a thread object for the native thread
         m_running = true;
         new Cpl::System::FreeRTOS::Thread( "main", *this );
     }
@@ -97,7 +97,7 @@ Thread::Thread( const char* threadName, Cpl::System::Runnable& dummyRunnable )
     }
 
     // Plant the address of my TLS array into FreeRTOS's TCB
-    vTaskSetApplicationTaskTag( m_threadHandle, (TaskHookFunction_t)this );
+    vTaskSetApplicationTaskTag( m_threadHandle, (TaskHookFunction_t) this );
 
     // Add the native thread to the list of active threads
     addThreadToActiveList_( *this );
@@ -108,7 +108,7 @@ Thread::Thread( Cpl::System::Runnable&   runnable,
                 const char*              name,
                 int                      priority,
                 unsigned                 stackSize
-                )
+)
     :m_runnable( runnable ),
     m_name( name ),
     m_threadHandle( NULL )
@@ -122,10 +122,11 @@ Thread::Thread( Cpl::System::Runnable&   runnable,
     // Calculate stack size in terms of 'depth' (not bytes)
     if ( stackSize == 0 )
     {
-        stackSize = OPTION_CPL_SYSTEM_FREERTOS_DEFAULT_STACK_SIZE >> sizeof(StackType_t)/2;
-    } else
+        stackSize = OPTION_CPL_SYSTEM_FREERTOS_DEFAULT_STACK_SIZE >> sizeof( StackType_t ) / 2;
+    }
+    else
     {
-        stackSize = stackSize >> sizeof(StackType_t)/2; 
+        stackSize = stackSize >> sizeof( StackType_t ) / 2;
     }
 
 
@@ -144,7 +145,7 @@ Thread::~Thread()
     //       of the associated Runnable object complete.  If you do
     //       need to kill a thread - be dang sure that it is state such
     //       that it is ok to die - i.e. it has released all of its acquired
-    //       resources: mutexs, semaphores, file handles, etc.
+    //       resources: mutexes, semaphores, file handles, etc.
     if ( m_runnable.isRunning() )
     {
         // Ask the runnable object nicely to stop 
@@ -312,7 +313,7 @@ Cpl::System::Thread* Cpl::System::Thread::create( Runnable&   runnable,
                                                   int         stackSize,
                                                   void*       stackPtr,
                                                   bool        allowSimTicks
-                                                  )
+)
 {
     return new Cpl::System::FreeRTOS::Thread( runnable, name, priority, stackSize );
 }

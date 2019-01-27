@@ -63,16 +63,16 @@ public:
               memory. Stack memory is allocated from the HEAP
 
             o If zero is passed as the stack size, then the default stack size
-              is set based on the OPTION_CPL_SYSTEM_FREERTOS_DEFAULT_STACK_SIZE 
+              is set based on the OPTION_CPL_SYSTEM_FREERTOS_DEFAULT_STACK_SIZE
               parameter.
      */
     Thread( Runnable&      runnable,
             const char*    name,
             int            priority      = CPL_SYSTEM_THREAD_PRIORITY_NORMAL,
             unsigned       stackSize     = 0
-            );
+    );
 
-      /// Destructor
+    /// Destructor
     ~Thread();
 
 public:
@@ -108,8 +108,8 @@ protected:
 
 
 public:
-    /** Private constructor to convert the native FreeRTOS thread to a Cpl Thread.
-        THIS CONSTRUCTOR SHOULD NEVER BE USED BY THE APPLICATION!
+    /** COMPONENT Scoped constructor to convert the native FreeRTOS thread to a 
+        Cpl Thread. THIS CONSTRUCTOR SHOULD NEVER BE USED BY THE APPLICATION!
      */
     Thread( const char* threadName, Cpl::System::Runnable& dummyRunnable );
 
@@ -119,7 +119,7 @@ public:
         working with the Arduino platform/framework where it creates
         the first/main FreeRTOS thread.
      */
-    static void makeNativeMainThreadACplThread(void);
+    static void makeNativeMainThreadACplThread( void );
 
 public:
     /// Housekeeping
@@ -131,11 +131,11 @@ public:
     a CPL thread.  This class should only be used when the 'application'
     contains active threads there were not created through the CPL
     libraries APIs.  For example: On the Arduino Feather52 platform,
-    the Arduino framework creates the 'main' thread.  
+    the Arduino framework creates the 'main' thread.
 
     ** ONLY USE THIS CLASS IF YOU KNOW WHAT YOU ARE DOING **
  */
-class MakeCurrentThreadACplThread: public Cpl::System::Runnable
+class MakeCurrentThreadACplThread : public Cpl::System::Runnable
 {
 protected:
     // Empty run function
@@ -150,11 +150,11 @@ protected:
 public:
     /// Converts the native thread to a CPL thread
     MakeCurrentThreadACplThread( const char* threadName="main" )
-        {
+    {
         // Create a thread object for the native thread
         m_running = true;
         new Cpl::System::FreeRTOS::Thread( threadName, *this );
-        }
+    }
 };
 
 

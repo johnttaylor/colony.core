@@ -1,15 +1,15 @@
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014 John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014 John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /*
-    Implemenation of the System::FatalError interface using the default Output 
+    Implementation of the System::FatalError interface using the default Output
     stream from the Trace engine.  Side effect of this decision is even if
     Trace is not being used, the application must implement the
     Cpl::System::Trace::getDefaultOutputStream_() method.
@@ -43,69 +43,69 @@ static Cpl::Text::FString<CPL_SYSTEM_FREERTOS_FATAL_ERROR_BUFSIZE> buffer_;
 
 ////////////////////////////////////////////////////////////////////////////////
 void FatalError::log( const char* message )
-    {
+{
     if ( xTaskGetSchedulerState() == taskSCHEDULER_RUNNING )
-        {
+    {
         Cpl::Io::Output* ptr = Cpl::System::Trace::getDefaultOutputStream_();
 
         ptr->write( EXTRA_INFO );
         ptr->write( message );
-        ptr->write( "\n" ); 
+        ptr->write( "\n" );
 
         // Allow time for the error message to be outputted
-        Cpl::System::Api::sleep(250);
-        }
-
-    Shutdown::failure( OPTION_CPL_SYSTEM_FATAL_ERROR_EXIT_CODE );
+        Cpl::System::Api::sleep( 250 );
     }
 
+    Shutdown::failure( OPTION_CPL_SYSTEM_FATAL_ERROR_EXIT_CODE );
+}
+
 void FatalError::log( const char* message, size_t value )
-    {
+{
     if ( xTaskGetSchedulerState() == taskSCHEDULER_RUNNING )
-        {
+    {
         int              dummy = 0;
         Cpl::Io::Output* ptr   = Cpl::System::Trace::getDefaultOutputStream_();
 
         ptr->write( EXTRA_INFO );
         ptr->write( message );
         ptr->write( ". v:= " );
-        ptr->write( Cpl::Text::sizetToStr( value, buffer_.getBuffer(dummy), SIZET_SIZE, 16 ) );
-        ptr->write( "\n" ); 
+        ptr->write( Cpl::Text::sizetToStr( value, buffer_.getBuffer( dummy ), SIZET_SIZE, 16 ) );
+        ptr->write( "\n" );
 
         // Allow time for the error message to be outputted
-        Cpl::System::Api::sleep(150);
-        }
+        Cpl::System::Api::sleep( 150 );
+    }
 
     Shutdown::failure( OPTION_CPL_SYSTEM_FATAL_ERROR_EXIT_CODE );
-    }
+}
 
 
 void FatalError::logf( const char* format, ... )
-    {
+{
     va_list ap;
-    va_start(ap, format);
+    va_start( ap, format );
 
     if ( xTaskGetSchedulerState() == taskSCHEDULER_RUNNING )
-        {
+    {
         buffer_ = EXTRA_INFO;
         buffer_.vformatAppend( format, ap );
         Cpl::System::Trace::getDefaultOutputStream_()->write( buffer_ );
-        }
+    }
 
     Shutdown::failure( OPTION_CPL_SYSTEM_FATAL_ERROR_EXIT_CODE );
-    }
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void FatalError::logRaw( const char* message )
-    {
+{
     log( message );
-    }
+}
 
 void FatalError::logRaw( const char* message, size_t value )
-    {
+{
     log( message, value );
-    }
+}
 
 
 

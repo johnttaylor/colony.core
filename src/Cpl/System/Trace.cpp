@@ -248,7 +248,7 @@ void Trace::setThreadFilter_( const char* threadName1,
                               const char* threadName2,
                               const char* threadName3,
                               const char* threadName4
-                              )
+)
 {
     Locks_::tracing().lock();
 

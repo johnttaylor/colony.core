@@ -29,7 +29,7 @@ namespace System {
 
 /** This abstract class defines the interface to generated a 'Event Flag'. Event
     Flags are used to indicate that an 'event' has occurred.  Each Event Flag
-    is represent by a bit the Cpl_System_Event_Flags_T data type.  
+    is represent by a bit the Cpl_System_Event_Flags_T data type.
 
     Individual event flags can be viewed as binary semaphores with respect
     to be signaled/waiting (though waiting is done on the thread's entire set
@@ -44,7 +44,7 @@ class EventFlag
 {
 public:
     /** This operation is called by clients to set one or more Event Flags.
-        Each bit in 'events' is different Event Flag.  
+        Each bit in 'events' is different Event Flag.
 
         This method can ONLY be called from a thread context.
      */
@@ -52,7 +52,7 @@ public:
 
     /** This operation is similar to notifyEvents(), except that it sets one
         event flags.  The 'eventNumber' is the bit number (zero based) of the
-        Event Flag to set.  
+        Event Flag to set.
 
         This method can ONLY be called from a thread context.
      */

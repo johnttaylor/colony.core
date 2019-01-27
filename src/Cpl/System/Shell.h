@@ -48,7 +48,7 @@ public:
 
 
 /*
-** PRIVATE SYMBOLS.  The application should NEVER directly use/references these symbols.
+** COMPONENT SCOPED SYMBOLS.  The application should NEVER directly use/references these symbols.
 */
 /// Defer the definition of the target specific 'null device' to the application's 'platform'
 #define CPL_SYSTEM_SHELL_NULL_DEVICE_           CPL_SYSTEM_SHELL_NULL_DEVICE_x_MAP

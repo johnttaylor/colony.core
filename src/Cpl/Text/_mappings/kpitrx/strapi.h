@@ -26,16 +26,21 @@
 #include <string.h>
 
 
+#include <stdio.h> // For sprintf
+
 #define HAVE_CPL_TEXT_STRCASECMP
 #define HAVE_CPL_TEXT_STRNCASECMP
-#define HAVE_CPL_TEXT_STRUPR
-#define HAVE_CPL_TEXT_STRLWR
-#define HAVE_CPL_TEXT_STRSET
-#define HAVE_CPL_TEXT_STRNSET
-#define HAVE_CPL_TEXT_STRREV
 #define HAVE_CPL_TEXT_STRTOK_R
 #define HAVE_CPL_TEXT_SNPRINTF
 #define HAVE_CPL_TEXT_VSNPRINTF      
+
+#define strset_MAP(s,f)		strnset_MAP(s,f,strlen(s))
+
+extern char* strupr_MAP( char* s1 );
+extern char* strlwr_MAP( char* s1 );
+extern char* strnset_MAP( char* s1, int fill, size_t len );
+extern char* strrev_MAP( char* s1 );
+
 
 
 

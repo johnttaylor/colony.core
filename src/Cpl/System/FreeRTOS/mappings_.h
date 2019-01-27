@@ -1,16 +1,16 @@
 #ifndef Cpl_System_FreeRtos_mappings_x_h_
 #define Cpl_System_FreeRtos_mappings_x_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014 John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
-/** @file 
+*
+* Copyright (c) 2014 John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
+/** @file
 
     This file provides the mappings for Platform specific types, etc. needed
     by Cpl::System
@@ -21,11 +21,11 @@
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "task.h"
-#include "Cpl/System/FatalError.h"
+#include "Cpl/System/_assert/c_assert.h"
 
 
 /// Mapping
-#define CPL_SYSTEM_ASSERT_MAP(e)                if (!(e)) { Cpl::System::FatalError::logf( "ASSERT Failed at: file=%s, line=%d, func=%s\n", __FILE__, __LINE__, __FUNC__ );}
+#define CPL_SYSTEM_ASSERT_MAP(e)                cpl_system_assert_c_wrapper( e, __FILE__, __LINE__, __FUNC__ )
 
 /// Mapping
 #define Cpl_System_Thread_NativeHdl_T_MAP       TaskHandle_t  
@@ -35,7 +35,7 @@
 
 /// Mapping
 #define Cpl_System_FastLock_T_MAP               uint8_t // Note: Not really used, but need something or the code won't compile
-                                                
+
 /// Mapping
 #define Cpl_System_Sema_T_MAP                   SemaphoreHandle_t
 

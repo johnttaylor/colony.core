@@ -107,10 +107,10 @@ public:
 
 
 public:
-    /// This psuedo PRIVATE method returns the transmitter for the PURPOSE of processing the TX ISR
+    /// This COMPONENT Scoped method returns the transmitter for the PURPOSE of processing the TX ISR
     Driver::Uart::Stream::Transmitter& su_getTransmitter_(void) throw() { return m_tx; }
 
-    /// This psuedo PRIVATE method returns the receiver for the PURPOSE of processing the RX ISRs
+    /// This COMPONENT Scoped method returns the receiver for the PURPOSE of processing the RX ISRs
     Driver::Uart::Stream::Receiver&    su_getReceiver_(void) throw() { return m_rx; }
 
 };

@@ -29,7 +29,7 @@ namespace System {
 class ElapsedTime
 {
 public:
-    /// Datatype for time in seconds with a 'fractional' millisecond precision
+    /// Data type for time in seconds with a 'fractional' millisecond precision
     typedef struct Precision_Tag
     {
         unsigned long  m_seconds;      //!< Total number of elapsed seconds

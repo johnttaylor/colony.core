@@ -24,7 +24,7 @@
 #endif
 
 
-/// 
+ /// 
 namespace Cpl {
 /// 
 namespace System {
@@ -63,11 +63,11 @@ public:
 
 public:
     /** Same as log(..) method, except NO "...other useful info
-        such as current task,..." is logged, AND the "storage media" is 
-        restricted to 'media' that is ALWAYS available.  
+        such as current task,..." is logged, AND the "storage media" is
+        restricted to 'media' that is ALWAYS available.
 
         This allows routines that are supplying the extra info OR routines that
-        write to media to be able to log fatal errors WITHOUT creating a 
+        write to media to be able to log fatal errors WITHOUT creating a
         recursive death loop.
      */
     static void logRaw( const char* message );

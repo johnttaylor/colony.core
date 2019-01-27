@@ -226,7 +226,7 @@ public:
                                   const char* threadName2 =0,
                                   const char* threadName3 =0,
                                   const char* threadName4 =0
-                                  );
+    );
 
     /** This method returns the number of enabled 'thread filters' and returns
         the actual thread name(s) via the String 'dst'.  It is the caller
@@ -279,7 +279,7 @@ public:
     static void revert_( void );
 
 public:
-    /** This PRIVATE internal method provides the Output stream to the Trace
+    /** This COMPONENT Scoped method provides the Output stream to the Trace
         Engine.  The Output stream instance MUST be created statically. However,
         the Output stream does not necessarily need to fully 'operational' when
         statically constructed - it just need to be  "operationally" by the time
@@ -475,43 +475,43 @@ protected:
 #define OPTION_CPL_SYSTEM_TRACE_MAX_SECTIONS            8
 #endif
 
-/** The default maximum size, in bytes, for a section name (not including
-    the null terminator).
- */
+ /** The default maximum size, in bytes, for a section name (not including
+     the null terminator).
+  */
 #ifndef OPTION_CPL_SYSTEM_TRACE_MAX_SECTION_NAME_LEN   
 #define OPTION_CPL_SYSTEM_TRACE_MAX_SECTION_NAME_LEN    63
 #endif
 
-/** The size, in bytes (without the null terminator), of trace engine's internal
-    String use to construct a complete (info + user msg) trace message.
- */
+  /** The size, in bytes (without the null terminator), of trace engine's internal
+      String use to construct a complete (info + user msg) trace message.
+   */
 #ifndef OPTION_CPL_SYSTEM_TRACE_MAX_BUFFER
 #define OPTION_CPL_SYSTEM_TRACE_MAX_BUFFER              511
 #endif
 
 
-/** String literal that is the prefix for all trace messages
- */
+   /** String literal that is the prefix for all trace messages
+    */
 #ifndef OPTION_CPL_SYSTEM_TRACE_PREFIX_STRING
 #define OPTION_CPL_SYSTEM_TRACE_PREFIX_STRING           ">> "
 #endif
 
 
-/** String literal that is the final suffix for all trace messages
- */
+    /** String literal that is the final suffix for all trace messages
+     */
 #ifndef OPTION_CPL_SYSTEM_TRACE_SUFFIX_STRING
 #define OPTION_CPL_SYSTEM_TRACE_SUFFIX_STRING           "\n"
 #endif
 
-/** The compile time default setting for the info level
- */
+     /** The compile time default setting for the info level
+      */
 #ifndef OPTION_CPL_SYSTEM_TRACE_DEFAULT_INFO_LEVEL
 #define OPTION_CPL_SYSTEM_TRACE_DEFAULT_INFO_LEVEL      Cpl::System::Trace::eBRIEF
 #endif
 
-/** The compile time default setting what enable/disable state the trace
-    starts in
- */
+      /** The compile time default setting what enable/disable state the trace
+          starts in
+       */
 #ifndef OPTION_CPL_SYSTEM_TRACE_DEFAULT_ENABLE_STATE
 #define OPTION_CPL_SYSTEM_TRACE_DEFAULT_ENABLE_STATE    true
 #endif

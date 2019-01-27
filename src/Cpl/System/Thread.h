@@ -38,15 +38,15 @@
  */
 #define CPL_SYSTEM_THREAD_PRIORITY_RAISE            CPL_SYSTEM_THREAD_PRIORITY_RAISE_MAP
 
-/** This value can be 'added' to one of the above Priorities to decrease (i.e.
-    lower) the priority by one 'level. A priority can be decreased multiple
-    levels by adding this value multiple times.
- */
+ /** This value can be 'added' to one of the above Priorities to decrease (i.e.
+     lower) the priority by one 'level. A priority can be decreased multiple
+     levels by adding this value multiple times.
+  */
 #define CPL_SYSTEM_THREAD_PRIORITY_LOWER            CPL_SYSTEM_THREAD_PRIORITY_LOWER_MAP
 
 
 
-///
+  ///
 namespace Cpl {
 ///
 namespace System {
@@ -190,7 +190,7 @@ public:
                            int         stackSize     = 0,
                            void*       stackPtr      = 0,
                            bool        allowSimTicks = true
-                           );
+    );
 
 
     /** This method is used to destroy a thread that was created by the Thread

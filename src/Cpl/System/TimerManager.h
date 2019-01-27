@@ -1,15 +1,15 @@
 #ifndef Cpl_System_TimerManager_h_
 #define Cpl_System_TimerManager_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2018  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "Cpl/System/Counter_.h"
@@ -17,21 +17,22 @@
 
 
 ///
-namespace Cpl { namespace System {
+namespace Cpl {
+///
+namespace System {
 
-/** This mostly concrete class implements manages a list of Software Timers. 
-    When an individual Timer object's count reaches zero, its callback method 
-    is invoked and it is remove from the Active List.  The Active List is 
-    designed to be very efficient with respect to decrement counts when there 
-    are many Timers in the list, i.e. the amount of time to decrement the 
+/** This mostly concrete class implements manages a list of Software Timers.
+    When an individual Timer object's count reaches zero, its callback method
+    is invoked and it is remove from the Active List.  The Active List is
+    designed to be very efficient with respect to decrement counts when there
+    are many Timers in the list, i.e. the amount of time to decrement the
     individual Timers is NOT a function of the number of active Timers.
 
     The Timer Manager requires that the Timer Manager instances, all Timer
     instances, add the Timer's Context (i.e. the code that executes the
     timer expired callbacks) all execute in the SAME thread.
-
  */
-class TimerManager: public CounterSource_
+class TimerManager : public CounterSource_
 {
 public:
     /// Constructor
@@ -53,13 +54,13 @@ public:
     void processTimers( void ) throw();
 
     /// Returns true if there are NO active timers
-    bool areActiveTimers(void) throw();
+    bool areActiveTimers( void ) throw();
 
 
-public: 
+public:
     ///  See Cpl::System::CounterCallback_
     void attach( CounterCallback_& clientToCallback ) throw();
-    
+
     ///  See Cpl::System::CounterCallback_
     bool detach( CounterCallback_& clientToCallback ) throw();
 
@@ -73,7 +74,7 @@ protected:
     /** This method is intended to be call by a the timing source and each
         call to this method represents that one tick has expired, i.e. decrement
         the active Counter objects' by one.
-     */ 
+     */
     virtual void tick( unsigned long milliseconds=1 ) throw();
 
     /** This method is used by the Tick source to information the Timer Manager

@@ -20,7 +20,7 @@ using namespace Cpl::System;
 
 
 ///////////////////////////////////////////////////////////////
-static unsigned long elaspedMsec_;
+static unsigned long elapsedMsec_;
 static unsigned long lastMsec_;
 
 namespace {
@@ -37,7 +37,7 @@ protected:
     ///
     void notify( InitLevel_T init_level )
     {
-        elaspedMsec_  = 0;
+        elapsedMsec_  = 0;
         lastMsec_     = clock();
     }
 
@@ -55,21 +55,21 @@ unsigned long ElapsedTime::millisecondsInRealTime( void ) throw()
 
     unsigned long newTime = clock();
     unsigned long delta   = newTime - lastMsec_;
-    elaspedMsec_         += delta;
+    elapsedMsec_         += delta;
     lastMsec_             = newTime;
 
-    return elaspedMsec_;
+    return elapsedMsec_;
 }
 
 unsigned long ElapsedTime::secondsInRealTime( void ) throw()
 {
     Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
-   
-    // Update my internal elaspedMsec time
+
+    // Update my internal elapsedMsec time
     millisecondsInRealTime();
 
-    // Convert my internal elasped time to seconds
-    return (unsigned long) (elaspedMsec_ / 1000LL);
+    // Convert my internal elapsed time to seconds
+    return (unsigned long) (elapsedMsec_ / 1000LL);
 }
 
 
@@ -77,12 +77,12 @@ ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) throw()
 {
     Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
 
-    // Update my internal elaspedMsec time
+    // Update my internal elapsedMsec time
     millisecondsInRealTime();
 
     // Convert to my Precision format
     Precision_T now;
-    lldiv_t     result = lldiv( elaspedMsec_, 1000LL );
+    lldiv_t     result = lldiv( elapsedMsec_, 1000LL );
     now.m_seconds      = (unsigned long) result.quot;
     now.m_thousandths  = (uint16_t) result.rem;
     return now;

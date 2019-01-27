@@ -25,15 +25,15 @@
 #endif
 
 
-/** Specifies the default value used for the application exit code when
-     terminating 'on a failure'
- */
+ /** Specifies the default value used for the application exit code when
+       terminating 'on a failure'
+  */
 #ifndef OPTION_CPL_SYSTEM_SHUTDOWN_FAILURE_ERROR_CODE
 #define OPTION_CPL_SYSTEM_SHUTDOWN_FAILURE_ERROR_CODE       1
 #endif
 
 
-/// 
+  /// 
 namespace Cpl {
 /// 
 namespace System {
@@ -65,7 +65,7 @@ public:
             method is passed 'exit_code' which is the exit code provided by the
             application when called the Shutdown interface.  The return value
             from the handler will be used as the application shutdown exit code.
-            To leave the exit code un-alter - return the passed in 'exit_code'.
+            To leave the exit code unaltered - return the passed in 'exit_code'.
 
             Notes:
 

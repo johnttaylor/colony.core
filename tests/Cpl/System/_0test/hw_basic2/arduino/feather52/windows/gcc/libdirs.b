@@ -7,6 +7,7 @@ src/Cpl/System/FreeRTOS
 src/Cpl/System/FreeRTOS/_fatalerror
 src/Cpl/System
 src/Cpl/System/_trace
+src/Cpl/System/_assert
 src/Cpl/System/_trace/_arduino
 src/Cpl/Container
 src/Cpl/Text

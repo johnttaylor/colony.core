@@ -17,8 +17,8 @@
 
 /** This macro is platform/compiler independent replacement for 'assert()'
     function/macro.  If the passed boolean expression is false (i.e. zero)
-    then the application is terminated.  The specific actions that occur when 
-    the application is terminated is platform specific.  The 'signature' for 
+    then the application is terminated.  The specific actions that occur when
+    the application is terminated is platform specific.  The 'signature' for
     the macro/function is:
 
     \b Prototype: void CPL_SYSTEM_ASSERT( <boolean expression> );

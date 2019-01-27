@@ -111,7 +111,7 @@ public:
                    TimerExpiredFunction_T expiredCallbackFunc
     );
 
-protected: 
+protected:
     /// See Cpl::System::CounterCallback_
     void expired() throw();
 

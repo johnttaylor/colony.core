@@ -77,11 +77,11 @@ public:
     {
     private:
         /// Reference to the mutex to be used for synchronization
-        Mutex&  m_mutex;
+        Mutex & m_mutex;
 
     public:
         /// Constructor.  This will block until the mutex lock is acquired.
-        inline ScopeBlock( Mutex& mutex ) throw() :m_mutex( mutex ) { m_mutex.lock(); }
+        inline ScopeBlock( Mutex& mutex ) throw():m_mutex( mutex ) { m_mutex.lock(); }
 
         /// Destructor.  This method releases ownership of the mutex
         inline ~ScopeBlock() { m_mutex.unlock(); }
