@@ -97,7 +97,7 @@ public:
         m_myThreadPtr = myThreadPtr;
     }
 
-    /// Override default implemenation
+    /// Override default implementation
     void pleaseStop( void )
     {
         if ( isRunning() && m_myThreadPtr )
@@ -145,7 +145,7 @@ public:
             m_loops++;
             CPL_SYSTEM_TRACE_MSG( SECT_, ("Waiting.... (loops=%d)", m_loops) );
             Thread::wait();
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("Signalled.  (loops=%d)", m_loops) );
+            CPL_SYSTEM_TRACE_MSG( SECT_, ("Signaled.  (loops=%d)", m_loops) );
             if ( isRunning() && m_nextThreadPtr )
             {
                 CPL_SYSTEM_TRACE_MSG( SECT_, ("Signaling: %s", m_nextThreadPtr->getName()) );
@@ -163,7 +163,7 @@ public:
         m_myThreadPtr = myThreadPtr;
     }
 
-    /// Override default implemenation
+    /// Override default implementation
     void pleaseStop( void )
     {
         if ( isRunning() && m_myThreadPtr )
@@ -220,7 +220,7 @@ public:
 
         // What till the the test harness is ready for the next test
         m_sema.wait();
-        Api::sleep( 30 ); // Allow time for the semaphore to signalled more than once.
+        Api::sleep( 30 ); // Allow time for the semaphore to signaled more than once.
 
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Semaphore Time wait test2 (no timeout)...") );
         start = ElapsedTime::milliseconds();
@@ -231,7 +231,7 @@ public:
 
         // What till the the test harness is ready for the next test
         Thread::wait();
-        Api::sleep( 1 ); // Allow time for the semaphore to signalled more than once.
+        Api::sleep( 1 ); // Allow time for the semaphore to signaled more than once.
 
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Thread Time wait test1 (timeout occurs)...") );
         start     = ElapsedTime::milliseconds();
