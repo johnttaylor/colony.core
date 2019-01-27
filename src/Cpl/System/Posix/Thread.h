@@ -15,7 +15,6 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Semaphore.h"
 #include "Cpl/Text/FString.h"
-#include "Cpl/Log/Loggers.h"
 #include <pthread.h>
 
 ///
@@ -75,8 +74,7 @@ public:
             int            priority      = CPL_SYSTEM_THREAD_PRIORITY_NORMAL,
             unsigned       stackSize     = 0,
             int            schedType     = SCHED_OTHER,
-            bool           allowSimTicks = true,
-            Cpl::Log::Api& eventLogger   = Cpl::Log::Loggers::application()
+            bool           allowSimTicks = true
     );
 
     /// Destructor

@@ -32,7 +32,7 @@ from nqbplib.base import BuildValues
 FINAL_OUTPUT_NAME = 'a.out'
 
 # Link unittest directory by object module so that Catch's self-registration mechansim 'works'
-unit_test_objects = '_BUILT_DIR_.src/Cpl/System/_0test'
+unit_test_objects = '_BUILT_DIR_.src/Cpl/System/_0test/sim'
 
 
 #

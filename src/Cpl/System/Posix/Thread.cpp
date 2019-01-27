@@ -108,8 +108,7 @@ Thread::Thread( Cpl::System::Runnable&   runnable,
                 int                      priority,
                 unsigned                 stackSize,
                 int                      schedType,
-                bool                     allowSimTicks,
-                Cpl::Log::Api&           eventLogger
+                bool                     allowSimTicks
 )
     :m_runnable( runnable ),
     m_name( name ),
@@ -150,7 +149,7 @@ Thread::Thread( Cpl::System::Runnable&   runnable,
     CPL_SYSTEM_TRACE_MSG( AREA_, ("pthread_attr_* Results (0==good): _init()=%d, _setdetachedstate=%d, _setstacksize=%d, _setschedpolicy=%d, _setschedparam=%d, stacksize=%d", rc_init, rc_setdetach, rc_setstack, rc_schedpolicy, rc_schedparam, myMax( PTHREAD_STACK_MIN, stackSize )) );
     if ( rc_init || rc_setdetach || rc_setstack || rc_schedpolicy || rc_schedparam )
     {
-        eventLogger.warning( "Cpl::System::Posix::Thread. unexpected error when creating thread %s. Returns codes (all should be zero): attr_init=%d, setdetach=%d, setstack=%d, schedpolicy=%, schedparam=%d", name, rc_init, rc_setdetach, rc_setstack, rc_schedpolicy, rc_schedparam );
+        CPL_SYSTEM_TRACE_MSG( AREA_, ("Cpl::System::Posix::Thread. unexpected error when creating thread %s. Returns codes (all should be zero): attr_init=%d, setdetach=%d, setstack=%d, schedpolicy=%, schedparam=%d", name, rc_init, rc_setdetach, rc_setstack, rc_schedpolicy, rc_schedparam ));
     }
 
 

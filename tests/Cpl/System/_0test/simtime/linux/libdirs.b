@@ -4,13 +4,11 @@ src/Cpl/System/_trace
 src/Cpl/System/_trace/_stdout
 
 # tests
-src/Cpl/System/_0test
+src/Cpl/System/_0test/sim
 
 # supporting infrastructure
 src/Cpl/Container
 src/Cpl/Text
-src/Cpl/Log
-src/Cpl/Log/_default
 
 
 # Platforms
