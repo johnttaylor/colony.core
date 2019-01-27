@@ -1,8 +1,9 @@
 # Unit under test
 src/Cpl/System
+src/Cpl/System/_simtick
 
 # tests
-src/Cpl/System/_0test
+src/Cpl/System/_0test/sim
 
 # supporting infrastructure
 src/Cpl/Container
