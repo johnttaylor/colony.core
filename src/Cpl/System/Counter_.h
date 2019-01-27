@@ -62,6 +62,10 @@ public:
      */
     virtual bool detach( CounterCallback_& clientToCallback ) throw() = 0;
 
+    /** This method converts the requested duration in milliseconds to
+        counter ticks.
+     */
+    virtual unsigned long msecToCounts( unsigned long durationInMsecs ) throw() = 0;
     
 public:
     /// Virtual Destructor

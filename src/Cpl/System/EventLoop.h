@@ -15,19 +15,47 @@
 #include "Cpl/System/Runnable.h"
 #include "Cpl/System/FastLock.h"
 #include "Cpl/System/Semaphore.h"
+#include "Cpl/System/Signable.h"
 #include "Cpl/System/EventFlag.h"
+#include "Cpl/System/TimerManager.h"
 
 
 /** Specifies the default timeout period for waiting on a event.
  */
 #ifndef OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD
-#define OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD       1  /// 1 msec timeout, aka 1 msec timer resolution for Software Timers
+#define OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD       1  //!< 1 msec timeout, aka 1 msec timer resolution for Software Timers
 #endif
 
  ///
 namespace Cpl {
 ///
 namespace System {
+
+/** This interfaces defines a callback that allows the application to extend
+    the event processing.  This method will be called every time there is
+    an event (and after the timer and event flags have been processed).
+
+    Other event processing modules can signal/wake-up the Event Loop at any
+    time (with no unintended side effects) by signaling the Event Loop 
+    instance.
+ */
+class EventLoopCallback
+{
+public:
+    /** This method is called from the Event Loop processing loop when any/all
+        have woken-up the event loop.  The 'timeNow' argument is the elapsed
+        time timestamp of the current event processing cycle.
+
+        The callback function should make NO assumptions on why the event
+        cycle was triggered.  It is possible that a event cycle can
+        be falsely triggered, i.e. no actual 'event' occurred but the
+        event loop executes.
+     */
+    virtual void processCustomEvent( unsigned long timeNow ) throw() = 0;
+
+    /// Virtual destructor
+    virtual ~EventLoopCallback() {};
+};
 
 
 /** This concrete class is a Runnable object that provides a event driven
@@ -36,10 +64,14 @@ namespace System {
 
     1) The EventLoop Semaphore was signaled
     2) A Software Timer expiring (Cpl::System::Timer)
-    3) A Event Flag was signaled( Cpl::System::EventFlag)
+    3) A Event Flag was set( Cpl::System::EventFlag)
+
+    To receive a callbacks when Event Flags are set, the application must create 
+    a child class and provide its own implementation of the processEventFlag()
+    method.
 
     The class also provides a mechanism for registering 'other' events to
-    be proccessed.
+    be processed.
 
     Note: The EventLoop does NOT use/consume the Thread Semaphore.
  */
@@ -49,30 +81,54 @@ namespace System {
  /** This is an abstract class defines the interface for an object
      that is "executed" when a Thread object is created.
   */
-class EventLoop : public Runnable, public EventFlag
+class EventLoop : public Runnable, public EventFlag, public Signable, public TimerManager
 {
 public:
     /** Constructor. The 'timeOutPeriodInMsec' parameter specifies how
-        long the EventLoop will wait for an event before returning
-        from the waitNext() call.  If 'timeOutPeriodInMsec' is zero, then
-        the EventLoop will wait forever, i.e. never timeout.  The value of
-        'timeOutPeriodInMsec' is resolution of the timing source for the
-        Software Timers.
+        long the EventLoop will wait for an event before timing out and
+        processing the software timers.  The value of 'timeOutPeriodInMsec' is 
+        the resolution of the timing source for the Software Timers, i.e. the
+        event loop will 'wake-up' at least every 'timeOutPeriodInMsec' 
+        milliseconds.
+
+        A fatal error is generated if 'timeOutPeriodInMsec' is set to zero.  
+
+        The event processing can be extended up to 3 additional event processors.
+        The extra event processors are called every event cycle AFTER the
+        Event Flag and Timers are processed.
      */
-    EventLoop( unsigned long timeOutPeriodInMsec=OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD );
+    EventLoop( unsigned long      timeOutPeriodInMsec  = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD, 
+               EventLoopCallback* extraEventProcessor1 = 0,
+               EventLoopCallback* extraEventProcessor2 = 0,
+               EventLoopCallback* extraEventProcessor3 = 0 );
 
     /// Virtual destructor
     virtual ~EventLoop() {};
 
-public:
-    /** This method used to signal/wake-up the EventLoop
+
+protected:
+    /** This method is used (by the concrete child class(es)) to process one
+        or more Event Flags.  This method is called when at least one Event
+        Flag was set. The method is called N consecutive times - one call for 
+        each Event Flag that is set.  The 'eventNumber' (which is zero based) 
+        identifies which Event Flag is/was set.
+
+        The default implementation of this method does NOTHING.
      */
-    virtual void wakeUp() throw();
+    virtual void processEventFlag( uint8_t eventNumber ) throw() {};
+
+public:
+    /// See Cpl::System::Signable
+    int signal( void ) throw();
+
+    /// See Cpl::System::Signable
+    int su_signal( void ) throw();
+
 
 public:
     /// See Cpl::System::Runnable
     void pleaseStop();
-
+    
 
 protected:
     /// See Cpl::System::Runnable
@@ -93,26 +149,29 @@ public:
 
 
 protected:
-    /// My thread pointer
-    Cpl::System::Thread* m_myThreadPtr;
-
-    /// Time of the current tick cycle
-    unsigned long           m_timeNow;
-
-    /// Flag used to help with the pleaseStop() request
-    bool                    m_run;
-
     /// Mutex used to protect my list
     Cpl::System::FastLock   m_flock;
 
     /// Semaphore associated with the mailbox (note: the Thread semaphore is NOT used)
     Cpl::System::Semaphore  m_sema;
+    
+    /// Additional event processing
+    EventLoopCallback*      m_processor1;
 
-    /// Timeout period for waiting on the next message
+    /// Additional event processing
+    EventLoopCallback*      m_processor2;
+
+    /// Additional event processing
+    EventLoopCallback*      m_processor3;
+
+    /// Timeout period for waiting on the next event
     unsigned long           m_timeout;
 
     /// The variable holds the current state of all Event Flags
     Cpl_System_EventFlag_T  m_events;
+
+    /// Flag used to help with the pleaseStop() request
+    bool                    m_run;
 
 };
 

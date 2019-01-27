@@ -11,6 +11,7 @@
 
 #include "TimerManager.h"
 #include "Cpl/System/Trace.h"
+#include "Cpl/System/ElapsedTime.h"
 
 
 ///
@@ -21,16 +22,35 @@ using namespace Cpl::System;
 
 ///////////////////////////
 TimerManager::TimerManager()
-    :m_inTickCall( false )
+    :m_timeMark( 0 )
+    , m_timeNow( 0 )
+    , m_inTickCall( false )
 {
 }
 
+void TimerManager::start( void ) throw()
+{
+    m_timeMark = Cpl::System::ElapsedTime::milliseconds();
+}
 
-bool TimerManager::isEmpty( void ) throw()
+bool TimerManager::areActiveTimers( void ) throw()
 {
     return m_counters.first() == 0;
 }
 
+unsigned TimerManager::processTimers( void ) throw()
+{
+    // Calculate the elapsed time in milliseconds since we last checked the timers
+    m_timeNow               = Cpl::System::ElapsedTime::milliseconds();
+    unsigned long deltaTime = Cpl::System::ElapsedTime::deltaMilliseconds( m_timeMark, m_timeNow );
+
+    // Update my timers
+    CPL_SYSTEM_TRACE_MSG( SECT_, (" @@ START TICK: %lu, now=%lu, [m_timeMark=%lu]", deltaTime, m_timeNow, m_timeMark) );
+    tick( deltaTime );
+    m_timeMark = m_timeNow;
+    CPL_SYSTEM_TRACE_MSG( SECT_, (" @@ TICK COMPLETE..., m_timeMark=%lu", m_timeMark) );
+    tickComplete();
+}
 
 
 /////////////////////////
@@ -177,4 +197,9 @@ bool TimerManager::detach( CounterCallback_& clientToCallback ) throw()
 }
 
 
-
+unsigned long TimerManager::msecToCounts( unsigned long milliseconds ) throw()
+{
+    unsigned long delta = Cpl::System::ElapsedTime::deltaMilliseconds( m_timeNow );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("milliseconds IN=%lu, count out=%lu", milliseconds, milliseconds + delta) );
+    return milliseconds + delta;
+}

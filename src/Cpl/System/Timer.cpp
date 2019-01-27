@@ -29,7 +29,7 @@ void Timer::start( unsigned long timerDurationInMilliseconds ) throw()
 {
 
     m_timingSource.detach( *this );
-    m_count = timerDurationInMilliseconds;
+    m_count = m_timingSource.msecToCounts( timerDurationInMilliseconds );
     m_timingSource.attach( *this );
 }
 

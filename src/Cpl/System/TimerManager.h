@@ -38,7 +38,40 @@ public:
     TimerManager();
 
 
+public:
+    /** This method starts the Timer Manager.  This method should be called
+        only once just before the Main/Event loop processing begins.
+
+        This method must be called from the same thread that the Timer Manager
+        executes in.
+     */
+    void start( void ) throw();
+
+    /** This method processes the current active timer lists.  For each timer
+        that has expired, the timer's context callback method is called.
+
+        Returns the number of timers that expired.
+     */
+    unsigned processTimers( void ) throw();
+
+    /// Returns true if there are NO active timers
+    bool areActiveTimers(void) throw();
+
+
 public: 
+    ///  See Cpl::System::CounterCallback_
+    void attach( CounterCallback_& clientToCallback ) throw();
+    
+    ///  See Cpl::System::CounterCallback_
+    bool detach( CounterCallback_& clientToCallback ) throw();
+
+    ///  See Cpl::System::CounterCallback_
+    unsigned long msecToCounts( unsigned long milliseconds ) throw();
+
+protected:
+    /// Helper method.
+    void addToActiveList( CounterCallback_& clientToCallback ) throw();
+
     /** This method is intended to be call by a the timing source and each
         call to this method represents that one tick has expired, i.e. decrement
         the active Counter objects' by one.
@@ -49,24 +82,6 @@ public:
         that there are no more ticks for the timing source's current tick cycle
      */
     virtual void tickComplete( void ) throw();
-     
-public:
-    /// Returns true if there are NO counters in the list
-    bool isEmpty(void) throw();
-
-
-public: 
-    ///  See Cpl::System::CounterCallback_
-    void attach( CounterCallback_& clientToCallback ) throw();
-    
-    ///  See Cpl::System::CounterCallback_
-    bool detach( CounterCallback_& clientToCallback ) throw();
-
-
-protected:
-    /// Helper method.
-    void addToActiveList( CounterCallback_& clientToCallback ) throw();
-
 
 protected:
     /// List of active counters
@@ -75,9 +90,14 @@ protected:
     /// List of Pending-to-attach counters (this happens when timers attach from the timer-expired-callbacks)
     Cpl::Container::DList<CounterCallback_> m_pendingAttach;
 
+    /// Elapsed time of the previous processing cycle
+    unsigned long                           m_timeMark;
+
+    /// Elapsed time of the current processing cycle
+    unsigned long                           m_timeNow;
 
     /// Flag to tracks when I am actively processing/consuming ticks
-    bool m_inTickCall;
+    bool                                    m_inTickCall;
 };
 
 

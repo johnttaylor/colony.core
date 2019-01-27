@@ -85,8 +85,8 @@ protected:
     bool m_running;
 
 public:
-    /** This method is PRIVATE, it is only made public to avoid the tight
-        coupling of the 'friend mechanism' for friending current and future
+    /** This method has COMPONENT Scope, it is only made public to avoid the 
+        tight coupling of the 'friend mechanism' for friending current and future
         concrete thread classes.  The application SHOULD NEVER call/use this
         method.
 
