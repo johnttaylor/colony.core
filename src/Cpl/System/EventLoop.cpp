@@ -25,7 +25,9 @@ EventLoop::EventLoop( unsigned long      timeOutPeriodInMsec,
                       EventLoopCallback* extraEventProcessor1,
                       EventLoopCallback* extraEventProcessor2,
                       EventLoopCallback* extraEventProcessor3 )
-    : m_processor1( extraEventProcessor1 )
+    : m_flock()
+    , m_sema()
+    , m_processor1( extraEventProcessor1 )
     , m_processor2( extraEventProcessor2 )
     , m_processor3( extraEventProcessor3 )
     , m_timeout( timeOutPeriodInMsec )
@@ -50,6 +52,9 @@ int EventLoop::su_signal( void ) throw()
 
 void EventLoop::appRun( void )
 {
+    // Initialize/start the timer manager
+    startManager();
+
     // Process events forever (or until told to stop)
     for ( ;;)
     {
@@ -103,15 +108,15 @@ void EventLoop::appRun( void )
         // Hooks for additional processing
         if ( m_processor1 )
         {
-            (*(m_processor1->processCustomEvent))(m_timeNow);
+            m_processor1->processCustomEvent( m_timeNow );
         }
         if ( m_processor2 )
         {
-            (*(m_processor2->processCustomEvent))(m_timeNow);
+            m_processor2->processCustomEvent( m_timeNow );
         }
         if ( m_processor3 )
         {
-            (*(m_processor3->processCustomEvent))(m_timeNow);
+            m_processor3->processCustomEvent( m_timeNow );
         }
     }
 }

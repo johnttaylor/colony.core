@@ -45,14 +45,12 @@ public:
         This method must be called from the same thread that the Timer Manager
         executes in.
      */
-    void start( void ) throw();
+    void startManager( void ) throw();
 
     /** This method processes the current active timer lists.  For each timer
         that has expired, the timer's context callback method is called.
-
-        Returns the number of timers that expired.
      */
-    unsigned processTimers( void ) throw();
+    void processTimers( void ) throw();
 
     /// Returns true if there are NO active timers
     bool areActiveTimers(void) throw();

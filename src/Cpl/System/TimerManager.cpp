@@ -28,7 +28,7 @@ TimerManager::TimerManager()
 {
 }
 
-void TimerManager::start( void ) throw()
+void TimerManager::startManager( void ) throw()
 {
     m_timeMark = Cpl::System::ElapsedTime::milliseconds();
 }
@@ -38,7 +38,7 @@ bool TimerManager::areActiveTimers( void ) throw()
     return m_counters.first() == 0;
 }
 
-unsigned TimerManager::processTimers( void ) throw()
+void TimerManager::processTimers( void ) throw()
 {
     // Calculate the elapsed time in milliseconds since we last checked the timers
     m_timeNow               = Cpl::System::ElapsedTime::milliseconds();

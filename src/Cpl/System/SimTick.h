@@ -55,14 +55,14 @@
 #define CPL_SYSTEM_SIM_TICK_USING_SIM_TICKS()           Cpl::System::SimTick::usingSimTicks()
 
 
-     /** This PRIVATE macro is a wrapper for threadInit_() call.  The macro allows the
+     /** This COMPONENT Scoped macro is a wrapper for threadInit_() call.  The macro allows the
          call to be compiled-out when simulate time is NOT enabled. NOTE: The
          application SHOULD NEVER use this macro
       */
 #define CPL_SYSTEM_SIM_TICK_THREAD_INIT_(f)             Cpl::System::SimTick::threadInit_(f)
 
 
-      /** This PRIVATE macro is a wrapper for onThreadExit_() call.  The macro allows the
+      /** This COMPONENT Scoped macro is a wrapper for onThreadExit_() call.  The macro allows the
           call to be compiled-out when simulate time is NOT enabled. NOTE: The
           application SHOULD NEVER use this macro
        */
