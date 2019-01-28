@@ -128,6 +128,7 @@ void SimTick::applicationWait( void ) throw()
 }
 
 
+
 void SimTick::topLevelWait( unsigned iterCount ) throw()
 {
     // Get my thread's SimInfo

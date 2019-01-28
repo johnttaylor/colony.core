@@ -23,7 +23,7 @@
     See documentation below for addition details.
  */
 #ifndef OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS
-#define OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS    64
+#define OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS    1
 #endif
 
 
@@ -37,45 +37,44 @@
 
 
 #ifdef USE_CPL_SYSTEM_SIM_TICK
-  /** This macro is a wrapper for the topLevelWait() call. The macro allows the
+/** This macro is a wrapper for the topLevelWait() call. The macro allows the
       call to be compiled-out when simulate time is NOT enabled.
    */
 #define CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT()            Cpl::System::SimTick::topLevelWait()
 
-
-   /** This macro is a wrapper for the applicationWait() call.  The macro allows the
-       call to be compiled out when simulated time is NOT enabled
-    */
+/** This macro is a wrapper for the applicationWait() call.  The macro allows the
+    call to be compiled-out when simulated time is NOT enabled
+ */
 #define CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT()          Cpl::System::SimTick::applicationWait()
 
 
-    /** This macro is a wrapper for the usingSimTicks() call. The macro allows the call
+/** This macro is a wrapper for the usingSimTicks() call. The macro allows the call
         to be compiled-out when simulate time is NOT enabled.
-     */
+  */
 #define CPL_SYSTEM_SIM_TICK_USING_SIM_TICKS()           Cpl::System::SimTick::usingSimTicks()
 
 
-     /** This COMPONENT Scoped macro is a wrapper for threadInit_() call.  The macro allows the
-         call to be compiled-out when simulate time is NOT enabled. NOTE: The
-         application SHOULD NEVER use this macro
-      */
+ /** This COMPONENT Scoped macro is a wrapper for threadInit_() call.  The macro allows the
+     call to be compiled-out when simulate time is NOT enabled. NOTE: The
+     application SHOULD NEVER use this macro
+  */
 #define CPL_SYSTEM_SIM_TICK_THREAD_INIT_(f)             Cpl::System::SimTick::threadInit_(f)
 
 
-      /** This COMPONENT Scoped macro is a wrapper for onThreadExit_() call.  The macro allows the
-          call to be compiled-out when simulate time is NOT enabled. NOTE: The
-          application SHOULD NEVER use this macro
-       */
+/** This COMPONENT Scoped macro is a wrapper for onThreadExit_() call.  The macro allows the
+    call to be compiled-out when simulate time is NOT enabled. NOTE: The
+    application SHOULD NEVER use this macro
+ */
 #define CPL_SYSTEM_SIM_TICK_ON_THREAD_EXIT_()           Cpl::System::SimTick::onThreadExit_()
 
 
 
 #else
-  /// Simulate Tick disabled
+/// Simulate Tick disabled
 #define CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT()
 
 /// Simulate Tick disabled
-#define CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT() 
+#define CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT()
 
 /// Simulate Tick disabled
 #define CPL_SYSTEM_SIM_TICK_USING_SIM_TICKS()           false
@@ -109,6 +108,7 @@ namespace System {
     his code differently to be able to run in simulate tick mode.  The
     'intrusions points' are detailed below. The typical uses cases for using
     simulated time are:
+
 @htmlonly
 <pre>
 
@@ -139,8 +139,9 @@ namespace System {
         o With respect to threads that are using simulated time, There needs to
           be at least one thread (at any given time) that is a 'timing' source,
           e.g. waiting on sleep(), timedWait(), etc.  If your application uses
-          a Cpl::Itc::MailboxServer instance - then this requirement has been
-          met. Worse case you a create a thread that forever loops on sleep().
+          a Cpl::System::EventLoop (or a sub-class) instance - then this 
+          requirement has been met. Worse case you a create a thread that 
+          forever loops on sleep().
 
         o This interface is independent of the underlaying platform, i.e works
           on ALL platforms.
@@ -175,15 +176,13 @@ namespace System {
               the tick source OR inter-tick timing is NOT guaranteed.
 
             - Not all use cases using a simulated tick and threading will work
-              and/or are supported.  The following threading 'paradigm(s)' are
-              supported:
-
-              o Individual threads having a top level "forever" loop with or without
-                potential blocking calls to a semaphore as part of the thread's
-                loop execution.  In addition, the assumption is that all calls
-                to a mutex will cause the thread to block across simulated ticks,
-                i.e. mutex can ALWAYS be successfully acquired and release within
-                the context of single simulated tick
+              and/or are supported.  For example, do not use 
+              CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT() macro in the top level forever
+              loop and then have potential blocking timing calls such as sleep(),
+              timeWait(), etc. In addition, the assumption is that all calls
+              to a mutex will cause the thread to block across simulated ticks,
+              i.e. mutex can ALWAYS be successfully acquired and release within
+              the context of single simulated tick
 
             - Be careful about deleting threads when using Simulated Ticks -
               brute force terminating threads in this scenario has unpredictable
@@ -206,7 +205,7 @@ namespace System {
 
     o Typically thats all that needs to be done. The only additional work is if
       application creates thread(s) that have an application specific (i.e. not
-      a Colony.Core message queue, mailbox server, etc.) 'forever' loop AND it
+      a Colony.Core Event Loop, mailbox server, etc.) 'forever' loop AND it
       is desired for the thread(s) to use 'simulated time'.  For this scenario
       the application must add a call to this interface at the top of the
       forever loop.  See the example below:
@@ -218,7 +217,7 @@ namespace System {
             while(1)
                 {
                 // Block the main loop until the next simulated system tick
-                CPL_SYSTEM_SIM_TICK_WAIT();
+                CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT();
                 ...
                 }
             }
@@ -233,9 +232,7 @@ public:
     /** This method will cause the current thread to block UNTIL one
         simulated system tick has elapsed.  Every call to this method
         consumes one simulated system tick. This method SHOULD only be used
-        at the very most top level of a thread's 'forever' loop.  The method
-        applicationWait() is used for supporting blocking calls within a thread's
-        loop iteration.
+        at the very most top level of a thread's 'forever' loop.  
 
         For example: if OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS is set to
                      1, and advance(5) is called then this method will return
@@ -274,11 +271,10 @@ public:
         it is waiting on the application logic.
 
         This method SHOULD NEVER called directly, but via the preprocessor
-        macro CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT().  This allows the simulate
+        macro CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT().  This allows the simulate 
         tick code to be compiled out of production versions of the application.
-     */
+     */ 
     static void applicationWait( void ) throw();
-
 
     /** This method returns the current simulated tick count
      */

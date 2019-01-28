@@ -55,8 +55,8 @@ public:
     ///
     void appRun()
     {
-        CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT();
-        CPL_SYSTEM_TRACE_SCOPE( SECT_, Thread::getCurrent().getName() );
+        // Wait for the test to be started
+        Thread::wait();
 
         // TEST#1 Round-robing signaling of thread
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Signaling: %s", m_appleThreadPtr->getName()) );
@@ -139,9 +139,11 @@ public:
     {
         CPL_SYSTEM_TRACE_SCOPE( SECT_, Thread::getCurrent().getName() );
 
+        // Wait for the test to be started
+        Thread::wait();
+
         while ( isRunning() && m_loops < m_maxLoops )
         {
-            CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT();
             m_loops++;
             CPL_SYSTEM_TRACE_MSG( SECT_, ("Waiting.... (loops=%d)", m_loops) );
             Thread::wait();
@@ -208,7 +210,6 @@ public:
     ///
     void appRun()
     {
-        CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT();
         CPL_SYSTEM_TRACE_SCOPE( SECT_, Thread::getCurrent().getName() );
 
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Semaphore Time wait test1 (timeout occurs)...") );
@@ -346,7 +347,7 @@ TEST_CASE( "simbasic", "[simbasic]" )
 
     Semaphore sema;
     Master    masterRun( sema );
-    Thread*   masterThreadPtr   = Thread::create( masterRun, "MASTER", CPL_SYSTEM_THREAD_PRIORITY_NORMAL );
+    Thread*   masterThreadPtr   = Thread::create( masterRun, "MASTER", CPL_SYSTEM_THREAD_PRIORITY_NORMAL + CPL_SYSTEM_THREAD_PRIORITY_LOWER );
 
     MyRunnable appleRun( *masterThreadPtr, 0, 3 );
     Thread* appleThreadPtr      = Thread::create( appleRun, "Apple", CPL_SYSTEM_THREAD_PRIORITY_NORMAL );
@@ -370,12 +371,18 @@ TEST_CASE( "simbasic", "[simbasic]" )
     masterRun.m_cherryThreadPtr = cherryThreadPtr;
 
     Lister myThreadList;
-    Cpl::System::Api::sleepInRealTime( 1000 );    // Give time to ensure all threads are active.
+    Cpl::System::Api::sleepInRealTime( 500 );    // Give time to ensure all threads are active.
     CPL_SYSTEM_TRACE_MSG( SECT_, ("ALL Threads should have been created and up and running.  Real Elapsed time=%lu", ElapsedTime::millisecondsInRealTime()) );
     Thread::traverse( myThreadList );
     REQUIRE( myThreadList.m_foundApple );
     REQUIRE( myThreadList.m_foundOrange );
     REQUIRE( myThreadList.m_foundPear );
+
+    // Start the tests
+    masterThreadPtr->signal();
+    appleThreadPtr->signal();
+    pearThreadPtr->signal();
+    orangeThreadPtr->signal();
 
     // Advance simulated time for the FIRST test
     while ( appleThreadPtr->isRunning() ||

@@ -237,8 +237,6 @@ public:
     ///
     void processEventFlag( uint8_t eventNumber ) throw()
     {
-        CPL_SYSTEM_TRACE_SCOPE( SECT_, Cpl::System::Thread::getCurrent().getName() );
-
         switch ( eventNumber )
         {
             case START_EVENT:

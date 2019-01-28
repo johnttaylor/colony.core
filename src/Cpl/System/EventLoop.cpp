@@ -58,9 +58,6 @@ void EventLoop::appRun( void )
     // Process events forever (or until told to stop)
     for ( ;;)
     {
-        // Support simulated ticks
-        CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT();
-
         // Trap my exit/please-stop condition
         m_flock.lock();
         bool stayRunning = m_run;
@@ -71,7 +68,7 @@ void EventLoop::appRun( void )
         }
 
         // Wait for something to happen...
-        m_sema.timedWait( m_timeout ); // Note: For Simulation: the timedWait() call if it blocks - does so waiting on the next tick - so no Application Wait() call is needed
+        m_sema.timedWait( m_timeout ); // Note: For Tick Simulation: the timedWait() calls topLevelWait() if the semaphore has not been signaled
 
         // Trap my exit/please-stop condition AGAIN since a lot could have happen while I was waiting....
         m_flock.lock();
