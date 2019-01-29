@@ -19,14 +19,6 @@
 #include "Cpl/Container/Item.h"
 
 
-/** Specifies the default value for 'number of iterations' per wait() call.
-    See documentation below for addition details.
- */
-#ifndef OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS
-#define OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS    1
-#endif
-
-
  /** The amount of (real) time, in milliseconds, for the simulated-tick engine to
      wait for at least one response from a simulated-tick-thread before aborting
      an advance() command (i.e. declaring all threads terminated OR deadlocked)
@@ -176,13 +168,14 @@ namespace System {
               the tick source OR inter-tick timing is NOT guaranteed.
 
             - Not all use cases using a simulated tick and threading will work
-              and/or are supported.  For example, do not use 
-              CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT() macro in the top level forever
-              loop and then have potential blocking timing calls such as sleep(),
-              timeWait(), etc. In addition, the assumption is that all calls
-              to a mutex will cause the thread to block across simulated ticks,
-              i.e. mutex can ALWAYS be successfully acquired and release within
-              the context of single simulated tick
+              and/or are supported.  The simulated tick logic only works for
+              event driven and/or frequency based where all actions for a time
+              period as completed in on pass of the "main loop".  Other issues:
+                
+                o The assumption is that all calls to a mutex will cause the 
+                  thread to block across simulated ticks, i.e. mutex can ALWAYS 
+                  be successfully acquired and release within the context of 
+                  single simulated tick
 
             - Be careful about deleting threads when using Simulated Ticks -
               brute force terminating threads in this scenario has unpredictable
@@ -255,7 +248,7 @@ public:
         macro CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT().  This allows the simulate
         tick code to be compiled out of production versions of the application.
      */
-    static void topLevelWait( unsigned iterCount=OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS ) throw();
+    static void topLevelWait( void ) throw();
 
     /** This method returns true if the current thread is using 'simulated time'
 
@@ -325,9 +318,6 @@ protected:
 
     /// Semaphore used to wait on a simulated tick
     Semaphore m_waiter;
-
-    /// The thread's current iteration count
-    unsigned  m_iterCount;
 
     /// Flag that keeps track if I need to signal/ack-back to the tick source for the current tick
     bool      m_ackPending;

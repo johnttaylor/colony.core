@@ -39,6 +39,7 @@ unsigned SimTick::wakeUpWaiters( void ) throw()
     while ( simInfoPtr )
     {
         waiters++;
+        simInfoPtr->m_ackPending  = true;
         simInfoPtr->m_waiter.signal();
         simInfoPtr = waiters_.get();
     }
@@ -69,8 +70,9 @@ bool SimTick::advance( size_t numTicks ) throw()
         // There MUST be a least one waiter
         if ( !waiters )
         {
-            unsigned long  start = ElapsedTime::milliseconds();
-            while ( ElapsedTime::expiredMilliseconds( start, OPTION_CPL_SYSTEM_SIM_TICK_NO_ACTIVITY_LIMIT ) == false )
+            unsigned long  start = ElapsedTime::millisecondsInRealTime();
+            unsigned long  now   = start;
+            while ( ElapsedTime::expiredMilliseconds( start, OPTION_CPL_SYSTEM_SIM_TICK_NO_ACTIVITY_LIMIT, now ) == false )
             {
                 // yield the CPU to give other threads a chance at the CPU
                 Api::sleepInRealTime( 1 );
@@ -88,6 +90,7 @@ bool SimTick::advance( size_t numTicks ) throw()
                     myLock_.unlock();
                     break;
                 }
+                now = ElapsedTime::millisecondsInRealTime();
             }
 
             // IF I get here and STILL have no waiter ->then the 'simulated threads' are all blocked on something other than the next tick (or all terminated)
@@ -129,7 +132,7 @@ void SimTick::applicationWait( void ) throw()
 
 
 
-void SimTick::topLevelWait( unsigned iterCount ) throw()
+void SimTick::topLevelWait( void ) throw()
 {
     // Get my thread's SimInfo
     SimTick* simInfoPtr = (SimTick*) simTlsPtr_->get();
@@ -140,57 +143,19 @@ void SimTick::topLevelWait( unsigned iterCount ) throw()
         return;
     }
 
-    // Process iterations (i.e. don't block)
-    if ( simInfoPtr->m_iterCount > 0 )
+
+    // Test my thread's tick counter against the System tick count and queue my thread to wait for next tick if tick counts match
+    if ( testAndQueue( simInfoPtr ) )
     {
-        // At least one iteration left         
-        if ( simInfoPtr->m_iterCount < iterCount )
-        {
-            simInfoPtr->m_iterCount++;
-        }
-
-        // Completed all iterations
-        else
-        {
-            // Reset my iteration count/progress indicator
-            simInfoPtr->m_iterCount = 0;
-
-            // Get queued for the next tick
-            bool queued = testAndQueue( simInfoPtr );
-
-            // Notify the tick source that I have complete my processing for the system tick
-            if ( simInfoPtr->m_ackPending )
-            {
-                simInfoPtr->m_ackPending = false;
-                tickSource_.signal();
-            }
-
-            // Wait for the next tick
-            if ( queued )
-            {
-                simInfoPtr->m_ackPending = true;
-                simInfoPtr->m_waiter.waitInRealTime();
-            }
-        }
-    }
-
-    // Wait for the next simulate tick
-    else
-    {
-        // Test my thread's tick counter against the System tick count and queue my thread to wait for next tick if tick counts match
-        if ( testAndQueue( simInfoPtr ) )
-        {
-            simInfoPtr->m_ackPending = true;
-            simInfoPtr->m_waiter.waitInRealTime();
-        }
+        simInfoPtr->m_ackPending = false;
+        tickSource_.signal();
+        simInfoPtr->m_waiter.waitInRealTime();
     }
 }
 
 
 bool SimTick::testAndQueue( SimTick* simInfoPtr ) throw()
 {
-    bool queued = false;
-
     // SCOPE Critical section
     Cpl::System::Mutex::ScopeBlock lock( myLock_ );
 
@@ -201,20 +166,18 @@ bool SimTick::testAndQueue( SimTick* simInfoPtr ) throw()
         waiters_.put( *simInfoPtr );
 
         // Set flag/return code that I need to wait for the next simulated tick
-        queued = true;
+        return true;
     }
 
-    // Increment my threads internal tick count and setup for intra-tick-iterations
-    simInfoPtr->m_iterCount = 1;
+    // Increment my threads internal tick count 
     simInfoPtr->m_curTicks++; //  = milliseconds_;
-    return queued;
+    return false;
 }
 
 
 /////////////////////////////////////////
 SimTick::SimTick()
     :m_curTicks( 0 ),
-    m_iterCount( 0 ),
     m_ackPending( false ),
     m_threadId( 0 )
 {
@@ -226,7 +189,7 @@ bool SimTick::isWaitingOnNextTick( size_t threadID ) throw()
     bool waiting = false;
 
     myLock_.lock();
-    SimTick* simInfoPtr = waiters_.get();
+    SimTick* simInfoPtr = waiters_.head();
     while ( simInfoPtr )
     {
         if ( simInfoPtr->m_threadId == threadID )
@@ -235,7 +198,7 @@ bool SimTick::isWaitingOnNextTick( size_t threadID ) throw()
             break;
         }
 
-        simInfoPtr = waiters_.get();
+        simInfoPtr = waiters_.next( *simInfoPtr );
     }
     myLock_.unlock();
 
@@ -335,7 +298,7 @@ void Api::sleep( unsigned long milliseconds ) throw()
             myLock_.unlock();
 
             // Wait on the tick
-            SimTick::topLevelWait( 1 );
+            SimTick::topLevelWait();
             myLock_.lock();
             unsigned long current = milliseconds_;
             myLock_.unlock();
