@@ -13,7 +13,6 @@
 /** @file */
 
 #include "Cpl/System/Runnable.h"
-#include "Cpl/System/FastLock.h"
 #include "Cpl/System/Semaphore.h"
 #include "Cpl/System/Signable.h"
 #include "Cpl/System/EventFlag.h"
@@ -26,7 +25,7 @@
 #define OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD       1  //!< 1 msec timeout, aka 1 msec timer resolution for Software Timers
 #endif
 
-///
+ ///
 namespace Cpl {
 ///
 namespace System {
@@ -97,14 +96,57 @@ public:
         The extra event processors are called every event cycle AFTER the
         Event Flag and Timers are processed.
      */
-    EventLoop( unsigned long      timeOutPeriodInMsec  = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD,
-               EventLoopCallback* extraEventProcessor1 = 0,
-               EventLoopCallback* extraEventProcessor2 = 0,
-               EventLoopCallback* extraEventProcessor3 = 0 );
+    EventLoop( unsigned long timeOutPeriodInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD );
 
     /// Virtual destructor
     virtual ~EventLoop() {};
 
+
+protected:
+    /** This method is used to initialize the Event Loop's thread has started
+        to executed.  
+        
+        This method is intended to be used by child classes that are extending 
+        the Event Loop.  For this use case - this method MUST be called once on 
+        the beginning of the appRun() method and BEFORE the "main loop" for the 
+        appRun() method is entered.
+     */
+    virtual void startEventLoop() throw();
+
+    /** This method is used to wait (and process) the next event(s).  This
+        method returns after being woken up and processing all timer expired
+        and pending Event Flag events. This method should always be wrapped
+        in a loop (typically a forever loop).
+        
+        The method typically returns true.  The method only returns false if
+        the pleaseStop() method was called on the Event Loop instance.
+
+        This method is intended to be used by child classes that are extending 
+        the Event Loop.  For this use case - this method MUST be called inside
+        the child class's "main loop" in its the appRun() method.
+
+        Example appRun() for a child class extending the Event Loop:
+        @code
+
+        void ChildEventLoop::appRun( void )
+        {
+            startEventLoop();
+            <child specific intialization>
+
+            bool run = true;
+            while( run )
+            {
+                run = waitAndProcessEvents();
+                if ( run )
+                {
+                    <child specific event processing>
+                }
+            }
+        }
+    
+        @endcode
+     */
+    virtual bool waitAndProcessEvents() throw();
 
 protected:
     /** This method is used (by the concrete child class(es)) to process one
@@ -149,20 +191,8 @@ public:
 
 
 protected:
-    /// Mutex used to protect my list
-    Cpl::System::FastLock   m_flock;
-
     /// Semaphore associated with the mailbox (note: the Thread semaphore is NOT used)
     Cpl::System::Semaphore  m_sema;
-
-    /// Additional event processing
-    EventLoopCallback*      m_processor1;
-
-    /// Additional event processing
-    EventLoopCallback*      m_processor2;
-
-    /// Additional event processing
-    EventLoopCallback*      m_processor3;
 
     /// Timeout period for waiting on the next event
     unsigned long           m_timeout;

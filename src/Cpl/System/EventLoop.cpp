@@ -13,6 +13,7 @@
 #include "SimTick.h"
 #include "Trace.h"
 #include "FatalError.h"
+#include "GlobalLock.h"
 
 #define SECT_ "Cpl::System"
 
@@ -21,15 +22,8 @@
 using namespace Cpl::System;
 
 /////////////////////
-EventLoop::EventLoop( unsigned long      timeOutPeriodInMsec,
-                      EventLoopCallback* extraEventProcessor1,
-                      EventLoopCallback* extraEventProcessor2,
-                      EventLoopCallback* extraEventProcessor3 )
-    : m_flock()
-    , m_sema()
-    , m_processor1( extraEventProcessor1 )
-    , m_processor2( extraEventProcessor2 )
-    , m_processor3( extraEventProcessor3 )
+EventLoop::EventLoop( unsigned long timeOutPeriodInMsec )
+    : m_sema()
     , m_timeout( timeOutPeriodInMsec )
     , m_events( 0 )
     , m_run( true )
@@ -52,70 +46,67 @@ int EventLoop::su_signal( void ) throw()
 
 void EventLoop::appRun( void )
 {
+    startEventLoop();
+    bool run = true;
+    while( run )
+    {
+        run = waitAndProcessEvents();
+    }
+}
+
+void EventLoop::startEventLoop() throw()
+{
     // Initialize/start the timer manager
     startManager();
+}
 
-    // Process events forever (or until told to stop)
-    for ( ;;)
+bool EventLoop::waitAndProcessEvents() throw()
+{
+
+    // Trap my exit/please-stop condition
+    GlobalLock::begin();
+    bool stayRunning = m_run;
+    GlobalLock::end();
+    if ( !stayRunning )
     {
-        // Trap my exit/please-stop condition
-        m_flock.lock();
-        bool stayRunning = m_run;
-        m_flock.unlock();
-        if ( !stayRunning )
+        return false;
+    }
+
+    // Wait for something to happen...
+    m_sema.timedWait( m_timeout ); // Note: For Tick Simulation: the timedWait() calls topLevelWait() if the semaphore has not been signaled
+
+    // Trap my exit/please-stop condition AGAIN since a lot could have happen while I was waiting....
+    GlobalLock::begin();
+    stayRunning = m_run;
+    GlobalLock::end();
+    if ( !stayRunning )
+    {
+        return false;
+    }
+
+    // Capture the current state of the event flags
+    GlobalLock::begin();
+    Cpl_System_EventFlag_T events = m_events;
+    m_events                      = 0;
+    GlobalLock::end();
+
+    // Process Event Flags
+    if ( events )
+    {
+        Cpl_System_EventFlag_T eventMask   = 1;
+        uint8_t                eventNumber = 0;
+        for ( ; eventMask; eventMask <<= 1, eventNumber++ )
         {
-            break;
-        }
-
-        // Wait for something to happen...
-        m_sema.timedWait( m_timeout ); // Note: For Tick Simulation: the timedWait() calls topLevelWait() if the semaphore has not been signaled
-
-        // Trap my exit/please-stop condition AGAIN since a lot could have happen while I was waiting....
-        m_flock.lock();
-        stayRunning = m_run;
-        m_flock.unlock();
-        if ( !stayRunning )
-        {
-            break;
-        }
-
-        // Capture the current state of the event flags
-        m_flock.lock();
-        Cpl_System_EventFlag_T events = m_events;
-        m_events                      = 0;
-        m_flock.unlock();
-
-        // Process Event Flags
-        if ( events )
-        {
-            Cpl_System_EventFlag_T eventMask   = 1;
-            uint8_t                eventNumber = 0;
-            for ( ; eventMask; eventMask <<= 1, eventNumber++ )
+            if ( (events & eventMask) )
             {
-                if ( (events & eventMask) )
-                {
-                    processEventFlag( eventNumber );
-                }
+                processEventFlag( eventNumber );
             }
         }
-
-        // Timer Check
-        processTimers();
-
-        // Hooks for additional processing
-        if ( m_processor1 )
-        {
-            m_processor1->processCustomEvent( m_timeNow );
-        }
-        if ( m_processor2 )
-        {
-            m_processor2->processCustomEvent( m_timeNow );
-        }
-        if ( m_processor3 )
-        {
-            m_processor3->processCustomEvent( m_timeNow );
-        }
     }
+
+    // Timer Check
+    processTimers();
+    return true;
 }
 
 /////////////////////
@@ -124,9 +115,9 @@ void EventLoop::pleaseStop()
     CPL_SYSTEM_TRACE_FUNC( SECT_ );
 
     // Set my flag/state to exit my top level thread loop
-    m_flock.lock();
+    GlobalLock::begin();
     m_run = false;
-    m_flock.unlock();
+    GlobalLock::end();
 
     // Signal myself in case the thread is blocked waiting for the 'next event'
     m_sema.signal();
@@ -136,9 +127,9 @@ void EventLoop::pleaseStop()
 void EventLoop::notifyEvents( Cpl_System_EventFlag_T events ) throw()
 {
     // Mark that I was signaled
-    m_flock.lock();
+    GlobalLock::begin();
     m_events |= events;
-    m_flock.unlock();
+    GlobalLock::end();
 
     m_sema.signal();
 }

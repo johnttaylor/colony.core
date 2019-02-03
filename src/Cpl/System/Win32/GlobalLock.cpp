@@ -9,32 +9,23 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
-#include "Cpl/System/FastLock.h"
+#include "Cpl/System/GlobalLock.h"
+#include "Cpl/System/Mutex.h"
+
+
+static Cpl::System::Mutex  global_;
 
 
 //////////////////////////////////////////////////////////////////////////////
-Cpl::System::FastLock::FastLock()
+void Cpl::System::GlobalLock::begin( void )
 {
-    pthread_mutexattr_t mutex_attr;
-    pthread_mutexattr_init( &mutex_attr );
-    pthread_mutexattr_settype( &mutex_attr, PTHREAD_MUTEX_DEFAULT );
-    pthread_mutex_init( &m_flock, &mutex_attr );
+    global_.lock();
 }
 
-Cpl::System::FastLock::~FastLock()
+void Cpl::System::GlobalLock::end( void )
 {
-    // Guarantee that the mutex is unlocked before it is "destroyed"
-    pthread_mutex_unlock( &m_flock );
-    pthread_mutex_destroy( &m_flock );
-}
-
-void Cpl::System::FastLock::lock( void )
-{
-    pthread_mutex_lock( &m_flock );
+    global_.unlock();
 }
 
 
-void Cpl::System::FastLock::unlock( void )
-{
-    pthread_mutex_unlock( &m_flock );
-}
+

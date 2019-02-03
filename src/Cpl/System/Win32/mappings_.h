@@ -41,13 +41,6 @@
 /// Win32 Mapping
 #define Cpl_System_TlsKey_T_MAP                 DWORD
 
-/// Win32 Mapping
-#define Cpl_System_FastLock_T_MAP               CRITICAL_SECTION
-
-/// Allow the application to adjust the Spin Count used for the FastLock
-#ifndef OPTION_CPL_SYSTEM_FASTLOCK_SPIN_COUNT
-#define OPTION_CPL_SYSTEM_FASTLOCK_SPIN_COUNT   4000 // Per the MSDN documentation '4000' is the spin count value used for per-heap critical sections
-#endif
 
 
 /// Win32 Mapping

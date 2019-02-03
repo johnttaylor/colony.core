@@ -36,9 +36,6 @@
 /// C++11 Mapping
 #define Cpl_System_Mutex_T_MAP                  std::recursive_mutex
 
-/// C++11 Mapping
-#define Cpl_System_FastLock_T_MAP               std::mutex // Not sure if this is faster than a recursive_mutex -->but its worth a try
-
 /// No native Semaphore in C++11 -->so build one out of a condition variable
 typedef struct Cpl_System_Cpp11_Sema_Tag
 {

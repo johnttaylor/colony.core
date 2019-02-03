@@ -9,31 +9,19 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
-#include "Cpl/System/FastLock.h"
+#include "colony_map.h"
+#include "Cpl/System/GlobalLock.h"
+
 
 
 //////////////////////////////////////////////////////////////////////////////
-Cpl::System::FastLock::FastLock( void )
+void Cpl::System::GlobalLock::begin( void )
 {
+     taskDISABLE_INTERRUPTS();
 }
 
-
-Cpl::System::FastLock::~FastLock( void )
+void Cpl::System::GlobalLock::end( void )
 {
+     taskENABLE_INTERRUPTS();
+
 }
-
-//////////////////////////////////////////////////////////////////////////////
-void Cpl::System::FastLock::lock( void )
-{
-    m_flock.lock();
-}
-
-
-void Cpl::System::FastLock::unlock( void )
-{
-    m_flock.unlock();
-}
-
-
-
-

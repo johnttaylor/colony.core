@@ -267,9 +267,9 @@ inline void DList<ITEM>::putFirst( ITEM& item ) throw()
     {
         if ( m_headPtr )
         {
-            item.m_nextPtr_      = m_headPtr;
+            item.m_nextPtr_       = m_headPtr;
             m_headPtr->m_prevPtr_ = &item;
-            m_headPtr            = &item;
+            m_headPtr             = &item;
         }
         else
         {
@@ -288,7 +288,7 @@ inline void DList<ITEM>::put( ITEM& item ) throw()
         if ( m_headPtr )
         {
             m_tailPtr->m_nextPtr_ = &item;
-            item.m_prevPtr_      = m_tailPtr;
+            item.m_prevPtr_       = m_tailPtr;
         }
         else
         {
@@ -368,7 +368,7 @@ inline void DList<ITEM>::insertBefore( ITEM& before, ITEM& item ) throw()
 {
     if ( item.insert_( this ) )
     {
-        ITEM* prvPtr     = (ITEM*) (item.m_prevPtr_ = before.m_prevPtr_);
+        ITEM* prvPtr      = (ITEM*) (item.m_prevPtr_ = before.m_prevPtr_);
         item.m_nextPtr_   = &before;
         before.m_prevPtr_ = &item;
         if ( !prvPtr )

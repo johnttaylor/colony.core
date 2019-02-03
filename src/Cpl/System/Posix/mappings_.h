@@ -35,9 +35,6 @@
 #define Cpl_System_Mutex_T_MAP                  pthread_mutex_t
 
 /// Mapping
-#define Cpl_System_FastLock_T_MAP               pthread_mutex_t
-
-/// Mapping
 #define Cpl_System_Sema_T_MAP                   sem_t
 
 /// Mapping

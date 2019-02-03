@@ -9,28 +9,23 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
-#include "Cpl/System/FastLock.h"
-#include "task.h"
+#include "Cpl/System/GlobalLock.h"
+#include "Cpl/System/Mutex.h"
 
+
+static Cpl::System::Mutex  global_;
 
 
 //////////////////////////////////////////////////////////////////////////////
-Cpl::System::FastLock::FastLock()
+void Cpl::System::GlobalLock::begin( void )
 {
+    global_.lock();
 }
 
-Cpl::System::FastLock::~FastLock()
+void Cpl::System::GlobalLock::end( void )
 {
-}
-
-
-void Cpl::System::FastLock::lock( void )
-{
-    taskDISABLE_INTERRUPTS();
+    global_.unlock();
 }
 
 
-void Cpl::System::FastLock::unlock( void )
-{
-    taskENABLE_INTERRUPTS();
-}
+
