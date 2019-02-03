@@ -49,24 +49,24 @@ bool bufferToString( const void* buffer, int len, String& destString, bool appen
 bool bufferToAsciiHex( const void* binaryData, int len, String& destString, bool upperCase=true, bool appendToString=false );
 
 
-/** This method converts the binary milliseoond count of 'timeStampInMsecs'
+/** This method converts the binary millisecond count of 'timeStampInMsecs'
     to a string with the folloing format: "DD HH:MM:SS.SSS". The converted 
-    result is returned via 'buffer'. If the results where trunaced by the no 
+    result is returned via 'buffer'. If the results where truncated by the no 
     enough memory in 'buffer' then false is returned; else true is returned.
  */
 bool formatMsecTimeStamp(Cpl::Text::String& buffer, unsigned long long timeStampInMsecs, bool encodeDay=true, bool appendToString=false );
 
 
 /** This method converts the binary second count of 'timeStampInSecs'
-    to a string with the folloing format: "DD HH:MM:SS". The converted result
-    is returned via 'buffer'. If the results where trunaced by the no enough 
+    to a string with the following format: "DD HH:MM:SS". The converted result
+    is returned via 'buffer'. If the results where truncated by the no enough 
     memory in 'buffer' then false is returned; else true is returned.
  */
 bool formatSecTimeStamp(Cpl::Text::String& buffer, unsigned long long timeStampInSecs, bool encodeDay=true, bool appendToString=false );
 
 /** This method converts the Cpl::System::ElapsedTime::Precision_T value of
-    time into a string with the folloing format: "DD HH:MM:SS.SSS". The 
-    converted result is returned via 'buffer'. If the results where trunaced 
+    time into a string with the following format: "DD HH:MM:SS.SSS". The 
+    converted result is returned via 'buffer'. If the results where truncated 
     by the no enough memory in 'buffer' then false is returned; else true 
     is returned.
  */

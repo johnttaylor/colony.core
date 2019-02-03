@@ -307,10 +307,10 @@ TEST_CASE( "basic", "[basic]" )
     Thread::wait();
     REQUIRE( cherryRun.m_tlsCompareResult  == 0 );
     REQUIRE( cherryRun.m_waitResult1 == false );
-    REQUIRE( cherryRun.m_delta1 >= 333 );
+    REQUIRE( cherryRun.m_delta1 >= 333 - 1);        // Use a tolerance for the test since the elapsed time and timed semaphore are guaranteed to have the same timing source
     REQUIRE( cherryRun.m_waitResult2 == true );
     REQUIRE( cherryRun.m_delta2 < 50 );
-    REQUIRE( cherryRun.m_delta3 >= 333 );
+    REQUIRE( cherryRun.m_delta3 >= 333 - 1);
     REQUIRE( cherryRun.m_delta4 < 50 );
     
     Api::sleep(50); // Allow time for the Cherry thread to self terminate

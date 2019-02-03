@@ -172,24 +172,18 @@ bool TimerManager::detach( CounterCallback_& clientToCallback ) throw()
     }
 
     // If I have the counter/timer -->it will be in the active list.  
-    CounterCallback_* counterPtr = m_counters.first();
-    while ( counterPtr )
+    if ( m_counters.find( clientToCallback ) )
     {
-        if ( counterPtr == &clientToCallback )
+        // Add the remaining time of the counter being remove to the next counter in the list
+        CounterCallback_* nextPtr = m_counters.next( clientToCallback );
+        if ( nextPtr )
         {
-            // Add the remaining time of the counter being remove to the next counter in the list
-            CounterCallback_* nextPtr = m_counters.next( *counterPtr );
-            if ( nextPtr )
-            {
-                nextPtr->increment( counterPtr->count() );
-            }
-
-            // remove the counter
-            m_counters.remove( *counterPtr );
-            return true;
+            nextPtr->increment( clientToCallback.count() );
         }
 
-        counterPtr = m_counters.next( *counterPtr );
+        // remove the counter
+        m_counters.remove( clientToCallback );
+        return true;
     }
 
     // If I get here, the Counter was NOT in the active list (AND it was not in the staging list)

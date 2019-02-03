@@ -241,11 +241,11 @@ bool Cpl::Text::a2b( bool& convertedValue, const char* string, const char* trueT
 }
 
 ///////////////////
-bool Cpl::Text::asciiHexToBuffer( void* dstBinary, const char* srcP, size_t dstMaxLen )
+long Cpl::Text::asciiHexToBuffer( void* dstBinary, const char* srcP, size_t dstMaxLen )
 {
     if ( !dstBinary || !srcP || dstMaxLen == 0 )
     {
-        return false;
+        return -1;
     }
 
     char        temp[3] = { '\0', };
@@ -257,29 +257,29 @@ bool Cpl::Text::asciiHexToBuffer( void* dstBinary, const char* srcP, size_t dstM
     // Length must be even
     if ( (len & 1) == 1 )
     {
-        return false;
+        return -1;
+    }
+
+    // Do NOT exceed the destination buffer 
+    if ( len / 2 > dstMaxLen )
+    {
+        return -1;
     }
 
     // Walk the entire string
     for ( i=0; i < len; i+=2 )
     {
-        // Do NOT exceed the destination buffer 
-        if ( i / 2 >= dstMaxLen )
-        {
-            return false;
-        }
-
         // Convert the data
         temp[0] = *srcP++;
         temp[1] = *srcP++;
         if ( !a2ui( rawByte, temp, 16 ) )
         {
             // Error -->end conversion
-            return false;
+            return -1;
         }
 
         *dstP++ = (uint8_t) rawByte;
     }
 
-    return true;
+    return len / 2;
 }
