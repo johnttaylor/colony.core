@@ -38,7 +38,7 @@ void* Tls::get( void )
     return pthread_getspecific( m_key );
 }
 
-void Tls::set( const void* newValue )
+void Tls::set( void* newValue )
 {
     pthread_setspecific( m_key, newValue );
 }

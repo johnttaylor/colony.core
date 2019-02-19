@@ -70,7 +70,7 @@ public:
 
     /** This method sets the thread-based stored value.
      */
-    virtual void set( const void* newValue );
+    virtual void set( void* newValue );
 
 
 protected:

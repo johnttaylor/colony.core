@@ -324,8 +324,9 @@ protected:
 #define CPL_SYSTEM_TRACE_PRETTY_FUNCNAME    __FUNCSIG__
 
 #else
-/// Omit function name
-#define CPL_SYSTEM_TRACE_PRETTY_FUNCNAME    ""
+/// Use C++11 function name
+
+#define CPL_SYSTEM_TRACE_PRETTY_FUNCNAME    __func__
 #endif  // end __PRETTY_FUNCTION__
 
 

@@ -53,7 +53,7 @@ void* Tls::get( void )
 }
 
 
-void Tls::set( const void* newValue )
+void Tls::set( void* newValue )
 {
-    cpl_sytem_cpp11_tls_values_[m_key] = (void*) newValue;
+    cpl_sytem_cpp11_tls_values_[m_key] = newValue;
 }

@@ -23,9 +23,23 @@
 #include "task.h"
 #include "Cpl/System/_assert/c_assert.h"
 
+// PRETTY_FUNCTION macro is non-standard
+#if defined(__GNUC__)
+/// Take advantage of GCC's pretty function symbol
+#define CPL_SYSTEM_ASSERT_PRETTY_FUNCNAME    __PRETTY_FUNCTION__
+
+#elif defined(_MSC_VER)
+/// Take advantage of Microsoft's pretty function symbol
+#define CPL_SYSTEM_ASSERT_PRETTY_FUNCNAME    __FUNCSIG__
+
+#else
+/// Use C++11 function name
+#define CPL_SYSTEM_ASSERT_PRETTY_FUNCNAME    __func__
+#endif  // end __PRETTY_FUNCTION__
+
 
 /// Mapping
-#define CPL_SYSTEM_ASSERT_MAP(e)                cpl_system_assert_c_wrapper( e, __FILE__, __LINE__, __FUNC__ )
+#define CPL_SYSTEM_ASSERT_MAP(e)                cpl_system_assert_c_wrapper( e, __FILE__, __LINE__, CPL_SYSTEM_ASSERT_PRETTY_FUNCNAME )
 
 /// Mapping
 #define Cpl_System_Thread_NativeHdl_T_MAP       TaskHandle_t  

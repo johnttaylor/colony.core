@@ -16,30 +16,34 @@
 ///
 using namespace Cpl::System;
 
+///
+static void* values_[OPTION_CPL_SYSTEM_TLS_DESIRED_MIN_INDEXES];
+static int   next_index_ = 0;
+
 
 /////////////////////////////////////////////////////////
 Tls::Tls( void )
 {
-    m_key = TlsAlloc();
-    if ( m_key == TLS_OUT_OF_INDEXES )
+    m_key = next_index_++;
+    if ( next_index_ >= OPTION_CPL_SYSTEM_TLS_DESIRED_MIN_INDEXES )
     {
-        Cpl::System::FatalError::logRaw( "Win32::Tls::Tls().  TlsAlloc() failed when creating index to store TLS variable." );
+        Cpl::System::FatalError::logRaw( "BareMetal::Tls::Tls().  Out of allocated indexes to store TLS variable." );
     }
 }
 
 Tls::~Tls()
 {
-    TlsFree( m_key );
+    // Cheat here and do nothing, i.e. will not be a to 'free' a previously allocated TLS
 }
 
 
 /////////////////////////////////////////////////////////
 void* Tls::get( void )
 {
-    return TlsGetValue( m_key );
+    return values_[m_key];
 }
 
 void Tls::set( void* newValue )
 {
-    TlsSetValue( m_key, (LPVOID) newValue );
+    values_[m_key] = newValue;
 }

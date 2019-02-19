@@ -61,9 +61,9 @@ void* Tls::get( void )
     return myArray[m_key];
 }
 
-void Tls::set( const void* newValue )
+void Tls::set( void* newValue )
 {
     // Get access to my FreeRTOS thread object.
     void** myArray = Cpl::System::FreeRTOS::Thread::getTlsArray();
-    myArray[m_key] = (void*) newValue;
+    myArray[m_key] = newValue;
 }

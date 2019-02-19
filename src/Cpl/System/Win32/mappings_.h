@@ -22,12 +22,26 @@
 #include <time.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <assert.h>
 #include "colony_config.h"
+#include "Cpl/System/FatalError.h"
+
+/// PRETTY_FUNCTION macro is non-standard
+#if defined(__GNUC__)
+/// Take advantage of GCC's pretty function symbol
+#define CPL_SYSTEM_ASSERT_PRETTY_FUNCNAME    __PRETTY_FUNCTION__
+
+#elif defined(_MSC_VER)
+/// Take advantage of Microsoft's pretty function symbol
+#define CPL_SYSTEM_ASSERT_PRETTY_FUNCNAME    __FUNCSIG__
+
+#else
+/// Use C++11 function name
+#define CPL_SYSTEM_ASSERT_PRETTY_FUNCNAME    __func__
+#endif  // end __PRETTY_FUNCTION__
 
 
 /// Win32 Mapping
-#define CPL_SYSTEM_ASSERT_MAP(e)                assert(e)
+#define CPL_SYSTEM_ASSERT_MAP(e)                do { if ( !(e) ) Cpl::System::FatalError::logf( "ASSERT Failed at: file=%s, line=%d, func=%s\n", __FILE__, __LINE__, CPL_SYSTEM_ASSERT_PRETTY_FUNCNAME ); } while(0)
 
 /// Win32 Mapping
 #define Cpl_System_Thread_NativeHdl_T_MAP       HANDLE  

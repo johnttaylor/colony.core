@@ -74,12 +74,6 @@ public:
 
     Note: The EventLoop does NOT use/consume the Thread Semaphore.
  */
-
-
-
- /** This is an abstract class defines the interface for an object
-     that is "executed" when a Thread object is created.
-  */
 class EventLoop : public Runnable, public EventFlag, public Signable, public TimerManager
 {
 public:

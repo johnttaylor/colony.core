@@ -11,19 +11,14 @@
 
 #include "Cpl/System/ElapsedTime.h"
 #include "Cpl/System/Private_.h"
+#include "Hal_.h"
 #include <stdlib.h>
-#include <time.h>
 
 
 /// 
 using namespace Cpl::System;
 
-static unsigned long getTime_()
-{
-    struct timespec tm;
-    clock_gettime( CLOCK_MONOTONIC, &tm );
-    return tm.tv_sec * 1000 + tm.tv_nsec / 1000000;
-}
+
 
 ///////////////////////////////////////////////////////////////
 static unsigned long elapsedMsec_;
@@ -44,7 +39,7 @@ protected:
     void notify( InitLevel_T init_level )
     {
         elapsedMsec_  = 0;
-        lastMsec_     = getTime_();
+        lastMsec_     = BareMetal::getElapsedTime();
     }
 
 };
@@ -57,9 +52,7 @@ static RegisterInitHandler_ autoRegister_systemInit_hook_;
 ///////////////////////////////////////////////////////////////
 unsigned long ElapsedTime::millisecondsInRealTime( void ) throw()
 {
-    Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
-
-    unsigned long newTime = getTime_();
+    unsigned long newTime = BareMetal::getElapsedTime();
     unsigned long delta   = newTime - lastMsec_;
     elapsedMsec_         += delta;
     lastMsec_             = newTime;
@@ -69,10 +62,8 @@ unsigned long ElapsedTime::millisecondsInRealTime( void ) throw()
 
 unsigned long ElapsedTime::secondsInRealTime( void ) throw()
 {
-    Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
-
     // Update my internal elapsedMsec time
-    milliseconds();
+    millisecondsInRealTime();
 
     // Convert my internal elapsed time to seconds
     return (unsigned long) (elapsedMsec_ / 1000LL);
@@ -81,15 +72,30 @@ unsigned long ElapsedTime::secondsInRealTime( void ) throw()
 
 ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) throw()
 {
-    Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
-
     // Update my internal elapsedMsec time
-    milliseconds();
+    millisecondsInRealTime();
 
     // Convert to my Precision format
     Precision_T now;
-    ldiv_t      result = ldiv( elapsedMsec_, 1000LL );
+    ldiv_t      result =lldiv( elapsedMsec_, 1000L );
     now.m_seconds      = (unsigned long) result.quot;
     now.m_thousandths  = (uint16_t) result.rem;
     return now;
+}
+
+///////////////////////////////////////////////////////////////
+// NOTE: Simulated Elapsed time has NO meaning on a single threaded system, i.e. there is no-simulate-time thread to generate simulate ticks
+unsigned long ElapsedTime::milliseconds( void ) throw()
+{
+    return millisecondsInRealTime();
+}
+
+unsigned long ElapsedTime::seconds( void ) throw()
+{
+    return secondsInRealTime();
+}
+
+ElapsedTime::Precision_T ElapsedTime::precision( void ) throw()
+{
+    return precisionInRealTime();
 }

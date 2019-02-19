@@ -82,7 +82,7 @@ ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) throw()
 
     // Convert to my Precision format
     Precision_T now;
-    lldiv_t     result = lldiv( elapsedMsec_, 1000LL );
+    ldiv_t      result = ldiv( elapsedMsec_, 1000L );
     now.m_seconds      = (unsigned long) result.quot;
     now.m_thousandths  = (uint16_t) result.rem;
     return now;

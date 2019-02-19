@@ -1,5 +1,5 @@
-#ifndef Cpl_System_Cpp11_mappings_x_h_
-#define Cpl_System_Cpp11_mappings_x_h_
+#ifndef Cpl_System_Win32_mappings_x_h_
+#define Cpl_System_Win32_mappings_x_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -17,14 +17,12 @@
 
  */
 
-#include "colony_config.h"  // Note: Yet another work around for managing OS specific items not covered by C++11, e.g. the native directory separator
 
-
-#include <mutex>
-#include <condition_variable>
+#include <windows.h>
 #include <time.h>
+#include <stdint.h>
 #include <stdlib.h>
-#include <thread>
+#include "colony_config.h"
 #include "Cpl/System/FatalError.h"
 
 /// PRETTY_FUNCTION macro is non-standard
@@ -42,44 +40,28 @@
 #endif  // end __PRETTY_FUNCTION__
 
 
-/// C++11 Mapping
+/// BareMetal Mapping
 #define CPL_SYSTEM_ASSERT_MAP(e)                do { if ( !(e) ) Cpl::System::FatalError::logf( "ASSERT Failed at: file=%s, line=%d, func=%s\n", __FILE__, __LINE__, CPL_SYSTEM_ASSERT_PRETTY_FUNCNAME ); } while(0)
 
-/// C++11 Mapping
-#define Cpl_System_Thread_NativeHdl_T_MAP       std::thread::native_handle_type
+/// BareMetal Mapping
+#define Cpl_System_Thread_NativeHdl_T_MAP       int  
 
-/// C++11 Mapping
-#define Cpl_System_Mutex_T_MAP                  std::recursive_mutex
+/// BareMetal Mapping
+#define Cpl_System_Mutex_T_MAP                  int
 
-/// No native Semaphore in C++11 -->so build one out of a condition variable
-typedef struct Cpl_System_Cpp11_Sema_Tag
-{
-    ///
-    std::mutex              m_mutex;
-    ///
-    std::condition_variable m_cond;
-    ///
-    unsigned                m_count;
-} Cpl_System_Cpp11_Sema_T;
+/// BareMetal Mapping
+#define Cpl_System_Sema_T_MAP                   volatile unsigned
 
-
-/// C++11 Mapping
-#define Cpl_System_Sema_T_MAP                   Cpl_System_Cpp11_Sema_T
-
-
-/// C++11 Mapping
+/// BareMetal Mapping
 #define Cpl_System_TlsKey_T_MAP                 int
 
 
-/// C++11 Mapping
-#ifndef CPL_SYSTEM_SHELL_SUPPORTED_x_MAP
-#define CPL_SYSTEM_SHELL_SUPPORTED_x_MAP        0   // Default to NOT supported (since this requires knowledge of the native OS)
-#endif 
 
-/// Default the native new line to the standard newline
-#ifndef CPL_IO_NEW_LINE_NATIVE_MAP
-#define CPL_IO_NEW_LINE_NATIVE_MAP              "\n"
-#endif
+/// BareMetal Mapping
+#define CPL_SYSTEM_SHELL_NULL_DEVICE_x_MAP      "none"
+
+/// BareMetal Mapping
+#define CPL_SYSTEM_SHELL_SUPPORTED_x_MAP        0
 
 
 /// Thread Priorities
@@ -97,11 +79,6 @@ typedef struct Cpl_System_Cpp11_Sema_Tag
 /// Thread Priorities
 #define CPL_SYSTEM_THREAD_PRIORITY_LOWER_MAP        0
 
-
-/// Hack because Microsoft's VC12 only HAS PARTIAL support for thread_local
-#if _MSC_VER >= 1800
-#define  thread_local __declspec(thread)
-#endif
 
 
 #endif  // end header latch
