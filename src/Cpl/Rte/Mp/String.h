@@ -27,7 +27,7 @@ namespace Mp {
 
 /** This class provides a concrete implementation for a Point who's data is a
     null terminated string.  The storage for the internal string storage is
-    allocated (from the heap) ONCE when the instance is constructed, i.e. fixed 
+    allocated (from the heap) ONCE when the instance is constructed, i.e. fixed
     length (per instance) storage.
 
     For the fromString() operation the expected data formats are:
@@ -40,15 +40,15 @@ namespace Mp {
                           application's source stream.
             <text-string> is a string bounded with double quotes and can contain
                           any printable character.  The Cpl::Text::Frame::StringDecoder
-                          class is used with the framing/special characters 
+                          class is used with the framing/special characters
                           defined in the Cpl/Rte/ModelPoint.h header file
 
 
         examples:
-            noWhitespace 
+            noWhitespace
             "I have white space and `"quote`" characters"
-    
-    The toString() function outputs in the same data format as the expected 
+
+    The toString() function outputs in the same data format as the expected
     fromString() function - except the toString() always output the string
     as a <text-string>
 
@@ -79,17 +79,17 @@ public:
     String( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t maxLength );
 
     /// Constructor.  Valid MP. Requires an initial value. The 'maxLength' specifies the size, in bytes, of the string storage EXCLUDING the null terminator
-    String( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t maxLength, const char* initialValue  );
+    String( Cpl::Rte::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t maxLength, const char* initialValue );
 
     /// Destructor (free up allocate array memory)
     ~String();
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint
-    virtual uint16_t read( Data& dstData, int8_t& validState ) const throw();
+    virtual int8_t read( Data& dstData, uint16_t* seqNumPtr=0 ) const throw();
 
     /// Type safe read. See Cpl::Rte::ModelPoint
-    virtual uint16_t read( Cpl::Text::String& dstData, int8_t& validState ) const throw();
+    virtual int8_t read( Cpl::Text::String& dstData, uint16_t* seqNumPtr=0 ) const throw();
 
 
     /// Type safe write. See Cpl::Rte::ModelPoint
@@ -154,7 +154,7 @@ protected:
     const void* getImportExportDataPointer_() const throw();
 
     /// See Cpl::Rte::ModelPoint.  
-    size_t getImportExportSize_() const throw();
+    size_t getInternalDataSize() const throw();
 };
 
 

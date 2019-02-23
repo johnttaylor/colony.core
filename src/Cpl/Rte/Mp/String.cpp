@@ -94,20 +94,20 @@ String::~String()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-uint16_t String::read( Cpl::Text::String& dstData, int8_t& validState ) const throw()
+int8_t String::read( Cpl::Text::String& dstData, uint16_t* seqNumPtr ) const throw()
 {
     Data dst;
     int  bufferMaxLength;
     dst.stringPtr   = dstData.getBuffer( bufferMaxLength );
     dst.maxLength   = bufferMaxLength;
-    uint16_t result = ModelPointCommon_::read( &dst, sizeof( Data ), validState );
+    uint16_t result = ModelPointCommon_::read( &dst, sizeof( Data ), seqNumPtr );
 
     return result;
 }
 
-uint16_t String::read( Data& dstData, int8_t& validState ) const throw()
+int8_t String::read( Data& dstData, uint16_t* seqNumPtr ) const throw()
 {
-    uint16_t result =  ModelPointCommon_::read( &dstData, sizeof( Data ), validState );
+    uint16_t result =  ModelPointCommon_::read( &dstData, sizeof( Data ), seqNumPtr );
 
     return result;
 }
@@ -203,7 +203,7 @@ size_t String::getSize() const throw()
     return m_data.maxLength;
 }
 
-size_t String::getImportExportSize_() const throw()
+size_t String::getInternalDataSize() const throw()
 {
     return m_data.maxLength;
 }

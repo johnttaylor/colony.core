@@ -45,41 +45,41 @@ TEST_CASE( "string-readwrite", "[string-readwrite]" )
 
     // Read1
     char             myDataMemory[5];
-    Mp::String::Data myData = { myDataMemory, 0, sizeof( myDataMemory ) -1 };
-    int8_t           valid;
-    uint16_t         seqNum = mp_orange_.read( myData, valid );
+    Mp::String::Data myData = { myDataMemory, 0, sizeof( myDataMemory ) - 1 };
+    uint16_t         seqNum;
+    int8_t           valid = mp_orange_.read( myData, valid );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( strcmp( myData.stringPtr, "bobs" ) == 0 );
 
     // Read2
     Cpl::Text::FString<32> value;
-    seqNum = mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value, &seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == "bobs yours uncl" );
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Write1
     uint16_t seqNum2 = mp_apple_.write( "-10.1234F" );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == "-10.1234F" );
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Write2
     seqNum = mp_apple_.write( "-10.1234F", 3 );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == "-10" );
-    REQUIRE( seqNum == seqNum2 + 1);
+    REQUIRE( seqNum == seqNum2 + 1 );
 
     // Write3
     Mp::String::Data myData2 = { (char*)"bob was here today", 18, 18 };
     seqNum2 = mp_apple_.write( myData2 );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == "bob was he" );
-    REQUIRE( seqNum+1 == seqNum2 );
+    REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read-Modify-Write with Lock (with too long of string)
     RmwString callbackClient;
@@ -87,7 +87,7 @@ TEST_CASE( "string-readwrite", "[string-readwrite]" )
     callbackClient.m_valueToWrite   = "Hello bob.!";
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     bool locked = mp_apple_.isLocked();
@@ -101,7 +101,7 @@ TEST_CASE( "string-readwrite", "[string-readwrite]" )
     callbackClient.m_valueToWrite   = "Hello bob!";
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     locked = mp_apple_.isLocked();
@@ -173,7 +173,7 @@ TEST_CASE( "string-export", "[string-export]" )
     REQUIRE( seqNum == seqNum2 + 1 );
     Cpl::Text::FString<32> value;
     int8_t                 valid;
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( value == "-42.14159F" );
@@ -185,14 +185,14 @@ TEST_CASE( "string-export", "[string-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Update the MP
     seqNum = mp_apple_.write( "13.99F" );
     REQUIRE( seqNum == seqNum2 + 1 );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( value == "13.99F" );
@@ -217,7 +217,7 @@ TEST_CASE( "string-export", "[string-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == "13.99F" );
@@ -305,7 +305,7 @@ TEST_CASE( "string-fromstring", "[string-fromstring]" )
     REQUIRE( seqNum2 == seqNum + 1 );
     Cpl::Text::FString<32> value;
     int8_t                 valid;
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == "12.34" );
@@ -342,7 +342,7 @@ TEST_CASE( "string-fromstring", "[string-fromstring]" )
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( mp_apple_.isLocked() == true );
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == "111.3" );
@@ -356,7 +356,7 @@ TEST_CASE( "string-fromstring", "[string-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == "3.14159" );
 
@@ -367,7 +367,7 @@ TEST_CASE( "string-fromstring", "[string-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == true );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == "3.14159" );
 
@@ -377,7 +377,7 @@ TEST_CASE( "string-fromstring", "[string-fromstring]" )
     REQUIRE( *nextChar == ',' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == "4.321" );
 
@@ -387,7 +387,7 @@ TEST_CASE( "string-fromstring", "[string-fromstring]" )
     REQUIRE( *nextChar == ',' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == "4\".321" );
 
@@ -397,7 +397,7 @@ TEST_CASE( "string-fromstring", "[string-fromstring]" )
     REQUIRE( *nextChar == ',' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == "4\".321 and,more" );
 
@@ -405,7 +405,7 @@ TEST_CASE( "string-fromstring", "[string-fromstring]" )
     errorMsg = "noerror";
     nextChar = mp_orange_.fromString( "\"0x1234", 0, &errorMsg );
     REQUIRE( nextChar == 0 );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == "4\".321 and,more" );
     REQUIRE( errorMsg != "noerror" );

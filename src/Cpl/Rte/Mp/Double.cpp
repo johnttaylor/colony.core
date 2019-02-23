@@ -31,9 +31,9 @@ Double::Double( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& stat
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-uint16_t Double::read( double& dstData, int8_t& validState ) const throw()
+int8_t Double::read( double& dstData, uint16_t* seqNumPtr ) const throw()
 {
-    return ModelPointCommon_::read( &dstData, sizeof( double ), validState );
+    return ModelPointCommon_::read( &dstData, sizeof( double ), seqNumPtr );
 }
 
 uint16_t Double::write( double newValue, LockRequest_T lockRequest ) throw()

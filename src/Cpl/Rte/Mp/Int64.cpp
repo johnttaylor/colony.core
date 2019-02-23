@@ -32,9 +32,9 @@ Int64::Int64( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& static
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-uint16_t Int64::read( int64_t& dstData, int8_t& validState ) const throw()
+int8_t Int64::read( int64_t& dstData, uint16_t* seqNumPtr ) const throw()
 {
-    return ModelPointCommon_::read( &dstData, sizeof( int64_t ), validState );
+    return ModelPointCommon_::read( &dstData, sizeof( int64_t ), seqNumPtr );
 }
 
 uint16_t Int64::write( int64_t newValue, LockRequest_T lockRequest ) throw()

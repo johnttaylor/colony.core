@@ -69,7 +69,7 @@ public:
     uint16_t setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest = eNO_REQUEST ) throw();
 
     /// Reads the current counter value
-    virtual uint16_t read( uint32_t& dstData, int8_t& validState ) const throw();
+    virtual int8_t read( uint32_t& dstData, uint16_t* seqNumPtr=0 ) const throw();
 
     /// Increments the counter
     virtual uint16_t increment( uint32_t incrementAmount=1, LockRequest_T lockRequest = eNO_REQUEST ) throw();

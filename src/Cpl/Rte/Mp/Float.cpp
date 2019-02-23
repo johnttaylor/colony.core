@@ -26,14 +26,14 @@ Float::Float( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& static
 }
 
 Float::Float( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, float initialValue )
-    :Basic<float>( myModelBase, staticInfo, initialValue )
+    : Basic<float>( myModelBase, staticInfo, initialValue )
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-uint16_t Float::read( float& dstData, int8_t& validState ) const throw()
+int8_t Float::read( float& dstData, uint16_t* seqNumPtr ) const throw()
 {
-    return ModelPointCommon_::read( &dstData, sizeof( float ), validState );
+    return ModelPointCommon_::read( &dstData, sizeof( float ), seqNumPtr );
 }
 
 uint16_t Float::write( float newValue, LockRequest_T lockRequest ) throw()

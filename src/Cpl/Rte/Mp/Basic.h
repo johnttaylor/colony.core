@@ -91,7 +91,7 @@ public:
     }
 
     /// See Cpl::Rte::Point.  
-    size_t getImportExportSize_() const throw()
+    size_t getInternalDataSize() const throw()
     {
         return sizeof( ELEMTYPE );
     }
@@ -263,7 +263,7 @@ public:
     }
 
     /// See Cpl::Rte::Point.  
-    size_t getImportExportSize_() const throw()
+    size_t getInternalDataSize() const throw()
     {
         return m_data.numElements * sizeof( ELEMTYPE );
     }

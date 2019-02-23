@@ -32,7 +32,7 @@ static StaticInfo       info_mp_apple_( "APPLE" );
 static Mp::Bool         mp_apple_( modelDb_, info_mp_apple_ );
 
 static StaticInfo       info_mp_orange_( "ORANGE" );
-static Mp::Bool         mp_orange_( modelDb_, info_mp_orange_, true  );
+static Mp::Bool         mp_orange_( modelDb_, info_mp_orange_, true );
 
 TEST_CASE( "bool-readwrite", "[bool-readwrite]" )
 {
@@ -41,16 +41,16 @@ TEST_CASE( "bool-readwrite", "[bool-readwrite]" )
 
     // Read
     bool     value;
-    int8_t   valid;
-    uint16_t seqNum = mp_orange_.read( value, valid );
+    uint16_t seqNum;
+    int8_t   valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == true );
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Write
     uint16_t seqNum2 = mp_apple_.write( true );
-    mp_apple_.read( value, valid );
+    valid =  mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == true );
     REQUIRE( seqNum + 1 == seqNum2 );
@@ -61,7 +61,7 @@ TEST_CASE( "bool-readwrite", "[bool-readwrite]" )
     callbackClient.m_nextValue      = false;
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     bool locked = mp_apple_.isLocked();
@@ -132,8 +132,7 @@ TEST_CASE( "bool-export", "[bool-export]" )
     seqNum = mp_apple_.write( true );
     REQUIRE( seqNum == seqNum2 + 1 );
     bool     value;
-    int8_t   valid;
-    mp_apple_.read( value, valid );
+    int8_t   valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( value == true );
@@ -145,14 +144,14 @@ TEST_CASE( "bool-export", "[bool-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Update the MP
     seqNum = mp_apple_.write( false );
     REQUIRE( seqNum == seqNum2 + 1 );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( value == false );
@@ -177,7 +176,7 @@ TEST_CASE( "bool-export", "[bool-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == false );
@@ -242,7 +241,7 @@ TEST_CASE( "bool-tostring", "[bool-tostring]" )
     mp_apple_.write( false, ModelPoint::eUNLOCK );
     mp_apple_.toString( string, false, &seqNum );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 + 1== seqNum );
+    REQUIRE( seqNum2 + 1 == seqNum );
     REQUIRE( string == "false" );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
@@ -270,8 +269,7 @@ TEST_CASE( "bool-fromstring", "[bool-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( seqNum2 == seqNum + 1 );
     bool value;
-    int8_t   valid;
-    seqNum = mp_apple_.read( value, valid );
+    int8_t   valid= mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == true );
@@ -280,7 +278,7 @@ TEST_CASE( "bool-fromstring", "[bool-fromstring]" )
     // Write - Fail case
     nextChar = mp_apple_.fromString( "False", 0, &errorMsg, &seqNum2 );
     REQUIRE( nextChar == 0 );
-    seqNum2 = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( value == true );
@@ -318,7 +316,7 @@ TEST_CASE( "bool-fromstring", "[bool-fromstring]" )
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( mp_apple_.isLocked() == true );
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == false );
@@ -332,7 +330,7 @@ TEST_CASE( "bool-fromstring", "[bool-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == false );
 
@@ -342,7 +340,7 @@ TEST_CASE( "bool-fromstring", "[bool-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == true );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == false );
 
@@ -352,7 +350,7 @@ TEST_CASE( "bool-fromstring", "[bool-fromstring]" )
     REQUIRE( *nextChar == ',' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == true );
 

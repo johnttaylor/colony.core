@@ -60,9 +60,9 @@ public:
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint
-    virtual uint16_t read( BETTERENUM_TYPE& dstData, int8_t& validState ) const throw()
+    virtual int8_t read( BETTERENUM_TYPE& dstData, uint16_t* seqNumPtr=0 ) const throw()
     {
-        return ModelPointCommon_::read( &dstData, sizeof( int ), validState );
+        return ModelPointCommon_::read( &dstData, sizeof( int ), seqNumPtr );
     }
 
     /// Type safe write. See Cpl::Rte::ModelPoint
@@ -126,7 +126,7 @@ public:
     }
 
     /// See Cpl::Rte::Point.  
-    size_t getImportExportSize_() const throw()
+    size_t getInternalDataSize() const throw()
     {
         return sizeof( BETTERENUM_TYPE );
     }

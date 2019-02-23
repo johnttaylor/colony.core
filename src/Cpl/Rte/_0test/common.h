@@ -116,8 +116,9 @@ public:
         uint16_t prevSeqNum = m_lastSeqNumber;
 
         m_mpNotificationCount1++;
-        uint16_t seqNum = modelPointThatChanged.read( m_lastValue, m_lastValidState );
-        m_lastSeqNumber = m_observerMp1.getSequenceNumber_();
+        uint16_t seqNum;
+        m_lastValidState = modelPointThatChanged.read( m_lastValue, &seqNum );
+        m_lastSeqNumber  = m_observerMp1.getSequenceNumber_();
 
         if ( m_pendingOpenMsgPtr != 0 && m_mpNotificationCount1 == 1 )
         {
@@ -363,7 +364,7 @@ public:
     uint32_t                        m_incValue;
 public:
     ///
-    RmwUint32():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue(0) {}
+    RmwUint32():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0 ) {}
     ///
     ModelPoint::RmwCallbackResult_T callback( uint32_t& data, int8_t validState ) throw()
     {

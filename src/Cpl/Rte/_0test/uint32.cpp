@@ -92,7 +92,7 @@ TEST_CASE( "uint32-export", "[uint32-export]" )
     REQUIRE( seqNum == seqNum2 + 1 );
     uint32_t value;
     int8_t   valid;
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( value == 42 );
@@ -104,14 +104,14 @@ TEST_CASE( "uint32-export", "[uint32-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Update the MP
     seqNum = mp_apple_.write( 13 );
     REQUIRE( seqNum == seqNum2 + 1 );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( value == 13 );
@@ -136,7 +136,7 @@ TEST_CASE( "uint32-export", "[uint32-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == 13 );
@@ -237,8 +237,7 @@ TEST_CASE( "uint32-fromstring", "[uint32-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( seqNum2 == seqNum + 1 );
     uint32_t value;
-    int8_t   valid;
-    seqNum = mp_apple_.read( value, valid );
+    int8_t   valid = mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == 1234 );
@@ -247,7 +246,7 @@ TEST_CASE( "uint32-fromstring", "[uint32-fromstring]" )
     // Write Hex value- Fail case
     nextChar = mp_apple_.fromString( "0x1234", 0, &errorMsg, &seqNum2 );
     REQUIRE( nextChar == 0 );
-    seqNum2 = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( value == 1234 );
@@ -259,7 +258,7 @@ TEST_CASE( "uint32-fromstring", "[uint32-fromstring]" )
     nextChar = mp_orange_.fromString( "0x1234", 0, &errorMsg );
     REQUIRE( nextChar != 0 );
     REQUIRE( *nextChar == '\0' );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == 0x1234 );
     REQUIRE( errorMsg == "noerror" );
@@ -295,7 +294,7 @@ TEST_CASE( "uint32-fromstring", "[uint32-fromstring]" )
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( mp_apple_.isLocked() == true );
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == 111 );
@@ -309,7 +308,7 @@ TEST_CASE( "uint32-fromstring", "[uint32-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == 0xDEAD );
 
@@ -319,7 +318,7 @@ TEST_CASE( "uint32-fromstring", "[uint32-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == true );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == 0xDEAD );
 
@@ -329,9 +328,9 @@ TEST_CASE( "uint32-fromstring", "[uint32-fromstring]" )
     REQUIRE( *nextChar == ',' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE( value == 0x4321);
+    REQUIRE( value == 0x4321 );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }

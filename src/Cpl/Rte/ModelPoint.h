@@ -362,8 +362,9 @@ public:
 
 protected:
     /** This method copies the Model Point's content to the caller's Point
-        instance. The method returns the Model Point's sequence number after
-        the method completes.
+        instance. The method returns the Model Point's valid state.  The
+        MP's sequence number is optionally return if 'seqNumPtr' is set to
+        a non-zero value.
 
         If 'validState' indicates that the data is invalid, then contents of 
         'dst' is meaningless.
@@ -375,7 +376,7 @@ protected:
            data from the Model Point
         3) The Model Point's sequence number is not changed.
      */
-    virtual uint16_t read( void* dstData, size_t dstSize, int8_t& validState ) const throw() = 0;
+    virtual int8_t read( void* dstData, size_t dstSize, uint16_t* seqNumPtr=0 ) const throw() = 0;
 
     /** This method writes the caller Point instance to the Model Point's
         internal data.  The method returns the Model Point's sequence number
@@ -578,7 +579,7 @@ public:
          not exposed to the Model Point consumers - but is used with the
          internal import()/export() methods.
     */
-    virtual size_t getImportExportSize_() const throw() = 0;
+    virtual size_t getInternalDataSize() const throw() = 0;
 
 
 public:

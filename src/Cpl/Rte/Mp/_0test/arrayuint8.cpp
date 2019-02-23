@@ -36,7 +36,7 @@ static StaticInfo      info_mp_apple_( "APPLE" );
 static Mp::ArrayUint8  mp_apple_( modelDb_, info_mp_apple_, APPLE_NUM_ELEMENTS );
 
 static StaticInfo      info_mp_orange_( "ORANGE" );
-static const uint8_t   orange_init_values[ORANGE_NUM_ELEMENTS] ={ 3, 2, 1 };
+static const uint8_t   orange_init_values[ORANGE_NUM_ELEMENTS] = { 3, 2, 1 };
 static Mp::ArrayUint8  mp_orange_( modelDb_, info_mp_orange_, ORANGE_NUM_ELEMENTS, orange_init_values, false );
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -46,20 +46,20 @@ TEST_CASE( "arrayuint8-readwrite", "[arrayuint8-readwrite]" )
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     // Read
-    uint8_t  value[ORANGE_NUM_ELEMENTS] ={ 0xFF, 0xFF, 0xFF };
-    int8_t   valid;
-    uint16_t seqNum = mp_orange_.read( value, 2, valid, 1 );
+    uint8_t  value[ORANGE_NUM_ELEMENTS] = { 0xFF, 0xFF, 0xFF };
+    int8_t   valid = mp_orange_.read( value, 2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value[0] == 2 );
     REQUIRE( value[1] == 1 );
     REQUIRE( value[2] == 0xFF );
-    seqNum = mp_apple_.read( value, 3, valid );
+    uint16_t seqNum;
+    valid = mp_apple_.read( value, 3, 0, &seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Write
-    uint8_t  value2[APPLE_NUM_ELEMENTS] ={ 50, 40, 30, 20, 10 };
+    uint8_t  value2[APPLE_NUM_ELEMENTS] = { 50, 40, 30, 20, 10 };
     uint16_t seqNum2 = mp_apple_.write( value2 + 1, 3, ModelPoint::eNO_REQUEST, 1 );
-    mp_apple_.read( value2, APPLE_NUM_ELEMENTS, valid );
+    valid = mp_apple_.read( value2, APPLE_NUM_ELEMENTS );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value2[0] == 0 );
     REQUIRE( value2[1] == 40 );
@@ -70,7 +70,7 @@ TEST_CASE( "arrayuint8-readwrite", "[arrayuint8-readwrite]" )
 
     // Partial Write same value
     seqNum = mp_apple_.write( value2 + 1, 3, ModelPoint::eNO_REQUEST, 1 );
-    mp_apple_.read( value2, APPLE_NUM_ELEMENTS, valid );
+    valid = mp_apple_.read( value2, APPLE_NUM_ELEMENTS );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value2[0] == 0 );
     REQUIRE( value2[1] == 40 );
@@ -80,9 +80,9 @@ TEST_CASE( "arrayuint8-readwrite", "[arrayuint8-readwrite]" )
     REQUIRE( seqNum == seqNum2 );
 
     // Entire Write same value
-    uint8_t  value3[APPLE_NUM_ELEMENTS] ={ 0, 40, 30, 20, 0 };
+    uint8_t  value3[APPLE_NUM_ELEMENTS] = { 0, 40, 30, 20, 0 };
     seqNum = mp_apple_.write( value3, APPLE_NUM_ELEMENTS );
-    mp_apple_.read( value2, APPLE_NUM_ELEMENTS, valid );
+    valid = mp_apple_.read( value2, APPLE_NUM_ELEMENTS );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value2[0] == 0 );
     REQUIRE( value2[1] == 40 );
@@ -98,7 +98,7 @@ TEST_CASE( "arrayuint8-readwrite", "[arrayuint8-readwrite]" )
     callbackClient.m_newValue       = 44;
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
-    mp_apple_.read( value2, APPLE_NUM_ELEMENTS, valid );
+    valid = mp_apple_.read( value2, APPLE_NUM_ELEMENTS );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     bool locked = mp_apple_.isLocked();
@@ -174,12 +174,11 @@ TEST_CASE( "arrayuint8-export", "[arrayuint8-export]" )
     REQUIRE( seqNum == seqNum2 );
 
     // Update the MP
-    uint8_t  value[APPLE_NUM_ELEMENTS] ={ 50, 40, 30, 20, 10 };
+    uint8_t  value[APPLE_NUM_ELEMENTS] = { 50, 40, 30, 20, 10 };
     seqNum = mp_apple_.write( value, APPLE_NUM_ELEMENTS );
     REQUIRE( seqNum == seqNum2 + 1 );
-    uint8_t  value2[APPLE_NUM_ELEMENTS] ={ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
-    int8_t   valid;
-    mp_apple_.read( value2, APPLE_NUM_ELEMENTS, valid );
+    uint8_t  value2[APPLE_NUM_ELEMENTS] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+    int8_t   valid = mp_apple_.read( value2, APPLE_NUM_ELEMENTS );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( value2[0] == 50 );
@@ -196,15 +195,15 @@ TEST_CASE( "arrayuint8-export", "[arrayuint8-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value2, APPLE_NUM_ELEMENTS, valid );
+    valid = mp_apple_.read( value2, APPLE_NUM_ELEMENTS );
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Update the MP
-    uint8_t  value3[APPLE_NUM_ELEMENTS] ={ 5, 4, 3, 2, 1 };
+    uint8_t  value3[APPLE_NUM_ELEMENTS] = { 5, 4, 3, 2, 1 };
     seqNum = mp_apple_.write( value3, APPLE_NUM_ELEMENTS );
     REQUIRE( seqNum == seqNum2 + 1 );
-    mp_apple_.read( value2, APPLE_NUM_ELEMENTS, valid );
+    valid = mp_apple_.read( value2, APPLE_NUM_ELEMENTS );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( value2[0] == 5 );
@@ -233,7 +232,7 @@ TEST_CASE( "arrayuint8-export", "[arrayuint8-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value2, APPLE_NUM_ELEMENTS, valid );
+    valid = mp_apple_.read( value2, APPLE_NUM_ELEMENTS );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value2[0] == 5 );
@@ -287,7 +286,7 @@ TEST_CASE( "arrayuint8-tostring", "[arrayuint8-tostring]" )
     REQUIRE( string == "!?100" );
 
     // Value 
-    uint8_t  value[APPLE_NUM_ELEMENTS] ={ 51, 40, 30, 20, 10 };
+    uint8_t  value[APPLE_NUM_ELEMENTS] = { 51, 40, 30, 20, 10 };
     mp_apple_.write( value, APPLE_NUM_ELEMENTS, ModelPoint::eUNLOCK );
     mp_apple_.toString( string, false, &seqNum2 );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
@@ -336,7 +335,7 @@ TEST_CASE( "arrayuint8-fromstring", "[arrayuint8-fromstring]" )
     uint16_t    seqNum;
     uint16_t    seqNum2;
     const char* nextChar;
-    uint8_t     value[APPLE_NUM_ELEMENTS] ={ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+    uint8_t     value[APPLE_NUM_ELEMENTS] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
     int8_t      valid;
 
     // Write Hex value- Pass case
@@ -344,7 +343,7 @@ TEST_CASE( "arrayuint8-fromstring", "[arrayuint8-fromstring]" )
     nextChar = mp_orange_.fromString( "3:0:050403", 0, &errorMsg, &seqNum );
     REQUIRE( nextChar != 0 );
     REQUIRE( *nextChar == '\0' );
-    mp_orange_.read( value, ORANGE_NUM_ELEMENTS, valid );
+    valid = mp_orange_.read( value, ORANGE_NUM_ELEMENTS );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( errorMsg == "noerror" );
     REQUIRE( value[0] == 5 );
@@ -354,7 +353,7 @@ TEST_CASE( "arrayuint8-fromstring", "[arrayuint8-fromstring]" )
     // Write Hex value- Fail case
     nextChar = mp_orange_.fromString( "3:0:5431", 0, &errorMsg, &seqNum2 );
     REQUIRE( nextChar == 0 );
-    mp_orange_.read( value, ORANGE_NUM_ELEMENTS, valid );
+    valid = mp_orange_.read( value, ORANGE_NUM_ELEMENTS );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( errorMsg != "noerror" );
@@ -370,7 +369,7 @@ TEST_CASE( "arrayuint8-fromstring", "[arrayuint8-fromstring]" )
     REQUIRE( nextChar != 0 );
     REQUIRE( *nextChar == '\0' );
     REQUIRE( seqNum2 == seqNum + 1 );
-    seqNum = mp_apple_.read( value, APPLE_NUM_ELEMENTS, valid );
+    valid = mp_apple_.read( value, APPLE_NUM_ELEMENTS, 0, &seqNum );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( errorMsg == "noerror" );
@@ -379,7 +378,7 @@ TEST_CASE( "arrayuint8-fromstring", "[arrayuint8-fromstring]" )
     REQUIRE( value[2] == 3 );
     REQUIRE( value[3] == 4 );
     REQUIRE( value[4] == 5 );
-    
+
     // Set Invalid
     nextChar = mp_apple_.fromString( "?", 0, 0, &seqNum2 );
     REQUIRE( nextChar != 0 );
@@ -397,7 +396,7 @@ TEST_CASE( "arrayuint8-fromstring", "[arrayuint8-fromstring]" )
 
     // Write with Lock
     nextChar = mp_apple_.fromString( "!5:0:11:21:31:41:51", 0, 0, &seqNum );
-    mp_apple_.read( value, APPLE_NUM_ELEMENTS, valid );
+    valid = mp_apple_.read( value, APPLE_NUM_ELEMENTS );
     REQUIRE( nextChar != 0 );
     REQUIRE( *nextChar == '\0' );
     REQUIRE( seqNum2 + 1 == seqNum );
@@ -418,7 +417,7 @@ TEST_CASE( "arrayuint8-fromstring", "[arrayuint8-fromstring]" )
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( mp_apple_.isLocked() == true );
-    seqNum = mp_apple_.read( value, APPLE_NUM_ELEMENTS, valid );
+    valid = mp_apple_.read( value, APPLE_NUM_ELEMENTS, 0, &seqNum );
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( mp_apple_.isLocked() == true );
@@ -436,7 +435,7 @@ TEST_CASE( "arrayuint8-fromstring", "[arrayuint8-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, ORANGE_NUM_ELEMENTS, valid );
+    valid = mp_orange_.read( value, ORANGE_NUM_ELEMENTS );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value[0] == 13 );
     REQUIRE( value[1] == 23 );
@@ -449,7 +448,7 @@ TEST_CASE( "arrayuint8-fromstring", "[arrayuint8-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == true );
-    mp_orange_.read( value, ORANGE_NUM_ELEMENTS, valid );
+    valid = mp_orange_.read( value, ORANGE_NUM_ELEMENTS );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value[0] == 13 );
     REQUIRE( value[1] == 23 );
@@ -462,7 +461,7 @@ TEST_CASE( "arrayuint8-fromstring", "[arrayuint8-fromstring]" )
     REQUIRE( *nextChar == ',' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, ORANGE_NUM_ELEMENTS, valid );
+    valid =  mp_orange_.read( value, ORANGE_NUM_ELEMENTS );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value[0] == 0x1d );
     REQUIRE( value[1] == 0x27 );
@@ -486,7 +485,7 @@ TEST_CASE( "arrayuint8-observer", "[arrayuint8-observer]" )
     // Open, write a value, wait for Viewer to see the change, then close
     mp_apple_.removeLock();
     viewer1.open();
-    uint8_t  value2[APPLE_NUM_ELEMENTS] ={ 50, 40, 30, 20, 10 };
+    uint8_t  value2[APPLE_NUM_ELEMENTS] = { 50, 40, 30, 20, 10 };
     uint16_t seqNum                     = mp_apple_.write( value2 + 1, 3, ModelPoint::eNO_REQUEST, 1 );
     Cpl::System::Thread::wait();
     viewer1.close();

@@ -165,14 +165,14 @@ TEST_CASE( "lock", "[lock]" )
     mp_apple_.write( 11 );
     uint32_t value;
     int8_t   valid;
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value);
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
     locked = mp_apple_.isLocked();
     REQUIRE( locked == true );
 
     mp_apple_.write( 12, ModelPoint::eUNLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value);
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     locked = mp_apple_.isLocked();
@@ -184,7 +184,7 @@ TEST_CASE( "lock", "[lock]" )
     callbackClient.m_incValue       = 1;
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value);
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     locked = mp_apple_.isLocked();
@@ -195,7 +195,7 @@ TEST_CASE( "lock", "[lock]" )
     callbackClient.m_incValue       = 2;
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value);
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     locked = mp_apple_.isLocked();
@@ -206,7 +206,7 @@ TEST_CASE( "lock", "[lock]" )
     callbackClient.m_incValue       = 3;
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eUNLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value);
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     locked = mp_apple_.isLocked();
@@ -217,7 +217,7 @@ TEST_CASE( "lock", "[lock]" )
     callbackClient.m_incValue       = 4;
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eUNLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value);
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     locked = mp_apple_.isLocked();
@@ -228,7 +228,7 @@ TEST_CASE( "lock", "[lock]" )
     callbackClient.m_incValue       = 5;
     callbackClient.m_returnResult   = ModelPoint::eINVALIDATE;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value);
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
     locked = mp_apple_.isLocked();
@@ -238,7 +238,7 @@ TEST_CASE( "lock", "[lock]" )
     callbackClient.m_incValue       = 5;
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value);
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
     locked = mp_apple_.isLocked();
@@ -248,7 +248,7 @@ TEST_CASE( "lock", "[lock]" )
     callbackClient.m_incValue       = 5;
     callbackClient.m_returnResult   = ModelPoint::eINVALIDATE;
     mp_apple_.readModifyWrite( callbackClient );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value);
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
     locked = mp_apple_.isLocked();
@@ -258,7 +258,7 @@ TEST_CASE( "lock", "[lock]" )
     callbackClient.m_incValue       = 6;
     callbackClient.m_returnResult   = ModelPoint::eNO_CHANGE;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eUNLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value);
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
     locked = mp_apple_.isLocked();
@@ -305,8 +305,7 @@ TEST_CASE( "find", "[find]" )
     REQUIRE( mp->isNotValid() == false );
     REQUIRE( mp_plum_.isNotValid() == false );
     uint32_t value;
-    int8_t   valid;
-    mp_plum_.read( value, valid );
+    int8_t   valid = mp_plum_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == 10 );
 

@@ -32,9 +32,9 @@ Uint32::Uint32( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& stat
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-uint16_t Uint32::read( uint32_t& dstData, int8_t& validState ) const throw()
+int8_t Uint32::read( uint32_t& dstData, uint16_t* seqNumPtr ) const throw()
 {
-    return ModelPointCommon_::read( &dstData, sizeof( uint32_t ), validState );
+    return ModelPointCommon_::read( &dstData, sizeof( uint32_t ), seqNumPtr );
 }
 
 uint16_t Uint32::write( uint32_t newValue, LockRequest_T lockRequest ) throw()

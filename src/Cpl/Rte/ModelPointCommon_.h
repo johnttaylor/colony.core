@@ -94,7 +94,7 @@ public:
 
 protected:
     /// See Cpl::Rte::ModelPoint
-    uint16_t read( void* dstData, size_t dstSize, int8_t& validState ) const throw();
+    int8_t read( void* dstData, size_t dstSize, uint16_t* seqNumPtr=0 ) const throw();
 
     /// See Cpl::Rte::ModelPoint
     uint16_t write( const void* srcData, size_t srcSize, LockRequest_T lockRequest = eNO_REQUEST ) throw();

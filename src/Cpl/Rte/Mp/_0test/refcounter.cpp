@@ -43,72 +43,72 @@ TEST_CASE( "refcounter-readwrite", "[refcounter-readwrite]" )
 
     // Read
     uint32_t value;
-    int8_t   valid;
-    uint16_t seqNum = mp_orange_.read( value, valid );
+    uint16_t seqNum;
+    int8_t   valid = valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == 64 );
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Write (reset). -->Count = 0
     uint16_t seqNum2 = mp_apple_.reset();
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == 0 );
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Write (decrement)  -->Count = 0
     seqNum = mp_apple_.decrement();
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == 0 );
     REQUIRE( seqNum == seqNum2 );
 
     // Write (increment)  -->Count = 1
     seqNum2 = mp_apple_.increment();
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == 1 );
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Write (decrement) -->Count = 0
     seqNum = mp_apple_.decrement();
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == 0 );
     REQUIRE( seqNum == seqNum2 + 1 );
 
     // Write (decrement) -->Count = 0
     seqNum2 = mp_apple_.decrement();
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == 0 );
     REQUIRE( seqNum == seqNum2 );       // No a change  transition -->so no change in the sequence number
 
     // Write (increment)  -->Count = max value
     seqNum2 = mp_apple_.increment( (uint32_t) -1 );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == (uint32_t) -1 );
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Write (increment) -->Count = max value
     seqNum = mp_apple_.increment();
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == (uint32_t) -1 );
     REQUIRE( seqNum == seqNum2 );
 
     // Write with lock (decrement) -->Count = 2
     seqNum2 = mp_apple_.decrement( (uint32_t) -3, ModelPoint::eLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == 2 );
     REQUIRE( seqNum == seqNum2 );   // No a change  transition -->so no change in the sequence number
 
     // Write (increment) -->Count = 2
     seqNum = mp_apple_.increment();
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == 2 );
     REQUIRE( seqNum == seqNum2 );
@@ -177,7 +177,7 @@ TEST_CASE( "refcounter-export", "[refcounter-export]" )
     REQUIRE( seqNum == seqNum2 + 1 );
     uint32_t value;
     int8_t   valid;
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( value == 42 );
@@ -189,14 +189,14 @@ TEST_CASE( "refcounter-export", "[refcounter-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Update the MP
     seqNum = mp_apple_.reset( 13 );
     REQUIRE( seqNum == seqNum2 + 1 );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( value == 13 );
@@ -221,7 +221,7 @@ TEST_CASE( "refcounter-export", "[refcounter-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == 13 );
@@ -297,7 +297,7 @@ TEST_CASE( "refcounter-fromstring", "[refcounter-fromstring]" )
     mp_apple_.removeLock();
     mp_orange_.removeLock();
     mp_orange_.setInvalid();
-    uint16_t seqNum = mp_apple_.reset(3);
+    uint16_t seqNum = mp_apple_.reset( 3 );
     uint16_t seqNum2;
 
     // Increment the value
@@ -307,7 +307,7 @@ TEST_CASE( "refcounter-fromstring", "[refcounter-fromstring]" )
     REQUIRE( seqNum2 == seqNum );       // Note: No 'change' because transition from 3 -> 5
     uint32_t value;
     int8_t   valid;
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == 5 );
@@ -318,7 +318,7 @@ TEST_CASE( "refcounter-fromstring", "[refcounter-fromstring]" )
     REQUIRE( nextChar != 0 );
     REQUIRE( *nextChar == '\0' );
     REQUIRE( seqNum2 == seqNum );       // Note: No 'change' because transition from 5 -> 4
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == 4 );
@@ -343,10 +343,10 @@ TEST_CASE( "refcounter-fromstring", "[refcounter-fromstring]" )
     nextChar = mp_apple_.fromString( "!+6", 0, 0, &seqNum );
     REQUIRE( nextChar != 0 );
     REQUIRE( *nextChar == '\0' );
-    REQUIRE( seqNum2 + 1 == seqNum );       
+    REQUIRE( seqNum2 + 1 == seqNum );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( mp_apple_.isLocked() == true );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == 6 );      // NOTE: Transition from invalid to valid which means the counter:= 0 + 6
 
@@ -358,10 +358,10 @@ TEST_CASE( "refcounter-fromstring", "[refcounter-fromstring]" )
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( mp_apple_.isLocked() == true );
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == 6 );
     REQUIRE( mp_apple_.isLocked() == true );
@@ -374,7 +374,7 @@ TEST_CASE( "refcounter-fromstring", "[refcounter-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == 4 );
 
@@ -384,7 +384,7 @@ TEST_CASE( "refcounter-fromstring", "[refcounter-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == true );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == 4 );
 
@@ -394,7 +394,7 @@ TEST_CASE( "refcounter-fromstring", "[refcounter-fromstring]" )
     REQUIRE( *nextChar == ',' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == 11 );
 
@@ -402,7 +402,7 @@ TEST_CASE( "refcounter-fromstring", "[refcounter-fromstring]" )
     errorMsg = "noerror";
     nextChar = mp_orange_.fromString( "+", 0, &errorMsg, &seqNum2 );
     REQUIRE( nextChar == 0 );
-    seqNum2 = mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value, &seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( value == 11 );
@@ -413,7 +413,7 @@ TEST_CASE( "refcounter-fromstring", "[refcounter-fromstring]" )
     errorMsg = "noerror";
     nextChar = mp_orange_.fromString( "+2.", 0, &errorMsg, &seqNum2 );
     REQUIRE( nextChar == 0 );
-    seqNum2 = mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value, &seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( value == 11 );

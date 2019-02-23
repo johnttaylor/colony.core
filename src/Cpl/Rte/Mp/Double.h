@@ -40,7 +40,7 @@ public:
 
 public:
     /// Type safe read. See Cpl::Rte::ModelPoint
-    virtual uint16_t read( double& dstData, int8_t& validState ) const throw();
+    virtual int8_t read( double& dstData, uint16_t* seqNumPtr=0 ) const throw();
 
     /// Type safe write. See Cpl::Rte::ModelPoint
     virtual uint16_t write( double newValue, LockRequest_T lockRequest = eNO_REQUEST ) throw();

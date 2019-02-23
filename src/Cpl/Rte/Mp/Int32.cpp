@@ -33,9 +33,9 @@ Int32::Int32( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& static
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-uint16_t Int32::read( int32_t& dstData, int8_t& validState ) const throw()
+int8_t Int32::read( int32_t& dstData, uint16_t* seqNumPtr ) const throw()
 {
-    return ModelPointCommon_::read( &dstData, sizeof( int32_t ), validState );
+    return ModelPointCommon_::read( &dstData, sizeof( int32_t ), seqNumPtr );
 }
 
 uint16_t Int32::write( int32_t newValue, LockRequest_T lockRequest ) throw()

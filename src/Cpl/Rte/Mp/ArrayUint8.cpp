@@ -36,10 +36,10 @@ ArrayUint8::ArrayUint8( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticIn
 
 
 ///////////////////////////////////////////////////////////////////////////////
-uint16_t ArrayUint8::read( uint8_t* dstData, size_t dstNumElements, int8_t& validState, size_t srcIndex ) const throw()
+int8_t ArrayUint8::read( uint8_t* dstData, size_t dstNumElements, size_t srcIndex, uint16_t* seqNumPtr ) const throw()
 {
     InternalData dst ={ dstData, dstNumElements, srcIndex };
-    return ModelPointCommon_::read( &dst, sizeof( dst ), validState );
+    return ModelPointCommon_::read( &dst, sizeof( dst ), seqNumPtr );
 }
 
 uint16_t ArrayUint8::write( uint8_t* srcData, size_t srcNumElements, LockRequest_T lockRequest, size_t dstIndex ) throw()

@@ -37,7 +37,7 @@ static StaticInfo      info_mp_apple_( "APPLE" );
 static Mp::Float       mp_apple_( modelDb_, info_mp_apple_ );
 
 static StaticInfo      info_mp_orange_( "ORANGE" );
-static Mp::Float       mp_orange_( modelDb_, info_mp_orange_, 3.14F  );
+static Mp::Float       mp_orange_( modelDb_, info_mp_orange_, 3.14F );
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "float-readwrite", "[float-readwrite]" )
@@ -47,16 +47,16 @@ TEST_CASE( "float-readwrite", "[float-readwrite]" )
 
     // Read
     float    value;
-    int8_t   valid;
-    uint16_t seqNum = mp_orange_.read( value, valid );
+    uint16_t seqNum;
+    int8_t   valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE_FLOAT_EQUAL( value, 3.14F );
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Write
     uint16_t seqNum2 = mp_apple_.write( -10.1234F );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE_FLOAT_EQUAL( value, -10.1234F );
     REQUIRE( seqNum + 1 == seqNum2 );
@@ -67,7 +67,7 @@ TEST_CASE( "float-readwrite", "[float-readwrite]" )
     callbackClient.m_incValue       = 1;
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     bool locked = mp_apple_.isLocked();
@@ -139,7 +139,7 @@ TEST_CASE( "float-export", "[float-export]" )
     REQUIRE( seqNum == seqNum2 + 1 );
     float value;
     int8_t   valid;
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE_FLOAT_EQUAL( value, -42.14159F );
@@ -151,14 +151,14 @@ TEST_CASE( "float-export", "[float-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Update the MP
     seqNum = mp_apple_.write( 13.99F );
     REQUIRE( seqNum == seqNum2 + 1 );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE_FLOAT_EQUAL( value, 13.99F );
@@ -183,7 +183,7 @@ TEST_CASE( "float-export", "[float-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE_FLOAT_EQUAL( value, 13.99F );
@@ -271,7 +271,7 @@ TEST_CASE( "float-fromstring", "[float-fromstring]" )
     REQUIRE( seqNum2 == seqNum + 1 );
     float value;
     int8_t   valid;
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE_FLOAT_EQUAL( value, 12.34F );
@@ -280,7 +280,7 @@ TEST_CASE( "float-fromstring", "[float-fromstring]" )
     // Write value- Fail case
     nextChar = mp_apple_.fromString( "0a1234", 0, &errorMsg, &seqNum2 );
     REQUIRE( nextChar == 0 );
-    seqNum2 = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE_FLOAT_EQUAL( value, 12.34F );
@@ -318,7 +318,7 @@ TEST_CASE( "float-fromstring", "[float-fromstring]" )
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( mp_apple_.isLocked() == true );
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE_FLOAT_EQUAL( value, 111.3F );
@@ -332,7 +332,7 @@ TEST_CASE( "float-fromstring", "[float-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE_FLOAT_EQUAL( value, 3.14159F );
 
@@ -343,7 +343,7 @@ TEST_CASE( "float-fromstring", "[float-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == true );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE_FLOAT_EQUAL( value, 3.14159F );
 
@@ -353,7 +353,7 @@ TEST_CASE( "float-fromstring", "[float-fromstring]" )
     REQUIRE( *nextChar == ',' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE_FLOAT_EQUAL( value, 4.321F );
 

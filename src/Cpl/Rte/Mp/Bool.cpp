@@ -32,9 +32,9 @@ Bool::Bool( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticIn
 
 
 ///////////////////////////////////////////////////////////////////////////////
-uint16_t Bool::read( bool& dstData, int8_t& validState ) const throw()
+int8_t Bool::read( bool& dstData, uint16_t* seqNumPtr ) const throw()
 {
-    return ModelPointCommon_::read( &dstData, sizeof( bool ), validState );
+    return ModelPointCommon_::read( &dstData, sizeof( bool ), seqNumPtr );
 }
 
 uint16_t Bool::write( bool newValue, LockRequest_T lockRequest ) throw()
