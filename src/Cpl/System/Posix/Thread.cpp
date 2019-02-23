@@ -46,17 +46,12 @@ class RegisterInitHandler_ : public Cpl::System::StartupHook_,
     public Cpl::System::Runnable
 {
 protected:
-    // Empty run function
-    // Note: Leave my 'running state' set to false -->this is so I don't 
-    // terminate the native thread prematurely when/if the Thread instance
-    // is deleted.  In theory this can't happen since the Thread and Runnable
-    // instance pointers for the native thread are never exposed to the 
-    // application and/or explicitly deleted.
+    // Empty 'run' function -- it is never called!
     void appRun( void ) {}
 
 public:
     ///
-    RegisterInitHandler_():StartupHook_( eSYSTEM ) {}
+    RegisterInitHandler_():StartupHook_( eSYSTEM ) { m_running = true; }
 
 
 protected:
@@ -212,6 +207,10 @@ Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) throw()
     return m_threadHandle;
 }
 
+Cpl::System::Runnable& Thread::getRunnable( void ) throw()
+{
+    return m_runnable;
+}
 
 //////////////////////////////
 void* Thread::entryPoint( void* data )
@@ -267,6 +266,11 @@ void Cpl::System::Thread::wait() throw()
     ((Cpl::System::Posix::Thread*)(&getCurrent()))->m_syncSema.wait();
 }
 
+bool Cpl::System::Thread::tryWait() throw()
+{
+    return ((Cpl::System::Posix::Thread*)(&getCurrent()))->m_syncSema.tryWait();
+}
+
 bool Cpl::System::Thread::timedWait( unsigned long msecs ) throw()
 {
     return ((Cpl::System::Posix::Thread*)(&getCurrent()))->m_syncSema.timedWait( msecs );
@@ -276,7 +280,6 @@ const char* Cpl::System::Thread::myName() throw()
 {
     return ((Cpl::System::Posix::Thread*)(&getCurrent()))->m_name;
 }
-
 
 size_t Cpl::System::Thread::myId() throw()
 {

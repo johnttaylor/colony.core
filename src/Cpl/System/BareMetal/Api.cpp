@@ -9,6 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
+#include "Hal_.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Private_.h"
 
@@ -26,6 +27,9 @@ void Api::initialize( void )
 {
     // Init the Colony.Core sub-systems
     StartupHook_::notifyStartupClients();
+
+    // Initialize the raw platform
+    BareMetal::initialize();
 }
 
 
@@ -39,6 +43,10 @@ bool Api::isSchedulingEnabled( void )
     return true; // Always return true since scheduling has no meaning in baremetal system
 }
 
+void Api::sleep( unsigned long milliseconds ) throw()
+{
+    BareMetal::busyWait( milliseconds );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 Mutex& Locks_::system( void )

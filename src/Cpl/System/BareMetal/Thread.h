@@ -35,11 +35,18 @@ class Thread : public Cpl::System::Thread
 {
 protected:
     /// Reference to the runnable object for the thread
-    Cpl::System::Runnable&  m_runnable;
+    Cpl::System::Runnable*  m_runnable;
 
     /// The thread synchronized message semaphore.
     Cpl::System::Semaphore  m_syncSema;
 
+
+public:
+    /** This method allows the application to set the Runnable object for
+        for single-thread/execution context.  The method returns a reference
+        to the previous/runnable object being 'replaced'
+     */
+    static Runnable& setRunnable( Runnable& newRunnableInstance );
 
 public:
     /// Private Constructor -->the application can not create threads!
@@ -67,6 +74,8 @@ public:
     /// See Cpl::System::Thread
     Cpl_System_Thread_NativeHdl_T getNativeHandle( void ) throw();
 
+    /// See Cpl::System::Thread
+    Runnable& getRunnable( void ) throw();
 
 
 public:

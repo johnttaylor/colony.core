@@ -41,13 +41,8 @@ class RegisterInitHandler_ : public Cpl::System::StartupHook_,
     public Cpl::System::Runnable
 {
 protected:
-    // Empty run function
-    // Note: Leave my 'running state' set to false -->this is so I don't 
-    // terminate the native thread prematurely when/if the Thread instance
-    // is deleted.  In theory this can't happen since the Thread and Runnable
-    // instance pointers for the native thread are never exposed to the 
-    // application and/or explicitly deleted.
-    void appRun() {}
+    // Empty 'run' function -- it is never called!
+    void appRun( void ) {} 
 
 public:
     ///
@@ -198,10 +193,14 @@ bool Thread::isRunning() throw()
     return m_runnable.isRunning();
 }
 
-
 Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) throw()
 {
     return m_threadHandle;
+}
+
+Cpl::System::Runnable& Thread::getRunnable( void ) throw()
+{
+    return m_runnable;
 }
 
 //////////////////////////////
@@ -240,6 +239,11 @@ Cpl::System::Thread& Cpl::System::Thread::getCurrent() throw()
 void Cpl::System::Thread::wait() throw()
 {
     ulTaskNotifyTake( pdFALSE, portMAX_DELAY );
+}
+
+bool Cpl::System::Thread::tryWait() throw()
+{
+    return ulTaskNotifyTake( pdFALSE, 0 ) > 0;
 }
 
 bool Cpl::System::Thread::timedWait( unsigned long msecs ) throw()

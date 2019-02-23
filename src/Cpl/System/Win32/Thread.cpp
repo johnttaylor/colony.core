@@ -172,6 +172,11 @@ Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) throw()
     return m_threadHandle;
 }
 
+Cpl::System::Runnable& Thread::getRunnable( void ) throw()
+{
+    return m_runnable;
+}
+
 
 //////////////////////////////
 //DWORD WINAPI Thread::entryPoint(void* data)
@@ -221,6 +226,11 @@ void Cpl::System::Thread::wait() throw()
     ((Cpl::System::Win32::Thread*)(&getCurrent()))->m_syncSema.wait();
 }
 
+bool Cpl::System::Thread::tryWait() throw()
+{
+    return ((Cpl::System::Win32::Thread*)(&getCurrent()))->m_syncSema.tryWait();
+}
+
 bool Cpl::System::Thread::timedWait( unsigned long timeout ) throw()
 {
     return ((Cpl::System::Win32::Thread*)(&getCurrent()))->m_syncSema.timedWait( timeout );
@@ -231,12 +241,10 @@ const char* Cpl::System::Thread::myName() throw()
     return ((Cpl::System::Win32::Thread*)(&getCurrent()))->m_name;
 }
 
-
 size_t Cpl::System::Thread::myId() throw()
 {
     return ((Cpl::System::Win32::Thread*)(&getCurrent()))->m_threadID;
 }
-
 
 
 //////////////////////////////

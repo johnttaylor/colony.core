@@ -82,6 +82,8 @@ public:
      */
     virtual Cpl_System_Thread_NativeHdl_T getNativeHandle( void ) throw() = 0;
 
+    /// This method returns a reference to the thread's Runnable object
+    virtual Runnable& getRunnable( void ) throw() = 0;
 
 public:
     /// This method returns a reference to the currently executing thread.
@@ -91,6 +93,11 @@ public:
         semaphore' is signal/set.
      */
     static void wait() throw();
+
+    /** This method is similar to Semaphore::tryWait(), except that it operates
+        on the thread semaphore
+     */
+    static bool tryWait() throw();
 
     /** Same as wait(), except the call will return after 'timeoutInMsec'
         has expired without the thread being signaled.  The method return true
@@ -108,6 +115,9 @@ public:
         threadPtr->getCurrent().getId()
      */
     static size_t myId() throw();
+
+    /// This method returns a reference to the current thread' runnable instance.
+    static inline Runnable& myRunnable() throw()    { return getCurrent().getRunnable(); }
 
 
 public:

@@ -44,12 +44,7 @@ class RegisterInitHandler_ : public Cpl::System::StartupHook_,
     public Cpl::System::Runnable
 {
 protected:
-    // Empty run function
-    // Note: Leave my 'running state' set to false -->this is so I don't 
-    // terminate the native thread prematurely when/if the Thread instance
-    // is deleted.  In theory this can't happen since the Thread and Runnable
-    // instance pointers for the native thread are never exposed to the 
-    // application and/or explicitly deleted.
+    // Empty 'run' function -- it is never called!
     void appRun( void ) {}
 
 public:
@@ -157,6 +152,10 @@ Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) throw()
     return m_thread.native_handle();
 }
 
+Cpl::System::Runnable& Thread::getRunnable( void ) throw()
+{
+    return m_runnable;
+}
 
 //////////////////////////////
 void Thread::entryPoint( Thread* myThreadPtr )
@@ -193,6 +192,11 @@ Cpl::System::Thread& Cpl::System::Thread::getCurrent() throw()
 void Cpl::System::Thread::wait() throw()
 {
     ((Cpl::System::Cpp11::Thread*)(&getCurrent()))->m_syncSema.wait();
+}
+
+bool Cpl::System::Thread::tryWait() throw()
+{
+    return ((Cpl::System::Cpp11::Thread*)(&getCurrent()))->m_syncSema.tryWait();
 }
 
 bool Cpl::System::Thread::timedWait( unsigned long timeout ) throw()

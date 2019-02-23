@@ -88,6 +88,9 @@ public:
     /// See Cpl::System::Thread
     Cpl_System_Thread_NativeHdl_T getNativeHandle( void ) throw();
 
+    /// See Cpl::System::Thread
+    Runnable& getRunnable( void ) throw();
+
 
 public:
     /// See Cpl::System::Signable

@@ -29,17 +29,12 @@ class RegisterInitHandler_ : public Cpl::System::StartupHook_,
     public Cpl::System::Runnable
 {
 protected:
-    // Empty run function
-    // Note: Leave my 'running state' set to false -->this is so I don't 
-    // terminate the native thread prematurely when/if the Thread instance
-    // is deleted.  In theory this can't happen since the Thread and Runnable
-    // instance pointers for the native thread are never exposed to the 
-    // application and/or explicitly deleted.
+    // Empty run function -- it is never called!
     void appRun() {}
 
 public:
     ///
-    RegisterInitHandler_():StartupHook_( eSYSTEM ) {}
+    RegisterInitHandler_():StartupHook_( eSYSTEM ) { m_running = true; }
 
 
 protected:
@@ -59,7 +54,7 @@ static RegisterInitHandler_ autoRegister_systemInit_hook_;
 
 ////////////////////////////////////
 Thread::Thread( Cpl::System::Runnable& dummyRunnable )
-    :m_runnable( dummyRunnable )
+    :m_runnable( &dummyRunnable )
 {
 }
 
@@ -68,6 +63,12 @@ Thread::~Thread()
     // Nothing needed
 }
 
+Cpl::System::Runnable& Thread::setRunnable( Cpl::System::Runnable& newRunnableInstance )
+{
+    Runnable& prev          = *(mainThread_->m_runnable);
+    mainThread_->m_runnable = &newRunnableInstance;
+    return prev;
+}
 
 //////////////////////////////
 int Thread::signal() throw()
@@ -81,7 +82,7 @@ int Thread::su_signal() throw()
 }
 
 const char* Thread::getName() throw()
-{    
+{
     return MAIN_THREAD_NAME;
 }
 
@@ -93,6 +94,11 @@ size_t Thread::getId() throw()
 bool Thread::isRunning() throw()
 {
     return true;
+}
+
+Cpl::System::Runnable& Thread::getRunnable( void ) throw()
+{
+    return *m_runnable;
 }
 
 Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) throw()
@@ -120,6 +126,11 @@ Cpl::System::Thread& Cpl::System::Thread::getCurrent() throw()
 void Cpl::System::Thread::wait() throw()
 {
     mainThread_->m_syncSema.wait();
+}
+
+bool Cpl::System::Thread::tryWait() throw()
+{
+    return mainThread_->m_syncSema.tryWait();
 }
 
 bool Cpl::System::Thread::timedWait( unsigned long timeout ) throw()
@@ -154,7 +165,7 @@ Cpl::System::Thread* Cpl::System::Thread::create( Runnable&   runnable,
                                                   int         stackSize,
                                                   void*       stackPtr,
                                                   bool        allowSimTicks
-)
+                                                )
 {
     return 0;
 }

@@ -64,7 +64,7 @@ bool Semaphore::tryWait( void ) throw()
 
 void Semaphore::waitInRealTime( void ) throw()
 {
-    for ( ;;)
+    for(;;)
     {
         GlobalLock::begin();
         if ( m_sema > 0 )
@@ -97,4 +97,14 @@ bool Semaphore::timedWaitInRealTime( unsigned long timeout ) throw()
             return false;
         }
     }
+}
+
+bool Semaphore::timedWait( unsigned long timeout ) throw()
+{
+    return timedWaitInRealTime( timeout );
+}
+
+void Semaphore::wait( void ) throw()
+{
+    waitInRealTime();
 }

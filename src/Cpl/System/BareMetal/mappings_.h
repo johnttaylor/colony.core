@@ -1,5 +1,5 @@
-#ifndef Cpl_System_Win32_mappings_x_h_
-#define Cpl_System_Win32_mappings_x_h_
+#ifndef Cpl_System_BareMetal_mappings_x_h_
+#define Cpl_System_BareMetal_mappings_x_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -18,8 +18,6 @@
  */
 
 
-#include <windows.h>
-#include <time.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include "colony_config.h"
@@ -41,27 +39,20 @@
 
 
 /// BareMetal Mapping
-#define CPL_SYSTEM_ASSERT_MAP(e)                do { if ( !(e) ) Cpl::System::FatalError::logf( "ASSERT Failed at: file=%s, line=%d, func=%s\n", __FILE__, __LINE__, CPL_SYSTEM_ASSERT_PRETTY_FUNCNAME ); } while(0)
+#define CPL_SYSTEM_ASSERT_MAP(e)                    do { if ( !(e) ) Cpl::System::FatalError::logf( "ASSERT Failed at: file=%s, line=%d, func=%s\n", __FILE__, __LINE__, CPL_SYSTEM_ASSERT_PRETTY_FUNCNAME ); } while(0)
 
 /// BareMetal Mapping
-#define Cpl_System_Thread_NativeHdl_T_MAP       int  
+#define Cpl_System_Thread_NativeHdl_T_MAP           int  
 
 /// BareMetal Mapping
-#define Cpl_System_Mutex_T_MAP                  int
+#define Cpl_System_Mutex_T_MAP                      int
 
 /// BareMetal Mapping
-#define Cpl_System_Sema_T_MAP                   volatile unsigned
+#define Cpl_System_Sema_T_MAP                       volatile unsigned
 
 /// BareMetal Mapping
-#define Cpl_System_TlsKey_T_MAP                 int
+#define Cpl_System_TlsKey_T_MAP                     int
 
-
-
-/// BareMetal Mapping
-#define CPL_SYSTEM_SHELL_NULL_DEVICE_x_MAP      "none"
-
-/// BareMetal Mapping
-#define CPL_SYSTEM_SHELL_SUPPORTED_x_MAP        0
 
 
 /// Thread Priorities

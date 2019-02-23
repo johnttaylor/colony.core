@@ -30,33 +30,6 @@ namespace Cpl {
 ///
 namespace System {
 
-/** This interfaces defines a callback that allows the application to extend
-    the event processing.  This method will be called every time there is
-    an event (and after the timer and event flags have been processed).
-
-    Other event processing modules can signal/wake-up the Event Loop at any
-    time (with no unintended side effects) by signaling the Event Loop
-    instance.
- */
-class EventLoopCallback
-{
-public:
-    /** This method is called from the Event Loop processing loop when any/all
-        have woken-up the event loop.  The 'timeNow' argument is the elapsed
-        time timestamp of the current event processing cycle.
-
-        The callback function should make NO assumptions on why the event
-        cycle was triggered.  It is possible that a event cycle can
-        be falsely triggered, i.e. no actual 'event' occurred but the
-        event loop executes.
-     */
-    virtual void processCustomEvent( unsigned long timeNow ) throw() = 0;
-
-    /// Virtual destructor
-    virtual ~EventLoopCallback() {};
-};
-
-
 /** This concrete class is a Runnable object that provides a event driven
     execution model for a thread.  The thread will remaining blocked until
     an "event" occurs.  The following "events" are supported:
