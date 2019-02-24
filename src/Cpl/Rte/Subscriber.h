@@ -15,7 +15,7 @@
 
 #include "Cpl/Rte/SubscriberApi.h"
 #include "Cpl/Rte/ModelPoint.h"
-#include "Cpl/Rte/MailboxServer.h"
+#include "Cpl/Rte/EventLoop.h"
 #include <stdint.h>
 
 ///
@@ -38,14 +38,14 @@ protected:
     ModelPoint*                     m_point;
 
     /// Reference to subscriber's EventFlag/Mailbox server
-    Cpl::Rte::MailboxServer&        m_mailboxHdl;
+    Cpl::Rte::EventLoop&            m_eventLoopHdl;
 
     /// Sequence number of the subscriber
     uint16_t                        m_seqNumber;
 
 public:
     /// Constructor
-    SubscriberBase( Cpl::Rte::MailboxServer& myMailbox );
+    SubscriberBase( Cpl::Rte::EventLoop& myEventLoop );
 
 public:
     /// See Cpl::Rte::SubscriberApi
@@ -86,7 +86,7 @@ public:
 
 public:
     /// Constructor
-    Subscriber( Cpl::Rte::MailboxServer& myMailbox ):SubscriberBase(myMailbox) {}
+    Subscriber( Cpl::Rte::EventLoop& myEventLoop ):SubscriberBase(myEventLoop) {}
 
 protected:
     /// See Cpl::Rte::SubscriberApi

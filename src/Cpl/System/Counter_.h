@@ -25,7 +25,7 @@ namespace System {
     A Counter object is used to maintain a counter down mechanism for tracking
     the time remaining for an individual timer.
 
-    The Counter interface is NOT inherently thread safe.  milliseconds
+    The Counter interface is NOT inherently thread safe.  
  */
 class CounterCallback_ : public Cpl::Container::ExtendedItem
 {

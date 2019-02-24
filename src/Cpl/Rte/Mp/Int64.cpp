@@ -26,7 +26,7 @@ Int64::Int64( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& static
 }
 
 Int64::Int64( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, int64_t initialValue, bool decimalFormat )
-    :Basic<int64_t>( myModelBase, staticInfo, initialValue )
+    : Basic<int64_t>( myModelBase, staticInfo, initialValue )
     , m_decimal( decimalFormat )
 {
 }
@@ -61,7 +61,7 @@ void Int64::detach( Observer& observer ) throw()
 ///////////////////////////////////////////////////////////////////////////////
 const char* Int64::getTypeAsText() const throw()
 {
-    return m_decimal? "Cpl::Rte::Mp::Int64-dec": "Cpl::Rte::Mp::Int64-hex";
+    return m_decimal ? "Cpl::Rte::Mp::Int64-dec" : "Cpl::Rte::Mp::Int64-hex";
 }
 
 bool Int64::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
@@ -98,9 +98,12 @@ bool Int64::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequence
 const char* Int64::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
 {
     const char*   result = 0;
-    uint16_t      seqnum = SEQUENCE_NUMBER_UNKNOWN;
     const char*   endptr;
     long long     value;
+    m_modelDatabase.lock_();
+    uint16_t seqnum = m_seqNum;
+    m_modelDatabase.unlock_();
+
     if ( Cpl::Text::a2ll( value, srcText, m_decimal ? 10 : 16, terminationChars, &endptr ) )
     {
         seqnum = write( value, lockAction );

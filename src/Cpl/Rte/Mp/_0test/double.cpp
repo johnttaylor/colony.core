@@ -269,7 +269,7 @@ TEST_CASE( "double-fromstring", "[double-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( seqNum2 == seqNum + 1 );
     double value;
-    int8_t   vali d= mp_apple_.read( value, &seqNum );
+    int8_t   valid= mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE_DOUBLE_EQUAL( value, 12.34 );

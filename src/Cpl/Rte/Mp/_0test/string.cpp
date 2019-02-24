@@ -47,7 +47,7 @@ TEST_CASE( "string-readwrite", "[string-readwrite]" )
     char             myDataMemory[5];
     Mp::String::Data myData = { myDataMemory, 0, sizeof( myDataMemory ) - 1 };
     uint16_t         seqNum;
-    int8_t           valid = mp_orange_.read( myData, valid );
+    int8_t           valid = mp_orange_.read( myData );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( strcmp( myData.stringPtr, "bobs" ) == 0 );
 

@@ -19,7 +19,7 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/Itc/CloseSync.h"
-#include "Cpl/Timer/Local.h"
+#include "Cpl/System/Timer.h"
 
 /// 
 using namespace Cpl::Rte;
@@ -168,7 +168,7 @@ public:
     ///
     uint32_t                            m_stepSize;
     ///
-    Cpl::Timer::Local<Writer>           m_timer;
+    Cpl::System::TimerComposer<Writer>  m_timer;
 
     /// Constructor
     Writer( MailboxServer& myMbox, Cpl::System::Thread& masterThread, Mp::Uint32& mp1, unsigned long intervalMsec, uint32_t startValue, uint32_t endValue, uint32_t stepSize )
@@ -266,7 +266,7 @@ public:
     ///
     uint32_t                            m_stepSize;
     ///
-    Cpl::Timer::Local<Rmw>              m_timer;
+    Cpl::System::TimerComposer<Rmw>     m_timer;
     ///
     RmwComposer<Rmw, uint32_t>          m_rmwHandler;
 

@@ -100,16 +100,12 @@ int8_t String::read( Cpl::Text::String& dstData, uint16_t* seqNumPtr ) const thr
     int  bufferMaxLength;
     dst.stringPtr   = dstData.getBuffer( bufferMaxLength );
     dst.maxLength   = bufferMaxLength;
-    uint16_t result = ModelPointCommon_::read( &dst, sizeof( Data ), seqNumPtr );
-
-    return result;
+    return ModelPointCommon_::read( &dst, sizeof( Data ), seqNumPtr );
 }
 
 int8_t String::read( Data& dstData, uint16_t* seqNumPtr ) const throw()
 {
-    uint16_t result =  ModelPointCommon_::read( &dstData, sizeof( Data ), seqNumPtr );
-
-    return result;
+    return ModelPointCommon_::read( &dstData, sizeof( Data ), seqNumPtr );
 }
 
 
@@ -245,8 +241,10 @@ bool String::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenc
 const char* String::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
 {
     const char*   result = 0;
-    uint16_t      seqnum = SEQUENCE_NUMBER_UNKNOWN;
     const char*   endPtr;
+    m_modelDatabase.lock_();
+    uint16_t seqnum = m_seqNum;
+    m_modelDatabase.unlock_();
 
     // Allow non-quoted text (the burden is on the caller that the text does 
     // NOT contain any 'special' characters where this would get us in 

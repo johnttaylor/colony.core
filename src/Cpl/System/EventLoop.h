@@ -35,8 +35,8 @@ namespace System {
     an "event" occurs.  The following "events" are supported:
 
     1) The EventLoop Semaphore was signaled
-    2) A Software Timer expiring (Cpl::System::Timer)
-    3) A Event Flag was set( Cpl::System::EventFlag)
+    2) A Event Flag was set( Cpl::System::EventFlag)
+    3) A Software Timer expiring (Cpl::System::Timer)
 
     To receive a callbacks when Event Flags are set, the application must create
     a child class and provide its own implementation of the processEventFlag()
@@ -58,10 +58,6 @@ public:
         milliseconds.
 
         A fatal error is generated if 'timeOutPeriodInMsec' is set to zero.
-
-        The event processing can be extended up to 3 additional event processors.
-        The extra event processors are called every event cycle AFTER the
-        Event Flag and Timers are processed.
      */
     EventLoop( unsigned long timeOutPeriodInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD );
 
@@ -156,8 +152,14 @@ public:
     /// See Cpl::System::EventFlag
     void su_notify( uint8_t eventNumber ) throw();
 
+public:
+    /// See Cpl::System::Runnable
+    void setThreadOfExecution_( Thread* myThreadPtr );
 
 protected:
+    /// A pointer to the thread the Event Loop executes in
+    Thread*                 m_myThreadPtr;
+
     /// Semaphore associated with the mailbox (note: the Thread semaphore is NOT used)
     Cpl::System::Semaphore  m_sema;
 

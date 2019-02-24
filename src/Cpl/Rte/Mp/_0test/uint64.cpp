@@ -43,7 +43,7 @@ TEST_CASE( "uint64-readwrite", "[uint64-readwrite]" )
     // Read
     uint64_t value;
     uint16_t seqNum;
-    int8_t   valid= valid = mp_orange_.read( value );
+    int8_t   valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == 64 );
     valid = mp_apple_.read( value, &seqNum );

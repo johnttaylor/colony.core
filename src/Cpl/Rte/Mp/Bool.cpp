@@ -26,7 +26,7 @@ Bool::Bool( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticIn
 
 
 Bool::Bool( Cpl::Rte::ModelDatabase& myModelBase, Cpl::Rte::StaticInfo& staticInfo, bool initialValue )
-    :Basic<bool>( myModelBase, staticInfo, initialValue )
+    : Basic<bool>( myModelBase, staticInfo, initialValue )
 {
 }
 
@@ -91,9 +91,12 @@ bool Bool::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceN
 const char* Bool::setFromText( const char* srcText, LockRequest_T lockAction, const char* not_usedterminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
 {
     const char*   result = 0;
-    uint16_t      seqnum = SEQUENCE_NUMBER_UNKNOWN;
     const char*   endptr;
     bool          value;
+    m_modelDatabase.lock_();
+    uint16_t seqnum = m_seqNum;
+    m_modelDatabase.unlock_();
+
     if ( Cpl::Text::a2b( value, srcText, "true", "false", &endptr ) )
     {
         seqnum = write( value, lockAction );

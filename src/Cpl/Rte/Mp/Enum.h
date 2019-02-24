@@ -144,7 +144,7 @@ public:
         bool     locked = m_locked;
         m_modelDatabase.unlock_();
 
-       // Convert data and state to a string
+        // Convert data and state to a string
         if ( convertStateToText( dst, append, locked, valid ) )
         {
             // Convert data and state to a string
@@ -165,8 +165,10 @@ protected:
     const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw()
     {
         const char*   result = 0;
-        uint16_t      seqnum = SEQUENCE_NUMBER_UNKNOWN;
         char*         srcPtr = (char*) srcText;
+        m_modelDatabase.lock_();
+        uint16_t seqnum = m_seqNum;
+        m_modelDatabase.unlock_();
 
 
         // Make a temporary copy of source text when there are termination characters

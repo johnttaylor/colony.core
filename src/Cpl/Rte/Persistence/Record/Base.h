@@ -21,8 +21,7 @@
 #include "Cpl/Rte/ModelPoint.h"
 #include "Cpl/Container/Map.h"
 #include "Cpl/Container/SList.h"
-#include "Cpl/Timer/Local.h"
-#include "Cpl/Log/Loggers.h"
+#include "Cpl/System/Timer.h"
 #include <stdint.h>
 
 

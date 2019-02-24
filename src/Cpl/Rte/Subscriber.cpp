@@ -19,17 +19,17 @@ using namespace Cpl::Rte;
 
 
 /////////////////////////////
-SubscriberBase::SubscriberBase( Cpl::Rte::MailboxServer& myMailbox )
+SubscriberBase::SubscriberBase( Cpl::Rte::EventLoop& myEventLoop )
     : m_state( 0 )
     , m_point( 0 )
-    , m_mailboxHdl( myMailbox )
+    , m_eventLoopHdl( myEventLoop )
     , m_seqNumber( ModelPoint::SEQUENCE_NUMBER_UNKNOWN )
 {
 }
 
 NotificationApi_* SubscriberBase::getNotificationApi_() const throw()
 {
-    return &m_mailboxHdl;
+    return &m_eventLoopHdl;
 }
 
 void SubscriberBase::setModelPoint_( ModelPoint* modelPoint ) throw()

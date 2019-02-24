@@ -24,7 +24,6 @@
 #include "Cpl/Container/SList.h"
 #include "Cpl/Container/Map.h"
 #include "Cpl/Memory/Aligned.h"
-#include "Cpl/Log/Loggers.h"
 #include <stdint.h>
 
 

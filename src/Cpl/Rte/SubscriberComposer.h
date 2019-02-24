@@ -52,7 +52,7 @@ protected:
 
 public:
     /// Constructor
-    SubscriberComposer( Cpl::Rte::MailboxServer& myMailbox,
+    SubscriberComposer( Cpl::Rte::EventLoop&     myEventLoop,
                         CONTEXT&                 context,
                         NotificationFunc_T       notifyCallback );
 
@@ -67,10 +67,10 @@ public:
 //                  INLINE IMPLEMENTAION
 /////////////////////////////////////////////////////////////////////////////
 template <class CONTEXT, class MP>
-Cpl::Rte::SubscriberComposer<CONTEXT, MP>::SubscriberComposer( Cpl::Rte::MailboxServer& myMailbox,
+Cpl::Rte::SubscriberComposer<CONTEXT, MP>::SubscriberComposer( Cpl::Rte::EventLoop&     myEventLoop,
                                                                CONTEXT&                 context,
                                                                NotificationFunc_T       notifyCallback )
-    :Subscriber<MP>( myMailbox )
+    :Subscriber<MP>( myEventLoop )
     , m_context( context )
     , m_notificationCb( notifyCallback )
 {

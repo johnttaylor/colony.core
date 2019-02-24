@@ -6,8 +6,6 @@ src/Cpl/Rte/Persistence/Chunk/_0test
 
 # supporting infrastructure
 src/Cpl/Container
-src/Cpl/Log
-src/Cpl/Log/_default
 src/Cpl/Text
 src/Cpl/System
 src/Cpl/Itc

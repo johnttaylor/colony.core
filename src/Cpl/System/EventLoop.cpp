@@ -23,7 +23,8 @@ using namespace Cpl::System;
 
 /////////////////////
 EventLoop::EventLoop( unsigned long timeOutPeriodInMsec )
-    : m_sema()
+    : m_myThreadPtr( 0 )
+    , m_sema()
     , m_timeout( timeOutPeriodInMsec )
     , m_events( 0 )
     , m_run( true )
@@ -32,6 +33,10 @@ EventLoop::EventLoop( unsigned long timeOutPeriodInMsec )
     {
         FatalError::logf( "EventLoop(%p): timeOutPeriodInMsec can NOT be set to zero", this );
     }
+}
+void EventLoop::setThreadOfExecution_( Thread* myThreadPtr )
+{
+    m_myThreadPtr = myThreadPtr;
 }
 
 int EventLoop::signal( void ) throw()

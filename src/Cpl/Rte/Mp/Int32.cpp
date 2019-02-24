@@ -99,9 +99,12 @@ bool Int32::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequence
 const char* Int32::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
 {
     const char*   result = 0;
-    uint16_t      seqnum = SEQUENCE_NUMBER_UNKNOWN;
     const char*   endptr;
     long         value;
+    m_modelDatabase.lock_();
+    uint16_t seqnum = m_seqNum;
+    m_modelDatabase.unlock_();
+
     if ( Cpl::Text::a2l( value, srcText, m_decimal ? 10 : 16, terminationChars, &endptr ) && value <= LONG_MAX && value >= LONG_MIN )
     {
         seqnum = write( value, lockAction );

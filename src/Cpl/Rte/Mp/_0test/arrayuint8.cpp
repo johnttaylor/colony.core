@@ -47,7 +47,7 @@ TEST_CASE( "arrayuint8-readwrite", "[arrayuint8-readwrite]" )
 
     // Read
     uint8_t  value[ORANGE_NUM_ELEMENTS] = { 0xFF, 0xFF, 0xFF };
-    int8_t   valid = mp_orange_.read( value, 2 );
+    int8_t   valid = mp_orange_.read( value, 2, 1 );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value[0] == 2 );
     REQUIRE( value[1] == 1 );
