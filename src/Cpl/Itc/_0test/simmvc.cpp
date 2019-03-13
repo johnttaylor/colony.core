@@ -11,12 +11,8 @@
 
 #include "Catch/catch.hpp"
 #include "Cpl/System/_testsupport/Shutdown_TS.h"
+#include "Cpl/System/ElapsedTime.h"
 #include "common.h"
-
-/// This method is used as part of 'forcing' this object to being actually 
-/// linked during the NQBP link process (it is artifact of linking libraries 
-/// and how CATCH auto-registers (via static objects) test case)
-void link_simmvc( void ) {}
 
 
 #define MY_EVENT_NUMBER     8
@@ -55,6 +51,8 @@ TEST_CASE( "simmvc", "[simmvc]" )
     // Test the default signal handler 
     viewerMbox.notify( MY_EVENT_NUMBER );
 
+    unsigned long startTime = Cpl::System::ElapsedTime::milliseconds();
+
     // Validate result of each sequence
     int i;
     for ( i=0; i < NUM_SEQ_; i++ )
@@ -87,6 +85,10 @@ TEST_CASE( "simmvc", "[simmvc]" )
     REQUIRE( t1->isRunning() == false );
     REQUIRE( t2->isRunning() == false );
     REQUIRE( t3->isRunning() == false );
+
+    unsigned elapsedTime = Cpl::System::ElapsedTime::deltaMilliseconds( startTime );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Viewer Timer count=%lu, max possible value=%lu", myViewer.m_timerExpiredCount, elapsedTime / TIMER_DELAY) );
+    REQUIRE( ((myViewer.m_timerExpiredCount > 1) && (myViewer.m_timerExpiredCount < elapsedTime / TIMER_DELAY)) );
 
     Cpl::System::Thread::destroy( *t1 );
     Cpl::System::Thread::destroy( *t2 );

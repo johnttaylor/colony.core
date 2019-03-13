@@ -15,6 +15,7 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/System/SimTick.h"
+#include "Cpl/System/Timer.h"
 #include "Cpl/Itc/MailboxServer.h"
 #include "Cpl/Itc/CloseSync.h"
 #include "Cpl/Itc/AtomicCallback.h"
@@ -33,6 +34,7 @@
 #define NUM_WRITES_     5
 #define ATOMIC_MODIFY_  2
 
+#define TIMER_DELAY     100
 
 ////////////////////////////////////////////////////////////////////////////////
 class Master : public Cpl::System::Runnable,
@@ -133,7 +135,7 @@ public:
     uint32_t     m_expectedEvents;
 
     /// Constructor
-    MyMailboxServer( uint32_t expectedEvents ) :m_sigCount( 0 ), m_sigCountUnexpected( 0 ), m_expectedEvents( expectedEvents ) {}
+    MyMailboxServer( uint32_t expectedEvents ):m_sigCount( 0 ), m_sigCountUnexpected( 0 ), m_expectedEvents( expectedEvents ) {}
 
 public:
     ///
@@ -283,7 +285,8 @@ public: // AtomicRequest<ReadModifyWrite> methods
 
 
 class Viewer : public Cpl::Itc::CloseSync,
-    public ViewResponseApi
+    public ViewResponseApi,
+    public Cpl::System::Timer
 {
 public:
     ///
@@ -304,11 +307,13 @@ public:
     volatile bool                       m_ownAttachMsg;
     ///
     volatile bool                       m_ownDetachMsg;
-
+    ///
+    unsigned long                       m_timerExpiredCount;
 
     /// Constructor
-    Viewer( int initialValue, Cpl::Itc::PostApi& viewersMbox, ViewRequest::SAP& viewSAP )
+    Viewer( int initialValue, Cpl::Itc::MailboxServer& viewersMbox, ViewRequest::SAP& viewSAP )
         :Cpl::Itc::CloseSync( viewersMbox ),
+        Cpl::System::Timer( viewersMbox ),
         m_opened( false ),
         m_pendingCloseMsgPtr( 0 ),
         m_attachPayload( initialValue ),
@@ -317,10 +322,21 @@ public:
         m_detachRspMsg( *this, viewersMbox, viewSAP, m_detachPayload ),
         m_viewReqSAP( viewSAP ),
         m_ownAttachMsg( true ),
-        m_ownDetachMsg( true )
+        m_ownDetachMsg( true ),
+        m_timerExpiredCount( 0 )
     {
     }
 
+
+protected:
+    void expired( void ) throw()
+    {
+        if ( m_opened )
+        {
+            m_timerExpiredCount++;
+            start( TIMER_DELAY );
+        }
+    }
 
 public:
     ///
@@ -330,6 +346,9 @@ public:
         {
             Cpl::System::FatalError::log( "OPENING Viewer more than ONCE" );
         }
+
+        // Start my timer
+        start( TIMER_DELAY );
 
         CPL_SYSTEM_TRACE_MSG( SECT_, ("SUBSCRIBING for Change notification. current value=%d", m_attachRspMsg.getRequestMsg().getPayload().m_value) );
         m_opened       = true;
@@ -382,6 +401,7 @@ public:
         m_pendingCloseMsgPtr = 0;
         m_opened             = false;
         m_ownDetachMsg       = true;
+        stop();
     }
 
 
