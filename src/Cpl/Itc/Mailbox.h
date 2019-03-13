@@ -23,12 +23,12 @@ namespace Cpl {
 namespace Itc {
 
 /** This mailbox class implements an Inter Thread Communications message
-    queue. There is no limit to the number of messages that can be stored in 
-    the queue at any given time since the FIFO queue and the messages uses the 
+    queue. There is no limit to the number of messages that can be stored in
+    the queue at any given time since the FIFO queue and the messages uses the
     intrusive container mechanisms from the Cpl::Container namespace.
  */
 
-class Mailbox : 
+class Mailbox :
     public PostApi,
     public Cpl::Container::SList<Message>
 {

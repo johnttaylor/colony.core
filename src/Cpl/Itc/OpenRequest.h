@@ -42,7 +42,7 @@ public:
 
     public:
         /// Constructor
-        OpenPayload() :m_success( true ) {}
+        OpenPayload():m_success( true ) {}
     };
 
 

@@ -25,8 +25,8 @@ using namespace Cpl::Itc;
 
 /////////////////////
 MailboxServer::MailboxServer( unsigned long timingTickInMsec ) throw()
-    :Mailbox( *((Cpl::System::EventLoop*)this ))
-    ,Cpl::System::EventLoop( timingTickInMsec )
+    :Mailbox( *((Cpl::System::EventLoop*)this) )
+    , Cpl::System::EventLoop( timingTickInMsec )
 {
 }
 
