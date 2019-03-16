@@ -1,15 +1,15 @@
 #ifndef Cpl_Io_Stdio_Input_x_h_
 #define Cpl_Io_Stdio_Input_x_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2019  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "Cpl/Io/Input.h"
@@ -17,14 +17,22 @@
 
 
 // Forward declaration in other namespaces (needed for 'friends' declaration)
-namespace Cpl { namespace Io { namespace File { 
-    class Input;
-    class InputOutput;
-};};};
+namespace Cpl {
+namespace Io {
+namespace File {
+class Input;
+class InputOutput;
+};
+};
+};
 
 
 ///
-namespace Cpl { namespace Io { namespace Stdio {
+namespace Cpl {
+///
+namespace Io {
+///
+namespace Stdio {
 
 
 
@@ -34,7 +42,7 @@ namespace Cpl { namespace Io { namespace Stdio {
     class and/or implementation inheritance parent class than an class
     used directly by the Application.
  */
-class Input_: public Cpl::Io::Input
+class Input_ : public Cpl::Io::Input
 {
 protected:
     /// Stream Handle
@@ -81,7 +89,7 @@ public:
      */
     void activate( void* handle );
 
-    /** Activates and/or resets the underlying 'srreamfd' for the stream.  If the
+    /** Activates and/or resets the underlying 'streamfd' for the stream.  If the
         current 'fd' is not in the closed state - a fatal error is generated
      */
     void activate( Cpl::Io::Descriptor streamfd );
@@ -91,7 +99,7 @@ public:
     /** This method returns true if the file was successfully open and/or
         is still opened (i.e. close() has not been called). Note: it is okay
         to call other methods in the class if the file is not open - i.e.
-        nothing 'bad' will happen and the method will return 'failed' 
+        nothing 'bad' will happen and the method will return 'failed'
         status (when appropriate).
      */
     bool isOpened();

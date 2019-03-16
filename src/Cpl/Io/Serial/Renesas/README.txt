@@ -1,3 +1,4 @@
+/** @dir */
 /** @file */
 /** @namespace Cpl::Io::Serial::Renesas
 @htmlonly

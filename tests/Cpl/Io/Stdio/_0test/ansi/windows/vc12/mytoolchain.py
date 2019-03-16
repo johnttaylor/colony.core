@@ -20,7 +20,7 @@
 #           
 #---------------------------------------------------------------------------
 
-# get definition of the Options strcuture
+# get definition of the Options structure
 from nqbplib.base import BuildValues
 
 
@@ -31,13 +31,17 @@ from nqbplib.base import BuildValues
 # Set the name for the final output item
 FINAL_OUTPUT_NAME = 'b.exe'
 
+# Link unittest directory by object module so that Catch's self-registration mechanism 'works'
+unit_test_objects = '_BUILT_DIR_.src/Cpl/Io/Stdio/_0test'
+
 #
 # For build config/variant: "Release" (aka C++11 threading)
 #
 
 # Set project specific 'base' (i.e always used) options
-base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags = '/W3 /WX /EHsc'  # /EHsc enables exceptions
+base_release           = BuildValues()        # Do NOT comment out this line
+base_release.cflags    = '/W3 /WX /EHsc'  # /EHsc enables exceptions
+base_release.firstobjs = unit_test_objects
 
 # Set project specific 'optimzed' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
@@ -60,7 +64,8 @@ debug_cpp11    = BuildValues()
 
 
 # Set 'base' options
-base_cpp11.cflags     = '/W3 /WX /EHsc'  # /EHsc enables exceptions
+base_cpp11.cflags    = '/W3 /WX /EHsc'  # /EHsc enables exceptions
+base_cpp11.firstobjs = unit_test_objects
 
 # Set 'Optimized' options
 optimzed_cpp11.cflags = '/O2'

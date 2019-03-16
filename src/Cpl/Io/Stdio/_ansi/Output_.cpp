@@ -20,7 +20,7 @@ using namespace Cpl::Io::Stdio;
 
 //////////////////////
 Output_::Output_( int fd )
-    :m_outFd( 0 )
+    : m_outFd( 0 )
     , m_outEos( false )
 {
     Cpl::System::FatalError::logf( "Cpl:Io::Stdio::Output_().  Constructed with an 'int' instead of a 'FILE*'." );
@@ -108,7 +108,7 @@ bool Output_::write( const void* buffer, int maxBytes, int& bytesWritten )
     // perform the write
     bytesWritten = (int) fwrite( buffer, sizeof( char ), maxBytes, (FILE*) (m_outFd.m_handlePtr) );
     m_outEos     = feof( (FILE*) (m_outFd.m_handlePtr) ) ? true : false;
-    return m_outEos || ferror( (FILE*) (m_outFd.m_handlePtr) ) ? false : true;
+    return !m_outEos && (ferror( (FILE*) (m_outFd.m_handlePtr) ) ? false : true);
 
 }
 

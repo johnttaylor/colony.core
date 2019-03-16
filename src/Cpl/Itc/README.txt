@@ -1,3 +1,4 @@
+/** @dir */
 /** @file */
 /** @namespace Cpl::Itc
 @htmlonly

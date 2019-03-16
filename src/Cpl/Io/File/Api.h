@@ -41,17 +41,17 @@ typedef Cpl::Text::FString<CPL_IO_FILE_MAX_NAME> NameString;
 /** This concrete class defines the interface for handling and manipulating
     entries in the System's File system.  
     
-    The directory seperator is ALWAYS  '/'.  If neccesary it will be internally 
-    converted to the OS/platform  specific delimeter. Directory paths can 
-    contain drive designators, but ONLY if the native OS supports thems.
+    The directory separator is ALWAYS  '/'.  If necessary it will be internally 
+    converted to the OS/platform  specific delimiter. Directory paths can 
+    contain drive designators, but ONLY if the native OS supports it.
  */
 class Api
 {
 public:
-    /// Standardized Directory seperator
+    /// Standardized Directory separator
     static inline char directorySep() { return '/'; }
 
-    /// Returns the native Directory seperator
+    /// Returns the native Directory separator
     static inline char nativeDirectorySep() { return CPL_IO_FILE_NATIVE_DIR_SEP; }
 
 
@@ -129,11 +129,11 @@ public:
     /** This method breaks the specified File System Entry name into it's
         individual components.  If the specific component is not
         need, then specify 0 as the argument and it will be skipped.
-        The fullPath argument contains the drive+path. path only contains 
+        The fullPath argument contains the drive+path. Path only contains 
         the path.  The fullName argument contains the file name+extension.  
-        name only contains the file name.  On return, fullPath string (if 
-        specified and drive exists) will contain the driver seperator.  The 
-        drive string will NOT 'include' the drive sepeartor. The fullName 
+        Name only contains the file name.  On return, fullPath string (if 
+        specified and drive exists) will contain the driver separator.  The 
+        drive string will NOT 'include' the drive separator. The fullName 
         parameter will contain the extensionSeperator.  The name and
         extension will NOT 'include' the extensionSeperator. 
 
@@ -157,14 +157,14 @@ public:
 public:
     /** This method expands the relative path name in 'relPath' to its 
         'absPath'.  Returns true if successful, else false if an error
-        occured (bad relative path, not enough buffer space to hold
+        occurred (bad relative path, not enough buffer space to hold
         the complete path, etc.)
      */
     static bool canonicalPath( const char* relPath, Cpl::Text::String& absPath );
 
     /** This method returns the canonical/absolute path of the current
         working directory.  Returns true if successful, else false if
-        an error occured (not enough buffer space to hold the path, etc.).
+        an error occurred (not enough buffer space to hold the path, etc.).
      */
     static bool getCwd( Cpl::Text::String& cwd );
 
@@ -188,8 +188,8 @@ public:
      */
     static const char* getStandard( const char* fsEntryName );
 
-    /** This method converts the DOS directory seperator to the UNIX
-        directory seperator.  The scope of the returned value is limited, i.e.
+    /** This method converts the DOS directory separator to the UNIX
+        directory separator.  The scope of the returned value is limited, i.e.
         the value needs to be consumed BEFORE any other call to this
         interface  and/or methods in the Cpl::Io::File* namespaces.  Note:
         This method IS thread safe in that each thread has it own internal
@@ -197,8 +197,8 @@ public:
      */
     static const char* dos2unix( const char* fsEntryName );
 
-    /** This method converts the UNIX directory seperator to the
-        DOS direcotry sepeartor.  The scope of the returned value is limited,
+    /** This method converts the UNIX directory separator to the
+        DOS directory separator.  The scope of the returned value is limited,
         i.e. the value needs to be consumed BEFORE any other call to this
         interface  and/or methods in the Cpl::Io::File* namespaces.  Note: This
         method IS thread safe in that each thread has it own internal storage
@@ -249,7 +249,7 @@ public:
         /// True if the file entry is readable by the application
         bool            m_readable;
 
-        /// True if the file entry is writeable by the application
+        /// True if the file entry is writable by the application
         bool            m_writeable;
 
         /// True if the file entry is a directory
@@ -268,7 +268,7 @@ public:
 
 public:
     /** Creates the 'fileName' as an empty file.  The parent directory must 
-        exist. Returns true if successfull.
+        exist. Returns true if successful.
      */
     static bool createFile( const char* fileName );
 
@@ -317,7 +317,7 @@ public:
 public:
     /** This abstract class defines the client interface for walking
         the contents of a directory, i.e. defines the callback method for
-        when walking/travering the entries in a directory
+        when walking/traversing the entries in a directory
      */
     class DirectoryWalker
     {
@@ -327,7 +327,7 @@ public:
     
     public: 
         /** This method is called once for ever item in the "traversee's"
-            list.  The return code from the method is used by the traverer
+            list.  The return code from the method is used by the traverser
             to continue the traversal (eCONTINUE), or abort the traversal 
             (eABORT).
          */
@@ -338,13 +338,13 @@ public:
 
 
     /** This method allows the caller to walk the contents of the 'dirToList' 
-        directory (assuming the entry is a directory).  The default behaviour is
+        directory (assuming the entry is a directory).  The default behavior is
         to list only the current directory.  The Caller can override the depth
         of the traversal.  Also, by default only the file name without its path
         is returned.  The caller can optionally have the traverse call only
         return the name of files (omitting any directory names found) OR names
-        of directories (omiiting any file names found).  Returns true when
-        succesfully and the entire traversal complete; else false is return if 
+        of directories (omitting any file names found).  Returns true when
+        successfully and the entire traversal complete; else false is return if 
         their is an error (e.g. 'dirToList' is a file or does not exist) or the
         'walker' aborted the traversal.
 
@@ -356,7 +356,7 @@ public:
                  is the risk of failure do to lack of memory.  Memory failures 
                  are handled silently - but will not crash traversal.
        
-        WARNING: Be carefull when recursing into subdirectories.  There are 
+        WARNING: Be careful when recursing into subdirectories.  There are 
                  typically OS limits on how many directories may be 'opened'.  
                  Extremely deep directory trees run the risk of exceeding these 
                  limits.

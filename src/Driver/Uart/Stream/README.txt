@@ -1,3 +1,4 @@
+/** @dir */
 /** @file */
 /** @namespace Driver::Uart::Stream
 @htmlonly

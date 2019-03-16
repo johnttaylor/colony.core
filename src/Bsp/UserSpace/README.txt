@@ -1,3 +1,4 @@
+/** @dir */
 /** @file */
 /** @namespace Bsp::UserSpace
 @htmlonly
