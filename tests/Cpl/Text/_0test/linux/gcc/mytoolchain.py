@@ -62,8 +62,8 @@ optimzed_cpp11 = BuildValues()
 debug_cpp11    = BuildValues()
 
 # Set 'base' options
-base_cpp11.cflags     = '-m32 -std=c++11 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
-base_cpp11.linkflags  = '-m32 -fprofile-arcs'
+base_cpp11.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
+base_cpp11.linkflags  = '-m64 -fprofile-arcs'
 base_cpp11.linklibs   = '-lgcov '
 
 # Set 'Optimized' options
