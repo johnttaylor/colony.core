@@ -110,7 +110,7 @@ bool Output_::write( const void* buffer, int maxBytes, int& bytesWritten )
     BOOL result  = WriteFile( (HANDLE) (m_outFd.m_handlePtr), buffer, maxBytes, &work, 0 );
     bytesWritten = (int) work;
     m_outEos     = result && bytesWritten == 0 ? true : false;
-    return !m_inEos && result != 0;
+    return !m_outEos && result != 0;
 }
 
 

@@ -36,7 +36,7 @@ unit_test_objects = '_BUILT_DIR_.src/Cpl/Io/_0test'
 
 # Set project specific 'base' (i.e always used) options
 base_release           = BuildValues()        # Do NOT comment out this line
-base_release.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
+base_release.cflags    = '-m32 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
 base_release.linkflags = '-m32 -fprofile-arcs'
 base_release.linklibs  = '-lgcov'
 base_release.firstobjs = unit_test_objects
