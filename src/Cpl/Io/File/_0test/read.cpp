@@ -94,11 +94,14 @@ TEST_CASE( "read", "[read]" )
     char myBuffer[10] = { 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29 };
     int  bytesRead    = 1;
     REQUIRE( fd2.available() == true );
-    fd2.read( myBuffer, sizeof( myBuffer ), bytesRead );
+    REQUIRE( fd2.read( myBuffer, sizeof( myBuffer ), bytesRead ) == false );
+    REQUIRE( fd2.isEof() == true );
     REQUIRE( bytesRead == 2 );
     REQUIRE( myBuffer[0] == 'd' );
     REQUIRE( myBuffer[1] == '.' );
     REQUIRE( fd2.read( myBuffer, sizeof( myBuffer ), bytesRead ) == false );
+    REQUIRE( fd2.isEof() == true );
+    REQUIRE( bytesRead == 0 );
 
     fd2.close();
     REQUIRE( fd2.isOpened() == false );
@@ -107,48 +110,28 @@ TEST_CASE( "read", "[read]" )
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
 
-TEST_CASE( "close", "[close]" )
+TEST_CASE( "read/close", "[read/close]" )
 {
     CPL_SYSTEM_TRACE_FUNC( SECT_ );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
-    StdIn fd;
-    char dummyChar = 29;
-
+    Input fd( "testinput.txt" );
+    REQUIRE( fd.isOpened() );
     fd.close();
+    char dummyChar = 29;
     REQUIRE( fd.read( dummyChar ) == false );
     REQUIRE( dummyChar == 29 );
 
-    StdOut fd2;
-    fd2.close();
-    REQUIRE( fd2.write( 'a' ) == false );
+    REQUIRE( fd.available() == false );
 
-    StdOut fd3;
-    fd3.close();
-    REQUIRE( fd3.write( 'a' ) == false );
+    REQUIRE( fd.isEof() == true );
+    unsigned long pos;
+    REQUIRE( fd.currentPos( pos ) == false );
+    REQUIRE( fd.setAbsolutePos( 1 ) == false );
+    REQUIRE( fd.setRelativePos( 1 ) == false );
+    REQUIRE( fd.setToEof() == false );
+    unsigned long len = 22;
+    REQUIRE( fd.length( len ) == false );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
-}
-
-TEST_CASE( "open/activate", "[open/activate]" )
-{
-    CPL_SYSTEM_TRACE_FUNC( SECT_ );
-    Cpl::System::Shutdown_TS::clearAndUseCounter();
-
-    StdIn fd;
-    Cpl::Io::Descriptor rawFd = { 0, };
-    fd.activate( (int) 1 );
-    fd.activate( (void*) 1 );
-    fd.activate( rawFd );
-    fd.close();
-    fd.activate( rawFd );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 3u );
-
-    StdOut fd2;
-    fd2.activate( (int) 1 );
-    fd2.activate( (void*) 1 );
-    fd2.activate( rawFd );
-    fd2.close();
-    fd2.activate( rawFd );
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 3u );
 }

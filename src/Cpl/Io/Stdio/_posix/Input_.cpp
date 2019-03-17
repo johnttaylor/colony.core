@@ -107,14 +107,14 @@ bool Input_::read( void* buffer, int numBytes, int& bytesRead )
     // perform the read
     bytesRead = (int) ::read( m_inFd.m_fd, buffer, numBytes );
     m_inEos = bytesRead == 0 ? true : false;
-    return !m_inEos && (bytesRead <= 0 ? false : true);
+    return !m_inEos && bytesRead > 0;
 }
 
 
 bool Input_::available()
 {
-    // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract)
-    return true;
+    // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract) WHEN OPENED
+    return m_inFd.m_fd != -1;
 }
 
 void Input_::close()

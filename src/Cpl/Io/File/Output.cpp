@@ -121,7 +121,7 @@ bool Output::setAbsolutePos( unsigned long newoffset )
 
 bool Output::isEof()
 {
-    return m_stream.m_outEos;
+    return isOpened() == false || m_stream.m_outEos;
 }
 
 bool Output::length( unsigned long& len )

@@ -110,14 +110,14 @@ bool Input_::read( void* buffer, int numBytes, int& bytesRead )
     BOOL result = ReadFile( (HANDLE) (m_inFd.m_handlePtr), buffer, numBytes, &work, 0 );
     bytesRead   = (int) work;
     m_inEos     = result && bytesRead == 0 ? true : false;
-    return !m_inEos && (result == 0 ? false : true);
+    return !m_inEos && result != 0;
 }
 
 
 bool Input_::available()
 {
-    // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract)
-    return true;
+    // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract) WHEN OPENED
+    return m_inFd.m_handlePtr != (void*) INVALID_HANDLE_VALUE;
 }
 
 void Input_::close()

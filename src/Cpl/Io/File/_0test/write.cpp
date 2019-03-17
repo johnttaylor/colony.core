@@ -101,3 +101,29 @@ TEST_CASE( "write", "[write]" )
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
+
+TEST_CASE( "write/close", "[write/close]" )
+{
+    CPL_SYSTEM_TRACE_FUNC( SECT_ );
+    Cpl::System::Shutdown_TS::clearAndUseCounter();
+
+    Output fd( "output2.txt", true, true );
+    REQUIRE( fd.isOpened() );
+    fd.close();
+    char dummyChar = 29;
+    REQUIRE( fd.write( dummyChar ) == false );
+    REQUIRE( dummyChar == 29 );
+    fd.flush();
+    
+    REQUIRE( fd.isEof() == true );
+    unsigned long pos;
+    REQUIRE( fd.currentPos( pos ) == false );
+    REQUIRE( fd.setAbsolutePos( 1 ) == false );
+    REQUIRE( fd.setRelativePos( 1 ) == false );
+    REQUIRE( fd.setToEof() == false );
+    unsigned long len = 22;
+    REQUIRE( fd.length( len ) == false );
+
+
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+}

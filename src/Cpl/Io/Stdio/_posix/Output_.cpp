@@ -107,7 +107,7 @@ bool Output_::write( const void* buffer, int maxBytes, int& bytesWritten )
     // perform the write
     bytesWritten = (int) ::write( m_outFd.m_fd, buffer, maxBytes );
     m_outEos = bytesWritten == 0 ? true : false;
-    return !m_outEos && (bytesWritten <= 0 ? false : true);
+    return !m_outEos && bytesWritten > 0;
 }
 
 

@@ -206,24 +206,53 @@ TEST_CASE( "close", "[close]" )
     REQUIRE( atomicfd.requestOutputs( testContext, &MyContext::testOutputs ) == false );
     REQUIRE( testContext.m_count == 2 );
 
-    // I don't have a useful concrete streams to test the following -->but I can at least make sure they compile & link
-    Null apple;
-    Null cherry;
-    Null orange;
-    apple.close();
-    cherry.close();
-    TeeOutput many( apple, cherry );
-    many.add( orange );
-    REQUIRE( many.write( "[World! (apple, cherry, orange)]" ) == false );
-    REQUIRE( many.firstFailed() == &apple );
-    REQUIRE( many.nextFailed( apple ) == &cherry );
-    REQUIRE( many.remove( apple ) );
-    REQUIRE( many.write( "[Goodbye! (cherry, orange)]" ) == true );
-    REQUIRE( many.remove( cherry ) );
-    REQUIRE( many.firstFailed() == 0 );
-    REQUIRE( many.write( "[One more try! (none)]" ) == true );
-    many.close();
-    REQUIRE( many.write( "[Should fail!]" ) == false );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+}
+
+TEST_CASE( "TeeOutput", "[TeeOutput]" )
+{
+    CPL_SYSTEM_TRACE_FUNC( SECT_ );
+    Cpl::System::Shutdown_TS::clearAndUseCounter();
+
+    SECTION( "basic" )
+    {
+        // I don't have a useful concrete streams to test the following -->but I can at least make sure they compile & link
+        Null apple;
+        Null cherry;
+        Null orange;
+        apple.close();
+        cherry.close();
+        TeeOutput many( apple, cherry );
+        many.add( orange );
+        REQUIRE( many.write( "[World! (apple, cherry, orange)]" ) == false );
+        REQUIRE( many.firstFailed() == &apple );
+        REQUIRE( many.nextFailed( apple ) == &cherry );
+        REQUIRE( many.remove( apple ) );
+        REQUIRE( many.write( "[Goodbye! (cherry, orange)]" ) == true );
+        REQUIRE( many.remove( cherry ) );
+        REQUIRE( many.firstFailed() == 0 );
+        REQUIRE( many.write( "[One more try! (none)]" ) == true );
+        many.close();
+        REQUIRE( many.write( "[Should fail!]" ) == false );
+    }
+
+    SECTION( "basic2" )
+    {
+        // I don't have a useful concrete streams to test the following -->but I can at least make sure they compile & link
+        Null apple;
+        Null cherry;
+        Null orange;
+        apple.close();
+        cherry.close();
+        TeeOutput many( apple, cherry );
+        many.add( orange );
+        REQUIRE( many.write( "[World! (apple, cherry, orange)]" ) == false );
+        many.flush();
+        REQUIRE( many.removeAndGetNextFailed(apple) == &cherry );
+        REQUIRE( many.write( "[Goodbye! (cherry, orange)]" ) == true );
+        many.close();
+        REQUIRE( many.write( "[Should fail!]" ) == false );
+    }
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }

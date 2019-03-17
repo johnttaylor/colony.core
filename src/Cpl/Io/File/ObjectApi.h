@@ -33,8 +33,10 @@ public:
     /** After a read/write operation this method returns true if
         the file pointer is at EOF.
 
-        NOTE: This method is ONLY VALID immediately following a
-              read/write operation!
+        NOTES: 
+        - This method is ONLY VALID immediately following a read/write 
+          operation!
+        - If the File object has been closed, this method will return true.
      */
     virtual bool isEof() = 0;
 

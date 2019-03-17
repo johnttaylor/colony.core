@@ -110,8 +110,8 @@ bool Input_::read( void* buffer, int numBytes, int& bytesRead )
 
 bool Input_::available()
 {
-    // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract)
-    return true;
+    // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract) WHEN OPENED
+    return m_inFd.m_handlePtr != 0;
 }
 
 void Input_::close()

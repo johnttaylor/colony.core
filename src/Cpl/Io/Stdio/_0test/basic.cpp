@@ -64,6 +64,8 @@ TEST_CASE( "basic", "[basic]" )
     StdIn infd;
     char dummyChar = 29;
 
+    REQUIRE( infd.isOpened() == true );
+
     REQUIRE( infd.read( dummyChar ) == true );
     REQUIRE( dummyChar == 'A' );
 
@@ -74,6 +76,8 @@ TEST_CASE( "basic", "[basic]" )
     char myBuffer[10] = { 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29 };
     int  bytesRead    = 1;
     REQUIRE( infd.available() == true );
+    REQUIRE( infd.read( myBuffer, 0, bytesRead ) == true );
+    REQUIRE( bytesRead == 0 );
     infd.read( myBuffer, sizeof( myBuffer ), bytesRead );
     REQUIRE( bytesRead == 2 );
     REQUIRE( myBuffer[0] == 'd' );
@@ -81,12 +85,16 @@ TEST_CASE( "basic", "[basic]" )
     REQUIRE( infd.read( myBuffer, sizeof( myBuffer ), bytesRead ) == false );
 
     infd.close();
+    REQUIRE( infd.isOpened() == false );
     REQUIRE( infd.read( dummyChar ) == false );
 
 
     //
     StdOut outfd;
     int    bytesWritten;
+    REQUIRE( outfd.isOpened() == true );
+    REQUIRE( outfd.write( myBuffer, 0, bytesWritten ) == true );
+    REQUIRE( bytesWritten == 0 );
     REQUIRE( outfd.write( 'a' ) );
     REQUIRE( outfd.write( "bob's your uncle" ) );
     REQUIRE( outfd.write( buffer ) );
@@ -98,10 +106,14 @@ TEST_CASE( "basic", "[basic]" )
 
     outfd.flush();
     outfd.close();
+    REQUIRE( outfd.isOpened() == false );
     REQUIRE( outfd.write( 'a' ) == false );
 
     //
     StdOut out2fd;
+    REQUIRE( out2fd.isOpened() == true );
+    REQUIRE( out2fd.write( myBuffer, 0, bytesWritten ) == true );
+    REQUIRE( bytesWritten == 0 );
     Cpl::Io::LineWriter writer( out2fd );
     REQUIRE( writer.println() );
     REQUIRE( writer.println( "Hello World" ) );
@@ -109,7 +121,9 @@ TEST_CASE( "basic", "[basic]" )
     REQUIRE( writer.print( "World" ) );
     REQUIRE( writer.print( " again!" ) );
     REQUIRE( writer.println() );
+    writer.flush();
     writer.close();
+    REQUIRE( out2fd.isOpened() == false );
     REQUIRE( writer.println() == false );
     REQUIRE( out2fd.write( 'a' ) == false );
 
@@ -178,6 +192,11 @@ TEST_CASE( "open/activate", "[open/activate]" )
     fd.activate( rawFd );
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 3u );
 
+    fd.close();
+    fd.activate( (int) 1 );
+    fd.activate( (void*) 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1u );
+
     StdOut fd2;
     fd2.activate( (int) 1 );
     fd2.activate( (void*) 1 );
@@ -185,4 +204,9 @@ TEST_CASE( "open/activate", "[open/activate]" )
     fd2.close();
     fd2.activate( rawFd );
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 3u );
+
+    fd2.close();
+    fd2.activate( (int) 1 );
+    fd2.activate( (void*) 1 );
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1u );
 }

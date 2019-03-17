@@ -94,7 +94,7 @@ bool Input::setAbsolutePos( unsigned long newoffset )
 
 bool Input::isEof()
 {
-    return m_stream.m_inEos;
+    return isOpened() == false || m_stream.m_inEos;
 }
 
 bool Input::length(unsigned long& len)
