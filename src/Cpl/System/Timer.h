@@ -46,9 +46,10 @@ namespace System {
 class Timer : public CounterCallback_
 {
 protected:
-    ///
+    /// The timer's tick source
     TimerManager & m_timingSource;
-    ///
+    
+    /// Current count
     unsigned long           m_count;
 
 public:

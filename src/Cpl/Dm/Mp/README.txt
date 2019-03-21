@@ -1,6 +1,6 @@
 /** @dir */
 /** @file */
-/** @namespace Cpl::Rte::Mp
+/** @namespace Cpl::Dm::Mp
 @htmlonly
 <pre>    
 

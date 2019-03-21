@@ -19,10 +19,6 @@ def filter_warnings( output ):
     at_least_one = False
     lines = output.splitlines()
     for line in lines:
-        # Filter auto generated FSM code
-        if ( re.search( "^.*Fsm_.h", line ) or re.search( "^.*Fsm_ext_.h", line ) or re.search( "^.*Fsm_trace_.h", line )):
-            continue
-            
         # Filter
         if ( re.search( r"^.*src/Cpl/Type/enum.h:.*warning:.*", line ) ):
             continue

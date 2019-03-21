@@ -15,16 +15,24 @@ sys.path.append( NQBP_BIN )
 
 # Find the Package & Workspace root
 from other import genfsm_base
+sys.argv.append('')
+sys.argv.append('')
+sys.argv.append('')
+
+
+###############################################################
+# BEGIN EDITS HERE
+###############################################################
 
 # Generate FSM#1
-sys.argv.append('-d 4')
-sys.argv.append('HandlerFsm')
-sys.argv.append('Cpl::Rte::Persistence::Record')
+sys.argv[1] = '-d 4'
+sys.argv[2] = 'HandlerFsm'
+sys.argv[3] = 'Cpl::Dm::Persistence::Record'
 genfsm_base.run( sys.argv )
 
 
 # Generate FSM#2
 sys.argv[1] = '-d 4'
 sys.argv[2] = 'Fsm'
-sys.argv[3] = 'Cpl::Rte::Persistence::Record'
+sys.argv[3] = 'Cpl::Dm::Persistence::Record'
 genfsm_base.run( sys.argv )

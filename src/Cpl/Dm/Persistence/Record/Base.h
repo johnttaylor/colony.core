@@ -35,10 +35,10 @@ namespace Record {
 /** This class implements the core functionality of a Record Instance.  Each
     Record instance interacts with the Record Handler to perform the initial
     read of the Record data (which is only done once) and writes to the
-    Pesistence storage when the Record's data is modified.
+    Persistence storage when the Record's data is modified.
 
     The concrete Record classes to call registerModelPoint() - for each of
-    their Model Points - in their constrcutor.
+    their Model Points - in their constructor.
     
     The concrete Record classes are required to the implemented the following
     methods:
@@ -49,7 +49,7 @@ namespace Record {
     The defaultData() method is responsible for updating all of the concrete 
     Record's Model Point's to the appropriate default values.  Note: A Model 
     Point can be defaulted to the "invalid state" since each Model Point's 
-    valid/invalid state is stored as part of the persisent record.
+    valid/invalid state is stored as part of the persistent record.
 
     The connectToModel() method is responsible for registering each individual
     model point for change notifications.  In the callback for the change 
@@ -59,8 +59,8 @@ namespace Record {
     for the sequence number value. Note: No other actions are required in the 
     callback methods.
 
-    The disconnectFromModel() method is responsible for cancelling the change
-    notification registrations
+    The disconnectFromModel() method is responsible for canceling the change
+    notification registrations.
  */
 class Base :
     public Api_,
