@@ -1,8 +1,4 @@
-/** @dir */
-/** @file */
 /** @namespace Cpl::System::BareMetal
-@htmlonly
-<pre>    
 
 Concrete implementation of the platform specific classes/features of the 
 Cpl::System namespace interfaces for a Baremetal/Singled-threaded system.
@@ -30,8 +26,6 @@ ElapsedTime - The platform is required to provide the number of milliseconds
               
 EventLoop   - Fully functional.  This includes EventFlags and Software Timers.
 
-</pre>    
-@endhtmlonly
 */  
 
 

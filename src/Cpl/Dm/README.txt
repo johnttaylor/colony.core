@@ -1,8 +1,4 @@
-/** @dir */
-/** @file */
 /** @namespace Cpl::Dm
-@htmlonly
-<pre>    
 
 Overview
 --------
@@ -55,8 +51,6 @@ or controllers to  read, write the data items.  Some terminology:
   on the stack.  Note: There is no 'Controller' data-type/class. The term 
   Controller Point refers to how a Point instance is used.
 
-</pre>    
-@endhtmlonly
 */  
 
 

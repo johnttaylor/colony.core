@@ -1,8 +1,4 @@
-/** @dir */
-/** @file */
 /** @namespace Cpl::Dm::Persistence::Record
-@htmlonly
-<pre>    
 
 The 'Record' namespace contains the interfaces, classes, infrastructure, etc.
 for reading and writing persistent data the DM Engine's Model Points.  An 
@@ -11,8 +7,6 @@ The Record layer reads all records in persistent storage at start-up and then
 monitors the Model Points for change and updates persistent storage on said 
 change.
 
-</pre>    
-@endhtmlonly
 */  
 
 

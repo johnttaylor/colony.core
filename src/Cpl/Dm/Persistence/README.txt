@@ -1,8 +1,4 @@
-/** @dir */
-/** @file */
 /** @namespace Cpl::Dm::Persistence
-@htmlonly
-<pre>    
 
 The 'Persistence' namespace provides a basic persistence storage mechanism 
 for the RTE's Model Points.  The persistence sub-system has the following 
@@ -59,8 +55,6 @@ Threading Model:
     Media can vary greatly.   Multiple Chunk servers can ran in the same
     thread.
 
-</pre>    
-@endhtmlonly
 */  
 
 

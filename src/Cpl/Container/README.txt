@@ -1,8 +1,4 @@
-/** @dir */
-/** @file */
 /** @namespace Cpl::Container
-@htmlonly
-<pre>    
 
 The Container namespace provides classes for various types of containers.
 All of the containers use 'intrusive listing' mechanism, i.e. every item
@@ -18,8 +14,6 @@ intrusive containers.
     2) A given item/instance can be in AT MOST one and ONLY one container.
 
 
-</pre>    
-@endhtmlonly
 */  
 
 

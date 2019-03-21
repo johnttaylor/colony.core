@@ -1,8 +1,4 @@
-/** @dir */
-/** @file */
 /** @namespace Cpl::Io::File
-@htmlonly
-<pre>    
 
 The File namespace provides the base/common interfaces for reading and writing
 data from/to Files. 
@@ -11,9 +7,6 @@ Note: The underlying implementation for reading/writing files is defined by whic
       implementation the Application selects (i.e. compiles & links) for the 
       Cpl::Io::Stdio namespace.
 
-</pre>    
-@endhtmlonly
-*/  
 
 
   

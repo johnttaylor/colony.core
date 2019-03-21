@@ -1,8 +1,4 @@
-/** @dir */
-/** @file */
 /** @namespace Cpl::Itc
-@htmlonly
-<pre>    
 
 The Itc namespace provides classes for message based Inter Thread Communications
 (ITC) as well as Event Flags.  The ITC message mechanism has the following 
@@ -61,8 +57,6 @@ The ITC Event Flags mechanism has the following characteristics:
       Events that were in the signaled state when the thread was unblock are
       cleared.
 
-</pre>    
-@endhtmlonly
 */  
 
 

@@ -1,9 +1,4 @@
-/** @dir */
-/** @file */
 /** @namespace Cpl::Io::Stdio
-@htmlonly
-<pre>    
-
 The Stdio namespace provides concrete classes for the C Library's 'stdin', 
 'stdout', and 'stderr' input/output streams.  The class definitions (i.e the
 header files) are platform independent so the Application can use them directly
@@ -19,9 +14,7 @@ Input, Output, Error streams.
 Note: The "_ansi/' implementation of the Stdio classes uses the C library's 
       'FILE*' methods (fwrite, fread, etc.).
 
-</pre>    
-@endhtmlonly
-*/  
+ */  
 
 
   

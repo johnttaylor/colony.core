@@ -4,14 +4,14 @@
   <navindex>
     <tab type="mainpage" visible="yes" title=""/>
     <tab type="pages" visible="yes" title="" intro=""/>
-    <tab type="modules" visible="yes" title="" intro=""/>
+    <tab type="modules" visible="yes" title="Components" intro=""/>
     <tab type="namespaces" visible="yes" title="">
       <tab type="namespacelist" visible="yes" title="" intro=""/>
       <tab type="namespacemembers" visible="yes" title="" intro=""/>
     </tab>
     <tab type="classes" visible="yes" title="">
       <tab type="classlist" visible="yes" title="" intro=""/>
-      <tab type="classindex" visible="$ALPHABETICAL_INDEX" title=""/> 
+      <tab type="classindex" visible="$ALPHABETICAL_INDEX" title=""/>
       <tab type="hierarchy" visible="yes" title="" intro=""/>
       <tab type="classmembers" visible="yes" title="" intro=""/>
     </tab>
@@ -19,7 +19,7 @@
       <tab type="filelist" visible="yes" title="" intro=""/>
       <tab type="globals" visible="yes" title="" intro=""/>
     </tab>
-    <tab type="examples" visible="yes" title="" intro=""/>  
+    <tab type="examples" visible="yes" title="" intro=""/>
   </navindex>
 
   <!-- Layout definition for a class page -->
@@ -108,7 +108,7 @@
   <!-- Layout definition for a file page -->
   <file>
     <briefdescription visible="yes"/>
-    <detaileddescription title=""/>
+    <detaileddescription visible="yes" title=""/>
     <includes visible="yes"/>
     <includegraph visible="yes"/>
     <includedbygraph visible="yest"/>
@@ -184,7 +184,7 @@
   <!-- Layout definition for a directory page -->
   <directory>
     <briefdescription visible="yes"/>
-    <detaileddescription title=""/>
+    <detaileddescription visible="yes" />
     <directorygraph visible="yes"/>
     <memberdecl>
       <dirs visible="yes"/>
