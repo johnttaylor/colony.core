@@ -1,8 +1,4 @@
-/** @dir */
-/** @file */
 /** @namespace Cpl::Dm::Persistence::Chunk
-@htmlonly
-<pre>    
 
 The 'Chunk' namespace contains the interfaces, classes, infrastructure, etc.
 for performing the 'file IO' for the DM persistent storage.  The Chunk layer
@@ -11,8 +7,6 @@ records stored.  The 'file IO' that the Chunk layer uses is abstracted so that
 the Chunk layer can work with persistent storage media that is not a 
 traditional file system.
 
-</pre>    
-@endhtmlonly
 */  
 
 

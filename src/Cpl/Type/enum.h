@@ -266,7 +266,8 @@
 #endif // #ifdef BETTER_ENUMS_MACRO_FILE else case
 
 
-
+/** C++11 support for improved enums
+ */
 namespace better_enums {
 
 

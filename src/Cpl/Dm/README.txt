@@ -1,7 +1,5 @@
 /** @namespace Cpl::Dm
 
-Overview
---------
 The 'DM' namespace is the root name space for a Data Model centric Run Time 
 Environment. 
 

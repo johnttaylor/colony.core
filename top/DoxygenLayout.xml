@@ -107,7 +107,7 @@
 
   <!-- Layout definition for a file page -->
   <file>
-    <briefdescription visible="yes"/>
+    <briefdescription visible="no"/>
     <detaileddescription visible="yes" title=""/>
     <includes visible="yes"/>
     <includegraph visible="yes"/>
@@ -183,7 +183,7 @@
 
   <!-- Layout definition for a directory page -->
   <directory>
-    <briefdescription visible="yes"/>
+    <briefdescription visible="no"/>
     <detaileddescription visible="yes" />
     <directorygraph visible="yes"/>
     <memberdecl>
