@@ -5,9 +5,6 @@
 #define CATCH_CONFIG_RUNNER  
 #include "Catch/catch.hpp"
 
-// External references
-extern void link_test(void);
-
 
 int main( int argc, char* argv[] )
     {
@@ -18,13 +15,6 @@ int main( int argc, char* argv[] )
     CPL_SYSTEM_TRACE_ENABLE_SECTION("_0test");
     CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eBRIEF );
     CPL_SYSTEM_TRACE_FUNC( "_0test");
-
-    // THIS CODE DOES NOTHING.  It is needed to force the inclusion of
-    // the test code due to the combination of how CATCH auto registers
-    // test cases and how NQBP links by libraries.  Short version is do NOT
-    // remove these call(s).
-    link_test();
-
 
     // Run the test(s)
     int result = Catch::Session().run( argc, argv );

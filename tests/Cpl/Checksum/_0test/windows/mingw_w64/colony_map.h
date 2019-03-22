@@ -9,7 +9,7 @@
 #endif
 
 // strapi mapping
-#include "Cpl/Text/_mappings/mingw/strapi.h"
+#include "Cpl/Text/_mappings/_mingw/strapi.h"
 
 
 #endif

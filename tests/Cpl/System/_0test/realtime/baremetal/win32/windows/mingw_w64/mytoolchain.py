@@ -31,7 +31,7 @@ from nqbplib.base import BuildValues
 # Set the name for the final output item
 FINAL_OUTPUT_NAME = 'a.exe'
 
-# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
+# Link unittest directory by object module so that Catch's self-registration mechanism 'works'
 unit_test_objects = '_BUILT_DIR_.src/Cpl/System/_0test _BUILT_DIR_.src/Cpl/System/_0test/_baremetal'
 
 # Set project specific 'base' (i.e always used) options
@@ -64,7 +64,7 @@ debug_cpp11    = BuildValues()
 
 # Set 'base' options
 base_cpp11.cflags     = '-O0 -m32 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
-base_cpp11.linkflags  = '-m32 -fprofile-arcs'
+base_cpp11.linkflags  = '-m64 -fprofile-arcs'
 base_cpp11.linklibs   = '-lgcov'
 base_cpp11.firstobjs  = unit_test_objects
 
@@ -135,7 +135,7 @@ import os
 prjdir = os.path.dirname(os.path.abspath(__file__))
 
 
-# Select Module that contains the desired toolcahin
+# Select Module that contains the desired toolchain
 from nqbplib.toolchains.windows.mingw_w64.console_exe import ToolChain
 
 

@@ -20,7 +20,7 @@
 #           
 #---------------------------------------------------------------------------
 
-# get definition of the Options strcuture
+# get definition of the Options structure
 from nqbplib.base import BuildValues
 
 
@@ -40,7 +40,7 @@ base_release = BuildValues()        # Do NOT comment out this line
 base_release.cflags = '/W3 /WX /EHsc'  # /EHsc enables exceptions
 base_release.linklibs = 'ws2_32.lib' 
 
-# Set project specific 'optimzed' options
+# Set project specific 'optimized' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
 optimzed_release.cflags = '/O2'
 
@@ -49,7 +49,7 @@ debug_release = BuildValues()       # Do NOT comment out this line
 debug_release.cflags = '/D "_MY_APP_DEBUG_SWITCH_"'
 
 #
-# For build config/varint: "cpp11"
+# For build config/variant: "cpp11"
 # (note: uses same internal toolchain options as the 'Release' variant, 
 #        only the 'User' options will/are different)
 #
@@ -83,7 +83,7 @@ release_opts = { 'user_base':base_release,
                }
                
                
-# Add new dictionary of for new build configuraiton options
+# Add new dictionary of for new build configuration options
 cpp11_opts = { 'user_base':base_cpp11, 
                'user_optimized':optimzed_cpp11, 
                'user_debug':debug_cpp11
@@ -107,7 +107,7 @@ import os
 prjdir = os.path.dirname(os.path.abspath(__file__))
 
 
-# Select Module that contains the desired toolcahin
+# Select Module that contains the desired toolchain
 from nqbplib.toolchains.windows.vc12.console_exe import ToolChain
 
 

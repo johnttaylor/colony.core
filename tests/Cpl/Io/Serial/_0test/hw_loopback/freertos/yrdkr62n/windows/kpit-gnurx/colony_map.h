@@ -7,7 +7,7 @@
 #include "Cpl/System/FreeRTOS/mappings_.h"
 
 // strapi mapping
-#include "Cpl/Text/_mappings/kpitrx/strapi.h"
+#include "Cpl/Text/_mappings/_kpitrx/strapi.h"
 
 
 

@@ -4,7 +4,7 @@ src/Cpl/System/_trace
 src/Cpl/System/_trace/_stdout
 
 # tests
-src/Cpl/System/_0test/sim
+src/Cpl/System/_0test/_sim
 
 # supporting infrastructure
 src/Cpl/Container

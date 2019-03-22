@@ -15,7 +15,7 @@
 #endif
 
 // strapi mapping
-#include "Cpl/Text/_mappings/posix/strapi.h"
+#include "Cpl/Text/_mappings/_posix/strapi.h"
 
 
 #endif

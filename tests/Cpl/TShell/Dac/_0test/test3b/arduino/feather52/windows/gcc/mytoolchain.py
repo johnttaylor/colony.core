@@ -23,7 +23,7 @@
 # 
 import os
 
-# get definition of the Options strcuture
+# get definition of the Options structure
 from nqbplib.base import BuildValues
 from nqbplib.my_globals import NQBP_WORK_ROOT
 
@@ -62,7 +62,7 @@ base_release.cflags   = ' -Wall -DF_CPU=64000000 -DARDUINO=10802'
 base_release.asmflags = ' -Wall -DF_CPU=64000000 -DARDUINO=10802'
 
 
-# Set project specific 'optimzed' options
+# Set project specific 'optimized' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
 
 # Set project specific 'debug' options
@@ -84,7 +84,7 @@ release_opts = { 'user_base':base_release,
                }
                
                
-# Add new dictionary of for new build configuraiton options
+# Add new dictionary of for new build configuration options
 #xyz_opts = { 'user_base':base_xyz, 
 #             'user_optimized':optimzed_xyz, 
 #             'user_debug':debug_xyz
@@ -108,7 +108,7 @@ import os
 prjdir = os.path.dirname(os.path.abspath(__file__))
 
 
-# Select Module that contains the desired toolcahin
+# Select Module that contains the desired toolchain
 from nqbplib.toolchains.windows.arm_m4_arduino.nrf52_feather52 import ToolChain
 
 

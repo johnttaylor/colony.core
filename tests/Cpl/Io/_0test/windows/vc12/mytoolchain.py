@@ -86,7 +86,7 @@ release_opts = { 'user_base':base_release,
                }
                
                
-# Add new dictionary of for new build configuraiton options
+# Add new dictionary of for new build configuration options
 cpp11_opts = { 'user_base':base_cpp11, 
                'user_optimized':optimzed_cpp11, 
                'user_debug':debug_cpp11
@@ -110,7 +110,7 @@ import os
 prjdir = os.path.dirname(os.path.abspath(__file__))
 
 
-# Select Module that contains the desired toolcahin
+# Select Module that contains the desired toolchain
 from nqbplib.toolchains.windows.vc12.console_exe import ToolChain
 
 

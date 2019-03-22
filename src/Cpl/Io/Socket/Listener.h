@@ -40,7 +40,7 @@ class Listener: public Cpl::System::Runnable
 
 {
 public:
-    /** This class defines the callback mechansim used for accepting incoming 
+    /** This class defines the callback mechanism used for accepting incoming 
         socket connections.
 
         NOTE: Typically the client should NOT inherit/implement this class 

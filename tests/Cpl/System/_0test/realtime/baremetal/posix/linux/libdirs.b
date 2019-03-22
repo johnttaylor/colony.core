@@ -9,7 +9,7 @@ src/Cpl/System/_0test/_baremetal
 # supporting infrastructure
 src/Cpl/Container
 src/Cpl/Text
-src/Cpl/Text/_mappings/posix
+src/Cpl/Text/_mappings/_posix
 
 
 # Platforms

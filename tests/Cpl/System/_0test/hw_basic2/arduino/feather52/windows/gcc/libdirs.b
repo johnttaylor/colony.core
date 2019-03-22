@@ -1,5 +1,5 @@
 # Test Application
-src/Cpl/System/_0test/hw_basic2
+src/Cpl/System/_0test/_hw_basic2
 
 # Colony::Core libraries (note: the Feather52/Arduino boards uses FreeRTOS)
 src/Cpl/Io

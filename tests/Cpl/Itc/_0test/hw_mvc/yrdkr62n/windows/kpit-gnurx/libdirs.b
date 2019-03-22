@@ -1,5 +1,5 @@
 # Test App
-src/Cpl/Itc/_0test/hw_mvc 
+src/Cpl/Itc/_0test/_hw_mvc 
 
 # Unit under test
 src/Cpl/Itc
@@ -9,7 +9,7 @@ src/Cpl/Itc
 
 # more infrastructure
 src/Cpl/Timer
-src/Cpl/Text/_mappings/kpitrx
+src/Cpl/Text/_mappings/_kpitrx
 
 
 # drivers

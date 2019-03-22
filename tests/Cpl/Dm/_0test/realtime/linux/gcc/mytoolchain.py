@@ -20,7 +20,7 @@
 #           
 #---------------------------------------------------------------------------
 
-# get definition of the Options strcuture
+# get definition of the Options structure
 from nqbplib.base import BuildValues
 
 
@@ -34,7 +34,7 @@ FINAL_OUTPUT_NAME = 'a.out'
 #
 # For build config/variant: "Release" (aka posix build variant)
 #
-# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
+# Link unittest directory by object module so that Catch's self-registration mechanism 'works'
 testobjs = '_BUILT_DIR_.src/Cpl/Dm/_0test'
 
 # Set project specific 'base' (i.e always used) options
@@ -43,10 +43,10 @@ base_release.cflags    = '-m32 -std=c++11 -Wall -Werror -x c++ -fprofile-arcs -f
 base_release.linkflags = '-m32 -fprofile-arcs'
 base_release.linklibs  = '-lgcov -lpthread'
 
-# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
+# Link unittest directory by object module so that Catch's self-registration mechanism 'works'
 base_release.firstobjs = testobjs
 
-# Set project specific 'optimzed' options
+# Set project specific 'optimized' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
 optimzed_release.cflags = '-O3'
 
@@ -71,7 +71,7 @@ base_cpp11.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++ -fprofile-arcs -ft
 base_cpp11.linkflags  = '-m64 -fprofile-arcs -std=c++11'
 base_cpp11.linklibs   = '-lgcov -lpthread'
 
-# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
+# Link unittest directory by object module so that Catch's self-registration mechanism 'works'
 base_cpp11.firstobjs =  testobjs
 
 # Set 'Optimized' options
@@ -95,10 +95,10 @@ base_posix64.cflags    = '-m64 -std=c++11 -Wall -Werror -x c++ -fprofile-arcs -f
 base_posix64.linkflags = '-fprofile-arcs'
 base_posix64.linklibs  = '-lgcov -lpthread'
 
-# Link unittest directory by object module so that Catch's self-registration mechansim 'works'
+# Link unittest directory by object module so that Catch's self-registration mechanism 'works'
 base_posix64.firstobjs =  testobjs
 
-# Set project specific 'optimzed' options
+# Set project specific 'optimized' options
 optimzed_posix64.cflags = '-O3'
 
 # Set project specific 'debug' options
@@ -116,7 +116,7 @@ release_opts = { 'user_base':base_release,
                }
                
                
-# Add new dictionary of for new build configuraiton options
+# Add new dictionary of for new build configuration options
 cpp11_opts = { 'user_base':base_cpp11, 
                'user_optimized':optimzed_cpp11, 
                'user_debug':debug_cpp11
@@ -146,7 +146,7 @@ import os
 prjdir = os.path.dirname(os.path.abspath(__file__))
 
 
-# Select Module that contains the desired toolcahin
+# Select Module that contains the desired toolchain
 from nqbplib.toolchains.linux.gcc.console_exe import ToolChain
 
 

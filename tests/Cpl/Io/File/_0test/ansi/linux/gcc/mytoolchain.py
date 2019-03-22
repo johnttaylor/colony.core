@@ -20,7 +20,7 @@
 #           
 #---------------------------------------------------------------------------
 
-# get definition of the Options strcuture
+# get definition of the Options structure
 from nqbplib.base import BuildValues
 
 
@@ -45,7 +45,7 @@ base_release.linkflags = '-m32 -fprofile-arcs'
 base_release.linklibs  = '-lgcov -lpthread'
 base_release.firstobjs = unit_test_objects
 
-# Set project specific 'optimzed' options
+# Set project specific 'optimized' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
 optimzed_release.cflags = '-O3'
 
@@ -93,7 +93,7 @@ base_posix64.linkflags = '-fprofile-arcs'
 base_posix64.linklibs  = '-lgcov -lpthread'
 base_posix64.firstobjs  = unit_test_objects
 
-# Set project specific 'optimzed' options
+# Set project specific 'optimized' options
 optimzed_posix64.cflags = '-O3'
 
 # Set project specific 'debug' options
@@ -111,7 +111,7 @@ release_opts = { 'user_base':base_release,
                }
                
                
-# Add new dictionary of for new build configuraiton options
+# Add new dictionary of for new build configuration options
 cpp11_opts = { 'user_base':base_cpp11, 
                'user_optimized':optimzed_cpp11, 
                'user_debug':debug_cpp11
@@ -141,7 +141,7 @@ import os
 prjdir = os.path.dirname(os.path.abspath(__file__))
 
 
-# Select Module that contains the desired toolcahin
+# Select Module that contains the desired toolchain
 from nqbplib.toolchains.linux.gcc.console_exe import ToolChain
 
 

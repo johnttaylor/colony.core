@@ -20,7 +20,7 @@
 #           
 #---------------------------------------------------------------------------
 
-# get definition of the Options strcuture
+# get definition of the Options structure
 from nqbplib.base import BuildValues
 
 
@@ -37,11 +37,11 @@ FINAL_OUTPUT_NAME = 'b.out'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++'
+base_release.cflags    = '-m32 -std=c++11 -Wall -Werror -x c++'
 base_release.linkflags = '-m32'
 base_release.linklibs  = '-lpthread'
 
-# Set project specific 'optimzed' options
+# Set project specific 'optimized' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
 optimzed_release.cflags = '-O3'
 
@@ -62,8 +62,8 @@ optimzed_cpp11 = BuildValues()
 debug_cpp11    = BuildValues()
 
 # Set 'base' options
-base_cpp11.cflags     = '-m32 -std=c++11 -Wall -Werror -x c++'
-base_cpp11.linkflags  = '-m32 -std=c++11'
+base_cpp11.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++'
+base_cpp11.linkflags  = '-m64 -std=c++11'
 base_cpp11.linklibs   = '-lpthread'
 
 # Set 'Optimized' options
@@ -83,11 +83,11 @@ optimzed_posix64 = BuildValues()
 debug_posix64    = BuildValues()
 
 # Set project specific 'base' (i.e always used) options
-base_posix64.cflags    = '-m64 -std=c++03 -Wall -Werror -x c++'
+base_posix64.cflags    = '-m64 -std=c++11 -Wall -Werror -x c++'
 base_posix64.linkflags = '-m64'
 base_posix64.linklibs  = '-lpthread'
 
-# Set project specific 'optimzed' options
+# Set project specific 'optimized' options
 optimzed_posix64.cflags = '-O3'
 
 # Set project specific 'debug' options
@@ -104,11 +104,11 @@ optimzed_testcov = BuildValues()
 debug_testcov    = BuildValues()
 
 # Set project specific 'base' (i.e always used) options
-base_testcov.cflags    = '-m32 -std=c++03 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
+base_testcov.cflags    = '-m32 -std=c++11 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
 base_testcov.linkflags = '-m32 -fprofile-arcs'
 base_testcov.linklibs  = '-lgcov -lpthread'
 
-# Set project specific 'optimzed' options
+# Set project specific 'optimized' options
 optimzed_testcov.cflags = '-O0'
 
 # Set project specific 'debug' options
@@ -126,7 +126,7 @@ release_opts = { 'user_base':base_release,
                }
                
                
-# Add new dictionary of for new build configuraiton options
+# Add new dictionary of for new build configuration options
 cpp11_opts = { 'user_base':base_cpp11, 
                'user_optimized':optimzed_cpp11, 
                'user_debug':debug_cpp11
@@ -162,11 +162,11 @@ import os
 prjdir = os.path.dirname(os.path.abspath(__file__))
 
 
-# Select Module that contains the desired toolcahin
+# Select Module that contains the desired toolchain
 from nqbplib.toolchains.linux.gcc.console_exe import ToolChain
 
 
 # Function that instantiates an instance of the toolchain
 def create():
-    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "posix" )
+    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "posix64" )
     return tc 

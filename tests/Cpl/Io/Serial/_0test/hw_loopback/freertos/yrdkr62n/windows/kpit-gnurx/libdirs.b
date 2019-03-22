@@ -1,5 +1,5 @@
 # Test App
-src/Cpl/Io/Serial/_0test/hw_loopback
+src/Cpl/Io/Serial/_0test/_hw_loopback
 
 
 # supporting infrastructure
