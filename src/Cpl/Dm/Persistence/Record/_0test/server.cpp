@@ -525,6 +525,90 @@ TEST_CASE( "recordserver-corrupt-record" )
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
 
+TEST_CASE( "recordserver-default-records")
+{
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "recordserver-default-records" );
+    Cpl::System::Shutdown_TS::clearAndUseCounter();
+
+    // Ensure starting conditions
+    Cpl::Io::File::Api::remove( MEDIA_FNAME_ );
+    invalidate_all_records_mps();
+
+    REQUIRE( are_all_records_mps_valid() == false );
+
+    // Load the records
+    recordServer_.open();
+    Persistence::Record::ServerStatus serverStatus = Persistence::Record::ServerStatus::eUNKNOWN;
+    REQUIRE( ModelPoint::IS_VALID( mp_recordServerStatus_.read( serverStatus ) ) );
+    REQUIRE( serverStatus == +Persistence::Record::ServerStatus::eRUNNING );
+    Cpl::System::Api::sleep( 500 );
+    REQUIRE( are_all_records_mps_valid() == true );
+    REQUIRE( are_record_values_match( record1_, "Rec1Mp1Default", "Rec1Mp2Default", "Rec1Mp3Default" ) );
+    REQUIRE( are_record_values_match( record2_, "Rec2Mp1Default", "Rec2Mp2Default", "Rec2Mp3Default" ) );
+    REQUIRE( are_record_values_match( record3_, "Rec3Mp1Default", "Rec3Mp2Default", "Rec3Mp3Default" ) );
+
+    // Update records...
+    record1_.m_mp1.write( "BOB-Rec1Mp1" );
+    record1_.m_mp2.write( "BOB-Rec1Mp2" );
+    record3_.m_mp3.write( "BOB-Rec3Mp3" );
+    Cpl::System::Api::sleep( 1000 );
+    REQUIRE( are_record_values_match( record1_, "BOB-Rec1Mp1", "BOB-Rec1Mp2", "Rec1Mp3Default" ) );
+    REQUIRE( are_record_values_match( record2_, "Rec2Mp1Default", "Rec2Mp2Default", "Rec2Mp3Default" ) );
+    REQUIRE( are_record_values_match( record3_, "Rec3Mp1Default", "Rec3Mp2Default", "BOB-Rec3Mp3" ) );
+
+    recordServer_.close();
+    REQUIRE( ModelPoint::IS_VALID( mp_recordServerStatus_.read( serverStatus ) ) );
+    REQUIRE( serverStatus == +Persistence::Record::ServerStatus::eCLOSED );
+
+    //
+    // Open Existing file - with updated values
+    //
+
+    // Load the records
+    invalidate_all_records_mps();
+    recordServer_.open();
+    Cpl::System::Api::sleep( 500 );
+    REQUIRE( ModelPoint::IS_VALID( mp_recordServerStatus_.read( serverStatus ) ) );
+    REQUIRE( serverStatus == +Persistence::Record::ServerStatus::eRUNNING );
+    REQUIRE( are_all_records_mps_valid() == true );
+    REQUIRE( are_record_values_match( record1_, "BOB-Rec1Mp1", "BOB-Rec1Mp2", "Rec1Mp3Default" ) );
+    REQUIRE( are_record_values_match( record2_, "Rec2Mp1Default", "Rec2Mp2Default", "Rec2Mp3Default" ) );
+    REQUIRE( are_record_values_match( record3_, "Rec3Mp1Default", "Rec3Mp2Default", "BOB-Rec3Mp3" ) );
+   
+    // Default Record 3
+    mp_recordDefaultActionRequest_.write( "Record3" );
+    Cpl::System::Api::sleep( 500 );
+    REQUIRE( are_record_values_match( record1_, "BOB-Rec1Mp1", "BOB-Rec1Mp2", "Rec1Mp3Default" ) );
+    REQUIRE( are_record_values_match( record2_, "Rec2Mp1Default", "Rec2Mp2Default", "Rec2Mp3Default" ) );
+    REQUIRE( are_record_values_match( record3_, "Rec3Mp1Default", "Rec3Mp2Default", "Rec3Mp3Default" ) );
+   
+    // Default ALL Records
+    mp_recordDefaultActionRequest_.write( "*" );
+    Cpl::System::Api::sleep( 500 );
+    REQUIRE( are_record_values_match( record1_, "Rec1Mp1Default", "Rec1Mp2Default", "Rec1Mp3Default" ) );
+    REQUIRE( are_record_values_match( record2_, "Rec2Mp1Default", "Rec2Mp2Default", "Rec2Mp3Default" ) );
+    REQUIRE( are_record_values_match( record3_, "Rec3Mp1Default", "Rec3Mp2Default", "Rec3Mp3Default" ) );
+    recordServer_.close();
+    REQUIRE( ModelPoint::IS_VALID( mp_recordServerStatus_.read( serverStatus ) ) );
+    REQUIRE( serverStatus == +Persistence::Record::ServerStatus::eCLOSED );
+
+    // Load the records
+    recordServer_.open();
+    REQUIRE( ModelPoint::IS_VALID( mp_recordServerStatus_.read( serverStatus ) ) );
+    REQUIRE( serverStatus == +Persistence::Record::ServerStatus::eRUNNING );
+    Cpl::System::Api::sleep( 500 );
+    REQUIRE( are_all_records_mps_valid() == true );
+    REQUIRE( are_record_values_match( record1_, "Rec1Mp1Default", "Rec1Mp2Default", "Rec1Mp3Default" ) );
+    REQUIRE( are_record_values_match( record2_, "Rec2Mp1Default", "Rec2Mp2Default", "Rec2Mp3Default" ) );
+    REQUIRE( are_record_values_match( record3_, "Rec3Mp1Default", "Rec3Mp2Default", "Rec3Mp3Default" ) );
+    recordServer_.close();
+    REQUIRE( ModelPoint::IS_VALID( mp_recordServerStatus_.read( serverStatus ) ) );
+    REQUIRE( serverStatus == +Persistence::Record::ServerStatus::eCLOSED );
+
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+}
+
+
 TEST_CASE( "recordserver-last", "[recordserver-last]" )
 {
     CPL_SYSTEM_TRACE_SCOPE( SECT_, "SERVERSTATUS-LAST test" );
