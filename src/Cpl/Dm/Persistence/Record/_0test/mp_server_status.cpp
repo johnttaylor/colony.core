@@ -28,10 +28,10 @@
 static ModelDatabase    modelDb_( "ignoreThisParameter_usedToInvokeTheStaticConstructor" );
 
 // Allocate my Model Points
-static Cpl::Dm::StaticInfo                 info_mp_apple_( "APPLE" );
+static Cpl::Dm::StaticInfo                  info_mp_apple_( "APPLE" );
 static Persistence::Record::MpServerStatus  mp_apple_( modelDb_, info_mp_apple_ );
 
-static Cpl::Dm::StaticInfo                 info_mp_orange_( "ORANGE" );
+static Cpl::Dm::StaticInfo                  info_mp_orange_( "ORANGE" );
 static Persistence::Record::MpServerStatus  mp_orange_( modelDb_, info_mp_orange_, Persistence::Record::ServerStatus::eRUNNING_MINOR_UPGRADE );
 
 
@@ -43,17 +43,17 @@ TEST_CASE( "serverstatus-readwrite", "[serverstatus-readwrite]" )
 
     // Read
     Persistence::Record::ServerStatus value = Persistence::Record::ServerStatus::eRUNNING;
-    int8_t       valid;
-    uint16_t seqNum = mp_orange_.read( value, valid );
+    uint16_t seqNum;
+    int8_t valid = mp_orange_.read( value, &seqNum );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("read:orange:= [%s])", value._to_string()) );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == +Persistence::Record::ServerStatus::eRUNNING_MINOR_UPGRADE );
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Write
     uint16_t seqNum2 = mp_apple_.write( Persistence::Record::ServerStatus::eOPENING );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("write:apple:= [%s])", value._to_string()) );
     REQUIRE( value == +Persistence::Record::ServerStatus::eOPENING );
@@ -65,7 +65,7 @@ TEST_CASE( "serverstatus-readwrite", "[serverstatus-readwrite]" )
     callbackClient.m_incValue       = 1;
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     bool locked = mp_apple_.isLocked();
@@ -141,8 +141,7 @@ TEST_CASE( "serverstatus-export", "[serverstatus-export]" )
     seqNum = mp_apple_.write( Persistence::Record::ServerStatus::eUNKNOWN );
     REQUIRE( seqNum == seqNum2 + 1 );
     Persistence::Record::ServerStatus   value = Persistence::Record::ServerStatus::eRUNNING;
-    int8_t   valid;
-    mp_apple_.read( value, valid );
+    int8_t   valid= mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( value == +Persistence::Record::ServerStatus::eUNKNOWN );
@@ -154,14 +153,14 @@ TEST_CASE( "serverstatus-export", "[serverstatus-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( ModelPoint::IS_VALID( valid ) == false );
 
     // Update the MP
-    seqNum = mp_apple_.write( Persistence::Record::ServerStatus::eOPENING  );
+    seqNum = mp_apple_.write( Persistence::Record::ServerStatus::eOPENING );
     REQUIRE( seqNum == seqNum2 + 1 );
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( value == +Persistence::Record::ServerStatus::eOPENING );
@@ -186,7 +185,7 @@ TEST_CASE( "serverstatus-export", "[serverstatus-export]" )
     REQUIRE( seqNum + 1 == seqNum2 );
 
     // Read import value/state
-    mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( value == +Persistence::Record::ServerStatus::eOPENING );
@@ -272,8 +271,7 @@ TEST_CASE( "serverstatus-fromstring", "[serverstatus-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( seqNum2 == seqNum + 1 );
     Persistence::Record::ServerStatus   value = Persistence::Record::ServerStatus::eRUNNING;
-    int8_t   valid;
-    seqNum = mp_apple_.read( value, valid );
+    int8_t valid = mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == +Persistence::Record::ServerStatus::eOPENING );
@@ -282,7 +280,7 @@ TEST_CASE( "serverstatus-fromstring", "[serverstatus-fromstring]" )
     // Write value- Fail case
     nextChar = mp_apple_.fromString( "eBIRDS", 0, &errorMsg, &seqNum2 );
     REQUIRE( nextChar == 0 );
-    seqNum2 = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum2 );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( value == +Persistence::Record::ServerStatus::eOPENING );
@@ -321,7 +319,7 @@ TEST_CASE( "serverstatus-fromstring", "[serverstatus-fromstring]" )
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( mp_apple_.isNotValid() == false );
     REQUIRE( mp_apple_.isLocked() == true );
-    seqNum = mp_apple_.read( value, valid );
+    valid = mp_apple_.read( value, &seqNum );
     REQUIRE( seqNum2 == seqNum );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == +Persistence::Record::ServerStatus::eUNKNOWN );
@@ -335,7 +333,7 @@ TEST_CASE( "serverstatus-fromstring", "[serverstatus-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == +Persistence::Record::ServerStatus::eOPENING );
 
@@ -345,7 +343,7 @@ TEST_CASE( "serverstatus-fromstring", "[serverstatus-fromstring]" )
     REQUIRE( *nextChar == '\0' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == true );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == +Persistence::Record::ServerStatus::eOPENING );
 
@@ -355,7 +353,7 @@ TEST_CASE( "serverstatus-fromstring", "[serverstatus-fromstring]" )
     REQUIRE( *nextChar == ',' );
     REQUIRE( mp_orange_.isNotValid() == false );
     REQUIRE( mp_orange_.isLocked() == false );
-    mp_orange_.read( value, valid );
+    valid = mp_orange_.read( value );
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( value == +Persistence::Record::ServerStatus::eRUNNING );
 

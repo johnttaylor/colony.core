@@ -101,7 +101,14 @@ void Server::request( ReadFileMsg& msg )
     }
 
     // Remember the start of the chunk in the file
-    operation.m_handlePtr->m_offset = m_fdPtr->currentPos();
+
+    if ( m_fdPtr->currentPos( operation.m_handlePtr->m_offset ) == false )
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request( ReadFileMsg ) - getCurrentPos() failed") );
+        operation.m_result = ServerResult::eERR_FILEIO;
+        msg.returnToSender();
+        return;
+    }
 
     // Get the chunk length
     int bytesRead = 0;
@@ -177,12 +184,14 @@ void Server::request( WriteFileMsg& msg )
     {
         // Append chunk to the end of the file
         m_fdPtr->setToEof();
-        operation.m_handlePtr->m_offset = m_fdPtr->currentPos();
-        operation.m_handlePtr->m_len    = operation.m_bufferLen;
-        if ( writeChunk( operation.m_result, operation.m_buffer, operation.m_bufferLen, operation.m_handlePtr ) )
+        if ( m_fdPtr->currentPos( operation.m_handlePtr->m_offset ) )
         {
-            // Successful in adding the chunk to the media file -->mark the handle as "associated"
-            operation.m_handlePtr->m_generation = m_generation;
+            operation.m_handlePtr->m_len    = operation.m_bufferLen;
+            if ( writeChunk( operation.m_result, operation.m_buffer, operation.m_bufferLen, operation.m_handlePtr ) )
+            {
+                // Successful in adding the chunk to the media file -->mark the handle as "associated"
+                operation.m_handlePtr->m_generation = m_generation;
+            }
         }
     }
 

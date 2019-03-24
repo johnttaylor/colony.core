@@ -39,24 +39,24 @@ namespace Record {
 
     The concrete Record classes to call registerModelPoint() - for each of
     their Model Points - in their constructor.
-    
+
     The concrete Record classes are required to the implemented the following
     methods:
             void defaultData() throw()
             void connectToModel() throw()
             void disconnectFromModel() throw()
 
-    The defaultData() method is responsible for updating all of the concrete 
-    Record's Model Point's to the appropriate default values.  Note: A Model 
-    Point can be defaulted to the "invalid state" since each Model Point's 
+    The defaultData() method is responsible for updating all of the concrete
+    Record's Model Point's to the appropriate default values.  Note: A Model
+    Point can be defaulted to the "invalid state" since each Model Point's
     valid/invalid state is stored as part of the persistent record.
 
     The connectToModel() method is responsible for registering each individual
-    model point for change notifications.  In the callback for the change 
+    model point for change notifications.  In the callback for the change
     notifications, the concrete class is required to generate the evDataModified
-    event.  When registering for the change notification, the concrete class 
+    event.  When registering for the change notification, the concrete class
     needs to register with the MP's current sequence number (do NOT use 'UNKNOWN'
-    for the sequence number value. Note: No other actions are required in the 
+    for the sequence number value. Note: No other actions are required in the
     callback methods.
 
     The disconnectFromModel() method is responsible for canceling the change
@@ -85,16 +85,13 @@ protected:
     Cpl::Dm::Persistence::Record::HandlerApi_* m_recLayerPtr;
 
     /// Timer for my FSM
-    Cpl::Timer::Local<Base>                     m_timer;
+    Cpl::System::TimerComposer<Base>           m_timer;
 
     /// Write delay in milliseconds
     unsigned long                               m_writeDelay;
 
     /// Record/Record name
     Cpl::Container::KeyLiteralString            m_name;
-
-    /// Event Logger
-    Cpl::Log::Api&                              m_logger;
 
     /// Flag that track if the initial read did not match exactly (i.e. the record length was less/more than expected)
     bool                                        m_mismatched;
@@ -112,8 +109,7 @@ public:
     Base( Cpl::Container::Map<Api_>&     myRecordList,
           unsigned long                  delayWriteTimeInMsec,
           const char*                    name,
-          Cpl::Dm::MailboxServer&       recordLayerMbox,
-          Cpl::Log::Api&                 eventLogger = Cpl::Log::Loggers::application()
+          Cpl::Dm::MailboxServer&        recordLayerMbox
     );
 
 

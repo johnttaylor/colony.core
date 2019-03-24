@@ -6,12 +6,9 @@ src/Rte/Db/Chunk/_0test
 
 # supporting infrastructure
 src/Cpl/Container
-src/Cpl/Log
-src/Cpl/Log/_default
 src/Cpl/Text
 src/Cpl/System
 src/Cpl/Itc
-src/Cpl/Timer
 src/Cpl/Checksum
 src/Cpl/Io/File
 src/Cpl/Io/File/_win32

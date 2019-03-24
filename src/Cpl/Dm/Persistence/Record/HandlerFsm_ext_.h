@@ -12,7 +12,7 @@
 
 /* Command line options: -p CADIFRA -doxygen -o HandlerFsm -l cppx -Trace HandlerFsm.cdd   */
 /* This file is generated from HandlerFsm.cdd - do not edit manually  */
-/* Generated on:  version 3.7.4b2 */
+/* Generated on:  version 3.7.4b3 */
 
 
 #ifndef __HANDLERFSM_CPL_DM_PERSISTENCE_RECORD_EXT_H__
@@ -38,7 +38,7 @@ enum HANDLERFSM_EVENT_T {
 
 
 
-#define InnermostStates "Verifying,NoPersistence,Reading,Idle,Writeable,Stopping,ClearingFile,WaitingToOpen,Writing;"
+#define Cpl_Dm_Persistence_Record_HandlerFsm_InnermostStates "Verifying,NoPersistence,Reading,Idle,Writeable,Stopping,ClearingFile,WaitingToOpen,Writing;";
 
 }}}} //namespace Cpl { namespace Dm { namespace Persistence { namespace Record 
 

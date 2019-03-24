@@ -8,7 +8,6 @@ src/Cpl/Itc
 /top/libdirs/platform_freertos_default_realtime_libdirs.b
 
 # more infrastructure
-src/Cpl/Timer
 src/Cpl/Text/_mappings/_kpitrx
 
 

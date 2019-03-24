@@ -12,7 +12,7 @@
 
 /* Command line options: -p CADIFRA -doxygen -o Fsm -l cppx -Trace Fsm.cdd   */
 /* This file is generated from Fsm.cdd - do not edit manually  */
-/* Generated on:  version 3.7.4b2 */
+/* Generated on:  version 3.7.4b3 */
 
 
 #ifndef __FSM_CPL_DM_PERSISTENCE_RECORD_EXT_H__
@@ -39,7 +39,7 @@ enum FSM_EVENT_T {
 
 
 
-#define InnermostStates "Clean,DelayingWrite,Writing,WaitingOnRead,Initialized,WriteDefaulting,WritingRecord,ReadDefaulting,Idle,Defaulting;"
+#define Cpl_Dm_Persistence_Record_Fsm_InnermostStates "Clean,DelayingWrite,Writing,WaitingOnRead,Initialized,WriteDefaulting,WritingRecord,ReadDefaulting,Idle,Defaulting;";
 
 }}}} //namespace Cpl { namespace Dm { namespace Persistence { namespace Record 
 

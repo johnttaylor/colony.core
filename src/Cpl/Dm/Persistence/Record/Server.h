@@ -21,6 +21,7 @@
 #include "Cpl/Dm/Persistence/Record/Api_.h"
 #include "Cpl/Dm/Mp/String.h"
 #include "Cpl/Dm/SubscriberApi.h"
+#include "Cpl/Dm/MailboxServer.h"
 #include "Cpl/Container/SList.h"
 #include "Cpl/Container/Map.h"
 #include "Cpl/Memory/Aligned.h"
@@ -53,7 +54,7 @@ private:
     /// Number of Registered records
     unsigned                                    m_totalRecordCount;
 
-    /// Number of Records that have NOT been succesfully initialized
+    /// Number of Records that have NOT been successfully initialized
     unsigned                                    m_recordCount;
 
     /// Number of started/opened Records
@@ -71,13 +72,13 @@ private:
     /// Current Health MP Reference
     MpServerStatus&                             m_statusMp;
 
-    /// Temporary/intermeidate status
+    /// Temporary/intermediate status
     ServerStatus                                m_localStatus;
 
     /// 'Default Action request' MP Reference
     Cpl::Dm::Mp::String&                       m_defaultRequestMp;
 
-    /// Raw buffer used for all Read/Write operaitons
+    /// Raw buffer used for all Read/Write operations
     uint8_t*                                    m_buffer;
 
     /// Size, in bytes, of m_buffer
@@ -101,26 +102,23 @@ private:
     /// Current Record Writer
     ApiWriter_*                                 m_writerPtr;
 
-    /// Logger (for unexpected events)
-    Cpl::Log::Api&                              m_logger;
-
     /// Queued/pending Write requests
     Cpl::Container::SList<ApiWriter_>           m_writeRequests;
 
     /// Map of expected/supported Records
     Cpl::Container::Map<Api_>&                  m_records;
 
-    /// Close DB msg  (I have a seperate CloseFileMsg since it can be invoked asynchronously in relation to all other Chunk ITC messages)
+    /// Close DB msg  (I have a separate CloseFileMsg since it can be invoked asynchronously in relation to all other Chunk ITC messages)
     Dm::Persistence::Chunk::Response::CloseFileMsg    m_closeFileResponseMsg;
 
     /// Close File payload
     Dm::Persistence::Chunk::Request::CloseFilePayload m_closeFilePayload;
 
 
-    /// Memmory for Chunk Layer ITC requests (use the 'largest' payload/msg)
+    /// Memory for Chunk Layer ITC requests (use the 'largest' payload/msg)
     Cpl::Memory::AlignedClass<Dm::Persistence::Chunk::Request::WritePayload>   m_memPayload;
 
-    /// Memmory for Chunk Layer ITC requests
+    /// Memory for Chunk Layer ITC requests
     Cpl::Memory::AlignedClass<Dm::Persistence::Chunk::Response::WriteFileMsg>  m_memResponseMsg;
 
 
@@ -128,12 +126,11 @@ public:
     /// Constructor
     Server( uint8_t*                                    recordLayerBuffer,
             uint32_t                                    bufferSize,
-            Cpl::Dm::Persistence::Chunk::Request::SAP& chunkSAP,
-            Cpl::Dm::MailboxServer&                    recordLayerMbox,
+            Cpl::Dm::Persistence::Chunk::Request::SAP&  chunkSAP,
+            Cpl::Dm::MailboxServer&                     recordLayerMbox,
             Cpl::Container::Map<Api_>&                  recordList,
             MpServerStatus&                             serverStatusMp,
-            Cpl::Dm::Mp::String&                       defaultRequestMp,
-            Cpl::Log::Api&                              eventLogger  = Cpl::Log::Loggers::application()
+            Cpl::Dm::Mp::String&                        defaultRequestMp
     );
 
 public:

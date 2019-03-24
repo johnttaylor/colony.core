@@ -5,7 +5,6 @@ src/Cpl/Itc
 src/Cpl/Itc/_0test  > mvc.cpp
 
 # supporting infrastructure
-src/Cpl/Timer
 src/Cpl/Container
 src/Cpl/Text
 src/Cpl/System

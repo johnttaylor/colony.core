@@ -7,7 +7,6 @@ src/Cpl/Dm/Mp/_0test
 
 # supporting infrastructure
 src/Cpl/Itc
-src/Cpl/Timer
 src/Cpl/Container
 src/Cpl/Text
 src/Cpl/Text/Frame

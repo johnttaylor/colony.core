@@ -25,7 +25,7 @@ namespace Record {
 
 
 /** This - private to the namespace - class defines the interface for writing 
-    the contents of a Record in RAM to non-volitile storage. It is the Record 
+    the contents of a Record in RAM to non-volatile storage. It is the Record 
     Handler that calls this interface.  All of the methods in this class are 
     intended to be call in the same thread as the Record Server, i.e. from the 
     Record Layer thread.

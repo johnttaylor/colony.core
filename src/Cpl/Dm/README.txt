@@ -1,6 +1,6 @@
 /** @namespace Cpl::Dm
 
-The 'DM' namespace is the root name space for a Data Model centric Run Time 
+The 'Dm' namespace is the root name space for a Data Model centric Run Time 
 Environment. 
 
 The Rte namespace is multi-threaded data driven paradigm that provides a

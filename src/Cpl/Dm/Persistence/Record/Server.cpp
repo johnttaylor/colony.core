@@ -12,7 +12,6 @@
 #include "Server.h"
 #include "Cpl/System/FatalError.h"
 #include "Cpl/System/Trace.h"
-#include "Cpl/Log/Api.h"
 #include "Cpl/Itc/SyncReturnHandler.h"
 #include "Cpl/Dm/Persistence/Framing.h"
 #include "Cpl/Text/FString.h"
@@ -26,12 +25,11 @@ using namespace Cpl::Dm::Persistence::Record;
 /////////////////////////////////
 Server::Server( uint8_t*                                    recordLayerBuffer,
                 uint32_t                                    bufferSize,
-                Cpl::Dm::Persistence::Chunk::Request::SAP& chunkSAP,
-                Cpl::Dm::MailboxServer&                    recordLayerMbox,
+                Cpl::Dm::Persistence::Chunk::Request::SAP&  chunkSAP,
+                Cpl::Dm::MailboxServer&                     recordLayerMbox,
                 Cpl::Container::Map<Api_>&                  recordList,
                 MpServerStatus&                             serverStatusMp,
-                Cpl::Dm::Mp::String&                       defaultRequestMp,
-                Cpl::Log::Api&                              eventLogger )
+                Cpl::Dm::Mp::String&                        defaultRequestMp )
     :ServerApi( recordLayerMbox )
     , Subscriber<Cpl::Dm::Mp::String>( recordLayerMbox )
     , m_conversion( false )
@@ -51,15 +49,11 @@ Server::Server( uint8_t*                                    recordLayerBuffer,
     , m_fileResult( Cpl::Dm::Persistence::Chunk::ServerResult::eSUCCESS )
     , m_fileDataLen( 0 )
     , m_writerPtr( 0 )
-    , m_logger( eventLogger )
     , m_records( recordList )
     , m_closeFileResponseMsg( *this, recordLayerMbox, chunkSAP, m_closeFilePayload )
 {
     // Initialize my FSM
     initialize();
-
-    // Update my status
-    m_statusMp.write( m_localStatus );
 }
 
 ///////////////////////////////////////
@@ -68,9 +62,7 @@ void Server::modelPointChanged( Cpl::Dm::Mp::String& modelPointThatChanged ) thr
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::modelPointChanged") );
 
     Cpl::Text::FString<OPTION_CPL_RTE_PERSISTENCE_RECORD_MAX_RECORD_NAME_LEN> name;
-    int8_t mpState;
-    modelPointThatChanged.read( name, mpState );
-    if ( Cpl::Dm::ModelPoint::IS_VALID( mpState ) )
+    if ( Cpl::Dm::ModelPoint::IS_VALID( modelPointThatChanged.read( name ) ) )
     {
         // Default ALL records
         if ( name == "*" )
@@ -88,11 +80,10 @@ void Server::modelPointChanged( Cpl::Dm::Mp::String& modelPointThatChanged ) thr
             }
             else
             {
-                m_logger.warning( "Cpl::Dm::Persistence::Record::Server.  Requested to default the record: %s - but the record does not exist", name.getString() );
             }
         }
 
-        // Clear the request (but do in any that I don't get a change notifcation for the clear action)
+        // Clear the request (but do in any that I don't get a change notification for the clear action)
         modelPointThatChanged.detach( *this );
         uint16_t seqNum = modelPointThatChanged.write( "" );
         modelPointThatChanged.attach( *this, seqNum );
@@ -253,7 +244,7 @@ void Server::notifyRecordStarted( void )
         }
         else
         {
-            // Set error result to the open request if in 'Non-Perstistance' mode
+            // Set error result to the open request if in 'Non-Persistence' mode
             if ( m_localStatus == +ServerStatus::eNO_STORAGE_MEDIA_ERR || m_localStatus == +ServerStatus::eNO_STORAGE_WRONG_SCHEMA )
             {
                 m_openMsgPtr->getPayload().m_success = false;
@@ -321,21 +312,18 @@ void Server::response( WriteFileMsg& msg )
 void Server::reportIncompatible() throw()
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportIncompatible") );
-    m_logger.warning( "Cpl::Dm::Persistence::Record::Server::reportIncompatible - Incompatible schema" );
     m_localStatus = ServerStatus::eNO_STORAGE_WRONG_SCHEMA;
 }
 
 void Server::reportFileReadError() throw()
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportFileReadError") );
-    m_logger.warning( "Cpl::Dm::Persistence::Record::Server::reportFileReadError - File Read/Open error" );
     m_localStatus = ServerStatus::eNO_STORAGE_MEDIA_ERR;
 }
 
 void Server::reportDataCorruptError() throw()
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportDataCorruptError") );
-    m_logger.warning( "Cpl::Dm::Persistence::Record::Server::reportDataCorruptError - File Corruption error - defaulting one or more record(s)" );
     m_localStatus = ServerStatus::eRUNNING_CORRUPTED_INPUT;
 }
 
@@ -343,9 +331,8 @@ void Server::reportFileWriteError() throw()
 {
     const char* recname = m_writerPtr->getName();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportFileWriteError (rec=%s)", recname) );
-    m_logger.warning( "Cpl::Dm::Persistence::Record::Server::reportFileWriteError - File Write error (rec=%s)", recname );
 
-    // Delay reporting media error is I am the processing of 'opening'
+    // Delay reporting media error if I am the processing of 'opening'
     if ( m_localStatus == +ServerStatus::eOPENING )
     {
         m_localStatus = ServerStatus::eNO_STORAGE_MEDIA_ERR;
@@ -362,7 +349,6 @@ void Server::reportFileWriteError() throw()
 void Server::reportMinorUpgrade() throw()
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportMinorUpgrade") );
-    m_logger.warning( "Cpl::Dm::Persistence::Record::Server::reportMinorUpgrade - one or more Records where automatically upgraded." );
     m_localStatus = ServerStatus::eRUNNING_MINOR_UPGRADE;
 }
 
@@ -440,7 +426,6 @@ void Server::ackRead() throw()
     {
         // Log the failure
         CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackRead - Unknown Record Name=%.*s. Record will be purged", extractRecNameLength(), extractRecName()) );
-        m_logger.warning( "Cpl::Dm::Persistence::Record::Server::ackRead - Unknown Record Name=%.*s. Record will be purged", extractRecNameLength(), extractRecName() );
 
         // Read the next record
         m_conversion = true;
@@ -462,9 +447,8 @@ void Server::ackRead() throw()
         {
             // Log the failure
             CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackRead - Record read failed (%.*s), i.e. an incompatible DB", extractRecNameLength(), extractRecName()) );
-            m_logger.warning( "Cpl::Dm::Persistence::Record::Server::ackRead - Record read failed(%.*s), i.e. an incompatible DB", extractRecNameLength(), extractRecName() );
 
-            // Send myself an 'bad-data' event to transition to the Non-Peristance State
+            // Send myself an 'bad-data' event to transition to the Non-Persistence State
             m_fileResult = Cpl::Dm::Persistence::Chunk::ServerResult::eWRONG_SCHEMA;
             generateEvent( HandlerFsm_evResponse );
         }

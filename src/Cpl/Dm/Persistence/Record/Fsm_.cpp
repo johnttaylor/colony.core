@@ -12,7 +12,7 @@
 
 /* Command line options: -p CADIFRA -doxygen -o Fsm -l cppx -Trace Fsm.cdd   */
 /* This file is generated from Fsm.cdd - do not edit manually  */
-/* Generated on:  version 3.7.4b2 */
+/* Generated on:  version 3.7.4b3 */
 
 
 /* Include default headers (no header definition in UML state-chart provided) */

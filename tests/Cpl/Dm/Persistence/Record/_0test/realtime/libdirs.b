@@ -13,7 +13,6 @@ src/Cpl/Text
 src/Cpl/Text/Frame
 src/Cpl/System
 src/Cpl/Itc
-src/Cpl/Timer
 src/Cpl/Checksum
 src/Cpl/Io/File
 

@@ -12,7 +12,7 @@
 
 /* Command line options: -p CADIFRA -doxygen -o HandlerFsm -l cppx -Trace HandlerFsm.cdd   */
 /* This file is generated from HandlerFsm.cdd - do not edit manually  */
-/* Generated on:  version 3.7.4b2 */
+/* Generated on:  version 3.7.4b3 */
 
 
 #ifndef __HANDLERFSM_CPL_DM_PERSISTENCE_RECORD_H__

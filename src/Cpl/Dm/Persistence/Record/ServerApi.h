@@ -36,10 +36,10 @@ namespace Record {
           MpServerStatus Model Point (that the application provides when 
           constructing a concrete Record Server).
 
-    NOTE: The application can default the entire Model Datbase (or a specified
-          individual record) by writing an "*" (or record name) to the the
-          String Model Point (that the application provides when constructing
-          a concrete Record Server).  The Record server writes a empty string
+    NOTE: The application can default the entire Model Database (or a specified
+          individual record) by writing an "*" (or record name) to the String 
+          Model Point (that the application provides when constructing a 
+          concrete Record Server).  The Record server writes a empty string
           to the String MP when it initiates the default action.  The actual 
           state of the Record(s) (and it Model Points) my still be 'in-flux' 
           when the String MP is updated, i.e. 'when' the data is changed and/or 

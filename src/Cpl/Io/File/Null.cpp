@@ -64,14 +64,16 @@ bool Null::isEof()
     return false;
 }
 
-unsigned long Null::length()
+bool Null::length( unsigned long& len )
 {
-    return 0L;
+    len = 0L;
+    return m_opened;
 }
 
-unsigned long Null::currentPos()
+bool Null::currentPos( unsigned long& curPos )
 {
-    return 0L;
+    curPos = 0L;
+    return m_opened;
 }
 
 bool Null::setRelativePos( long deltaOffset )

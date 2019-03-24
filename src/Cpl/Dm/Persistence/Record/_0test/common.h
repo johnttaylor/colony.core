@@ -18,11 +18,11 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/Itc/CloseSync.h"
-#include "Cpl/Timer/Local.h"
 #include "Cpl/Dm/Persistence/Record/MpServerStatus.h"
 #include "Cpl/Dm/Persistence/Record/Base.h"
 #include "Cpl/Dm/SubscriberComposer.h"
 #include "Cpl/Dm/Mp/String.h"
+#include "Cpl/Dm/Persistence/Chunk/Null.h"
 
 /// 
 using namespace Cpl::Dm;
@@ -67,25 +67,24 @@ public:
     MyRecord( Cpl::Container::Map<Api_>&     myRecordList,
               unsigned long                  delayWriteTimeInMsec,
               const char*                    name,
-              Cpl::Dm::MailboxServer&       recordLayerMbox,
-              Cpl::Dm::Mp::String&          modelPoint1,
-              Cpl::Dm::Mp::String&          modelPoint2,
-              Cpl::Dm::Mp::String&          modelPoint3,
+              Cpl::Dm::MailboxServer&        recordLayerMbox,
+              Cpl::Dm::Mp::String&           modelPoint1,
+              Cpl::Dm::Mp::String&           modelPoint2,
+              Cpl::Dm::Mp::String&           modelPoint3,
               const char*                    defaultValueMp1 = "MP1 default",
               const char*                    defaultValueMp2 = "MP2 default",
-              const char*                    defaultValueMp3 = "MP3 default",
-              Cpl::Log::Api&                 eventLogger = Cpl::Log::Loggers::application()
-              )
-        :Base( myRecordList, delayWriteTimeInMsec, name, recordLayerMbox, eventLogger )
+              const char*                    defaultValueMp3 = "MP3 default"
+    )
+        :Base( myRecordList, delayWriteTimeInMsec, name, recordLayerMbox )
         , m_observer1( recordLayerMbox, *this, &MyRecord::modelPointNChanged )
         , m_observer2( recordLayerMbox, *this, &MyRecord::modelPointNChanged )
         , m_observer3( recordLayerMbox, *this, &MyRecord::modelPointNChanged )
-        , m_mpRef1(modelPoint1)
-        , m_mpRef2(modelPoint2)
-        , m_mpRef3(modelPoint3)
-        , m_mp1(modelPoint1)
-        , m_mp2(modelPoint2)
-        , m_mp3(modelPoint3)
+        , m_mpRef1( modelPoint1 )
+        , m_mpRef2( modelPoint2 )
+        , m_mpRef3( modelPoint3 )
+        , m_mp1( modelPoint1 )
+        , m_mp2( modelPoint2 )
+        , m_mp3( modelPoint3 )
         , m_default1( defaultValueMp1 )
         , m_default2( defaultValueMp2 )
         , m_default3( defaultValueMp3 )
@@ -99,8 +98,8 @@ public:
     void connectToModel() throw()
     {
         m_mp1.attach( m_observer1, m_mp1.getSequenceNumber() );
-        m_mp2.attach( m_observer2, m_mp2.getSequenceNumber()  );
-        m_mp3.attach( m_observer3, m_mp3.getSequenceNumber()  );
+        m_mp2.attach( m_observer2, m_mp2.getSequenceNumber() );
+        m_mp3.attach( m_observer3, m_mp3.getSequenceNumber() );
     }
 
     /// FSM Action
@@ -277,5 +276,18 @@ public:
     }
 };
 
+class MyNullMedia : public Cpl::Dm::Persistence::Chunk::Null
+{
+public:
+    /// Constructor
+    MyNullMedia() {}
 
+
+public:
+    /// See Rte::Db::Chunk::Media
+    Cpl::Io::File::InputOutputApi* openFile( bool& newfile ) throw()
+    {
+        return 0;
+    }
+};
 #endif

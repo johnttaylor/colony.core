@@ -14,7 +14,6 @@
 
 #include "Cpl/System/EventLoop.h"
 #include "Cpl/Itc/Mailbox.h"
-#include "Cpl/Timer/CounterList.h"
 
 
 ///

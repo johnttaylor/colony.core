@@ -68,10 +68,10 @@ public:
     bool isEof();
 
     /// See Cpl::Io::File::ObjectApi
-    unsigned long length();
+    bool length( unsigned long& len );
 
     /// See Cpl::Io::File::ObjectApi
-    unsigned long currentPos();
+    bool currentPos( unsigned long& curPos );
 
     /// See Cpl::Io::File::ObjectApi
     bool setRelativePos( long deltaOffset );

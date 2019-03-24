@@ -25,15 +25,13 @@ using namespace Cpl::Dm::Persistence::Record;
 Base::Base( Cpl::Container::Map<Api_>&     myRecordList,
             unsigned long                  delayWriteTimeInMsec,
             const char*                    name,
-            Cpl::Dm::MailboxServer&       recordLayerMbox,
-            Cpl::Log::Api&                 eventLogger
+            Cpl::Dm::MailboxServer&        recordLayerMbox
 )
     :m_mbox( recordLayerMbox )
     , m_recLayerPtr( 0 )
     , m_timer( recordLayerMbox, *this, &Base::timerExpired )
     , m_writeDelay( delayWriteTimeInMsec )
     , m_name( name )
-    , m_logger( eventLogger )
     , m_mismatched( false )
     , m_loadIsGood( false )
     , m_dirty( false )
@@ -187,7 +185,6 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
         if ( dataLen == 0 )
         {
             m_mismatched = true;
-            m_logger.warning( "Cpl::Dm::Persistence::Record::Base::notifyRead[%s] - Minor upgrade to Record (raw record missing mp(%s))", m_name(), expectedMpName );
             CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. Minor upgrade to Record (raw record missing %d mp(%s))", m_name(), expectedMpName) );
             break;
         }
@@ -197,7 +194,6 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
         {
             m_mismatched = true;
             result       = false;
-            m_logger.warning( "Cpl::Dm::Persistence::Record::Base::notifyRead[%s] - Bad raw record length, unable to read MP name field (expected name=%s)", m_name(), expectedMpName );
             CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. Bad raw record length, unable to read MP name field (expected name=%s)", m_name(), expectedMpName) );
             break;
         }
@@ -207,7 +203,6 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
         {
             m_mismatched = true;
             result       = false;
-            m_logger.warning( "Cpl::Dm::Persistence::Record::Base::notifyRead[%s] - Unexpected MP name (%.*s) (expected name=%s)", m_name(), srcPtr + Cpl::Dm::Persistence::eNLEN_SIZE, expectedMpName );
             CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. Unexpected MP name (%.*s) (expected name=%s)", m_name(), srcPtr + Cpl::Dm::Persistence::eNLEN_SIZE, expectedMpName) );
             break;
         }
@@ -220,7 +215,6 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
         {
             m_mismatched = true;
             result       = false;
-            m_logger.warning( "Cpl::Dm::Persistence::Record::Base::notifyRead[%s] - Bad Record - missing MP (expected name=%s)", m_name(), expectedMpName );
             CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::notifyRead() [%s]. Bad Record - missing MP (expected name=%s)", m_name(), expectedMpName) );
             break;
         }
@@ -231,13 +225,13 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
         mpRefPtr = m_points.next( *mpRefPtr );
     }
 
-    // Default the record if there was a read failure, i.e. guarentee the state of the Record if a read error occurred
+    // Default the record if there was a read failure, i.e. guarantee the state of the Record if a read error occurred
     if ( result == false )
     {
         defaultData();
     }
     
-    // Kick my FSM now that I am done with read and return my read-sucess result to the Record Handler
+    // Kick my FSM now that I am done with read and return my read-success result to the Record Handler
     generateEvent( Fsm_evReadDone );
     return result;
 }

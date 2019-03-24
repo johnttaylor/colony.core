@@ -9,7 +9,6 @@ src/Cpl/Container
 src/Cpl/Text
 src/Cpl/System
 src/Cpl/Itc
-src/Cpl/Timer
 src/Cpl/Checksum
 src/Cpl/Io/File
 
