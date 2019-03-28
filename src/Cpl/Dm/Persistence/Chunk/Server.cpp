@@ -255,7 +255,7 @@ void Server::closeFile()
     // NOTE: Do NOT Put any TRACE statement in this method.  This method is 
     //       call by the destructor and if the server was statically
     //       created - the TRACE method will fail because it uses a statically
-    //       allocated mutex -->and there IS NOT order on how static 
+    //       allocated mutex -->and there IS NO order on how static 
     //       destructors are called, i.e. your program will crash (when running
     //       on OS that dynamically runs executables).
 
