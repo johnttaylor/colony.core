@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Script to run unittests (leverages NQBP python code base)
 
@@ -14,7 +14,7 @@ def run_test( root, subdir ):
     utils.push_dir( subdir )
     src = os.path.join( root, 'colony.core', 'src', 'Rte', 'TShell', 'Dac', '_0test', 'testscript.txt' )
     shutil.copy( src, '.' )
-    print "Running unit test dir: {} ...".format( subdir )
+    print( "Running unit test dir: {} ...".format( subdir ) )
     p = subprocess.Popen( 'b.out < testscript.txt', shell=True )
     p.communicate()
     if ( p.returncode != 0 ):

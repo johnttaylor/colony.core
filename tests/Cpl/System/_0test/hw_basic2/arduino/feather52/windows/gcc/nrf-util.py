@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """Invokes NQBP's nrf_util_base.py script.  Place 'nrf-util.py' in your current directory or in your command path
 """
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """Invokes NQBP's genfsm_base.py script.  To run 'GENFSM' copy this file to 
    your source directory.  Then edit the local script to generate one or more
    Finite State Machines (FSMs)
