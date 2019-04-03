@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 This script runs 'doxygen' (to generate HTML documention of the package's
 header files) on the package and checks for warnings.  Colony's coding 
@@ -36,20 +36,20 @@ def filter_warnings( output ):
         #    continue
             
         # Passed ALL filters
-        print line
+        print( line )
         at_least_one = True
 
     # Display the results of the filtering
     if ( at_least_one == False ):
-        print "    All warnings are known warnings -->so you are good!"
-        print
+        print( "    All warnings are known warnings -->so you are good!")
+        print()
         exit(0)
     else:
-        print
+        print()
         exit(1)
         
 #------------------------------------------------------------------------------
-print "Running doxygen..."     
+print( "Running doxygen..." )    
 
 # run doxygen
 cmd = "doxygen"
@@ -60,9 +60,9 @@ if ( p.returncode != 0 ):
 
 
 # check for errors
-if ( " warning: " in r[1] ):
-    print
-    print "*** Doxygen had one or more warnings! ***"
-    filter_warnings( r[1] )
+if ( " warning: " in r[1].decode() ):
+    print()
+    print( "*** Doxygen had one or more warnings! ***" )
+    filter_warnings( r[1].decode() )
     
-print "Completed without warnings or errors."
+print( "Completed without warnings or errors." )
