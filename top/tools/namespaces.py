@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Package specific script that updates the 'pkg.namespaces' file with all of the
 namespaces 'owned' by the package.  This script is called as part of the
@@ -33,7 +33,7 @@ def _use_outcast():
     cmd       = "orc.py -v namespaces --update {}".format( pkgname )
     
     # Invoke the build
-    print "EXECUTING: " + cmd
+    print("EXECUTING: " + cmd)
     p = subprocess.Popen( cmd, shell=True )
     r = p.communicate()
     if ( p.returncode != 0 ):
