@@ -30,7 +30,7 @@ Decoder_::Decoder_( char buffer[], size_t bufsize )
 
 
 /////////////////////////////////////////////////////////////////////////////
-bool Decoder_::scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw()
+bool Decoder_::scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) noexcept
     {
     // Housekeeping
     bool  inFrame  = false;

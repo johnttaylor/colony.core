@@ -32,7 +32,7 @@ static Cpl::Container::SList<SimTick> waiters_;
 
 
 /////////////////////////////////////////
-unsigned SimTick::wakeUpWaiters( void ) throw()
+unsigned SimTick::wakeUpWaiters( void ) noexcept
 {
     unsigned waiters    = 0;
     SimTick* simInfoPtr = waiters_.get();
@@ -47,7 +47,7 @@ unsigned SimTick::wakeUpWaiters( void ) throw()
 }
 
 
-bool SimTick::advance( size_t numTicks ) throw()
+bool SimTick::advance( size_t numTicks ) noexcept
 {
     while ( numTicks-- )
     {
@@ -111,7 +111,7 @@ bool SimTick::advance( size_t numTicks ) throw()
 }
 
 
-void SimTick::applicationWait( void ) throw()
+void SimTick::applicationWait( void ) noexcept
 {
     // Get my thread's SimInfo
     SimTick* simInfoPtr = (SimTick*) simTlsPtr_->get();
@@ -132,7 +132,7 @@ void SimTick::applicationWait( void ) throw()
 
 
 
-void SimTick::topLevelWait( void ) throw()
+void SimTick::topLevelWait( void ) noexcept
 {
     // Get my thread's SimInfo
     SimTick* simInfoPtr = (SimTick*) simTlsPtr_->get();
@@ -154,7 +154,7 @@ void SimTick::topLevelWait( void ) throw()
 }
 
 
-bool SimTick::testAndQueue( SimTick* simInfoPtr ) throw()
+bool SimTick::testAndQueue( SimTick* simInfoPtr ) noexcept
 {
     // SCOPE Critical section
     Cpl::System::Mutex::ScopeBlock lock( myLock_ );
@@ -184,7 +184,7 @@ SimTick::SimTick()
 }
 
 
-bool SimTick::isWaitingOnNextTick( size_t threadID ) throw()
+bool SimTick::isWaitingOnNextTick( size_t threadID ) noexcept
 {
     bool waiting = false;
 
@@ -206,21 +206,21 @@ bool SimTick::isWaitingOnNextTick( size_t threadID ) throw()
 }
 
 
-bool SimTick::usingSimTicks() throw()
+bool SimTick::usingSimTicks() noexcept
 {
     // If my thread's SimInfo is NULL -->then I am NOT using simulated time
     return simTlsPtr_->get() != 0;
 }
 
 
-size_t SimTick::current( void ) throw()
+size_t SimTick::current( void ) noexcept
 {
     Cpl::System::Mutex::ScopeBlock lock( myLock_ );
     return milliseconds_;
 }
 
 
-void SimTick::threadInit_( bool useSimTicks ) throw()
+void SimTick::threadInit_( bool useSimTicks ) noexcept
 {
     // Create the TLS key/index needed to store the per thread info (do a lazy create)
     if ( !simTlsPtr_ )
@@ -250,7 +250,7 @@ void SimTick::threadInit_( bool useSimTicks ) throw()
 }
 
 
-void SimTick::onThreadExit_( void ) throw()
+void SimTick::onThreadExit_( void ) noexcept
 {
     // Get my thread's SimInfo
     SimTick* simInfoPtr = (SimTick*) simTlsPtr_->get();
@@ -275,7 +275,7 @@ void SimTick::onThreadExit_( void ) throw()
 
 
 /////////////////////////////////////////////
-void Api::sleep( unsigned long milliseconds ) throw()
+void Api::sleep( unsigned long milliseconds ) noexcept
 {
     // Get my thread's SimInfo
     SimTick* simInfoPtr = (SimTick*) simTlsPtr_->get();
@@ -312,7 +312,7 @@ void Api::sleep( unsigned long milliseconds ) throw()
 
 
 ///////////////////////////////////////////////////////////////
-unsigned long ElapsedTime::milliseconds( void ) throw()
+unsigned long ElapsedTime::milliseconds( void ) noexcept
 {
     // Get my thread's SimInfo
     SimTick* simInfoPtr = (SimTick*) simTlsPtr_->get();
@@ -331,7 +331,7 @@ unsigned long ElapsedTime::milliseconds( void ) throw()
     return msec;
 }
 
-unsigned long ElapsedTime::seconds( void ) throw()
+unsigned long ElapsedTime::seconds( void ) noexcept
 {
     // Get my thread's SimInfo
     SimTick* simInfoPtr = (SimTick*) simTlsPtr_->get();
@@ -350,7 +350,7 @@ unsigned long ElapsedTime::seconds( void ) throw()
 }
 
 
-ElapsedTime::Precision_T ElapsedTime::precision( void ) throw()
+ElapsedTime::Precision_T ElapsedTime::precision( void ) noexcept
 {
     // Get my thread's SimInfo
     SimTick* simInfoPtr = (SimTick*) simTlsPtr_->get();

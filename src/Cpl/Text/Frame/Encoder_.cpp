@@ -33,7 +33,7 @@ Encoder_::Encoder_( char startOfFrame, char endOfFrame, char escapeChar, bool ap
 
 
 ///////////////////////////////////
-bool Encoder_::startFrame() throw()
+bool Encoder_::startFrame() noexcept
     {
     if ( m_inFrame )
         {
@@ -55,7 +55,7 @@ bool Encoder_::startFrame() throw()
     return false;
     }
 
-bool Encoder_::output( char src ) throw()
+bool Encoder_::output( char src ) noexcept
     {
     if ( !m_inFrame )
         {
@@ -79,7 +79,7 @@ bool Encoder_::output( char src ) throw()
     }
 
 
-bool Encoder_::output( const char* src ) throw()
+bool Encoder_::output( const char* src ) noexcept
     {
     // Do NOTHING if invalid input
     if ( !src )
@@ -91,7 +91,7 @@ bool Encoder_::output( const char* src ) throw()
     }
 
 
-bool Encoder_::output( const char* src, size_t numBytes ) throw()
+bool Encoder_::output( const char* src, size_t numBytes ) noexcept
     {
     // Do NOTHING if invalid input
     if ( !src )
@@ -111,7 +111,7 @@ bool Encoder_::output( const char* src, size_t numBytes ) throw()
     return true;
     }
 
-bool Encoder_::endFrame() throw()
+bool Encoder_::endFrame() noexcept
     {
     if ( !m_inFrame )
         {

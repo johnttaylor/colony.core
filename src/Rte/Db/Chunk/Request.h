@@ -233,7 +233,7 @@ public:
 
 public:
     /// Helper method that converta a Result_T enum value to a string constant
-    static const char* resultToString( Result_T result ) throw();
+    static const char* resultToString( Result_T result ) noexcept;
 };
 
 

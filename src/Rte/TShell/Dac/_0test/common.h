@@ -640,10 +640,10 @@ class Viewers: public Cpl::TShell::Dac::Cmd::Command
 {
 public:
     /// See Cpl::TShell::Dac::Command
-    const char* getUsage() const throw()   { return "viewers\nviewers <num> [clear]\nviewers clear"; }
+    const char* getUsage() const noexcept   { return "viewers\nviewers <num> [clear]\nviewers clear"; }
 
     /// See Cpl::TShell::Dac::Command
-    const char* getHelp() const throw()    { return "  Displays the Model viewer counts and optionally clears the counts."; }
+    const char* getHelp() const noexcept    { return "  Displays the Model viewer counts and optionally clears the counts."; }
     
     ///
     static const unsigned MAX_VIEWERS = 5;
@@ -692,7 +692,7 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Command
-    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept
         {
         Cpl::TShell::Dac::ActiveVariablesApi& vars    = context.getVariables();
         Cpl::Text::String&                    outtext = context.getOutputBuffer();

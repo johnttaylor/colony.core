@@ -49,7 +49,7 @@ public:
     /** This method allows the Application/consumer to change/Set the Input
         Stream handle. 
      */
-    void setInput( Cpl::Io::Input& newInFd ) throw();
+    void setInput( Cpl::Io::Input& newInFd ) noexcept;
 
 
 protected:

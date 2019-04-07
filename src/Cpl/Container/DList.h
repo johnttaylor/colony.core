@@ -39,7 +39,7 @@ private:
 public:
     /** Public constructor initializes head and tail pointers.
      */
-    DList() throw();
+    DList() noexcept;
 
     /** This is a special constructor for when the list is
         statically declared (i.e. it is initialized as part of
@@ -56,7 +56,7 @@ public:
         is provided.  It assumes that the pointers are already set
         zero because the list is "static". Whew!
      */
-    DList( const char* ignoreThisParameter_usedToCreateAUniqueConstructor ) throw();
+    DList( const char* ignoreThisParameter_usedToCreateAUniqueConstructor ) noexcept;
 
 
 public: ///@name Operations on the List itself
@@ -76,23 +76,23 @@ public: ///@name View as a FIFO
     /** Removes the first item in the list.  Returns 0 if the list
         is empty.
      */
-    ITEM*  get( void ) throw();
+    ITEM*  get( void ) noexcept;
 
     /** Adds the item as the last item in the list
      */
-    void   put( ITEM& item ) throw();
+    void   put( ITEM& item ) noexcept;
 
     /** Return a pointer to the first item in the list.
         The returned item remains in the list.  Returns 0
         if the list is empty.
      */
-    ITEM*  head( void ) const throw();
+    ITEM*  head( void ) const noexcept;
 
     /** Return a pointer to the last item in the list.
         The returned item remains in the list.  Returns 0
         if the list is empty.
      */
-    ITEM*  tail( void ) const throw();
+    ITEM*  tail( void ) const noexcept;
     ///@}
 
 
@@ -101,17 +101,17 @@ public: ///@name View as a STACK
     /** Removes the top element from stack and return a pointer to
         it as a result. Returns 0, if the stack is empty
      */
-    ITEM*  pop( void ) throw();
+    ITEM*  pop( void ) noexcept;
 
     /** Adds the ITEM item to top of the stack.
      */
-    void   push( ITEM& item ) throw();
+    void   push( ITEM& item ) noexcept;
 
     /** Return a pointer to the top ITEM item in the stack.
         The returned item remains in the queue.  Returns 0
         if the stack is empty.
      */
-    ITEM*  top( void ) const throw();
+    ITEM*  top( void ) const noexcept;
     ///@}
 
 public: ///@name View as Ordered List
@@ -119,67 +119,67 @@ public: ///@name View as Ordered List
     /** Removes the first item in the list.  Returns 0 if the list
         is empty.
      */
-    ITEM*  getFirst( void ) throw();
+    ITEM*  getFirst( void ) noexcept;
 
     /** Removes the last item in the list.  Returns 0 if the list
         is empty.
      */
-    ITEM*  getLast( void ) throw();
+    ITEM*  getLast( void ) noexcept;
 
     /** Adds the item as the first item in the list.
      */
-    void   putFirst( ITEM& item ) throw();
+    void   putFirst( ITEM& item ) noexcept;
 
     /** Adds the item as the last item in the list.
      */
-    void   putLast( ITEM& item ) throw();
+    void   putLast( ITEM& item ) noexcept;
 
     /** Remove specified ITEM element from the list.
         Returns true, if the specified element was found and
         removed from the list, else false.
      */
-    bool   remove( ITEM& item ) throw();
+    bool   remove( ITEM& item ) noexcept;
 
     /** Insert the "item" ITEM into the list behind the
         "after" ITEM element.  If 'after' is 0, then 'item'
         is added to the head of the list.
      */
-    void   insertAfter( ITEM& after, ITEM& item ) throw();
+    void   insertAfter( ITEM& after, ITEM& item ) noexcept;
 
     /** Insert the "item" ITEM into the list ahead of the
         "before" ITEM element. If 'before' is 0, then 'item'
         is added to the tail of the list.
      */
-    void   insertBefore( ITEM& before, ITEM& item ) throw();
+    void   insertBefore( ITEM& before, ITEM& item ) noexcept;
 
     /** Returns true of the specified item/pointer is
         already in the list, else false.
      */
-    bool   find( const ITEM& item ) const throw();
+    bool   find( const ITEM& item ) const noexcept;
 
     /** Return a pointer to the first item in the list.
         The returned item remains in the list.  Returns 0
         if the list is empty.
      */
-    ITEM*  first( void ) const throw();
+    ITEM*  first( void ) const noexcept;
 
     /** Return a pointer to the last item in the list.
         The returned item remains in the list.  Returns 0
         if the list is empty.
      */
-    ITEM*  last( void ) const throw();
+    ITEM*  last( void ) const noexcept;
 
     /** Return a pointer to the item after the item "current".
         Both items remain in the list.  Returns 0 when the
         end-of-list is reached.
      */
-    ITEM*  next( ITEM& current ) const throw();
+    ITEM*  next( ITEM& current ) const noexcept;
 
     /** Return a pointer to the item before the item "current".
         Both items remain in the list.  Returns 0 when the
         end-of-list is reached.
      */
-    ITEM*  previous( ITEM& current ) const throw();
+    ITEM*  previous( ITEM& current ) const noexcept;
     ///@}
 
 
@@ -199,13 +199,13 @@ private: ///@name Prevent the container from being copied
 
 
 template <class ITEM>
-DList<ITEM>::DList( void ) throw()
+DList<ITEM>::DList( void ) noexcept
     :m_headPtr( 0 ), m_tailPtr( 0 )
 {
 }
 
 template <class ITEM>
-DList<ITEM>::DList( const char* ) throw()
+DList<ITEM>::DList( const char* ) noexcept
 {
 }
 
@@ -233,7 +233,7 @@ inline void DList<ITEM>::clearTheList()
 }
 
 template <class ITEM>
-inline ITEM* DList<ITEM>::get( void ) throw()
+inline ITEM* DList<ITEM>::get( void ) noexcept
 {
     ITEM* firstPtr = m_headPtr;
     if ( firstPtr )
@@ -244,13 +244,13 @@ inline ITEM* DList<ITEM>::get( void ) throw()
 }
 
 template <class ITEM>
-inline ITEM* DList<ITEM>::getFirst( void ) throw()
+inline ITEM* DList<ITEM>::getFirst( void ) noexcept
 {
     return get();
 }
 
 template <class ITEM>
-inline ITEM* DList<ITEM>::getLast( void ) throw()
+inline ITEM* DList<ITEM>::getLast( void ) noexcept
 {
     ITEM* lastPtr = m_tailPtr;
     if ( lastPtr )
@@ -261,7 +261,7 @@ inline ITEM* DList<ITEM>::getLast( void ) throw()
 }
 
 template <class ITEM>
-inline void DList<ITEM>::putFirst( ITEM& item ) throw()
+inline void DList<ITEM>::putFirst( ITEM& item ) noexcept
 {
     if ( item.insert_( this ) )
     {
@@ -281,7 +281,7 @@ inline void DList<ITEM>::putFirst( ITEM& item ) throw()
 }
 
 template <class ITEM>
-inline void DList<ITEM>::put( ITEM& item ) throw()
+inline void DList<ITEM>::put( ITEM& item ) noexcept
 {
     if ( item.insert_( this ) )
     {
@@ -301,13 +301,13 @@ inline void DList<ITEM>::put( ITEM& item ) throw()
 }
 
 template <class ITEM>
-inline void DList<ITEM>::putLast( ITEM& item ) throw()
+inline void DList<ITEM>::putLast( ITEM& item ) noexcept
 {
     put( item );
 }
 
 template <class ITEM>
-inline bool DList<ITEM>::remove( ITEM& item ) throw()
+inline bool DList<ITEM>::remove( ITEM& item ) noexcept
 {
     if ( item.isInContainer_( this ) )
     {
@@ -345,7 +345,7 @@ inline bool DList<ITEM>::remove( ITEM& item ) throw()
 
 
 template <class ITEM>
-inline void DList<ITEM>::insertAfter( ITEM& after, ITEM& item ) throw()
+inline void DList<ITEM>::insertAfter( ITEM& after, ITEM& item ) noexcept
 {
     if ( item.insert_( this ) )
     {
@@ -364,7 +364,7 @@ inline void DList<ITEM>::insertAfter( ITEM& after, ITEM& item ) throw()
 }
 
 template <class ITEM>
-inline void DList<ITEM>::insertBefore( ITEM& before, ITEM& item ) throw()
+inline void DList<ITEM>::insertBefore( ITEM& before, ITEM& item ) noexcept
 {
     if ( item.insert_( this ) )
     {
@@ -383,61 +383,61 @@ inline void DList<ITEM>::insertBefore( ITEM& before, ITEM& item ) throw()
 }
 
 template <class ITEM>
-inline bool DList<ITEM>::find( const ITEM& item ) const throw()
+inline bool DList<ITEM>::find( const ITEM& item ) const noexcept
 {
     return  item.isInContainer_( this );
 }
 
 template <class ITEM>
-inline ITEM* DList<ITEM>::first( void ) const throw()
+inline ITEM* DList<ITEM>::first( void ) const noexcept
 {
     return m_headPtr;
 }
 
 template <class ITEM>
-inline ITEM* DList<ITEM>::last( void ) const throw()
+inline ITEM* DList<ITEM>::last( void ) const noexcept
 {
     return m_tailPtr;
 }
 
 template <class ITEM>
-inline ITEM* DList<ITEM>::next( ITEM& cur ) const  throw()
+inline ITEM* DList<ITEM>::next( ITEM& cur ) const  noexcept
 {
     return (ITEM*) cur.m_nextPtr_;
 }
 
 template <class ITEM>
-inline ITEM* DList<ITEM>::previous( ITEM& cur ) const  throw()
+inline ITEM* DList<ITEM>::previous( ITEM& cur ) const  noexcept
 {
     return (ITEM*) cur.m_prevPtr_;
 }
 
 template <class ITEM>
-inline void DList<ITEM>::push( ITEM& item ) throw()
+inline void DList<ITEM>::push( ITEM& item ) noexcept
 {
     putFirst( item );
 }
 
 template <class ITEM>
-inline ITEM* DList<ITEM>::pop( void ) throw()
+inline ITEM* DList<ITEM>::pop( void ) noexcept
 {
     return get();
 }
 
 template <class ITEM>
-inline ITEM* DList<ITEM>::top( void ) const throw()
+inline ITEM* DList<ITEM>::top( void ) const noexcept
 {
     return first();
 }
 
 template <class ITEM>
-inline ITEM* DList<ITEM>::head( void ) const throw()
+inline ITEM* DList<ITEM>::head( void ) const noexcept
 {
     return first();
 }
 
 template <class ITEM>
-inline ITEM* DList<ITEM>::tail( void ) const throw()
+inline ITEM* DList<ITEM>::tail( void ) const noexcept
 {
     return last();
 }

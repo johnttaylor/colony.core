@@ -54,7 +54,7 @@ public:
         NOTE: A value of zero for 'timingTickInMsec' will disable support
               for Local Timers.
      */
-    EventLoop( unsigned long timingTickInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD ) throw();
+    EventLoop( unsigned long timingTickInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD ) noexcept;
 
 public:
     /// See Cpl::System::Runnable
@@ -78,7 +78,7 @@ public:
               all happen in a SINGLE thread and that thread is the 'Subscribers'
               thread.
      */
-    void addPendingChangingNotification_( SubscriberApi& subscriber ) throw();
+    void addPendingChangingNotification_( SubscriberApi& subscriber ) noexcept;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
     by other classes in the Cpl::Dm namespace.  The Application should
@@ -95,11 +95,11 @@ public:
            all happen in a SINGLE thread and that thread is the 'Subscribers'
            thread.
      */
-    void removePendingChangingNotification_( SubscriberApi& subscriber ) throw();
+    void removePendingChangingNotification_( SubscriberApi& subscriber ) noexcept;
 
 protected:
     /// This helper method processes pending change notifications
-    virtual void processChangeNotifications() throw();
+    virtual void processChangeNotifications() noexcept;
 };
 
 };      // end namespaces

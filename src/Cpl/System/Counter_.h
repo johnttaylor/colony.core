@@ -31,16 +31,16 @@ class CounterCallback_ : public Cpl::Container::ExtendedItem
 {
 public:
     /// Notification of the count reaching zero
-    virtual void expired( void ) throw() = 0;
+    virtual void expired( void ) noexcept = 0;
 
     /// Decrements the counter
-    virtual void decrement( unsigned long milliseconds=1 ) throw() = 0;
+    virtual void decrement( unsigned long milliseconds=1 ) noexcept = 0;
 
     /// Increments the counter
-    virtual void increment( unsigned long milliseconds ) throw() = 0;
+    virtual void increment( unsigned long milliseconds ) noexcept = 0;
 
     /// Returns the current count (in milliseconds)
-    virtual unsigned long count() const throw() = 0;
+    virtual unsigned long count() const noexcept = 0;
 
 public:
     /// Virtual Destructor
@@ -57,17 +57,17 @@ class CounterSource_
 {
 public:
     /// Register for notification
-    virtual void attach( CounterCallback_& clientToCallback ) throw() = 0;
+    virtual void attach( CounterCallback_& clientToCallback ) noexcept = 0;
 
     /** Unregister for notification.  Returns true if the client was currently
         attached/registered; else false is returned.
      */
-    virtual bool detach( CounterCallback_& clientToCallback ) throw() = 0;
+    virtual bool detach( CounterCallback_& clientToCallback ) noexcept = 0;
 
     /** This method converts the requested duration in milliseconds to
         counter ticks.
      */
-    virtual unsigned long msecToCounts( unsigned long durationInMsecs ) throw() = 0;
+    virtual unsigned long msecToCounts( unsigned long durationInMsecs ) noexcept = 0;
 
 public:
     /// Virtual Destructor

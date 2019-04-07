@@ -71,37 +71,37 @@ Cpl::System::Runnable& Thread::setRunnable( Cpl::System::Runnable& newRunnableIn
 }
 
 //////////////////////////////
-int Thread::signal() throw()
+int Thread::signal() noexcept
 {
     return m_syncSema.signal();
 }
 
-int Thread::su_signal() throw()
+int Thread::su_signal() noexcept
 {
     return m_syncSema.su_signal();
 }
 
-const char* Thread::getName() throw()
+const char* Thread::getName() noexcept
 {
     return MAIN_THREAD_NAME;
 }
 
-size_t Thread::getId() throw()
+size_t Thread::getId() noexcept
 {
     return 0;
 }
 
-bool Thread::isRunning() throw()
+bool Thread::isRunning() noexcept
 {
     return true;
 }
 
-Cpl::System::Runnable& Thread::getRunnable( void ) throw()
+Cpl::System::Runnable& Thread::getRunnable( void ) noexcept
 {
     return *m_runnable;
 }
 
-Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) throw()
+Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) noexcept
 {
     return 0;
 }
@@ -111,7 +111,7 @@ Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) throw()
 
 
 //////////////////////////////
-Cpl::System::Thread& Cpl::System::Thread::getCurrent() throw()
+Cpl::System::Thread& Cpl::System::Thread::getCurrent() noexcept
 {
     // Trap potential error
     if ( !mainThread_ )
@@ -123,28 +123,28 @@ Cpl::System::Thread& Cpl::System::Thread::getCurrent() throw()
 }
 
 
-void Cpl::System::Thread::wait() throw()
+void Cpl::System::Thread::wait() noexcept
 {
     mainThread_->m_syncSema.wait();
 }
 
-bool Cpl::System::Thread::tryWait() throw()
+bool Cpl::System::Thread::tryWait() noexcept
 {
     return mainThread_->m_syncSema.tryWait();
 }
 
-bool Cpl::System::Thread::timedWait( unsigned long timeout ) throw()
+bool Cpl::System::Thread::timedWait( unsigned long timeout ) noexcept
 {
     return mainThread_->m_syncSema.timedWait( timeout );
 }
 
-const char* Cpl::System::Thread::myName() throw()
+const char* Cpl::System::Thread::myName() noexcept
 {
     return MAIN_THREAD_NAME;
 }
 
 
-size_t Cpl::System::Thread::myId() throw()
+size_t Cpl::System::Thread::myId() noexcept
 {
     return 0;
 }
@@ -152,7 +152,7 @@ size_t Cpl::System::Thread::myId() throw()
 
 
 //////////////////////////////
-void Cpl::System::Thread::traverse( Cpl::System::Thread::Traverser& client ) throw()
+void Cpl::System::Thread::traverse( Cpl::System::Thread::Traverser& client ) noexcept
 {
     client.item( *mainThread_ );
 }

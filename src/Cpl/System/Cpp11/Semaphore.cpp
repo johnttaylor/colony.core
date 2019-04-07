@@ -30,7 +30,7 @@ Semaphore::~Semaphore()
 }
 
 
-int Semaphore::signal( void ) throw()
+int Semaphore::signal( void ) noexcept
 {
     std::unique_lock<std::mutex> lock( m_sema.m_mutex );
     if ( ++(m_sema.m_count) > MAX_COUNT_ )
@@ -42,13 +42,13 @@ int Semaphore::signal( void ) throw()
 }
 
 
-int Semaphore::su_signal( void ) throw()
+int Semaphore::su_signal( void ) noexcept
 {
     return signal();
 }
 
 
-bool Semaphore::tryWait( void ) throw()
+bool Semaphore::tryWait( void ) noexcept
 {
     bool decremented = false;
     std::unique_lock<std::mutex> lock( m_sema.m_mutex );
@@ -62,7 +62,7 @@ bool Semaphore::tryWait( void ) throw()
 }
 
 
-void Semaphore::waitInRealTime( void ) throw()
+void Semaphore::waitInRealTime( void ) noexcept
 {
     std::unique_lock<std::mutex> lock( m_sema.m_mutex );
     while ( m_sema.m_count == 0 )
@@ -74,7 +74,7 @@ void Semaphore::waitInRealTime( void ) throw()
 }
 
 
-bool Semaphore::timedWaitInRealTime( unsigned long milliseconds ) throw()
+bool Semaphore::timedWaitInRealTime( unsigned long milliseconds ) noexcept
 {
     auto start = std::chrono::system_clock::now();
     auto end   = start + std::chrono::milliseconds( milliseconds );

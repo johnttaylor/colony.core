@@ -70,16 +70,16 @@ public:
 
 protected:
     /// See Cpl::Text::Frame::Decoder_
-    bool isStartOfFrame() throw()   { return *m_dataPtr == m_sof; }
+    bool isStartOfFrame() noexcept   { return *m_dataPtr == m_sof; }
     
     /// See Cpl::Text::Frame::Decoder_
-    bool isEofOfFrame() throw()     { return *m_dataPtr == m_eof; }
+    bool isEofOfFrame() noexcept     { return *m_dataPtr == m_eof; }
 
     /// See Cpl::Text::Frame::Decoder_
-    bool isEscapeChar() throw()     { return *m_dataPtr == m_esc; }
+    bool isEscapeChar() noexcept     { return *m_dataPtr == m_esc; }
 
     /// See Cpl::Text::Frame::Decoder_
-    bool isLegalCharacter() throw() { return *m_dataPtr < 0x80 && (!m_restricted || (*m_dataPtr <= 0x7E && *m_dataPtr >= 0x20) ); }
+    bool isLegalCharacter() noexcept { return *m_dataPtr < 0x80 && (!m_restricted || (*m_dataPtr <= 0x7E && *m_dataPtr >= 0x20) ); }
 };
 
 

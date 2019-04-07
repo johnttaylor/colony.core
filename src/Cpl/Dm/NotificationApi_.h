@@ -45,7 +45,7 @@ public:
               all happen in a SINGLE thread and that thread is the 'Subscribers' 
               thread.
      */
-    virtual void addPendingChangingNotification_( SubscriberApi& subscriber ) throw() = 0;
+    virtual void addPendingChangingNotification_( SubscriberApi& subscriber ) noexcept = 0;
     
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
     by other classes in the Cpl::Dm namespace.  The Application should
@@ -62,7 +62,7 @@ public:
            all happen in a SINGLE thread and that thread is the 'Subscribers' 
            thread.
      */
-    virtual void removePendingChangingNotification_( SubscriberApi& subscriber ) throw() = 0;
+    virtual void removePendingChangingNotification_( SubscriberApi& subscriber ) noexcept = 0;
 
 
 public:

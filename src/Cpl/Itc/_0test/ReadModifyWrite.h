@@ -20,10 +20,10 @@ class ReadModifyWrite
 {
 public:
     /// Read the data
-    virtual int getValue(void) throw() = 0;
+    virtual int getValue(void) noexcept = 0;
 
     /// Write the data
-    virtual void writeValue(int newValue) throw() = 0;
+    virtual void writeValue(int newValue) noexcept = 0;
 
 
 public:

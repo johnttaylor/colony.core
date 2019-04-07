@@ -23,47 +23,47 @@ NullVariables::NullVariables()
 
 
 //////////////////////////////////////////
-VariableApi* NullVariables::get( const Cpl::Container::Key& variableName ) throw()
+VariableApi* NullVariables::get( const Cpl::Container::Key& variableName ) noexcept
     {
     return 0;
     }
 
 
-VariableApi* NullVariables::find( const Cpl::Container::Key& variableName ) throw()
+VariableApi* NullVariables::find( const Cpl::Container::Key& variableName ) noexcept
     {
     return 0;
     }
 
 
-void NullVariables::remove( VariableApi& varNoLongerInUse ) throw()
+void NullVariables::remove( VariableApi& varNoLongerInUse ) noexcept
     {
     }
 
 
-unsigned NullVariables::getUserCount() const throw()
-    {
-    return 0;
-    }
-
-
-unsigned NullVariables::getMaxUserCount() const throw()
+unsigned NullVariables::getUserCount() const noexcept
     {
     return 0;
     }
 
 
-void NullVariables::addSystem( VariableApi& systemVariable )  throw()
-    {
-    }
-
-
-VariableApi* NullVariables::first() const throw()
+unsigned NullVariables::getMaxUserCount() const noexcept
     {
     return 0;
     }
 
 
-VariableApi* NullVariables::next( VariableApi& current ) const throw()
+void NullVariables::addSystem( VariableApi& systemVariable )  noexcept
+    {
+    }
+
+
+VariableApi* NullVariables::first() const noexcept
+    {
+    return 0;
+    }
+
+
+VariableApi* NullVariables::next( VariableApi& current ) const noexcept
     {
     return 0;
     }

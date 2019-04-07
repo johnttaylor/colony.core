@@ -51,7 +51,7 @@ void Base::registerModelPoint( ModelPointReference_t& mpToAdd )
     m_points.put( mpToAdd );
 }
 
-const Cpl::Container::Key& Base::getKey() const throw()
+const Cpl::Container::Key& Base::getKey() const noexcept
 {
     return m_name;
 }
@@ -77,7 +77,7 @@ void Base::notifyWriteDone( void )
 }
 
 /////////////////////////////////////////
-void Base::start( HandlerApi_& recordLayer ) throw()
+void Base::start( HandlerApi_& recordLayer ) noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::start [%s]", m_name()) );
 
@@ -89,13 +89,13 @@ void Base::start( HandlerApi_& recordLayer ) throw()
     generateEvent( Fsm_evStart );
 }
 
-void Base::stop() throw()
+void Base::stop() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::stop [%s]", m_name()) );
     generateEvent( Fsm_evStop );
 }
 
-void Base::defaultContent() throw()
+void Base::defaultContent() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::defaultContent [%s]", m_name()) );
     generateEvent( Fsm_evDefault );
@@ -237,7 +237,7 @@ bool Base::notifyRead( void* srcBuffer, uint32_t dataLen )
 }
 
 /////////////////////////////////////////
-void Base::issueWrite() throw()
+void Base::issueWrite() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::issueWrite [%s]", m_name()) );
 
@@ -249,19 +249,19 @@ void Base::issueWrite() throw()
     m_recLayerPtr->write( *this );
 }
 
-void Base::markClean() throw()
+void Base::markClean() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::markClean [%s]", m_name()) );
     m_dirty = false;
 }
 
-void Base::markDirty() throw()
+void Base::markDirty() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::markDirty [%s]", m_name()) );
     m_dirty = true;
 }
 
-void Base::startTimer() throw()
+void Base::startTimer() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::startTimer [%s]", m_name()) );
 
@@ -278,13 +278,13 @@ void Base::startTimer() throw()
     }
 }
 
-void Base::stopTimer() throw()
+void Base::stopTimer() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::stopTimer [%s]", m_name()) );
     m_timer.stop();
 }
 
-void Base::tellInitialized() throw()
+void Base::tellInitialized() noexcept
 {
     if ( !m_recLayerPtr )
     {
@@ -303,7 +303,7 @@ void Base::tellInitialized() throw()
     }
 }
 
-void Base::tellStartCompleted() throw()
+void Base::tellStartCompleted() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellStartCompleted [%s]", m_name()) );
     if ( !m_recLayerPtr )
@@ -314,7 +314,7 @@ void Base::tellStartCompleted() throw()
     m_recLayerPtr->notifyRecordStarted();
 }
 
-void Base::tellStarting() throw()
+void Base::tellStarting() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellStarting [%s]", m_name()) );
     if ( !m_recLayerPtr )
@@ -325,7 +325,7 @@ void Base::tellStarting() throw()
     m_recLayerPtr->notifyRecordWaiting();
 }
 
-void Base::tellStopped() throw()
+void Base::tellStopped() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Base::tellStopped [%s]", m_name()) );
     if ( !m_recLayerPtr )
@@ -339,12 +339,12 @@ void Base::tellStopped() throw()
 
 
 /////////////////////////////////////////
-bool Base::isDirty() throw()
+bool Base::isDirty() noexcept
 {
     return m_dirty;
 }
 
-bool Base::isLoadGood() throw()
+bool Base::isLoadGood() noexcept
 {
     return m_loadIsGood;
 }

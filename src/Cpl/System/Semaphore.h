@@ -51,7 +51,7 @@ public:
         semaphore is signaled/set.  NOTE: Can only be called from a Thread
         context!
      */
-    void wait( void ) throw();
+    void wait( void ) noexcept;
 
     /** This method is the same as wait(), except that 'timeout' specifies the
         maximum amount of time, in milliseconds, will block if the semaphore
@@ -59,7 +59,7 @@ public:
         (i.e. count > 0); else false is returned if the timeout period
         expired.
      */
-    bool timedWait( unsigned long timeout ) throw();
+    bool timedWait( unsigned long timeout ) noexcept;
 
     /** This method is the same as wait(), except that if the semaphore
         count is zero, the method returns immediately and has a return code
@@ -67,15 +67,15 @@ public:
         is decrement and the method returns immediately and has a return code
         of true.
      */
-    bool tryWait( void ) throw();
+    bool tryWait( void ) noexcept;
 
 
 public:
     /// Signable API    
-    int signal( void ) throw();
+    int signal( void ) noexcept;
 
     /// Signable API    
-    int su_signal( void ) throw();
+    int su_signal( void ) noexcept;
 
 
 protected:
@@ -85,10 +85,10 @@ protected:
 
 protected:
     /// Helper method for supporting SimTicks and 'real' tick in the same build
-    void waitInRealTime( void ) throw();
+    void waitInRealTime( void ) noexcept;
 
     /// Helper method for supporting SimTicks and 'real' tick in the same build
-    bool timedWaitInRealTime( unsigned long timeout ) throw();
+    bool timedWaitInRealTime( unsigned long timeout ) noexcept;
 
 private:
     /// Prevent access to the copy constructor -->semaphores can not be copied!

@@ -54,18 +54,18 @@ public:
 
 public:
     /// Allow the consumer to change/Set the Output stream handle.  Note: No guarantees on what happens if this method is called in the 'middle of a frame'
-    void setOutput( Cpl::Io::Output& newOutfd ) throw();
+    void setOutput( Cpl::Io::Output& newOutfd ) noexcept;
     
      
 protected:
     /// See Cpl::Text::Frame::Encoder_
-    bool start( char src ) throw();
+    bool start( char src ) noexcept;
     
     /// See Cpl::Text::Frame::Encoder_
-    bool start() throw();
+    bool start() noexcept;
 
     /// See Cpl::Text::Frame::Encoder_
-    bool append( char src ) throw();
+    bool append( char src ) noexcept;
 
 };
 

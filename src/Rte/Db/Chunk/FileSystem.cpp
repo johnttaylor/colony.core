@@ -28,7 +28,7 @@ FileSystem::FileSystem( const char* myDbFileName )
 
 
 //////////////////////////////
-Cpl::Io::File::InputOutputApi* FileSystem::openDatabase( bool& newfile ) throw()
+Cpl::Io::File::InputOutputApi* FileSystem::openDatabase( bool& newfile ) noexcept
     {
     // Make the sure DB file is in the closed state to start with
     closeDatabase();
@@ -63,7 +63,7 @@ Cpl::Io::File::InputOutputApi* FileSystem::openDatabase( bool& newfile ) throw()
     }
 
 
-void FileSystem::closeDatabase() throw()
+void FileSystem::closeDatabase() noexcept
     {
     if ( m_fdPtr )
         {
@@ -73,7 +73,7 @@ void FileSystem::closeDatabase() throw()
     }
 
 
-bool FileSystem::deleteDatabase() throw()
+bool FileSystem::deleteDatabase() noexcept
     {
     // Close the DB just in the case
     closeDatabase();

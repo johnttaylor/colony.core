@@ -49,25 +49,25 @@ public:
 
 public:
     /// See Cpl::Dm::SubscriberApi
-    NotificationApi_* getNotificationApi_() const throw();
+    NotificationApi_* getNotificationApi_() const noexcept;
 
     /// See Cpl::Dm::SubscriberApi
-    void setModelPoint_( ModelPoint* modelPoint ) throw();
+    void setModelPoint_( ModelPoint* modelPoint ) noexcept;
 
     /// See Cpl::Dm::SubscriberApi
-    ModelPoint* getModelPoint_() throw();
+    ModelPoint* getModelPoint_() noexcept;
 
     /// See Cpl::Dm::SubscriberApi
-    int getState_() const throw();
+    int getState_() const noexcept;
 
     /// See Cpl::Dm::SubscriberApi
-    void setState_( int newState ) throw();
+    void setState_( int newState ) noexcept;
 
     /// See Cpl::Dm::SubscriberApi
-    uint16_t getSequenceNumber_() const throw();
+    uint16_t getSequenceNumber_() const noexcept;
 
     /// See Cpl::Dm::SubscriberApi
-    void setSequenceNumber_( uint16_t newSeqNumber ) throw();
+    void setSequenceNumber_( uint16_t newSeqNumber ) noexcept;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ class Subscriber : public SubscriberBase
 {
 public:
     /// Type safe change notification.  See Cpl::Dm::SubscriberApi
-    virtual void modelPointChanged( MP& modelPointThatChanged ) throw() = 0;
+    virtual void modelPointChanged( MP& modelPointThatChanged ) noexcept = 0;
 
 public:
     /// Constructor
@@ -90,7 +90,7 @@ public:
 
 protected:
     /// See Cpl::Dm::SubscriberApi
-    void genericModelPointChanged_( ModelPoint& modelPointThatChanged ) throw() { modelPointChanged( *((MP*) &modelPointThatChanged) ); }
+    void genericModelPointChanged_( ModelPoint& modelPointThatChanged ) noexcept { modelPointChanged( *((MP*) &modelPointThatChanged) ); }
 };
 
 

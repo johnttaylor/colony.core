@@ -34,14 +34,14 @@ private:
 
 public:
     /// Constructor
-    ServiceMessage( ReturnHandler& rh ) throw();
+    ServiceMessage( ReturnHandler& rh ) noexcept;
 
     /** This operation is invoked by the server when it has completed the
         operation implemented as a part of this message. Use of this operation
         relinquishes the ownership of the message from the server (which invokes
         the operation) to the client.
      */
-    void returnToSender() throw();
+    void returnToSender() noexcept;
 };
 
 

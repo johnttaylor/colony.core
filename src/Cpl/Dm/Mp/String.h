@@ -86,20 +86,20 @@ public:
 
 public:
     /// Type safe read. See Cpl::Dm::ModelPoint
-    virtual int8_t read( Data& dstData, uint16_t* seqNumPtr=0 ) const throw();
+    virtual int8_t read( Data& dstData, uint16_t* seqNumPtr=0 ) const noexcept;
 
     /// Type safe read. See Cpl::Dm::ModelPoint
-    virtual int8_t read( Cpl::Text::String& dstData, uint16_t* seqNumPtr=0 ) const throw();
+    virtual int8_t read( Cpl::Text::String& dstData, uint16_t* seqNumPtr=0 ) const noexcept;
 
 
     /// Type safe write. See Cpl::Dm::ModelPoint
-    virtual uint16_t write( const Data& srcData, LockRequest_T lockRequest = eNO_REQUEST ) throw();
+    virtual uint16_t write( const Data& srcData, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
     /// Type safe write of a null terminated string. See Cpl::Dm::ModelPoint
-    virtual uint16_t write( const char* srcData, LockRequest_T lockRequest = eNO_REQUEST ) throw();
+    virtual uint16_t write( const char* srcData, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
     /// Same as write(), except only writes at most 'srcLen' bytes
-    virtual uint16_t write( const char* srcData, size_t srcLen, LockRequest_T lockRequest = eNO_REQUEST ) throw();
+    virtual uint16_t write( const char* srcData, size_t srcLen, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
     /// Type safe read-modify-write client callback interface
     typedef Cpl::Dm::ModelPointRmwCallback<Data> Client;
@@ -120,41 +120,41 @@ public:
     typedef Cpl::Dm::Subscriber<String> Observer;
 
     /// Type safe register observer
-    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
+    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
 
     /// Type safe un-register observer
-    virtual void detach( Observer& observer ) throw();
+    virtual void detach( Observer& observer ) noexcept;
 
 
 public:
     ///  See Cpl::Dm::ModelPoint.
-    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const throw();
+    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const noexcept;
 
     ///  See Cpl::Dm::ModelPoint.
-    const char* getTypeAsText() const throw();
+    const char* getTypeAsText() const noexcept;
 
     /// See Cpl::Dm::ModelPoint.  Note: the returned sized does DOES NOT the null terminator
-    size_t getSize() const throw();
+    size_t getSize() const noexcept;
 
 
 protected:
     /// See Cpl::Dm::ModelPointCommon_.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw();
+    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) noexcept;
 
     /// See Cpl::Dm::ModelPoint. Note: dstSize DOES NOT include the null terminator
-    void copyDataTo_( void* dstData, size_t dstSize ) const throw();
+    void copyDataTo_( void* dstData, size_t dstSize ) const noexcept;
 
     /// See Cpl::Dm::ModelPoint.  Note: srcSize DOES NOT include the null terminator
-    void copyDataFrom_( const void* srcData, size_t srcSize ) throw();
+    void copyDataFrom_( const void* srcData, size_t srcSize ) noexcept;
 
     /// See Cpl::Dm::ModelPoint.  
-    bool isDataEqual_( const void* otherData ) const throw();
+    bool isDataEqual_( const void* otherData ) const noexcept;
 
     /// See Cpl::Dm::ModelPoint.  
-    const void* getImportExportDataPointer_() const throw();
+    const void* getImportExportDataPointer_() const noexcept;
 
     /// See Cpl::Dm::ModelPoint.  
-    size_t getInternalDataSize() const throw();
+    size_t getInternalDataSize() const noexcept;
 };
 
 

@@ -112,7 +112,7 @@ private: // HashFunction
         This one comes from 'Compiler Design in C', by Allen I. Holub,
         PRENTICE HALL, ISBN 0-13-155045-4
      */
-    unsigned int hashKey( const void* keystart, unsigned keylen, unsigned int maxBuckets ) const throw();
+    unsigned int hashKey( const void* keystart, unsigned keylen, unsigned int maxBuckets ) const noexcept;
 
 };
 

@@ -36,7 +36,7 @@ InputOutput_::~InputOutput_( void )
     }
 
 
-void InputOutput_::start(void) throw()
+void InputOutput_::start(void) noexcept
     {
     m_rx.start();
     m_tx.start();

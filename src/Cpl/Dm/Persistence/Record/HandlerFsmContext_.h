@@ -26,87 +26,87 @@ class HandlerFsmContext_
 {
 public:
     /// Action
-    virtual void ackFileStopped() throw() = 0;
+    virtual void ackFileStopped() noexcept = 0;
 
     /// Action
-    virtual void ackOpenDone() throw() = 0;
+    virtual void ackOpenDone() noexcept = 0;
 
     /// Action
-    virtual void ackRead() throw() = 0;
+    virtual void ackRead() noexcept = 0;
 
     /// Action
-    virtual void ackWrite() throw() = 0;
+    virtual void ackWrite() noexcept = 0;
 
     /// Action
-    virtual void clearWriteQue() throw() = 0;
+    virtual void clearWriteQue() noexcept = 0;
 
     /// Action
-    virtual void consumeNoWrite() throw() = 0;
+    virtual void consumeNoWrite() noexcept = 0;
 
     /// Action
-    virtual void defaultAllRecords() throw() = 0;
+    virtual void defaultAllRecords() noexcept = 0;
 
     /// Action
-    virtual void inspectWriteQue() throw() = 0;
+    virtual void inspectWriteQue() noexcept = 0;
 
     /// Action
-    virtual void nakOpenDone() throw() = 0;
+    virtual void nakOpenDone() noexcept = 0;
 
     /// Action
-    virtual void nakWrite() throw() = 0;
+    virtual void nakWrite() noexcept = 0;
 
     /// Action
-    virtual void queWriteRequest() throw() = 0;
+    virtual void queWriteRequest() noexcept = 0;
 
     /// Action
-    virtual void reportDataCorruptError() throw() = 0;
+    virtual void reportDataCorruptError() noexcept = 0;
 
     /// Action
-    virtual void reportFileReadError() throw() = 0;
+    virtual void reportFileReadError() noexcept = 0;
 
     /// Action
-    virtual void reportFileWriteError() throw() = 0;
+    virtual void reportFileWriteError() noexcept = 0;
 
     /// Action
-    virtual void reportIncompatible() throw() = 0;
+    virtual void reportIncompatible() noexcept = 0;
 
     /// Action
-    virtual void reportMinorUpgrade() throw() = 0;
+    virtual void reportMinorUpgrade() noexcept = 0;
 
     /// Action
-    virtual void requestFileClear() throw() = 0;
+    virtual void requestFileClear() noexcept = 0;
 
     /// Action
-    virtual void requestFileClose() throw() = 0;
+    virtual void requestFileClose() noexcept = 0;
 
     /// Action
-    virtual void requestFileOpen() throw() = 0;
+    virtual void requestFileOpen() noexcept = 0;
 
     /// Action
-    virtual void requestFileRead() throw() = 0;
+    virtual void requestFileRead() noexcept = 0;
 
     /// Action
-    virtual void requestFileWrite() throw() = 0;
+    virtual void requestFileWrite() noexcept = 0;
 
     /// Action
-    virtual void verifyOpen() throw() = 0;
+    virtual void verifyOpen() noexcept = 0;
 
 
 public:
     /// Guard
-    virtual bool isFileBadData() throw() = 0;
+    virtual bool isFileBadData() noexcept = 0;
 
     /// Guard
-    virtual bool isFileEof() throw() = 0;
+    virtual bool isFileEof() noexcept = 0;
 
     /// Guard
-    virtual bool isFileError() throw() = 0;
+    virtual bool isFileError() noexcept = 0;
 
     /// Guard
-    virtual bool isFileSuccess() throw() = 0;
+    virtual bool isFileSuccess() noexcept = 0;
 
     /// Guard
-    virtual bool isNotCompatible() throw() = 0;
+    virtual bool isNotCompatible() noexcept = 0;
 
 
 public:

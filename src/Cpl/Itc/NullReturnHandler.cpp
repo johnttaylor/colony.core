@@ -20,6 +20,6 @@ NullReturnHandler::NullReturnHandler()
 {
 }
 
-void NullReturnHandler::rts() throw()
+void NullReturnHandler::rts() noexcept
 {
 }

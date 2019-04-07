@@ -16,12 +16,12 @@
 
 
 ///////////////////////////////////////////////////////////////
-void Cpl::System::BareMetal::initialize( void ) throw()
+void Cpl::System::BareMetal::initialize( void ) noexcept
 {
     // Nothing needed
 }
 
-void Cpl::System::BareMetal::busyWait( unsigned long waitTimeMs ) throw()
+void Cpl::System::BareMetal::busyWait( unsigned long waitTimeMs ) noexcept
 {
     // Convert milliseconds to the nanosleep time spec
     static const long nsec2msec = 1000000;
@@ -34,7 +34,7 @@ void Cpl::System::BareMetal::busyWait( unsigned long waitTimeMs ) throw()
     nanosleep( &delay, 0 );
 }
 
-unsigned long Cpl::System::BareMetal::getElapsedTime( void ) throw()
+unsigned long Cpl::System::BareMetal::getElapsedTime( void ) noexcept
 {
     struct timespec tm;
     clock_gettime( CLOCK_MONOTONIC, &tm );

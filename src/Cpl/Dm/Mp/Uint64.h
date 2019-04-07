@@ -48,10 +48,10 @@ public:
 
 public:
     /// Type safe read. See Cpl::Dm::ModelPoint
-    virtual int8_t read( uint64_t& dstData, uint16_t* seqNumPtr=0 ) const throw();
+    virtual int8_t read( uint64_t& dstData, uint16_t* seqNumPtr=0 ) const noexcept;
 
     /// Type safe write. See Cpl::Dm::ModelPoint
-    virtual uint16_t write( uint64_t newValue, LockRequest_T lockRequest = eNO_REQUEST ) throw();
+    virtual uint16_t write( uint64_t newValue, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
     /// Type safe read-modify-write client callback interface
     typedef Cpl::Dm::ModelPointRmwCallback<uint64_t> Client;
@@ -73,22 +73,22 @@ public:
     typedef Cpl::Dm::Subscriber<Uint64> Observer;
 
     /// Type safe register observer
-    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
+    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
 
     /// Type safe un-register observer
-    virtual void detach( Observer& observer ) throw();
+    virtual void detach( Observer& observer ) noexcept;
 
 
 public:
     ///  See Cpl::Dm::ModelPoint.
-    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const throw();
+    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const noexcept;
 
     ///  See Cpl::Dm::ModelPoint.
-    const char* getTypeAsText() const throw();
+    const char* getTypeAsText() const noexcept;
 
 protected:
     /// See Cpl::Dm::ModelPointCommon_.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw();
+    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) noexcept;
 };
 
 

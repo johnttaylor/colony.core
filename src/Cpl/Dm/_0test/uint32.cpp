@@ -22,6 +22,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
+#define STRCMP(s1,s2)  (strcmp(s1,s2)==0)
+
 // Allocate/create my Model Database
 static ModelDatabase    modelDb_( "ignoreThisParameter_usedToInvokeTheStaticConstructor" );
 
@@ -145,81 +147,145 @@ TEST_CASE( "uint32-export", "[uint32-export]" )
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-#define MAX_STR_LENG    20
+#define MAX_STR_LENG    1024
 
-TEST_CASE( "uint32-tostring", "[uint32-tostring]" )
+TEST_CASE( "uint32-toJSON" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT32-TOSTRING test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT32-TOJSON test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
+    char string[MAX_STR_LENG + 1];
+    bool truncated;
 
-    // Invalid (Default value)
-    Cpl::Text::FString<MAX_STR_LENG> string;
-    uint16_t seqNum = mp_apple_.setInvalid();
-    uint16_t seqNum2;
-    mp_apple_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum );
-    REQUIRE( string == "?" );
 
-    // Invalid (Default value) + Locked
-    mp_apple_.applyLock();
-    mp_apple_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum );
-    REQUIRE( string == "!?" );
+    SECTION( "Invalid" )
+    {
+        // Invalid (Default value)
+        uint16_t seqnum = mp_apple_.setInvalid();
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s])", string) );
+        REQUIRE( truncated == false );
 
-    // Invalid (custom value)
-    mp_apple_.removeLock();
-    seqNum = mp_apple_.setInvalidState( 100 );
-    mp_apple_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum );
-    REQUIRE( string == "?100" );
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( STRCMP( doc["name"], "APPLE" ) );
+        REQUIRE( STRCMP( doc["type"], mp_apple_.getTypeAsText() ) );
+        REQUIRE( doc["seqnum"] == seqnum );
+        REQUIRE( doc["locked"] == false );
+        REQUIRE( doc["invalid"] > 0 );
+    }
 
-    // Invalid (custom value) + Locked
-    mp_apple_.applyLock();
-    mp_apple_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum );
-    REQUIRE( string == "!?100" );
+    SECTION( "Invalid + Locked" )
+    {
+        mp_apple_.applyLock();
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s])", string) );
 
-    // Value 
-    mp_apple_.write( 127, ModelPoint::eUNLOCK );
-    mp_apple_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum + 1 );
-    REQUIRE( string == "127" );
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["locked"] == true );
+        REQUIRE( doc["invalid"] > 0 );
+    }
 
-    // Value + Lock
-    mp_apple_.applyLock();
-    mp_apple_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum + 1 );
-    REQUIRE( string == "!127" );
+    SECTION( "Invalid - custom value" )
+    {
+        mp_apple_.removeLock();
+        uint16_t seqnum = mp_apple_.setInvalidState( 100 );
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s])", string) );
 
-    // Hex Value 
-    seqNum = mp_orange_.getSequenceNumber();
-    mp_orange_.write( 0xBEEF );
-    mp_orange_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum + 1 );
-    REQUIRE( string == "0xBEEF" );
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["seqnum"] == seqnum );
+        REQUIRE( doc["invalid"] == 100 );
+        REQUIRE( doc["locked"] == false );
+    }
 
-    // Hex Value + Lock
-    mp_orange_.applyLock();
-    mp_orange_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum + 1 );
-    REQUIRE( string == "!0xBEEF" );
+    SECTION( "Invalid - custom value + locked" )
+    {
+        // Invalid (custom value) + Locked
+        mp_apple_.applyLock();
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s])", string) );
+
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["invalid"] == 100 );
+        REQUIRE( doc["locked"] == true );
+    }
+
+    SECTION( "Value" )
+    {
+        uint16_t seqnum = mp_apple_.write( 127, ModelPoint::eUNLOCK );
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s])", string) );
+
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["seqnum"] == seqnum );
+        REQUIRE( doc["locked"] == false );
+        REQUIRE( doc["invalid"] == 0 );
+        REQUIRE( doc["val"] == 127 );
+    }
+
+    SECTION( "Value + Lock" )
+    {
+        mp_apple_.applyLock();
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s])", string) );
+
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["locked"] == true );
+        REQUIRE( doc["invalid"] == 0 );
+        REQUIRE( doc["val"] == 127 );
+    }
+
+    SECTION( "HEX Value" )
+    {
+        uint16_t seqnum = mp_orange_.write( 0xBEEF, ModelPoint::eUNLOCK );
+        mp_orange_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s])", string) );
+
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["seqnum"] == seqnum );
+        REQUIRE( doc["locked"] == false );
+        REQUIRE( doc["invalid"] == 0 );
+        REQUIRE( doc["val"] == "0xBEEF" );
+
+    }
+
+    SECTION( "HEX Value + Lock" )
+    {
+        uint16_t seqnum = mp_orange_.write( 0xDEAD, ModelPoint::eUNLOCK );
+        mp_orange_.applyLock();
+        mp_orange_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s])", string) );
+
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["seqnum"] == seqnum );
+        REQUIRE( doc["locked"] == true );
+        REQUIRE( doc["invalid"] == 0 );
+        REQUIRE( doc["val"] == "0xDEAD" );
+    }
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "uint32-fromstring", "[uint32-fromstring]" )
+TEST_CASE( "uint32-fromJSON" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT32-FROMSTRING test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "UINT32-FROMJSON test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     // Start with MP in the invalid state
@@ -230,107 +296,191 @@ TEST_CASE( "uint32-fromstring", "[uint32-fromstring]" )
     mp_orange_.setInvalid();
     uint16_t seqNum = mp_apple_.setInvalid();
     uint16_t seqNum2;
+    ModelPoint* mp;
 
-    // Write value
-    const char* nextChar = mp_apple_.fromString( "1234", 0, &errorMsg, &seqNum2 );
-    REQUIRE( nextChar != 0 );
-    REQUIRE( *nextChar == '\0' );
-    REQUIRE( seqNum2 == seqNum + 1 );
-    uint32_t value;
-    int8_t   valid = mp_apple_.read( value, &seqNum );
-    REQUIRE( seqNum == seqNum2 );
-    REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE( value == 1234 );
-    REQUIRE( errorMsg == "noerror" );
+    SECTION( "Write value" )
+    {
+        const char* json = "{name:\"APPLE\", val:1234}";
+        bool result = modelDb_.fromJSON( json, &errorMsg, &mp, &seqNum2 );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        REQUIRE( seqNum2 == seqNum + 1 );
+        uint32_t value;
+        int8_t   valid = mp_apple_.read( value, &seqNum );
+        REQUIRE( seqNum == seqNum2 );
+        REQUIRE( ModelPoint::IS_VALID( valid ) );
+        REQUIRE( value == 1234 );
+        REQUIRE( errorMsg == "noerror" );
+        REQUIRE( mp == &mp_apple_ );
+    }
 
-    // Write Hex value- Fail case
-    nextChar = mp_apple_.fromString( "0x1234", 0, &errorMsg, &seqNum2 );
-    REQUIRE( nextChar == 0 );
-    valid = mp_apple_.read( value, &seqNum2 );
-    REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE( seqNum == seqNum2 );
-    REQUIRE( value == 1234 );
-    REQUIRE( errorMsg != "noerror" );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("fromString FAILED: errorMsg=[%s])", errorMsg.getString()) );
+    SECTION( "Write value - error cases" )
+    {
+        const char* json   = "{name:\"APPLE\", val:\"abc\"}";
+        bool        result = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == false );
 
-    // Write Hex value- Pass case
-    errorMsg = "noerror";
-    nextChar = mp_orange_.fromString( "0x1234", 0, &errorMsg );
-    REQUIRE( nextChar != 0 );
-    REQUIRE( *nextChar == '\0' );
-    valid = mp_orange_.read( value );
-    REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE( value == 0x1234 );
-    REQUIRE( errorMsg == "noerror" );
+        errorMsg = "noerror";
+        json     = "{name:\"APPLE\"}";
+        result   = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == false );
 
-    // Set Invalid
-    nextChar = mp_apple_.fromString( "?", 0, 0, &seqNum2 );
-    REQUIRE( nextChar != 0 );
-    REQUIRE( *nextChar == '\0' );
-    REQUIRE( seqNum2 == seqNum + 1 );
-    REQUIRE( mp_apple_.isNotValid() == true );
+        errorMsg = "noerror";
+        json     = "{namex:\"APPLE\"}";
+        result   = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == false );
 
-    // Set Invalid with lock
-    REQUIRE( mp_apple_.isLocked() == false );
-    nextChar = mp_orange_.fromString( "!?" );
-    REQUIRE( nextChar != 0 );
-    REQUIRE( *nextChar == '\0' );
-    REQUIRE( mp_orange_.isNotValid() == true );
-    REQUIRE( mp_orange_.isLocked() == true );
+        errorMsg = "noerror";
+        json     = "{name:\"APPLE\", val:a123}";
+        result   = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == false );
 
-    // Write with Lock
-    nextChar = mp_apple_.fromString( "!111", 0, 0, &seqNum );
-    REQUIRE( nextChar != 0 );
-    REQUIRE( *nextChar == '\0' );
-    REQUIRE( seqNum2 + 1 == seqNum );
-    REQUIRE( mp_apple_.isNotValid() == false );
-    REQUIRE( mp_apple_.isLocked() == true );
+        errorMsg = "noerror";
+        json     = "{name:\"APPLE\", val:123a}";
+        result   = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        uint32_t value;
+        int8_t valid = mp_apple_.read( value );
+        REQUIRE( ModelPoint::IS_VALID( valid ) );
+        REQUIRE( value == 123 );
+        REQUIRE( errorMsg == "noerror" );
 
-    // Write while locked
-    errorMsg = "noerror";
-    nextChar = mp_apple_.fromString( "112", 0, &errorMsg, &seqNum2 );
-    REQUIRE( nextChar != 0 );
-    REQUIRE( *nextChar == '\0' );
-    REQUIRE( seqNum2 == seqNum );
-    REQUIRE( mp_apple_.isNotValid() == false );
-    REQUIRE( mp_apple_.isLocked() == true );
-    valid = mp_apple_.read( value, &seqNum );
-    REQUIRE( seqNum2 == seqNum );
-    REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE( value == 111 );
-    REQUIRE( mp_apple_.isLocked() == true );
-    REQUIRE( errorMsg == "noerror" );
+        errorMsg = "noerror";
+        json     = "{name:\"APPLE\", val:2.2}";
+        result   = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg =[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        valid = mp_apple_.read( value );
+        REQUIRE( ModelPoint::IS_VALID( valid ) );
+        REQUIRE( value == 2 );
+        REQUIRE( errorMsg == "noerror" );
 
-    // Write with unlock
-    REQUIRE( mp_orange_.isLocked() == true );
-    nextChar = mp_orange_.fromString( "^0xDEAD", 0, &errorMsg );
-    REQUIRE( nextChar != 0 );
-    REQUIRE( *nextChar == '\0' );
-    REQUIRE( mp_orange_.isNotValid() == false );
-    REQUIRE( mp_orange_.isLocked() == false );
-    valid = mp_orange_.read( value );
-    REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE( value == 0xDEAD );
+        errorMsg = "noerror";
+        json     = "{name:\"APPLE\", val:8589934591}";  // Exceed range of the uint32_t
+        result   = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        valid = mp_apple_.read( value );
+        REQUIRE( ModelPoint::IS_VALID( valid ) );
+        REQUIRE( value == 0 );
+        REQUIRE( errorMsg == "noerror" );
 
-    // Just lock
-    nextChar = mp_orange_.fromString( "!", 0, &errorMsg );
-    REQUIRE( nextChar != 0 );
-    REQUIRE( *nextChar == '\0' );
-    REQUIRE( mp_orange_.isNotValid() == false );
-    REQUIRE( mp_orange_.isLocked() == true );
-    valid = mp_orange_.read( value );
-    REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE( value == 0xDEAD );
+        errorMsg = "noerror";
+        json     = "{name:\"BOB\", invalid:1}";
+        result   = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == false );
+    }
 
-    // Test termination characters
-    nextChar = mp_orange_.fromString( "^0x4321,", ": ,;", &errorMsg );
-    REQUIRE( nextChar != 0 );
-    REQUIRE( *nextChar == ',' );
-    REQUIRE( mp_orange_.isNotValid() == false );
-    REQUIRE( mp_orange_.isLocked() == false );
-    valid = mp_orange_.read( value );
-    REQUIRE( ModelPoint::IS_VALID( valid ) );
-    REQUIRE( value == 0x4321 );
+    SECTION( "Write value - HEX" )
+    {
+        const char* json = "{name:\"ORANGE\", val:\"0xBEEF\"}";
+        bool result = modelDb_.fromJSON( json, &errorMsg, &mp );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        uint32_t value;
+        int8_t   valid = mp_orange_.read( value );
+        REQUIRE( ModelPoint::IS_VALID( valid ) );
+        REQUIRE( value == 0xBEEF );
+        REQUIRE( errorMsg == "noerror" );
+        REQUIRE( mp == &mp_orange_ );
+
+        errorMsg = "noerror";
+        json     = "{name:\"ORANGE\", val:\"DEAD\"}";
+        result   = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        valid = mp_orange_.read( value );
+        REQUIRE( ModelPoint::IS_VALID( valid ) );
+        REQUIRE( value == 0xDEAD );
+        REQUIRE( errorMsg == "noerror" );
+
+        errorMsg = "noerror";
+        json     = "{name:\"ORANGE\", val:\"1234\"}";
+        result   = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        valid = mp_orange_.read( value );
+        REQUIRE( ModelPoint::IS_VALID( valid ) );
+        REQUIRE( value == 0x1234 );
+
+        errorMsg = "noerror";
+        json     = "{name:\"ORANGE\", val:\"DTEAD\"}";
+        result   = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == false );
+    }
+
+
+    SECTION( "Set Invalid" )
+    {
+        seqNum = mp_apple_.write( 12 );
+        const char* json = "{name:\"APPLE\", val:4321, invalid:1}";
+        bool result = modelDb_.fromJSON( json, &errorMsg, &mp, &seqNum2 );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        REQUIRE( seqNum2 == seqNum + 1 );
+        uint32_t value;
+        int8_t   valid = mp_apple_.read( value, &seqNum );
+        REQUIRE( seqNum == seqNum2 );
+        REQUIRE( ModelPoint::IS_VALID( valid ) == false );
+        REQUIRE( errorMsg == "noerror" );
+        REQUIRE( mp == &mp_apple_ );
+    }
+
+    SECTION( "lock..." )
+    {
+        const char* json = "{name:\"APPLE\", val:4321, locked:true}";
+        bool result = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        uint32_t value;
+        int8_t   valid = mp_apple_.read( value );
+        REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+        REQUIRE( errorMsg == "noerror" );
+        REQUIRE( mp_apple_.isLocked() == true );
+        REQUIRE( value == 4321 );
+
+        json   = "{name:\"APPLE\", invalid:21, locked:false}";
+        result = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        REQUIRE( mp_apple_.isNotValid() == true );
+        REQUIRE( mp_apple_.isLocked() == false );
+        REQUIRE( mp_apple_.getValidState() == 21 );
+
+        json   = "{name:\"APPLE\", val:21, locked:true}";
+        result = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        REQUIRE( mp_apple_.isLocked() == true );
+        valid = mp_apple_.read( value );
+        REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+        REQUIRE( value == 21 );
+
+        json   = "{name:\"APPLE\", val:42 }";
+        result = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        REQUIRE( mp_apple_.isLocked() == true );
+        valid = mp_apple_.read( value );
+        REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+        REQUIRE( value == 21 );
+
+        json   = "{name:\"APPLE\", locked:false}";
+        result = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        valid = mp_apple_.read( value );
+        REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+        REQUIRE( value == 21 );
+        REQUIRE( mp_apple_.isLocked() == false );
+    }
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }

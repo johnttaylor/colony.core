@@ -36,26 +36,26 @@ void vApplicationTickHook( void )
 
 
 ///////////////////////////////////////////////////////////////
-unsigned long ElapsedTime::milliseconds( void ) throw()
+unsigned long ElapsedTime::milliseconds( void ) noexcept
 {
     return millisecondsInRealTime();
 }
 
 
-unsigned long ElapsedTime::seconds( void ) throw()
+unsigned long ElapsedTime::seconds( void ) noexcept
 {
     return secondsInRealTime();
 }
 
 
-ElapsedTime::Precision_T ElapsedTime::precision( void ) throw()
+ElapsedTime::Precision_T ElapsedTime::precision( void ) noexcept
 {
     return precisionInRealTime();
 }
 
 
 ///////////////////////////////////////////////////////////////
-unsigned long ElapsedTime::millisecondsInRealTime( void ) throw()
+unsigned long ElapsedTime::millisecondsInRealTime( void ) noexcept
 {
     unsigned long s;
     uint16_t      ms;
@@ -69,7 +69,7 @@ unsigned long ElapsedTime::millisecondsInRealTime( void ) throw()
     return (ms * portTICK_PERIOD_MS) + s * 1000L;
 }
 
-unsigned long ElapsedTime::secondsInRealTime( void ) throw()
+unsigned long ElapsedTime::secondsInRealTime( void ) noexcept
 {
     unsigned long s;
 
@@ -81,7 +81,7 @@ unsigned long ElapsedTime::secondsInRealTime( void ) throw()
 }
 
 
-ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) throw()
+ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) noexcept
 {
     ElapsedTime::Precision_T now;
 

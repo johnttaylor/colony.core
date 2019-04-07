@@ -39,12 +39,12 @@ void EventLoop::setThreadOfExecution_( Thread* myThreadPtr )
     m_myThreadPtr = myThreadPtr;
 }
 
-int EventLoop::signal( void ) throw()
+int EventLoop::signal( void ) noexcept
 {
     return m_sema.signal();
 }
 
-int EventLoop::su_signal( void ) throw()
+int EventLoop::su_signal( void ) noexcept
 {
     return m_sema.su_signal();
 }
@@ -59,13 +59,13 @@ void EventLoop::appRun( void )
     }
 }
 
-void EventLoop::startEventLoop() throw()
+void EventLoop::startEventLoop() noexcept
 {
     // Initialize/start the timer manager
     startManager();
 }
 
-bool EventLoop::waitAndProcessEvents() throw()
+bool EventLoop::waitAndProcessEvents() noexcept
 {
 
     // Trap my exit/please-stop condition
@@ -129,7 +129,7 @@ void EventLoop::pleaseStop()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void EventLoop::notifyEvents( Cpl_System_EventFlag_T events ) throw()
+void EventLoop::notifyEvents( Cpl_System_EventFlag_T events ) noexcept
 {
     // Mark that I was signaled
     GlobalLock::begin();
@@ -139,20 +139,20 @@ void EventLoop::notifyEvents( Cpl_System_EventFlag_T events ) throw()
     m_sema.signal();
 }
 
-void EventLoop::notify( uint8_t eventNumber ) throw()
+void EventLoop::notify( uint8_t eventNumber ) noexcept
 {
     notifyEvents( 1 << eventNumber );
 }
 
 // NOTE: Same logic as notifyEvents(), EXCEPT no critical section is used -->this is because su_signal() is called from an ISR and no mutex is required (and mutexes don't work in from ISRs anyway)
-void EventLoop::su_notifyEvents( Cpl_System_EventFlag_T events ) throw()
+void EventLoop::su_notifyEvents( Cpl_System_EventFlag_T events ) noexcept
 {
     // Mark that I was signaled 
     m_events    |= events;
     m_sema.su_signal();
 }
 
-void EventLoop::su_notify( uint8_t eventNumber ) throw()
+void EventLoop::su_notify( uint8_t eventNumber ) noexcept
 {
     su_notifyEvents( 1 << eventNumber );
 }

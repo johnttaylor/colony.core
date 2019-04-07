@@ -44,16 +44,16 @@ public:
 
 public:
     /// This method Symbolic name for the Model Point
-    inline const char* getName() const throw()  { return m_mapKey; }
+    inline const char* getName() const noexcept  { return m_mapKey; }
 
 
     /// This method a reference to the Model Point
-    inline Rte::Point::Model::Api& getModelPoint() const throw() { return m_point; }
+    inline Rte::Point::Model::Api& getModelPoint() const noexcept { return m_point; }
 
 
 protected:
     /// See Cpl::Container::Key
-    const Cpl::Container::Key& getKey() const throw();
+    const Cpl::Container::Key& getKey() const noexcept;
 
 };
 

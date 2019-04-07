@@ -28,7 +28,7 @@ FileSystem::FileSystem( const char* myMediaFileName )
 
 
 //////////////////////////////
-Cpl::Io::File::InputOutputApi* FileSystem::openFile( bool& newfile ) throw()
+Cpl::Io::File::InputOutputApi* FileSystem::openFile( bool& newfile ) noexcept
 {
     // Make the sure DB file is in the closed state to start with
     closeFile();
@@ -63,7 +63,7 @@ Cpl::Io::File::InputOutputApi* FileSystem::openFile( bool& newfile ) throw()
 }
 
 
-void FileSystem::closeFile() throw()
+void FileSystem::closeFile() noexcept
 {
     if ( m_fdPtr )
     {
@@ -73,7 +73,7 @@ void FileSystem::closeFile() throw()
 }
 
 
-bool FileSystem::deleteFile() throw()
+bool FileSystem::deleteFile() noexcept
 {
     // Close the DB just in the case
     closeFile();

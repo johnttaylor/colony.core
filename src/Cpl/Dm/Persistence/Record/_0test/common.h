@@ -95,7 +95,7 @@ public:
     }
 
     /// FSM Action
-    void connectToModel() throw()
+    void connectToModel() noexcept
     {
         m_mp1.attach( m_observer1, m_mp1.getSequenceNumber() );
         m_mp2.attach( m_observer2, m_mp2.getSequenceNumber() );
@@ -103,7 +103,7 @@ public:
     }
 
     /// FSM Action
-    void defaultData() throw()
+    void defaultData() noexcept
     {
         m_mp1.write( m_default1 );
         m_mp2.write( m_default2 );
@@ -112,7 +112,7 @@ public:
 
 
     /// FSM Action
-    void disconnectFromModel() throw()
+    void disconnectFromModel() noexcept
     {
         m_mp1.detach( m_observer1 );
         m_mp2.detach( m_observer2 );
@@ -120,7 +120,7 @@ public:
     }
 
     // Change notification
-    void modelPointNChanged( Cpl::Dm::Mp::String& modelPointThatChanged ) throw()
+    void modelPointNChanged( Cpl::Dm::Mp::String& modelPointThatChanged ) noexcept
     {
         generateEvent( Cpl::Dm::Persistence::Record::Fsm_evDataModified );
     }
@@ -224,7 +224,7 @@ public:
     ///
     void unsubscribe() { m_mp1.detach( *this ); }
     ///
-    void modelPointChanged( Persistence::Record::MpServerStatus& modelPointThatChanged ) throw()
+    void modelPointChanged( Persistence::Record::MpServerStatus& modelPointThatChanged ) noexcept
     {
         if ( m_done != true )
         {
@@ -265,7 +265,7 @@ public:
     ///
     RmwServerStatus():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0 ) {}
     ///
-    ModelPoint::RmwCallbackResult_T callback( Persistence::Record::ServerStatus& data, int8_t validState ) throw()
+    ModelPoint::RmwCallbackResult_T callback( Persistence::Record::ServerStatus& data, int8_t validState ) noexcept
     {
         m_callbackCount++;
         if ( m_returnResult != ModelPoint::eNO_CHANGE )
@@ -285,7 +285,7 @@ public:
 
 public:
     /// See Rte::Db::Chunk::Media
-    Cpl::Io::File::InputOutputApi* openFile( bool& newfile ) throw()
+    Cpl::Io::File::InputOutputApi* openFile( bool& newfile ) noexcept
     {
         return 0;
     }

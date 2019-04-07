@@ -46,41 +46,41 @@ public:
         This method must be called from the same thread that the Timer Manager
         executes in.
      */
-    void startManager( void ) throw();
+    void startManager( void ) noexcept;
 
     /** This method processes the current active timer lists.  For each timer
         that has expired, the timer's context callback method is called.
      */
-    void processTimers( void ) throw();
+    void processTimers( void ) noexcept;
 
     /// Returns true if there are NO active timers
-    bool areActiveTimers( void ) throw();
+    bool areActiveTimers( void ) noexcept;
 
 
 public:
     ///  See Cpl::System::CounterCallback_
-    void attach( CounterCallback_& clientToCallback ) throw();
+    void attach( CounterCallback_& clientToCallback ) noexcept;
 
     ///  See Cpl::System::CounterCallback_
-    bool detach( CounterCallback_& clientToCallback ) throw();
+    bool detach( CounterCallback_& clientToCallback ) noexcept;
 
     ///  See Cpl::System::CounterCallback_
-    unsigned long msecToCounts( unsigned long milliseconds ) throw();
+    unsigned long msecToCounts( unsigned long milliseconds ) noexcept;
 
 protected:
     /// Helper method.
-    void addToActiveList( CounterCallback_& clientToCallback ) throw();
+    void addToActiveList( CounterCallback_& clientToCallback ) noexcept;
 
     /** This method is intended to be call by a the timing source and each
         call to this method represents that one tick has expired, i.e. decrement
         the active Counter objects' by one.
      */
-    virtual void tick( unsigned long milliseconds=1 ) throw();
+    virtual void tick( unsigned long milliseconds=1 ) noexcept;
 
     /** This method is used by the Tick source to information the Timer Manager
         that there are no more ticks for the timing source's current tick cycle
      */
-    virtual void tickComplete( void ) throw();
+    virtual void tickComplete( void ) noexcept;
 
 protected:
     /// List of active counters

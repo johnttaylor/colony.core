@@ -57,7 +57,7 @@ Server::Server( uint8_t*                                    recordLayerBuffer,
 }
 
 ///////////////////////////////////////
-void Server::modelPointChanged( Cpl::Dm::Mp::String& modelPointThatChanged ) throw()
+void Server::modelPointChanged( Cpl::Dm::Mp::String& modelPointThatChanged ) noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::modelPointChanged") );
 
@@ -309,25 +309,25 @@ void Server::response( WriteFileMsg& msg )
 
 
 /////////////////////////////////
-void Server::reportIncompatible() throw()
+void Server::reportIncompatible() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportIncompatible") );
     m_localStatus = ServerStatus::eNO_STORAGE_WRONG_SCHEMA;
 }
 
-void Server::reportFileReadError() throw()
+void Server::reportFileReadError() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportFileReadError") );
     m_localStatus = ServerStatus::eNO_STORAGE_MEDIA_ERR;
 }
 
-void Server::reportDataCorruptError() throw()
+void Server::reportDataCorruptError() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportDataCorruptError") );
     m_localStatus = ServerStatus::eRUNNING_CORRUPTED_INPUT;
 }
 
-void Server::reportFileWriteError() throw()
+void Server::reportFileWriteError() noexcept
 {
     const char* recname = m_writerPtr->getName();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportFileWriteError (rec=%s)", recname) );
@@ -346,7 +346,7 @@ void Server::reportFileWriteError() throw()
     }
 }
 
-void Server::reportMinorUpgrade() throw()
+void Server::reportMinorUpgrade() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportMinorUpgrade") );
     m_localStatus = ServerStatus::eRUNNING_MINOR_UPGRADE;
@@ -354,13 +354,13 @@ void Server::reportMinorUpgrade() throw()
 
 
 
-void Server::requestFileClose() throw()
+void Server::requestFileClose() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::requestFileClose") );
     m_chunkSAP.post( m_closeFileResponseMsg.getRequestMsg() );
 }
 
-void Server::requestFileOpen() throw()
+void Server::requestFileOpen() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::requestFileOpen") );
     Cpl::Dm::Persistence::Chunk::Request::OpenFilePayload* payload = new(m_memPayload.m_byteMem)      Cpl::Dm::Persistence::Chunk::Request::OpenFilePayload( m_buffer, m_bufSize );
@@ -368,7 +368,7 @@ void Server::requestFileOpen() throw()
     m_chunkSAP.post( rspmsg->getRequestMsg() );
 }
 
-void Server::requestFileClear() throw()
+void Server::requestFileClear() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::requestFileClear") );
     Cpl::Dm::Persistence::Chunk::Request::ClearFilePayload* payload = new(m_memPayload.m_byteMem)      Cpl::Dm::Persistence::Chunk::Request::ClearFilePayload( m_buffer, m_bufSize );
@@ -376,7 +376,7 @@ void Server::requestFileClear() throw()
     m_chunkSAP.post( rspmsg->getRequestMsg() );
 }
 
-void Server::requestFileRead() throw()
+void Server::requestFileRead() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::requestFileRead") );
     Cpl::Dm::Persistence::Chunk::Request::ReadPayload*  payload = new(m_memPayload.m_byteMem)      Cpl::Dm::Persistence::Chunk::Request::ReadPayload( m_buffer, m_bufSize, m_chunkHandle );
@@ -385,7 +385,7 @@ void Server::requestFileRead() throw()
     m_fileDataLen = 0;
 }
 
-void Server::requestFileWrite() throw()
+void Server::requestFileWrite() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::requestFileWrite") );
     m_writerPtr = m_writeRequests.get();
@@ -405,7 +405,7 @@ void Server::requestFileWrite() throw()
 }
 
 
-void Server::consumeNoWrite() throw()
+void Server::consumeNoWrite() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::consumeNoWrite") );
     m_writerPtr = m_writeRequests.get();
@@ -416,7 +416,7 @@ void Server::consumeNoWrite() throw()
 }
 
 
-void Server::ackRead() throw()
+void Server::ackRead() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackRead") );
     Api_* recordPtr = findRecordApi( extractRecName(), extractRecNameLength() );
@@ -455,7 +455,7 @@ void Server::ackRead() throw()
     }
 }
 
-void Server::ackWrite() throw()
+void Server::ackWrite() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackWrite") );
     if ( m_writerPtr )
@@ -469,7 +469,7 @@ void Server::ackWrite() throw()
     }
 }
 
-void Server::defaultAllRecords() throw()
+void Server::defaultAllRecords() noexcept
 {
     // Default ALL registered records
     Api_* recordPtr = m_records.first();
@@ -480,14 +480,14 @@ void Server::defaultAllRecords() throw()
     }
 }
 
-void Server::nakWrite() throw()
+void Server::nakWrite() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::nakWrite") );
     m_writerPtr = 0;
 }
 
 
-void Server::ackOpenDone() throw()
+void Server::ackOpenDone() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackOpenDone") );
 
@@ -500,7 +500,7 @@ void Server::ackOpenDone() throw()
 }
 
 
-void Server::nakOpenDone() throw()
+void Server::nakOpenDone() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::nakOpenDone") );
 
@@ -513,7 +513,7 @@ void Server::nakOpenDone() throw()
 }
 
 
-void Server::ackFileStopped() throw()
+void Server::ackFileStopped() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackFileStopped") );
 
@@ -530,13 +530,13 @@ void Server::ackFileStopped() throw()
     m_closeMsgPtr = 0;
 }
 
-void Server::queWriteRequest() throw()
+void Server::queWriteRequest() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::queWriteRequest") );
     // Nothing needed!
 }
 
-void Server::inspectWriteQue() throw()
+void Server::inspectWriteQue() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::inspectWriteQue") );
 
@@ -547,14 +547,14 @@ void Server::inspectWriteQue() throw()
     }
 }
 
-void Server::clearWriteQue() throw()
+void Server::clearWriteQue() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::clearWriteQue") );
     m_writeRequests.clearTheList();
     m_writerPtr = 0;
 }
 
-void Server::verifyOpen() throw()
+void Server::verifyOpen() noexcept
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::verifyOpen") );
     if ( m_recordCount == 0 && !m_conversion )
@@ -570,27 +570,27 @@ void Server::verifyOpen() throw()
 
 
 /////////////////////////////////
-bool Server::isFileEof() throw()
+bool Server::isFileEof() noexcept
 {
     return m_fileResult == +Cpl::Dm::Persistence::Chunk::ServerResult::eEOF;
 }
 
-bool Server::isFileSuccess() throw()
+bool Server::isFileSuccess() noexcept
 {
     return m_fileResult == +Cpl::Dm::Persistence::Chunk::ServerResult::eSUCCESS;
 }
 
-bool Server::isFileBadData() throw()
+bool Server::isFileBadData() noexcept
 {
     return m_fileResult == +Cpl::Dm::Persistence::Chunk::ServerResult::eCORRUPT_DATA;
 }
 
-bool Server::isFileError() throw()
+bool Server::isFileError() noexcept
 {
     return m_fileResult == +Cpl::Dm::Persistence::Chunk::ServerResult::eERR_FILEIO || m_fileResult == +Cpl::Dm::Persistence::Chunk::ServerResult::eERR_NOT_A_MEDIA_FILE || m_fileResult == +Cpl::Dm::Persistence::Chunk::ServerResult::eERR_OPEN;
 }
 
-bool Server::isNotCompatible() throw()
+bool Server::isNotCompatible() noexcept
 {
     return m_fileResult == +Cpl::Dm::Persistence::Chunk::ServerResult::eWRONG_SCHEMA;
 }

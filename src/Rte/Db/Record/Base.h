@@ -88,7 +88,7 @@ public:
 
 public:
     /// Cpl::Container::MapItem
-    const Cpl::Container::Key& getKey() const throw();
+    const Cpl::Container::Key& getKey() const noexcept;
 
 
 
@@ -108,13 +108,13 @@ public:
 
 public: 
     /// See Rte::Db::Record::ApiLocal
-    void start( HandlerLocal& recordLayer ) throw();
+    void start( HandlerLocal& recordLayer ) noexcept;
 
     /// See Rte::Db::Record::ApiLocal
-    void stop() throw();
+    void stop() noexcept;
 
     /// See Rte::Db::Record::ApiLocal
-    void defaultContent() throw();
+    void defaultContent() noexcept;
 
     /// See Rte::Db::Record::Api
     Rte::Db::Chunk::Handle& getChunkHandle(void);
@@ -138,48 +138,48 @@ protected:
 
 protected:
     /// See Rte::Db::Record::FsmContext_
-    void connectToModel() throw();
+    void connectToModel() noexcept;
 
     /// See Rte::Db::Record::FsmContext_
-    void defaultData() throw();
+    void defaultData() noexcept;
 
     /// See Rte::Db::Record::FsmContext_
-    void disconnectFromModel() throw();
+    void disconnectFromModel() noexcept;
 
     /// See Rte::Db::Record::FsmContext_
-    void issueWrite() throw();
+    void issueWrite() noexcept;
 
     /// See Rte::Db::Record::FsmContext_
-    void markClean() throw();
+    void markClean() noexcept;
 
     /// See Rte::Db::Record::FsmContext_
-    void markDirty() throw();
+    void markDirty() noexcept;
 
     /// See Rte::Db::Record::FsmContext_
-    void startTimer() throw();
+    void startTimer() noexcept;
 
     /// See Rte::Db::Record::FsmContext_
-    void stopTimer() throw();
+    void stopTimer() noexcept;
 
     /// See Rte::Db::Record::FsmContext_
-    void tellInitialized() throw();
+    void tellInitialized() noexcept;
 
     /// See Rte::Db::Record::FsmContext_
-    void tellStartCompleted() throw();
+    void tellStartCompleted() noexcept;
 
     /// See Rte::Db::Record::FsmContext_
-    void tellStarting() throw();
+    void tellStarting() noexcept;
 
     /// See Rte::Db::Record::FsmContext_
-    void tellStopped() throw();
+    void tellStopped() noexcept;
 
 
 protected:
     /// See Rte::Db::Record::FsmContext_
-    bool isDirty() throw();
+    bool isDirty() noexcept;
 
     /// See Rte::Db::Record::FsmContext_
-    bool isLoadGood() throw();
+    bool isLoadGood() noexcept;
 
 
 protected:

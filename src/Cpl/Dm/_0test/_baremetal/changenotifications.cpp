@@ -43,7 +43,7 @@ public:
     EventFlagProcessing() {};
 
     ///
-    void processEventFlag( uint8_t eventNumber ) throw()
+    void processEventFlag( uint8_t eventNumber ) noexcept
     {
         static int count = 0;
         count++;
@@ -74,7 +74,7 @@ public:
     }
 
     /// Type safe change notification.  See Cpl::Dm::SubscriberApi
-    void modelPointChanged( Mp::Uint32& modelPointThatChanged ) throw()
+    void modelPointChanged( Mp::Uint32& modelPointThatChanged ) noexcept
     {
         m_count++;
 

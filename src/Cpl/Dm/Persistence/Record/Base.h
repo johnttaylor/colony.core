@@ -42,9 +42,9 @@ namespace Record {
 
     The concrete Record classes are required to the implemented the following
     methods:
-            void defaultData() throw()
-            void connectToModel() throw()
-            void disconnectFromModel() throw()
+            void defaultData() noexcept
+            void connectToModel() noexcept
+            void disconnectFromModel() noexcept
 
     The defaultData() method is responsible for updating all of the concrete
     Record's Model Point's to the appropriate default values.  Note: A Model
@@ -115,7 +115,7 @@ public:
 
 public:
     /// Cpl::Container::MapItem
-    const Cpl::Container::Key& getKey() const throw();
+    const Cpl::Container::Key& getKey() const noexcept;
 
 
 
@@ -134,13 +134,13 @@ public:
 
 public:
     /// See Cpl::Dm::Persistence::Record::Api_
-    void start( HandlerApi_& recordLayer ) throw();
+    void start( HandlerApi_& recordLayer ) noexcept;
 
     /// See Cpl::Dm::Persistence::Record::Api_
-    void stop() throw();
+    void stop() noexcept;
 
     /// See Cpl::Dm::Persistence::Record::Api_
-    void defaultContent() throw();
+    void defaultContent() noexcept;
 
     /// See Cpl::Dm::Persistence::Record::Api
     Cpl::Dm::Persistence::Chunk::Handle& getChunkHandle( void );
@@ -157,39 +157,39 @@ public:
 
 protected:
     /// See Cpl::Dm::Persistence::Record::FsmContext_
-    void issueWrite() throw();
+    void issueWrite() noexcept;
 
     /// See Cpl::Dm::Persistence::Record::FsmContext_
-    void markClean() throw();
+    void markClean() noexcept;
 
     /// See Cpl::Dm::Persistence::Record::FsmContext_
-    void markDirty() throw();
+    void markDirty() noexcept;
 
     /// See Cpl::Dm::Persistence::Record::FsmContext_
-    void startTimer() throw();
+    void startTimer() noexcept;
 
     /// See Cpl::Dm::Persistence::Record::FsmContext_
-    void stopTimer() throw();
+    void stopTimer() noexcept;
 
     /// See Cpl::Dm::Persistence::Record::FsmContext_
-    void tellInitialized() throw();
+    void tellInitialized() noexcept;
 
     /// See Cpl::Dm::Persistence::Record::FsmContext_
-    void tellStartCompleted() throw();
+    void tellStartCompleted() noexcept;
 
     /// See Cpl::Dm::Persistence::Record::FsmContext_
-    void tellStarting() throw();
+    void tellStarting() noexcept;
 
     /// See Cpl::Dm::Persistence::Record::FsmContext_
-    void tellStopped() throw();
+    void tellStopped() noexcept;
 
 
 protected:
     /// See Cpl::Dm::Persistence::Record::FsmContext_
-    bool isDirty() throw();
+    bool isDirty() noexcept;
 
     /// See Cpl::Dm::Persistence::Record::FsmContext_
-    bool isLoadGood() throw();
+    bool isLoadGood() noexcept;
 
 protected:
     /** This method is used by the concrete Record class to 'register' all of

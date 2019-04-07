@@ -158,7 +158,7 @@ Thread::~Thread()
 
 
 //////////////////////////////
-int Thread::signal() throw()
+int Thread::signal() noexcept
 {
     xTaskNotifyGive( m_threadHandle );
     return 0; // Always return success
@@ -169,7 +169,7 @@ int Thread::signal() throw()
           defined 'return zero on success' semantics.  This is to overcome
           the oddities of FreeRTOS.
  */
-int Thread::su_signal() throw()
+int Thread::su_signal() noexcept
 {
     BaseType_t higherPriorityTaskWoken = pdFALSE;
     vTaskNotifyGiveFromISR( m_threadHandle, &higherPriorityTaskWoken );
@@ -178,27 +178,27 @@ int Thread::su_signal() throw()
 
 
 
-const char* Thread::getName() throw()
+const char* Thread::getName() noexcept
 {
     return m_name;
 }
 
-size_t Thread::getId() throw()
+size_t Thread::getId() noexcept
 {
     return (size_t) m_threadHandle;
 }
 
-bool Thread::isRunning() throw()
+bool Thread::isRunning() noexcept
 {
     return m_runnable.isRunning();
 }
 
-Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) throw()
+Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) noexcept
 {
     return m_threadHandle;
 }
 
-Cpl::System::Runnable& Thread::getRunnable( void ) throw()
+Cpl::System::Runnable& Thread::getRunnable( void ) noexcept
 {
     return m_runnable;
 }
@@ -230,28 +230,28 @@ void Thread::entryPoint( void* data )
 
 
 //////////////////////////////
-Cpl::System::Thread& Cpl::System::Thread::getCurrent() throw()
+Cpl::System::Thread& Cpl::System::Thread::getCurrent() noexcept
 {
     return *((Thread*) xTaskGetApplicationTaskTag( xTaskGetCurrentTaskHandle() ));
 }
 
 
-void Cpl::System::Thread::wait() throw()
+void Cpl::System::Thread::wait() noexcept
 {
     ulTaskNotifyTake( pdFALSE, portMAX_DELAY );
 }
 
-bool Cpl::System::Thread::tryWait() throw()
+bool Cpl::System::Thread::tryWait() noexcept
 {
     return ulTaskNotifyTake( pdFALSE, 0 ) > 0;
 }
 
-bool Cpl::System::Thread::timedWait( unsigned long msecs ) throw()
+bool Cpl::System::Thread::timedWait( unsigned long msecs ) noexcept
 {
     return ulTaskNotifyTake( pdFALSE, msecs * portTICK_PERIOD_MS ) > 0;
 }
 
-const char* Cpl::System::Thread::myName() throw()
+const char* Cpl::System::Thread::myName() noexcept
 {
     // Provide some protection in case this method is called before the scheduler is running (e.g. called by the trace engine)
     if ( !Cpl::System::Api::isSchedulingEnabled() )
@@ -263,7 +263,7 @@ const char* Cpl::System::Thread::myName() throw()
 }
 
 
-size_t Cpl::System::Thread::myId() throw()
+size_t Cpl::System::Thread::myId() noexcept
 {
     // Provide some protection in case this method is called before the scheduler is running (e.g. called by the trace engine)
     if ( !Cpl::System::Api::isSchedulingEnabled() )
@@ -275,14 +275,14 @@ size_t Cpl::System::Thread::myId() throw()
 }
 
 
-void** Thread::getTlsArray() throw()
+void** Thread::getTlsArray() noexcept
 {
     return ((Cpl::System::FreeRTOS::Thread*) xTaskGetApplicationTaskTag( xTaskGetCurrentTaskHandle() ))->m_tlsArray;
 }
 
 
 //////////////////////////////
-void Cpl::System::Thread::traverse( Cpl::System::Thread::Traverser& client ) throw()
+void Cpl::System::Thread::traverse( Cpl::System::Thread::Traverser& client ) noexcept
 {
     Cpl::System::Mutex::ScopeBlock mylock( Cpl::System::Locks_::sysLists() );
     Cpl::System::FreeRTOS::Thread* t = threadList_.first();

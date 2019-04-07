@@ -28,19 +28,19 @@ static void dummy_( const char* f1, const char* f2, const char* f3, const char* 
 
 
 ///////////////////////////
-Trace::Trace( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+Trace::Trace( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept
 :Command(commandList, "trace")
     {
     }
 
-Trace::Trace( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+Trace::Trace( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
 :Command(commandList, "trace", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
     {
     }
 
 
 ///////////////////////////
-Cpl::TShell::Dac::Command::Result_T Trace::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Trace::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept
     {
     Cpl::Text::String&  token    = context.getTokenBuffer();
     Cpl::Text::String&  outtext  = context.getOutputBuffer();

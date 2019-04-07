@@ -31,12 +31,12 @@ Float::Float( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticIn
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-int8_t Float::read( float& dstData, uint16_t* seqNumPtr ) const throw()
+int8_t Float::read( float& dstData, uint16_t* seqNumPtr ) const noexcept
 {
     return ModelPointCommon_::read( &dstData, sizeof( float ), seqNumPtr );
 }
 
-uint16_t Float::write( float newValue, LockRequest_T lockRequest ) throw()
+uint16_t Float::write( float newValue, LockRequest_T lockRequest ) noexcept
 {
     return ModelPointCommon_::write( &newValue, sizeof( float ), lockRequest );
 }
@@ -46,29 +46,29 @@ uint16_t Float::readModifyWrite( Client& callbackClient, LockRequest_T lockReque
     return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
 }
 
-void Float::attach( Observer& observer, uint16_t initialSeqNumber ) throw()
+void Float::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
     ModelPointCommon_::attach( observer, initialSeqNumber );
 }
 
-void Float::detach( Observer& observer ) throw()
+void Float::detach( Observer& observer ) noexcept
 {
     ModelPointCommon_::detach( observer );
 }
 
-bool Float::isDataEqual_( const void* otherData ) const throw()
+bool Float::isDataEqual_( const void* otherData ) const noexcept
 {
     float left = *((float*) otherData);
     return Cpl::Math::areFloatsEqual( m_data, left );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-const char* Float::getTypeAsText() const throw()
+const char* Float::getTypeAsText() const noexcept
 {
     return "Cpl::Dm::Mp::Float";
 }
 
-bool Float::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
+bool Float::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const noexcept
 {
     // Get a snapshot of the my data and state
     m_modelDatabase.lock_();
@@ -92,7 +92,7 @@ bool Float::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequence
     return true;
 }
 
-const char* Float::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
+const char* Float::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) noexcept
 {
     const char*   result = 0;
     const char*   endptr;

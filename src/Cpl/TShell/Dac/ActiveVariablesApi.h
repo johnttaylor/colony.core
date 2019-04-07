@@ -33,7 +33,7 @@ public:
         the command can NOT be 'created' a new variable (e.g. out-of-memory)
         than 0 is returned. 
      */
-    virtual VariableApi* get( const Cpl::Container::Key& variableName ) throw() = 0;
+    virtual VariableApi* get( const Cpl::Container::Key& variableName ) noexcept = 0;
 
 
     /** This method searches - by variable name = the collection of active 
@@ -42,24 +42,24 @@ public:
         0 is returned.  This method is similiar to get() EXCEPT it does
         NOT attempt to create a new variable on the 'not-found' condition.
      */
-    virtual VariableApi* find( const Cpl::Container::Key& variableName ) throw() = 0;
+    virtual VariableApi* find( const Cpl::Container::Key& variableName ) noexcept = 0;
 
 
     /** This method is used to remove (i.e. 'destory') a variable from
         the active collection/state.
      */
-    virtual void remove( VariableApi& varNoLongerInUse ) throw() = 0;
+    virtual void remove( VariableApi& varNoLongerInUse ) noexcept = 0;
      
 
     /** This method returns the current number of active User variables
      */
-    virtual unsigned getUserCount() const throw() = 0;
+    virtual unsigned getUserCount() const noexcept = 0;
     
 
     /** This method returns the maximum number of active User variables allowed 
         and/or supported.
      */
-    virtual unsigned getMaxUserCount() const throw() = 0;
+    virtual unsigned getMaxUserCount() const noexcept = 0;
 
 
 public:
@@ -68,16 +68,16 @@ public:
         variables) prefix, e.g. leading underscore: '_errno'. System 
         variables cannot be remove once added.
      */
-    virtual void addSystem( VariableApi& systemVariable ) throw() = 0;
+    virtual void addSystem( VariableApi& systemVariable ) noexcept = 0;
 
 
 public:
     /// Returns the first active Variable in the collection.  Returns 0 if the collection is empty
-    virtual VariableApi* first() const throw() = 0;
+    virtual VariableApi* first() const noexcept = 0;
 
 
     /// Returns the nextactive Variable in the collection.  Returns 0 if there are no more variables in the collection
-    virtual VariableApi* next( VariableApi& current ) const throw() = 0;
+    virtual VariableApi* next( VariableApi& current ) const noexcept = 0;
 
 
 public:

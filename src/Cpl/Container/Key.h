@@ -73,10 +73,10 @@ public:
 
 public:
     /// Updates the Key's content value
-    void setValue( DATATYPE newValue ) throw();
+    void setValue( DATATYPE newValue ) noexcept;
 
     /// Returns the Key's content value
-    DATATYPE getKeyValue( void ) const throw();
+    DATATYPE getKeyValue( void ) const noexcept;
 
 
 public: // Cpl::Container::Key
@@ -153,7 +153,7 @@ public:
     /** Returns the Key's content value. Note: The returned values is NOT
         a null terminated string!
      */
-    inline const char* getKeyValue( size_t& lenOfStringInBytes ) const throw() { lenOfStringInBytes = m_len; return m_stringKeyPtr; }
+    inline const char* getKeyValue( size_t& lenOfStringInBytes ) const noexcept { lenOfStringInBytes = m_len; return m_stringKeyPtr; }
 
 public:
     /** Generic compare function for strings and string buffers
@@ -182,7 +182,7 @@ public:
 
 public:
     /// Returns the Key's content value
-    inline const char* getKeyValue( void ) const throw() { return m_stringKeyPtr; }
+    inline const char* getKeyValue( void ) const noexcept { return m_stringKeyPtr; }
 
     /// Cast to read-only character string pointer.
     inline operator const char* () const { return m_stringKeyPtr; }
@@ -206,13 +206,13 @@ Cpl::Container::KeyPlainType<DATATYPE>::KeyPlainType( DATATYPE initialValue )
 
 /////////////////
 template<class DATATYPE>
-void Cpl::Container::KeyPlainType<DATATYPE>::setValue( DATATYPE newValue ) throw()
+void Cpl::Container::KeyPlainType<DATATYPE>::setValue( DATATYPE newValue ) noexcept
 {
     m_keyData = newValue;
 }
 
 template<class DATATYPE>
-DATATYPE Cpl::Container::KeyPlainType<DATATYPE>::getKeyValue( void ) const throw()
+DATATYPE Cpl::Container::KeyPlainType<DATATYPE>::getKeyValue( void ) const noexcept
 {
     return m_keyData;
 }

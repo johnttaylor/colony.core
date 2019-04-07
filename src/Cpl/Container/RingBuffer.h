@@ -57,7 +57,7 @@ public:
         items that will fit in the memory allocated by 'memoryForElements' - it
         is NOT the number of bytes of 'memoryForElements'.
      */
-    RingBuffer( unsigned maxElements, ITEM memoryForElements[] ) throw();
+    RingBuffer( unsigned maxElements, ITEM memoryForElements[] ) noexcept;
 
 
 
@@ -67,7 +67,7 @@ public:
         return true if the operation was successful; else false is
         returned, i.e. the Ring buffer is/was empty.
      */
-    bool remove( ITEM& dst ) throw();
+    bool remove( ITEM& dst ) noexcept;
 
 
     /** The contents of 'item' will be copied into the Ring Buffer as the
@@ -75,43 +75,43 @@ public:
         successful; else false is returned, i.e. the Buffer was full prior to
         the attempted add().
      */
-    bool add( ITEM& item ) throw();
+    bool add( ITEM& item ) noexcept;
 
 
     /** Returns a pointer to the first item in the Buffer.
         The returned item remains in the buffer.  Returns 0
         if the Buffer is empty.
      */
-    ITEM* peekHead( void ) const throw();
+    ITEM* peekHead( void ) const noexcept;
 
 
     /** Returns a pointer to the last item in the Buffer.
         The returned item remains in the Buffer.  Returns 0
         if the Buffer is empty.
      */
-    ITEM* peekTail( void ) const throw();
+    ITEM* peekTail( void ) const noexcept;
 
 
 public:
     /** This method returns true if the Ring Buffer is empty
      */
-    bool isEmpty( void ) const throw();
+    bool isEmpty( void ) const noexcept;
 
     /** This method returns true if the Ring Buffer is full
      */
-    bool isFull( void ) const throw();
+    bool isFull( void ) const noexcept;
 
 
     /** This method returns the current number of items in
         the Ring Buffer
      */
-    unsigned getNumItems( void ) const throw();
+    unsigned getNumItems( void ) const noexcept;
 
 
     /** This method returns the maximum number of items that
         can be stored in the Ring buffer.
      */
-    unsigned getMaxItems( void ) const throw();
+    unsigned getMaxItems( void ) const noexcept;
 
 
 
@@ -119,7 +119,7 @@ public:
     /** Empties the Ring Buffer.  All references to the item(s) in the
         buffer are lost.
      */
-    void clearTheBuffer() throw();
+    void clearTheBuffer() noexcept;
 
 
 
@@ -138,21 +138,21 @@ private:
 
 
 template <class ITEM>
-RingBuffer<ITEM>::RingBuffer( unsigned maxElements, ITEM memoryForElements[] ) throw()
+RingBuffer<ITEM>::RingBuffer( unsigned maxElements, ITEM memoryForElements[] ) noexcept
     :m_headPtr( 0 ), m_tailPtr( 0 ), m_count( 0 ), m_max( maxElements ), m_endOfMemPtr( memoryForElements + maxElements ), m_elements( memoryForElements )
 {
 }
 
 
 template <class ITEM>
-inline void RingBuffer<ITEM>::clearTheBuffer() throw()
+inline void RingBuffer<ITEM>::clearTheBuffer() noexcept
 {
     m_count = 0;
 }
 
 
 template <class ITEM>
-inline bool RingBuffer<ITEM>::add( ITEM& item ) throw()
+inline bool RingBuffer<ITEM>::add( ITEM& item ) noexcept
 {
     if ( isFull() )
     {
@@ -177,7 +177,7 @@ inline bool RingBuffer<ITEM>::add( ITEM& item ) throw()
 }
 
 template <class ITEM>
-inline bool RingBuffer<ITEM>::remove( ITEM& dst ) throw()
+inline bool RingBuffer<ITEM>::remove( ITEM& dst ) noexcept
 {
     if ( isEmpty() )
     {
@@ -195,7 +195,7 @@ inline bool RingBuffer<ITEM>::remove( ITEM& dst ) throw()
 
 
 template <class ITEM>
-inline ITEM* RingBuffer<ITEM>::peekHead( void ) const throw()
+inline ITEM* RingBuffer<ITEM>::peekHead( void ) const noexcept
 {
     if ( isEmpty() )
     {
@@ -206,7 +206,7 @@ inline ITEM* RingBuffer<ITEM>::peekHead( void ) const throw()
 }
 
 template <class ITEM>
-inline ITEM* RingBuffer<ITEM>::peekTail( void ) const throw()
+inline ITEM* RingBuffer<ITEM>::peekTail( void ) const noexcept
 {
     if ( isEmpty() )
     {
@@ -218,25 +218,25 @@ inline ITEM* RingBuffer<ITEM>::peekTail( void ) const throw()
 
 
 template <class ITEM>
-inline bool RingBuffer<ITEM>::isEmpty( void ) const throw()
+inline bool RingBuffer<ITEM>::isEmpty( void ) const noexcept
 {
     return m_count == 0;
 }
 
 template <class ITEM>
-inline bool RingBuffer<ITEM>::isFull( void ) const throw()
+inline bool RingBuffer<ITEM>::isFull( void ) const noexcept
 {
     return m_count == m_max;
 }
 
 template <class ITEM>
-inline unsigned RingBuffer<ITEM>::getNumItems( void ) const throw()
+inline unsigned RingBuffer<ITEM>::getNumItems( void ) const noexcept
 {
     return m_count;
 }
 
 template <class ITEM>
-inline unsigned RingBuffer<ITEM>::getMaxItems( void ) const throw()
+inline unsigned RingBuffer<ITEM>::getMaxItems( void ) const noexcept
 {
     return m_max;
 }

@@ -31,12 +31,12 @@ Double::Double( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& static
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-int8_t Double::read( double& dstData, uint16_t* seqNumPtr ) const throw()
+int8_t Double::read( double& dstData, uint16_t* seqNumPtr ) const noexcept
 {
     return ModelPointCommon_::read( &dstData, sizeof( double ), seqNumPtr );
 }
 
-uint16_t Double::write( double newValue, LockRequest_T lockRequest ) throw()
+uint16_t Double::write( double newValue, LockRequest_T lockRequest ) noexcept
 {
     return ModelPointCommon_::write( &newValue, sizeof( double ), lockRequest );
 }
@@ -46,29 +46,29 @@ uint16_t Double::readModifyWrite( Client& callbackClient, LockRequest_T lockRequ
     return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
 }
 
-void Double::attach( Observer& observer, uint16_t initialSeqNumber ) throw()
+void Double::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
     ModelPointCommon_::attach( observer, initialSeqNumber );
 }
 
-void Double::detach( Observer& observer ) throw()
+void Double::detach( Observer& observer ) noexcept
 {
     ModelPointCommon_::detach( observer );
 }
 
-bool Double::isDataEqual_( const void* otherData ) const throw()
+bool Double::isDataEqual_( const void* otherData ) const noexcept
 {
     double left = *((double*) otherData);
     return Cpl::Math::areDoublesEqual( m_data, left );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-const char* Double::getTypeAsText() const throw()
+const char* Double::getTypeAsText() const noexcept
 {
     return "Cpl::Dm::Mp::Double";
 }
 
-bool Double::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
+bool Double::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const noexcept
 {
     // Get a snapshot of the my data and state
     m_modelDatabase.lock_();
@@ -92,7 +92,7 @@ bool Double::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenc
     return true;
 }
 
-const char* Double::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
+const char* Double::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) noexcept
 {
     const char*   result = 0;
     const char*   endptr;

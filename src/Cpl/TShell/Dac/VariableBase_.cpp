@@ -56,43 +56,43 @@ int VariableApi::compare( const char* leftValue, const char* rightValue )
     }      
 
 /////////////////////////////////////
-const char* VariableBase_::getName() const throw()
+const char* VariableBase_::getName() const noexcept
     {
     return m_name;
     }
 
-const char* VariableBase_::getValue() const throw()
+const char* VariableBase_::getValue() const noexcept
     {
     return m_value;
     }
 
 
 /////////////////////////////////////
-bool VariableBase_::setValue( const char* newValue ) throw()
+bool VariableBase_::setValue( const char* newValue ) noexcept
     {
     m_value = newValue;
     return m_value.truncated() == false;
     }
 
-bool VariableBase_::setValue( double newValue ) throw()
+bool VariableBase_::setValue( double newValue ) noexcept
     {
     m_value.format( "%f", newValue ); 
     return m_value.truncated() == false;
     }
 
-bool VariableBase_::setValue( long newValue ) throw()
+bool VariableBase_::setValue( long newValue ) noexcept
     {
     m_value = newValue;
     return m_value.truncated() == false;
     }
 
-bool VariableBase_::setValue( unsigned long newValue ) throw()
+bool VariableBase_::setValue( unsigned long newValue ) noexcept
     {
     m_value = newValue;
     return m_value.truncated() == false;
     }
 
-bool VariableBase_::setNumericValue( double newValue ) throw()
+bool VariableBase_::setNumericValue( double newValue ) noexcept
     {
     double intpart;
     double fracpart = modf( newValue, &intpart );
@@ -109,7 +109,7 @@ bool VariableBase_::setNumericValue( double newValue ) throw()
 
 
 /////////////////////////////////////
-bool VariableBase_::add( const char* amount ) throw()
+bool VariableBase_::add( const char* amount ) noexcept
     {
     double leftOper  = 0.0;
     double rightOper = 0.0;
@@ -126,12 +126,12 @@ bool VariableBase_::add( const char* amount ) throw()
 
 
 /////////////////////////////////////
-bool VariableBase_::getNumber( double& valueAsNumber ) const throw()
+bool VariableBase_::getNumber( double& valueAsNumber ) const noexcept
     {
     return Cpl::Text::a2d( valueAsNumber, m_value );
     }
 
-bool VariableBase_::getNumber( long& valueAsNumber ) const throw()
+bool VariableBase_::getNumber( long& valueAsNumber ) const noexcept
     {
     double value  = 0.0;
     bool   rc     = Cpl::Text::a2d( value, m_value );
@@ -139,7 +139,7 @@ bool VariableBase_::getNumber( long& valueAsNumber ) const throw()
     return rc;
     }
 
-bool VariableBase_::getNumber( unsigned long& valueAsNumber ) const throw()
+bool VariableBase_::getNumber( unsigned long& valueAsNumber ) const noexcept
     {
     double value  = 0.0;
     bool   rc     = Cpl::Text::a2d( value, m_value );

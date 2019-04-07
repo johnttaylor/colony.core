@@ -37,7 +37,7 @@ public:
         NOTE: This method is an 'in-thread' intialization, i.e. not thread
         safe.  The application is RESPONSIBLE for managing threading issues.
      */
-    virtual bool start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw() = 0;
+    virtual bool start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) noexcept = 0;
 
 
     /** This non-blocking method requests the Command Processor to stop.  When 
@@ -46,7 +46,7 @@ public:
         This method returns immediately.  There is no feedback/confirmation
         when the Command Processor stops.
      */
-    virtual void requestStop() throw() = 0;
+    virtual void requestStop() noexcept = 0;
 
 
 public:

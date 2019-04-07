@@ -17,19 +17,19 @@ using namespace Cpl::TShell::Dac::Cmd;
 using namespace Cpl::TShell::Dac;
 
 ///////////////////////////
-Inc::Inc( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+Inc::Inc( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept
 :Command(commandList, "inc")
     {
     }
 
-Inc::Inc( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+Inc::Inc( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
 :Command(commandList, "inc", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
     {
     }
 
 
 ///////////////////////////
-Cpl::TShell::Dac::Command::Result_T Inc::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Inc::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept
     {
     ActiveVariablesApi& vars  = context.getVariables();
 

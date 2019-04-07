@@ -139,7 +139,7 @@ public:
 
 public:
     ///
-    void processEventFlag( uint8_t eventNumber ) throw()
+    void processEventFlag( uint8_t eventNumber ) noexcept
     {
         if ( (1 << eventNumber) & m_expectedEvents )
         {
@@ -269,10 +269,10 @@ public:
 public: // AtomicRequest<ReadModifyWrite> methods
 
     /// Read the data
-    int getValue( void ) throw() { CPL_SYSTEM_TRACE_FUNC( SECT_ ); return m_value; }
+    int getValue( void ) noexcept { CPL_SYSTEM_TRACE_FUNC( SECT_ ); return m_value; }
 
     /// Write the data
-    void writeValue( int newValue ) throw() { CPL_SYSTEM_TRACE_FUNC( SECT_ ); m_value = newValue; }
+    void writeValue( int newValue ) noexcept { CPL_SYSTEM_TRACE_FUNC( SECT_ ); m_value = newValue; }
 
     /// Intercept base atomic-request call
     void request( ReqMsg& msg )
@@ -329,7 +329,7 @@ public:
 
 
 protected:
-    void expired( void ) throw()
+    void expired( void ) noexcept
     {
         if ( m_opened )
         {

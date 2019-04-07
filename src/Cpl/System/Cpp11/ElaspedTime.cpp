@@ -49,7 +49,7 @@ static RegisterInitHandler_ autoRegister_systemInit_hook_;
 
 
 ///////////////////////////////////////////////////////////////
-unsigned long ElapsedTime::millisecondsInRealTime( void ) throw()
+unsigned long ElapsedTime::millisecondsInRealTime( void ) noexcept
 {
     Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
 
@@ -61,7 +61,7 @@ unsigned long ElapsedTime::millisecondsInRealTime( void ) throw()
     return elaspedMsec_;
 }
 
-unsigned long ElapsedTime::secondsInRealTime( void ) throw()
+unsigned long ElapsedTime::secondsInRealTime( void ) noexcept
 {
     Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
 
@@ -73,7 +73,7 @@ unsigned long ElapsedTime::secondsInRealTime( void ) throw()
 }
 
 
-ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) throw()
+ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) noexcept
 {
     Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
 

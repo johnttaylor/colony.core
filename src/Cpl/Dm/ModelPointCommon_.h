@@ -59,63 +59,60 @@ protected:
 
 public:
     /// See Cpl::Dm::ModelPoint
-    const char* getName() const throw();
+    const char* getName() const noexcept;
 
     /// See Cpl::Dm::ModelPoint
-    uint16_t getSequenceNumber() const throw();
+    uint16_t getSequenceNumber() const noexcept;
 
     /// See Cpl::Dm::ModelPoint
-    uint16_t touch() throw();
+    uint16_t touch() noexcept;
 
     /// See Cpl::Dm::ModelPoint
-    uint16_t setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest = eNO_REQUEST ) throw();
+    uint16_t setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
     /// See Cpl::Dm::ModelPoint
-    int8_t getValidState( void ) const throw();
+    int8_t getValidState( void ) const noexcept;
 
     /// See Cpl::Dm::ModelPoint
-    bool isLocked() const throw();
+    bool isLocked() const noexcept;
 
     /// See Cpl::Dm::ModelPoint
-    uint16_t setLockState( LockRequest_T lockRequest ) throw();
-
-    /// See Cpl::Dm::ModelPoint
-    const char* fromString( const char* src, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw();
+    uint16_t setLockState( LockRequest_T lockRequest ) noexcept;
 
     /// See Cpl::Dm::ModelPoint 
-    size_t getExternalSize() const throw();
+    size_t getExternalSize() const noexcept;
 
     /// See Cpl::Dm::ModelPoint.  Note: The implementation does NOT account for Endianess, i.e. assumes the 'platform' is the same for export/import
-    size_t exportData( void* dstDataStream, size_t maxDstLength, uint16_t* retSequenceNumber = 0 ) const throw();
+    size_t exportData( void* dstDataStream, size_t maxDstLength, uint16_t* retSequenceNumber = 0 ) const noexcept;
 
     /// See Cpl::Dm::ModelPoint.  Note: The implementation does NOT account for Endianess, i.e. assumes the 'platform' is the same for export/import
-    size_t importData( const void* srcDataStream, size_t srcLength, uint16_t* retSequenceNumber = 0 ) throw();
+    size_t importData( const void* srcDataStream, size_t srcLength, uint16_t* retSequenceNumber = 0 ) noexcept;
 
 
 protected:
     /// See Cpl::Dm::ModelPoint
-    int8_t read( void* dstData, size_t dstSize, uint16_t* seqNumPtr=0 ) const throw();
+    int8_t read( void* dstData, size_t dstSize, uint16_t* seqNumPtr=0 ) const noexcept;
 
     /// See Cpl::Dm::ModelPoint
-    uint16_t write( const void* srcData, size_t srcSize, LockRequest_T lockRequest = eNO_REQUEST ) throw();
+    uint16_t write( const void* srcData, size_t srcSize, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
     /// See Cpl::Dm::ModelPoint
     uint16_t readModifyWrite( GenericRmwCallback& callbackClient, LockRequest_T lockRequest = eNO_REQUEST );
 
     /// See Cpl::Dm::ModelPoint
-    void attach( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
+    void attach( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
 
     /// See Cpl::Dm::ModelPoint 
-    void detach( SubscriberApi& observer ) throw();
+    void detach( SubscriberApi& observer ) noexcept;
 
 
 public:
     /// See Cpl::Container::DictItem
-    const Cpl::Container::Key& getKey() const throw();
+    const Cpl::Container::Key& getKey() const noexcept;
 
 public:
     /// See Cpl::Dm::ModelPoint
-    void processSubscriptionEvent_( SubscriberApi& subscriber, Event_T event ) throw();
+    void processSubscriptionEvent_( SubscriberApi& subscriber, Event_T event ) noexcept;
 
 
 protected:
@@ -125,21 +122,21 @@ protected:
 
         This method is NOT thread safe.
      */
-    virtual void processDataUpdated() throw();
+    virtual void processDataUpdated() noexcept;
 
     /** Internal helper method that handles generating change notifications
         when the Model Point's data/state has changed.
 
         This method is NOT thread safe.
      */
-    virtual void processChangeNotifications() throw();
+    virtual void processChangeNotifications() noexcept;
 
     /** Internal helper method that advances/updates the Model Point's
         sequence number.
 
         This method is NOT thread safe.
      */
-    virtual void advanceSequenceNumber() throw();
+    virtual void advanceSequenceNumber() noexcept;
 
     /** Internal helper method that manages testing and updating the locked
         state.
@@ -155,7 +152,7 @@ protected:
 
         This method is NOT thread safe.
      */
-    virtual bool testAndUpdateLock( LockRequest_T lockRequest ) throw();
+    virtual bool testAndUpdateLock( LockRequest_T lockRequest ) noexcept;
 
 
     /** Internal helper method that completes the data update process as well
@@ -164,30 +161,22 @@ protected:
 
         This method is NOT thread safe.
      */
-    virtual void processRmwCallbackResult( RmwCallbackResult_T result ) throw();
+    virtual void processRmwCallbackResult( RmwCallbackResult_T result ) noexcept;
 
 
 protected:
     /// Helper FSM method
-    virtual void transitionToNotifyPending( SubscriberApi& subscriber ) throw();
+    virtual void transitionToNotifyPending( SubscriberApi& subscriber ) noexcept;
 
     /// Helper FSM method
-    virtual void transitionToSubscribed( SubscriberApi& subscriber ) throw();
+    virtual void transitionToSubscribed( SubscriberApi& subscriber ) noexcept;
 
-protected:
-    /** Helper method for encoding Invalid & Locked states.  Returns false
-        when the MP's value is invalid; else true is returned.
-     */
-    virtual bool convertStateToText( Cpl::Text::String& dstMemory, bool& append, bool isLocked, int8_t validState ) const throw();
+    /// Helper method when converting MP to a JSON string
+    virtual JsonDocument& beginJSON( int8_t validState, bool locked, uint16_t seqnum ) noexcept;
 
-    /// Helper method that handles the lock/unlock/invalidate requests
-    virtual const char* parsePrefixOps( const char* source, LockRequest_T& lockRequest, int8_t& invalidAction, const char* terminationChars );
+    /// Helper method when converting MP to a JSON string
+    virtual void endJSON( char* dst, size_t dstSize, bool& truncated  ) noexcept;
 
-    /** Helper method that set's the MP Data value from a text string.  Has the
-        semantics of fromString() method.  This method MUST be implemented by
-        the leaf child classes.
-     */
-    virtual const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw() = 0;
 
 };
 

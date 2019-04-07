@@ -45,23 +45,23 @@ public:
 public:
     /** This method executes the command.  
      */
-    virtual Result_T execute( Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw() = 0;
+    virtual Result_T execute( Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept = 0;
 
 
 public:
     /// This method returns the command's verb string
-    virtual const char* getVerb() const throw() = 0;
+    virtual const char* getVerb() const noexcept = 0;
 
 
     /// This method returns the command's usage string
-    virtual const char* getUsage() const throw() = 0;
+    virtual const char* getUsage() const noexcept = 0;
 
 
     /** This method returns the command's detailed help string.  Detailed
         help is optional.  If the command does not support detailed help,
         then 0 is returned.
      */
-    virtual const char* getHelp() const throw() = 0;
+    virtual const char* getHelp() const noexcept = 0;
 
 
 protected:

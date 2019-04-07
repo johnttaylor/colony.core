@@ -122,37 +122,37 @@ Thread::~Thread()
 }
 
 //////////////////////////////
-int Thread::signal() throw()
+int Thread::signal() noexcept
 {
     return m_syncSema.signal();
 }
 
-int Thread::su_signal() throw()
+int Thread::su_signal() noexcept
 {
     return m_syncSema.su_signal();
 }
 
-const char* Thread::getName() throw()
+const char* Thread::getName() noexcept
 {
     return m_name;
 }
 
-size_t Thread::getId() throw()
+size_t Thread::getId() noexcept
 {
     return m_threadID;
 }
 
-bool Thread::isRunning() throw()
+bool Thread::isRunning() noexcept
 {
     return m_runnable.isRunning();
 }
 
-Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) throw()
+Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) noexcept
 {
     return m_thread.native_handle();
 }
 
-Cpl::System::Runnable& Thread::getRunnable( void ) throw()
+Cpl::System::Runnable& Thread::getRunnable( void ) noexcept
 {
     return m_runnable;
 }
@@ -177,7 +177,7 @@ void Thread::entryPoint( Thread* myThreadPtr )
 
 
 //////////////////////////////
-Cpl::System::Thread& Cpl::System::Thread::getCurrent() throw()
+Cpl::System::Thread& Cpl::System::Thread::getCurrent() noexcept
 {
     // Trap potential error
     if ( !cpl_system_cpp11_thread_mePtr_ )
@@ -189,35 +189,35 @@ Cpl::System::Thread& Cpl::System::Thread::getCurrent() throw()
 }
 
 
-void Cpl::System::Thread::wait() throw()
+void Cpl::System::Thread::wait() noexcept
 {
     ((Cpl::System::Cpp11::Thread*)(&getCurrent()))->m_syncSema.wait();
 }
 
-bool Cpl::System::Thread::tryWait() throw()
+bool Cpl::System::Thread::tryWait() noexcept
 {
     return ((Cpl::System::Cpp11::Thread*)(&getCurrent()))->m_syncSema.tryWait();
 }
 
-bool Cpl::System::Thread::timedWait( unsigned long timeout ) throw()
+bool Cpl::System::Thread::timedWait( unsigned long timeout ) noexcept
 {
     return ((Cpl::System::Cpp11::Thread*)(&getCurrent()))->m_syncSema.timedWait( timeout );
 }
 
-const char* Cpl::System::Thread::myName() throw()
+const char* Cpl::System::Thread::myName() noexcept
 {
     return ((Cpl::System::Cpp11::Thread*)(&getCurrent()))->m_name;
 }
 
 
-size_t Cpl::System::Thread::myId() throw()
+size_t Cpl::System::Thread::myId() noexcept
 {
     return ((Cpl::System::Cpp11::Thread*)(&getCurrent()))->m_threadID;
 }
 
 
 //////////////////////////////
-void Cpl::System::Thread::traverse( Cpl::System::Thread::Traverser& client ) throw()
+void Cpl::System::Thread::traverse( Cpl::System::Thread::Traverser& client ) noexcept
 {
     Cpl::System::Mutex::ScopeBlock mylock( Cpl::System::Locks_::sysLists() );
     Cpl::System::Cpp11::Thread* t = threadList_.first();

@@ -22,7 +22,7 @@ WriteSync::WriteSync( Cpl::Itc::PostApi& myMbox )
 
 
 ///////////////////
-void WriteSync::write( int newValue ) throw()
+void WriteSync::write( int newValue ) noexcept
 {
     WritePayload                  payload( newValue );
     Cpl::Itc::SyncReturnHandler   srh;

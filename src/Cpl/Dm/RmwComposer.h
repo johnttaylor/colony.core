@@ -58,7 +58,7 @@ public:
 
 public:
     /// See Cpl::Dm::ModelPointRmwCallback<DATA>
-    ModelPoint::RmwCallbackResult_T callback( DATA& data, int8_t validState ) throw();
+    ModelPoint::RmwCallbackResult_T callback( DATA& data, int8_t validState ) noexcept;
 
 };
 
@@ -75,7 +75,7 @@ Cpl::Dm::RmwComposer<CONTEXT, DATA>::RmwComposer( CONTEXT&       context,
 
 /////////////////
 template <class CONTEXT, class DATA>
-Cpl::Dm::ModelPoint::RmwCallbackResult_T Cpl::Dm::RmwComposer<CONTEXT, DATA>::callback( DATA& data, int8_t validState) throw()
+Cpl::Dm::ModelPoint::RmwCallbackResult_T Cpl::Dm::RmwComposer<CONTEXT, DATA>::callback( DATA& data, int8_t validState) noexcept
 {
     // Notify context
     return (m_context.*m_modifyCb)( data, validState );

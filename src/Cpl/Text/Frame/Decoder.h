@@ -74,7 +74,7 @@ public:
                  ONLY a buffer with 'frameSize' number of characters stored
                  in it. 
      */
-    virtual bool scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw() = 0;
+    virtual bool scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) noexcept = 0;
 
 
 public:

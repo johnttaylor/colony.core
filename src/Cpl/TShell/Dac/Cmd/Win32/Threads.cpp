@@ -19,12 +19,12 @@ using namespace Cpl::TShell::Dac::Cmd::Win32;
 
 
 ///////////////////////////
-Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept
 :Cpl::TShell::Dac::Cmd::Threads(commandList)
     {
     }
 
-Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
 :Cpl::TShell::Dac::Cmd::Threads(commandList, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
     {
     }

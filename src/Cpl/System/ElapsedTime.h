@@ -58,14 +58,14 @@ public:
         was powered on and/or reset.  The elapsed time is free running counter
         that will roll over once the range of the data type is exceeded.
      */
-    static unsigned long    seconds() throw();
+    static unsigned long    seconds() noexcept;
 
 
     /** This method returns the elapsed time, in milliseconds, since the system
         was powered on and/or reset.  The elapsed time is free running counter
         that will roll over once the range of the data type is exceeded.
      */
-    static unsigned long    milliseconds() throw();
+    static unsigned long    milliseconds() noexcept;
 
 
     /** This method returns the elapsed time, in seconds with milliseconds
@@ -73,7 +73,7 @@ public:
         second time is free running counter that will roll over once the range
         of the data type is exceeded.
      */
-    static Precision_T  precision() throw();
+    static Precision_T  precision() noexcept;
 
 
 public:
@@ -83,7 +83,7 @@ public:
         handles the scenario of when the has been 'roll over' between the
         two times.
      */
-    inline static unsigned long deltaMilliseconds( unsigned long startTime, unsigned long endTime = milliseconds() ) throw()
+    inline static unsigned long deltaMilliseconds( unsigned long startTime, unsigned long endTime = milliseconds() ) noexcept
     {
         return endTime - startTime;
     }
@@ -95,7 +95,7 @@ public:
         handles the scenario of when the has been 'roll over' between the
         two times.
      */
-    inline static unsigned long deltaSeconds( unsigned long startTime, unsigned long endTime = seconds() ) throw()
+    inline static unsigned long deltaSeconds( unsigned long startTime, unsigned long endTime = seconds() ) noexcept
     {
         return endTime - startTime;
     }
@@ -106,7 +106,7 @@ public:
         handles the scenario of when the has been 'roll over' between the
         two times.
      */
-    static Precision_T deltaPrecision( Precision_T startTime, Precision_T endTime = precision() ) throw();
+    static Precision_T deltaPrecision( Precision_T startTime, Precision_T endTime = precision() ) noexcept;
 
 
 public:
@@ -114,7 +114,7 @@ public:
         since the 'timeMarker'.  The calculation properly handles the scenario
         of when the has been 'roll over' between the 'timeMarker' and NOW.
      */
-    inline static bool expiredMilliseconds( unsigned long timeMarker, unsigned long duration, unsigned long currentTime = milliseconds() ) throw()
+    inline static bool expiredMilliseconds( unsigned long timeMarker, unsigned long duration, unsigned long currentTime = milliseconds() ) noexcept
     {
         return deltaMilliseconds( timeMarker, currentTime ) >= duration;
     }
@@ -123,7 +123,7 @@ public:
         since the 'timeMarker'.  The calculation properly handles the scenario
         of when the has been 'roll over' between the 'timeMarker' and NOW.
      */
-    inline static bool expiredSeconds( unsigned long timeMarker, unsigned long duration, unsigned long currentTime = seconds() ) throw()
+    inline static bool expiredSeconds( unsigned long timeMarker, unsigned long duration, unsigned long currentTime = seconds() ) noexcept
     {
         return deltaSeconds( timeMarker, currentTime ) >= duration;
     }
@@ -133,7 +133,7 @@ public:
         since the 'timeMarker'.  The calculation properly handles the scenario
         of when the has been 'roll over' between the 'timeMarker' and NOW.
      */
-    static bool expiredPrecision( Precision_T timeMarker, Precision_T duration, Precision_T currentTime = precision() ) throw();
+    static bool expiredPrecision( Precision_T timeMarker, Precision_T duration, Precision_T currentTime = precision() ) noexcept;
 
 
 
@@ -162,7 +162,7 @@ public:
         the application NOT CALL this method because then that code can NOT
         be simulated using the SimTick interface.
      */
-    static unsigned long    secondsInRealTime() throw();
+    static unsigned long    secondsInRealTime() noexcept;
 
 
     /** This method is the same as milliseconds(), EXCEPT that is ALWAYS
@@ -171,7 +171,7 @@ public:
         time.  It is recommended the application NOT CALL this method because
         then that code can NOT be simulated using the SimTick interface.
      */
-    static unsigned long    millisecondsInRealTime() throw();
+    static unsigned long    millisecondsInRealTime() noexcept;
 
 
     /** This method is the same as precision(), EXCEPT that is ALWAYS guaranteed
@@ -180,7 +180,7 @@ public:
         the application NOT CALL this method because then that code can NOT
         be simulated using the SimTick interface.
      */
-    static Precision_T      precisionInRealTime() throw();
+    static Precision_T      precisionInRealTime() noexcept;
 
 
 

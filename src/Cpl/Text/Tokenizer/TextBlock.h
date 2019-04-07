@@ -93,31 +93,31 @@ public:
         METHODS.  THE PARSED TOKENS ARE ONLY VALID IF THIS METHOD
         RETURNS TRUE!
      */
-    inline bool isValidTokens() const throw()       { return m_validTokens; }
+    inline bool isValidTokens() const noexcept       { return m_validTokens; }
       
             
     /// Returns the number of parameter fields in the Text block
-    inline unsigned numParameters() const throw()   { return m_count; }
+    inline unsigned numParameters() const noexcept   { return m_count; }
      
 
     /// Returns the Nth parameter (index starts with 0). Return a null pointer if index is out-of-range
-    const char* getParameter( unsigned index ) const throw();
+    const char* getParameter( unsigned index ) const noexcept;
     
 
     /// Returns true if the parsing stopped because the terminator character was encounter (vs. end-of-string)
-    inline bool isTerminated() const throw()        { return m_terminatorFound; }
+    inline bool isTerminated() const noexcept        { return m_terminatorFound; }
 
     
     /** Returns a pointer to the portion of the string that has not
         been tokenized, i.e. the first character AFTER the terminator 
         character.
      */
-    inline const char* remaining() const throw()    { return m_ptr; }
+    inline const char* remaining() const noexcept    { return m_ptr; }
 
 
 protected:
     /// Helpter method
-    void removeWhiteSpace( char* startOfTokenPtr, char* firstNonSpacePtr, char* lastNonSpacePtr ) throw();
+    void removeWhiteSpace( char* startOfTokenPtr, char* firstNonSpacePtr, char* lastNonSpacePtr ) noexcept;
 
 };
 

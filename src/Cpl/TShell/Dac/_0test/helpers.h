@@ -113,10 +113,10 @@ class Bob: public Cpl::TShell::Dac::Cmd::Command
 {
 public:
     /// See Cpl::TShell::Dac::Command
-    const char* getUsage() const throw()   { return "bob on|off [delay]"; }
+    const char* getUsage() const noexcept   { return "bob on|off [delay]"; }
 
     /// See Cpl::TShell::Dac::Command
-    const char* getHelp() const throw()    { return "  Sets the test trace output to on/off and delay time between msgs"; }
+    const char* getHelp() const noexcept    { return "  Sets the test trace output to on/off and delay time between msgs"; }
     
     ///
     Apple& m_app;
@@ -124,14 +124,14 @@ public:
      
 public:
     /// Constructor
-    Bob( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Apple& application ) throw()
+    Bob( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Apple& application ) noexcept
     :Command(commandList, "bob")
     ,m_app(application)
         {
         }
 
     /// Constructor
-    Bob( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Apple& application, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+    Bob( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Apple& application, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
     :Command(commandList, "bob", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
     ,m_app(application)
         {
@@ -140,7 +140,7 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Command
-    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept
         {
         Cpl::Text::String& token = context.getTokenBuffer();
 

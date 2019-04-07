@@ -28,7 +28,7 @@ public:
         the message to be processed after it has been retrieved from the
         mailbox.
      */
-    virtual void process() throw()=0;
+    virtual void process() noexcept=0;
 
 
 public:

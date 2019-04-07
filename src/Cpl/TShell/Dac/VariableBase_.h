@@ -42,42 +42,42 @@ public:
 
 public:
     /// See Cpl::Container::DictItem
-    const Cpl::Container::Key& getKey() const throw() { return m_name; }
+    const Cpl::Container::Key& getKey() const noexcept { return m_name; }
 
 
 public:
     /// See Cpl::TShell::Dac::VariableApi
-    const char* getName() const throw();
+    const char* getName() const noexcept;
 
     /// See Cpl::TShell::Dac::VariableApi
-    const char* getValue() const throw();
+    const char* getValue() const noexcept;
 
     /// See Cpl::TShell::Dac::VariableApi
-    bool setValue( const char* newValue ) throw();
+    bool setValue( const char* newValue ) noexcept;
 
     /// See Cpl::TShell::Dac::VariableApi
-    bool setValue( double newValue ) throw();
+    bool setValue( double newValue ) noexcept;
 
     /// See Cpl::TShell::Dac::VariableApi
-    bool setValue( long newValue ) throw();
+    bool setValue( long newValue ) noexcept;
 
     /// See Cpl::TShell::Dac::VariableApi
-    bool setValue( unsigned long newValue ) throw();
+    bool setValue( unsigned long newValue ) noexcept;
 
     /// See Cpl::TShell::Dac::VariableApi
-    bool setNumericValue( double newValue ) throw();
+    bool setNumericValue( double newValue ) noexcept;
 
     /// See Cpl::TShell::Dac::VariableApi
-    bool add( const char* amount ) throw();
+    bool add( const char* amount ) noexcept;
 
     /// See Cpl::TShell::Dac::VariableApi
-    bool getNumber( double& valueAsNumber ) const throw();
+    bool getNumber( double& valueAsNumber ) const noexcept;
 
     /// See Cpl::TShell::Dac::VariableApi
-    bool getNumber( long& valueAsNumber ) const throw();
+    bool getNumber( long& valueAsNumber ) const noexcept;
 
     /// See Cpl::TShell::Dac::VariableApi
-    bool getNumber( unsigned long& valueAsNumber ) const throw();
+    bool getNumber( unsigned long& valueAsNumber ) const noexcept;
 
 
 protected:

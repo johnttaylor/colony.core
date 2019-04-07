@@ -38,14 +38,14 @@ public:
         before the call to opendDatabase(). The Chunk Layer is responsible for
         signing (i.e. writing the db signature string)  new db files.
      */
-    virtual Cpl::Io::File::InputOutputApi* openDatabase( bool& newfile ) throw() = 0;
+    virtual Cpl::Io::File::InputOutputApi* openDatabase( bool& newfile ) noexcept = 0;
 
 
     /** This method closes the associated database file.  If this method is
         called when the db file is not in the open state - no error is
         generated. 
      */
-    virtual void closeDatabase() throw() = 0;
+    virtual void closeDatabase() noexcept = 0;
 
 
 public:
@@ -54,7 +54,7 @@ public:
         database file is in the CLOSED state. The method returns true if 
         successful; else false is returned.
      */
-    virtual bool deleteDatabase() throw() = 0;
+    virtual bool deleteDatabase() noexcept = 0;
 
 
 public:

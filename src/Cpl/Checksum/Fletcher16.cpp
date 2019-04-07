@@ -15,13 +15,13 @@
 using namespace Cpl::Checksum;
 
 ///////////////////////////////////////
-Fletcher16::Fletcher16() throw()
+Fletcher16::Fletcher16() noexcept
     {
     reset();
     }
 
 
-void Fletcher16::reset(void) throw()
+void Fletcher16::reset(void) noexcept
     {
     m_sum1 = 0;
     m_sum2 = 0;
@@ -29,7 +29,7 @@ void Fletcher16::reset(void) throw()
 
 
 ///////////////////////////////////////
-void Fletcher16::accumulate( void* bytes, unsigned numbytes ) throw()
+void Fletcher16::accumulate( void* bytes, unsigned numbytes ) noexcept
     {
     unsigned i;
     uint8_t* ptr = (uint8_t*) bytes;
@@ -40,7 +40,7 @@ void Fletcher16::accumulate( void* bytes, unsigned numbytes ) throw()
         }
     }
 
-uint16_t Fletcher16::finalize( void* destBuffer ) throw()
+uint16_t Fletcher16::finalize( void* destBuffer ) noexcept
     {
     uint8_t sumlo = 255 - (((uint16_t)m_sum1 + (uint16_t)m_sum2) % 255 );
     uint8_t sumhi = 255 - (((uint16_t)m_sum1 + (uint16_t)sumlo) % 255 );
@@ -55,7 +55,7 @@ uint16_t Fletcher16::finalize( void* destBuffer ) throw()
     return ((uint16_t)sumlo) + (((uint16_t)sumhi) << 8 );
     }
 
-bool Fletcher16::isOkay(void) throw()
+bool Fletcher16::isOkay(void) noexcept
     {
     return m_sum1 == 0 && m_sum2 == 0;
     }

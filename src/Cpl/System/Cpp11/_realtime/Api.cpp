@@ -8,7 +8,7 @@ using namespace Cpl::System;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void Api::sleep( unsigned long milliseconds ) throw()
+void Api::sleep( unsigned long milliseconds ) noexcept
 {
     std::this_thread::sleep_for( std::chrono::milliseconds( milliseconds ) );
 }

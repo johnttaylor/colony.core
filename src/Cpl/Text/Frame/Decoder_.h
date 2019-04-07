@@ -52,21 +52,21 @@ public:
 
 public:
     /// See Cpl::Text::Frame::Decoder
-    bool scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw();
+    bool scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) noexcept;
 
 
 protected:
     /// Returns true if at start-of-frame
-    virtual bool isStartOfFrame() throw() = 0;
+    virtual bool isStartOfFrame() noexcept = 0;
     
     /// Returns true if at end-of-frame
-    virtual bool isEofOfFrame() throw() = 0;
+    virtual bool isEofOfFrame() noexcept = 0;
 
     /// Returns true if the start of the start of a escape sequence has been detected
-    virtual bool isEscapeChar() throw() = 0;
+    virtual bool isEscapeChar() noexcept = 0;
 
     /// Returns true if the current character is a legal/valid within a frame
-    virtual bool isLegalCharacter() throw() = 0;
+    virtual bool isLegalCharacter() noexcept = 0;
 
     /** Attempts to read the specified number of bytes from the "input source"
         in the supplied buffer.  The actual number of bytes read is returned via 

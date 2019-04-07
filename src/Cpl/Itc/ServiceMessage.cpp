@@ -16,12 +16,12 @@ using namespace Cpl::Itc;
 
 
 /////////////////////////////////////
-ServiceMessage::ServiceMessage( ReturnHandler& rh ) throw()
+ServiceMessage::ServiceMessage( ReturnHandler& rh ) noexcept
     :m_rh( rh )
 {
 }
 
-void ServiceMessage::returnToSender() throw()
+void ServiceMessage::returnToSender() noexcept
 {
     m_rh.rts();
 }

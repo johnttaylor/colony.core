@@ -33,7 +33,7 @@ bool Item::insert_( void* newContainerPtr )
     }
 }
 
-bool Item::isInContainer_( const void* containerPtr ) const throw()
+bool Item::isInContainer_( const void* containerPtr ) const noexcept
 {
     if ( m_inListPtr_ != containerPtr )
     {
@@ -42,7 +42,7 @@ bool Item::isInContainer_( const void* containerPtr ) const throw()
     return true;
 }
 
-void Item::remove_( Item* itemPtr ) throw()
+void Item::remove_( Item* itemPtr ) noexcept
 {
     if ( itemPtr )
     {

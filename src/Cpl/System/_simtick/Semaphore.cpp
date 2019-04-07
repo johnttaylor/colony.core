@@ -23,7 +23,7 @@ using namespace Cpl::System;
 
 
 //////////////////////////////////////////////////
-bool Semaphore::timedWait( unsigned long milliseconds ) throw()
+bool Semaphore::timedWait( unsigned long milliseconds ) noexcept
 {
     // If not a simulated-tick thread -->do a 'regular Semaphore timed wait
     if ( !SimTick::usingSimTicks() )
@@ -54,7 +54,7 @@ bool Semaphore::timedWait( unsigned long milliseconds ) throw()
 }
 
 
-void Semaphore::wait( void ) throw()
+void Semaphore::wait( void ) noexcept
 {
     // If not a simulated-tick thread -->do a 'regular Semaphore wait
     if ( !SimTick::usingSimTicks() )

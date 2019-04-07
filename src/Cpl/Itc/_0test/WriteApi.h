@@ -21,7 +21,7 @@ class WriteApi
 {
 public:
     /// Synchronously writes a new value to the model
-    virtual void write( int newValue ) throw() = 0;
+    virtual void write( int newValue ) noexcept = 0;
 
 
 public:

@@ -26,87 +26,87 @@ class HandlerFsmContext_
 {
 public:
     /// Action
-    virtual void ackDbStopped() throw() = 0;
+    virtual void ackDbStopped() noexcept = 0;
 
     /// Action
-    virtual void ackOpenDone() throw() = 0;
+    virtual void ackOpenDone() noexcept = 0;
 
     /// Action
-    virtual void ackRead() throw() = 0;
+    virtual void ackRead() noexcept = 0;
 
     /// Action
-    virtual void ackWrite() throw() = 0;
+    virtual void ackWrite() noexcept = 0;
 
     /// Action
-    virtual void clearWriteQue() throw() = 0;
+    virtual void clearWriteQue() noexcept = 0;
 
     /// Action
-    virtual void consumeNoWrite() throw() = 0;
+    virtual void consumeNoWrite() noexcept = 0;
 
     /// Action
-    virtual void defaultAllRecords() throw() = 0;
+    virtual void defaultAllRecords() noexcept = 0;
 
     /// Action
-    virtual void inspectWriteQue() throw() = 0;
+    virtual void inspectWriteQue() noexcept = 0;
 
     /// Action
-    virtual void nakOpenDone() throw() = 0;
+    virtual void nakOpenDone() noexcept = 0;
 
     /// Action
-    virtual void nakWrite() throw() = 0;
+    virtual void nakWrite() noexcept = 0;
 
     /// Action
-    virtual void queWriteRequest() throw() = 0;
+    virtual void queWriteRequest() noexcept = 0;
 
     /// Action
-    virtual void reportDataCorruptError() throw() = 0;
+    virtual void reportDataCorruptError() noexcept = 0;
 
     /// Action
-    virtual void reportFileReadError() throw() = 0;
+    virtual void reportFileReadError() noexcept = 0;
 
     /// Action
-    virtual void reportFileWriteError() throw() = 0;
+    virtual void reportFileWriteError() noexcept = 0;
 
     /// Action
-    virtual void reportIncompatible() throw() = 0;
+    virtual void reportIncompatible() noexcept = 0;
 
     /// Action
-    virtual void reportMinorUpgrade() throw() = 0;
+    virtual void reportMinorUpgrade() noexcept = 0;
 
     /// Action
-    virtual void requestDbClear() throw() = 0;
+    virtual void requestDbClear() noexcept = 0;
 
     /// Action
-    virtual void requestDbClose() throw() = 0;
+    virtual void requestDbClose() noexcept = 0;
 
     /// Action
-    virtual void requestDbOpen() throw() = 0;
+    virtual void requestDbOpen() noexcept = 0;
 
     /// Action
-    virtual void requestDbRead() throw() = 0;
+    virtual void requestDbRead() noexcept = 0;
 
     /// Action
-    virtual void requestDbWrite() throw() = 0;
+    virtual void requestDbWrite() noexcept = 0;
 
     /// Action
-    virtual void verifyOpen() throw() = 0;
+    virtual void verifyOpen() noexcept = 0;
 
 
 public:
     /// Guard
-    virtual bool isDbBadData() throw() = 0;
+    virtual bool isDbBadData() noexcept = 0;
 
     /// Guard
-    virtual bool isDbEof() throw() = 0;
+    virtual bool isDbEof() noexcept = 0;
 
     /// Guard
-    virtual bool isDbError() throw() = 0;
+    virtual bool isDbError() noexcept = 0;
 
     /// Guard
-    virtual bool isDbSuccess() throw() = 0;
+    virtual bool isDbSuccess() noexcept = 0;
 
     /// Guard
-    virtual bool isNotCompatible() throw() = 0;
+    virtual bool isNotCompatible() noexcept = 0;
 
 
 public:

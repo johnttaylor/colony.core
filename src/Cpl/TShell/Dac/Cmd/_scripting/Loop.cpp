@@ -17,7 +17,7 @@ using namespace Cpl::TShell::Dac::Cmd;
 using namespace Cpl::TShell::Dac;
 
 ///////////////////////////
-Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept
 :Command(commandList, "loop")
 ,m_state(eIDLE)
 ,m_level(0)
@@ -25,7 +25,7 @@ Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw(
     {
     }
 
-Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
 :Command(commandList, "loop", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
 ,m_state(eIDLE)
 ,m_level(0)
@@ -35,7 +35,7 @@ Loop::Loop( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const c
 
 
 ///////////////////////////
-Cpl::TShell::Dac::Command::Result_T Loop::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Loop::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept
     {
     ActiveVariablesApi& vars      = context.getVariables();
     Cpl::Text::String&  token     = context.getTokenBuffer();

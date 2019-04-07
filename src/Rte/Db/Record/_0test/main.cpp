@@ -109,7 +109,7 @@ public:
 
 public:
     /// See Rte::Db::Chunk::Media
-    Cpl::Io::File::InputOutputApi* openDatabase( bool& newfile ) throw()
+    Cpl::Io::File::InputOutputApi* openDatabase( bool& newfile ) noexcept
         {
         return 0;
         }

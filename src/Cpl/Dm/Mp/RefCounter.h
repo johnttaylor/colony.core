@@ -66,41 +66,37 @@ public:
               to zero, i.e. calling increment() when the Model Point is in the
               invalid state will result the counter being set to 1.
      */
-    uint16_t setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest = eNO_REQUEST ) throw();
+    uint16_t setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
     /// Reads the current counter value
-    virtual int8_t read( uint32_t& dstData, uint16_t* seqNumPtr=0 ) const throw();
+    virtual int8_t read( uint32_t& dstData, uint16_t* seqNumPtr=0 ) const noexcept;
 
     /// Increments the counter
-    virtual uint16_t increment( uint32_t incrementAmount=1, LockRequest_T lockRequest = eNO_REQUEST ) throw();
+    virtual uint16_t increment( uint32_t incrementAmount=1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
     /// Decrements the counter
-    virtual uint16_t decrement( uint32_t decrementAmount=1, LockRequest_T lockRequest = eNO_REQUEST ) throw();
+    virtual uint16_t decrement( uint32_t decrementAmount=1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
  
     /// Resets the counter to zero (or to a specific value)
-    virtual uint16_t reset( uint32_t newValue=0, LockRequest_T lockRequest = eNO_REQUEST ) throw();
+    virtual uint16_t reset( uint32_t newValue=0, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
 public:
     /// Type safe subscriber
     typedef Cpl::Dm::Subscriber<RefCounter> Observer;
 
     /// Type safe register observer
-    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
+    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
 
     /// Type safe un-register observer
-    virtual void detach( Observer& observer ) throw();
+    virtual void detach( Observer& observer ) noexcept;
 
 
 public:
     ///  See Cpl::Dm::ModelPoint.
-    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const throw();
+    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const noexcept;
 
     ///  See Cpl::Dm::ModelPoint.
-    const char* getTypeAsText() const throw();
-
-protected:
-    /// See Cpl::Dm::ModelPointCommon_.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw();
+    const char* getTypeAsText() const noexcept;
 };
 
 

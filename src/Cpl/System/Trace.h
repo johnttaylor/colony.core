@@ -175,7 +175,7 @@ public:
         NOTE: NEVER call this method directly -->use the CPL_SYSTEM_TRACE_xxx()
               macros.
      */
-    static InfoLevel_T getInfoLevel_( void ) throw();
+    static InfoLevel_T getInfoLevel_( void ) noexcept;
 
     /** This method enables the output/logging of trace message at run-time for
         the specified 'section'.  A 'section' name can NOT contain any white
@@ -287,7 +287,7 @@ public:
 
         NOTE: The Application is RESPONSIBLE for implementing this method!
      */
-    static Cpl::Io::Output* getDefaultOutputStream_( void ) throw();
+    static Cpl::Io::Output* getDefaultOutputStream_( void ) noexcept;
 
 
 protected:

@@ -41,7 +41,7 @@ public:
     EventFlagProcessing( uint8_t exitEventNum ):m_eventCount( 0 ), m_eventsReceived( 0 ), m_exitEventNum( exitEventNum ) {};
 
     ///
-    void processEventFlag( uint8_t eventNumber ) throw()
+    void processEventFlag( uint8_t eventNumber ) noexcept
     {
         m_eventCount++;
         m_eventsReceived |= 1 << eventNumber;
@@ -64,7 +64,7 @@ public:
     ///
     TestTimer( TimerManager& timingSource, const char* name, unsigned long duration, int exitCount ):Timer( timingSource ), m_name( name ), m_duration( duration ), m_count( 0 ), m_exitCount( exitCount ) {}
 
-    void expired( void ) throw()
+    void expired( void ) noexcept
     {
         m_count++;
         int abs_exitCount = abs( m_exitCount );

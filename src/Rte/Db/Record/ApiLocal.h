@@ -34,16 +34,16 @@ public:
     /** This method starts/initializes the Record.  A Record can be restartd after
         stop() is called
      */
-    virtual void start( HandlerLocal& recordHandler ) throw() = 0;
+    virtual void start( HandlerLocal& recordHandler ) noexcept = 0;
 
     /** This method stops the Record.
      */
-    virtual void stop() throw() = 0;
+    virtual void stop() noexcept = 0;
 
     /** This method is used to default the data contents of the Record to its
         default value(s).
      */
-    virtual void defaultContent() throw() = 0;
+    virtual void defaultContent() noexcept = 0;
 
 
 public:

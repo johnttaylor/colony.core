@@ -32,12 +32,12 @@ Bool::Bool( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo
 
 
 ///////////////////////////////////////////////////////////////////////////////
-int8_t Bool::read( bool& dstData, uint16_t* seqNumPtr ) const throw()
+int8_t Bool::read( bool& dstData, uint16_t* seqNumPtr ) const noexcept
 {
     return ModelPointCommon_::read( &dstData, sizeof( bool ), seqNumPtr );
 }
 
-uint16_t Bool::write( bool newValue, LockRequest_T lockRequest ) throw()
+uint16_t Bool::write( bool newValue, LockRequest_T lockRequest ) noexcept
 {
     return ModelPointCommon_::write( &newValue, sizeof( bool ), lockRequest );
 }
@@ -47,24 +47,24 @@ uint16_t Bool::readModifyWrite( Client& callbackClient, LockRequest_T lockReques
     return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
 }
 
-void Bool::attach( Observer& observer, uint16_t initialSeqNumber ) throw()
+void Bool::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
     ModelPointCommon_::attach( observer, initialSeqNumber );
 }
 
-void Bool::detach( Observer& observer ) throw()
+void Bool::detach( Observer& observer ) noexcept
 {
     ModelPointCommon_::detach( observer );
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-const char* Bool::getTypeAsText() const throw()
+const char* Bool::getTypeAsText() const noexcept
 {
     return "Cpl::Dm::Mp::Bool";
 }
 
-bool Bool::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
+bool Bool::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const noexcept
 {
     // Get a snapshot of the my data and state
     m_modelDatabase.lock_();
@@ -88,7 +88,7 @@ bool Bool::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceN
     return true;
 }
 
-const char* Bool::setFromText( const char* srcText, LockRequest_T lockAction, const char* not_usedterminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
+const char* Bool::setFromText( const char* srcText, LockRequest_T lockAction, const char* not_usedterminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) noexcept
 {
     const char*   result = 0;
     const char*   endptr;

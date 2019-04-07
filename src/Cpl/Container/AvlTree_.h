@@ -51,7 +51,7 @@ private:
     {
     public:
         /// 
-        const Key& getKey() const throw();
+        const Key& getKey() const noexcept;
         /// 
         int compareKey( const Key& key ) const;
         /// 

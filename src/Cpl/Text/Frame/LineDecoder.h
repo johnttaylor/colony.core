@@ -69,7 +69,7 @@ public:
 
 protected:
     /// See Cpl::Text::Frame::Decoder_
-    bool isStartOfFrame() throw()   
+    bool isStartOfFrame() noexcept   
         { 
         // Convert tabs (when feature is enabled)
         if ( *m_dataPtr == '\t' && m_convertTabs != '\t'  )
@@ -95,13 +95,13 @@ protected:
         }
     
     /// See Cpl::Text::Frame::Decoder_
-    bool isEofOfFrame() throw()     { return *m_dataPtr == 0x0A || *m_dataPtr == 0x0D; }
+    bool isEofOfFrame() noexcept     { return *m_dataPtr == 0x0A || *m_dataPtr == 0x0D; }
 
     /// See Cpl::Text::Frame::Decoder_
-    bool isEscapeChar() throw()     { return false; }
+    bool isEscapeChar() noexcept     { return false; }
 
     /// See Cpl::Text::Frame::Decoder_
-    bool isLegalCharacter() throw() 
+    bool isLegalCharacter() noexcept 
         {
         // Convert tabs (when feature is enabled)
         if ( *m_dataPtr == '\t' && m_convertTabs != '\t'  )

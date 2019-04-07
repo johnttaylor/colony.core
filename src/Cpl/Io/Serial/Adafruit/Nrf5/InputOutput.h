@@ -81,7 +81,7 @@ public:
               the start() method MUST be called BEFORE the Cpl::System::Initialize()
               method is called.
      */
-    void start( unsigned long baudrate=115200, uint16_t config = SERIAL_8N1 ) throw();
+    void start( unsigned long baudrate=115200, uint16_t config = SERIAL_8N1 ) noexcept;
 
     /** This method return true when UART is 'ready'
      */

@@ -12,6 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
+#include "Cpl/Text/String.h"
 
 ///
 namespace Cpl {
@@ -45,7 +46,7 @@ public:
               register with their assigned Model Database when the Model Points
               are created.
      */
-    virtual ModelPoint* lookupModelPoint( const char* modelPointName ) const throw() = 0;
+    virtual ModelPoint* lookupModelPoint( const char* modelPointName ) noexcept = 0;
 
 
 public:
@@ -53,14 +54,51 @@ public:
         The model points are traversed in order by model point name.  If there
         are not Model Points in the Database, the method returns 0.
      */
-    virtual ModelPoint* getFirstByName() const throw() = 0;
+    virtual ModelPoint* getFirstByName() noexcept = 0;
 
     /** This method returns the next (in sorted order) Model Point in the
         Database. If the current model point is the last Model Point in the
         Database the method returns 0.
      */
-    virtual ModelPoint* getNextByName( ModelPoint& currentModelPoint ) const throw() = 0;
+    virtual ModelPoint* getNextByName( ModelPoint& currentModelPoint ) noexcept = 0;
 
+
+public:
+    /** This method attempts to convert the null terminated JSON formated 'src' 
+        string to its binary format and copies the result to the Model Point's 
+        internal data. The expected format of the JSON string is specific to 
+        the concrete leaf class.
+
+        The method optional returns - via 'retMp' - a pointer to the Model Point
+        identified by <mpname>.  If the method false return, then 'retMp' has
+        no meaning.
+
+        The method optional returns - via 'retSequenceNumber' - the Model Point's
+        sequence number after the conversion. If the method false return, then 
+        'retSequenceNumber' has no meaning.
+
+        If the conversion is successful true is returned. If the contents of 
+        the 'src' is not a valid JSON object and/or not parse-able, OR the Point 
+        does not support a full/complete conversion from Text to binary, OR 
+        the conversion fails, OR the specified model point name does not exist
+        then the method returns false.  When the conversion fails, the optional 
+        'errorMsg' argument is updated with a plain text error message.
+
+        
+        The general input format: 
+        \code
+
+        { name="<mpname>", locked=true|false }              // Locks/unlocks the MP
+        { name="<mpname>", valid=1 }                    // Invalidates the MP
+        { name="<mpname>", valid=22 }                   // Invalidates the MP with a non-default invalid state/value
+        { name="<mpname>", valid=1, locked=true }       // Invalidates the MP and locks the MP
+        { name="<mpname>", val:<value> }                    // Writes a new (valid) value to the MP
+        { name="<mpname>", val:<value>, locked=true }       // Writes a new (valid) value to the MP and locks the MP
+
+         
+        \endcode
+     */
+    virtual bool fromJSON( const char* src, Cpl::Text::String* errorMsg=0, ModelPoint** retMp = 0, uint16_t* retSequenceNumber=0 ) noexcept = 0;
 
 public:
     /// Virtual destructor to make the compiler happy

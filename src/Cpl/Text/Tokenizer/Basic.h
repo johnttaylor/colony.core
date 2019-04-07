@@ -55,13 +55,13 @@ public:
         or the string has already been completed tokenized. NOTE: This
         method is also used to get the 'first' token.
      */
-    const char* next() throw();
+    const char* next() noexcept;
 
     /** Returns a pointer to the portion of the string that has not
         been tokenized, i.e. the first character AFTER the delimiter character
         that marked the end of the current token to End-of-String.  
      */
-    inline const char* remaining() const throw() { return m_ptr; }
+    inline const char* remaining() const noexcept { return m_ptr; }
 
 
 public:
@@ -70,11 +70,11 @@ public:
         then 0 is returned.  Typically this method is called once the entire
         string has been tokenized.
      */
-    const char* getToken( unsigned n ) const throw();
+    const char* getToken( unsigned n ) const noexcept;
 
     /** Returns the number of tokens parsed to-date.
      */
-    inline unsigned numTokens() const throw() { return m_count; }
+    inline unsigned numTokens() const noexcept { return m_count; }
 
 };
 

@@ -36,7 +36,7 @@ public:
         returns immediately. The client relinquishes ownership of the memory
         until the message's returnToSender() function is invoked.
      */
-    virtual void post( Message& msg ) throw()=0;
+    virtual void post( Message& msg ) noexcept=0;
 
     /** This operation is called by clients which wish to send a message
         to the owner of this mailbox, and then block on the client's thread
@@ -44,7 +44,7 @@ public:
         for the mailbox owner to receive. Next, the client waits on its
         thread semaphore until the semaphore is signaled.
      */
-    virtual void postSync( Message& msg ) throw()=0;
+    virtual void postSync( Message& msg ) noexcept=0;
 
 
 public:

@@ -39,7 +39,7 @@ private:
 
 public:
     /// Constructor
-    AtomicSync( PostApi& myMbox ) throw();
+    AtomicSync( PostApi& myMbox ) noexcept;
 
 public:
     /// See AtomicApi
@@ -52,7 +52,7 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 
 template <class ACCESS_API>
-AtomicSync<ACCESS_API>::AtomicSync( PostApi& myMbox ) throw()
+AtomicSync<ACCESS_API>::AtomicSync( PostApi& myMbox ) noexcept
     :m_mbox( myMbox )
 {
 }

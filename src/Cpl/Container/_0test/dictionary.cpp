@@ -52,7 +52,7 @@ public:
 
 public:
     ///  API from SortedItem
-    const Key& getKey() const throw() { return *this; }
+    const Key& getKey() const noexcept { return *this; }
     
 };
 
@@ -72,7 +72,7 @@ public:
 
 public:
     ///  API from SortedItem
-    const Key& getKey() const throw() { return *this; }
+    const Key& getKey() const noexcept { return *this; }
 };
 
 
@@ -80,7 +80,7 @@ class Stupid: public HashFunction
 {
 public:
     /// Generates a Hash Index (0 to maxBuckets-1) based on the specified key
-    unsigned int hashKey( const void* keystart, unsigned keylen, unsigned int maxBuckets) const throw()
+    unsigned int hashKey( const void* keystart, unsigned keylen, unsigned int maxBuckets) const noexcept
         {
         return 0;
         }

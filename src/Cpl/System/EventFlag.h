@@ -48,7 +48,7 @@ public:
 
         This method can ONLY be called from a thread context.
      */
-    virtual void notifyEvents( Cpl_System_EventFlag_T events ) throw() = 0;
+    virtual void notifyEvents( Cpl_System_EventFlag_T events ) noexcept = 0;
 
     /** This operation is similar to notifyEvents(), except that it sets one
         event flags.  The 'eventNumber' is the bit number (zero based) of the
@@ -56,19 +56,19 @@ public:
 
         This method can ONLY be called from a thread context.
      */
-    virtual void notify( uint8_t eventNumber ) throw() = 0;
+    virtual void notify( uint8_t eventNumber ) noexcept = 0;
 
 
 public:
     /** This method is same as notifyEvents() EXCEPT this method can ONLY be
         called from supervisor mode and/or ISR contexts.
      */
-    virtual void su_notifyEvents( Cpl_System_EventFlag_T events ) throw() = 0;
+    virtual void su_notifyEvents( Cpl_System_EventFlag_T events ) noexcept = 0;
 
     /** This method is same as notify() EXCEPT this method can ONLY be
         called from supervisor mode and/or ISR contexts.
      */
-    virtual void su_notify( uint8_t eventNumber ) throw() = 0;
+    virtual void su_notify( uint8_t eventNumber ) noexcept = 0;
 
 
 public:

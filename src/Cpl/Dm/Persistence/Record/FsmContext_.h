@@ -26,48 +26,48 @@ class FsmContext_
 {
 public:
     /// Action
-    virtual void connectToModel() throw() = 0;
+    virtual void connectToModel() noexcept = 0;
 
     /// Action
-    virtual void defaultData() throw() = 0;
+    virtual void defaultData() noexcept = 0;
 
     /// Action
-    virtual void disconnectFromModel() throw() = 0;
+    virtual void disconnectFromModel() noexcept = 0;
 
     /// Action
-    virtual void issueWrite() throw() = 0;
+    virtual void issueWrite() noexcept = 0;
 
     /// Action
-    virtual void markClean() throw() = 0;
+    virtual void markClean() noexcept = 0;
 
     /// Action
-    virtual void markDirty() throw() = 0;
+    virtual void markDirty() noexcept = 0;
 
     /// Action
-    virtual void startTimer() throw() = 0;
+    virtual void startTimer() noexcept = 0;
 
     /// Action
-    virtual void stopTimer() throw() = 0;
+    virtual void stopTimer() noexcept = 0;
 
     /// Action
-    virtual void tellInitialized() throw() = 0;
+    virtual void tellInitialized() noexcept = 0;
 
     /// Action
-    virtual void tellStartCompleted() throw() = 0;
+    virtual void tellStartCompleted() noexcept = 0;
 
     /// Action
-    virtual void tellStarting() throw() = 0;
+    virtual void tellStarting() noexcept = 0;
 
     /// Action
-    virtual void tellStopped() throw() = 0;
+    virtual void tellStopped() noexcept = 0;
 
 
 public:
     /// Guard
-    virtual bool isDirty() throw() = 0;
+    virtual bool isDirty() noexcept = 0;
 
     /// Guard
-    virtual bool isLoadGood() throw() = 0;
+    virtual bool isLoadGood() noexcept = 0;
 
 
 public:

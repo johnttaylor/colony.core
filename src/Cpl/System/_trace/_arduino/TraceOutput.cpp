@@ -15,7 +15,7 @@
 extern Cpl::Io::InputOutput& Bsp_Serial( void );
 
 /*-----------------------------------------------------------*/
-Cpl::Io::Output* Cpl::System::Trace::getDefaultOutputStream_( void ) throw()
+Cpl::Io::Output* Cpl::System::Trace::getDefaultOutputStream_( void ) noexcept
 {
     return &Bsp_Serial();
 }

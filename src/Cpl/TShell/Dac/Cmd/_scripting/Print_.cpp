@@ -24,12 +24,12 @@ static void initializeOuttext_( Cpl::Text::String& outtext, bool prependTimeStam
 
 
 ///////////////////////////
-Print_::Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb ) throw()
+Print_::Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb ) noexcept
 :Command(commandList, verb)
     {
     }
 
-Print_::Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+Print_::Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
 :Command(commandList, verb, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
     {
     }
@@ -37,7 +37,7 @@ Print_::Print_( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, con
 
 
 ///////////////////////////
-Cpl::TShell::Dac::Command::Result_T Print_::execute( bool prependTimeStamp, Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Print_::execute( bool prependTimeStamp, Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept
     {
     ActiveVariablesApi& vars    = context.getVariables();
     Cpl::Text::String&  outtext = context.getOutputBuffer();

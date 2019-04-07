@@ -16,7 +16,7 @@
 using namespace Rte::Db::Chunk;
 
 
-const char* Request::resultToString( Result_T result ) throw()
+const char* Request::resultToString( Result_T result ) noexcept
     {
     switch( result )
         {

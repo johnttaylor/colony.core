@@ -248,7 +248,7 @@ public:
         macro CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT().  This allows the simulate
         tick code to be compiled out of production versions of the application.
      */
-    static void topLevelWait( void ) throw();
+    static void topLevelWait( void ) noexcept;
 
     /** This method returns true if the current thread is using 'simulated time'
 
@@ -256,7 +256,7 @@ public:
         macro CPL_SYSTEM_SIM_TICK_USING_SIM_TICKS().  This allows the simulate tick
         code to be compiled out of production versions of the application.
      */
-    static bool usingSimTicks( void ) throw();
+    static bool usingSimTicks( void ) noexcept;
 
     /** This method is used to support blocking calls (such as wait on semaphore,
         sleep(), etc.) within an individual iteration of thread's top level
@@ -267,11 +267,11 @@ public:
         macro CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT().  This allows the simulate 
         tick code to be compiled out of production versions of the application.
      */ 
-    static void applicationWait( void ) throw();
+    static void applicationWait( void ) noexcept;
 
     /** This method returns the current simulated tick count
      */
-    static size_t current( void ) throw();
+    static size_t current( void ) noexcept;
 
 
 public:
@@ -286,7 +286,7 @@ public:
         simulate tick engine has detected that there a NO simulated-tick-threads
         executing OR that ALL simulated-tick-threads are dead locked.
      */
-    static bool advance( size_t numTicks ) throw();
+    static bool advance( size_t numTicks ) noexcept;
 
 
     /** This method returns true if the specified thread (by Thread ID) is
@@ -294,7 +294,7 @@ public:
         thread safe -->it is intended (and only make sense) to be called
         from the SAME thread that also calls the advance() method.
      */
-    static bool isWaitingOnNextTick( size_t threadID ) throw();
+    static bool isWaitingOnNextTick( size_t threadID ) noexcept;
 
 
 public:
@@ -303,13 +303,13 @@ public:
         'useSimTicks' is false then thread does NOT use simulated time. This
         method SHOULD NEVER be called by the application.
      */
-    static void threadInit_( bool useSimTicks=true ) throw();
+    static void threadInit_( bool useSimTicks=true ) noexcept;
 
     /** This COMPONENT Scoped method is used during thread deletion to insert the
         necessary hooks (per thread) for the simulate tick engine. This
         method SHOULD NEVER be called by the application.
      */
-    static void onThreadExit_( void ) throw();
+    static void onThreadExit_( void ) noexcept;
 
 
 protected:
@@ -331,10 +331,10 @@ protected:
     SimTick();
 
     /// Helper method. Returns true if the thread was queued for the next simulated tick
-    static bool testAndQueue( SimTick* simInfoPtr ) throw();
+    static bool testAndQueue( SimTick* simInfoPtr ) noexcept;
 
     /// Helper method. 
-    static unsigned wakeUpWaiters( void ) throw();
+    static unsigned wakeUpWaiters( void ) noexcept;
 
     /// Friend(s)
     friend class ElapsedTime;

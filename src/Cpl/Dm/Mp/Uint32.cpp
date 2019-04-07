@@ -13,6 +13,7 @@
 
 #include "Uint32.h"
 #include "Cpl/Text/atob.h"
+#include "Cpl/Text/FString.h"
 #include <limits.h>
 
 ///
@@ -32,12 +33,12 @@ Uint32::Uint32( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& static
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-int8_t Uint32::read( uint32_t& dstData, uint16_t* seqNumPtr ) const throw()
+int8_t Uint32::read( uint32_t& dstData, uint16_t* seqNumPtr ) const noexcept
 {
     return ModelPointCommon_::read( &dstData, sizeof( uint32_t ), seqNumPtr );
 }
 
-uint16_t Uint32::write( uint32_t newValue, LockRequest_T lockRequest ) throw()
+uint16_t Uint32::write( uint32_t newValue, LockRequest_T lockRequest ) noexcept
 {
     return ModelPointCommon_::write( &newValue, sizeof( uint32_t ), lockRequest );
 }
@@ -47,24 +48,24 @@ uint16_t Uint32::readModifyWrite( Client& callbackClient, LockRequest_T lockRequ
     return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
 }
 
-void Uint32::attach( Observer& observer, uint16_t initialSeqNumber ) throw()
+void Uint32::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
     ModelPointCommon_::attach( observer, initialSeqNumber );
 }
 
-void Uint32::detach( Observer& observer ) throw()
+void Uint32::detach( Observer& observer ) noexcept
 {
     ModelPointCommon_::detach( observer );
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-const char* Uint32::getTypeAsText() const throw()
+const char* Uint32::getTypeAsText() const noexcept
 {
     return m_decimal ? "Cpl::Dm::Mp::Uint32-dec" : "Cpl::Dm::Mp::Uint32-hex";
 }
 
-bool Uint32::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
+bool Uint32::toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
 {
     // Get a snapshot of the my data and state
     m_modelDatabase.lock_();
@@ -74,56 +75,67 @@ bool Uint32::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenc
     bool     locked = m_locked;
     m_modelDatabase.unlock_();
 
-    // Convert data and state to a string
-    if ( convertStateToText( dst, append, locked, valid ) )
+    // Start the conversion
+    JsonDocument& doc = beginJSON( valid, locked, seqnum );
+
+    // Construct the 'val' key/value pair (as a simple numeric)
+    if ( IS_VALID(valid) )
     {
         if ( m_decimal )
         {
-            dst.formatOpt( append, "%lu", (unsigned long) value );
+            doc["val"] = value;
         }
+
+        // Construct the 'val' key/value pair (as a HEX string)
         else
         {
-            dst.formatOpt( append, "0x%lX", (unsigned long) value );
+            Cpl::Text::FString<10> tmp;
+            tmp.format( "0x%lX", (unsigned long) value );
+            doc["val"] = tmp.getString();
         }
     }
 
-    if ( retSequenceNumber )
-    {
-        *retSequenceNumber = seqnum;
-    }
-
+    // End the conversion
+    endJSON( dst, dstSize, truncated );
     return true;
 }
 
-const char* Uint32::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
+bool Uint32::fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept
 {
-    const char*   result = 0;
-    const char*   endptr;
-    unsigned long value;
-    m_modelDatabase.lock_();
-    uint16_t seqnum = m_seqNum;
-    m_modelDatabase.unlock_();
+    uint32_t newValue = 0;
 
-    if ( Cpl::Text::a2ul( value, srcText, m_decimal ? 10 : 16, terminationChars, &endptr ) && value <= ULONG_MAX )
+    // Attempt to parse the value key/value pair (as a simple numeric)
+    if ( m_decimal )
     {
-        seqnum = write( value, lockAction );
-        result = endptr;
-    }
-
-    // Conversion failed!
-    else
-    {
-        if ( errorMsg )
+        uint32_t checkForError = src | 2;
+        newValue               = src | 1;
+        if ( newValue == 1 && checkForError == 2 )
         {
-            errorMsg->format( "Conversion of %s[%s] (base=%d) to a uint32_t failed OR value too great.", getTypeAsText(), srcText, m_decimal ? 10 : 16 );
+            if ( errorMsg )
+            {
+                *errorMsg = "Invalid syntax for the 'val' key/value pair";
+            }
+            return false;
         }
     }
 
-    // Housekeeping
-    if ( retSequenceNumber )
+    // Attempt to parse the value as HEX string
+    else
     {
-        *retSequenceNumber = seqnum;
-    }
-    return result;
-}
+        const char*   val = src;
+        unsigned long value;
+        if ( Cpl::Text::a2ul( value, val, 16 ) == false )
+        {
+            if ( errorMsg )
+            {
+                *errorMsg = "Invalid syntax for the 'val' key/value pair";
+            }
+            return false;
+        }
 
+        newValue = (uint32_t) value;
+    }
+
+    retSequenceNumber = write( newValue, lockRequest );
+    return true;
+}

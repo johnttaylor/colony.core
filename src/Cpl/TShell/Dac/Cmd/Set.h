@@ -44,22 +44,22 @@ class Set: public Command
 {
 public:
     /// See Cpl::TShell::Dac::Command
-    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_SET_; }
+    const char* getUsage() const noexcept    { return CPLTSHELLDACMD_USAGE_SET_; }
 
     /// See Cpl::TShell::Dac::Command
-    const char* getHelp() const throw()    { return CPLTSHELLDACMD_DETAIL_SET_; }
+    const char* getHelp() const noexcept    { return CPLTSHELLDACMD_DETAIL_SET_; }
     
      
 public:
     /// Constructor
-    Set( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw();
+    Set( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept;
 
     /// Constructor.  Used to create a static instance of the command
-    Set( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+    Set( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept;
 
 public:
     /// See Cpl::TShell::Dac::Command
-    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept;
 
 };
 

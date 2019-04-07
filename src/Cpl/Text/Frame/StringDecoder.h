@@ -71,40 +71,40 @@ public:
     /** This method allows the Application/consumer to change/Set the Input
         source.
      */
-    virtual void setInput( const char* inputSourceAsNullTerminatedString ) throw();
+    virtual void setInput( const char* inputSourceAsNullTerminatedString ) noexcept;
 
     /** This method allows the Application/consumer to change/Set the Input
         source.  Note: 'sizeInBytesOfSource' does NOT include the/a null 
         terminator
      */
-    virtual void setInput( const char* inputSoruce, int sizeInBytesOfSource ) throw();
+    virtual void setInput( const char* inputSoruce, int sizeInBytesOfSource ) noexcept;
 
     /** This method return a pointer to the next character AFTER the LAST character
         decoded.  The value returned from this method is ONLY valid after a
         call to scan() and BEFORE a subsequent call to scan() or setInput().
      */
-    virtual const char* getRemainder() const throw();
+    virtual const char* getRemainder() const noexcept;
     
 
 
 public:
     /// See Cpl::Text::Frame::Decoder
-    bool scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw();
+    bool scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) noexcept;
 
 
 
 protected:
     /// See Cpl::Text::Frame::Decoder_
-    bool isStartOfFrame() throw();
+    bool isStartOfFrame() noexcept;
     
     /// See Cpl::Text::Frame::Decoder_
-    bool isEofOfFrame() throw();
+    bool isEofOfFrame() noexcept;
 
     /// See Cpl::Text::Frame::Decoder_
-    bool isEscapeChar() throw();
+    bool isEscapeChar() noexcept;
 
     /// See Cpl::Text::Frame::Decoder_
-    bool isLegalCharacter() throw();
+    bool isLegalCharacter() noexcept;
 
 
 protected:

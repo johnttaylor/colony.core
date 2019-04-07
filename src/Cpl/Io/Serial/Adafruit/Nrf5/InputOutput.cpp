@@ -31,7 +31,7 @@ InputOutput::~InputOutput( void )
 }
 
 
-void InputOutput::start( unsigned long baudrate, uint16_t config )throw()
+void InputOutput::start( unsigned long baudrate, uint16_t config )noexcept
 {
     if ( !m_started )
     {

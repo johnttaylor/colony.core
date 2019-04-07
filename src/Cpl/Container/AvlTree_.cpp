@@ -790,7 +790,7 @@ AvlTree_::AvlRoot::AvlRoot( const char* ignoreThisParameter_usedToCreateAUniqueC
 {
 }
 
-const Key& AvlTree_::AvlRoot::getKey() const throw()
+const Key& AvlTree_::AvlRoot::getKey() const noexcept
 {
     return *this;
 }

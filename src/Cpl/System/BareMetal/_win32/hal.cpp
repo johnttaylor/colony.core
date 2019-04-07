@@ -17,17 +17,17 @@
 
 
 ///////////////////////////////////////////////////////////////
-void Cpl::System::BareMetal::initialize( void ) throw()
+void Cpl::System::BareMetal::initialize( void ) noexcept
 {
     // Nothing needed
 }
 
-void Cpl::System::BareMetal::busyWait( unsigned long waitTimeMs ) throw()
+void Cpl::System::BareMetal::busyWait( unsigned long waitTimeMs ) noexcept
 {
     Sleep( (DWORD) waitTimeMs );
 }
 
-unsigned long Cpl::System::BareMetal::getElapsedTime( void ) throw()
+unsigned long Cpl::System::BareMetal::getElapsedTime( void ) noexcept
 {
     return clock();
 }

@@ -43,7 +43,7 @@ bool Api::isSchedulingEnabled( void )
     return true; // Always return true since scheduling has no meaning in baremetal system
 }
 
-void Api::sleep( unsigned long milliseconds ) throw()
+void Api::sleep( unsigned long milliseconds ) noexcept
 {
     BareMetal::busyWait( milliseconds );
 }

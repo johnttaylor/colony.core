@@ -39,7 +39,7 @@ Basic::Basic( char* stringToParse, const char* delimiterSet )
 
 
 ///////////////////////////////
-const char* Basic::next() throw()
+const char* Basic::next() noexcept
     {
     // Trap error: null pointer for input string
     if ( !m_base )
@@ -66,7 +66,7 @@ const char* Basic::next() throw()
 
 
 ///////////////////////////////
-const char* Basic::getToken( unsigned n ) const throw()
+const char* Basic::getToken( unsigned n ) const noexcept
     {
     // Trap out-of-bounds index
     if ( n >= m_count || !m_base )

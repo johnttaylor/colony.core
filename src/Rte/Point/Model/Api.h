@@ -38,13 +38,13 @@ public:
               associated Model Point and as part of the Db start-up process this 
               method is called on all of the associated Model Points.
     */
-    virtual void defaultContents( void ) throw() = 0;
+    virtual void defaultContents( void ) noexcept = 0;
 
     /** This is non-thread safe version (i.e. can only be called from the 
         'Model' thread) of defaultContents().  Typically the Application 
         SHOULD NEVER call this method.
      */
-    virtual void defaultContents_nonThreadSafe( void ) throw() = 0;
+    virtual void defaultContents_nonThreadSafe( void ) noexcept = 0;
 
 
 public:
@@ -131,7 +131,7 @@ public:
         called by the Application. This method is non-thread safe, i.e. 
         can ONLY be called from the 'Model' thread. 
      */
-    virtual Rte::Point::Api& getMyPoint_nonThreadSafe(void) throw() = 0;
+    virtual Rte::Point::Api& getMyPoint_nonThreadSafe(void) noexcept = 0;
     
     /** This method 'touches' and/or marks the Model Point's internal Point
         as have been updated/modified.  This method is typically ONLY used 
@@ -139,7 +139,7 @@ public:
         Application.. This method is non-thread safe, i.e. can ONLY be called 
         from the 'Model' thread.
      */
-    virtual void touch_nonThreadSafe( void ) throw() = 0;
+    virtual void touch_nonThreadSafe( void ) noexcept = 0;
 
 
 

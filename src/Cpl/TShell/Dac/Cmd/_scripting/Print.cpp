@@ -19,19 +19,19 @@ using namespace Cpl::TShell::Dac;
 
 
 ///////////////////////////
-Print::Print( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+Print::Print( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept
 :Print_(commandList, "print")
     {
     }
 
-Print::Print( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+Print::Print( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
 :Print_(commandList, "print", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
     {
     }
 
 
 ///////////////////////////
-Cpl::TShell::Dac::Command::Result_T Print::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Print::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept
     {
     return Print_::execute( false, context, tokens, rawInputString, outfd );
     }

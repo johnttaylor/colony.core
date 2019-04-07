@@ -42,22 +42,22 @@ class Exe: public Command
 {
 public:
     /// See Cpl::TShell::Dac::Command
-    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_EXE_; }
+    const char* getUsage() const noexcept    { return CPLTSHELLDACMD_USAGE_EXE_; }
 
     /// See Cpl::TShell::Dac::Command
-    const char* getHelp() const throw()    { return CPLTSHELLDACMD_DETAIL_EXE_; }
+    const char* getHelp() const noexcept    { return CPLTSHELLDACMD_DETAIL_EXE_; }
     
      
 public:
     /// Constructor
-    Exe( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw();
+    Exe( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept;
 
     /// Constructor.  Used to create a static instance of the command
-    Exe( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+    Exe( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept;
 
 public:
     /// See Cpl::TShell::Dac::Command
-    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept;
 
 };
 

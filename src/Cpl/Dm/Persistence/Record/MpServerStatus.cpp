@@ -29,17 +29,17 @@ MpServerStatus::MpServerStatus( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::St
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-const char* MpServerStatus::getTypeAsText() const throw()
+const char* MpServerStatus::getTypeAsText() const noexcept
 {
     return "Cpl::Dm::Persistence::Record::ServerStatus";
 }
 
-void MpServerStatus::attach( Observer& observer, uint16_t initialSeqNumber ) throw()
+void MpServerStatus::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
     ModelPointCommon_::attach( observer, initialSeqNumber );
 }
 
-void MpServerStatus::detach( Observer& observer ) throw()
+void MpServerStatus::detach( Observer& observer ) noexcept
 {
     ModelPointCommon_::detach( observer );
 }

@@ -27,10 +27,10 @@ class Threads: public Cpl::TShell::Dac::Cmd::Threads
 {
 public:
     /// Constructor
-    Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw();
+    Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept;
 
     /// Constructor.  Used to create a static instance of the command
-    Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+    Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept;
 
 
 protected:

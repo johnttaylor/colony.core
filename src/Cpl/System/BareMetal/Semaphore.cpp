@@ -29,7 +29,7 @@ Semaphore::~Semaphore()
     // Nothing needed
 }
 
-int Semaphore::signal( void ) throw()
+int Semaphore::signal( void ) noexcept
 {
     GlobalLock::begin();
     su_signal();
@@ -37,7 +37,7 @@ int Semaphore::signal( void ) throw()
     return 0;
 }
 
-int Semaphore::su_signal( void ) throw()
+int Semaphore::su_signal( void ) noexcept
 {
     // Increment the semaphore (but don't let it roll over)
     m_sema++;
@@ -48,7 +48,7 @@ int Semaphore::su_signal( void ) throw()
     return 0;
 }
 
-bool Semaphore::tryWait( void ) throw()
+bool Semaphore::tryWait( void ) noexcept
 {
     bool signaled = false;
     GlobalLock::begin();
@@ -62,7 +62,7 @@ bool Semaphore::tryWait( void ) throw()
     return signaled;
 }
 
-void Semaphore::waitInRealTime( void ) throw()
+void Semaphore::waitInRealTime( void ) noexcept
 {
     for(;;)
     {
@@ -77,7 +77,7 @@ void Semaphore::waitInRealTime( void ) throw()
     }
 }
 
-bool Semaphore::timedWaitInRealTime( unsigned long timeout ) throw()
+bool Semaphore::timedWaitInRealTime( unsigned long timeout ) noexcept
 {
     unsigned long start = ElapsedTime::milliseconds();
 
@@ -99,12 +99,12 @@ bool Semaphore::timedWaitInRealTime( unsigned long timeout ) throw()
     }
 }
 
-bool Semaphore::timedWait( unsigned long timeout ) throw()
+bool Semaphore::timedWait( unsigned long timeout ) noexcept
 {
     return timedWaitInRealTime( timeout );
 }
 
-void Semaphore::wait( void ) throw()
+void Semaphore::wait( void ) noexcept
 {
     waitInRealTime();
 }

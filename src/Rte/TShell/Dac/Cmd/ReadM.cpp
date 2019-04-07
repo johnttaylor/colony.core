@@ -19,19 +19,19 @@ using namespace Rte::TShell::Dac::Cmd;
 
 
 ///////////////////////////
-ReadM::ReadM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw()
+ReadM::ReadM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) noexcept
 :Command( commandList, "readm", modelPointList )
     {
     }
 
-ReadM::ReadM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+ReadM::ReadM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
 :Command( commandList, "readm", modelPointList, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
     {
     }
 
 
 ///////////////////////////
-Cpl::TShell::Dac::Command::Result_T ReadM::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T ReadM::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept
     {
     // Display Points
     Cpl::TShell::Dac::Command::Result_T result = listPoints(context, tokens);

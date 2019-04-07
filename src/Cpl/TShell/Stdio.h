@@ -57,7 +57,7 @@ public:
         of the CPL Libraries static resources (e.g. mutexes) are unknown
         which your application will crash/behavior poorly on exit.
      */
-    Stdio( Processor& shell, const char* threadName = "DAC-Shell", int threadPriority = CPL_SYSTEM_THREAD_PRIORITY_NORMAL + CPL_SYSTEM_THREAD_PRIORITY_LOWER, bool thisIsAStaticInstance=true ) throw();
+    Stdio( Processor& shell, const char* threadName = "DAC-Shell", int threadPriority = CPL_SYSTEM_THREAD_PRIORITY_NORMAL + CPL_SYSTEM_THREAD_PRIORITY_LOWER, bool thisIsAStaticInstance=true ) noexcept;
 
 
     /// Destructor
@@ -69,7 +69,7 @@ public:
         runs in the context of the calling thread - and spawns a new
         thread for Shell/Command Processor to executing in.
      */
-    void launch( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw();
+    void launch( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) noexcept;
 };
 
 

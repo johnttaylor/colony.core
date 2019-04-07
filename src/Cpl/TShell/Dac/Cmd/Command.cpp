@@ -17,14 +17,14 @@ using namespace Cpl::TShell::Dac::Cmd;
 
 
 ////////////////////////////
-Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb  ) throw()
+Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb  ) noexcept
 :m_mapKey(verb)
     {
     commandList.insert( *this );
     }
 
 
-Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance  ) throw()
+Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance  ) noexcept
 :Cpl::TShell::Dac::Command(ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
 ,m_mapKey(verb)
     {
@@ -33,13 +33,13 @@ Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, c
 
 
 ////////////////////////////
-const char* Command::getVerb() const throw()                 
+const char* Command::getVerb() const noexcept                 
     { 
     return m_mapKey.getKeyValue(); 
     }
 
 
-const Cpl::Container::Key& Command::getKey() const throw()   
+const Cpl::Container::Key& Command::getKey() const noexcept   
     { 
     return m_mapKey; 
     }

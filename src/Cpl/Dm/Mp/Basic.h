@@ -57,41 +57,41 @@ public:
 
 public:
     /// See Cpl::Dm::ModelPoint.  This method IS thread safe.
-    size_t getSize() const throw()
+    size_t getSize() const noexcept
     {
         return sizeof( ELEMTYPE );
     }
 
 public:
     /// See Cpl::Dm::ModelPoint
-    void copyDataTo_( void* dstData, size_t dstSize ) const throw()
+    void copyDataTo_( void* dstData, size_t dstSize ) const noexcept
     {
         CPL_SYSTEM_ASSERT( dstSize == sizeof( ELEMTYPE ) );
         *((ELEMTYPE*) dstData) = m_data;
     }
 
     /// See Cpl::Dm::ModelPoint
-    void copyDataFrom_( const void* srcData, size_t srcSize ) throw()
+    void copyDataFrom_( const void* srcData, size_t srcSize ) noexcept
     {
         CPL_SYSTEM_ASSERT( srcSize == sizeof( ELEMTYPE ) );
         m_data = *((ELEMTYPE*) srcData);
     }
 
     /// See Cpl::Dm::ModelPoint.  The default implementation is for integers
-    bool isDataEqual_( const void* otherData ) const throw()
+    bool isDataEqual_( const void* otherData ) const noexcept
     {
         ELEMTYPE left = *((ELEMTYPE*) otherData);
         return m_data == left;
     }
 
     /// See Cpl::Dm::Point.  
-    const void* getImportExportDataPointer_() const throw()
+    const void* getImportExportDataPointer_() const noexcept
     {
         return (const void*) (&m_data);
     }
 
     /// See Cpl::Dm::Point.  
-    size_t getInternalDataSize() const throw()
+    size_t getInternalDataSize() const noexcept
     {
         return sizeof( ELEMTYPE );
     }
@@ -131,7 +131,7 @@ public:
         , m_data( { new(std::nothrow) ELEMTYPE[numElements], numElements, 0 } )
     {
         // Throw a fatal error if global parse buffer is too small
-        if ( OPTION_CPL_RTE_MODEL_DATABASE_MAX_LENGTH_FROM_STRING_BUFFER < numElements * sizeof( ELEMTYPE ) )
+        if ( OPTION_CPL_RTE_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC < numElements * sizeof( ELEMTYPE ) )
         {
             Cpl::System::FatalError::logf( "Cpl::Dm::Array().  Creating a Array of size %lu which is greater than the fromString() parser buffer", numElements * sizeof( ELEMTYPE ) );
         }
@@ -156,7 +156,7 @@ public:
         , m_data( { new(std::nothrow) ELEMTYPE[numElements], numElements, 0 } )
     {
         // Throw a fatal error if global parse buffer is too small
-        if ( OPTION_CPL_RTE_MODEL_DATABASE_MAX_LENGTH_FROM_STRING_BUFFER < numElements * sizeof( ELEMTYPE ) )
+        if ( OPTION_CPL_RTE_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC < numElements * sizeof( ELEMTYPE ) )
         {
             Cpl::System::FatalError::logf( "Cpl::Dm::Array().  Creating a Array of size %lu which is greater than the fromString() parser buffer", numElements * sizeof( ELEMTYPE ) );
         }
@@ -192,14 +192,14 @@ public:
 
 public:
     /// See Cpl::Dm::ModelPoint.  This method IS thread safe.
-    size_t getSize() const throw()
+    size_t getSize() const noexcept
     {
         return m_data.numElements * sizeof( ELEMTYPE );
     }
 
 public:
     /// See Cpl::Dm::ModelPoint
-    void copyDataTo_( void* dstData, size_t dstSize ) const throw()
+    void copyDataTo_( void* dstData, size_t dstSize ) const noexcept
     {
         CPL_SYSTEM_ASSERT( dstSize == sizeof( m_data ) );
         InternalData* dstInfo = (InternalData*) dstData;
@@ -219,7 +219,7 @@ public:
     }
 
     /// See Cpl::Dm::ModelPoint
-    void copyDataFrom_( const void* srcData, size_t srcSize ) throw()
+    void copyDataFrom_( const void* srcData, size_t srcSize ) noexcept
     {
         CPL_SYSTEM_ASSERT( srcSize == sizeof( m_data ) );
         InternalData* srcInfo = (InternalData*) srcData;
@@ -239,7 +239,7 @@ public:
     }
 
     /// See Cpl::Dm::ModelPoint.  
-    bool isDataEqual_( const void* otherData ) const throw()
+    bool isDataEqual_( const void* otherData ) const noexcept
     {
         InternalData* otherInfo = (InternalData*) otherData;
 
@@ -257,13 +257,13 @@ public:
     }
 
     /// See Cpl::Dm::Point.  
-    const void* getImportExportDataPointer_() const throw()
+    const void* getImportExportDataPointer_() const noexcept
     {
         return (const void*) m_data.elemPtr;
     }
 
     /// See Cpl::Dm::Point.  
-    size_t getInternalDataSize() const throw()
+    size_t getInternalDataSize() const noexcept
     {
         return m_data.numElements * sizeof( ELEMTYPE );
     }
@@ -299,26 +299,9 @@ protected:
     }
 
     /// Helper method to for setFromText() implementation
-    const char* parseNumElementsAndStartingIndex( const char* srcText, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber, unsigned long& numElements, unsigned long& startIndex ) throw()
+    const char* parseNumElementsAndStartingIndex( const char* srcText, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber, unsigned long& numElements, unsigned long& startIndex ) noexcept
     {
-        // Parse numElements and starting index
-        const char*   endptr;
-        char          tempTermChars[2] = { OPTION_CPL_RTE_MODEL_POINT_ELEM_DELIMITER_CHAR, '\0' };
-        if ( Cpl::Text::a2ul( numElements, srcText, 10, tempTermChars, &endptr ) == false )
-        {
-            return processError( errorMsg, retSequenceNumber, "Unable to parse the numElems field.  Format is: <numElems>:<mpIndex>:<e0> [%s]", srcText );
-        }
-        const char*   endptr2;
-        if ( Cpl::Text::a2ul( startIndex, endptr + 1, 10, tempTermChars, &endptr2 ) == false )
-        {
-            return processError( errorMsg, retSequenceNumber, "Unable to parse the mpIndex field.  Format is: <numElems>:<mpIndex>:<e0> [%s]", srcText );
-        }
-        if ( numElements + startIndex > m_data.numElements )
-        {
-            return processError( errorMsg, retSequenceNumber, "Unable to parse the numElems+mpIndex exceeds the size of the array (array size=%lu) [%s]", (unsigned long) m_data.numElements, srcText );
-        }
-
-        return endptr2 + 1;
+        return 0;
     }
 
 };

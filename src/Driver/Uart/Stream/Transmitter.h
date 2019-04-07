@@ -79,7 +79,7 @@ public:
                                 is interrupt driven.  When set to true, the
                                 initial transmitted byte is 'manually' loaded.
      */
-    Transmitter( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[], bool manualFirstTx=false ) throw();
+    Transmitter( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[], bool manualFirstTx=false ) noexcept;
 
 
 
@@ -90,13 +90,13 @@ public:
         application to change the Baud rate, framing, etc - it must first stop
         the driver and then restart it.
      */
-    void start(void) throw();
+    void start(void) noexcept;
 
     /** This method will stop/disable the driver.  The driver can be restarted 
         by call start() again.  The state of the contents of the outbound buffer 
         and the byte(s) 'in transmit' when the driver is stop is undetermined.
      */
-    void stop(void) throw();
+    void stop(void) noexcept;
     
 
       
@@ -109,7 +109,7 @@ public:
         there is no guaranty/information-available with  respect to how many (if
         any) bytes where transmitted.
      */
-    bool write( const void* data, size_t numBytesToTx ) throw();
+    bool write( const void* data, size_t numBytesToTx ) noexcept;
 
 
 public:
@@ -122,7 +122,7 @@ public:
         The method returns the result of signalling waiter (i.e. return code
         from su_signal()), or zero if no waiter was signaled.
      */
-    int su_txDoneIsr_(void) throw();
+    int su_txDoneIsr_(void) noexcept;
  
      
 private: 

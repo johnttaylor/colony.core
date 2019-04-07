@@ -94,7 +94,7 @@ String::~String()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-int8_t String::read( Cpl::Text::String& dstData, uint16_t* seqNumPtr ) const throw()
+int8_t String::read( Cpl::Text::String& dstData, uint16_t* seqNumPtr ) const noexcept
 {
     Data dst;
     int  bufferMaxLength;
@@ -103,13 +103,13 @@ int8_t String::read( Cpl::Text::String& dstData, uint16_t* seqNumPtr ) const thr
     return ModelPointCommon_::read( &dst, sizeof( Data ), seqNumPtr );
 }
 
-int8_t String::read( Data& dstData, uint16_t* seqNumPtr ) const throw()
+int8_t String::read( Data& dstData, uint16_t* seqNumPtr ) const noexcept
 {
     return ModelPointCommon_::read( &dstData, sizeof( Data ), seqNumPtr );
 }
 
 
-uint16_t String::write( const Data& srcData, LockRequest_T lockRequest ) throw()
+uint16_t String::write( const Data& srcData, LockRequest_T lockRequest ) noexcept
 {
     // Trap the null pointer case -->Do NOTHING
     if ( srcData.stringPtr == 0 )
@@ -123,7 +123,7 @@ uint16_t String::write( const Data& srcData, LockRequest_T lockRequest ) throw()
     return write( srcData.stringPtr, strlen( srcData.stringPtr ), lockRequest );
 }
 
-uint16_t String::write( const char* newValue, LockRequest_T lockRequest ) throw()
+uint16_t String::write( const char* newValue, LockRequest_T lockRequest ) noexcept
 {
     // Trap the null pointer case -->Do NOTHING
     if ( newValue == 0 )
@@ -137,7 +137,7 @@ uint16_t String::write( const char* newValue, LockRequest_T lockRequest ) throw(
     return write( newValue, strlen( newValue ), lockRequest );
 }
 
-uint16_t String::write( const char* srcData, size_t srcLen, LockRequest_T lockRequest ) throw()
+uint16_t String::write( const char* srcData, size_t srcLen, LockRequest_T lockRequest ) noexcept
 {
     Data src = { (char*) srcData, srcLen, srcLen };
     return ModelPointCommon_::write( &src, sizeof( Data ), lockRequest );
@@ -148,24 +148,24 @@ uint16_t String::readModifyWrite( Client& callbackClient, LockRequest_T lockRequ
     return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
 }
 
-void String::attach( Observer& observer, uint16_t initialSeqNumber ) throw()
+void String::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
     ModelPointCommon_::attach( observer, initialSeqNumber );
 }
 
-void String::detach( Observer& observer ) throw()
+void String::detach( Observer& observer ) noexcept
 {
     ModelPointCommon_::detach( observer );
 }
 
-bool String::isDataEqual_( const void* otherData ) const throw()
+bool String::isDataEqual_( const void* otherData ) const noexcept
 {
     Data*  otherDataPtr = (Data*) otherData;
 
     return otherDataPtr->stringLen == m_data.stringLen && strncmp( m_data.stringPtr, otherDataPtr->stringPtr, m_data.stringLen ) == 0;
 }
 
-void String::copyDataTo_( void* dstData, size_t dstSize ) const throw()
+void String::copyDataTo_( void* dstData, size_t dstSize ) const noexcept
 {
     CPL_SYSTEM_ASSERT( dstSize == sizeof( Data ) );
     Data* dataDstPtr = (Data*) dstData;
@@ -176,7 +176,7 @@ void String::copyDataTo_( void* dstData, size_t dstSize ) const throw()
     dataDstPtr->stringLen          = dstSize;
 }
 
-void String::copyDataFrom_( const void* srcData, size_t srcSize ) throw()
+void String::copyDataFrom_( const void* srcData, size_t srcSize ) noexcept
 {
     CPL_SYSTEM_ASSERT( srcSize == sizeof( Data ) );
     Data* dataSrcPtr = (Data*) srcData;
@@ -189,28 +189,28 @@ void String::copyDataFrom_( const void* srcData, size_t srcSize ) throw()
 
 
 ///////////////////////////////////////////////////////////////////////////////
-const char* String::getTypeAsText() const throw()
+const char* String::getTypeAsText() const noexcept
 {
     return "Cpl::Dm::Mp::String";
 }
 
-size_t String::getSize() const throw()
+size_t String::getSize() const noexcept
 {
     return m_data.maxLength;
 }
 
-size_t String::getInternalDataSize() const throw()
+size_t String::getInternalDataSize() const noexcept
 {
     return m_data.maxLength;
 }
 
 
-const void* String::getImportExportDataPointer_() const throw()
+const void* String::getImportExportDataPointer_() const noexcept
 {
     return m_data.stringPtr;
 }
 
-bool String::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
+bool String::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const noexcept
 {
     // Lock the database
     m_modelDatabase.lock_();
@@ -238,7 +238,7 @@ bool String::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenc
     return true;
 }
 
-const char* String::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
+const char* String::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) noexcept
 {
     const char*   result = 0;
     const char*   endPtr;

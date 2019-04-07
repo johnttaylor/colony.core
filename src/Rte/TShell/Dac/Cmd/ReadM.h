@@ -47,23 +47,23 @@ class ReadM: public Command
 {
 public:
     /// See Cpl::TShell::Dac::Command
-    const char* getUsage() const throw()   { return RTETSHELLDACMD_USAGE_READM_; }
+    const char* getUsage() const noexcept   { return RTETSHELLDACMD_USAGE_READM_; }
 
     /// See Cpl::TShell::Dac::Command
-    const char* getHelp() const throw()    { return RTETSHELLDACMD_DETAIL_READM_; }
+    const char* getHelp() const noexcept    { return RTETSHELLDACMD_DETAIL_READM_; }
     
      
 public:
     /// Constructor
-    ReadM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw();
+    ReadM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) noexcept;
 
     /// Constructor.  Used to create a static instance of the command
-    ReadM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+    ReadM( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept;
 
 
 public:
     /// See Cpl::TShell::Dac::Command
-    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept;
 
 };
 

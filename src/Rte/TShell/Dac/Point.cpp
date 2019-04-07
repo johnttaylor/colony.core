@@ -34,7 +34,7 @@ Point::Point( Cpl::Container::Map<Rte::TShell::Dac::Point>& pointList, Rte::Poin
     }
 
 
-const Cpl::Container::Key& Point::getKey() const throw()
+const Cpl::Container::Key& Point::getKey() const noexcept
     {
     return m_mapKey;
     }

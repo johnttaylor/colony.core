@@ -224,7 +224,7 @@ public:
     {
     }
 
-    void expired( void ) throw()
+    void expired( void ) noexcept
     {
         CPL_SYSTEM_TRACE_MSG( SECT_, ("----- Stopping Timer Sequence....") );
         m_appObj1.stop();
@@ -235,7 +235,7 @@ public:
 
 public:
     ///
-    void processEventFlag( uint8_t eventNumber ) throw()
+    void processEventFlag( uint8_t eventNumber ) noexcept
     {
         switch ( eventNumber )
         {

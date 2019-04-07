@@ -25,7 +25,7 @@ class HashFunction
 {
 public:
     /// Generates a Hash Index (0 to maxBuckets-1) based on the specified key
-    virtual unsigned int hashKey( const void* keystart, unsigned keylen, unsigned int maxBuckets ) const throw() = 0;
+    virtual unsigned int hashKey( const void* keystart, unsigned keylen, unsigned int maxBuckets ) const noexcept = 0;
 
 
 public:

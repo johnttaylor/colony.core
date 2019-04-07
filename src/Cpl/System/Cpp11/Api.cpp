@@ -44,7 +44,7 @@ bool Api::isSchedulingEnabled( void )
 }
 
 
-void Api::sleepInRealTime( unsigned long milliseconds ) throw()
+void Api::sleepInRealTime( unsigned long milliseconds ) noexcept
 {
     std::this_thread::sleep_for( std::chrono::milliseconds( milliseconds ) );
 }

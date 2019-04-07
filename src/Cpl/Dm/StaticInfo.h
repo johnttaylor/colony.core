@@ -20,6 +20,12 @@ namespace Cpl {
 ///
 namespace Dm {
 
+/** This symbol defines the size, in bytes not including the null terminator, 
+    of the longest Model Point name.
+ */
+#ifndef OPTION_CPL_DM_STATIC_INFO_MAX_NAME_LENGTH
+#define OPTION_CPL_DM_STATIC_INFO_MAX_NAME_LENGTH   32
+#endif
 
 /** This class defines an interface for a Model Point to store its constant/static 
     data in program memory.  Concrete leaf classes can extended this class
@@ -39,7 +45,7 @@ class StaticInfo : public Cpl::Container::KeyLiteralString
 {
 public:
     /// Returns the Point's name
-    inline const char* getName() const throw() 
+    inline const char* getName() const noexcept 
     {
         return m_stringKeyPtr;
     }

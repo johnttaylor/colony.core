@@ -50,7 +50,7 @@ static RegisterInitHandler_ autoRegister_systemInit_hook_;
 
 
 ///////////////////////////////////////////////////////////////
-unsigned long ElapsedTime::millisecondsInRealTime( void ) throw()
+unsigned long ElapsedTime::millisecondsInRealTime( void ) noexcept
 {
     unsigned long newTime = BareMetal::getElapsedTime();
     unsigned long delta   = newTime - lastMsec_;
@@ -60,7 +60,7 @@ unsigned long ElapsedTime::millisecondsInRealTime( void ) throw()
     return elapsedMsec_;
 }
 
-unsigned long ElapsedTime::secondsInRealTime( void ) throw()
+unsigned long ElapsedTime::secondsInRealTime( void ) noexcept
 {
     // Update my internal elapsedMsec time
     millisecondsInRealTime();
@@ -70,7 +70,7 @@ unsigned long ElapsedTime::secondsInRealTime( void ) throw()
 }
 
 
-ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) throw()
+ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) noexcept
 {
     // Update my internal elapsedMsec time
     millisecondsInRealTime();
@@ -85,17 +85,17 @@ ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) throw()
 
 ///////////////////////////////////////////////////////////////
 // NOTE: Simulated Elapsed time has NO meaning on a single threaded system, i.e. there is no-simulate-time thread to generate simulate ticks
-unsigned long ElapsedTime::milliseconds( void ) throw()
+unsigned long ElapsedTime::milliseconds( void ) noexcept
 {
     return millisecondsInRealTime();
 }
 
-unsigned long ElapsedTime::seconds( void ) throw()
+unsigned long ElapsedTime::seconds( void ) noexcept
 {
     return secondsInRealTime();
 }
 
-ElapsedTime::Precision_T ElapsedTime::precision( void ) throw()
+ElapsedTime::Precision_T ElapsedTime::precision( void ) noexcept
 {
     return precisionInRealTime();
 }

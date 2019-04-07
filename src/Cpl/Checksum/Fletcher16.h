@@ -35,21 +35,21 @@ private:
 
 public:
     /// Constructor
-    Fletcher16() throw();
+    Fletcher16() noexcept;
 
 
 public:
     /// See Cpl::Checksum::Ap16
-    void reset(void) throw();
+    void reset(void) noexcept;
 
     /// See Cpl::Checksum::Ap16
-    void accumulate( void* bytes, unsigned numbytes=1 ) throw();
+    void accumulate( void* bytes, unsigned numbytes=1 ) noexcept;
 
     /// See Cpl::Checksum::Ap16
-    uint16_t finalize( void* destBuffer=0 ) throw();
+    uint16_t finalize( void* destBuffer=0 ) noexcept;
 
     /// See Cpl::Checksum::Ap16
-    bool isOkay(void) throw();
+    bool isOkay(void) noexcept;
 };
 
 

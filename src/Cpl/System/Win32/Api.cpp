@@ -40,7 +40,7 @@ bool Api::isSchedulingEnabled( void )
     return true; // Always return true since scheduling is always enabled by definition of running in user space
 }
 
-void Api::sleepInRealTime( unsigned long milliseconds ) throw()
+void Api::sleepInRealTime( unsigned long milliseconds ) noexcept
 {
     Sleep( (DWORD) milliseconds );
 }

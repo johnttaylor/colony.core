@@ -38,13 +38,13 @@ public:
 
 public:
     /// See Dm::Db::Chunk::Media
-    Cpl::Io::File::InputOutputApi* openFile( bool& newfile ) throw();
+    Cpl::Io::File::InputOutputApi* openFile( bool& newfile ) noexcept;
 
     /// See Dm::Db::Chunk::Media
-    void closeFile() throw();
+    void closeFile() noexcept;
 
     /// See Dm::Db::Chunk::Media
-    bool deleteFile() throw();
+    bool deleteFile() noexcept;
 
 };
 

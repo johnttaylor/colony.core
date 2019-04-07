@@ -51,12 +51,12 @@ class VariableApi: public Cpl::Container::MapItem
 public:
     /** This method returns the variable's name
      */
-    virtual const char* getName() const throw() = 0;
+    virtual const char* getName() const noexcept = 0;
 
 
     /** This method returns the current value of the variable
      */
-    virtual const char* getValue() const throw() = 0;
+    virtual const char* getValue() const noexcept = 0;
 
     /// Overload the Cast-to-read-only-character-string-pointer as an alternate to getValue()
     inline operator const char* () const { return getValue(); }
@@ -66,7 +66,7 @@ public:
         a failed set call is the length of the new value exceeds the
         internal storage of the Variable.
      */
-    virtual bool setValue( const char* newValue ) throw() = 0;
+    virtual bool setValue( const char* newValue ) noexcept = 0;
 
     /** This method converts the binary numeric value to a string and
         sets the value of the Variable to the converted value. The method 
@@ -74,16 +74,16 @@ public:
         a failed set call is the length of the new value exceeds the
         internal storage of the Variable.
      */
-    virtual bool setValue( double newValue ) throw() = 0;
+    virtual bool setValue( double newValue ) noexcept = 0;
 
     /// Same as above
-    virtual bool setValue( long newValue ) throw() = 0;
+    virtual bool setValue( long newValue ) noexcept = 0;
 
     /// Same as above
-    virtual bool setValue( unsigned long newValue ) throw() = 0;
+    virtual bool setValue( unsigned long newValue ) noexcept = 0;
 
     /// Similiar to setValue() methods above, but sets the value as an double or long depending on if there is/is-not an fractional digits
-    virtual bool setNumericValue( double newValue ) throw() = 0;
+    virtual bool setNumericValue( double newValue ) noexcept = 0;
 
 
 public:
@@ -96,7 +96,7 @@ public:
         a valid 'numeric' value OR the variable's value is a not valid
         'numeric' value then false is returned; else true is returned.
      */
-    virtual bool add( const char* amount ) throw() = 0;
+    virtual bool add( const char* amount ) noexcept = 0;
 
 
 public:
@@ -104,13 +104,13 @@ public:
         method returns true if the conversation was successful; else
         false is returned.
      */
-    virtual bool getNumber( double& valueAsNumber ) const throw() = 0;
+    virtual bool getNumber( double& valueAsNumber ) const noexcept = 0;
 
     /// Same as above
-    virtual bool getNumber( long& valueAsNumber ) const throw() = 0;
+    virtual bool getNumber( long& valueAsNumber ) const noexcept = 0;
 
     /// Same as above
-    virtual bool getNumber( unsigned long& valueAsNumber ) const throw() = 0;
+    virtual bool getNumber( unsigned long& valueAsNumber ) const noexcept = 0;
 
 
 public:

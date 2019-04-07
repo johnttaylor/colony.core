@@ -39,16 +39,16 @@ public:
 
 public:
     /// See Cpl::Itc::PostApi
-    void post( Message& msg ) throw();
+    void post( Message& msg ) noexcept;
 
     /// See Cpl::Itc::PostApi
-    void postSync( Message& msg ) throw();
+    void postSync( Message& msg ) noexcept;
 
 
 protected:
     /** This operation is used process any pending messages.
      */
-    virtual void processMessages() throw();
+    virtual void processMessages() noexcept;
 
 
 protected:

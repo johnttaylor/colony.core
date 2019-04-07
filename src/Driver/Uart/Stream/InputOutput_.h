@@ -62,7 +62,7 @@ protected:
 
 protected:
     /// This method is used by a sub-class to start the internal drivers
-    void start(void) throw();
+    void start(void) noexcept;
 
 
 public:

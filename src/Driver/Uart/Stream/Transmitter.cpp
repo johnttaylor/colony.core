@@ -18,7 +18,7 @@ using namespace Driver::Uart::Stream;
 
 
 ////////////////////////
-Transmitter::Transmitter( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[], bool manualFirstTx ) throw()
+Transmitter::Transmitter( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[], bool manualFirstTx ) noexcept
 :m_uartHdl(uartHdl),
  m_waiterPtr(0),
  m_buffer(bufSize,bufMem),
@@ -30,7 +30,7 @@ Transmitter::Transmitter( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t b
 
 
 ////////////////////////
-void Transmitter::start(void) throw()
+void Transmitter::start(void) noexcept
     {
     // If in the wrong state -->get in the correct state
     if ( m_started )
@@ -46,7 +46,7 @@ void Transmitter::start(void) throw()
     }
 
 
-void Transmitter::stop(void) throw()
+void Transmitter::stop(void) noexcept
     {
     // Disable the TX side of the UART
     Driver_Uart_Hal_disableTxIrq( m_uartHdl );
@@ -67,7 +67,7 @@ void Transmitter::stop(void) throw()
 
       
 ////////////////////////
-bool Transmitter::write( const void* data, size_t numBytesToTx ) throw()
+bool Transmitter::write( const void* data, size_t numBytesToTx ) noexcept
     {
     // Fail the write if the driver has not been started
     if ( !m_started )
@@ -161,7 +161,7 @@ bool Transmitter::write( const void* data, size_t numBytesToTx ) throw()
 
 
 
-int Transmitter::su_txDoneIsr_(void) throw()
+int Transmitter::su_txDoneIsr_(void) noexcept
     {
     uint8_t byte;
     int     result = 0;

@@ -77,27 +77,27 @@ public:
 
 public:
     /// See Cpl::System::Thread
-    const char* getName() throw();
+    const char* getName() noexcept;
 
     /// See Cpl::System::Thread
-    size_t getId() throw();
+    size_t getId() noexcept;
 
     /// See Cpl::System::Thread
-    bool isRunning( void ) throw();
+    bool isRunning( void ) noexcept;
 
     /// See Cpl::System::Thread
-    Cpl_System_Thread_NativeHdl_T getNativeHandle( void ) throw();
+    Cpl_System_Thread_NativeHdl_T getNativeHandle( void ) noexcept;
 
     /// See Cpl::System::Thread
-    Runnable& getRunnable( void ) throw();
+    Runnable& getRunnable( void ) noexcept;
 
 
 public:
     /// See Cpl::System::Signable
-    int signal( void ) throw();
+    int signal( void ) noexcept;
 
     /// See Cpl::System::Signable
-    int su_signal( void ) throw();
+    int su_signal( void ) noexcept;
 
 
 
@@ -107,7 +107,7 @@ private:
 
 protected:
     /// Returns access to the TLS key array
-    static void** getTlsArray() throw();
+    static void** getTlsArray() noexcept;
 
 
 public:

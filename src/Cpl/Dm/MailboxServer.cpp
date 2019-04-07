@@ -19,7 +19,7 @@
 using namespace Cpl::Dm;
 
 /////////////////////
-MailboxServer::MailboxServer( unsigned long timingTickInMsec ) throw()
+MailboxServer::MailboxServer( unsigned long timingTickInMsec ) noexcept
     :Cpl::Dm::EventLoop( timingTickInMsec )
     ,Cpl::Itc::Mailbox( *((Cpl::System::EventLoop*)this) )
 {

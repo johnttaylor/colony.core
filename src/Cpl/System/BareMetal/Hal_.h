@@ -28,15 +28,15 @@ namespace BareMetal {
 /** This method is used to initialize the HAL/Target layer.  What needs to be
     an/or is initialized is platform specific.
  */
-void initialize( void ) throw();
+void initialize( void ) noexcept;
 
 /** This method performs a busy-wait for the specified number of milliseconds
  */
-void busyWait( unsigned long waitTimeMs ) throw();
+void busyWait( unsigned long waitTimeMs ) noexcept;
 
 /** This method returns the current elapsed time since power-up in milliseconds
  */
-unsigned long getElapsedTime( void ) throw();
+unsigned long getElapsedTime( void ) noexcept;
 
 };      // end namespaces
 };

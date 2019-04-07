@@ -31,12 +31,12 @@ RefCounter::RefCounter( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo
 
 
 ///////////////////////////////////////////////////////////////////////////////
-int8_t RefCounter::read( uint32_t& dstData, uint16_t* seqNumPtr ) const throw()
+int8_t RefCounter::read( uint32_t& dstData, uint16_t* seqNumPtr ) const noexcept
 {
     return ModelPointCommon_::read( &dstData, sizeof( uint32_t ), seqNumPtr );
 }
 
-uint16_t RefCounter::reset( uint32_t newValue, LockRequest_T lockRequest ) throw()
+uint16_t RefCounter::reset( uint32_t newValue, LockRequest_T lockRequest ) noexcept
 {
     m_modelDatabase.lock_();
     if ( testAndUpdateLock( lockRequest ) )
@@ -57,7 +57,7 @@ uint16_t RefCounter::reset( uint32_t newValue, LockRequest_T lockRequest ) throw
     return result;
 }
 
-uint16_t RefCounter::increment( uint32_t incrementAmount, LockRequest_T lockRequest ) throw()
+uint16_t RefCounter::increment( uint32_t incrementAmount, LockRequest_T lockRequest ) noexcept
 {
     m_modelDatabase.lock_();
     if ( testAndUpdateLock( lockRequest ) )
@@ -82,7 +82,7 @@ uint16_t RefCounter::increment( uint32_t incrementAmount, LockRequest_T lockRequ
     return result;
 }
 
-uint16_t RefCounter::decrement( uint32_t decrementAmount, LockRequest_T lockRequest ) throw()
+uint16_t RefCounter::decrement( uint32_t decrementAmount, LockRequest_T lockRequest ) noexcept
 {
     m_modelDatabase.lock_();
     if ( testAndUpdateLock( lockRequest ) )
@@ -107,7 +107,7 @@ uint16_t RefCounter::decrement( uint32_t decrementAmount, LockRequest_T lockRequ
     return result;
 }
 
-uint16_t RefCounter::setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest ) throw()
+uint16_t RefCounter::setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest ) noexcept
 {
     m_modelDatabase.lock_();
     m_data          = 0;
@@ -116,24 +116,24 @@ uint16_t RefCounter::setInvalidState( int8_t newInvalidState, LockRequest_T lock
     return result;
 }
 
-void RefCounter::attach( Observer& observer, uint16_t initialSeqNumber ) throw()
+void RefCounter::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
     ModelPointCommon_::attach( observer, initialSeqNumber );
 }
 
-void RefCounter::detach( Observer& observer ) throw()
+void RefCounter::detach( Observer& observer ) noexcept
 {
     ModelPointCommon_::detach( observer );
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-const char* RefCounter::getTypeAsText() const throw()
+const char* RefCounter::getTypeAsText() const noexcept
 {
     return "Cpl::Dm::Mp::RefCounter";
 }
 
-bool RefCounter::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
+bool RefCounter::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const noexcept
 {
     // Get a snapshot of the my data and state
     m_modelDatabase.lock_();
@@ -157,7 +157,7 @@ bool RefCounter::toString( Cpl::Text::String& dst, bool append, uint16_t* retSeq
     return true;
 }
 
-const char* RefCounter::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
+const char* RefCounter::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) noexcept
 {
     const char*   result = 0;
     const char*   endptr;

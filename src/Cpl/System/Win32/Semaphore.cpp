@@ -27,28 +27,28 @@ Semaphore::~Semaphore()
     CloseHandle( m_sema );
 }
 
-int Semaphore::signal( void ) throw()
+int Semaphore::signal( void ) noexcept
 {
     return ReleaseSemaphore( m_sema, 1, 0 ) ? 0 : -1;
 }
 
-int Semaphore::su_signal( void ) throw()
+int Semaphore::su_signal( void ) noexcept
 {
     return ReleaseSemaphore( m_sema, 1, 0 ) ? 0 : -1;
 }
 
-bool Semaphore::tryWait( void ) throw()
+bool Semaphore::tryWait( void ) noexcept
 {
     DWORD result = WaitForSingleObject( m_sema, 0L );
     return result == WAIT_OBJECT_0 ? true : false;
 }
 
-void Semaphore::waitInRealTime( void ) throw()
+void Semaphore::waitInRealTime( void ) noexcept
 {
     WaitForSingleObject( m_sema, INFINITE );
 }
 
-bool Semaphore::timedWaitInRealTime( unsigned long timeout ) throw()
+bool Semaphore::timedWaitInRealTime( unsigned long timeout ) noexcept
 {
     DWORD result = WaitForSingleObject( m_sema, (DWORD) timeout );
     return result == WAIT_OBJECT_0 ? true : false;

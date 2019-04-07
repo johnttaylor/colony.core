@@ -28,17 +28,17 @@ TimerManager::TimerManager()
 {
 }
 
-void TimerManager::startManager( void ) throw()
+void TimerManager::startManager( void ) noexcept
 {
     m_timeMark = Cpl::System::ElapsedTime::milliseconds();
 }
 
-bool TimerManager::areActiveTimers( void ) throw()
+bool TimerManager::areActiveTimers( void ) noexcept
 {
     return m_counters.first() == 0;
 }
 
-void TimerManager::processTimers( void ) throw()
+void TimerManager::processTimers( void ) noexcept
 {
     // Calculate the elapsed time in milliseconds since we last checked the timers
     m_timeNow               = Cpl::System::ElapsedTime::milliseconds();
@@ -54,7 +54,7 @@ void TimerManager::processTimers( void ) throw()
 
 
 /////////////////////////
-void TimerManager::tick( unsigned long msec ) throw()
+void TimerManager::tick( unsigned long msec ) noexcept
 {
     // Set my state to: PROCESSING TICK(S)    
     m_inTickCall = true;
@@ -93,7 +93,7 @@ void TimerManager::tick( unsigned long msec ) throw()
     }
 }
 
-void TimerManager::tickComplete( void ) throw()
+void TimerManager::tickComplete( void ) noexcept
 {
     // Process pending attaches now that the tick cycle has completed
     CounterCallback_* pendingClientPtr = m_pendingAttach.get();
@@ -109,7 +109,7 @@ void TimerManager::tickComplete( void ) throw()
 
 
 /////////////////////////
-void TimerManager::attach( CounterCallback_& clientToCallback ) throw()
+void TimerManager::attach( CounterCallback_& clientToCallback ) noexcept
 {
 
     // Do NOT add to my active timer list while I am processing tick(s)!
@@ -126,7 +126,7 @@ void TimerManager::attach( CounterCallback_& clientToCallback ) throw()
 }
 
 
-void TimerManager::addToActiveList( CounterCallback_& clientToCallback ) throw()
+void TimerManager::addToActiveList( CounterCallback_& clientToCallback ) noexcept
 {
     // Insert the counter wisely into the list.  The counters are
     // stored in the list in the order they will expire and have their
@@ -163,7 +163,7 @@ void TimerManager::addToActiveList( CounterCallback_& clientToCallback ) throw()
 }
 
 
-bool TimerManager::detach( CounterCallback_& clientToCallback ) throw()
+bool TimerManager::detach( CounterCallback_& clientToCallback ) noexcept
 {
     // Try my pending list FIRST
     if ( m_pendingAttach.remove( clientToCallback ) )
@@ -191,7 +191,7 @@ bool TimerManager::detach( CounterCallback_& clientToCallback ) throw()
 }
 
 
-unsigned long TimerManager::msecToCounts( unsigned long milliseconds ) throw()
+unsigned long TimerManager::msecToCounts( unsigned long milliseconds ) noexcept
 {
     unsigned long delta = Cpl::System::ElapsedTime::deltaMilliseconds( m_timeNow );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("milliseconds IN=%lu, count out=%lu", milliseconds, milliseconds + delta) );

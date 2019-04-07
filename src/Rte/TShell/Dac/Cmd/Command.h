@@ -33,15 +33,15 @@ protected:
 
 protected:
     /// Constructor
-    Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw();
+    Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) noexcept;
 
     /// Constructor.  Used to create a static instance of the command
-    Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+    Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept;
 
 
 protected:
     /// Helper: List all points
-    virtual Cpl::TShell::Dac::Command::Result_T listPoints( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens ) throw();
+    virtual Cpl::TShell::Dac::Command::Result_T listPoints( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens ) noexcept;
 
     /// Helper: Formats Point Info
     virtual void outputPointInfo( Cpl::TShell::Dac::Context_& context, bool& io, Cpl::Text::String& outbuffer, Rte::TShell::Dac::Point& dacPoint, bool includeDetails=false );

@@ -41,14 +41,14 @@ public:
         before the call to openFile(). The Chunk Layer is responsible for
         signing (i.e. writing the db signature string)  new media files.
      */
-    virtual Cpl::Io::File::InputOutputApi* openFile( bool& newfile ) throw() = 0;
+    virtual Cpl::Io::File::InputOutputApi* openFile( bool& newfile ) noexcept = 0;
 
 
     /** This method closes the associated storage media file.  If this method 
         is called when the storage media file is not in the open state - no 
         error is generated.
      */
-    virtual void closeFile() throw() = 0;
+    virtual void closeFile() noexcept = 0;
 
 
 public:
@@ -57,7 +57,7 @@ public:
         media file is in the CLOSED state. The method returns true if
         successful; else false is returned.
      */
-    virtual bool deleteFile() throw() = 0;
+    virtual bool deleteFile() noexcept = 0;
 
 
 public:

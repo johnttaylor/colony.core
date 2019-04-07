@@ -135,7 +135,7 @@ public:
 
 public:
     /// See Cpl::Dm::Subscriber<String>
-    void modelPointChanged( Cpl::Dm::Mp::String& modelPointThatChanged ) throw();
+    void modelPointChanged( Cpl::Dm::Mp::String& modelPointThatChanged ) noexcept;
 
 public:
     /// See Cpl::Itc::Open
@@ -184,88 +184,88 @@ protected:
 
 protected:
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void ackFileStopped() throw();
+    void ackFileStopped() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void ackOpenDone() throw();
+    void ackOpenDone() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void ackRead() throw();
+    void ackRead() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void ackWrite() throw();
+    void ackWrite() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void clearWriteQue() throw();
+    void clearWriteQue() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void consumeNoWrite() throw();
+    void consumeNoWrite() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void defaultAllRecords() throw();
+    void defaultAllRecords() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void inspectWriteQue() throw();
+    void inspectWriteQue() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void nakOpenDone() throw();
+    void nakOpenDone() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void nakWrite() throw();
+    void nakWrite() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void queWriteRequest() throw();
+    void queWriteRequest() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void reportDataCorruptError() throw();
+    void reportDataCorruptError() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void reportFileReadError() throw();
+    void reportFileReadError() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void reportFileWriteError() throw();
+    void reportFileWriteError() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void reportIncompatible() throw();
+    void reportIncompatible() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void reportMinorUpgrade() throw();
+    void reportMinorUpgrade() noexcept;
 
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void requestFileClear() throw();
+    void requestFileClear() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void requestFileClose() throw();
+    void requestFileClose() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void requestFileOpen() throw();
+    void requestFileOpen() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void requestFileRead() throw();
+    void requestFileRead() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void requestFileWrite() throw();
+    void requestFileWrite() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    void verifyOpen() throw();
+    void verifyOpen() noexcept;
 
 
 protected:
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    bool isFileBadData() throw();
+    bool isFileBadData() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    bool isFileEof() throw();
+    bool isFileEof() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    bool isFileError() throw();
+    bool isFileError() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    bool isFileSuccess() throw();
+    bool isFileSuccess() noexcept;
 
     /// See Dm::Persistence::Record::HandlerFsmContext_
-    bool isNotCompatible() throw();
+    bool isNotCompatible() noexcept;
 
 
 protected:

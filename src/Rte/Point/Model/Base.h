@@ -66,16 +66,16 @@ protected:
 
 public:
     /// See Rte::Point::Model::Api
-    void defaultContents( void ) throw();
+    void defaultContents( void ) noexcept;
 
     /// See Rte::Point::Model::Api
-    void defaultContents_nonThreadSafe( void ) throw();
+    void defaultContents_nonThreadSafe( void ) noexcept;
 
     /// See Rte::Point::Model::Api
-    Rte::Point::Api& getMyPoint_nonThreadSafe(void) throw();
+    Rte::Point::Api& getMyPoint_nonThreadSafe(void) noexcept;
 
     /// See Rte::Point::Model::Api
-    void touch_nonThreadSafe( void ) throw();
+    void touch_nonThreadSafe( void ) noexcept;
 
 
 

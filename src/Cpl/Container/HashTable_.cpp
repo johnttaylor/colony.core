@@ -177,7 +177,7 @@ void HashTable_::tableStats( HashTable_::Stats& info ) const
 
 
 //////////////////////////////
-unsigned int HashTable_::hashKey( const void* keystart, unsigned keylen, unsigned int maxBuckets ) const throw()
+unsigned int HashTable_::hashKey( const void* keystart, unsigned keylen, unsigned int maxBuckets ) const noexcept
 {
     static const unsigned int bits_in_unsigned     = sizeof( unsigned int ) * 8;
     static const unsigned int seventy_five_percent = (unsigned int) (bits_in_unsigned * .75);

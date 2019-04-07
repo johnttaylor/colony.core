@@ -92,7 +92,7 @@ static RegisterInitHandler autoRegister_systemInit_hook;
 
 
 //////////////////////////////////////////////////////////////////////////
-static void* my_new( size_t sz ) throw()
+static void* my_new( size_t sz ) noexcept
     {
     // Update metrics
     metrics_.m_bytesAllocated += sz;
@@ -127,22 +127,22 @@ static void my_delete( void* ptr )
         }
     }
 
-void* operator new( size_t sz, const std::nothrow_t& nothrow_value ) throw()
+void* operator new( size_t sz, const std::nothrow_t& nothrow_value ) noexcept
     {
     return my_new(sz);
     }
 
-void* operator new[](size_t sz, const std::nothrow_t& nothrow_value) throw()
+void* operator new[](size_t sz, const std::nothrow_t& nothrow_value) noexcept
     {
     return my_new(sz);
     }
 
-void operator delete(void* ptr) throw()
+void operator delete(void* ptr) noexcept
     {
     my_delete( ptr );
     }
 
-void operator delete[](void* ptr) throw()
+void operator delete[](void* ptr) noexcept
     {
     my_delete( ptr );
     }

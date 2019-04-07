@@ -36,18 +36,18 @@ private:
 
 public:
     /// Constructor
-    Md5Aladdin() throw();
+    Md5Aladdin() noexcept;
 
 
 public:
     /// See Cpl::Checksum::ApiMd5
-    void reset(void) throw();
+    void reset(void) noexcept;
 
     /// See Cpl::Checksum::ApiMd5
-    void accumulate( const void* bytes, unsigned numbytes=1 ) throw();
+    void accumulate( const void* bytes, unsigned numbytes=1 ) noexcept;
 
     /// See Cpl::Checksum::ApiMd5
-    Digest_T& finalize( Cpl::Text::String* convertToString=0, bool uppercase=true, bool append=false ) throw();
+    Digest_T& finalize( Cpl::Text::String* convertToString=0, bool uppercase=true, bool append=false ) noexcept;
 };
 
 };      // end namespaces

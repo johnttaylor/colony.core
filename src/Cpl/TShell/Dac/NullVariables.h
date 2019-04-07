@@ -30,28 +30,28 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    VariableApi* get( const Cpl::Container::Key& variableName ) throw();
+    VariableApi* get( const Cpl::Container::Key& variableName ) noexcept;
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    VariableApi* find( const Cpl::Container::Key& variableName ) throw();
+    VariableApi* find( const Cpl::Container::Key& variableName ) noexcept;
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    void remove( VariableApi& varNoLongerInUse ) throw();
+    void remove( VariableApi& varNoLongerInUse ) noexcept;
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    unsigned getUserCount() const throw();
+    unsigned getUserCount() const noexcept;
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    unsigned getMaxUserCount() const throw();
+    unsigned getMaxUserCount() const noexcept;
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    void addSystem( VariableApi& systemVariable ) throw();
+    void addSystem( VariableApi& systemVariable ) noexcept;
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    VariableApi* first() const throw();
+    VariableApi* first() const noexcept;
 
     /// See Cpl::TShell::Dac::ActiveVariablesApi
-    VariableApi* next( VariableApi& current ) const throw();
+    VariableApi* next( VariableApi& current ) const noexcept;
 };
 
 

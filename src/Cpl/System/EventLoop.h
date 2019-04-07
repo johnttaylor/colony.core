@@ -74,7 +74,7 @@ protected:
         the beginning of the appRun() method and BEFORE the "main loop" for the 
         appRun() method is entered.
      */
-    virtual void startEventLoop() throw();
+    virtual void startEventLoop() noexcept;
 
     /** This method is used to wait (and process) the next event(s).  This
         method returns after being woken up and processing all timer expired
@@ -109,7 +109,7 @@ protected:
     
         @endcode
      */
-    virtual bool waitAndProcessEvents() throw();
+    virtual bool waitAndProcessEvents() noexcept;
 
 protected:
     /** This method is used (by the concrete child class(es)) to process one
@@ -120,14 +120,14 @@ protected:
 
         The default implementation of this method does NOTHING.
      */
-    virtual void processEventFlag( uint8_t eventNumber ) throw() {};
+    virtual void processEventFlag( uint8_t eventNumber ) noexcept {};
 
 public:
     /// See Cpl::System::Signable
-    int signal( void ) throw();
+    int signal( void ) noexcept;
 
     /// See Cpl::System::Signable
-    int su_signal( void ) throw();
+    int su_signal( void ) noexcept;
 
 
 public:
@@ -141,16 +141,16 @@ protected:
 
 public:
     /// See Cpl::System::EventFlag
-    void notifyEvents( Cpl_System_EventFlag_T events ) throw();
+    void notifyEvents( Cpl_System_EventFlag_T events ) noexcept;
 
     /// See Cpl::System::EventFlag
-    void notify( uint8_t eventNumber ) throw();
+    void notify( uint8_t eventNumber ) noexcept;
 
     /// See Cpl::System::EventFlag
-    void su_notifyEvents( Cpl_System_EventFlag_T events ) throw();
+    void su_notifyEvents( Cpl_System_EventFlag_T events ) noexcept;
 
     /// See Cpl::System::EventFlag
-    void su_notify( uint8_t eventNumber ) throw();
+    void su_notify( uint8_t eventNumber ) noexcept;
 
 public:
     /// See Cpl::System::Runnable

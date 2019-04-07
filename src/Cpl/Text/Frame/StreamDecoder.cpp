@@ -29,7 +29,7 @@ StreamDecoder::StreamDecoder( char rawInputBuffer[], size_t sizeOfRawInputBuffer
 
 
 ///////////////////////////////////
-void StreamDecoder::setInput( Cpl::Io::Input& newInFd ) throw()
+void StreamDecoder::setInput( Cpl::Io::Input& newInFd ) noexcept
     {
     m_srcPtr = &newInFd;
     }

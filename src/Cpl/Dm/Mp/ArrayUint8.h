@@ -92,7 +92,7 @@ public:
         in the Model Point's array.  Note: if srcIndex + dstNumElements exceeds
         the size of the MP's data then the read operation will be truncated.
       */
-    virtual int8_t read( uint8_t* dstData, size_t dstNumElements, size_t srcIndex=0, uint16_t* seqNumPtr=0 ) const throw();
+    virtual int8_t read( uint8_t* dstData, size_t dstNumElements, size_t srcIndex=0, uint16_t* seqNumPtr=0 ) const noexcept;
 
     /** Type safe write. See Cpl::Dm::ModelPoint.
 
@@ -108,7 +108,7 @@ public:
               state!
       */
 
-    virtual uint16_t write( uint8_t* srcData, size_t srcNumElements, LockRequest_T lockRequest = eNO_REQUEST, size_t dstIndex=0 ) throw();
+    virtual uint16_t write( uint8_t* srcData, size_t srcNumElements, LockRequest_T lockRequest = eNO_REQUEST, size_t dstIndex=0 ) noexcept;
 
 
     /// Type safe read-modify-write client callback interface
@@ -131,22 +131,22 @@ public:
     typedef Cpl::Dm::Subscriber<ArrayUint8> Observer;
 
     /// Type safe register observer
-    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
+    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
 
     /// Type safe un-register observer
-    virtual void detach( Observer& observer ) throw();
+    virtual void detach( Observer& observer ) noexcept;
 
 
 public:
     ///  See Cpl::Dm::ModelPoint.
-    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const throw();
+    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const noexcept;
 
     ///  See Cpl::Dm::ModelPoint.
-    const char* getTypeAsText() const throw();
+    const char* getTypeAsText() const noexcept;
 
 protected:
     /// See Cpl::Dm::ModelPointCommon_.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw();
+    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) noexcept;
 
 
 

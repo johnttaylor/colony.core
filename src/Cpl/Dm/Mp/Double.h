@@ -40,10 +40,10 @@ public:
 
 public:
     /// Type safe read. See Cpl::Dm::ModelPoint
-    virtual int8_t read( double& dstData, uint16_t* seqNumPtr=0 ) const throw();
+    virtual int8_t read( double& dstData, uint16_t* seqNumPtr=0 ) const noexcept;
 
     /// Type safe write. See Cpl::Dm::ModelPoint
-    virtual uint16_t write( double newValue, LockRequest_T lockRequest = eNO_REQUEST ) throw();
+    virtual uint16_t write( double newValue, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
     /// Type safe read-modify-write client callback interface
     typedef Cpl::Dm::ModelPointRmwCallback<double> Client;
@@ -65,25 +65,25 @@ public:
     typedef Cpl::Dm::Subscriber<Double> Observer;
 
     /// Type safe register observer
-    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
+    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
 
     /// Type safe un-register observer
-    virtual void detach( Observer& observer ) throw();
+    virtual void detach( Observer& observer ) noexcept;
 
 
 public:
     ///  See Cpl::Dm::ModelPoint.
-    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const throw();
+    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const noexcept;
 
     ///  See Cpl::Dm::ModelPoint.
-    const char* getTypeAsText() const throw();
+    const char* getTypeAsText() const noexcept;
 
 protected:
     /// See Cpl::Dm::ModelPointCommon_.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw();
+    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) noexcept;
 
     /// See Cpl::Dm::ModelPoint.  Note: Use the system wide default epsilon of CPL_MATH_REAL_FLOAT_EPSILON when testing for equality
-    bool isDataEqual_( const void* otherData ) const throw();
+    bool isDataEqual_( const void* otherData ) const noexcept;
 
 };
 

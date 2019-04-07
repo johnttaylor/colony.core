@@ -66,7 +66,7 @@ public:
                                 buffer.
         @param bufMem           Array of bytes for the receive/inbound buffer.
      */
-    Receiver( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[] ) throw();
+    Receiver( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[] ) noexcept;
 
 
 
@@ -77,13 +77,13 @@ public:
         application to change the Baud rate, framing, etc - it must first stop
         the driver and then restart it.
      */
-    void start(void) throw();
+    void start(void) noexcept;
 
     /** This method will stop/disable the driver.  The driver can be restarted 
         by call start() again.  The state of the contents of the inbound buffer 
         and the byte(s) 'incoming' when the driver is stop is undetermined.
      */
-    void stop(void) throw();
+    void stop(void) noexcept;
     
 
       
@@ -98,19 +98,19 @@ public:
               NOT put into the inbound buffer.  A free running counter is 
               maintain of the number of framing errors encountered.
      */
-    bool read( void* data, size_t maxBytes, size_t& numBytesRx ) throw();
+    bool read( void* data, size_t maxBytes, size_t& numBytesRx ) noexcept;
 
 
     /** This method returns true if at least one byte is available in the
         inbound buffer.
      */
-    bool available( void ) const throw();
+    bool available( void ) const noexcept;
 
 
     /** This method returns and optionally clears the driver's framing error
         counter.
      */
-    size_t getFramingErrorsCount( bool clearCount=true ) throw();
+    size_t getFramingErrorsCount( bool clearCount=true ) noexcept;
 
 
 public:
@@ -123,7 +123,7 @@ public:
         The method returns the result of signalling waiter (i.e. return code
         from su_signal()), or zero if no waiter was signaled.
      */
-    int su_rxDataAndErrorIsr_(void) throw();
+    int su_rxDataAndErrorIsr_(void) noexcept;
  
      
 private: 

@@ -21,7 +21,7 @@ using namespace Cpl::TShell::Dac;
 
 
 ///////////////////////////
-Try::Try( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+Try::Try( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept
 :Command(commandList, "try")
 ,m_state(eIDLE)
 ,m_level(0)
@@ -29,7 +29,7 @@ Try::Try( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
     {
     }
 
-Try::Try( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+Try::Try( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
 :Command(commandList, "try", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
 ,m_state(eIDLE)
 ,m_level(0)
@@ -40,7 +40,7 @@ Try::Try( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const cha
 
 
 ///////////////////////////
-Cpl::TShell::Dac::Command::Result_T Try::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Try::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept
     {
     ActiveVariablesApi& vars  = context.getVariables();
     Cpl::Text::String&  token = context.getTokenBuffer();
@@ -183,7 +183,7 @@ Cpl::TShell::Dac::Command::Result_T Try::execute( Cpl::TShell::Dac::Context_& co
 
 
 ///////////////////////////
-Try::State_T Try::popState() throw()
+Try::State_T Try::popState() noexcept
     {
     bool    popResult = true;
     State_T newState  = m_stack.pop( &popResult );
@@ -196,7 +196,7 @@ Try::State_T Try::popState() throw()
     }
 
 
-Try::State_T Try::convert2State( Cpl::TShell::Dac::Cmd::Command::CondResult_T result ) const throw()
+Try::State_T Try::convert2State( Cpl::TShell::Dac::Cmd::Command::CondResult_T result ) const noexcept
     {
     switch( result )
         {

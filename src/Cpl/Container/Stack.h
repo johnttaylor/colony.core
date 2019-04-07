@@ -48,14 +48,14 @@ public:
         will fit in the memory allocated by 'memoryForElements' - it is NOT
         the number of bytes of 'memoryForElements'.
      */
-    Stack( unsigned maxElements, ITEM memoryForElements[] ) throw();
+    Stack( unsigned maxElements, ITEM memoryForElements[] ) noexcept;
 
 
 public:
     /** Adds an item to the top of the stack.  Returns true if successful;
         else false is returned (e.g. on stack overflow).
      */
-    bool push( ITEM dst ) throw();
+    bool push( ITEM dst ) noexcept;
 
 
     /** Removes the top item of the stack.  If the stack is empty, then
@@ -64,7 +64,7 @@ public:
         *statusPtr == false then the pop operation failed and the returned 
         value is invalid.
      */
-    ITEM pop( bool* statusPtr=0 ) throw();
+    ITEM pop( bool* statusPtr=0 ) noexcept;
 
 
     /** Returns the item on the top of the Stack. The returned item
@@ -73,35 +73,35 @@ public:
         stats/result of the pop operation, i.e. when *statusPtr == false then 
         the peek operation failed and the returned value is invalid.
      */
-    ITEM peekTop( bool* statusPtr=0 ) const throw();
+    ITEM peekTop( bool* statusPtr=0 ) const noexcept;
 
 
 public:
     /** This method returns true if the Stack is empty
      */
-    bool isEmpty( void ) const throw();
+    bool isEmpty( void ) const noexcept;
 
     /** This method returns true if the Stack is full
      */
-    bool isFull( void ) const throw();
+    bool isFull( void ) const noexcept;
 
 
     /** This method returns the current number of items in
         the Stack
      */
-    unsigned getNumItems( void ) const throw();
+    unsigned getNumItems( void ) const noexcept;
 
 
     /** This method returns the maximum number of items that
         can be stored in the Stack.
      */
-    unsigned getMaxItems( void ) const throw();
+    unsigned getMaxItems( void ) const noexcept;
 
 public:
     /** Empties the Stack.  All references to the item(s) in the stack are
         lost.
      */
-    void clearTheStack() throw();
+    void clearTheStack() noexcept;
 
 
 
@@ -120,21 +120,21 @@ private:
 
 
 template <class ITEM>
-Stack<ITEM>::Stack( unsigned maxElements, ITEM memoryForElements[] ) throw()
+Stack<ITEM>::Stack( unsigned maxElements, ITEM memoryForElements[] ) noexcept
     :m_count( 0 ), m_maxItems( maxElements ), m_elements( memoryForElements )
 {
 }
 
 
 template <class ITEM>
-inline void Stack<ITEM>::clearTheStack() throw()
+inline void Stack<ITEM>::clearTheStack() noexcept
 {
     m_count = 0;
 }
 
 
 template <class ITEM>
-inline bool Stack<ITEM>::push( ITEM item ) throw()
+inline bool Stack<ITEM>::push( ITEM item ) noexcept
 {
     if ( isFull() )
     {
@@ -147,7 +147,7 @@ inline bool Stack<ITEM>::push( ITEM item ) throw()
 
 
 template <class ITEM>
-inline ITEM Stack<ITEM>::pop( bool* statusPtr ) throw()
+inline ITEM Stack<ITEM>::pop( bool* statusPtr ) noexcept
 {
     if ( isEmpty() )
     {
@@ -170,7 +170,7 @@ inline ITEM Stack<ITEM>::pop( bool* statusPtr ) throw()
 
 
 template <class ITEM>
-inline ITEM Stack<ITEM>::peekTop( bool* statusPtr ) const throw()
+inline ITEM Stack<ITEM>::peekTop( bool* statusPtr ) const noexcept
 {
     if ( isEmpty() )
     {
@@ -193,25 +193,25 @@ inline ITEM Stack<ITEM>::peekTop( bool* statusPtr ) const throw()
 
 
 template <class ITEM>
-inline bool Stack<ITEM>::isEmpty( void ) const throw()
+inline bool Stack<ITEM>::isEmpty( void ) const noexcept
 {
     return m_count == 0;
 }
 
 template <class ITEM>
-inline bool Stack<ITEM>::isFull( void ) const throw()
+inline bool Stack<ITEM>::isFull( void ) const noexcept
 {
     return m_count == m_maxItems;
 }
 
 template <class ITEM>
-inline unsigned Stack<ITEM>::getNumItems( void ) const throw()
+inline unsigned Stack<ITEM>::getNumItems( void ) const noexcept
 {
     return m_count;
 }
 
 template <class ITEM>
-inline unsigned Stack<ITEM>::getMaxItems( void ) const throw()
+inline unsigned Stack<ITEM>::getMaxItems( void ) const noexcept
 {
     return m_maxItems;
 }

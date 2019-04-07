@@ -68,13 +68,13 @@ public:
 
     /** Returns 'true' if the instance is in the specified container.
      */
-    bool isInContainer_( const void* containerPtr ) const throw();
+    bool isInContainer_( const void* containerPtr ) const noexcept;
 
 
     /** Helper method to do the proper 'clean-up' for the
         multiple-containers-error-trap when removing an item from a container.
      */
-    static void remove_( Item* itemPtr ) throw();
+    static void remove_( Item* itemPtr ) noexcept;
 
 };
 

@@ -25,7 +25,7 @@ Timer::Timer( TimerManager& timingSource )
 
 
 /////////////////////////////
-void Timer::start( unsigned long timerDurationInMilliseconds ) throw()
+void Timer::start( unsigned long timerDurationInMilliseconds ) noexcept
 {
 
     m_timingSource.detach( *this );
@@ -33,22 +33,22 @@ void Timer::start( unsigned long timerDurationInMilliseconds ) throw()
     m_timingSource.attach( *this );
 }
 
-void Timer::stop() throw()
+void Timer::stop() noexcept
 {
     m_timingSource.detach( *this );
 }
 
 
-void Timer::decrement( unsigned long milliseconds ) throw()
+void Timer::decrement( unsigned long milliseconds ) noexcept
 {
     m_count -= milliseconds;
 }
-void Timer::increment( unsigned long milliseconds ) throw()
+void Timer::increment( unsigned long milliseconds ) noexcept
 {
     m_count += milliseconds;
 }
 
-unsigned long Timer::count() const throw()
+unsigned long Timer::count() const noexcept
 {
     return m_count;
 }

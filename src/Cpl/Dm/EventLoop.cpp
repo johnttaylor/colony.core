@@ -24,7 +24,7 @@
 using namespace Cpl::Dm;
 
 /////////////////////
-EventLoop::EventLoop( unsigned long timingTickInMsec ) throw()
+EventLoop::EventLoop( unsigned long timingTickInMsec ) noexcept
     :Cpl::System::EventLoop( timingTickInMsec )
 {
 }
@@ -45,7 +45,7 @@ void EventLoop::appRun()
     }
 }
 
-void EventLoop::processChangeNotifications() throw()
+void EventLoop::processChangeNotifications() noexcept
 {
     // Get the next pending change notification
     Cpl::System::GlobalLock::begin();
@@ -71,7 +71,7 @@ void EventLoop::processChangeNotifications() throw()
     }
 }
 
-void EventLoop::addPendingChangingNotification_( SubscriberApi& subscriber ) throw()
+void EventLoop::addPendingChangingNotification_( SubscriberApi& subscriber ) noexcept
 {
     // Add the notification to my list and send myself an Event to wake up the mailbox
     Cpl::System::GlobalLock::begin();
@@ -80,7 +80,7 @@ void EventLoop::addPendingChangingNotification_( SubscriberApi& subscriber ) thr
     signal();
 }
 
-void EventLoop::removePendingChangingNotification_( SubscriberApi& subscriber ) throw()
+void EventLoop::removePendingChangingNotification_( SubscriberApi& subscriber ) noexcept
 {
     // Remove the subscriber from the notification
     Cpl::System::GlobalLock::begin();

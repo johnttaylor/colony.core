@@ -36,7 +36,7 @@ protected:
     /** This method returns a reference to the Item's Key instance.  The
         application is responsible for implementing this method.
      */
-    virtual const Key& getKey() const throw() = 0;
+    virtual const Key& getKey() const noexcept = 0;
 
 
 protected:

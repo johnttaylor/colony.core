@@ -133,7 +133,7 @@ public:
     ///
     void unsubscribe() { m_mp1.detach( *this ); }
     ///
-    void modelPointChanged( Mp::Int32& modelPointThatChanged ) throw()
+    void modelPointChanged( Mp::Int32& modelPointThatChanged ) noexcept
     {
         if ( m_done != true )
         {
@@ -174,7 +174,7 @@ public:
     ///
     RmwInt32():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0 ) {}
     ///
-    ModelPoint::RmwCallbackResult_T callback( int32_t& data, int8_t validState ) throw()
+    ModelPoint::RmwCallbackResult_T callback( int32_t& data, int8_t validState ) noexcept
     {
         m_callbackCount++;
         if ( m_returnResult != ModelPoint::eNO_CHANGE )
@@ -207,7 +207,7 @@ public:
     ///
     void unsubscribe() { m_mp1.detach( *this ); }
     ///
-    void modelPointChanged( Mp::Int64& modelPointThatChanged ) throw()
+    void modelPointChanged( Mp::Int64& modelPointThatChanged ) noexcept
     {
         if ( m_done != true )
         {
@@ -248,7 +248,7 @@ public:
     ///
     RmwInt64():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0 ) {}
     ///
-    ModelPoint::RmwCallbackResult_T callback( int64_t& data, int8_t validState ) throw()
+    ModelPoint::RmwCallbackResult_T callback( int64_t& data, int8_t validState ) noexcept
     {
         m_callbackCount++;
         if ( m_returnResult != ModelPoint::eNO_CHANGE )
@@ -281,7 +281,7 @@ public:
     ///
     void unsubscribe() { m_mp1.detach( *this ); }
     ///
-    void modelPointChanged( Mp::Uint64& modelPointThatChanged ) throw()
+    void modelPointChanged( Mp::Uint64& modelPointThatChanged ) noexcept
     {
         if ( m_done != true )
         {
@@ -322,7 +322,7 @@ public:
     ///
     RmwUint64():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0 ) {}
     ///
-    ModelPoint::RmwCallbackResult_T callback( uint64_t& data, int8_t validState ) throw()
+    ModelPoint::RmwCallbackResult_T callback( uint64_t& data, int8_t validState ) noexcept
     {
         m_callbackCount++;
         if ( m_returnResult != ModelPoint::eNO_CHANGE )
@@ -355,7 +355,7 @@ public:
     ///
     void unsubscribe() { m_mp1.detach( *this ); }
     ///
-    void modelPointChanged( Mp::Bool& modelPointThatChanged ) throw()
+    void modelPointChanged( Mp::Bool& modelPointThatChanged ) noexcept
     {
         if ( m_done != true )
         {
@@ -396,7 +396,7 @@ public:
     ///
     RmwBool():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_nextValue( true ) {}
     ///
-    ModelPoint::RmwCallbackResult_T callback( bool& data, int8_t validState ) throw()
+    ModelPoint::RmwCallbackResult_T callback( bool& data, int8_t validState ) noexcept
     {
         m_callbackCount++;
         if ( m_returnResult != ModelPoint::eNO_CHANGE )
@@ -430,7 +430,7 @@ public:
     ///
     void unsubscribe() { m_mp1.detach( *this ); }
     ///
-    void modelPointChanged( Mp::Float& modelPointThatChanged ) throw()
+    void modelPointChanged( Mp::Float& modelPointThatChanged ) noexcept
     {
         if ( m_done != true )
         {
@@ -471,7 +471,7 @@ public:
     ///
     RmwFloat():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0.0 ) {}
     ///
-    ModelPoint::RmwCallbackResult_T callback( float& data, int8_t validState ) throw()
+    ModelPoint::RmwCallbackResult_T callback( float& data, int8_t validState ) noexcept
     {
         m_callbackCount++;
         if ( m_returnResult != ModelPoint::eNO_CHANGE )
@@ -504,7 +504,7 @@ public:
     ///
     void unsubscribe() { m_mp1.detach( *this ); }
     ///
-    void modelPointChanged( Mp::Double& modelPointThatChanged ) throw()
+    void modelPointChanged( Mp::Double& modelPointThatChanged ) noexcept
     {
         if ( m_done != true )
         {
@@ -545,7 +545,7 @@ public:
     ///
     RmwDouble():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0.0 ) {}
     ///
-    ModelPoint::RmwCallbackResult_T callback( double& data, int8_t validState ) throw()
+    ModelPoint::RmwCallbackResult_T callback( double& data, int8_t validState ) noexcept
     {
         m_callbackCount++;
         if ( m_returnResult != ModelPoint::eNO_CHANGE )
@@ -578,7 +578,7 @@ public:
     ///
     void unsubscribe() { m_mp1.detach( *this ); }
     ///
-    void modelPointChanged( Mp::String& modelPointThatChanged ) throw()
+    void modelPointChanged( Mp::String& modelPointThatChanged ) noexcept
     {
         if ( m_done != true )
         {
@@ -619,7 +619,7 @@ public:
     ///
     RmwString():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_valueToWrite( 0 ) {}
     ///
-    ModelPoint::RmwCallbackResult_T callback( Mp::String::Data& data, int8_t validState ) throw()
+    ModelPoint::RmwCallbackResult_T callback( Mp::String::Data& data, int8_t validState ) noexcept
     {
         m_callbackCount++;
         if ( m_returnResult != ModelPoint::eNO_CHANGE )
@@ -659,7 +659,7 @@ public:
     ///
     void unsubscribe() { m_mp1.detach( *this ); }
     ///
-    void modelPointChanged( Mp::RefCounter& modelPointThatChanged ) throw()
+    void modelPointChanged( Mp::RefCounter& modelPointThatChanged ) noexcept
     {
         if ( m_done != true )
         {
@@ -708,7 +708,7 @@ public:
     ///
     void unsubscribe() { m_mp1.detach( *this ); }
     ///
-    void modelPointChanged( Mp::ArrayUint8& modelPointThatChanged ) throw()
+    void modelPointChanged( Mp::ArrayUint8& modelPointThatChanged ) noexcept
     {
         if ( m_done != true )
         {
@@ -750,7 +750,7 @@ public:
     ///
     RmwArrayUint8():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_index( 0 ), m_newValue( 0 ) {}
     ///
-    ModelPoint::RmwCallbackResult_T callback( Mp::ArrayUint8::Data& data, int8_t validState ) throw()
+    ModelPoint::RmwCallbackResult_T callback( Mp::ArrayUint8::Data& data, int8_t validState ) noexcept
     {
         m_callbackCount++;
         if ( m_returnResult != ModelPoint::eNO_CHANGE && m_index < data.numElements )
@@ -782,7 +782,7 @@ public:
     }
 
     // Type
-    const char* getTypeAsText() const throw()
+    const char* getTypeAsText() const noexcept
     {
         return "Cpl::Dm::Mp::_0test::MyEnum";
     }
@@ -792,13 +792,13 @@ public:
     typedef Cpl::Dm::Subscriber<MpMyEnum> Observer;
 
     /// Type safe register observer
-    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw()
+    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept
     {
         ModelPointCommon_::attach( observer, initialSeqNumber );
     }
 
     /// Type safe un-register observer
-    virtual void detach( Observer& observer ) throw()
+    virtual void detach( Observer& observer ) noexcept
     {
         ModelPointCommon_::detach( observer );
     }
@@ -828,7 +828,7 @@ public:
     ///
     void unsubscribe() { m_mp1.detach( *this ); }
     ///
-    void modelPointChanged( MpMyEnum& modelPointThatChanged ) throw()
+    void modelPointChanged( MpMyEnum& modelPointThatChanged ) noexcept
     {
         if ( m_done != true )
         {
@@ -869,7 +869,7 @@ public:
     ///
     RmwMyEnum():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0 ) {}
     ///
-    ModelPoint::RmwCallbackResult_T callback( MyEnum& data, int8_t validState ) throw()
+    ModelPoint::RmwCallbackResult_T callback( MyEnum& data, int8_t validState ) noexcept
     {
         m_callbackCount++;
         if ( m_returnResult != ModelPoint::eNO_CHANGE )

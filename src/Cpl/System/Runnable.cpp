@@ -39,7 +39,7 @@ void Runnable::run( void )
     Locks_::system().unlock();
 }
 
-bool Runnable::isRunning( void ) throw()
+bool Runnable::isRunning( void ) noexcept
 {
     bool result = false;
 

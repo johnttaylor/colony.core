@@ -18,13 +18,13 @@ using namespace Cpl::System;
 
 
 //////////////////////////////////////////////////
-void Semaphore::wait( void ) throw()
+void Semaphore::wait( void ) noexcept
 {
     sem_wait( &m_sema );
 }
 
 
-bool Semaphore::timedWait( unsigned long timeout ) throw()
+bool Semaphore::timedWait( unsigned long timeout ) noexcept
 {
     return timedWaitInRealTime( timeout );
 }

@@ -55,12 +55,12 @@ bool Api::isSchedulingEnabled( void )
     return cpl_system_thread_freertos_schedulerStarted_;
 }
 
-void Api::sleep( unsigned long milliseconds ) throw()
+void Api::sleep( unsigned long milliseconds ) noexcept
 {
     vTaskDelay( milliseconds * portTICK_PERIOD_MS );
 }
 
-void Api::sleepInRealTime( unsigned long milliseconds ) throw()
+void Api::sleepInRealTime( unsigned long milliseconds ) noexcept
 {
     vTaskDelay( milliseconds * portTICK_PERIOD_MS );
 }

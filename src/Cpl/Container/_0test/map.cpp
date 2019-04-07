@@ -53,7 +53,7 @@ public:
 
 public:
     ///  API from SortedItem
-    const Key& getKey() const throw() { return *this; }
+    const Key& getKey() const noexcept { return *this; }
     
 };
 
@@ -86,7 +86,7 @@ public:
 
 public:
     ///  API from SortedItem
-    const Key& getKey() const throw() { return *this; }
+    const Key& getKey() const noexcept { return *this; }
 };
 
 

@@ -48,7 +48,7 @@ public:
         NOTE: A value of zero for 'timingTickInMsec' will disable support
               for Local Timers.
      */
-    MailboxServer( unsigned long timingTickInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD ) throw();
+    MailboxServer( unsigned long timingTickInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD ) noexcept;
 
 public:
     /// See Cpl::System::Runnable

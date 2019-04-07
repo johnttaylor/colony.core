@@ -32,7 +32,7 @@ using namespace Cpl::TShell::Dac::Cmd;
 
 
 ////////////////////////////////////////
-Command::Result_T Command::expandText( const char* textToExpand, Cpl::Text::String& dst, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw()
+Command::Result_T Command::expandText( const char* textToExpand, Cpl::Text::String& dst, Cpl::TShell::Dac::ActiveVariablesApi& vars ) noexcept
     {
     // Generated expanded text
     const char* nextPtr;
@@ -101,7 +101,7 @@ Command::CondResult_T Command::conditional( Cpl::TShell::Dac::Context_&         
                                             Cpl::Text::Tokenizer::TextBlock&      tokens, 
                                             unsigned                              startingTokenIndex, 
                                             Cpl::TShell::Dac::ActiveVariablesApi& vars 
-                                          ) throw()
+                                          ) noexcept
     {
     CondResult_T result   = eTRUE;
     unsigned     numParms = tokens.numParameters();
@@ -182,7 +182,7 @@ Command::CondResult_T Command::conditional( Cpl::TShell::Dac::Context_&         
 
 
 
-Command::CondResult_T Command::evaluate( const char* leftVal, const char* oper, const char* rightVal ) throw()
+Command::CondResult_T Command::evaluate( const char* leftVal, const char* oper, const char* rightVal ) noexcept
     {
     int compareResult = VariableApi::compare( leftVal, rightVal );
 

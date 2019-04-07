@@ -42,7 +42,7 @@ public:
         notification mechanism of the subscriber's Mailbox Server, i.e. executes 
         in the thread associated m_mailBoxHdl
      */
-    virtual void genericModelPointChanged_( ModelPoint& modelPointThatChanged ) throw() = 0;
+    virtual void genericModelPointChanged_( ModelPoint& modelPointThatChanged ) noexcept = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Dm namespace.  The Application should
@@ -50,7 +50,7 @@ public:
 
         This method returns a pointer to the Subscriber's mailbox
       */
-    virtual NotificationApi_* getNotificationApi_() const throw() = 0;
+    virtual NotificationApi_* getNotificationApi_() const noexcept = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Dm namespace.  The Application should
@@ -58,7 +58,7 @@ public:
 
         This method is use to set the Subscriber's Model Point reference
       */
-    virtual void setModelPoint_( ModelPoint* modelPoint ) throw() = 0;
+    virtual void setModelPoint_( ModelPoint* modelPoint ) noexcept = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Dm namespace.  The Application should
@@ -69,7 +69,7 @@ public:
         Note: If this method is called BEFORE the setModelPoint() method is
               called then a Fatal Error will be generated.
       */
-    virtual ModelPoint* getModelPoint_() throw() = 0;
+    virtual ModelPoint* getModelPoint_() noexcept = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Dm namespace.  The Application should
@@ -77,7 +77,7 @@ public:
 
         This method is use to get the Subscriber's internal state
       */
-    virtual int getState_() const throw() = 0;
+    virtual int getState_() const noexcept = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Dm namespace.  The Application should
@@ -85,7 +85,7 @@ public:
 
         This method is use to set the Subscriber's internal state
       */
-    virtual void setState_( int newState ) throw() = 0;
+    virtual void setState_( int newState ) noexcept = 0;
 
    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
        by other classes in the Cpl::Dm namespace.  The Application should
@@ -93,7 +93,7 @@ public:
 
        This method is use to get the Subscriber's sequence number
      */
-    virtual uint16_t getSequenceNumber_() const throw() = 0;
+    virtual uint16_t getSequenceNumber_() const noexcept = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Dm namespace.  The Application should
@@ -101,7 +101,7 @@ public:
 
         This method is use to set the Subscriber's sequence number
       */
-    virtual void setSequenceNumber_( uint16_t newSeqNumber ) throw() = 0;
+    virtual void setSequenceNumber_( uint16_t newSeqNumber ) noexcept = 0;
 
 
 public:

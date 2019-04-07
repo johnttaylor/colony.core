@@ -19,7 +19,7 @@
 using namespace Cpl::TShell::Dac::Cmd;
 
 ///////////////////////////
-Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw()
+Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept
 :Command(commandList, "threads")
 ,m_contextPtr(0)
 ,m_count(0)
@@ -27,7 +27,7 @@ Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) 
     {
     }
 
-Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
 :Command(commandList, "threads", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance)
 ,m_contextPtr(0)
 ,m_count(0)
@@ -37,7 +37,7 @@ Threads::Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, c
 
 
 ///////////////////////////
-Cpl::TShell::Dac::Command::Result_T Threads::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw()
+Cpl::TShell::Dac::Command::Result_T Threads::execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept
     {
     // Error checking
     if ( tokens.numParameters() != 1 )

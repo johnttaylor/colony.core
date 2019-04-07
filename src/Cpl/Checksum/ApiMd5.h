@@ -40,11 +40,11 @@ public:
 
 public:
     /// Used to re-use/restart the hash object
-    virtual void reset(void) throw() = 0;
+    virtual void reset(void) noexcept = 0;
 
     /** Call the method for every byte being hash'd
      */
-    virtual void accumulate( const void* bytes, unsigned numbytes=1 ) throw() = 0;
+    virtual void accumulate( const void* bytes, unsigned numbytes=1 ) noexcept = 0;
 
     /** Call this method to finalize the Hash.  The calcualted hash
         value is returned.  If 'convertToString' is NOT null, then the

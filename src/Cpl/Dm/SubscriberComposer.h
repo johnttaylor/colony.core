@@ -59,7 +59,7 @@ public:
 
 public:
     /// See Cpl::Dm::Subscriber<MP>
-    void modelPointChanged( MP& modelPointThatChanged ) throw();
+    void modelPointChanged( MP& modelPointThatChanged ) noexcept;
 
 };
 
@@ -78,7 +78,7 @@ Cpl::Dm::SubscriberComposer<CONTEXT, MP>::SubscriberComposer( Cpl::Dm::EventLoop
 
 /////////////////
 template <class CONTEXT, class MP>
-void Cpl::Dm::SubscriberComposer<CONTEXT, MP>::modelPointChanged( MP& modelPointThatChanged ) throw()
+void Cpl::Dm::SubscriberComposer<CONTEXT, MP>::modelPointChanged( MP& modelPointThatChanged ) noexcept
 {
     // Notify context
     return (m_context.*m_notificationCb)(modelPointThatChanged);

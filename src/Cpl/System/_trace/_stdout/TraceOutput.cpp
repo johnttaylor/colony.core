@@ -21,7 +21,7 @@ static Cpl::Io::Stdio::StdOut fd_;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-Cpl::Io::Output* Trace::getDefaultOutputStream_( void ) throw()
+Cpl::Io::Output* Trace::getDefaultOutputStream_( void ) noexcept
 {
     return &fd_;
 }

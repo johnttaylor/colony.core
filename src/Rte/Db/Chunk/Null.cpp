@@ -24,19 +24,19 @@ Null::Null()
 
 
 //////////////////////////////
-Cpl::Io::File::InputOutputApi* Null::openDatabase( bool& newfile ) throw()
+Cpl::Io::File::InputOutputApi* Null::openDatabase( bool& newfile ) noexcept
     {
     newfile = true;
     return this;
     }
 
 
-void Null::closeDatabase() throw()
+void Null::closeDatabase() noexcept
     {
     }
 
 
-bool Null::deleteDatabase() throw()
+bool Null::deleteDatabase() noexcept
     {
     return true;
     }

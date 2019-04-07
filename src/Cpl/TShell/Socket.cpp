@@ -19,7 +19,7 @@ using namespace Cpl::TShell;
 
 
 /////////////////////////////////////////
-Socket::Socket( Processor& shell, Cpl::Io::Socket::Listener& listener, const char* threadName, int threadPriority, bool thisIsAStaticInstance ) throw()
+Socket::Socket( Processor& shell, Cpl::Io::Socket::Listener& listener, const char* threadName, int threadPriority, bool thisIsAStaticInstance ) noexcept
 :m_shell(shell)
 ,m_threadPtr(0)
 ,m_priority(threadPriority)
@@ -39,7 +39,7 @@ Socket::~Socket()
 
 
 /////////////////////////////////////////
-void Socket::launch( int portNumToListenOn ) throw()
+void Socket::launch( int portNumToListenOn ) noexcept
     {
     // If I am re-launched -->kill the previous shell
     if ( m_threadPtr )

@@ -24,19 +24,19 @@ Null::Null()
 
 
 //////////////////////////////
-Cpl::Io::File::InputOutputApi* Null::openFile( bool& newfile ) throw()
+Cpl::Io::File::InputOutputApi* Null::openFile( bool& newfile ) noexcept
 {
     newfile = true;
     return this;
 }
 
 
-void Null::closeFile() throw()
+void Null::closeFile() noexcept
 {
 }
 
 
-bool Null::deleteFile() throw()
+bool Null::deleteFile() noexcept
 {
     return true;
 }

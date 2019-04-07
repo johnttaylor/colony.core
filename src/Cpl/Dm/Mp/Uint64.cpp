@@ -32,12 +32,12 @@ Uint64::Uint64( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& static
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-int8_t Uint64::read( uint64_t& dstData, uint16_t* seqNumPtr ) const throw()
+int8_t Uint64::read( uint64_t& dstData, uint16_t* seqNumPtr ) const noexcept
 {
     return ModelPointCommon_::read( &dstData, sizeof( uint64_t ), seqNumPtr );
 }
 
-uint16_t Uint64::write( uint64_t newValue, LockRequest_T lockRequest ) throw()
+uint16_t Uint64::write( uint64_t newValue, LockRequest_T lockRequest ) noexcept
 {
     return ModelPointCommon_::write( &newValue, sizeof( uint64_t ), lockRequest );
 }
@@ -47,24 +47,24 @@ uint16_t Uint64::readModifyWrite( Client& callbackClient, LockRequest_T lockRequ
     return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
 }
 
-void Uint64::attach( Observer& observer, uint16_t initialSeqNumber ) throw()
+void Uint64::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
     ModelPointCommon_::attach( observer, initialSeqNumber );
 }
 
-void Uint64::detach( Observer& observer ) throw()
+void Uint64::detach( Observer& observer ) noexcept
 {
     ModelPointCommon_::detach( observer );
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-const char* Uint64::getTypeAsText() const throw()
+const char* Uint64::getTypeAsText() const noexcept
 {
     return m_decimal ? "Cpl::Dm::Mp::Uint64-dec" : "Cpl::Dm::Mp::Uint64-hex";
 }
 
-bool Uint64::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
+bool Uint64::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const noexcept
 {
     // Get a snapshot of the my data and state
     m_modelDatabase.lock_();
@@ -95,7 +95,7 @@ bool Uint64::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenc
     return true;
 }
 
-const char* Uint64::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
+const char* Uint64::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) noexcept
 {
     const char*        result = 0;
     const char*        endptr;

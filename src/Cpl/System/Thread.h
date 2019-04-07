@@ -65,59 +65,59 @@ public:
     virtual ~Thread() {};
 
     /// This method returns the name (null terminated string) of the current thread.
-    virtual const char* getName() throw() = 0;
+    virtual const char* getName() noexcept = 0;
 
     /// This method returns the task's unique identifier
-    virtual size_t getId() throw() = 0;
+    virtual size_t getId() noexcept = 0;
 
     /** This method returns the 'running' state of the thread.  If the method
         returns false, the underlying thread has terminated (i.e. the run()
         method has completed) and then the Thread object/instance can be safely
         deleted using the destroy() method below.
      */
-    virtual bool isRunning( void ) throw() = 0;
+    virtual bool isRunning( void ) noexcept = 0;
 
     /** Returns the native thread handle.  Note: This handle can NOT be used
         a handle/reference/pointer to a Thread object instance.
      */
-    virtual Cpl_System_Thread_NativeHdl_T getNativeHandle( void ) throw() = 0;
+    virtual Cpl_System_Thread_NativeHdl_T getNativeHandle( void ) noexcept = 0;
 
     /// This method returns a reference to the thread's Runnable object
-    virtual Runnable& getRunnable( void ) throw() = 0;
+    virtual Runnable& getRunnable( void ) noexcept = 0;
 
 public:
     /// This method returns a reference to the currently executing thread.
-    static Thread& getCurrent() throw();
+    static Thread& getCurrent() noexcept;
 
     /** This method causes the CURRENT thread to wait until its 'thread
         semaphore' is signal/set.
      */
-    static void wait() throw();
+    static void wait() noexcept;
 
     /** This method is similar to Semaphore::tryWait(), except that it operates
         on the thread semaphore
      */
-    static bool tryWait() throw();
+    static bool tryWait() noexcept;
 
     /** Same as wait(), except the call will return after 'timeoutInMsec'
         has expired without the thread being signaled.  The method return true
         if the Thread was signaled; else false is returned if the timeout period
         expired.
      */
-    static bool timedWait( unsigned long timeoutInMsec ) throw();
+    static bool timedWait( unsigned long timeoutInMsec ) noexcept;
 
     /** Returns the name for the current thread (i.e. short-hand for
         threadPtr->getCurrent().getName()
      */
-    static const char* myName() throw();
+    static const char* myName() noexcept;
 
     /** Returns the ID for the current thread (i.e. short-hand for
         threadPtr->getCurrent().getId()
      */
-    static size_t myId() throw();
+    static size_t myId() noexcept;
 
     /// This method returns a reference to the current thread' runnable instance.
-    static inline Runnable& myRunnable() throw()    { return getCurrent().getRunnable(); }
+    static inline Runnable& myRunnable() noexcept    { return getCurrent().getRunnable(); }
 
 
 public:
@@ -158,7 +158,7 @@ public:
               threads from being created/deleted until it has
               completed.
      */
-    static void traverse( Thread::Traverser& client ) throw();
+    static void traverse( Thread::Traverser& client ) noexcept;
 
 
 public:

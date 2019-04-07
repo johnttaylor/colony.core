@@ -64,13 +64,13 @@ public:
 
 protected:
     /// See Cpl::Text::Frame::Encoder_
-    bool start( char src ) throw();
+    bool start( char src ) noexcept;
     
     /// See Cpl::Text::Frame::Encoder_
-    bool start() throw();
+    bool start() noexcept;
 
     /// See Cpl::Text::Frame::Encoder_
-    bool append( char src ) throw();
+    bool append( char src ) noexcept;
 
 };
 

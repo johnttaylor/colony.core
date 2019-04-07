@@ -74,19 +74,19 @@ static uint32_t reflect_( uint32_t data, uint8_t nBits )
 
 
 ///////////////////////////////////////
-Crc32EthernetFast::Crc32EthernetFast() throw()
+Crc32EthernetFast::Crc32EthernetFast() noexcept
     {
     reset();
     }
 
-void Crc32EthernetFast::reset(void) throw()
+void Crc32EthernetFast::reset(void) noexcept
     {
     m_crc = ~0;
     }
 
 
 ///////////////////////////////////////
-void Crc32EthernetFast::accumulate( void* bytes, unsigned numbytes ) throw()
+void Crc32EthernetFast::accumulate( void* bytes, unsigned numbytes ) noexcept
     {
     unsigned i;
     uint8_t* ptr = (uint8_t*) bytes;
@@ -98,7 +98,7 @@ void Crc32EthernetFast::accumulate( void* bytes, unsigned numbytes ) throw()
         }
     }
 
-uint32_t Crc32EthernetFast::finalize( void* destBuffer ) throw()
+uint32_t Crc32EthernetFast::finalize( void* destBuffer ) noexcept
     {
     uint8_t* ptr = (uint8_t*) destBuffer;
     if ( ptr )
@@ -112,7 +112,7 @@ uint32_t Crc32EthernetFast::finalize( void* destBuffer ) throw()
     return m_crc;
     }
 
-bool Crc32EthernetFast::isOkay(void) throw()
+bool Crc32EthernetFast::isOkay(void) noexcept
     {
     return m_crc == 0;
     }

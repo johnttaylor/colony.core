@@ -109,7 +109,7 @@ public:
 
 
 public:
-    void mp1_changed( Mp::Uint32& modelPointThatChanged ) throw()
+    void mp1_changed( Mp::Uint32& modelPointThatChanged ) noexcept
     {
         uint32_t prevValue  = m_lastValue;
         int8_t   prevState  = m_lastValidState;
@@ -366,7 +366,7 @@ public:
     ///
     RmwUint32():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0 ) {}
     ///
-    ModelPoint::RmwCallbackResult_T callback( uint32_t& data, int8_t validState ) throw()
+    ModelPoint::RmwCallbackResult_T callback( uint32_t& data, int8_t validState ) noexcept
     {
         m_callbackCount++;
         if ( m_returnResult != ModelPoint::eNO_CHANGE )

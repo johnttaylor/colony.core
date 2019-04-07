@@ -60,13 +60,13 @@ public:
 
 public:
     /// Type safe read. See Cpl::Dm::ModelPoint
-    virtual int8_t read( BETTERENUM_TYPE& dstData, uint16_t* seqNumPtr=0 ) const throw()
+    virtual int8_t read( BETTERENUM_TYPE& dstData, uint16_t* seqNumPtr=0 ) const noexcept
     {
         return ModelPointCommon_::read( &dstData, sizeof( int ), seqNumPtr );
     }
 
     /// Type safe write. See Cpl::Dm::ModelPoint
-    virtual uint16_t write( BETTERENUM_TYPE newValue, LockRequest_T lockRequest = eNO_REQUEST ) throw()
+    virtual uint16_t write( BETTERENUM_TYPE newValue, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
     {
         return ModelPointCommon_::write( &newValue, sizeof( int ), lockRequest );
     }
@@ -92,41 +92,41 @@ public:
 
 public:
     /// See Cpl::Dm::ModelPoint.  This method IS thread safe.
-    size_t getSize() const throw()
+    size_t getSize() const noexcept
     {
         return sizeof( BETTERENUM_TYPE );
     }
 
 public:
     /// See Cpl::Dm::ModelPoint
-    void copyDataTo_( void* dstData, size_t dstSize ) const throw()
+    void copyDataTo_( void* dstData, size_t dstSize ) const noexcept
     {
         CPL_SYSTEM_ASSERT( dstSize == sizeof( BETTERENUM_TYPE ) );
         *((BETTERENUM_TYPE*) dstData) = m_data;
     }
 
     /// See Cpl::Dm::ModelPoint
-    void copyDataFrom_( const void* srcData, size_t srcSize ) throw()
+    void copyDataFrom_( const void* srcData, size_t srcSize ) noexcept
     {
         CPL_SYSTEM_ASSERT( srcSize == sizeof( BETTERENUM_TYPE ) );
         m_data = *((BETTERENUM_TYPE*) srcData);
     }
 
     /// See Cpl::Dm::ModelPoint.  The default implementation is for integers
-    bool isDataEqual_( const void* otherData ) const throw()
+    bool isDataEqual_( const void* otherData ) const noexcept
     {
         BETTERENUM_TYPE left = *((BETTERENUM_TYPE*) otherData);
         return m_data == left;
     }
 
     /// See Cpl::Dm::Point.  
-    const void* getImportExportDataPointer_() const throw()
+    const void* getImportExportDataPointer_() const noexcept
     {
         return (const void*) (&m_data);
     }
 
     /// See Cpl::Dm::Point.  
-    size_t getInternalDataSize() const throw()
+    size_t getInternalDataSize() const noexcept
     {
         return sizeof( BETTERENUM_TYPE );
     }
@@ -134,7 +134,7 @@ public:
 
 public:
     ///  See Cpl::Dm::ModelPoint.
-    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const throw()
+    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const noexcept
     {
         // Get a snapshot of the my data and state
         m_modelDatabase.lock_();
@@ -162,7 +162,7 @@ public:
 
 protected:
     /// See Cpl::Dm::ModelPointCommon_.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) throw()
+    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) noexcept
     {
         const char*   result = 0;
         char*         srcPtr = (char*) srcText;

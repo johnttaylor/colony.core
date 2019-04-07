@@ -28,30 +28,30 @@ Semaphore::~Semaphore()
     sem_destroy( &m_sema );
 }
 
-int Semaphore::signal( void ) throw()
+int Semaphore::signal( void ) noexcept
 {
     return sem_post( &m_sema );
 }
 
-int Semaphore::su_signal( void ) throw()
+int Semaphore::su_signal( void ) noexcept
 {
     // TODO: Add log unexpected error/event since this isn't really supported
     return sem_post( &m_sema );
 }
 
-bool Semaphore::tryWait( void ) throw()
+bool Semaphore::tryWait( void ) noexcept
 {
     int result = sem_trywait( &m_sema );
     return result == -1 && errno == EAGAIN ? false : true;
 }
 
-void Semaphore::waitInRealTime( void ) throw()
+void Semaphore::waitInRealTime( void ) noexcept
 {
     sem_wait( &m_sema );
 }
 
 
-bool Semaphore::timedWaitInRealTime( unsigned long timeout ) throw()
+bool Semaphore::timedWaitInRealTime( unsigned long timeout ) noexcept
 {
     // Convert milliseconds to the nanosleep time spec
     static const long nsec2msec = 1000000;

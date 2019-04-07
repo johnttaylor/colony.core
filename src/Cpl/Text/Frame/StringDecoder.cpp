@@ -35,7 +35,7 @@ StringDecoder::StringDecoder( char startOfFrame, char endOfFrame, char escapeCha
 
 
 ////////////////////////////////////
-bool StringDecoder::scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) throw()
+bool StringDecoder::scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize ) noexcept
     {
     bool result = Decoder_::scan( maxSizeOfFrame, frame, frameSize );
     m_endPtr    = m_dataPtr;
@@ -44,14 +44,14 @@ bool StringDecoder::scan( size_t maxSizeOfFrame, char* frame, size_t& frameSize 
     }
 
 
-const char* StringDecoder::getRemainder() const throw()
+const char* StringDecoder::getRemainder() const noexcept
     {
     return m_endPtr;
     }
 
 
 ////////////////////////////////////
-void StringDecoder::setInput( const char* inputSourceAsNullTerminatedString ) throw()
+void StringDecoder::setInput( const char* inputSourceAsNullTerminatedString ) noexcept
     {
     m_srcPtr = inputSourceAsNullTerminatedString;
     m_srcLen = inputSourceAsNullTerminatedString? strlen(inputSourceAsNullTerminatedString): 0;
@@ -59,7 +59,7 @@ void StringDecoder::setInput( const char* inputSourceAsNullTerminatedString ) th
     }
 
 
-void StringDecoder::setInput( const char* inputSoruce, int sizeInBytesOfSource ) throw()
+void StringDecoder::setInput( const char* inputSoruce, int sizeInBytesOfSource ) noexcept
     {
     m_srcPtr = inputSoruce;
     m_srcLen = sizeInBytesOfSource;
@@ -68,22 +68,22 @@ void StringDecoder::setInput( const char* inputSoruce, int sizeInBytesOfSource )
 
 
 ////////////////////////////////////////////
-bool StringDecoder::isStartOfFrame() throw()   
+bool StringDecoder::isStartOfFrame() noexcept   
     { 
     return *m_dataPtr == m_sof; 
     }
 
-bool StringDecoder::isEofOfFrame() throw()     
+bool StringDecoder::isEofOfFrame() noexcept     
     { 
     return *m_dataPtr == m_eof; 
     }
 
-bool StringDecoder::isEscapeChar() throw()     
+bool StringDecoder::isEscapeChar() noexcept     
     { 
     return *m_dataPtr == m_esc; 
     }
 
-bool StringDecoder::isLegalCharacter() throw() 
+bool StringDecoder::isLegalCharacter() noexcept 
     { 
     return *m_dataPtr != '\0'; 
     }

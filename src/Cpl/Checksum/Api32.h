@@ -41,11 +41,11 @@ class Api32
 {
 public:
     /// Used to re-use/restart the Checksum object
-    virtual void reset(void) throw() = 0;
+    virtual void reset(void) noexcept = 0;
 
     /** Call the method for every byte being Checksum'd
      */
-    virtual void accumulate( void* bytes, unsigned numbytes=1 ) throw() = 0;
+    virtual void accumulate( void* bytes, unsigned numbytes=1 ) noexcept = 0;
 
     /** Call this method to finalize the Checksum.  The calcualted Checksum
         value is returned.  If 'destBuffer' is NOT null, then the
@@ -54,13 +54,13 @@ public:
         for ensure there is sufficient space (and additional 4 bytes) for
         the appended Checksum value.
      */
-    virtual uint32_t finalize( void* destBuffer=0 ) throw() = 0;
+    virtual uint32_t finalize( void* destBuffer=0 ) noexcept = 0;
 
     /** This method returns true if the data and the incoming Checksum bytes,
         that accumalte() has been called on, is good.  Returns true if
         the Checksum check passes; else false is returned
      */
-    virtual bool isOkay(void) throw() = 0;
+    virtual bool isOkay(void) noexcept = 0;
 
 
 public:

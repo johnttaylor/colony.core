@@ -78,7 +78,7 @@ public:
                  uint8_t           irqPriority, 
                  uint8_t           baudrate, 
                  uint8_t           baudrateDivider, 
-                 uint8_t           frameConfig      ) throw()
+                 uint8_t           frameConfig      ) noexcept
     :Driver::Uart::Stream::InputOutput_(sciPortID, true, m_txMemBuffer, TXSIZE, m_rxMemBuffer, RXSIZE ),
      m_sciPortID(sciPortID),
      m_pinSelect(pinSelect),
@@ -98,7 +98,7 @@ public:
     /** This method must be called BEFORE using the InputOutput stream - BUT 
         it must called AFTER the BSP and the CPL library has been initialized.
      */
-    void start(void) throw()
+    void start(void) noexcept
         {
         Cpl_Io_Serial_Renesas_Rx62n_Hal_uartInit( m_sciPortID, m_pinSelect, m_irqPriority, m_baudrate, m_baudrateDivider, m_frameConfig );
         m_tx.start();
@@ -108,10 +108,10 @@ public:
 
 public:
     /// This COMPONENT Scoped method returns the transmitter for the PURPOSE of processing the TX ISR
-    Driver::Uart::Stream::Transmitter& su_getTransmitter_(void) throw() { return m_tx; }
+    Driver::Uart::Stream::Transmitter& su_getTransmitter_(void) noexcept { return m_tx; }
 
     /// This COMPONENT Scoped method returns the receiver for the PURPOSE of processing the RX ISRs
-    Driver::Uart::Stream::Receiver&    su_getReceiver_(void) throw() { return m_rx; }
+    Driver::Uart::Stream::Receiver&    su_getReceiver_(void) noexcept { return m_rx; }
 
 };
 

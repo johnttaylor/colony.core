@@ -44,15 +44,15 @@ public:
 
 public:
     /// Returns a reference to the associated Cpl::Itc::Request instance
-    SERVER & getServer() throw();
+    SERVER & getServer() noexcept;
 
 
 public:
     /// See PostApi                                 
-    void post( Message& msg ) throw();
+    void post( Message& msg ) noexcept;
 
     /// See PostApi
-    void postSync( Message& msg ) throw();
+    void postSync( Message& msg ) noexcept;
 };
 
 
@@ -68,19 +68,19 @@ SAP<SERVER>::SAP( SERVER& api, PostApi& mbox )
 }
 
 template <class SERVER>
-SERVER& SAP<SERVER>::getServer() throw()
+SERVER& SAP<SERVER>::getServer() noexcept
 {
     return m_api;
 }
 
 template <class SERVER>
-void SAP<SERVER>::post( Message& msg ) throw()
+void SAP<SERVER>::post( Message& msg ) noexcept
 {
     m_mbox.post( msg );
 }
 
 template <class SERVER>
-void SAP<SERVER>::postSync( Message& msg ) throw()
+void SAP<SERVER>::postSync( Message& msg ) noexcept
 {
     m_mbox.postSync( msg );
 }

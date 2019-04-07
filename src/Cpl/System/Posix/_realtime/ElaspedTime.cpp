@@ -18,17 +18,17 @@ using namespace Cpl::System;
 
 
 /////////////////////////////////////////////////////////////////
-unsigned long ElapsedTime::milliseconds( void ) throw()
+unsigned long ElapsedTime::milliseconds( void ) noexcept
 {
     return millisecondsInRealTime();
 }
 
-unsigned long ElapsedTime::seconds( void ) throw()
+unsigned long ElapsedTime::seconds( void ) noexcept
 {
     return secondsInRealTime();
 }
 
-ElapsedTime::Precision_T ElapsedTime::precision( void ) throw()
+ElapsedTime::Precision_T ElapsedTime::precision( void ) noexcept
 {
     return precisionInRealTime();
 }

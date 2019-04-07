@@ -65,7 +65,7 @@ Base::getDefaultSAP(void)
 
 
 ///////////////////
-void Base::defaultContents() throw()
+void Base::defaultContents() noexcept
     {
     DefaultPayload                payload;
     Cpl::Itc::SyncReturnHandler   srh;
@@ -163,7 +163,7 @@ void Base::pollViewer( ViewerRequest::RegisterMsg& viewerToPoll )
 
 
 ///////////////////
-void Base::defaultContents_nonThreadSafe( void ) throw()
+void Base::defaultContents_nonThreadSafe( void ) noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::defaultContents_nonThreadSafe() - (%p)", this ));
 
@@ -181,14 +181,14 @@ void Base::defaultContents_nonThreadSafe( void ) throw()
     }
 
 
-Rte::Point::Api& Base::getMyPoint_nonThreadSafe( void ) throw()
+Rte::Point::Api& Base::getMyPoint_nonThreadSafe( void ) noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ( "Base::getMyPoint_nonThreadSafe() - (%p)", this ));
     return m_myPoint;
     }
     
 
-void Base::touch_nonThreadSafe( void ) throw()
+void Base::touch_nonThreadSafe( void ) noexcept
     {
     // Increment the Tuples sequence numbers
     unsigned j;

@@ -35,17 +35,17 @@ public:
     MpServerStatus( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, ServerStatus initialValue );
 
     // Type
-    const char* getTypeAsText() const throw();
+    const char* getTypeAsText() const noexcept;
 
 public:
     /// Type safe subscriber
     typedef Cpl::Dm::Subscriber<MpServerStatus> Observer;
 
     /// Type safe register observer
-    void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) throw();
+    void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
 
     /// Type safe un-register observer
-    void detach( Observer& observer ) throw();
+    void detach( Observer& observer ) noexcept;
 };
 
 

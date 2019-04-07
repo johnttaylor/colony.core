@@ -42,23 +42,23 @@ class Help: public Command
 {
 public:
     /// See Cpl::TShell::Dac::Command
-    const char* getUsage() const throw()    { return CPLTSHELLDACMD_USAGE_HELP_; }
+    const char* getUsage() const noexcept    { return CPLTSHELLDACMD_USAGE_HELP_; }
 
     /// See Cpl::TShell::Dac::Command
-    const char* getHelp() const throw()     { return CPLTSHELLDACMD_DETAIL_HELP_; }
+    const char* getHelp() const noexcept     { return CPLTSHELLDACMD_DETAIL_HELP_; }
     
      
 public:
     /// Constructor
-    Help( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) throw();
+    Help( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept;
 
     /// Constructor.  Used to create a static instance of the command
-    Help( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+    Help( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept;
 
 
 public:
     /// See Cpl::TShell::Dac::Command
-    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) throw();
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept;
 
 };
 

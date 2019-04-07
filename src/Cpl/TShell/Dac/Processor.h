@@ -274,89 +274,89 @@ public:
 
 public:
     /// See Cpl::TShell::Processor
-    bool start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw();
+    bool start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) noexcept;
 
     /// See Cpl::TShell::Processor
-    void requestStop() throw();
+    void requestStop() noexcept;
 
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    Command::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing=0 ) throw();
+    Command::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing=0 ) noexcept;
 
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    Cpl::System::Mutex& getOutputLock() throw();
+    Cpl::System::Mutex& getOutputLock() noexcept;
 
     /// See Cpl::TShell::Dac::Context_
-    Cpl::Container::Map<Command>& getCommands() throw();
+    Cpl::Container::Map<Command>& getCommands() noexcept;
 
     /// See Cpl::TShell::Dac::Context_
-    ActiveVariablesApi& getVariables() throw();
+    ActiveVariablesApi& getVariables() noexcept;
 
     /// See Cpl::TShell::Dac::Context_
-    VariableApi& getErrorLevel() throw();
+    VariableApi& getErrorLevel() noexcept;
 
     /// See Cpl::TShell::Dac::Context_
-    VariableApi& getLastOutput() throw();
+    VariableApi& getLastOutput() noexcept;
 
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    bool writeFrame( const char* text  ) throw();
+    bool writeFrame( const char* text  ) noexcept;
 
     /// See Cpl::TShell::Dac::Context_
-    bool writeFrame( const char* text, size_t maxBytes ) throw();
+    bool writeFrame( const char* text, size_t maxBytes ) noexcept;
  
 public:
     /// See Cpl::TShell::Dac::Context_
-    bool beginCommandReplay(  unsigned level ) throw();
+    bool beginCommandReplay(  unsigned level ) noexcept;
 
     /// See Cpl::TShell::Dac::Context_
-    void endCommandReplay(void) throw();
+    void endCommandReplay(void) noexcept;
 
     /// See Cpl::TShell::Dac::Context_
-    bool beginCommandCapture( unsigned level, const char* firstCmd=0  ) throw();
+    bool beginCommandCapture( unsigned level, const char* firstCmd=0  ) noexcept;
 
     /// See Cpl::TShell::Dac::Context_
-    bool endCommandCapture(void) throw();
-
-public:
-    /// See Cpl::TShell::Dac::Context_
-    void enableFilter( Command& marker ) throw();
+    bool endCommandCapture(void) noexcept;
 
 public:
     /// See Cpl::TShell::Dac::Context_
-    Cpl::Text::String& getOutputBuffer() throw();
+    void enableFilter( Command& marker ) noexcept;
+
+public:
+    /// See Cpl::TShell::Dac::Context_
+    Cpl::Text::String& getOutputBuffer() noexcept;
 
     /// See Cpl::TShell::Dac::Context_
-    Cpl::Text::String& getTokenBuffer() throw();
+    Cpl::Text::String& getTokenBuffer() noexcept;
 
     /// See Cpl::TShell::Dac::Context_
-    Cpl::Text::String& getTokenBuffer2() throw();
+    Cpl::Text::String& getTokenBuffer2() noexcept;
 
     /// See Cpl::TShell::Dac::Context_
-    Cpl::Text::String& getLastOutValue() throw();
+    Cpl::Text::String& getLastOutValue() noexcept;
 
     
 protected:
     /// Outputs the shell's start message
-    virtual bool greeting( Cpl::Io::Output& outfd ) throw();
+    virtual bool greeting( Cpl::Io::Output& outfd ) noexcept;
 
     /// Outputs the shell's end message
-    virtual bool farewell( Cpl::Io::Output& outfd ) throw();
+    virtual bool farewell( Cpl::Io::Output& outfd ) noexcept;
 
     /// Outputs the shell's prompt
-    virtual bool prompt( Cpl::Io::Output& outfd ) throw();
+    virtual bool prompt( Cpl::Io::Output& outfd ) noexcept;
 
 
 protected:
     /// Helper method
-    void backoutCaptureLine( unsigned capturing ) throw();
+    void backoutCaptureLine( unsigned capturing ) noexcept;
 
     /// Helper method
-    bool outputCommandError( Command::Result_T result, const char* deframedInput ) throw();
+    bool outputCommandError( Command::Result_T result, const char* deframedInput ) noexcept;
 
 };
 

@@ -94,7 +94,7 @@ void Server::request( CancelMsg& msg )
     msg.returnToSender();
     }
 
-void Server::defaultAllRecordsContent() throw()
+void Server::defaultAllRecordsContent() noexcept
     {
     DefaultPayload                payload;
     Cpl::Itc::SyncReturnHandler   srh;
@@ -321,28 +321,28 @@ void Server::response( WriteMsg& msg )
 
 
 /////////////////////////////////
-void Server::reportIncompatible() throw()
+void Server::reportIncompatible() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportIncompatible") );
     m_logger.warning( "Rte::Db::Record::Server::reportIncompatible - Incompatible schema" );
     m_tempStatus = HealthRequest::eNO_STORAGE_WRONG_SCHEMA;
     }
 
-void Server::reportFileReadError() throw()
+void Server::reportFileReadError() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportFileReadError") );
     m_logger.warning( "Rte::Db::Record::Server::reportFileReadError - DB File Read/Open error" );
     m_tempStatus = HealthRequest::eNO_STORAGE_MEDIA_ERR;
     }
 
-void Server::reportDataCorruptError() throw()
+void Server::reportDataCorruptError() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportDataCorruptError") );
     m_logger.warning( "Rte::Db::Record::Server::reportDataCorruptError - DB Corruption error - defaulting one or more record(s)" );
     m_tempStatus = HealthRequest::eRUNNING_CORRUPTED_INPUT;
     }
 
-void Server::reportFileWriteError() throw()
+void Server::reportFileWriteError() noexcept
     {
     const char* recname = m_writerPtr->getName();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportFileWriteError (rec=%s)", recname) );
@@ -361,7 +361,7 @@ void Server::reportFileWriteError() throw()
         }
     }
 
-void Server::reportMinorUpgrade() throw()
+void Server::reportMinorUpgrade() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportMinorUpgrade") );
     m_logger.warning( "Rte::Db::Record::Server::reportMinorUpgrade - one or more Records where automatically upgraded." );
@@ -370,13 +370,13 @@ void Server::reportMinorUpgrade() throw()
 
 
 
-void Server::requestDbClose() throw()
+void Server::requestDbClose() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::requestDbClose") );
     m_chunkSAP.post( m_closeDbResponseMsg.getRequestMsg() );
     }
 
-void Server::requestDbOpen() throw()
+void Server::requestDbOpen() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::requestDbOpen") );
     Rte::Db::Chunk::Request::OpenDbPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::OpenDbPayload(m_buffer, m_bufSize);
@@ -384,7 +384,7 @@ void Server::requestDbOpen() throw()
     m_chunkSAP.post( rspmsg->getRequestMsg() );
     }
 
-void Server::requestDbClear() throw()
+void Server::requestDbClear() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::requestDbClear") );
     Rte::Db::Chunk::Request::ClearDbPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ClearDbPayload(m_buffer, m_bufSize);
@@ -392,7 +392,7 @@ void Server::requestDbClear() throw()
     m_chunkSAP.post( rspmsg->getRequestMsg() );
     }
 
-void Server::requestDbRead() throw()
+void Server::requestDbRead() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::requestDbRead") );
     Rte::Db::Chunk::Request::ReadPayload* payload = new(m_memPayload.m_byteMem)      Rte::Db::Chunk::Request::ReadPayload(m_buffer, m_bufSize, m_chunkHandle);
@@ -401,7 +401,7 @@ void Server::requestDbRead() throw()
     m_dbDataLen = 0;
     }
 
-void Server::requestDbWrite() throw()
+void Server::requestDbWrite() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::requestDbWrite") );
     m_writerPtr = m_writeRequests.get();
@@ -421,7 +421,7 @@ void Server::requestDbWrite() throw()
     }
 
 
-void Server::consumeNoWrite() throw()
+void Server::consumeNoWrite() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::consumeNoWrite") );
     m_writerPtr = m_writeRequests.get();
@@ -432,7 +432,7 @@ void Server::consumeNoWrite() throw()
     }
 
 
-void Server::ackRead() throw()
+void Server::ackRead() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackRead") );
     ApiLocal* recordPtr = findRecordApi( extractRecName(), extractRecNameLength() );
@@ -473,7 +473,7 @@ void Server::ackRead() throw()
         }
     }
 
-void Server::ackWrite() throw()
+void Server::ackWrite() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackWrite") );
     if ( m_writerPtr )
@@ -487,7 +487,7 @@ void Server::ackWrite() throw()
         }
     }
 
-void Server::defaultAllRecords() throw()
+void Server::defaultAllRecords() noexcept
     {
     // Default ALL registered records
     ApiLocal* recordPtr = m_records.first();
@@ -498,14 +498,14 @@ void Server::defaultAllRecords() throw()
         }
     }
 
-void Server::nakWrite() throw()
+void Server::nakWrite() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::nakWrite") );
     m_writerPtr = 0;
     }
 
 
-void Server::ackOpenDone() throw()
+void Server::ackOpenDone() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackOpenDone") );
 
@@ -518,7 +518,7 @@ void Server::ackOpenDone() throw()
     }
 
 
-void Server::nakOpenDone() throw()
+void Server::nakOpenDone() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::nakOpenDone") );
 
@@ -531,7 +531,7 @@ void Server::nakOpenDone() throw()
     }
 
 
-void Server::ackDbStopped() throw()
+void Server::ackDbStopped() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::ackDbStopped") );
 
@@ -547,13 +547,13 @@ void Server::ackDbStopped() throw()
     m_closeMsgPtr = 0;
     }
 
-void Server::queWriteRequest() throw()
+void Server::queWriteRequest() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::queWriteRequest") );
     // Nothing needed!
     }
 
-void Server::inspectWriteQue() throw()
+void Server::inspectWriteQue() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::inspectWriteQue") );
     
@@ -564,14 +564,14 @@ void Server::inspectWriteQue() throw()
         }
     }
 
-void Server::clearWriteQue() throw()
+void Server::clearWriteQue() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::clearWriteQue") );
     m_writeRequests.clearTheList();
     m_writerPtr = 0;
     }
 
-void Server::verifyOpen() throw()
+void Server::verifyOpen() noexcept
     {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::verifyOpen") );
     if ( m_recordCount == 0 && !m_conversion )
@@ -587,27 +587,27 @@ void Server::verifyOpen() throw()
 
 
 /////////////////////////////////
-bool Server::isDbEof() throw()
+bool Server::isDbEof() noexcept
     {
     return m_dbResult == Rte::Db::Chunk::Request::eEOF;
     }
 
-bool Server::isDbSuccess() throw()
+bool Server::isDbSuccess() noexcept
     {
     return m_dbResult == Rte::Db::Chunk::Request::eSUCCESS;
     }
 
-bool Server::isDbBadData() throw()
+bool Server::isDbBadData() noexcept
     {
     return m_dbResult == Rte::Db::Chunk::Request::eCORRUPT_DATA;
     }
 
-bool Server::isDbError() throw()
+bool Server::isDbError() noexcept
     {
     return m_dbResult == Rte::Db::Chunk::Request::eERR_FILEIO || m_dbResult == Rte::Db::Chunk::Request::eERR_NOT_A_DB_FILE || m_dbResult == Rte::Db::Chunk::Request::eERR_OPEN;
     }
 
-bool Server::isNotCompatible() throw()
+bool Server::isNotCompatible() noexcept
     {
     return m_dbResult == Rte::Db::Chunk::Request::eWRONG_SCHEMA;
     }

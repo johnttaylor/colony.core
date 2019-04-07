@@ -28,13 +28,13 @@ StringEncoder::StringEncoder( Cpl::Text::String& dst, char startOfFrame, char en
 
 
 ///////////////////////////////////
-bool StringEncoder::start( char src ) throw()
+bool StringEncoder::start( char src ) noexcept
     {
     m_dst.formatOpt( m_append, "%c", src );
     return m_dst.truncated() == false;
     }
 
-bool StringEncoder::start() throw()
+bool StringEncoder::start() noexcept
     {
     if ( !m_append )
         {
@@ -44,7 +44,7 @@ bool StringEncoder::start() throw()
     return m_dst.truncated() == false;
     }
 
-bool StringEncoder::append( char src ) throw()
+bool StringEncoder::append( char src ) noexcept
     {
     m_dst += src;
     return m_dst.truncated() == false;

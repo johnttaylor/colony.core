@@ -64,7 +64,7 @@ public:
 
 public:
     /// Return Cpl::Container::DictItem (used with Maps and Dictionaries)
-    const Cpl::Container::Key& getKey() const throw() { return m_myString; }
+    const Cpl::Container::Key& getKey() const noexcept { return m_myString; }
 
 
 protected:

@@ -135,7 +135,7 @@ public:
     HealthRequest::SAP&  getHealthSAP(void);
 
     /// See Rte::Db::Record::Handler
-    void defaultAllRecordsContent() throw();
+    void defaultAllRecordsContent() noexcept;
 
     /// See Rte::Db::Record::HealthRequest
     void request( RegisterMsg& msg );
@@ -192,88 +192,88 @@ protected:
 
 protected:
     /// See Rte::Db::Record::HandlerFsmContext_
-    void ackDbStopped() throw();
+    void ackDbStopped() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void ackOpenDone() throw();
+    void ackOpenDone() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void ackRead() throw();
+    void ackRead() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void ackWrite() throw();
+    void ackWrite() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void clearWriteQue() throw();
+    void clearWriteQue() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void consumeNoWrite() throw();
+    void consumeNoWrite() noexcept;
     
     /// See Rte::Db::Record::HandlerFsmContext_
-    void defaultAllRecords() throw();
+    void defaultAllRecords() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void inspectWriteQue() throw();
+    void inspectWriteQue() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void nakOpenDone() throw();
+    void nakOpenDone() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void nakWrite() throw();
+    void nakWrite() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void queWriteRequest() throw();
+    void queWriteRequest() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void reportDataCorruptError() throw();
+    void reportDataCorruptError() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void reportFileReadError() throw();
+    void reportFileReadError() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void reportFileWriteError() throw();
+    void reportFileWriteError() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void reportIncompatible() throw();
+    void reportIncompatible() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void reportMinorUpgrade() throw();
+    void reportMinorUpgrade() noexcept;
 
     
     /// See Rte::Db::Record::HandlerFsmContext_
-    void requestDbClear() throw();
+    void requestDbClear() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void requestDbClose() throw();
+    void requestDbClose() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void requestDbOpen() throw();
+    void requestDbOpen() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void requestDbRead() throw();
+    void requestDbRead() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void requestDbWrite() throw();
+    void requestDbWrite() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    void verifyOpen() throw();
+    void verifyOpen() noexcept;
 
 
 protected:
     /// See Rte::Db::Record::HandlerFsmContext_
-    bool isDbBadData() throw();
+    bool isDbBadData() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    bool isDbEof() throw();
+    bool isDbEof() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    bool isDbError() throw();
+    bool isDbError() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    bool isDbSuccess() throw();
+    bool isDbSuccess() noexcept;
 
     /// See Rte::Db::Record::HandlerFsmContext_
-    bool isNotCompatible() throw();
+    bool isNotCompatible() noexcept;
 
 
 protected:

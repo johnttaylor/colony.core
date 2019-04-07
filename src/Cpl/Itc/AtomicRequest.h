@@ -51,10 +51,10 @@ public:
 
     public:
         /// Constructor
-        Payload( AtomicCallback<ACCESS_API>& clientToCallback ) throw():m_clientCb( clientToCallback ) {};
+        Payload( AtomicCallback<ACCESS_API>& clientToCallback ) noexcept:m_clientCb( clientToCallback ) {};
 
         /// Returns the reference to the client atom
-        AtomicCallback<ACCESS_API>&   getClient() throw() { return m_clientCb; }
+        AtomicCallback<ACCESS_API>&   getClient() noexcept { return m_clientCb; }
     };
 
     /// Message Type:

@@ -42,37 +42,37 @@ public:
         command.  If 'inputString' is not a valid command, then the appropriate
         error/result code is returned.
      */
-    virtual Command::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing = 0 ) throw() = 0;
+    virtual Command::Result_T executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing = 0 ) noexcept = 0;
                      
 
 public:
     /// This method returns the lock for ensuring atomic output data 
-    virtual Cpl::System::Mutex& getOutputLock() throw() = 0;
+    virtual Cpl::System::Mutex& getOutputLock() noexcept = 0;
 
     /// This method returns the list of implemented commands
-    virtual Cpl::Container::Map<Command>& getCommands() throw() = 0;
+    virtual Cpl::Container::Map<Command>& getCommands() noexcept = 0;
 
     /// This method the set of active/in-use Shell variables
-    virtual ActiveVariablesApi& getVariables() throw() = 0;
+    virtual ActiveVariablesApi& getVariables() noexcept = 0;
 
     /** This method returns the Shell variable that contains the 
         numeric value of the returned Result_T code form the last executed
         command.
      */
-    virtual VariableApi& getErrorLevel() throw() = 0;
+    virtual VariableApi& getErrorLevel() noexcept = 0;
 
     /** Returns a reference to the Shell variable that contains the
         unframed output of the last command. 
      */
-    virtual VariableApi& getLastOutput() throw() = 0;
+    virtual VariableApi& getLastOutput() noexcept = 0;
 
 
 public:
     /// This method encodes and outputs the specified message/text.  The method returns false if there was Output Stream error
-    virtual bool writeFrame( const char* text ) throw() = 0;
+    virtual bool writeFrame( const char* text ) noexcept = 0;
 
     /// Same as writeFrame(), but only outputs (at most) 'N' bytes as the content of the frame
-    virtual bool writeFrame( const char* text, size_t maxBytes ) throw() = 0;
+    virtual bool writeFrame( const char* text, size_t maxBytes ) noexcept = 0;
 
 
 public:
@@ -81,12 +81,12 @@ public:
         range, i.e. exceeded the allocated memory for storing level/index
         pairs.
      */
-    virtual bool beginCommandReplay( unsigned level ) throw() = 0;
+    virtual bool beginCommandReplay( unsigned level ) noexcept = 0;
 
 
     /** The method stops the replay of commands.       
      */
-    virtual void endCommandReplay(void) throw() = 0;
+    virtual void endCommandReplay(void) noexcept = 0;
 
 
     /** The method begins the capture (into the Processor's loop buffer) of 
@@ -95,13 +95,13 @@ public:
         is out of range, i.e. exceeded the allocated memory for storing 
         level/index pairs.
      */
-    virtual bool beginCommandCapture( unsigned level, const char* firstCmd=0 ) throw() = 0;
+    virtual bool beginCommandCapture( unsigned level, const char* firstCmd=0 ) noexcept = 0;
 
 
     /** The method stops catpure of commands. The method returns if/when
         the command capture buffer overflowed.
      */
-    virtual bool endCommandCapture(void) throw() = 0;
+    virtual bool endCommandCapture(void) noexcept = 0;
 
 
 public:
@@ -109,28 +109,28 @@ public:
         'marker' command is encounter.  When the marker command is found, the 
         filtering is turn off and the marker is executed.
      */
-    virtual void enableFilter( Command& marker ) throw() = 0;
+    virtual void enableFilter( Command& marker ) noexcept = 0;
 
 
 public:
     /** This method returns a working buffer for a command to format its
         output prior to 'writing the frame'.
      */
-    virtual Cpl::Text::String& getOutputBuffer() throw() = 0;
+    virtual Cpl::Text::String& getOutputBuffer() noexcept = 0;
 
     /** A shared/common working buffer. The buffer is guarented to be large 
         enough hold any valid token from an input frame.  The contents of
         buffer is guaranteed to be empty/cleared. 
      */
-    virtual Cpl::Text::String& getTokenBuffer() throw() = 0;
+    virtual Cpl::Text::String& getTokenBuffer() noexcept = 0;
 
     /** Same as getTokenBuffer(), except provides a second/seperate token buffer
      */
-    virtual Cpl::Text::String& getTokenBuffer2() throw() = 0;
+    virtual Cpl::Text::String& getTokenBuffer2() noexcept = 0;
 
     /** Provides direct access to the _lastout variable's value - should used with CAUTION!
      */
-    virtual Cpl::Text::String& getLastOutValue() throw() = 0;
+    virtual Cpl::Text::String& getLastOutValue() noexcept = 0;
 
 
 public:

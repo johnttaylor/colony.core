@@ -18,7 +18,7 @@ using namespace Driver::Uart::Stream;
 
 
 ////////////////////////
-Receiver::Receiver( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[] ) throw()
+Receiver::Receiver( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[] ) noexcept
 :m_uartHdl(uartHdl),
  m_waiterPtr(0),
  m_errCount(0),
@@ -30,7 +30,7 @@ Receiver::Receiver( Driver_Uart_Hal_T uartHdl, unsigned bufSize, uint8_t bufMem[
 
 
 ////////////////////////
-void Receiver::start(void) throw()
+void Receiver::start(void) noexcept
     {
     // If in the wrong state -->get in the correct state
     if ( m_started )
@@ -47,7 +47,7 @@ void Receiver::start(void) throw()
     }
 
 
-void Receiver::stop(void) throw()
+void Receiver::stop(void) noexcept
     {
     // Disable the RX side of the UART
     Driver_Uart_Hal_disableRxIrq( m_uartHdl );
@@ -70,7 +70,7 @@ void Receiver::stop(void) throw()
 
       
 ////////////////////////
-bool Receiver::available( void ) const throw()
+bool Receiver::available( void ) const noexcept
     {
     // NOTE: If the driver is NOT started, then the RingBuffer count will always be zero -->i.e. returns false
 
@@ -83,7 +83,7 @@ bool Receiver::available( void ) const throw()
     }
 
 
-size_t Receiver::getFramingErrorsCount( bool clearCount ) throw()
+size_t Receiver::getFramingErrorsCount( bool clearCount ) noexcept
     {
     // INTERRUPT/CRITICAL SECTION: Get RX Framing Error counts
     Bsp_Api_disableIrqs();
@@ -98,7 +98,7 @@ size_t Receiver::getFramingErrorsCount( bool clearCount ) throw()
     }
 
 
-bool Receiver::read( void* data, size_t maxBytes, size_t& numBytesRx ) throw()
+bool Receiver::read( void* data, size_t maxBytes, size_t& numBytesRx ) noexcept
     {
     numBytesRx = 0;
     
@@ -161,7 +161,7 @@ bool Receiver::read( void* data, size_t maxBytes, size_t& numBytesRx ) throw()
     
 
 
-int Receiver::su_rxDataAndErrorIsr_(void) throw()
+int Receiver::su_rxDataAndErrorIsr_(void) noexcept
     {
     int result = 0;
 

@@ -16,13 +16,13 @@ using namespace Cpl::System;
 
 
 //////////////////////////////////////////////////
-bool Semaphore::timedWait( unsigned long timeout ) throw()
+bool Semaphore::timedWait( unsigned long timeout ) noexcept
 {
     DWORD result = WaitForSingleObject( m_sema, (DWORD) timeout );
     return result == WAIT_OBJECT_0 ? true : false;
 }
 
-void Semaphore::wait( void ) throw()
+void Semaphore::wait( void ) noexcept
 {
     WaitForSingleObject( m_sema, INFINITE );
 }

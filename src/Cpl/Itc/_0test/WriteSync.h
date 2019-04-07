@@ -34,7 +34,7 @@ public:
 
 public:
     /// See WriteApi
-    void write( int newValue ) throw();
+    void write( int newValue ) noexcept;
 };
 
 

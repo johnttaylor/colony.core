@@ -65,14 +65,14 @@ public:
     /** This method causes the current thread to be suspended for
         n milliseconds.
      */
-    static void sleep( unsigned long milliseconds ) throw();
+    static void sleep( unsigned long milliseconds ) noexcept;
 
     /** This method is the same as sleep(), EXCEPT that is guaranteed to
         suspend in 'real time'.  Typically an application NEVER needs
         to call this method.  See the SimTick interface for additional
         details about Simulated Time.
      */
-    static void sleepInRealTime( unsigned long milliseconds ) throw();
+    static void sleepInRealTime( unsigned long milliseconds ) noexcept;
 };
 
 

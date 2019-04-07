@@ -127,7 +127,7 @@ Trace::InfoLevel_T Trace::setInfoLevel_( Trace::InfoLevel_T newLevel )
     return previous;
 }
 
-Trace::InfoLevel_T Trace::getInfoLevel_( void ) throw()
+Trace::InfoLevel_T Trace::getInfoLevel_( void ) noexcept
 {
     Locks_::tracing().lock();
     InfoLevel_T current = infoLevel_;

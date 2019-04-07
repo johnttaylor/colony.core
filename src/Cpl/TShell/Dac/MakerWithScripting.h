@@ -63,7 +63,7 @@ public:
 
 public:
     /// Returns a reference to the Command processor
-    Processor& getCommandProcessor(void) throw()    { return m_processor; }
+    Processor& getCommandProcessor(void) noexcept    { return m_processor; }
 
     /// Cast-operator: Short-hand for getCommandProcessor()
     operator Processor& ()                          { return m_processor; }

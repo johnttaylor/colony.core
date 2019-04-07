@@ -16,24 +16,24 @@ using namespace Cpl::Checksum;
 
 
 ///////////////////////////////////////
-Md5Aladdin::Md5Aladdin() throw()
+Md5Aladdin::Md5Aladdin() noexcept
     {
     reset();
     }
 
-void Md5Aladdin::reset(void) throw()
+void Md5Aladdin::reset(void) noexcept
     {
 	md5_init(&m_state);
     }
 
 
 ///////////////////////////////////////
-void Md5Aladdin::accumulate( const void* bytes, unsigned numbytes ) throw()
+void Md5Aladdin::accumulate( const void* bytes, unsigned numbytes ) noexcept
     {
 	md5_append( &m_state, (const md5_byte_t *)bytes, numbytes );
     }
 
-Md5Aladdin::Digest_T& Md5Aladdin::finalize( Cpl::Text::String* convertToString, bool uppercase, bool append ) throw()
+Md5Aladdin::Digest_T& Md5Aladdin::finalize( Cpl::Text::String* convertToString, bool uppercase, bool append ) noexcept
     {
 	md5_finish(&m_state, m_result);
 

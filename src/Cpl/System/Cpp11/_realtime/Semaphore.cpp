@@ -17,12 +17,12 @@ using namespace Cpl::System;
 
 
 //////////////////////////////////////////////////
-bool Semaphore::timedWait( unsigned long milliseconds ) throw()
+bool Semaphore::timedWait( unsigned long milliseconds ) noexcept
 {
     return timedWaitInRealTime( milliseconds );
 }
 
-void Semaphore::wait( void ) throw()
+void Semaphore::wait( void ) noexcept
 {
     waitInRealTime();
 }

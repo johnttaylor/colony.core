@@ -51,7 +51,7 @@ public:
 
 public:
     /// See Cpl::Itc::Message
-    void process() throw();
+    void process() noexcept;
 
 public:
     /// Returns the payload associated with this request
@@ -85,7 +85,7 @@ RequestMessage<SERVER, PAYLOAD>::~RequestMessage()
 }
 
 template <class SERVER, class PAYLOAD>
-void RequestMessage<SERVER, PAYLOAD>::process() throw()
+void RequestMessage<SERVER, PAYLOAD>::process() noexcept
 {
     m_srv.request( *this );
 }

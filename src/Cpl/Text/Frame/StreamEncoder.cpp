@@ -27,14 +27,14 @@ StreamEncoder::StreamEncoder( Cpl::Io::Output* dstPtr, char startOfFrame, char e
 
 
 ///////////////////////////////////
-void StreamEncoder::setOutput( Cpl::Io::Output& newOutfd ) throw()
+void StreamEncoder::setOutput( Cpl::Io::Output& newOutfd ) noexcept
     {
     m_dstPtr = &newOutfd;
     }
 
 
 ///////////////////////////////////
-bool StreamEncoder::start( char src ) throw()
+bool StreamEncoder::start( char src ) noexcept
     {
     if ( !m_dstPtr )
         {
@@ -44,14 +44,14 @@ bool StreamEncoder::start( char src ) throw()
     return m_dstPtr->write(src);
     }
 
-bool StreamEncoder::start() throw()
+bool StreamEncoder::start() noexcept
     {
     // Nothing to do for stream output
     return true;
     }
 
 
-bool StreamEncoder::append( char src ) throw()
+bool StreamEncoder::append( char src ) noexcept
     {
     if ( !m_dstPtr )
         {

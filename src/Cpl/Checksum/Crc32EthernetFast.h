@@ -34,21 +34,21 @@ private:
 
 public:
     /// Constructor
-    Crc32EthernetFast() throw();
+    Crc32EthernetFast() noexcept;
 
 
 public:
     /// See Cpl::Checksum::Api32
-    void reset(void) throw();
+    void reset(void) noexcept;
 
     /// See Cpl::Checksum::Api32
-    void accumulate( void* bytes, unsigned numbytes=1 ) throw();
+    void accumulate( void* bytes, unsigned numbytes=1 ) noexcept;
 
     /// See Cpl::Checksum::Api32
-    uint32_t finalize( void* destBuffer=0 ) throw();
+    uint32_t finalize( void* destBuffer=0 ) noexcept;
 
     /// See Cpl::Checksum::Api32
-    bool isOkay(void) throw();
+    bool isOkay(void) noexcept;
 };
 
 };      // end namespaces

@@ -61,7 +61,7 @@ Processor::Processor( Cpl::Container::Map<Command>&     commands,
 
 
 ///////////////////////////////////
-bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
+bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) noexcept
     {
     // Set my state to: running
     m_fast.lock();
@@ -179,7 +179,7 @@ bool Processor::start( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
 
     
 
-void Processor::requestStop() throw()
+void Processor::requestStop() noexcept
     {
     m_fast.lock();
     m_running = false;
@@ -188,7 +188,7 @@ void Processor::requestStop() throw()
 
 
 ///////////////////////////////////
-Command::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing ) throw()
+Command::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io::Output& outfd, unsigned capturing ) noexcept
     {
     // Make a copy of the input and then tokenize/parse the input
     strcpy( m_inputCopy, deframedInput );
@@ -243,34 +243,34 @@ Command::Result_T Processor::executeCommand( const char* deframedInput, Cpl::Io:
     }
 
 ///////////////////////////////////
-Cpl::System::Mutex& Processor::getOutputLock() throw()
+Cpl::System::Mutex& Processor::getOutputLock() noexcept
     {
     return m_outLock;
     }
 
-Cpl::Container::Map<Command>& Processor::getCommands() throw()
+Cpl::Container::Map<Command>& Processor::getCommands() noexcept
     {
     return m_commands;
     }
 
-ActiveVariablesApi& Processor::getVariables() throw()
+ActiveVariablesApi& Processor::getVariables() noexcept
     {
     return m_variables;
     }
 
-VariableApi& Processor::getErrorLevel() throw()
+VariableApi& Processor::getErrorLevel() noexcept
     {
     return m_errorLevel;
     }
 
-VariableApi& Processor::getLastOutput() throw()
+VariableApi& Processor::getLastOutput() noexcept
     {                     
     return m_lastCmdOutput;
     }
 
 
 ///////////////////////////////////
-bool Processor::writeFrame( const char* text  ) throw()
+bool Processor::writeFrame( const char* text  ) noexcept
     {
     // Cache last output
     m_last = text;
@@ -286,7 +286,7 @@ bool Processor::writeFrame( const char* text  ) throw()
     return io;
     }
 
-bool Processor::writeFrame( const char* text, size_t maxBytes  ) throw()
+bool Processor::writeFrame( const char* text, size_t maxBytes  ) noexcept
     {
     // Encode and output the text
     bool io = true;
@@ -301,7 +301,7 @@ bool Processor::writeFrame( const char* text, size_t maxBytes  ) throw()
 
 
 ///////////////////////////////////
-bool Processor::beginCommandReplay( unsigned level ) throw()
+bool Processor::beginCommandReplay( unsigned level ) noexcept
     {
     // Trap out-of-range level/index
     if ( level >= OPTION_CPL_TSHELL_PROCESSOR_MAX_NESTED_LOOPS )
@@ -314,12 +314,12 @@ bool Processor::beginCommandReplay( unsigned level ) throw()
     return true;
     }
 
-void Processor::endCommandReplay(void) throw()
+void Processor::endCommandReplay(void) noexcept
     {
     m_replayCount = 0;
     }
 
-bool Processor::beginCommandCapture( unsigned level, const char* firstCmd ) throw()
+bool Processor::beginCommandCapture( unsigned level, const char* firstCmd ) noexcept
     {
     // Trap out-of-range level/index
     if ( level >= OPTION_CPL_TSHELL_PROCESSOR_MAX_NESTED_LOOPS )
@@ -357,7 +357,7 @@ bool Processor::beginCommandCapture( unsigned level, const char* firstCmd ) thro
     return true;
     }
 
-bool Processor::endCommandCapture(void) throw()
+bool Processor::endCommandCapture(void) noexcept
     {
     bool result = true;
     if ( m_captureCount < 0 )
@@ -369,7 +369,7 @@ bool Processor::endCommandCapture(void) throw()
     return result;
     }
 
-void Processor::backoutCaptureLine( unsigned capturing ) throw()
+void Processor::backoutCaptureLine( unsigned capturing ) noexcept
     {
     if ( capturing )
         {
@@ -378,7 +378,7 @@ void Processor::backoutCaptureLine( unsigned capturing ) throw()
     }
 
 ///////////////////////////////////
-void Processor::enableFilter( Command& marker ) throw()
+void Processor::enableFilter( Command& marker ) noexcept
     {
     m_filtering    = true;
     m_filterMarker = marker.getVerb();
@@ -386,48 +386,48 @@ void Processor::enableFilter( Command& marker ) throw()
 
 
 ///////////////////////////////////
-Cpl::Text::String& Processor::getOutputBuffer() throw()
+Cpl::Text::String& Processor::getOutputBuffer() noexcept
     {
     return m_outputBuffer;
     }
 
-Cpl::Text::String& Processor::getTokenBuffer() throw()
+Cpl::Text::String& Processor::getTokenBuffer() noexcept
     {
     m_tokenBuffer.clear();
     return m_tokenBuffer;
     }
 
-Cpl::Text::String& Processor::getTokenBuffer2() throw()
+Cpl::Text::String& Processor::getTokenBuffer2() noexcept
     {
     m_tokenBuffer2.clear();
     return m_tokenBuffer2;
     }
 
-Cpl::Text::String& Processor::getLastOutValue() throw()
+Cpl::Text::String& Processor::getLastOutValue() noexcept
     {
     return m_lastCmdOutputValue;
     }
 
 
 ///////////////////////////////////
-bool Processor::greeting( Cpl::Io::Output& outfd ) throw()
+bool Processor::greeting( Cpl::Io::Output& outfd ) noexcept
 	{
 	return outfd.write( OPTION_CPL_TSHELL_DAC_PROCESSOR_GREETING );
 	}
 	
-bool Processor::farewell( Cpl::Io::Output& outfd ) throw()
+bool Processor::farewell( Cpl::Io::Output& outfd ) noexcept
 	{
 	return outfd.write( OPTION_CPL_TSHELL_DAC_PROCESSOR_FAREWELL );
 	}
 	
-bool Processor::prompt( Cpl::Io::Output& outfd ) throw()
+bool Processor::prompt( Cpl::Io::Output& outfd ) noexcept
 	{
 	return outfd.write( OPTION_CPL_TSHELL_DAC_PROCESSOR_PROMPT );
 	}
 
 
 ///////////////////////////////////
-bool Processor::outputCommandError( Command::Result_T result, const char* deframedInput ) throw()
+bool Processor::outputCommandError( Command::Result_T result, const char* deframedInput ) noexcept
     {
     bool io = true;
 

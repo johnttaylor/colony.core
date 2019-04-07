@@ -54,19 +54,19 @@ static uint16_t const table_[256] =
 
 ///////////////////////////////////////
 
-Crc16CcittFast::Crc16CcittFast() throw()
+Crc16CcittFast::Crc16CcittFast() noexcept
     {
     reset();
     }
 
-void Crc16CcittFast::reset(void) throw()
+void Crc16CcittFast::reset(void) noexcept
     {
     m_crc = ~0;
     }
 
 
 ///////////////////////////////////////
-void Crc16CcittFast::accumulate( void* bytes, unsigned numbytes ) throw()
+void Crc16CcittFast::accumulate( void* bytes, unsigned numbytes ) noexcept
     {
     unsigned i;
     uint8_t* ptr = (uint8_t*) bytes;
@@ -77,7 +77,7 @@ void Crc16CcittFast::accumulate( void* bytes, unsigned numbytes ) throw()
         }
     }
 
-uint16_t Crc16CcittFast::finalize( void* destBuffer ) throw()
+uint16_t Crc16CcittFast::finalize( void* destBuffer ) noexcept
     {
     uint8_t* ptr = (uint8_t*) destBuffer;
     if ( ptr )
@@ -89,7 +89,7 @@ uint16_t Crc16CcittFast::finalize( void* destBuffer ) throw()
     return m_crc;
     }
 
-bool Crc16CcittFast::isOkay(void) throw()
+bool Crc16CcittFast::isOkay(void) noexcept
     {
     return m_crc == 0;
     }

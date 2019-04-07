@@ -27,37 +27,37 @@ SubscriberBase::SubscriberBase( Cpl::Dm::EventLoop& myEventLoop )
 {
 }
 
-NotificationApi_* SubscriberBase::getNotificationApi_() const throw()
+NotificationApi_* SubscriberBase::getNotificationApi_() const noexcept
 {
     return &m_eventLoopHdl;
 }
 
-void SubscriberBase::setModelPoint_( ModelPoint* modelPoint ) throw()
+void SubscriberBase::setModelPoint_( ModelPoint* modelPoint ) noexcept
 {
     m_point = modelPoint;
 }
 
-int SubscriberBase::getState_() const throw()
+int SubscriberBase::getState_() const noexcept
 {
     return m_state;
 }
 
-void SubscriberBase::setState_( int newState ) throw()
+void SubscriberBase::setState_( int newState ) noexcept
 {
     m_state = newState;
 }
 
-uint16_t SubscriberBase::getSequenceNumber_() const throw()
+uint16_t SubscriberBase::getSequenceNumber_() const noexcept
 {
     return m_seqNumber;
 }
 
-void SubscriberBase::setSequenceNumber_( uint16_t newSeqNumber ) throw()
+void SubscriberBase::setSequenceNumber_( uint16_t newSeqNumber ) noexcept
 {
     m_seqNumber = newSeqNumber;
 }
 
-ModelPoint* SubscriberBase::getModelPoint_() throw()
+ModelPoint* SubscriberBase::getModelPoint_() noexcept
 {
     if ( m_point == 0 )
     {

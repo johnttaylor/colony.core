@@ -66,7 +66,7 @@ public:
         run method; false is returned, i.e. the run() method has
         completed.
      */
-    virtual bool isRunning() throw();
+    virtual bool isRunning() noexcept;
 
 
 protected:

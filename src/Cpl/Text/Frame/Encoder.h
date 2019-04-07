@@ -65,7 +65,7 @@ public:
         returned.  If this method is called twice - without an intervening 
         call to endFrame() - a Fatal error is generated
      */ 
-    virtual bool startFrame( void ) throw() = 0;
+    virtual bool startFrame( void ) noexcept = 0;
 
     /** Outputs the single character to the output destination.  The method 
         will return false if there an error occured while writing to the 
@@ -73,7 +73,7 @@ public:
         without a previous call to startFrame(), i.e. the frame has NOT been
         started, a Fatal error is generated
      */
-    virtual bool output( char src ) throw() = 0;
+    virtual bool output( char src ) noexcept = 0;
 
     /** Outputs the null terminated string to the output destination.  The 
         method  will return false if there an error occured while writing to
@@ -81,7 +81,7 @@ public:
         called  without a previous call to startFrame(), i.e. the frame has
         NOT been started, a Fatal error is generated
      */
-    virtual bool output( const char* src ) throw() = 0;
+    virtual bool output( const char* src ) noexcept = 0;
 
     /** Outputs 'numBytes' of data (from 'src') to the output destination.  
         The  method will return false if there an error occured while
@@ -89,14 +89,14 @@ public:
         method is called  without a previous call to startFrame(), i.e. the
         frame has NOT been started, a Fatal error is generated
      */
-    virtual bool output( const char* src, size_t numBytes ) throw() = 0;
+    virtual bool output( const char* src, size_t numBytes ) noexcept = 0;
 
     /** Ends the frame.  The method will return false if there an error 
         occured while writing to the output destination; else true is 
         returned.  If this method is called twice - without an intervening 
         call to startFrame() - a Fatal error is generated
      */
-    virtual bool endFrame( void ) throw() = 0;
+    virtual bool endFrame( void ) noexcept = 0;
 
 
 public:

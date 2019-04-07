@@ -36,13 +36,13 @@ public:
 
 public:
     /// See Rte::Db::Chunk::Media
-    Cpl::Io::File::InputOutputApi* openDatabase( bool& newfile ) throw();
+    Cpl::Io::File::InputOutputApi* openDatabase( bool& newfile ) noexcept;
     
     /// See Rte::Db::Chunk::Media
-    void closeDatabase() throw();
+    void closeDatabase() noexcept;
 
     /// See Rte::Db::Chunk::Media
-    bool deleteDatabase() throw();
+    bool deleteDatabase() noexcept;
 
 };                  
 

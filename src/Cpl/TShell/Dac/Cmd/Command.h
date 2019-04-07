@@ -50,35 +50,35 @@ protected:
 
 protected:
     /// Constructor
-    Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb ) throw();
+    Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb ) noexcept;
 
     /// Constructor. Used when creating a static instance of a command
-    Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw();
+    Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept;
 
 
 public:
     /// See Cpl::TShell::Dac::Command
-    const char* getVerb() const throw();
+    const char* getVerb() const noexcept;
 
 
 protected:
     /// See Cpl::Container::Key
-    const Cpl::Container::Key& getKey() const throw();
+    const Cpl::Container::Key& getKey() const noexcept;
 
 
 protected:
     /// Helper method to expand text
-    static Result_T expandText( const char* textToExpand, Cpl::Text::String& dst, Cpl::TShell::Dac::ActiveVariablesApi& vars ) throw();
+    static Result_T expandText( const char* textToExpand, Cpl::Text::String& dst, Cpl::TShell::Dac::ActiveVariablesApi& vars ) noexcept;
 
     /// Helper method that processes the a conditional expression
     static CondResult_T conditional( Cpl::TShell::Dac::Context_&           context, 
                                      Cpl::Text::Tokenizer::TextBlock&      tokens, 
                                      unsigned                              startingTokenIndex, 
                                      Cpl::TShell::Dac::ActiveVariablesApi& vars 
-                                   ) throw();
+                                   ) noexcept;
 
     /// Helper method that compares to values
-    static CondResult_T evaluate( const char* leftVal, const char* oper, const char* rightVal ) throw();
+    static CondResult_T evaluate( const char* leftVal, const char* oper, const char* rightVal ) noexcept;
 
 };
 

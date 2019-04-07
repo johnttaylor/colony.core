@@ -24,7 +24,7 @@ AsyncReturnHandler::AsyncReturnHandler( PostApi& mbox, Message& msg )
 {
 }
 
-void AsyncReturnHandler::rts() throw()
+void AsyncReturnHandler::rts() noexcept
 {
     m_mbox.post( m_msg );
 }

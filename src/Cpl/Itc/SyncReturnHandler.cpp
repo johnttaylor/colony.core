@@ -21,7 +21,7 @@ SyncReturnHandler::SyncReturnHandler()
 {
 }
 
-void SyncReturnHandler::rts() throw()
+void SyncReturnHandler::rts() noexcept
 {
     m_waiter.signal();
 }

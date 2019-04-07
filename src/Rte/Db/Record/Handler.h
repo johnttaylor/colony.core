@@ -44,7 +44,7 @@ public:
     /** This method is used to default the data contents of ALL Records to their
         default value(s).
      */
-    virtual void defaultAllRecordsContent() throw() = 0;
+    virtual void defaultAllRecordsContent() noexcept = 0;
 
 
 public:

@@ -120,7 +120,7 @@ public:
 
 public: 
     /// See Rte::Point::Model::Api
-    void defaultMe( void ) throw()
+    void defaultMe( void ) noexcept
         {
         // Default ALL tuples/elements to the VALID state 
         setAllValidState( RTE_ELEMENT_API_STATE_VALID );
@@ -171,7 +171,7 @@ public:
 
 public: 
     /// See Rte::Point::Model::Api
-    void defaultMe( void ) throw()
+    void defaultMe( void ) noexcept
         {
         // Note: The model point starts out with all Tuples/elements being INVALID
 
@@ -218,7 +218,7 @@ public:
 
 public: 
     /// See Rte::Point::Model::Api
-    void defaultMe( void ) throw()
+    void defaultMe( void ) noexcept
         {
         // Note: The model point starts out with all Tuples/elements being INVALID
 

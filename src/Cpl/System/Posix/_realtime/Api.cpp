@@ -18,7 +18,7 @@ using namespace Cpl::System;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void Api::sleep( unsigned long milliseconds ) throw()
+void Api::sleep( unsigned long milliseconds ) noexcept
 {
     sleepInRealTime( milliseconds );
 }

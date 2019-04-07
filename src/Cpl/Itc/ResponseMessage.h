@@ -61,7 +61,7 @@ public:
 
 public:
     /// See Message
-    void process() throw();
+    void process() noexcept;
 
 
 public:
@@ -99,7 +99,7 @@ ResponseMessage<CLIENT, SERVER, PAYLOAD>::~ResponseMessage()
 }
 
 template <class CLIENT, class SERVER, class PAYLOAD>
-void ResponseMessage<CLIENT, SERVER, PAYLOAD>::process() throw()
+void ResponseMessage<CLIENT, SERVER, PAYLOAD>::process() noexcept
 {
     m_client.response( *this );
 }

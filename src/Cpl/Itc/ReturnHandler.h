@@ -30,7 +30,7 @@ public:
         the client request message. Subclass implementations should notify
         the client that the request is complete.
      */
-    virtual void rts() throw()=0;
+    virtual void rts() noexcept=0;
 
 public:
     /// Virtual destructor

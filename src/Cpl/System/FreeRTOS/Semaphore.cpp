@@ -31,7 +31,7 @@ Cpl::System::Semaphore::~Semaphore()
 
 
 //////////////////////////////////////////////////
-int Cpl::System::Semaphore::signal( void ) throw()
+int Cpl::System::Semaphore::signal( void ) noexcept
 {
     xSemaphoreGive( m_sema );
     return 0;
@@ -42,7 +42,7 @@ int Cpl::System::Semaphore::signal( void ) throw()
           defined 'return zero on success' semantics.  This is to overcome
           the oddities of FreeRTOS.
  */
-int Cpl::System::Semaphore::su_signal( void ) throw()
+int Cpl::System::Semaphore::su_signal( void ) noexcept
 {
     BaseType_t higherPriorityTaskWoken = pdFALSE;
     xSemaphoreGiveFromISR( m_sema, &higherPriorityTaskWoken );
@@ -51,31 +51,31 @@ int Cpl::System::Semaphore::su_signal( void ) throw()
 
 
 //////////////////////////////////////////////////
-void Cpl::System::Semaphore::wait( void ) throw()
+void Cpl::System::Semaphore::wait( void ) noexcept
 {
     xSemaphoreTake( m_sema, portMAX_DELAY );
 }
 
 
-bool Cpl::System::Semaphore::timedWait( unsigned long timeout ) throw()
+bool Cpl::System::Semaphore::timedWait( unsigned long timeout ) noexcept
 {
     return xSemaphoreTake( m_sema, timeout * portTICK_PERIOD_MS ) == pdTRUE;
 }
 
 
-bool Cpl::System::Semaphore::tryWait( void ) throw()
+bool Cpl::System::Semaphore::tryWait( void ) noexcept
 {
     return xSemaphoreTake( m_sema, 0 ) == pdTRUE;
 }
 
 
-void Cpl::System::Semaphore::waitInRealTime( void ) throw()
+void Cpl::System::Semaphore::waitInRealTime( void ) noexcept
 {
     xSemaphoreTake( m_sema, portMAX_DELAY );
 }
 
 
-bool Cpl::System::Semaphore::timedWaitInRealTime( unsigned long timeout ) throw()
+bool Cpl::System::Semaphore::timedWaitInRealTime( unsigned long timeout ) noexcept
 {
     return xSemaphoreTake( m_sema, timeout * portTICK_PERIOD_MS ) == pdTRUE;
 }

@@ -26,7 +26,7 @@ Mailbox::Mailbox( Cpl::System::EventLoop& myEventLoop )
 }
 
 
-void Mailbox::post( Message& msg ) throw()
+void Mailbox::post( Message& msg ) noexcept
 {
     // Update my internal FIFO
     Cpl::System::GlobalLock::begin();
@@ -37,7 +37,7 @@ void Mailbox::post( Message& msg ) throw()
     m_eventLoop.signal();
 }
 
-void Mailbox::postSync( Message& msg ) throw()
+void Mailbox::postSync( Message& msg ) noexcept
 {
     post( msg );
     CPL_SYSTEM_SIM_TICK_APPLICATION_WAIT();
@@ -45,7 +45,7 @@ void Mailbox::postSync( Message& msg ) throw()
 }
 
 
-void Mailbox::processMessages() throw()
+void Mailbox::processMessages() noexcept
 {
     // Get the next message
     Cpl::System::GlobalLock::begin();

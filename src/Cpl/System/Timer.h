@@ -33,7 +33,7 @@ namespace System {
 
     NOTES:
         o The timer context must implement the following method:
-                virtual void expired( void ) throw();
+                virtual void expired( void ) noexcept;
 
         o Because the timing source of an individual thread may NOT be a
           clean divider of the timer duration, the timer duration is taken
@@ -62,23 +62,23 @@ public:
         'timerDurationInMilliseconds'.  If the timer is currently running, the
         timer is first stopped, and then restarted.
      */
-    virtual void start( unsigned long timerDurationInMilliseconds ) throw();
+    virtual void start( unsigned long timerDurationInMilliseconds ) noexcept;
 
     /** Stops the timer. It is okay to call stop() even after the timer has
         previously expired or explicitly stopped.
      */
-    virtual void stop() throw();
+    virtual void stop() noexcept;
 
 
 protected:  // CounterCallback_ API
     /// See Cpl::System::CounterCallback_
-    void decrement( unsigned long milliseconds=1 ) throw();
+    void decrement( unsigned long milliseconds=1 ) noexcept;
 
     /// See Cpl::System::CounterCallback_
-    void increment( unsigned long milliseconds ) throw();
+    void increment( unsigned long milliseconds ) noexcept;
 
     /// See Cpl::System::CounterCallback_
-    unsigned long count() const throw();
+    unsigned long count() const noexcept;
 };
 
 
@@ -114,7 +114,7 @@ public:
 
 protected:
     /// See Cpl::System::CounterCallback_
-    void expired() throw();
+    void expired() noexcept;
 
 };
 
@@ -138,7 +138,7 @@ TimerComposer<CONTEXT>::TimerComposer
 }
 
 template <class CONTEXT>
-void TimerComposer<CONTEXT>::expired( void ) throw()
+void TimerComposer<CONTEXT>::expired( void ) noexcept
 {
     (m_context.*m_expiredFuncPtr)();
 }

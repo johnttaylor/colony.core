@@ -67,30 +67,30 @@ protected:
 
 public:
     /// See Cpl::Text::Frame::Encoder
-    bool startFrame( void ) throw();
+    bool startFrame( void ) noexcept;
 
     /// See Cpl::Text::Frame::Encoder
-    bool output( char src ) throw();
+    bool output( char src ) noexcept;
 
     /// See Cpl::Text::Frame::Encoder
-    bool output( const char* src ) throw();
+    bool output( const char* src ) noexcept;
 
     /// See Cpl::Text::Frame::Encoder
-    bool output( const char* src, size_t numBytes ) throw();
+    bool output( const char* src, size_t numBytes ) noexcept;
 
     /// See Cpl::Text::Frame::Encoder
-    bool endFrame( void ) throw();
+    bool endFrame( void ) noexcept;
 
 
 protected:
     /// Helper method - implemented by the child class
-    virtual bool start( char src ) throw() = 0;
+    virtual bool start( char src ) noexcept = 0;
     
     /// Helper method - implemented by the child class
-    virtual bool start() throw() = 0;
+    virtual bool start() noexcept = 0;
 
     /// Helper method - implemented by the child class
-    virtual bool append( char src ) throw() = 0;
+    virtual bool append( char src ) noexcept = 0;
 };
 
 

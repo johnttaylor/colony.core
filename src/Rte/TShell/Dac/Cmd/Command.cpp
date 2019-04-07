@@ -18,14 +18,14 @@ using namespace Rte::TShell::Dac::Cmd;
 
 
 ////////////////////////////
-Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) throw()
+Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList ) noexcept
 :Cpl::TShell::Dac::Cmd::Command( commandList, verb )
 ,m_points(modelPointList)
     {
     commandList.insert( *this );
     }
 
-Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) throw()
+Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, const char* verb, Cpl::Container::Map<Rte::TShell::Dac::Point>& modelPointList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
 :Cpl::TShell::Dac::Cmd::Command( commandList, verb, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
 ,m_points(modelPointList)
     {
@@ -35,7 +35,7 @@ Command::Command( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, c
 
 
 ////////////////////////////
-Cpl::TShell::Dac::Command::Result_T Command::listPoints( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens ) throw()
+Cpl::TShell::Dac::Command::Result_T Command::listPoints( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens ) noexcept
     {
     Cpl::Text::String&                    outtext   = context.getOutputBuffer();
     Cpl::TShell::Dac::ActiveVariablesApi& vars      = context.getVariables();

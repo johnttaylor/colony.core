@@ -56,7 +56,7 @@ public:
 
 
 /////////////////////////////////////////
-Stdio::Stdio( Processor& shell, const char* threadName, int threadPriority, bool thisIsAStaticInstance ) throw()
+Stdio::Stdio( Processor& shell, const char* threadName, int threadPriority, bool thisIsAStaticInstance ) noexcept
 :m_shell(shell)
 ,m_threadPtr(0)
 ,m_priority(threadPriority)
@@ -79,7 +79,7 @@ Stdio::~Stdio()
 
 
 /////////////////////////////////////////
-void Stdio::launch( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) throw()
+void Stdio::launch( Cpl::Io::Input& infd, Cpl::Io::Output& outfd ) noexcept
     {
     // If I am re-launched -->kill the previous shell
     delete m_runnablePtr;

@@ -36,13 +36,13 @@ ArrayUint8::ArrayUint8( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo
 
 
 ///////////////////////////////////////////////////////////////////////////////
-int8_t ArrayUint8::read( uint8_t* dstData, size_t dstNumElements, size_t srcIndex, uint16_t* seqNumPtr ) const throw()
+int8_t ArrayUint8::read( uint8_t* dstData, size_t dstNumElements, size_t srcIndex, uint16_t* seqNumPtr ) const noexcept
 {
     InternalData dst ={ dstData, dstNumElements, srcIndex };
     return ModelPointCommon_::read( &dst, sizeof( dst ), seqNumPtr );
 }
 
-uint16_t ArrayUint8::write( uint8_t* srcData, size_t srcNumElements, LockRequest_T lockRequest, size_t dstIndex ) throw()
+uint16_t ArrayUint8::write( uint8_t* srcData, size_t srcNumElements, LockRequest_T lockRequest, size_t dstIndex ) noexcept
 {
     InternalData src ={ srcData, srcNumElements, dstIndex };
     return ModelPointCommon_::write( &src, sizeof( src ), lockRequest );
@@ -55,24 +55,24 @@ uint16_t ArrayUint8::readModifyWrite( Client& callbackClient, LockRequest_T lock
 
 
 ///////////////////////////////////////////////////////////////////////////////
-void ArrayUint8::attach( Observer& observer, uint16_t initialSeqNumber ) throw()
+void ArrayUint8::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
     ModelPointCommon_::attach( observer, initialSeqNumber );
 }
 
-void ArrayUint8::detach( Observer& observer ) throw()
+void ArrayUint8::detach( Observer& observer ) noexcept
 {
     ModelPointCommon_::detach( observer );
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-const char* ArrayUint8::getTypeAsText() const throw()
+const char* ArrayUint8::getTypeAsText() const noexcept
 {
     return m_decimal ? "Cpl::Dm::Mp::ArrayUint8-dec" : "Cpl::Dm::Mp::ArrayUint8-hex";
 }
 
-bool ArrayUint8::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const throw()
+bool ArrayUint8::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const noexcept
 {
     // lock the database
     m_modelDatabase.lock_();
@@ -113,7 +113,7 @@ bool ArrayUint8::toString( Cpl::Text::String& dst, bool append, uint16_t* retSeq
     return true;
 }
 
-const char* ArrayUint8::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) throw()
+const char* ArrayUint8::setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) noexcept
 {
     // Parse the number of elements and starting index 
     unsigned long numElements;

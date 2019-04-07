@@ -48,7 +48,7 @@ public:
 
 public:
     /// See ReturnHandler
-    void    rts() throw();
+    void    rts() noexcept;
 };
 
 };      // end namespaces

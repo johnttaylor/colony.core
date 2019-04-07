@@ -19,7 +19,7 @@ using namespace Cpl::Text;
 using namespace Cpl::Text::Tokenizer;
 
 
-static void removeCharacter_( char* charToRemovePtr, size_t numCharsToRemove=1 ) throw();
+static void removeCharacter_( char* charToRemovePtr, size_t numCharsToRemove=1 ) noexcept;
 
 
 ///////////////////////////////
@@ -187,7 +187,7 @@ TextBlock::TextBlock( char* string, char delimiter, char terminator, char quote,
 
 
 ///////////////////////////////
-const char* TextBlock::getParameter( unsigned index ) const throw()
+const char* TextBlock::getParameter( unsigned index ) const noexcept
     {
     // Trap out-of-bounds index
     if ( !m_validTokens || index >= m_count )
@@ -210,7 +210,7 @@ const char* TextBlock::getParameter( unsigned index ) const throw()
     }
 
 
-void TextBlock::removeWhiteSpace( char* startOfTokenPtr, char* firstNonSpacePtr, char* lastNonSpacePtr ) throw()
+void TextBlock::removeWhiteSpace( char* startOfTokenPtr, char* firstNonSpacePtr, char* lastNonSpacePtr ) noexcept
     {
     size_t numSpaces = 0;
 
@@ -247,7 +247,7 @@ void TextBlock::removeWhiteSpace( char* startOfTokenPtr, char* firstNonSpacePtr,
     }
 
 ///////////////////////////////
-void removeCharacter_( char* charToRemovePtr, size_t numCharsToRemove ) throw()
+void removeCharacter_( char* charToRemovePtr, size_t numCharsToRemove ) noexcept
     {
     if ( numCharsToRemove == 0 )
         {
