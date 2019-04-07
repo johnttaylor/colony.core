@@ -184,10 +184,10 @@ public:
         The general output format:
         \code
 
-        { name="<mpname>", type="<mptypestring>", valid=nn, seqnum=nnnn, locked=true|false val:<value> }
+        { name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:<value> }
 
         Notes:
-            - The MP is in the valid state if/when the 'valid' value is 0
+            - The MP is in the valid state if/when the 'invalid' value is 0
             - The 'val' key/value pair is omitted if the MP is in the invalid state
             - The 'val' key/value pair can be a single element, an object, or
               array. etc. -- it is specific to the concrete MP type/class.

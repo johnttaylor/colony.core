@@ -12,8 +12,6 @@
 
 
 #include "Uint32.h"
-#include "Cpl/Text/atob.h"
-#include "Cpl/Text/FString.h"
 #include <limits.h>
 
 ///
@@ -21,14 +19,12 @@ using namespace Cpl::Dm::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
 Uint32::Uint32( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, bool decimalFormat )
-    :Basic<uint32_t>( myModelBase, staticInfo )
-    , m_decimal( decimalFormat )
+    :Basic<uint32_t>( myModelBase, staticInfo, decimalFormat )
 {
 }
 
 Uint32::Uint32( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, uint32_t initialValue, bool decimalFormat )
-    : Basic<uint32_t>( myModelBase, staticInfo, initialValue )
-    , m_decimal( decimalFormat )
+    : Basic<uint32_t>( myModelBase, staticInfo, initialValue, decimalFormat )
 {
 }
 
@@ -65,77 +61,3 @@ const char* Uint32::getTypeAsText() const noexcept
     return m_decimal ? "Cpl::Dm::Mp::Uint32-dec" : "Cpl::Dm::Mp::Uint32-hex";
 }
 
-bool Uint32::toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
-{
-    // Get a snapshot of the my data and state
-    m_modelDatabase.lock_();
-    uint32_t value  = m_data;
-    uint16_t seqnum = m_seqNum;
-    int8_t   valid  = m_validState;
-    bool     locked = m_locked;
-    m_modelDatabase.unlock_();
-
-    // Start the conversion
-    JsonDocument& doc = beginJSON( valid, locked, seqnum );
-
-    // Construct the 'val' key/value pair (as a simple numeric)
-    if ( IS_VALID(valid) )
-    {
-        if ( m_decimal )
-        {
-            doc["val"] = value;
-        }
-
-        // Construct the 'val' key/value pair (as a HEX string)
-        else
-        {
-            Cpl::Text::FString<10> tmp;
-            tmp.format( "0x%lX", (unsigned long) value );
-            doc["val"] = tmp.getString();
-        }
-    }
-
-    // End the conversion
-    endJSON( dst, dstSize, truncated );
-    return true;
-}
-
-bool Uint32::fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept
-{
-    uint32_t newValue = 0;
-
-    // Attempt to parse the value key/value pair (as a simple numeric)
-    if ( m_decimal )
-    {
-        uint32_t checkForError = src | 2;
-        newValue               = src | 1;
-        if ( newValue == 1 && checkForError == 2 )
-        {
-            if ( errorMsg )
-            {
-                *errorMsg = "Invalid syntax for the 'val' key/value pair";
-            }
-            return false;
-        }
-    }
-
-    // Attempt to parse the value as HEX string
-    else
-    {
-        const char*   val = src;
-        unsigned long value;
-        if ( Cpl::Text::a2ul( value, val, 16 ) == false )
-        {
-            if ( errorMsg )
-            {
-                *errorMsg = "Invalid syntax for the 'val' key/value pair";
-            }
-            return false;
-        }
-
-        newValue = (uint32_t) value;
-    }
-
-    retSequenceNumber = write( newValue, lockRequest );
-    return true;
-}

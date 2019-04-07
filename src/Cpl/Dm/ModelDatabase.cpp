@@ -20,7 +20,7 @@ using namespace Cpl::Dm;
 
 // global lock
 static Cpl::System::Mutex globalMutex_;
-StaticJsonDocument<OPTION_CPL_RTE_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC> ModelDatabase::g_doc_;
+StaticJsonDocument<OPTION_CPL_DM_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC> ModelDatabase::g_doc_;
 
 //////////////////////////////////////////////
 ModelDatabase::ModelDatabase() noexcept

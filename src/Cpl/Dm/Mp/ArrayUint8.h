@@ -29,28 +29,15 @@ namespace Mp {
     from the heap.  Once an instance is constructed, the memory/array size can
     NOT be changed.
 
-    For the fromString() operation the expected data formats are:
-    \code    
+    The toJSON()/fromJSON format is:
+        \code
 
-        <numElems>:<mpIndex>:<d0>:<d1>[:..]
-        <numElems>:<mpIndex>:<h0><h1>[..]
+        { name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:{start:<idx>, elems:[<n0>,<n1>,...]} }
 
-        where:
-            <numElems> is the number of <dN>/<hN> arguments
-            <mpIndex>  is the starting Model Point element index to write the 
-                       data to
-            <eN>       is a/next source element.  The elements can be
-                       decimal or hex depending on how the MP was constructed
+        where <idx> is the start index for the values in 'elems'. If <idx> is
+        not specified, then it defaults to 0.
 
-        examples:
-            3:7:32:33:34    -->writes the three values {32,33,34} to the
-                               Model Point's array at indexes 7,8,9 respectively
-            3:7:202122      -->same as above except that the element data is
-                               in hex format.
-    
-    \endcode
-    The toString() function outputs in the same data format as the expected 
-    fromString() function.
+        \endcode
 
     NOTE: All methods in this class ARE thread Safe unless explicitly
           documented otherwise.
@@ -69,21 +56,17 @@ public:
     } Data;
 
 
-protected:
-    /// Decimal/Hex formating flat for toString()/fromString() operations
-    bool m_decimal;
-
 
 public:
-    /** Constructor.  Invalid MP. 
+    /** Constructor.  Invalid MP.
      */
-    ArrayUint8( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, bool decimalFormat = true);
+    ArrayUint8( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements );
 
-    /** Constructor.  Valid MP.  Requires an initial value. If the 'srcData' 
-        pointer is set to zero, then the entire array will be initialized to 
+    /** Constructor.  Valid MP.  Requires an initial value. If the 'srcData'
+        pointer is set to zero, then the entire array will be initialized to
         zero.   Note: 'srcData' MUST contain at least 'numElements' elements.
      */
-    ArrayUint8( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, const uint8_t* srcData, bool decimalFormat = true );
+    ArrayUint8( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, const uint8_t* srcData );
 
 public:
     /** Type safe read. See Cpl::Dm::ModelPoint.
@@ -104,7 +87,7 @@ public:
               means to the integrity of the MP's data.  WARNING: Think before
               doing a partial write!  For example, if the MP is in the invalid
               state and a partial write is done - then the MP's data/array is
-              only partially initialized AND then MP is now in the valid 
+              only partially initialized AND then MP is now in the valid
               state!
       */
 
@@ -139,17 +122,10 @@ public:
 
 public:
     ///  See Cpl::Dm::ModelPoint.
-    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const noexcept;
+    bool fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept;
 
     ///  See Cpl::Dm::ModelPoint.
     const char* getTypeAsText() const noexcept;
-
-protected:
-    /// See Cpl::Dm::ModelPointCommon_.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) noexcept;
-
-
-
 };
 
 

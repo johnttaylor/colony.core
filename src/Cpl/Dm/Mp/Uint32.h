@@ -26,15 +26,23 @@ namespace Mp {
 /** This class provides a concrete implementation for a Point who's data is a
     uint32_t.
 
-    NOTE: All methods in this class ARE thread Safe unless explicitly
+    The toJSON()/fromJSON format is:
+        \code
+
+        { name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:<numvalue> }
+
+        where <numvalue> is decimal numeric OR a quoted HEX string (when the MP
+        instance was constructed with 'decimalFormat':=false).  For example:
+
+            val:1234  or val:"4D2"
+
+        \endcode
+ 
+ NOTE: All methods in this class ARE thread Safe unless explicitly
           documented otherwise.
  */
 class Uint32 : public Basic<uint32_t>
 {
-protected:
-    /// Flag for to/from string() methods
-    bool m_decimal;
-
 public:
     /** Constructor. Invalid MP.  Note: the 'decimalFormat' argument applies to the 
         toString()/fromString() methods.   When set to true, the input/output
@@ -81,16 +89,7 @@ public:
 
 public:
     ///  See Cpl::Dm::ModelPoint.
-    bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept;
-
-    ///  See Cpl::Dm::ModelPoint.
-    bool fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept;
-    
-    ///  See Cpl::Dm::ModelPoint.
     const char* getTypeAsText() const noexcept;
-
-    /// See Cpl::Dm::ModelPointCommon_.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) noexcept;
 };
 
 

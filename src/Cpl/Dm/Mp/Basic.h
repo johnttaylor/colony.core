@@ -17,7 +17,9 @@
 #include "Cpl/System/Assert.h"
 #include "Cpl/System/FatalError.h"
 #include "Cpl/Text/atob.h"
+#include "Cpl/Text/FString.h"
 #include <string.h>
+
 
 ///
 namespace Cpl {
@@ -41,18 +43,24 @@ protected:
     /// The element's value
     ELEMTYPE    m_data;
 
+    /// Flag for to/from string() methods
+    bool m_decimal;
+
 
 public:
     /// Constructor: Invalid MP
-    Basic( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo )
+    Basic( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true )
         :ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
-    {}
+    {
+        m_decimal = decimalFormat;
+    }
 
     /// Constructor: Valid MP (requires initial value)
-    Basic( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue )
+    Basic( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue, bool decimalFormat=true )
         :ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Dm::ModelPoint::MODEL_POINT_STATE_VALID )
     {
-        m_data = initialValue;
+        m_data    = initialValue;
+        m_decimal = decimalFormat;
     }
 
 public:
@@ -95,6 +103,84 @@ public:
     {
         return sizeof( ELEMTYPE );
     }
+
+    /// See Cpl::Dm::Point.  
+    bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
+    {
+        // Get a snapshot of the my data and state
+        m_modelDatabase.lock_();
+        ELEMTYPE value  = m_data;
+        uint16_t seqnum = m_seqNum;
+        int8_t   valid  = m_validState;
+        bool     locked = m_locked;
+        m_modelDatabase.unlock_();
+
+        // Start the conversion
+        JsonDocument& doc = beginJSON( valid, locked, seqnum );
+
+        // Construct the 'val' key/value pair (as a simple numeric)
+        if ( IS_VALID( valid ) )
+        {
+            if ( m_decimal )
+            {
+                doc["val"] = value;
+            }
+
+            // Construct the 'val' key/value pair (as a HEX string)
+            else
+            {
+                Cpl::Text::FString<10> tmp;
+                tmp.format( "0x%llX", (unsigned long long) value );
+                doc["val"] = tmp.getString();
+            }
+        }
+
+        // End the conversion
+        endJSON( dst, dstSize, truncated );
+        return true;
+    }
+
+    /// See Cpl::Dm::Point.  
+    bool fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept
+    {
+        ELEMTYPE newValue = 0;
+
+        // Attempt to parse the value key/value pair (as a simple numeric)
+        if ( m_decimal )
+        {
+            ELEMTYPE checkForError = src | 2;
+            newValue               = src | 1;
+            if ( newValue == 1 && checkForError == 2 )
+            {
+                if ( errorMsg )
+                {
+                    *errorMsg = "Invalid syntax for the 'val' key/value pair";
+                }
+                return false;
+            }
+        }
+
+        // Attempt to parse the value as HEX string
+        else
+        {
+            const char*        val = src;
+            unsigned long long value;
+            if ( Cpl::Text::a2ull( value, val, 16 ) == false )
+            {
+                if ( errorMsg )
+                {
+                    *errorMsg = "Invalid syntax for the 'val' key/value pair";
+                }
+                return false;
+            }
+
+            newValue = (ELEMTYPE) value;
+        }
+
+        retSequenceNumber = write( &newValue, sizeof( ELEMTYPE ), lockRequest );
+        return true;
+    }
+
 };
 
 
@@ -131,9 +217,9 @@ public:
         , m_data( { new(std::nothrow) ELEMTYPE[numElements], numElements, 0 } )
     {
         // Throw a fatal error if global parse buffer is too small
-        if ( OPTION_CPL_RTE_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC < numElements * sizeof( ELEMTYPE ) )
+        if ( OPTION_CPL_DM_MODEL_DATABASE_TEMP_STORAGE_SIZE < numElements * sizeof( ELEMTYPE ) )
         {
-            Cpl::System::FatalError::logf( "Cpl::Dm::Array().  Creating a Array of size %lu which is greater than the fromString() parser buffer", numElements * sizeof( ELEMTYPE ) );
+            Cpl::System::FatalError::logf( "Cpl::Dm::Array().  Creating a Array of size %lu which is greater than the fromJSON_() temporary buffer", numElements * sizeof( ELEMTYPE ) );
         }
 
         // Check for the case of failed memory allocation
@@ -156,9 +242,9 @@ public:
         , m_data( { new(std::nothrow) ELEMTYPE[numElements], numElements, 0 } )
     {
         // Throw a fatal error if global parse buffer is too small
-        if ( OPTION_CPL_RTE_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC < numElements * sizeof( ELEMTYPE ) )
+        if ( OPTION_CPL_DM_MODEL_DATABASE_TEMP_STORAGE_SIZE < numElements * sizeof( ELEMTYPE ) )
         {
-            Cpl::System::FatalError::logf( "Cpl::Dm::Array().  Creating a Array of size %lu which is greater than the fromString() parser buffer", numElements * sizeof( ELEMTYPE ) );
+            Cpl::System::FatalError::logf( "Cpl::Dm::Array().  Creating a Array of size %lu which is greater than the fromJSON_() temporary buffer", numElements * sizeof( ELEMTYPE ) );
         }
 
         // Check for the case of failed memory allocation
@@ -268,42 +354,87 @@ public:
         return m_data.numElements * sizeof( ELEMTYPE );
     }
 
-
-protected:
-    /// Helper method when processing errors that occur during setFromText() method
-    const char* processError( Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber, const char* errorFormatText, ... )
+public:
+    /// See Cpl::Dm::Point.  
+    bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
     {
-        // Update the Caller's error Message (if provided)
-        va_list ap;
-        va_start( ap, errorFormatText );
-        if ( errorMsg )
-        {
-            errorMsg->vformat( errorFormatText, ap );
-        }
-
-        va_end( ap );
-
-        // Lock the database 
+        // Lock the Model Point
         m_modelDatabase.lock_();
+        uint16_t seqnum = m_seqNum;
+        int8_t   valid  = m_validState;
+        bool     locked = m_locked;
 
-        // Update the caller's sequence number (if provided)
-        if ( retSequenceNumber )
+        // Start the conversion
+        JsonDocument& doc = beginJSON( valid, locked, seqnum );
+
+        // Construct the 'val' array object
+        if ( IS_VALID( valid ) )
         {
-            *retSequenceNumber = m_seqNum;
+            JsonObject obj = doc.createNestedObject( "val" );
+            obj["start"] = 0;
+            JsonArray arr = obj.createNestedArray( "elems" );
+            for ( size_t i=0; i < m_data.numElements; i++ )
+            {
+                arr.add( m_data.elemPtr[i] );
+            }
         }
 
+        // End the conversion
+        endJSON( dst, dstSize, truncated );
+
+        // unlock the database
         m_modelDatabase.unlock_();
-
-        // Return 'parse failed'
-        return 0;
+        return true;
     }
 
-    /// Helper method to for setFromText() implementation
-    const char* parseNumElementsAndStartingIndex( const char* srcText, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber, unsigned long& numElements, unsigned long& startIndex ) noexcept
+    bool fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept
     {
-        return 0;
-    }
+        // Check for object
+        if ( src.is<JsonObject>() == false )
+        {
+            if ( errorMsg )
+            {
+                *errorMsg = "'val' key/value pair is NOT an JSON object";
+            }
+            return false;
+        }
 
+        // Check for embedded array
+        JsonArray elems = src["elems"];
+        if ( elems.isNull() )
+        {
+            if ( errorMsg )
+            {
+                *errorMsg = "'val' key/value pair is missing the embedded 'elems' array";
+            }
+            return false;
+        }
+
+        // Get starting index (note: if not present a default of '0' will be returned)
+        size_t startIdx = src["start"];
+
+        // Check for exceeding array limits
+        if ( src.size() > m_data.numElements )
+        {
+            if ( errorMsg )
+            {
+                errorMsg->format( "Number of array elements (%lu) exceeds the MP's element count (%lu)", src.size(), m_data.numElements );
+            }
+            return false;
+        }
+
+        // Parse the array items
+        ELEMTYPE tempArray = (ELEMTYPE*) ModelDatabase::g_tempBuffer_;
+        for ( size_t i = 0; i < src.size(); i++ )
+        {
+            tempArray[i] = src[i];
+        }
+
+        // Update the Model Point 
+        InternalData srcArray = { tempArray, src.size(), startIdx };
+        retSequenceNumber = ModelPointCommon_::write( &srcArray, sizeof( srcArray ), lockRequest );
+        return true;
+    }
 };
 
 
