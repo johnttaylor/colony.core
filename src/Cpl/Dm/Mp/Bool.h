@@ -72,15 +72,12 @@ public:
 
 
 public:
-    ///  See Cpl::Dm::ModelPoint.
-    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const noexcept;
+    /// See Cpl::Dm::Point.  
+    bool fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept;
 
     ///  See Cpl::Dm::ModelPoint.
     const char* getTypeAsText() const noexcept;
 
-protected:
-    /// See Cpl::Dm::ModelPointCommon_.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) noexcept;
 };
 
 

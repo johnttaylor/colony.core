@@ -22,6 +22,7 @@
 #include <string.h>
 
 
+#define STRCMP(s1,s2)  (strcmp(s1,s2)==0)
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -141,11 +142,11 @@ TEST_CASE( "arrayuint8-get" )
     REQUIRE( s == ORANGE_NUM_ELEMENTS * sizeof( uint8_t ) + sizeof( int8_t ) );
 
     const char* mpType = mp_apple_.getTypeAsText();
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s])", mpType) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s]", mpType) );
     REQUIRE( strcmp( mpType, "Cpl::Dm::Mp::ArrayUint8-dec" ) == 0 );
 
     mpType = mp_orange_.getTypeAsText();
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s])", mpType) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s]", mpType) );
     REQUIRE( strcmp( mpType, "Cpl::Dm::Mp::ArrayUint8-hex" ) == 0 );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
@@ -247,74 +248,137 @@ TEST_CASE( "arrayuint8-export" )
 
 
 ///////////////////////////////////////////////////////////////////////////////
-#define MAX_STR_LENG    100
+#define MAX_STR_LENG    1024
 
 TEST_CASE( "arrayuint8-toJSON" )
 {
     CPL_SYSTEM_TRACE_SCOPE( SECT_, "ARRAYUINT8-TOJSON test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
-#if 0 
-    // Invalid (Default value)
-    Cpl::Text::FString<MAX_STR_LENG> string;
-    uint16_t seqNum = mp_apple_.setInvalid();
-    uint16_t seqNum2;
-    mp_apple_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum );
-    REQUIRE( string == "?" );
 
-    // Invalid (Default value) + Locked
-    mp_apple_.applyLock();
-    mp_apple_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum );
-    REQUIRE( string == "!?" );
-
-    // Invalid (custom value)
+    mp_apple_.setInvalid();
     mp_apple_.removeLock();
-    seqNum = mp_apple_.setInvalidState( 100 );
-    mp_apple_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum );
-    REQUIRE( string == "?100" );
+    mp_orange_.setInvalid();
+    mp_orange_.removeLock();
 
-    // Invalid (custom value) + Locked
-    mp_apple_.applyLock();
-    mp_apple_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum );
-    REQUIRE( string == "!?100" );
+    char string[MAX_STR_LENG + 1];
+    bool truncated;
 
-    // Value 
-    uint8_t  value[APPLE_NUM_ELEMENTS] = { 51, 40, 30, 20, 10 };
-    mp_apple_.write( value, APPLE_NUM_ELEMENTS, ModelPoint::eUNLOCK );
-    mp_apple_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum + 1 );
-    REQUIRE( string == "5:0:51:40:30:20:10" );
+    SECTION( "Invalid" )
+    {
+        // Invalid (Default value)
+        uint16_t seqnum = mp_apple_.setInvalid();
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s]", string) );
+        REQUIRE( truncated == false );
 
-    // Value + Lock
-    mp_apple_.applyLock();
-    mp_apple_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum + 1 );
-    REQUIRE( string == "!5:0:51:40:30:20:10" );
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( STRCMP( doc["name"], "APPLE" ) );
+        REQUIRE( STRCMP( doc["type"], mp_apple_.getTypeAsText() ) );
+        REQUIRE( doc["seqnum"] == seqnum );
+        REQUIRE( doc["locked"] == false );
+        REQUIRE( doc["invalid"] > 0 );
+    }
 
-    // Hex Value 
-    seqNum = mp_orange_.getSequenceNumber();
-    mp_orange_.write( value, ORANGE_NUM_ELEMENTS );
-    mp_orange_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum + 1 );
-    REQUIRE( string == "3:0:33281E" );
+    SECTION( "Invalid + Locked" )
+    {
+        mp_apple_.applyLock();
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s]", string) );
 
-    // Hex Value + Lock
-    mp_orange_.applyLock();
-    mp_orange_.toString( string, false, &seqNum2 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("toString: [%s])", string.getString()) );
-    REQUIRE( seqNum2 == seqNum + 1 );
-    REQUIRE( string == "!3:0:33281E" );
-#endif
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["locked"] == true );
+        REQUIRE( doc["invalid"] > 0 );
+    }
+
+    SECTION( "Invalid - custom value" )
+    {
+        mp_apple_.removeLock();
+        uint16_t seqnum = mp_apple_.setInvalidState( 100 );
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s]", string) );
+
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["seqnum"] == seqnum );
+        REQUIRE( doc["invalid"] == 100 );
+        REQUIRE( doc["locked"] == false );
+    }
+
+    SECTION( "Invalid - custom value + locked" )
+    {
+        // Invalid (custom value) + Locked
+        uint16_t seqnum = mp_apple_.setInvalidState( 100 );
+        mp_apple_.applyLock();
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s]", string) );
+
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["invalid"] == 100 );
+        REQUIRE( doc["locked"] == true );
+    }
+
+    SECTION( "Hex Value" )
+    {
+        uint8_t  value[ORANGE_NUM_ELEMENTS] = { 51, 40, 31 };
+        uint16_t seqnum = mp_orange_.write( value, ORANGE_NUM_ELEMENTS );
+        mp_orange_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s]", string) );
+
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["seqnum"] == seqnum );
+        REQUIRE( doc["locked"] == false );
+        REQUIRE( doc["invalid"] == 0 );
+        REQUIRE( doc["val"]["start"] == 0 );
+        REQUIRE( STRCMP( doc["val"]["elems"][0], "0x33" ) );
+        REQUIRE( STRCMP( doc["val"]["elems"][2], "0x1F" ) );
+    }
+
+    SECTION( "Value" )
+    {
+        uint8_t  value[APPLE_NUM_ELEMENTS] = { 51, 40, 30, 20, 10 };
+        uint16_t seqnum = mp_apple_.write( value, APPLE_NUM_ELEMENTS, ModelPoint::eUNLOCK );
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s]", string) );
+
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["seqnum"] == seqnum );
+        REQUIRE( doc["locked"] == false );
+        REQUIRE( doc["invalid"] == 0 );
+        REQUIRE( doc["val"]["start"] == 0 );
+        REQUIRE( doc["val"]["elems"][0] == 51 );
+        REQUIRE( doc["val"]["elems"][4] == 10 );
+    }
+
+    SECTION( "Value + lock" )
+    {
+        uint8_t  value[APPLE_NUM_ELEMENTS] = { 52, 41, 30, 20, 11 };
+        uint16_t seqnum = mp_apple_.write( value, APPLE_NUM_ELEMENTS, ModelPoint::eUNLOCK );
+        mp_apple_.applyLock();
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s]", string) );
+
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( doc["seqnum"] == seqnum );
+        REQUIRE( doc["locked"] == true );
+        REQUIRE( doc["invalid"] == 0 );
+        REQUIRE( doc["val"]["start"] == 0 );
+        REQUIRE( doc["val"]["elems"][0] == 52 );
+        REQUIRE( doc["val"]["elems"][4] == 11 );
+    }
+
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
 
@@ -324,6 +388,168 @@ TEST_CASE( "arrayuint8-fromJSON_", )
 {
     CPL_SYSTEM_TRACE_SCOPE( SECT_, "ARRAYUINT8-FROMSJON_ test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
+
+    // Start with MP in the invalid state
+    Cpl::Text::FString<MAX_STR_LENG> string;
+    Cpl::Text::DString               errorMsg( "noerror", 1024 );
+    mp_apple_.removeLock();
+    mp_orange_.removeLock();
+    mp_orange_.setInvalid();
+    uint16_t seqNum = mp_apple_.setInvalid();
+    uint16_t seqNum2;
+    ModelPoint* mp;
+
+    SECTION( "Write value" )
+    {
+        const char* json = "{name:\"APPLE\", val:{start:0,elems:[5,4,3,2,1]}}";
+        bool result = modelDb_.fromJSON( json, &errorMsg, &mp, &seqNum2 );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        REQUIRE( seqNum2 == seqNum + 1 );
+        uint8_t  value[APPLE_NUM_ELEMENTS] = { 0x45, 0x45, 0x45, 0x45, 0x45 };
+        int8_t   valid = mp_apple_.read( value, APPLE_NUM_ELEMENTS, 0, &seqNum );
+        REQUIRE( seqNum == seqNum2 );
+        REQUIRE( ModelPoint::IS_VALID( valid ) );
+        REQUIRE( value[0] == 5 );
+        REQUIRE( value[1] == 4 );
+        REQUIRE( value[2] == 3 );
+        REQUIRE( value[3] == 2 );
+        REQUIRE( value[4] == 1 );
+        REQUIRE( errorMsg == "noerror" );
+        REQUIRE( mp == &mp_apple_ );
+    }
+
+    SECTION( "Write value - partial write" )
+    {
+        const char* json = "{name:\"APPLE\", val:{start:2,elems:[22,23]}}";
+        bool result = modelDb_.fromJSON( json, &errorMsg, &mp, &seqNum2 );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        REQUIRE( seqNum2 == seqNum + 1 );
+        uint8_t  value[APPLE_NUM_ELEMENTS] = { 0x45, 0x45, 0x45, 0x45, 0x45 };
+        int8_t   valid = mp_apple_.read( value, APPLE_NUM_ELEMENTS, 0, &seqNum );
+        REQUIRE( seqNum == seqNum2 );
+        REQUIRE( ModelPoint::IS_VALID( valid ) );
+        REQUIRE( value[0] == 5 );
+        REQUIRE( value[1] == 4 );
+        REQUIRE( value[2] == 22 );
+        REQUIRE( value[3] == 23 );
+        REQUIRE( value[4] == 1 );
+        REQUIRE( errorMsg == "noerror" );
+        REQUIRE( mp == &mp_apple_ );
+    }
+
+    SECTION( "Write value - hex write" )
+    {
+        const char* json = "{name:\"ORANGE\", val:{start:0,elems:[\"10\",\"11\",\"12\"]}}";
+        bool result = modelDb_.fromJSON( json, &errorMsg, &mp, &seqNum2 );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        uint8_t  value[ORANGE_NUM_ELEMENTS] = { 0x45, 0x45, 0x45 };
+        int8_t   valid = mp_orange_.read( value, ORANGE_NUM_ELEMENTS, 0, &seqNum );
+        REQUIRE( seqNum == seqNum2 );
+        REQUIRE( ModelPoint::IS_VALID( valid ) );
+        REQUIRE( value[0] == 0x10 );
+        REQUIRE( value[1] == 0x11 );
+        REQUIRE( value[2] == 0x12 );
+        REQUIRE( errorMsg == "noerror" );
+        REQUIRE( mp == &mp_orange_ );
+
+        json = "{name:\"ORANGE\", val:{elems:[\"1E\"]}}";
+        result = modelDb_.fromJSON( json, &errorMsg, &mp, &seqNum2 );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        valid = mp_orange_.read( value, ORANGE_NUM_ELEMENTS, 0, &seqNum );
+        REQUIRE( seqNum == seqNum2 );
+        REQUIRE( ModelPoint::IS_VALID( valid ) );
+        REQUIRE( value[0] == 0x1E );
+        REQUIRE( value[1] == 0x11 );
+        REQUIRE( value[2] == 0x12 );
+        REQUIRE( errorMsg == "noerror" );
+        REQUIRE( mp == &mp_orange_ );
+    }
+
+    SECTION( "Write value - error cases" )
+    {
+        const char* json   = "{name:\"APPLE\", val:{start=0}";
+        bool        result = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == false );
+
+        errorMsg = "noerror";
+        json     = "{name:\"APPLE\", val:{elems:[abc]}}";
+        result   = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == false );
+    }
+
+    SECTION( "Set Invalid" )
+    {
+        uint8_t  value[APPLE_NUM_ELEMENTS] = { 0x45, 0x45, 0x45, 0x45, 0x45 };
+        seqNum = mp_apple_.write( value, APPLE_NUM_ELEMENTS );
+        const char* json = "{name:\"APPLE\", val:{start:2,elems:[22,23]}, invalid:1}";
+        bool result = modelDb_.fromJSON( json, &errorMsg, &mp, &seqNum2 );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        int8_t   valid = mp_apple_.read( value, APPLE_NUM_ELEMENTS, 0, &seqNum );
+        REQUIRE( seqNum == seqNum2 );
+        REQUIRE( ModelPoint::IS_VALID( valid ) == false );
+        REQUIRE( errorMsg == "noerror" );
+        REQUIRE( mp == &mp_apple_ );
+    }
+
+    SECTION( "lock..." )
+    {
+        const char* json = "{name:\"APPLE\", val:{start:2,elems:[22,23]}, locked:true}";
+        bool result = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        uint8_t  value[APPLE_NUM_ELEMENTS] = { 0x45, 0x45, 0x45, 0x45, 0x45 };
+        int8_t   valid = mp_apple_.read( value, APPLE_NUM_ELEMENTS );
+        REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+        REQUIRE( errorMsg == "noerror" );
+        REQUIRE( mp_apple_.isLocked() == true );
+        REQUIRE( value[2] == 22 );
+        REQUIRE( value[3] == 23 );
+
+        json   = "{name:\"APPLE\", invalid:21, locked:false}";
+        result = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        REQUIRE( mp_apple_.isNotValid() == true );
+        REQUIRE( mp_apple_.isLocked() == false );
+        REQUIRE( mp_apple_.getValidState() == 21 );
+
+        json   = "{name:\"APPLE\", val:{start:2,elems:[22,23]}, locked:true}";
+        result = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        REQUIRE( mp_apple_.isLocked() == true );
+        valid = mp_apple_.read( value, APPLE_NUM_ELEMENTS );
+        REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+        REQUIRE( value[2] == 22 );
+        REQUIRE( value[3] == 23 );
+
+        json   = "{name:\"APPLE\", val:{start:2,elems:[33,44]} }";
+        result = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        REQUIRE( mp_apple_.isLocked() == true );
+        valid = mp_apple_.read( value, APPLE_NUM_ELEMENTS );
+        REQUIRE( value[2] == 22 );
+        REQUIRE( value[3] == 23 );
+
+
+        json   = "{name:\"APPLE\", locked:false}";
+        result = modelDb_.fromJSON( json, &errorMsg );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("fromSJON errorMsg=[%s])", errorMsg.getString()) );
+        REQUIRE( result == true );
+        valid = mp_apple_.read( value, APPLE_NUM_ELEMENTS );
+        REQUIRE( ModelPoint::IS_VALID( valid ) == true );
+        REQUIRE( value[2] == 22 );
+        REQUIRE( value[3] == 23 );
+        REQUIRE( mp_apple_.isLocked() == false );
+    }
 #if 0 
 
     // Start with MP in the invalid state
@@ -357,7 +583,7 @@ TEST_CASE( "arrayuint8-fromJSON_", )
     REQUIRE( ModelPoint::IS_VALID( valid ) );
     REQUIRE( seqNum == seqNum2 );
     REQUIRE( errorMsg != "noerror" );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("fromString FAILED: errorMsg=[%s])", errorMsg.getString()) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("fromString FAILED: errorMsg=[%s]", errorMsg.getString()) );
     REQUIRE( value[0] == 5 );
     REQUIRE( value[1] == 4 );
     REQUIRE( value[2] == 3 );
@@ -474,7 +700,7 @@ TEST_CASE( "arrayuint8-fromJSON_", )
 
 static Cpl::Dm::MailboxServer     t1Mbox_;
 
-TEST_CASE( "arrayuint8-observer"  )
+TEST_CASE( "arrayuint8-observer" )
 {
     CPL_SYSTEM_TRACE_SCOPE( SECT_, "ARRAYUINT8-OBSERVER test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
@@ -485,7 +711,7 @@ TEST_CASE( "arrayuint8-observer"  )
     // Open, write a value, wait for Viewer to see the change, then close
     mp_apple_.removeLock();
     viewer1.open();
-    uint8_t  value2[APPLE_NUM_ELEMENTS] = { 50, 40, 30, 20, 10 };
+    uint8_t  value2[APPLE_NUM_ELEMENTS] = { 50, 140, 30, 20, 10 };
     uint16_t seqNum                     = mp_apple_.write( value2 + 1, 3, ModelPoint::eNO_REQUEST, 1 );
     Cpl::System::Thread::wait();
     viewer1.close();

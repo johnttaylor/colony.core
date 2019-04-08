@@ -43,8 +43,8 @@ protected:
     /// The element's value
     ELEMTYPE    m_data;
 
-    /// Flag for to/from string() methods
-    bool m_decimal;
+    /// Flag for to/from json() methods
+    bool        m_decimal;
 
 
 public:
@@ -103,7 +103,32 @@ public:
     {
         return sizeof( ELEMTYPE );
     }
+};
 
+/** This template class extends the implementation of Basic<ELEMTYPE> to support
+    the toJSON() and fromJSON_() methods.
+
+    NOTES:
+        1) All methods in this class are NOT thread Safe unless explicitly
+           documented otherwise.
+ */
+template<class ELEMTYPE>
+class BasicNumeric : public Basic<ELEMTYPE>
+{
+public:
+    /// Constructor: Invalid MP
+    BasicNumeric( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true )
+        :Basic<ELEMTYPE>( myModelBase, staticInfo, decimalFormat )
+    {
+    }
+
+    /// Constructor: Valid MP (requires initial value)
+    BasicNumeric( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue, bool decimalFormat=true )
+        :Basic<ELEMTYPE>( myModelBase, staticInfo, initialValue, decimalFormat )
+    {
+    }
+
+public:
     /// See Cpl::Dm::Point.  
     bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
     {
@@ -129,9 +154,9 @@ public:
             // Construct the 'val' key/value pair (as a HEX string)
             else
             {
-                Cpl::Text::FString<10> tmp;
+                Cpl::Text::FString<20> tmp;
                 tmp.format( "0x%llX", (unsigned long long) value );
-                doc["val"] = tmp.getString();
+                doc["val"] = (char*) tmp.getString();
             }
         }
 
@@ -148,9 +173,9 @@ public:
         // Attempt to parse the value key/value pair (as a simple numeric)
         if ( m_decimal )
         {
-            ELEMTYPE checkForError = src | 2;
-            newValue               = src | 1;
-            if ( newValue == 1 && checkForError == 2 )
+            ELEMTYPE checkForError = src | (ELEMTYPE) 2;
+            newValue               = src | (ELEMTYPE) 1;
+            if ( newValue == (ELEMTYPE) 1 && checkForError == (ELEMTYPE) 2 )
             {
                 if ( errorMsg )
                 {
@@ -180,7 +205,6 @@ public:
         retSequenceNumber = write( &newValue, sizeof( ELEMTYPE ), lockRequest );
         return true;
     }
-
 };
 
 
@@ -210,11 +234,15 @@ protected:
     /// The element's value
     InternalData     m_data;
 
+    /// Flag for to/from json() methods
+    bool m_decimal;
+
 public:
     /// Constructor: Invalid MP
-    Array( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements )
+    Array( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, bool decimalFormat=true )
         :ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
         , m_data( { new(std::nothrow) ELEMTYPE[numElements], numElements, 0 } )
+        , m_decimal( decimalFormat )
     {
         // Throw a fatal error if global parse buffer is too small
         if ( OPTION_CPL_DM_MODEL_DATABASE_TEMP_STORAGE_SIZE < numElements * sizeof( ELEMTYPE ) )
@@ -237,9 +265,10 @@ public:
         pointer is set to zero, then the entire array will be initialized to
         zero.   Note: 'srcData' MUST contain at least 'numElements' elements.
      */
-    Array( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, const ELEMTYPE* srcData )
+    Array( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, const ELEMTYPE* srcData, bool decimalFormat=true )
         :ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Dm::ModelPoint::MODEL_POINT_STATE_VALID )
         , m_data( { new(std::nothrow) ELEMTYPE[numElements], numElements, 0 } )
+        , m_decimal( decimalFormat )
     {
         // Throw a fatal error if global parse buffer is too small
         if ( OPTION_CPL_DM_MODEL_DATABASE_TEMP_STORAGE_SIZE < numElements * sizeof( ELEMTYPE ) )
@@ -375,7 +404,16 @@ public:
             JsonArray arr = obj.createNestedArray( "elems" );
             for ( size_t i=0; i < m_data.numElements; i++ )
             {
-                arr.add( m_data.elemPtr[i] );
+                if ( m_decimal )
+                {
+                    arr.add( m_data.elemPtr[i] );
+                }
+                else
+                {
+                    Cpl::Text::FString<20> s;
+                    s.format( "0x%llX", (unsigned long long) m_data.elemPtr[i] );
+                    arr.add( (char*) s.getString() );
+                }
             }
         }
 
@@ -414,7 +452,8 @@ public:
         size_t startIdx = src["start"];
 
         // Check for exceeding array limits
-        if ( src.size() > m_data.numElements )
+        size_t numElements = elems.size();
+        if ( numElements > m_data.numElements )
         {
             if ( errorMsg )
             {
@@ -423,15 +462,35 @@ public:
             return false;
         }
 
-        // Parse the array items
-        ELEMTYPE tempArray = (ELEMTYPE*) ModelDatabase::g_tempBuffer_;
-        for ( size_t i = 0; i < src.size(); i++ )
+        // Attempt to parse the value key/value pair (as a simple numeric)
+        ELEMTYPE* tempArray = (ELEMTYPE*) ModelDatabase::g_tempBuffer_;
+        for ( size_t i = 0; i < numElements; i++ )
         {
-            tempArray[i] = src[i];
+            // Attempt to parse the value as simple numeric
+            if ( m_decimal )
+            {
+                tempArray[i] = elems[i];
+            }
+
+            // Attempt to parse the value as HEX string
+            else
+            {
+                const char*        val = elems[i];
+                unsigned long long value;
+                if ( Cpl::Text::a2ull( value, val, 16 ) == false )
+                {
+                    if ( errorMsg )
+                    {
+                        *errorMsg = "Invalid syntax for the 'val' key/value pair";
+                    }
+                    return false;
+                }
+                tempArray[i] = (ELEMTYPE) value;
+            }      
         }
 
         // Update the Model Point 
-        InternalData srcArray = { tempArray, src.size(), startIdx };
+        InternalData srcArray = { tempArray, numElements, startIdx };
         retSequenceNumber = ModelPointCommon_::write( &srcArray, sizeof( srcArray ), lockRequest );
         return true;
     }

@@ -23,11 +23,12 @@ using namespace Cpl::Dm::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
 ArrayUint8::ArrayUint8( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, size_t numElements, bool decimalFormat )
-    :Array<uint8_t>( myModelBase, staticInfo, numElements )
+    :Array<uint8_t>( myModelBase, staticInfo, numElements, decimalFormat )
+{
 }
 
 ArrayUint8::ArrayUint8( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, size_t numElements, const uint8_t* srcData, bool decimalFormat )
-    :Array<uint8_t>( myModelBase, staticInfo, numElements, srcData )
+    :Array<uint8_t>( myModelBase, staticInfo, numElements, srcData, decimalFormat )
 {
 }
 
@@ -66,7 +67,7 @@ void ArrayUint8::detach( Observer& observer ) noexcept
 ///////////////////////////////////////////////////////////////////////////////
 const char* ArrayUint8::getTypeAsText() const noexcept
 {
-    return "Cpl::Dm::Mp::ArrayUint8-dec";
+    return m_decimal? "Cpl::Dm::Mp::ArrayUint8-dec" :"Cpl::Dm::Mp::ArrayUint8-hex";
 }
 
 

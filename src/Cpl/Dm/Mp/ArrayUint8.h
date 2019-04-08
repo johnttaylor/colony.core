@@ -37,6 +37,11 @@ namespace Mp {
         where <idx> is the start index for the values in 'elems'. If <idx> is
         not specified, then it defaults to 0.
 
+        where <n0> is decimal numeric OR a quoted HEX string (when the MP
+        instance was constructed with 'decimalFormat':=false).  For example:
+
+            1234  or "4D2"
+
         \endcode
 
     NOTE: All methods in this class ARE thread Safe unless explicitly
@@ -60,13 +65,13 @@ public:
 public:
     /** Constructor.  Invalid MP.
      */
-    ArrayUint8( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements );
+    ArrayUint8( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, size_t numElements, bool decimalFormat=true );
 
     /** Constructor.  Valid MP.  Requires an initial value. If the 'srcData'
         pointer is set to zero, then the entire array will be initialized to
         zero.   Note: 'srcData' MUST contain at least 'numElements' elements.
      */
-    ArrayUint8( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, const uint8_t* srcData );
+    ArrayUint8( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements, const uint8_t* srcData, bool decimalFormat=true );
 
 public:
     /** Type safe read. See Cpl::Dm::ModelPoint.
@@ -121,9 +126,6 @@ public:
 
 
 public:
-    ///  See Cpl::Dm::ModelPoint.
-    bool fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept;
-
     ///  See Cpl::Dm::ModelPoint.
     const char* getTypeAsText() const noexcept;
 };

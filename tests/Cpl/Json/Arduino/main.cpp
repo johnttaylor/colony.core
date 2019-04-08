@@ -42,5 +42,15 @@ int main( int argc, char* argv[] )
     array.add( 3 );
     serializeJson( doc_, output, OUTPUT_LEN );
     printf( "serialization: [%s]\n", output );
+
+        // Create embedded string array
+    doc_.clear();
+    doc_["name"]  = "uncle";
+    array = doc_.createNestedArray( "val" );
+    array.add( "1" );
+    array.add( "2" );
+    array.add( "3" );
+    serializeJson( doc_, output, OUTPUT_LEN );
+    printf( "serialization: [%s]\n", output );
     return 0;
 }

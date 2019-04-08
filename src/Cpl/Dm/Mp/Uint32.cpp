@@ -19,12 +19,12 @@ using namespace Cpl::Dm::Mp;
 
 ///////////////////////////////////////////////////////////////////////////////
 Uint32::Uint32( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, bool decimalFormat )
-    :Basic<uint32_t>( myModelBase, staticInfo, decimalFormat )
+    :BasicNumeric<uint32_t>( myModelBase, staticInfo, decimalFormat )
 {
 }
 
 Uint32::Uint32( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, uint32_t initialValue, bool decimalFormat )
-    : Basic<uint32_t>( myModelBase, staticInfo, initialValue, decimalFormat )
+    : BasicNumeric<uint32_t>( myModelBase, staticInfo, initialValue, decimalFormat )
 {
 }
 

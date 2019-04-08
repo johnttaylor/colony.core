@@ -64,59 +64,22 @@ const char* Bool::getTypeAsText() const noexcept
     return "Cpl::Dm::Mp::Bool";
 }
 
-bool Bool::toString( Cpl::Text::String& dst, bool append, uint16_t* retSequenceNumber ) const noexcept
+bool Bool::fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept
 {
-    // Get a snapshot of the my data and state
-    m_modelDatabase.lock_();
-    bool     value  = m_data;
-    uint16_t seqnum = m_seqNum;
-    int8_t   valid  = m_validState;
-    bool     locked = m_locked;
-    m_modelDatabase.unlock_();
+    bool newValue = 0;
 
-    // Convert data and state to a string
-    if ( convertStateToText( dst, append, locked, valid ) )
-    {
-        dst.formatOpt( append, "%s", value ? "true" : "false" );
-    }
+    // Attempt to parse the value key/value pair
+        bool checkForError = src | false;
+        newValue           = src | true;
+        if ( newValue == true && checkForError == false)
+        {
+            if ( errorMsg )
+            {
+                *errorMsg = "Invalid syntax for the 'val' key/value pair";
+            }
+            return false;
+        }
 
-    if ( retSequenceNumber )
-    {
-        *retSequenceNumber = seqnum;
-    }
-
+    retSequenceNumber = write( newValue, lockRequest );
     return true;
 }
-
-const char* Bool::setFromText( const char* srcText, LockRequest_T lockAction, const char* not_usedterminationChars, Cpl::Text::String* errorMsg, uint16_t* retSequenceNumber ) noexcept
-{
-    const char*   result = 0;
-    const char*   endptr;
-    bool          value;
-    m_modelDatabase.lock_();
-    uint16_t seqnum = m_seqNum;
-    m_modelDatabase.unlock_();
-
-    if ( Cpl::Text::a2b( value, srcText, "true", "false", &endptr ) )
-    {
-        seqnum = write( value, lockAction );
-        result = endptr;
-    }
-
-    // Conversion failed!
-    else
-    {
-        if ( errorMsg )
-        {
-            errorMsg->format( "Conversion of %s[%s] to a bool failed.", getTypeAsText(), srcText );
-        }
-    }
-
-    // Housekeeping
-    if ( retSequenceNumber )
-    {
-        *retSequenceNumber = seqnum;
-    }
-    return result;
-}
-

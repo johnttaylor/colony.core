@@ -18,7 +18,6 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/Itc/CloseSync.h"
-#include "Cpl/Timer/Local.h"
 #include "Cpl/Dm/Mp/Int32.h"
 #include "Cpl/Dm/Mp/Uint64.h"
 #include "Cpl/Dm/Mp/Int64.h"

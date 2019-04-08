@@ -41,7 +41,7 @@ namespace Mp {
  NOTE: All methods in this class ARE thread Safe unless explicitly
           documented otherwise.
  */
-class Uint32 : public Basic<uint32_t>
+class Uint32 : public BasicNumeric<uint32_t>
 {
 public:
     /** Constructor. Invalid MP.  Note: the 'decimalFormat' argument applies to the 
