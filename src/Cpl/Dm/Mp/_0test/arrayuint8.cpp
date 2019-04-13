@@ -312,7 +312,7 @@ TEST_CASE( "arrayuint8-toJSON" )
     SECTION( "Invalid - custom value + locked" )
     {
         // Invalid (custom value) + Locked
-        uint16_t seqnum = mp_apple_.setInvalidState( 100 );
+        mp_apple_.setInvalidState( 100 );
         mp_apple_.applyLock();
         mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
         CPL_SYSTEM_TRACE_MSG( SECT_, ("toJSON: [%s]", string) );

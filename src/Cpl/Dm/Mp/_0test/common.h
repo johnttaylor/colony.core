@@ -21,13 +21,15 @@
 #include "Cpl/Dm/Mp/Int32.h"
 #include "Cpl/Dm/Mp/Uint64.h"
 #include "Cpl/Dm/Mp/Int64.h"
-#include "Cpl/Dm/Mp/Bool.h"
 #include "Cpl/Dm/Mp/Float.h"
 #include "Cpl/Dm/Mp/Double.h"
+#if 0
+#include "Cpl/Dm/Mp/Bool.h"
 #include "Cpl/Dm/Mp/String.h"
 #include "Cpl/Dm/Mp/RefCounter.h"
-#include "Cpl/Dm/Mp/ArrayUint8.h"
 #include "Cpl/Dm/Mp/Enum.h"
+#endif
+#include "Cpl/Dm/Mp/ArrayUint8.h"
 #include "Cpl/Type/enum.h"
 
 
@@ -333,81 +335,6 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////
-class ViewerBool : public ViewerBase, public Mp::Bool::Observer
-{
-public:
-    ///
-    Mp::Bool&  m_mp1;
-
-    /// Constructor
-    ViewerBool( MailboxServer& myMbox, Cpl::System::Thread& masterThread, Mp::Bool& mp1 )
-        :ViewerBase( myMbox, masterThread )
-        , Mp::Bool::Observer( myMbox )
-        , m_mp1( mp1 )
-    {
-        CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerBool(%p). mp1=%s", this, mp1.getName()) );
-    }
-
-public:
-    ///
-    void subscribe() { m_mp1.attach( *this ); }
-    ///
-    void unsubscribe() { m_mp1.detach( *this ); }
-    ///
-    void modelPointChanged( Mp::Bool& modelPointThatChanged ) noexcept
-    {
-        if ( m_done != true )
-        {
-            m_notifCount++;
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerBool(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
-
-            m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
-            m_lastValidState = modelPointThatChanged.getValidState();
-
-            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
-            {
-                m_pendingOpenMsgPtr->returnToSender();
-                m_opened            = true;
-                m_pendingOpenMsgPtr = 0;
-                CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerBool(%p) Returning Open Msg.") );
-            }
-
-            if ( m_notifCount >= 2 )
-            {
-                m_masterThread.signal();
-                m_done = true;
-            }
-        }
-    }
-};
-
-class RmwBool : public Mp::Bool::Client
-{
-public:
-    ///
-    int m_callbackCount;
-    ///
-    ModelPoint::RmwCallbackResult_T m_returnResult;
-    ///
-    bool                            m_nextValue;
-
-public:
-    ///
-    RmwBool():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_nextValue( true ) {}
-    ///
-    ModelPoint::RmwCallbackResult_T callback( bool& data, int8_t validState ) noexcept
-    {
-        m_callbackCount++;
-        if ( m_returnResult != ModelPoint::eNO_CHANGE )
-        {
-            data = m_nextValue;
-        }
-        return m_returnResult;
-    }
-};
-
-
-/////////////////////////////////////////////////////////////////
 class ViewerFloat : public ViewerBase, public Mp::Float::Observer
 {
 public:
@@ -555,6 +482,82 @@ public:
     }
 };
 
+#if 0
+/////////////////////////////////////////////////////////////////
+class ViewerBool : public ViewerBase, public Mp::Bool::Observer
+{
+public:
+	///
+	Mp::Bool&  m_mp1;
+
+	/// Constructor
+	ViewerBool( MailboxServer& myMbox, Cpl::System::Thread& masterThread, Mp::Bool& mp1 )
+		:ViewerBase( myMbox, masterThread )
+		, Mp::Bool::Observer( myMbox )
+		, m_mp1( mp1 )
+	{
+		CPL_SYSTEM_TRACE_MSG( SECT_, ( "ViewerBool(%p). mp1=%s", this, mp1.getName() ) );
+	}
+
+public:
+	///
+	void subscribe() { m_mp1.attach( *this ); }
+	///
+	void unsubscribe() { m_mp1.detach( *this ); }
+	///
+	void modelPointChanged( Mp::Bool& modelPointThatChanged ) noexcept
+	{
+		if( m_done != true )
+		{
+			m_notifCount++;
+			CPL_SYSTEM_TRACE_MSG( SECT_, ( "ViewerBool(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount ) );
+
+			m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
+			m_lastValidState = modelPointThatChanged.getValidState();
+
+			if( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
+			{
+				m_pendingOpenMsgPtr->returnToSender();
+				m_opened            = true;
+				m_pendingOpenMsgPtr = 0;
+				CPL_SYSTEM_TRACE_MSG( SECT_, ( "..ViewerBool(%p) Returning Open Msg." ) );
+			}
+
+			if( m_notifCount >= 2 )
+			{
+				m_masterThread.signal();
+				m_done = true;
+			}
+		}
+	}
+};
+
+class RmwBool : public Mp::Bool::Client
+{
+public:
+	///
+	int m_callbackCount;
+	///
+	ModelPoint::RmwCallbackResult_T m_returnResult;
+	///
+	bool                            m_nextValue;
+
+public:
+	///
+	RmwBool() :m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_nextValue( true ) {}
+	///
+	ModelPoint::RmwCallbackResult_T callback( bool& data, int8_t validState ) noexcept
+	{
+		m_callbackCount++;
+		if( m_returnResult != ModelPoint::eNO_CHANGE )
+		{
+			data = m_nextValue;
+		}
+		return m_returnResult;
+	}
+};
+
+
 /////////////////////////////////////////////////////////////////
 class ViewerString : public ViewerBase, public Mp::String::Observer
 {
@@ -686,81 +689,6 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////
-class ViewerArrayUint8 : public ViewerBase, public Mp::ArrayUint8::Observer
-{
-public:
-    ///
-    Mp::ArrayUint8&  m_mp1;
-
-    /// Constructor
-    ViewerArrayUint8( MailboxServer& myMbox, Cpl::System::Thread& masterThread, Mp::ArrayUint8& mp1 )
-        :ViewerBase( myMbox, masterThread )
-        , Mp::ArrayUint8::Observer( myMbox )
-        , m_mp1( mp1 )
-    {
-        CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerArrayUint8(%p). mp1=%s", this, mp1.getName()) );
-    }
-
-public:
-    ///
-    void subscribe() { m_mp1.attach( *this ); }
-    ///
-    void unsubscribe() { m_mp1.detach( *this ); }
-    ///
-    void modelPointChanged( Mp::ArrayUint8& modelPointThatChanged ) noexcept
-    {
-        if ( m_done != true )
-        {
-            m_notifCount++;
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerArrayUint8(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
-
-            m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
-            m_lastValidState = modelPointThatChanged.getValidState();
-
-            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
-            {
-                m_pendingOpenMsgPtr->returnToSender();
-                m_opened            = true;
-                m_pendingOpenMsgPtr = 0;
-                CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerArrayUint8(%p) Returning Open Msg.") );
-            }
-
-            if ( m_notifCount >= 2 )
-            {
-                m_masterThread.signal();
-                m_done = true;
-            }
-        }
-    }
-};
-
-class RmwArrayUint8 : public Mp::ArrayUint8::Client
-{
-public:
-    ///
-    int                              m_callbackCount;
-    ///
-    ModelPoint::RmwCallbackResult_T  m_returnResult;
-    ///
-    unsigned                         m_index;
-    ///
-    uint8_t                          m_newValue;
-public:
-    ///
-    RmwArrayUint8():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_index( 0 ), m_newValue( 0 ) {}
-    ///
-    ModelPoint::RmwCallbackResult_T callback( Mp::ArrayUint8::Data& data, int8_t validState ) noexcept
-    {
-        m_callbackCount++;
-        if ( m_returnResult != ModelPoint::eNO_CHANGE && m_index < data.numElements )
-        {
-            data.firstElemPtr[m_index] = m_newValue;
-        }
-        return m_returnResult;
-    }
-};
-
-/////////////////////////////////////////////////////////////////
 namespace Cpl {
 namespace Dm {
 BETTER_ENUM( MyEnum, int, eDOGS, eCATS, ePIGS );
@@ -877,6 +805,83 @@ public:
         }
         return m_returnResult;
     }
+};
+
+#endif
+
+/////////////////////////////////////////////////////////////////
+class ViewerArrayUint8 : public ViewerBase, public Mp::ArrayUint8::Observer
+{
+public:
+	///
+	Mp::ArrayUint8&  m_mp1;
+
+	/// Constructor
+	ViewerArrayUint8(MailboxServer& myMbox, Cpl::System::Thread& masterThread, Mp::ArrayUint8& mp1)
+		:ViewerBase(myMbox, masterThread)
+		, Mp::ArrayUint8::Observer(myMbox)
+		, m_mp1(mp1)
+	{
+		CPL_SYSTEM_TRACE_MSG(SECT_, ("ViewerArrayUint8(%p). mp1=%s", this, mp1.getName()));
+	}
+
+public:
+	///
+	void subscribe() { m_mp1.attach(*this); }
+	///
+	void unsubscribe() { m_mp1.detach(*this); }
+	///
+	void modelPointChanged(Mp::ArrayUint8& modelPointThatChanged) noexcept
+	{
+		if (m_done != true)
+		{
+			m_notifCount++;
+			CPL_SYSTEM_TRACE_MSG(SECT_, ("ViewerArrayUint8(%p) Changed!: count=%lu", this, (unsigned long)m_notifCount));
+
+			m_lastSeqNumber = modelPointThatChanged.getSequenceNumber();
+			m_lastValidState = modelPointThatChanged.getValidState();
+
+			if (m_pendingOpenMsgPtr != 0 && m_notifCount == 1)
+			{
+				m_pendingOpenMsgPtr->returnToSender();
+				m_opened = true;
+				m_pendingOpenMsgPtr = 0;
+				CPL_SYSTEM_TRACE_MSG(SECT_, ("..ViewerArrayUint8(%p) Returning Open Msg."));
+			}
+
+			if (m_notifCount >= 2)
+			{
+				m_masterThread.signal();
+				m_done = true;
+			}
+		}
+	}
+};
+
+class RmwArrayUint8 : public Mp::ArrayUint8::Client
+{
+public:
+	///
+	int                              m_callbackCount;
+	///
+	ModelPoint::RmwCallbackResult_T  m_returnResult;
+	///
+	unsigned                         m_index;
+	///
+	uint8_t                          m_newValue;
+public:
+	///
+	RmwArrayUint8() :m_callbackCount(0), m_returnResult(ModelPoint::eNO_CHANGE), m_index(0), m_newValue(0) {}
+	///
+	ModelPoint::RmwCallbackResult_T callback(Mp::ArrayUint8::Data& data, int8_t validState) noexcept
+	{
+		m_callbackCount++;
+		if (m_returnResult != ModelPoint::eNO_CHANGE && m_index < data.numElements)
+		{
+			data.firstElemPtr[m_index] = m_newValue;
+		}
+		return m_returnResult;
+	}
 };
 
 

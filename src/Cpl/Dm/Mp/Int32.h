@@ -26,33 +26,41 @@ namespace Mp {
 /** This class provides a concrete implementation for a Point who's data is a
     int32_t.
 
-    NOTE: All methods in this class ARE thread Safe unless explicitly
+	The toJSON()/fromJSON format is:
+	\code
+
+	{ name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:<numvalue> }
+
+	where <numvalue> is decimal numeric OR a quoted HEX string (when the MP
+	instance was constructed with 'decimalFormat':=false).  For example:
+
+	val:1234  or val:"4D2"
+
+	\endcode
+	
+	NOTE: All methods in this class ARE thread Safe unless explicitly
           documented otherwise.
  */
-class Int32 : public Basic<int32_t>
+class Int32 : public BasicInteger<int32_t>
 {
-protected:
-    /// Flag for to/from string() methods
-    bool m_decimal;
-
 public:
     /** Constructor. Invalid MP.  Note: the 'decimalFormat' argument applies to the 
         toString()/fromString() methods.   When set to true, the input/output
-        values must be decimal numbers; else hexadecimal numbers (as defined
-        by standard C library strtol() function).
+        values must be decimal numbers; else hexadecimal numbers.
      */
-    Int32( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true );
+    Int32( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true )
+		:BasicInteger<int32_t>( myModelBase, staticInfo, decimalFormat )
+	{
+	}
+
 
     /// Constructor. Valid MP.  Requires an initial value
-    Int32( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, int32_t initialValue, bool decimalFormat=true  );
+    Int32( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, int32_t initialValue, bool decimalFormat=true  )
+		:BasicInteger<int32_t>( myModelBase, staticInfo, initialValue, decimalFormat )
+	{
+	}
 
 public:
-    /// Type safe read. See Cpl::Dm::ModelPoint
-    virtual int8_t read( int32_t& dstData, uint16_t* seqNumPtr=0 ) const noexcept;
-
-    /// Type safe write. See Cpl::Dm::ModelPoint
-    virtual uint16_t write( int32_t newValue, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
-
     /// Type safe read-modify-write client callback interface
     typedef Cpl::Dm::ModelPointRmwCallback<int32_t> Client;
 
@@ -65,30 +73,34 @@ public:
              specific read, write, read-modify-write methods in addition or in
              lieu of the read/write methods in this interface.
      */
-    virtual uint16_t readModifyWrite( Client& callbackClient, LockRequest_T lockRequest = eNO_REQUEST );
-
+    virtual uint16_t readModifyWrite( Client& callbackClient, LockRequest_T lockRequest = eNO_REQUEST )
+	{
+		return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
+	}
 
 public:
     /// Type safe subscriber
     typedef Cpl::Dm::Subscriber<Int32> Observer;
 
     /// Type safe register observer
-    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
+    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept
+	{
+		ModelPointCommon_::attach( observer, initialSeqNumber );
+	}
 
     /// Type safe un-register observer
-    virtual void detach( Observer& observer ) noexcept;
+    virtual void detach( Observer& observer ) noexcept
+	{
+		ModelPointCommon_::detach( observer );
+	}
 
 
 public:
-    ///  See Cpl::Dm::ModelPoint.
-    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const noexcept;
-
-    ///  See Cpl::Dm::ModelPoint.
-    const char* getTypeAsText() const noexcept;
-
-protected:
-    /// See Cpl::Dm::ModelPointCommon_.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) noexcept;
+	///  See Cpl::Dm::ModelPoint.
+	const char* getTypeAsText() const noexcept
+	{
+		return m_decimal ? "Cpl::Dm::Mp::Int32-dec" : "Cpl::Dm::Mp::Int32-hex";
+	}
 };
 
 
