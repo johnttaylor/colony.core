@@ -43,25 +43,33 @@ protected:
     /// The element's value
     ELEMTYPE    m_data;
 
-    /// Flag for to/from json() methods
-    bool        m_decimal;
-
-
 public:
     /// Constructor: Invalid MP
-    Basic( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true )
+    Basic( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo )
         :ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
     {
-        m_decimal = decimalFormat;
     }
 
     /// Constructor: Valid MP (requires initial value)
-    Basic( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue, bool decimalFormat=true )
+    Basic( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue )
         :ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Dm::ModelPoint::MODEL_POINT_STATE_VALID )
     {
-        m_data    = initialValue;
-        m_decimal = decimalFormat;
+        m_data = initialValue;
     }
+
+public:
+	/// Type safe read. See Cpl::Dm::ModelPoint
+	virtual int8_t read(ELEMTYPE& dstData, uint16_t* seqNumPtr = 0) const noexcept
+	{
+		return ModelPointCommon_::read(&dstData, sizeof(ELEMTYPE), seqNumPtr);
+	}
+
+	/// Type safe write. See Cpl::Dm::ModelPoint
+	virtual uint16_t write(ELEMTYPE newValue, LockRequest_T lockRequest = eNO_REQUEST) noexcept
+	{
+		return ModelPointCommon_::write(&newValue, sizeof(ELEMTYPE), lockRequest);
+	}
+
 
 public:
     /// See Cpl::Dm::ModelPoint.  This method IS thread safe.
@@ -106,26 +114,32 @@ public:
 };
 
 /** This template class extends the implementation of Basic<ELEMTYPE> to support
-    the toJSON() and fromJSON_() methods.
+    the toJSON() and fromJSON_() methods for integer types.
 
     NOTES:
         1) All methods in this class are NOT thread Safe unless explicitly
            documented otherwise.
  */
 template<class ELEMTYPE>
-class BasicNumeric : public Basic<ELEMTYPE>
+class BasicInteger : public Basic<ELEMTYPE>
 {
+protected:
+	/// Flag for to/from json() methods
+	bool        m_decimal;
+
 public:
     /// Constructor: Invalid MP
-    BasicNumeric( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true )
-        :Basic<ELEMTYPE>( myModelBase, staticInfo, decimalFormat )
+    BasicInteger( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat=true )
+        :Basic<ELEMTYPE>( myModelBase, staticInfo )
+		, m_decimal(decimalFormat)
     {
     }
 
     /// Constructor: Valid MP (requires initial value)
-    BasicNumeric( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue, bool decimalFormat=true )
-        :Basic<ELEMTYPE>( myModelBase, staticInfo, initialValue, decimalFormat )
-    {
+    BasicInteger( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue, bool decimalFormat=true )
+        :Basic<ELEMTYPE>( myModelBase, staticInfo, initialValue )
+		, m_decimal(decimalFormat)
+	{
     }
 
 public:
@@ -133,18 +147,18 @@ public:
     bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
     {
         // Get a snapshot of the my data and state
-        m_modelDatabase.lock_();
-        ELEMTYPE value  = m_data;
-        uint16_t seqnum = m_seqNum;
-        int8_t   valid  = m_validState;
-        bool     locked = m_locked;
-        m_modelDatabase.unlock_();
+        Cpl::Dm::ModelPointCommon_::m_modelDatabase.lock_();
+        ELEMTYPE value  = Basic<ELEMTYPE>::m_data;
+        uint16_t seqnum = Basic<ELEMTYPE>::m_seqNum;
+        int8_t   valid  = Basic<ELEMTYPE>::m_validState;
+        bool     locked = Basic<ELEMTYPE>::m_locked;
+		Cpl::Dm::ModelPointCommon_::m_modelDatabase.unlock_();
 
         // Start the conversion
-        JsonDocument& doc = beginJSON( valid, locked, seqnum );
+        JsonDocument& doc = Cpl::Dm::ModelPointCommon_::beginJSON( valid, locked, seqnum );
 
         // Construct the 'val' key/value pair (as a simple numeric)
-        if ( IS_VALID( valid ) )
+        if (Cpl::Dm::ModelPointCommon_::IS_VALID( valid ) )
         {
             if ( m_decimal )
             {
@@ -161,12 +175,12 @@ public:
         }
 
         // End the conversion
-        endJSON( dst, dstSize, truncated );
+		Cpl::Dm::ModelPointCommon_::endJSON( dst, dstSize, truncated );
         return true;
     }
 
     /// See Cpl::Dm::Point.  
-    bool fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept
+    bool fromJSON_( JsonVariant& src, Cpl::Dm::ModelPoint::LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept
     {
         ELEMTYPE newValue = 0;
 
@@ -199,15 +213,15 @@ public:
                 return false;
             }
 
-            newValue = (ELEMTYPE) value;
+            newValue = (ELEMTYPE) value;	 
         }
 
-        retSequenceNumber = write( &newValue, sizeof( ELEMTYPE ), lockRequest );
+        retSequenceNumber = Basic<ELEMTYPE>::write( newValue, lockRequest );
         return true;
     }
 };
 
-
+#if 0
 /** This template class provides a mostly concrete implementation for a Model
     Point who's data is a array of a C primitive type of type: 'ELEMTYPE'.
 
@@ -304,6 +318,39 @@ public:
     {
         delete m_data.elemPtr;
     }
+
+public:
+	/** Type safe read. See Cpl::Dm::ModelPoint.
+
+	The caller can read a subset of array starting from the specified index
+	in the Model Point's array.  Note: if srcIndex + dstNumElements exceeds
+	the size of the MP's data then the read operation will be truncated.
+	*/
+	virtual int8_t read(ELEMTYPE* dstData, size_t dstNumElements, size_t srcIndex = 0, uint16_t* seqNumPtr = 0) const noexcept
+	{
+		InternalData dst = { dstData, dstNumElements, srcIndex };
+		return ModelPointCommon_::read(&dst, sizeof(dst), seqNumPtr);
+	}
+
+	/** Type safe write. See Cpl::Dm::ModelPoint.
+
+	The caller can write a subset of array starting from the specified index
+	in the Model Point's array.  Note: if dstIndex + srcNumElements exceeds
+	the size of the MP's data then the write operation will be truncated
+
+	NOTE: The application/caller is responsible for what a 'partial write'
+	means to the integrity of the MP's data.  WARNING: Think before
+	doing a partial write!  For example, if the MP is in the invalid
+	state and a partial write is done - then the MP's data/array is
+	only partially initialized AND then MP is now in the valid
+	state!
+	*/
+
+	virtual uint16_t write(ELEMTYPE* srcData, size_t srcNumElements, LockRequest_T lockRequest = eNO_REQUEST, size_t dstIndex = 0) noexcept
+	{
+		InternalData src = { srcData, srcNumElements, dstIndex };
+		return ModelPointCommon_::write(&src, sizeof(src), lockRequest);
+	}
 
 public:
     /// See Cpl::Dm::ModelPoint.  This method IS thread safe.
@@ -495,7 +542,7 @@ public:
         return true;
     }
 };
-
+#endif
 
 };      // end namespaces
 };

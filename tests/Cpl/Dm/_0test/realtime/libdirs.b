@@ -1,6 +1,6 @@
 # Unit under test
 src/Cpl/Dm
-src/Cpl/Dm/Mp < Uint32.cpp
+#src/Cpl/Dm/Mp < Uint32.cpp
 
 # tests
 src/Cpl/Dm/_0test
