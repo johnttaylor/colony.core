@@ -29,23 +29,38 @@ class MpServerStatus : public Cpl::Dm::Mp::Enum<Cpl::Dm::Persistence::Record::Se
 {
 public:
     /// Constructor. 
-    MpServerStatus( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo );
+    MpServerStatus( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo )
+		:Cpl::Dm::Mp::Enum<ServerStatus>( myModelBase, staticInfo )
+	{
+	}
 
     /// Constructor. 
-    MpServerStatus( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, ServerStatus initialValue );
+    MpServerStatus( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, ServerStatus initialValue )
+		: Cpl::Dm::Mp::Enum<ServerStatus>( myModelBase, staticInfo, initialValue )
+	{
+	}
 
     // Type
-    const char* getTypeAsText() const noexcept;
+    const char* getTypeAsText() const noexcept
+	{
+		return "Cpl::Dm::Persistence::Record::ServerStatus";
+	}
 
 public:
     /// Type safe subscriber
     typedef Cpl::Dm::Subscriber<MpServerStatus> Observer;
 
     /// Type safe register observer
-    void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
+    void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept
+	{
+		ModelPointCommon_::attach( observer, initialSeqNumber );
+	}
 
     /// Type safe un-register observer
-    void detach( Observer& observer ) noexcept;
+    void detach( Observer& observer ) noexcept
+	{
+		ModelPointCommon_::detach( observer );
+	}
 };
 
 
