@@ -4,6 +4,9 @@ src/Driver/Uart/Stream/_0test
 # Unit under test
 src/Driver/Uart/Stream
 
+# infrastructure
+src/Cpl/Text/_mappings/_kpitrx
+
 # supporting infrastructure
 /top/libdirs/platform_freertos_default_realtime_libdirs.b
 

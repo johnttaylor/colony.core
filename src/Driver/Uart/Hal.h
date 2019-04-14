@@ -15,7 +15,7 @@
     This file defines a hardware abstraction layer (HAL) for accessing a
     hardware register based UART.
 
-    NOTE: NO 'Initialization' method is provided/defined in this interface -
+	NOTE: NO 'Initialization' method is provided/defined in this interface -
           this is intentional! The initialization of the baud rate, number of
           start/stop bits, etc. is VERY platform specific - which translate
           to very cumbersome/inefficiencies in trying to make a generic one

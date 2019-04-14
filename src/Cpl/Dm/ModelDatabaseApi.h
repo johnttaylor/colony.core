@@ -70,7 +70,7 @@ public:
         the concrete leaf class.
 
         The method optional returns - via 'retMp' - a pointer to the Model Point
-        identified by <mpname>.  If the method false return, then 'retMp' has
+        identified by 'mpname'.  If the method false return, then 'retMp' has
         no meaning.
 
         The method optional returns - via 'retSequenceNumber' - the Model Point's

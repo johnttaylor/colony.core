@@ -19,117 +19,117 @@ using namespace Cpl::Io::Serial::Adafruit::Nrf5;
 
 ////////////////////////////////////
 InputOutput::InputOutput( Uart& serialPort )
-    : m_serialPort( serialPort )
-    , m_started( false )
+	: m_serialPort( serialPort )
+	, m_started( false )
 {
 }
 
 
 InputOutput::~InputOutput( void )
 {
-    close();
+	close();
 }
 
 
 void InputOutput::start( unsigned long baudrate, uint16_t config )noexcept
 {
-    if ( !m_started )
-    {
-        m_serialPort.begin( baudrate, config );
-        m_started = true;
-    }
+	if ( !m_started )
+	{
+		m_serialPort.begin( baudrate, config );
+		m_started = true;
+	}
 }
 
 bool InputOutput::isReady( void )
 {
-    // Fail if I have not been started
-    if ( !m_started )
-    {
-        return false;
-    }
+	// Fail if I have not been started
+	if ( !m_started )
+	{
+		return false;
+	}
 
-    return m_serialPort;
+	return m_serialPort;
 }
 
 ////////////////////////////////////
 bool InputOutput::read( void* buffer, int numBytes, int& bytesRead )
 {
-    // Fail if I have not been started
-    if ( !m_started )
-    {
-        return false;
-    }
+	// Fail if I have not been started
+	if ( !m_started )
+	{
+		return false;
+	}
 
-    uint8_t* ptr = (uint8_t*) buffer;
-    for ( bytesRead = 0; bytesRead < numBytes; bytesRead++ )
-    {
-        int inbyte = m_serialPort.read();
-        if ( inbyte < 0 )
-        {
-            // No more data left in the RX queue -->return
-            return true;
-        }
+	uint8_t* ptr = (uint8_t*) buffer;
+	for ( bytesRead = 0; bytesRead < numBytes; bytesRead++ )
+	{
+		int inbyte = m_serialPort.read();
+		if ( inbyte < 0 )
+		{
+			// No more data left in the RX queue -->return
+			return true;
+		}
 
-        // Store the read-in byte
-        *ptr++ = (uint8_t) inbyte;
-    }
+		// Store the read-in byte
+		*ptr++ = (uint8_t) inbyte;
+	}
 
-    // The Adafruit Uart class NEVER has an 'error' on the read() call
-    return true;
+	// The Adafruit Uart class NEVER has an 'error' on the read() call
+	return true;
 }
 
 bool InputOutput::available()
 {
-    // Fail if I have not been started
-    if ( !m_started )
-    {
-        return false;
-    }
+	// Fail if I have not been started
+	if ( !m_started )
+	{
+		return false;
+	}
 
-    return m_serialPort.available();
+	return m_serialPort.available();
 }
 
 
 ////////////////////////////////////
 bool InputOutput::write( const void* buffer, int maxBytes, int& bytesWritten )
 {
-    // Fail if I have not been started
-    if ( !m_started )
-    {
-        return false;
-    }
+	// Fail if I have not been started
+	if ( !m_started )
+	{
+		return false;
+	}
 
-    const uint8_t* ptr = (const uint8_t*) buffer;
-    bytesWritten = maxBytes;
+	const uint8_t* ptr = (const uint8_t*) buffer;
+	bytesWritten = maxBytes;
 
-    for ( bytesWritten=0; bytesWritten < maxBytes; bytesWritten++ )
-    {
-        if ( m_serialPort.write( *ptr++ ) != 1 )
-        {
-            return false;
-        }
-    }
+	for ( bytesWritten=0; bytesWritten < maxBytes; bytesWritten++ )
+	{
+		if ( m_serialPort.write( *ptr++ ) != 1 )
+		{
+			return false;
+		}
+	}
 
-    return true;
+	return true;
 }
 
 
 void InputOutput::flush()
 {
-    // Do nothing if I have not been started
-    if ( m_started )
-    {
-        m_serialPort.flush();
-    }
+	// Do nothing if I have not been started
+	if ( m_started )
+	{
+		m_serialPort.flush();
+	}
 }
 
 
 void InputOutput::close()
 {
-    // Do nothing if I have not been started
-    if ( m_started )
-    {
-        m_serialPort.end();
-        m_started = false;
-    }
+	// Do nothing if I have not been started
+	if ( m_started )
+	{
+		m_serialPort.end();
+		m_started = false;
+	}
 }

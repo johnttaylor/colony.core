@@ -72,12 +72,12 @@ INC_FREERTOS2 = os.path.join( NQBP_WORK_ROOT(), "xpkgs", "freertos", "src", "por
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
 base_release.cflags    = '-ffunction-sections -fdata-sections  -Wall -Werror -D__RX_LITTLE_ENDIAN__=1 -mlittle-endian-data -m64bit-doubles -mint-register=0 -DCPPAPP'
-base_release.cppflags  = '-fno-exceptions -fno-rtti'
+base_release.cppflags  = '-std=c++11 -fno-exceptions -fno-rtti'
 base_release.asmflags  = base_release.cflags + ' -x assembler-with-cpp ' 
 base_release.inc       = ' -I{} -I{} -I{} -I{}'.format( INC_PATH1, INC_PATH2, INC_FREERTOS1, INC_FREERTOS2 )
 base_release.asminc    = base_release.inc
 
-base_release.firstobjs  = '..\\xpkgs\\colony.bsp.renesas.rx\src\\Bsp\\Renesas\Rx\\u62n\\Yrdkr62n\\Gnurx\\_no_c++_exceptions\*.o '
+base_release.firstobjs = '..\\xpkgs\\colony.bsp.renesas.rx\src\\Bsp\\Renesas\Rx\\u62n\\Yrdkr62n\\Gnurx\\_no_c++_exceptions\*.o '
 base_release.lastobjs  = '..\\xpkgs\\colony.bsp.renesas.rx\src\\Bsp\\Renesas\Rx\\u62n\\Yrdkr62n\\Gnurx\\_libc\*.a '
 base_release.linkflags = '-ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -Wl,--gc-sections -T ..\\{} -e {} -L {} -L {}'.format(LINKER_SCRIPT, RESET_VECTOR_NAME, LIB_PATH1, LIB_PATH2 )
                                     

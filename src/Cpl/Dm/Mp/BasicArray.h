@@ -311,6 +311,7 @@ public:
 		return true;
 	}
 
+	/// See Cpl::Dm::Point.  
 	bool fromJSON_( JsonVariant& src, Cpl::Dm::ModelPoint::LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept
 	{
 		// Check for object

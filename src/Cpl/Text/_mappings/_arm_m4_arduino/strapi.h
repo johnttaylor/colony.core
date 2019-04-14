@@ -1,27 +1,27 @@
 #ifndef Cpl_Text_x_mappings_arm_m4_arduino_strapi_h_
 #define Cpl_Text_x_mappings_arm_m4_arduino_strapi_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2017  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
-/** @file 
+*
+* Copyright (c) 2017  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
+/** @file
 
-    This file provides the mapping of the 'strapi' to the GCC ARM-M4 NOABI Arduino C/C++ compiler.
-    
-    The GCC/ARM compiler provides all of the strapi natively.
+	This file provides the mapping of the 'strapi' to the GCC ARM-M4 NOABI Arduino C/C++ compiler.
+
+	The GCC/ARM compiler provides all of the strapi natively.
 
  */
 
 
 
 
-///////////////////////////////////////////////////////////////////////////////
+ ///////////////////////////////////////////////////////////////////////////////
 
 #include <string.h>
 

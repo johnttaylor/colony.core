@@ -1,13 +1,13 @@
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2019  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 
 #include <winsock2.h>
 #include "Cpl/Io/Socket/InputOutput.h"
@@ -23,46 +23,46 @@
 namespace {
 
 ////
-class ExitHandler: public Cpl::System::Shutdown::Handler
+class ExitHandler : public Cpl::System::Shutdown::Handler
 {
 protected:
-    ///
-    int notify( int exit_code )
-        {
-	    WSACleanup();
-        return exit_code;
-        }
+	///
+	int notify( int exit_code )
+	{
+		WSACleanup();
+		return exit_code;
+	}
 };
 
 
 ////
-class RegisterInitHandler: public Cpl::System::StartupHook_
+class RegisterInitHandler : public Cpl::System::StartupHook_
 {
 protected:
-    ///
-    ExitHandler m_shutdown;
+	///
+	ExitHandler m_shutdown;
 
 public:
-    ///
-    RegisterInitHandler():StartupHook_(eMIDDLE_WARE) {}
+	///
+	RegisterInitHandler() :StartupHook_( eMIDDLE_WARE ) {}
 
-            
+
 protected:
-    /// 
-    void notify( InitLevel_T init_level )
-        {
-	    WSADATA wsaData;
+	/// 
+	void notify( InitLevel_T init_level )
+	{
+		WSADATA wsaData;
 
-	    if ( WSAStartup(0x202,&wsaData) == SOCKET_ERROR ) 
-	        {
-            int err = WSAGetLastError();
-	        WSACleanup();
-            Cpl::System::FatalError::logf( "WSAStartup failed with error", err );
-    	    }
-        
-        // Register my shutdown handler
-        Cpl::System::Shutdown::registerHandler( m_shutdown );
-        }
+		if ( WSAStartup( 0x202, &wsaData ) == SOCKET_ERROR )
+		{
+			int err = WSAGetLastError();
+			WSACleanup();
+			Cpl::System::FatalError::logf( "WSAStartup failed with error", err );
+		}
+
+		// Register my shutdown handler
+		Cpl::System::Shutdown::registerHandler( m_shutdown );
+	}
 
 };
 
@@ -81,99 +81,99 @@ using namespace Cpl::Io::Socket;
 
 /////////////////////
 InputOutput::InputOutput()
-:m_fd( ((void*)INVALID_SOCKET) )
- 	{
-	} 
+	:m_fd( ( (void*) INVALID_SOCKET ) )
+{
+}
 
 InputOutput::InputOutput( Cpl::Io::Descriptor fd )
-:m_fd(fd)
- 	{
-	}
-	
+	: m_fd( fd )
+{
+}
+
 InputOutput::~InputOutput( void )
- 	{
-    close();
-	}
-	
+{
+	close();
+}
+
 
 ///////////////////
 void InputOutput::activate( Cpl::Io::Descriptor fd )
-    {
-    // Only activate if already closed 
-    if ( ((SOCKET)(m_fd.m_handlePtr)) == INVALID_SOCKET )
-        {
-        m_fd = fd;
-        }        
-    else
-        {
-        Cpl::System::FatalError::logf( "Cpl:Io::Socket::InputOutput::activate().  Attempting to Activate an already opened stream." );
-        }
-    }
+{
+	// Only activate if already closed 
+	if ( ( (SOCKET) ( m_fd.m_handlePtr ) ) == INVALID_SOCKET )
+	{
+		m_fd = fd;
+	}
+	else
+	{
+		Cpl::System::FatalError::logf( "Cpl:Io::Socket::InputOutput::activate().  Attempting to Activate an already opened stream." );
+	}
+}
 
 
 ///////////////////
 bool InputOutput::read( void* buffer, int numBytes, int& bytesRead )
-    {
-    // Throw an error if the socket had already been closed
-    if ( ((SOCKET)(m_fd.m_handlePtr)) == INVALID_SOCKET  )
-        {
-        return false;
-        }
+{
+	// Throw an error if the socket had already been closed
+	if ( ( (SOCKET) ( m_fd.m_handlePtr ) ) == INVALID_SOCKET )
+	{
+		return false;
+	}
 
 	// Ignore read requests of ZERO bytes
 	if ( numBytes == 0 )
-		{
+	{
 		bytesRead = 0;
 		return true;
-		}
-		
-    // perform the read
-    bytesRead = recv( ((SOCKET)(m_fd.m_handlePtr)), (char*)buffer, numBytes, 0 );
-    return bytesRead <=0 ? false: true;
-    }
+	}
+
+	// perform the read
+	bytesRead = recv( ( (SOCKET) ( m_fd.m_handlePtr ) ), (char*) buffer, numBytes, 0 );
+	return bytesRead <= 0 ? false : true;
+}
 
 bool InputOutput::available()
-    {
-    unsigned long nbytes=1;            // NOTE: If there is error -->then I will return true
-    ioctlsocket( ((SOCKET)(m_fd.m_handlePtr)), FIONREAD, &nbytes );
-    return nbytes > 0 ? true: false;    
-    }
+{
+	unsigned long nbytes=1;            // NOTE: If there is error -->then I will return true
+	ioctlsocket( ( (SOCKET) ( m_fd.m_handlePtr ) ), FIONREAD, &nbytes );
+	return nbytes > 0 ? true : false;
+}
 
 
 //////////////////////
 bool InputOutput::write( const void* buffer, int maxBytes, int& bytesWritten )
-    {
-    // Throw an error if the socket had already been closed
-    if ( ((SOCKET)(m_fd.m_handlePtr)) == INVALID_SOCKET  )
-        {
-        return false;
-        }
+{
+	// Throw an error if the socket had already been closed
+	if ( ( (SOCKET) ( m_fd.m_handlePtr ) ) == INVALID_SOCKET )
+	{
+		return false;
+	}
 
 	// Ignore write requests of ZERO bytes
 	if ( maxBytes == 0 )
-		{
+	{
 		bytesWritten = 0;
 		return true;
-		}
-		
-    // perform the write
-    bytesWritten = send( ((SOCKET)(m_fd.m_handlePtr)), (char*)buffer, maxBytes, 0 );
-    return bytesWritten <=0 ? false: true;
-    }
+	}
+
+	// perform the write
+	bytesWritten = send( ( (SOCKET) ( m_fd.m_handlePtr ) ), (char*) buffer, maxBytes, 0 );
+	return bytesWritten <= 0 ? false : true;
+}
 
 void InputOutput::flush()
-    {
-    // I could use WSAIoctl() here with SIO_FLUSH - but according
-    // to the Microsoft documentation - WSAIoctrl w/SIO_FLUSH could
-    // block (unless using overlapped IO) - which is not the designed
-    // behaviour for this call -->so we will skip it for now (jtt 2-14-2015)
-    }
+{
+	// I could use WSAIoctl() here with SIO_FLUSH - but according
+	// to the Microsoft documentation - WSAIoctrl w/SIO_FLUSH could
+	// block (unless using overlapped IO) - which is not the designed
+	// behavior for this call -->so we will skip it for now (jtt 2-14-2015)
+}
 
 void InputOutput::close()
-    {
-    if ( ((SOCKET)(m_fd.m_handlePtr)) != INVALID_SOCKET  )
-        {
-        closesocket( ((SOCKET)(m_fd.m_handlePtr)) );
-        m_fd.m_handlePtr = (void*) INVALID_SOCKET;
-        }
-    }
+{
+	if ( ( (SOCKET) ( m_fd.m_handlePtr ) ) != INVALID_SOCKET )
+	{
+		closesocket( ( (SOCKET) ( m_fd.m_handlePtr ) ) );
+		m_fd.m_handlePtr = (void*) INVALID_SOCKET;
+	}
+}

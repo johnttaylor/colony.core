@@ -8,8 +8,6 @@ src/Cpl/Text/_0test
 src/Cpl/System
 src/Cpl/Container
 src/Cpl/Memory/_testsupport
-src/Cpl/Log
-src/Cpl/Log/_default
 
 
 # Platforms

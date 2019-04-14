@@ -73,7 +73,7 @@ INC_FREERTOS2 = os.path.join( NQBP_WORK_ROOT(), "xpkgs", "freertos", "src", "por
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
 base_release.cflags    = '-ffunction-sections -fdata-sections  -Wall -Werror -D__RX_LITTLE_ENDIAN__=1 -mlittle-endian-data -m64bit-doubles -mint-register=0 -DCPPAPP'
-base_release.cppflags  = '-fno-exceptions -fno-rtti'
+base_release.cppflags  = '-std=c++11 -fno-exceptions -fno-rtti'
 base_release.asmflags  = base_release.cflags + ' -x assembler-with-cpp ' 
 base_release.inc       = ' -I{} -I{} -I{} -I{}'.format( INC_PATH1, INC_PATH2, INC_FREERTOS1, INC_FREERTOS2 )
 base_release.asminc    = base_release.inc

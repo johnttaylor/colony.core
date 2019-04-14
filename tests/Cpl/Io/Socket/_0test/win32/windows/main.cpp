@@ -9,7 +9,7 @@
 
 
 
-int main( int argc, char* const argv[] )
+int main( int argc, char* argv[] )
 {
     // Initialize Colony
     Cpl::System::Api::initialize();
@@ -19,12 +19,6 @@ int main( int argc, char* const argv[] )
     Cpl::Io::Socket::Win32::Listener  listener;
     Cpl::Io::Socket::Win32::Connector connector;
     initialize_loopback( listener, connector );
-
-
-    // THIS CODE DOES NOTHING.  It is needed to force the inclusion of
-    // the test code due to the combination of how CATCH auto registers
-    // test cases and how NQBP links by libraries.  Short version is do NOT
-    // remove these call(s).
 
     CPL_SYSTEM_TRACE_ENABLE();
     CPL_SYSTEM_TRACE_ENABLE_SECTION("_0test");

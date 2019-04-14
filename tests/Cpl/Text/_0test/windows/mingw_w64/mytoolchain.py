@@ -29,13 +29,17 @@ from nqbplib.base import BuildValues
 #---------------------------------------------------
 
 # Set the name for the final output item
-FINAL_OUTPUT_NAME = 'b.exe'
+FINAL_OUTPUT_NAME = 'a.exe'
+
+# Link unittest directory by object module so that Catch's self-registration mechanism 'works'
+unit_test_objects = '_BUILT_DIR_.src/Cpl/Text/_0test'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
 base_release.cflags    = '-m32 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
 base_release.linkflags = '-m32 -fprofile-arcs'
 base_release.linklibs  = '-lgcov'
+base_release.firstobjs = unit_test_objects
 
 # Set project specific 'optimized' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
@@ -62,6 +66,7 @@ debug_cpp11    = BuildValues()
 base_cpp11.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
 base_cpp11.linkflags  = '-m64 -fprofile-arcs'
 base_cpp11.linklibs   = '-lgcov'
+base_cpp11.firstobjs  = unit_test_objects
 
 # Set 'Optimized' options
 optimzed_cpp11.cflags = '-O3'
@@ -82,9 +87,10 @@ debug_win64    = BuildValues()
 base_win64.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
 base_win64.linkflags  = '-m64 -fprofile-arcs'
 base_win64.linklibs   = '-lgcov'
+base_win64.firstobjs  = unit_test_objects
 
 # Set 'Optimized' options
-optimzed_cpp11.cflags = '-O3'
+optimzed_win64.cflags = '-O3'
 
 #-------------------------------------------------
 # ONLY edit this section if you are ADDING options
