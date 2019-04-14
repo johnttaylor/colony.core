@@ -23,12 +23,10 @@
 #include "Cpl/Dm/Mp/Int64.h"
 #include "Cpl/Dm/Mp/Float.h"
 #include "Cpl/Dm/Mp/Double.h"
-#if 0
 #include "Cpl/Dm/Mp/Bool.h"
+#include "Cpl/Dm/Mp/Enum.h"
 #include "Cpl/Dm/Mp/String.h"
 #include "Cpl/Dm/Mp/RefCounter.h"
-#include "Cpl/Dm/Mp/Enum.h"
-#endif
 #include "Cpl/Dm/Mp/ArrayUint8.h"
 #include "Cpl/Type/enum.h"
 
@@ -482,7 +480,6 @@ public:
     }
 };
 
-#if 0
 /////////////////////////////////////////////////////////////////
 class ViewerBool : public ViewerBase, public Mp::Bool::Observer
 {
@@ -688,6 +685,8 @@ public:
     }
 };
 
+
+
 /////////////////////////////////////////////////////////////////
 namespace Cpl {
 namespace Dm {
@@ -696,39 +695,39 @@ BETTER_ENUM( MyEnum, int, eDOGS, eCATS, ePIGS );
 class MpMyEnum : public Mp::Enum<MyEnum>
 {
 public:
-    /// Constructor. 
-    MpMyEnum( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo )
-        :Mp::Enum<MyEnum>( myModelBase, staticInfo )
-    {
-    }
+	/// Constructor. 
+	MpMyEnum( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo )
+		:Mp::Enum<MyEnum>( myModelBase, staticInfo )
+	{
+	}
 
-    /// Constructor. 
-    MpMyEnum( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, MyEnum initialValue )
-        :Mp::Enum<MyEnum>( myModelBase, staticInfo, initialValue )
-    {
-    }
+	/// Constructor. 
+	MpMyEnum( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, MyEnum initialValue )
+		:Mp::Enum<MyEnum>( myModelBase, staticInfo, initialValue )
+	{
+	}
 
-    // Type
-    const char* getTypeAsText() const noexcept
-    {
-        return "Cpl::Dm::Mp::_0test::MyEnum";
-    }
+	// Type
+	const char* getTypeAsText() const noexcept
+	{
+		return "Cpl::Dm::Mp::_0test::MyEnum";
+	}
 
 public:
-    /// Type safe subscriber
-    typedef Cpl::Dm::Subscriber<MpMyEnum> Observer;
+	/// Type safe subscriber
+	typedef Cpl::Dm::Subscriber<MpMyEnum> Observer;
 
-    /// Type safe register observer
-    virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept
-    {
-        ModelPointCommon_::attach( observer, initialSeqNumber );
-    }
+	/// Type safe register observer
+	virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept
+	{
+		ModelPointCommon_::attach( observer, initialSeqNumber );
+	}
 
-    /// Type safe un-register observer
-    virtual void detach( Observer& observer ) noexcept
-    {
-        ModelPointCommon_::detach( observer );
-    }
+	/// Type safe un-register observer
+	virtual void detach( Observer& observer ) noexcept
+	{
+		ModelPointCommon_::detach( observer );
+	}
 };
 
 };
@@ -737,77 +736,75 @@ public:
 class ViewerMyEnum : public ViewerBase, public MpMyEnum::Observer
 {
 public:
-    ///
-    MpMyEnum & m_mp1;
+	///
+	MpMyEnum & m_mp1;
 
-    /// Constructor
-    ViewerMyEnum( MailboxServer& myMbox, Cpl::System::Thread& masterThread, MpMyEnum& mp1 )
-        :ViewerBase( myMbox, masterThread )
-        , MpMyEnum::Observer( myMbox )
-        , m_mp1( mp1 )
-    {
-        CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerMyEnum(%p). mp1=%s", this, mp1.getName()) );
-    }
+	/// Constructor
+	ViewerMyEnum( MailboxServer& myMbox, Cpl::System::Thread& masterThread, MpMyEnum& mp1 )
+		:ViewerBase( myMbox, masterThread )
+		, MpMyEnum::Observer( myMbox )
+		, m_mp1( mp1 )
+	{
+		CPL_SYSTEM_TRACE_MSG( SECT_, ( "ViewerMyEnum(%p). mp1=%s", this, mp1.getName() ) );
+	}
 
 public:
-    ///
-    void subscribe() { m_mp1.attach( *this ); }
-    ///
-    void unsubscribe() { m_mp1.detach( *this ); }
-    ///
-    void modelPointChanged( MpMyEnum& modelPointThatChanged ) noexcept
-    {
-        if ( m_done != true )
-        {
-            m_notifCount++;
-            CPL_SYSTEM_TRACE_MSG( SECT_, ("ViewerMyEnum(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount) );
+	///
+	void subscribe() { m_mp1.attach( *this ); }
+	///
+	void unsubscribe() { m_mp1.detach( *this ); }
+	///
+	void modelPointChanged( MpMyEnum& modelPointThatChanged ) noexcept
+	{
+		if( m_done != true )
+		{
+			m_notifCount++;
+			CPL_SYSTEM_TRACE_MSG( SECT_, ( "ViewerMyEnum(%p) Changed!: count=%lu", this, (unsigned long) m_notifCount ) );
 
-            m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
-            m_lastValidState = modelPointThatChanged.getValidState();
+			m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
+			m_lastValidState = modelPointThatChanged.getValidState();
 
-            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
-            {
-                m_pendingOpenMsgPtr->returnToSender();
-                m_opened            = true;
-                m_pendingOpenMsgPtr = 0;
-                CPL_SYSTEM_TRACE_MSG( SECT_, ("..ViewerMyEnum(%p) Returning Open Msg.") );
-            }
+			if( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
+			{
+				m_pendingOpenMsgPtr->returnToSender();
+				m_opened            = true;
+				m_pendingOpenMsgPtr = 0;
+				CPL_SYSTEM_TRACE_MSG( SECT_, ( "..ViewerMyEnum(%p) Returning Open Msg." ) );
+			}
 
-            if ( m_notifCount >= 2 )
-            {
-                m_masterThread.signal();
-                m_done = true;
-            }
-        }
-    }
+			if( m_notifCount >= 2 )
+			{
+				m_masterThread.signal();
+				m_done = true;
+			}
+		}
+	}
 };
 
 class RmwMyEnum : public MpMyEnum::Client
 {
 public:
-    ///
-    int                             m_callbackCount;
-    ///
-    ModelPoint::RmwCallbackResult_T m_returnResult;
-    ///
-    int                             m_incValue;
+	///
+	int                             m_callbackCount;
+	///
+	ModelPoint::RmwCallbackResult_T m_returnResult;
+	///
+	int                             m_incValue;
 
 public:
-    ///
-    RmwMyEnum():m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0 ) {}
-    ///
-    ModelPoint::RmwCallbackResult_T callback( MyEnum& data, int8_t validState ) noexcept
-    {
-        m_callbackCount++;
-        if ( m_returnResult != ModelPoint::eNO_CHANGE )
-        {
-            data = MyEnum::_from_integral_unchecked( data + m_incValue );
-        }
-        return m_returnResult;
-    }
+	///
+	RmwMyEnum() :m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_incValue( 0 ) {}
+	///
+	ModelPoint::RmwCallbackResult_T callback( MyEnum& data, int8_t validState ) noexcept
+	{
+		m_callbackCount++;
+		if( m_returnResult != ModelPoint::eNO_CHANGE )
+		{
+			data = MyEnum::_from_integral_unchecked( data + m_incValue );
+		}
+		return m_returnResult;
+	}
 };
-
-#endif
 
 /////////////////////////////////////////////////////////////////
 class ViewerArrayUint8 : public ViewerBase, public Mp::ArrayUint8::Observer

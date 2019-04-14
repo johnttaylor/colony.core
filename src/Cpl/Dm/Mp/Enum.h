@@ -25,206 +25,176 @@ namespace Mp {
 
 
 /** This class provides a MOSTLY concrete implementation for a Point who's data
-    is a an a "Better Enum", a.k.a a "enum" defines using the BETTER_ENUM macro
-    defined in Cpl/Type/enum.h.  A child class is still needed to provide the
-    following methods:
-        getTypeAsText()
-        attach()
-        detach()
+	is a an a "Better Enum", a.k.a a "enum" defines using the BETTER_ENUM macro
+	defined in Cpl/Type/enum.h.  A child class is still needed to provide the
+	following methods:
 
-    NOTE: All methods in this class ARE thread Safe unless explicitly
-          documented otherwise.
+		getTypeAsText()
+		attach()
+		detach()
+
+	The toJSON()/fromJSON format is:
+	\code
+
+	{ name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:"<enumsymbol>" }
+
+	\endcode
+
+	NOTE: All methods in this class ARE thread Safe unless explicitly
+  		  documented otherwise.
  */
 template<class BETTERENUM_TYPE>
 class Enum : public Cpl::Dm::ModelPointCommon_
 {
 protected:
-    /// The element's value
-    BETTERENUM_TYPE    m_data;
+	/// The element's value
+	BETTERENUM_TYPE    m_data;
 
 public:
-    /// Constructor. 
-    Enum( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo )
-        :ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
-        , m_data( BETTERENUM_TYPE::_values()[0] )
-    {
-    }
+	/// Constructor. 
+	Enum( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo )
+		:ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+		, m_data( BETTERENUM_TYPE::_values()[0] )
+	{
+	}
 
-    /// Constructor. 
-    Enum( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, BETTERENUM_TYPE initialValue )
-        :ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Dm::ModelPoint::MODEL_POINT_STATE_VALID )
-        , m_data( initialValue )
-    {
-    }
-
-
-public:
-    /// Type safe read. See Cpl::Dm::ModelPoint
-    virtual int8_t read( BETTERENUM_TYPE& dstData, uint16_t* seqNumPtr=0 ) const noexcept
-    {
-        return ModelPointCommon_::read( &dstData, sizeof( int ), seqNumPtr );
-    }
-
-    /// Type safe write. See Cpl::Dm::ModelPoint
-    virtual uint16_t write( BETTERENUM_TYPE newValue, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
-    {
-        return ModelPointCommon_::write( &newValue, sizeof( int ), lockRequest );
-    }
-
-    /// Type safe read-modify-write client callback interface
-    typedef Cpl::Dm::ModelPointRmwCallback<BETTERENUM_TYPE> Client;
-
-    /** Type safe read-modify-write. See Cpl::Dm::ModelPoint
-
-       NOTE: THE USE OF THIS METHOD IS STRONGLY DISCOURAGED because it has
-             potential to lockout access to the ENTIRE Model Base for an
-             indeterminate amount of time.  And alternative is to have the
-             concrete Model Point leaf classes provide the application
-             specific read, write, read-modify-write methods in addition or in
-             lieu of the read/write methods in this interface.
-     */
-    virtual uint16_t readModifyWrite( Client& callbackClient, LockRequest_T lockRequest = eNO_REQUEST )
-    {
-        return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
-    }
-
+	/// Constructor. 
+	Enum( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, BETTERENUM_TYPE initialValue )
+		:ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Dm::ModelPoint::MODEL_POINT_STATE_VALID )
+		, m_data( initialValue )
+	{
+	}
 
 
 public:
-    /// See Cpl::Dm::ModelPoint.  This method IS thread safe.
-    size_t getSize() const noexcept
-    {
-        return sizeof( BETTERENUM_TYPE );
-    }
+	/// Type safe read. See Cpl::Dm::ModelPoint
+	virtual int8_t read( BETTERENUM_TYPE& dstData, uint16_t* seqNumPtr=0 ) const noexcept
+	{
+		return ModelPointCommon_::read( &dstData, sizeof( int ), seqNumPtr );
+	}
 
-public:
-    /// See Cpl::Dm::ModelPoint
-    void copyDataTo_( void* dstData, size_t dstSize ) const noexcept
-    {
-        CPL_SYSTEM_ASSERT( dstSize == sizeof( BETTERENUM_TYPE ) );
-        *((BETTERENUM_TYPE*) dstData) = m_data;
-    }
+	/// Type safe write. See Cpl::Dm::ModelPoint
+	virtual uint16_t write( BETTERENUM_TYPE newValue, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
+	{
+		return ModelPointCommon_::write( &newValue, sizeof( int ), lockRequest );
+	}
 
-    /// See Cpl::Dm::ModelPoint
-    void copyDataFrom_( const void* srcData, size_t srcSize ) noexcept
-    {
-        CPL_SYSTEM_ASSERT( srcSize == sizeof( BETTERENUM_TYPE ) );
-        m_data = *((BETTERENUM_TYPE*) srcData);
-    }
+	/// Type safe read-modify-write client callback interface
+	typedef Cpl::Dm::ModelPointRmwCallback<BETTERENUM_TYPE> Client;
 
-    /// See Cpl::Dm::ModelPoint.  The default implementation is for integers
-    bool isDataEqual_( const void* otherData ) const noexcept
-    {
-        BETTERENUM_TYPE left = *((BETTERENUM_TYPE*) otherData);
-        return m_data == left;
-    }
+	/** Type safe read-modify-write. See Cpl::Dm::ModelPoint
 
-    /// See Cpl::Dm::Point.  
-    const void* getImportExportDataPointer_() const noexcept
-    {
-        return (const void*) (&m_data);
-    }
+	   NOTE: THE USE OF THIS METHOD IS STRONGLY DISCOURAGED because it has
+			 potential to lockout access to the ENTIRE Model Base for an
+			 indeterminate amount of time.  And alternative is to have the
+			 concrete Model Point leaf classes provide the application
+			 specific read, write, read-modify-write methods in addition or in
+			 lieu of the read/write methods in this interface.
+	 */
+	virtual uint16_t readModifyWrite( Client& callbackClient, LockRequest_T lockRequest = eNO_REQUEST )
+	{
+		return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
+	}
 
-    /// See Cpl::Dm::Point.  
-    size_t getInternalDataSize() const noexcept
-    {
-        return sizeof( BETTERENUM_TYPE );
-    }
 
 
 public:
-    ///  See Cpl::Dm::ModelPoint.
-    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const noexcept
-    {
-        // Get a snapshot of the my data and state
-        m_modelDatabase.lock_();
-        BETTERENUM_TYPE  value  = m_data;
-        uint16_t seqnum = m_seqNum;
-        int8_t   valid  = m_validState;
-        bool     locked = m_locked;
-        m_modelDatabase.unlock_();
+	/// See Cpl::Dm::ModelPoint.  This method IS thread safe.
+	size_t getSize() const noexcept
+	{
+		return sizeof( BETTERENUM_TYPE );
+	}
 
-        // Convert data and state to a string
-        if ( convertStateToText( dst, append, locked, valid ) )
-        {
-            // Convert data and state to a string
-            dst.formatOpt( append, value._to_string() );
-        }
+public:
+	/// See Cpl::Dm::ModelPoint
+	void copyDataTo_( void* dstData, size_t dstSize ) const noexcept
+	{
+		CPL_SYSTEM_ASSERT( dstSize == sizeof( BETTERENUM_TYPE ) );
+		*( (BETTERENUM_TYPE*) dstData ) = m_data;
+	}
 
-        // Return the sequence number when requested
-        if ( retSequenceNumber )
-        {
-            *retSequenceNumber = seqnum;
-        }
+	/// See Cpl::Dm::ModelPoint
+	void copyDataFrom_( const void* srcData, size_t srcSize ) noexcept
+	{
+		CPL_SYSTEM_ASSERT( srcSize == sizeof( BETTERENUM_TYPE ) );
+		m_data = *( (BETTERENUM_TYPE*) srcData );
+	}
 
-        return true;
-    }
+	/// See Cpl::Dm::ModelPoint.  The default implementation is for integers
+	bool isDataEqual_( const void* otherData ) const noexcept
+	{
+		BETTERENUM_TYPE left = *( (BETTERENUM_TYPE*) otherData );
+		return m_data == left;
+	}
 
-protected:
-    /// See Cpl::Dm::ModelPointCommon_.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) noexcept
-    {
-        const char*   result = 0;
-        char*         srcPtr = (char*) srcText;
-        m_modelDatabase.lock_();
-        uint16_t seqnum = m_seqNum;
-        m_modelDatabase.unlock_();
+	/// See Cpl::Dm::Point.  
+	const void* getImportExportDataPointer_() const noexcept
+	{
+		return (const void*) ( &m_data );
+	}
+
+	/// See Cpl::Dm::Point.  
+	size_t getInternalDataSize() const noexcept
+	{
+		return sizeof( BETTERENUM_TYPE );
+	}
 
 
-        // Make a temporary copy of source text when there are termination characters
-        ModelDatabase::globalLock_();
-        if ( terminationChars )
-        {
-            size_t idx = 0;
-            srcPtr     = ModelDatabase::g_parseBuffer_;
-            result     = srcText;
-            while ( srcText[idx] != '\0' && strchr( terminationChars, srcText[idx] ) == 0 && idx < (sizeof( ModelDatabase::g_parseBuffer_ ) - 1) )
-            {
-                srcPtr[idx] = srcText[idx];
-                idx++;
-                result++;
-            }
+public:
+	/// See Cpl::Dm::Point.  
+	bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
+	{
+		// Get a snapshot of the my data and state
+		m_modelDatabase.lock_();
+		BETTERENUM_TYPE value  = m_data;
+		uint16_t        seqnum = m_seqNum;
+		int8_t          valid  = m_validState;
+		bool            locked = m_locked;
+		m_modelDatabase.unlock_();
 
-            // Null terminate the temp copy
-            srcPtr[idx] = '\0';
-        }
+		// Start the conversion
+		JsonDocument& doc = beginJSON( valid, locked, seqnum );
 
-        // No termination characters -->get a reference to the end of the string token (aka the methods return value)
-        else
-        {
-            result = srcText + strlen( srcText );
-        }
+		// Construct the 'val' key/value pair 
+		if( IS_VALID( valid ) )
+		{
+			doc["val"] = (char*) (value._to_string());
+		}
 
-        // Convert the text to an enum value
-        auto maybeValue = BETTERENUM_TYPE::_from_string_nothrow( srcPtr );
-        ModelDatabase::globalUnlock_();
+		// End the conversion
+		endJSON( dst, dstSize, truncated );
+		return true;
+	}
 
-        // Successful conversion
-        if ( maybeValue )
-        {
-            seqnum = write( *maybeValue, lockAction );
-        }
+public:
+	/// See Cpl::Dm::Point.  
+	bool fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept
+	{
+		// Get the enum string
+		const char* newValue = src;
+		if( newValue == nullptr )
+		{
+			if( errorMsg )
+			{
+				*errorMsg = "Invalid syntax for the 'val' key/value pair";
+			}
+			return false;
+		}
 
-        // Conversion failed!
-        else
-        {
-            // Set conversion failed
-            result = 0;
+		// Convert the text to an enum value
+		auto maybeValue = BETTERENUM_TYPE::_from_string_nothrow( newValue );
+		if( !maybeValue )
+		{
+			if( errorMsg )
+			{
+				errorMsg->format( "Invalid enum value (%s)", newValue );
+			}
+			return false;
+		}
 
-            if ( errorMsg )
-            {
-                errorMsg->format( "Conversion of %s [%s] to a 'enum' failed", getTypeAsText(), srcText );
-            }
-        }
-
-        // Housekeeping
-        if ( retSequenceNumber )
-        {
-            *retSequenceNumber = seqnum;
-        }
-
-        return result;
-    }
+		retSequenceNumber = write( *maybeValue, lockRequest );
+		return true;
+	}
 };
 
 

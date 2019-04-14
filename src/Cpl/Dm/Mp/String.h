@@ -30,27 +30,13 @@ namespace Mp {
     allocated (from the heap) ONCE when the instance is constructed, i.e. fixed
     length (per instance) storage.
 
-    For the fromString() operation the expected data formats are:
-        <simple-text>
-        "<text-string>"
+	The toJSON()/fromJSON format is:
+	\code
 
-        where:
-            <simple-text> is a string containing no whitespace AND does NOT
-                          contain any 'special characters' with respect to the
-                          application's source stream.
-            <text-string> is a string bounded with double quotes and can contain
-                          any printable character.  The Cpl::Text::Frame::StringDecoder
-                          class is used with the framing/special characters
-                          defined in the Cpl/Dm/ModelPoint.h header file
+	{ name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, maxlen=nnn, val:"<newvalue>" }
 
+	\endcode
 
-        examples:
-            noWhitespace
-            "I have white space and `"quote`" characters"
-
-    The toString() function outputs in the same data format as the expected
-    fromString() function - except the toString() always output the string
-    as a <text-string>
 
     NOTE: All methods in this class ARE thread Safe unless explicitly
           documented otherwise.
@@ -127,8 +113,8 @@ public:
 
 
 public:
-    ///  See Cpl::Dm::ModelPoint.
-    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const noexcept;
+	/// See Cpl::Dm::Point.  
+	bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept;
 
     ///  See Cpl::Dm::ModelPoint.
     const char* getTypeAsText() const noexcept;
@@ -137,9 +123,9 @@ public:
     size_t getSize() const noexcept;
 
 
-protected:
-    /// See Cpl::Dm::ModelPointCommon_.
-    const char* setFromText( const char* srcText, LockRequest_T lockAction, const char* terminationChars=0, Cpl::Text::String* errorMsg=0, uint16_t* retSequenceNumber=0 ) noexcept;
+public:
+	/// See Cpl::Dm::Point.  
+	bool fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept;
 
     /// See Cpl::Dm::ModelPoint. Note: dstSize DOES NOT include the null terminator
     void copyDataTo_( void* dstData, size_t dstSize ) const noexcept;

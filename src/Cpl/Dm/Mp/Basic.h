@@ -275,10 +275,8 @@ public:
 	/// See Cpl::Dm::Point.  
 	bool fromJSON_( JsonVariant& src, Cpl::Dm::ModelPoint::LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept
 	{
-		ELEMTYPE newValue = 0;
-
 		ELEMTYPE checkForError = src | (ELEMTYPE) 2;
-		newValue               = src | (ELEMTYPE) 1;
+		ELEMTYPE newValue      = src | (ELEMTYPE) 1;
 		if( newValue == (ELEMTYPE) 1 && checkForError == (ELEMTYPE) 2 )
 		{
 			if( errorMsg )

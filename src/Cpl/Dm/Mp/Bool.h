@@ -26,7 +26,14 @@ namespace Mp {
 /** This class provides a concrete implementation for a Point who's data is a
     bool.
 
-    NOTE: All methods in this class ARE thread Safe unless explicitly
+ 	The toJSON()/fromJSON format is:
+	\code
+	
+	{ name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:true|false }
+	
+	\endcode
+	
+	NOTE: All methods in this class ARE thread Safe unless explicitly
           documented otherwise.
  */
 class Bool : public Basic<bool>
@@ -70,6 +77,9 @@ public:
     /// Type safe un-register observer
     virtual void detach( Observer& observer ) noexcept;
 
+public:
+	/// See Cpl::Dm::Point.  
+	bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept;
 
 public:
     /// See Cpl::Dm::Point.  

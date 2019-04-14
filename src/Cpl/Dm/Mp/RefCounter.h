@@ -35,17 +35,28 @@ namespace Mp {
         3) Transition to zero 
         4) Transition from zero to value greater than zero
     
-    For the fromString() operation.  The provide value is used to either
-    increment, decrement, and reset the reference counter.  For example:
-    
-        The following strings increment the counter by 1,3,14 respectively:
-            "+1", "!+3", "^+14"
+	The toJSON/fromJSON() format is:
+	\code
 
-        The following strings decrement the counter by 1,3,14 respectively:
-            "!-1", "-3", "^-4"  
+	{ name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:"[<act>]<numvalue>" }
 
-        The following strings reset the counter to 0,1,14 respectively:
-            "^0", "!1", "14"
+		where <act> can be: 
+			"+"				-->increment the counter
+			"-"				-->decrement the counter
+			not specified	-->set the counter
+		
+		NOTE: The value for the "val" key/value pair is a STRING, NOT a numeric
+		
+		Examples:
+			toJSON():
+				{ name:"mp_visitors", type:"Cpl::Dm::Mp::RefCounter", invalid:0, seqnum:12, locked:false, val:"12" }
+
+			fromJSON():
+				{ name:"mp_visitors", val:"+2" }	// Increments the point by 2
+				{ name:"mp_visitors", val:"-1" }	// Decrements the point by 1
+				{ name:"mp_visitors", val:"0" }		// Resets the counter to zero
+
+	\endcode
 
 
     NOTE: All methods in this class ARE thread Safe unless explicitly
@@ -68,9 +79,6 @@ public:
      */
     uint16_t setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
-    /// Reads the current counter value
-    virtual int8_t read( uint32_t& dstData, uint16_t* seqNumPtr=0 ) const noexcept;
-
     /// Increments the counter
     virtual uint16_t increment( uint32_t incrementAmount=1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
@@ -92,11 +100,23 @@ public:
 
 
 public:
-    ///  See Cpl::Dm::ModelPoint.
-    bool toString( Cpl::Text::String& dst, bool append=false, uint16_t* retSequenceNumber=0 ) const noexcept;
+	/// See Cpl::Dm::Point.  
+	bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept;
 
     ///  See Cpl::Dm::ModelPoint.
     const char* getTypeAsText() const noexcept;
+
+public:
+	/// See Cpl::Dm::Point.  
+	bool fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept;
+
+
+private:
+	/// Hide/block the inherited write method
+	uint16_t write( uint32_t newValue, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
+	{
+		return reset( newValue, lockRequest );
+	}
 };
 
 
