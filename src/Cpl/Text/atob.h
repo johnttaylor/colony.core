@@ -12,8 +12,8 @@
 *----------------------------------------------------------------------------*/
 /** @file
 
-    This file contains a collection of methods that wrap the standard C
-    library functions for converting text/string to binary values.
+	This file contains a collection of methods that wrap the standard C
+	library functions for converting text/string to binary values.
 
 */
 
@@ -23,16 +23,17 @@
 
 ///
 namespace Cpl {
+///
 namespace Text {
 
 
 
 /** This method converts the specified string to an integer.  The method returns
-    true if the conversion was successful. When false is returned, the
-    'convertedValue' argument is NOT updated. By default the conversion assumes
-    a base 10 number and that the 'end-of-number' is end-of-string. If endptr
-    is specified and the conversation was successful, a pointer to the first
-    character 'after' the number is returned.
+	true if the conversion was successful. When false is returned, the
+	'convertedValue' argument is NOT updated. By default the conversion assumes
+	a base 10 number and that the 'end-of-number' is end-of-string. If endptr
+	is specified and the conversation was successful, a pointer to the first
+	character 'after' the number is returned.
  */
 bool a2i( int& convertedValue, const char* string, int base=10, const char* validStopChars=0, const char** endptr=0 );
 
@@ -45,47 +46,47 @@ bool a2ui( unsigned& convertedValue, const char* string, int base=10, const char
 bool a2l( long& convertedValue, const char* string, int base=10, const char* validStopChars=0, const char** endptr=0 );
 
 /** This method is the same as a2i() except that it converts unsigned long
-    integer.
+	integer.
  */
 bool a2ul( unsigned long& convertedValue, const char* string, int base=10, const char* validStopChars=0, const char** endptr=0 );
 
 
 /** This method is the same as a2i() except that it converts long long
-    integer.
+	integer.
  */
 bool a2ll( long long& convertedValue, const char* string, int base=10, const char* validStopChars=0, const char** endptr=0 );
 
 /** This method is the same as a2i() except that it converts unsigned long long
-    integer.
+	integer.
  */
 bool a2ull( unsigned long long& convertedValue, const char* string, int base=10, const char* validStopChars=0, const char** endptr=0 );
 
 
 /** This method converts the specified string to an double. The method returns
-    true if the conversion was successful. When false is returned, the
-    'convertedValue' argument is NOT updated. By default the conversion assumes
-    that the 'end-of-number' is end-of-string.  If endptr is specified and the
-    method returns true, a pointer to the first character 'after' the number is
-    returned.
+	true if the conversion was successful. When false is returned, the
+	'convertedValue' argument is NOT updated. By default the conversion assumes
+	that the 'end-of-number' is end-of-string.  If endptr is specified and the
+	method returns true, a pointer to the first character 'after' the number is
+	returned.
  */
 bool a2d( double& convertedValue, const char* string, const char* validStopChars=0, const char** endptr=0 );
 
 
 /** This method convert the specified string to an boolean.  The method returns
-    true if the conversion was successful. When false is returned, the
-    'convertedValue' argument is NOT updated. If the first N characters of
-    'string' match the specified boolean token - the conversion is consider
-    successful (i.e. there is no required separator/terminator character for
-    a boolean token). If endptr is specified and the method returns true, a
-    pointer to the first character 'after' the boolean token is returned.
+	true if the conversion was successful. When false is returned, the
+	'convertedValue' argument is NOT updated. If the first N characters of
+	'string' match the specified boolean token - the conversion is consider
+	successful (i.e. there is no required separator/terminator character for
+	a boolean token). If endptr is specified and the method returns true, a
+	pointer to the first character 'after' the boolean token is returned.
  */
 bool a2b( bool& convertedValue, const char* string, const char* trueToken="T", const char* falseToken="F", const char** endptr=0 );
 
 
 /** This method will convert an 'ASCII HEX' string to an equivalent binary
-    buffer, i.e. the reverse of bufferToAsciiHex() in format.h.  If the entire
-    string was not able to be converted then -1 is returned, else the number
-    of converted bytes are returned.
+	buffer, i.e. the reverse of bufferToAsciiHex() in format.h.  If the entire
+	string was not able to be converted then -1 is returned, else the number
+	of converted bytes are returned.
  */
 long asciiHexToBuffer( void* dstBinary, const char* srcString, size_t dstMaxLen );
 

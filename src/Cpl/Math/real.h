@@ -12,8 +12,8 @@
 *----------------------------------------------------------------------------*/
 /** @file
 
-    This file contains a collection of methods comparing, manipulating, etc.
-    floating point numbers (i.e. floats and doubles).
+	This file contains a collection of methods comparing, manipulating, etc.
+	floating point numbers (i.e. floats and doubles).
 
 */
 
@@ -23,14 +23,14 @@
 
 
 /** This symbols provides the default Epsilon value when testing for 'almost
-    equal' between to float numbers.  Note: This is a GLOBAL setting.
+	equal' between to float numbers.  Note: This is a GLOBAL setting.
  */
 #ifndef CPL_MATH_REAL_FLOAT_EPSILON
 #define CPL_MATH_REAL_FLOAT_EPSILON     (FLT_EPSILON)
 #endif
 
  /** This symbols provides the default Epsilon value when testing for 'almost
-     equal' between to double numbers.  Note: This is a GLOBAL setting.
+	 equal' between to double numbers.  Note: This is a GLOBAL setting.
   */
 #ifndef CPL_MATH_REAL_DOUBLE_EPSILON
 #define CPL_MATH_REAL_DOUBLE_EPSILON    (DBL_EPSILON)
@@ -38,44 +38,45 @@
 
 
 
-  ///
+///
 namespace Cpl {
+///
 namespace Math {
 
 
 /** This template function implements a 'almost equals' comparison function for
-    floating points numbers.  See the following link for why an 'almost equals'
-    function is necessary:
+	floating points numbers.  See the following link for why an 'almost equals'
+	function is necessary:
 
-    http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
+	http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
  */
 template <class T>
 bool almostEquals( T a, T b, T epsilon )
 {
-    // Filter out NaN (always return false since by the IEEE standard NaN != NaN)
-    if ( std::isnan( a ) || std::isnan( b ) )
-    {
-        return false;
-    }
+	// Filter out NaN (always return false since by the IEEE standard NaN != NaN)
+	if ( std::isnan( a ) || std::isnan( b ) )
+	{
+		return false;
+	}
 
-    // Try the 'quick' case (also handles infinites)
-    if ( a == b )
-    {
-        return true;
-    }
+	// Try the 'quick' case (also handles infinites)
+	if ( a == b )
+	{
+		return true;
+	}
 
 
-    // Handle the case of one of the arguments being zero or close to zero
-    T diff = std::abs( a - b );
-    if ( (a == (T) (0.0) || b == (T) (0.0)) && diff < epsilon )
-    {
-        return diff < (epsilon * epsilon);
-    }
+	// Handle the case of one of the arguments being zero or close to zero
+	T diff = std::abs( a - b );
+	if ( ( a == (T) ( 0.0 ) || b == (T) ( 0.0 ) ) && diff < epsilon )
+	{
+		return diff < ( epsilon * epsilon );
+	}
 
-    // Do a relative error check
-    T absA = std::abs( a );
-    T absB = std::abs( b );
-    return (diff / (absA + absB)) < epsilon;
+	// Do a relative error check
+	T absA = std::abs( a );
+	T absB = std::abs( b );
+	return ( diff / ( absA + absB ) ) < epsilon;
 }
 
 
@@ -83,7 +84,7 @@ bool almostEquals( T a, T b, T epsilon )
  */
 inline bool areFloatsEqual( float a, float b, float epsilon = CPL_MATH_REAL_FLOAT_EPSILON )
 {
-    return almostEquals<float>( a, b, epsilon );
+	return almostEquals<float>( a, b, epsilon );
 }
 
 
@@ -91,7 +92,7 @@ inline bool areFloatsEqual( float a, float b, float epsilon = CPL_MATH_REAL_FLOA
  */
 inline bool areDoublesEqual( double a, double b, double epsilon = CPL_MATH_REAL_DOUBLE_EPSILON )
 {
-    return almostEquals<double>( a, b, epsilon );
+	return almostEquals<double>( a, b, epsilon );
 }
 
 

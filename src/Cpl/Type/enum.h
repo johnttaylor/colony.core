@@ -9,7 +9,7 @@
 #ifndef BETTER_ENUMS_ENUM_H
 #define BETTER_ENUMS_ENUM_H
 
-
+#ifndef DOXYGEN_WILL_SKIP_THIS
 
 #include <cstddef>
 #include <cstring>
@@ -1258,4 +1258,5 @@ BETTER_ENUMS_CONSTEXPR_ map<Enum, T> make_map(T (*f)(Enum))
 
 }
 
+#endif // end !DOXYGEN_WILL_SKIP_THIS
 #endif // #ifndef BETTER_ENUMS_ENUM_H

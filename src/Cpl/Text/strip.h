@@ -20,8 +20,9 @@
 
 
 
- ///
+///
 namespace Cpl {
+///
 namespace Text {
 
 
@@ -43,7 +44,8 @@ const char* stripSpace( const char* s );
         o If 's' is null, then null is returned.
 
 
-    This method is useful in finding the 'next' token in a string, for example: <pre>
+    This method is useful in finding the 'next' token in a string, for example: 
+	@code
 
         // Returns a pointer to the first token in 'input'
         const char* token = stripSpace(input)
@@ -51,7 +53,8 @@ const char* stripSpace( const char* s );
         // Returns a pointer to the second token in 'input'
         token = stripSpace(stripNotSpace(token))
 
-</pre> */
+	@endcode
+ */
 const char* stripNotSpace( const char* s );
 
 
