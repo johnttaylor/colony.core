@@ -12,7 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Cpl/TShell/Processor.h"
+#include "Cpl/TShell/ProcessorApi.h"
 #include "Cpl/System/Thread.h"
 #include "Cpl/Io/Socket/Listener.h"
 #include "Cpl/Io/Socket/InputOutput.h"
@@ -35,7 +35,7 @@ class Socket : public Cpl::Io::Socket::Listener::Client
 {
 protected:
 	/// Command Processor to run
-	Processor&						m_shell;
+	ProcessorApi&					m_shell;
 
 	/// Thread that the shell runs in
 	Cpl::System::Thread*            m_threadPtr;
@@ -66,7 +66,7 @@ public:
 		of the CPL Libraries static resources (e.g. mutexes) are unknown
 		which your application will crash/behavior poorly on exit.
 	 */
-	Socket( Processor& shell, Cpl::Io::Socket::Listener& listener, const char* threadName = "DAC-Shell", int threadPriority = CPL_SYSTEM_THREAD_PRIORITY_NORMAL + CPL_SYSTEM_THREAD_PRIORITY_LOWER, bool thisIsAStaticInstance=true ) noexcept;
+	Socket( ProcessorApi& shell, Cpl::Io::Socket::Listener& listener, const char* threadName = "TShell", int threadPriority = CPL_SYSTEM_THREAD_PRIORITY_NORMAL + CPL_SYSTEM_THREAD_PRIORITY_LOWER, bool thisIsAStaticInstance=true ) noexcept;
 
 
 	/// Destructor. Note: the referenced 'listener' is NOT destroyed/clean-up since it was NOT created by me.

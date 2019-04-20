@@ -25,14 +25,14 @@ class Shell_ : public Cpl::System::Runnable
 {
 public:
 	///
-	Processor & m_shell;
+	ProcessorApi&    m_shell;
 	///
 	Cpl::Io::Input&  m_infd;
 	///
 	Cpl::Io::Output& m_outfd;
 
 public:
-	Shell_( Processor& shell, Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
+	Shell_( ProcessorApi& shell, Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
 		:m_shell( shell )
 		, m_infd( infd )
 		, m_outfd( outfd )
@@ -56,8 +56,8 @@ public:
 
 
 /////////////////////////////////////////
-Stdio::Stdio( Processor& shell, const char* threadName, int threadPriority, bool thisIsAStaticInstance ) noexcept
-	:m_shell( shell )
+Stdio::Stdio( ProcessorApi& shell, const char* threadName, int threadPriority, bool thisIsAStaticInstance ) noexcept
+	: m_shell( shell )
 	, m_threadPtr( 0 )
 	, m_priority( threadPriority )
 	, m_name( threadName )

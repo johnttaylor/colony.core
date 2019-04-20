@@ -12,7 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Cpl/TShell/Processor.h"
+#include "Cpl/TShell/ProcessorApi.h"
 #include "Cpl/System/Thread.h"
 
 
@@ -33,7 +33,7 @@ class Stdio
 {
 protected:
 	/// Command Processor to run
-	Processor&				m_shell;
+	ProcessorApi&			m_shell;
 
 	/// Thread that the shell runs in
 	Cpl::System::Thread*    m_threadPtr;
@@ -60,7 +60,7 @@ public:
 		of the CPL Libraries static resources (e.g. mutexes) are unknown
 		which your application will crash/behavior poorly on exit.
 	 */
-	Stdio( Processor& shell, const char* threadName = "DAC-Shell", int threadPriority = CPL_SYSTEM_THREAD_PRIORITY_NORMAL + CPL_SYSTEM_THREAD_PRIORITY_LOWER, bool thisIsAStaticInstance=true ) noexcept;
+	Stdio( ProcessorApi& shell, const char* threadName = "TShell", int threadPriority = CPL_SYSTEM_THREAD_PRIORITY_NORMAL + CPL_SYSTEM_THREAD_PRIORITY_LOWER, bool thisIsAStaticInstance=true ) noexcept;
 
 
 	/// Destructor
