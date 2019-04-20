@@ -20,6 +20,7 @@
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
+#define CPLTSHELLDACMD_CMD_TRACE_	  "trace"
 #define CPLTSHELLDACMD_USAGE_TRACE_   "trace [on|off]\n" \
                                       "trace section (on|off) <sect1> [<sect2>]...\n" \
                                       "trace threadfilters [<threadname1> [<threadname2>]]...\n" \
@@ -63,7 +64,7 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Command
-    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept;
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, Cpl::Io::Output& outfd ) noexcept;
 
 };
 

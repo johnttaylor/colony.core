@@ -1,15 +1,15 @@
 #ifndef Cpl_TShell_Dac_Cmd_Threads_h
 #define Cpl_TShell_Dac_Cmd_Threads_h
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2019  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "colony_config.h"
@@ -23,6 +23,7 @@
                                         "         1         2         3         4         5         6         7         8"
                                         "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
+#define CPLTSHELLDACMD_CMD_THREADS_	    "threads"
 #define CPLTSHELLDACMD_USAGE_THREADS_   "threads"
 
 /// Detailed Help text
@@ -35,21 +36,26 @@
 
 
 ///
-namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
+namespace Cpl {
+///
+namespace TShell {
+///
+namespace Dac {
+///
+namespace Cmd {
 
 
 
 /** This class implements a DAC Shell command
  */
-class Threads: public Command,
-               public Cpl::System::Thread::Traverser
+class Threads : public Command, public Cpl::System::Thread::Traverser
 {
 public:
     /// See Cpl::TShell::Dac::Command
-    const char* getUsage() const noexcept   { return CPLTSHELLDACMD_USAGE_THREADS_; }
+    const char* getUsage() const noexcept { return CPLTSHELLDACMD_USAGE_THREADS_; }
 
     /// See Cpl::TShell::Dac::Command
-    const char* getHelp() const noexcept    { return CPLTSHELLDACMD_DETAIL_THREADS_; }
+    const char* getHelp() const noexcept { return CPLTSHELLDACMD_DETAIL_THREADS_; }
 
 
 protected:
@@ -61,8 +67,8 @@ protected:
 
     /// Cache IO status/errors
     bool                         m_io;
-        
-     
+
+
 public:
     /// Constructor
     Threads( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept;
@@ -73,7 +79,7 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Command
-    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept;
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, Cpl::Io::Output& outfd ) noexcept;
 
 
 
@@ -90,9 +96,6 @@ protected:
 
     /// Hook when generating a thread row entry (i.e. subclass appends to the String)
     virtual void hookThreadEntry( Cpl::Text::String& text, Cpl::System::Thread& currentThread );
-
-
-
 };
 
 };      // end namespaces

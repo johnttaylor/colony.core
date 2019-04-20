@@ -226,7 +226,7 @@ public:
                                   const char* threadName2 =0,
                                   const char* threadName3 =0,
                                   const char* threadName4 =0
-    );
+                                );
 
     /** This method returns the number of enabled 'thread filters' and returns
         the actual thread name(s) via the String 'dst'.  It is the caller

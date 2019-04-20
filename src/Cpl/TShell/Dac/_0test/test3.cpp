@@ -12,13 +12,7 @@
 #include "colony_config.h"
 #include "Cpl/TShell/Stdio.h"
 
-// Cheat here: in the name of less files
-#ifdef BUILD_TEST_A_
-#include "staticsA.h"
-#endif
-#ifdef BUILD_TEST_B_
-#include "staticsB.h"
-#endif
+#include "statics.h"
 
 #ifndef OPTION_0TEST_DAC_SHELL_THREAD_PRIORITY
 #define OPTION_0TEST_DAC_SHELL_THREAD_PRIORITY  CPL_SYSTEM_THREAD_PRIORITY_NORMAL

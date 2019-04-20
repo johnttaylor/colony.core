@@ -40,7 +40,7 @@ protected:
     /// Result when processing a conditional statement
     enum CondResult_T { eFALSE, //!< The conditional statement evaluated to false
                         eTRUE,  //!< The conditional statement evaluated to true
-                        eERROR  //!< Error occuring during the evaulation of the conditional
+                        eERROR  //!< Error occurring during the evaluation of the conditional
                       }; 
 
 protected:
@@ -64,21 +64,6 @@ public:
 protected:
     /// See Cpl::Container::Key
     const Cpl::Container::Key& getKey() const noexcept;
-
-
-protected:
-    /// Helper method to expand text
-    static Result_T expandText( const char* textToExpand, Cpl::Text::String& dst, Cpl::TShell::Dac::ActiveVariablesApi& vars ) noexcept;
-
-    /// Helper method that processes the a conditional expression
-    static CondResult_T conditional( Cpl::TShell::Dac::Context_&           context, 
-                                     Cpl::Text::Tokenizer::TextBlock&      tokens, 
-                                     unsigned                              startingTokenIndex, 
-                                     Cpl::TShell::Dac::ActiveVariablesApi& vars 
-                                   ) noexcept;
-
-    /// Helper method that compares to values
-    static CondResult_T evaluate( const char* leftVal, const char* oper, const char* rightVal ) noexcept;
 
 };
 

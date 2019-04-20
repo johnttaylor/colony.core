@@ -1,15 +1,15 @@
 #ifndef Cpl_TShell_Dac_Cmd_Bye_h
 #define Cpl_TShell_Dac_Cmd_Bye_h
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2019  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "colony_config.h"
@@ -19,6 +19,7 @@
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
+#define CPLTSHELLDACMD_CMD_BYE_		"bye"
 #define CPLTSHELLDACMD_USAGE_BYE_   "bye [app [<exitcode>]]"
 
 /// Detailed Help text
@@ -31,20 +32,26 @@
 
 
 ///
-namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
+namespace Cpl {
+///
+namespace TShell {
+///
+namespace Dac {
+///
+namespace Cmd {
 
 /** This Private Namespace class defines the interface for a DAC shell command.
  */
-class Bye: public Command
+class Bye : public Command
 {
 protected:
     /// See Cpl::TShell::Dac::Command
-    const char* getUsage() const noexcept    { return CPLTSHELLDACMD_USAGE_BYE_; }
+    const char* getUsage() const noexcept { return CPLTSHELLDACMD_USAGE_BYE_; }
 
     /// See Cpl::TShell::Dac::Command
-    const char* getHelp() const noexcept     { return CPLTSHELLDACMD_DETAIL_BYE_; }
-    
-     
+    const char* getHelp() const noexcept { return CPLTSHELLDACMD_DETAIL_BYE_; }
+
+
 public:
     /// Constructor
     Bye( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList ) noexcept;
@@ -54,7 +61,7 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Command
-    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept;
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, Cpl::Io::Output& outfd ) noexcept;
 
 };
 

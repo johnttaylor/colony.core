@@ -13,20 +13,21 @@
 /** @file */
 
 #include "colony_config.h"
-#include "Cpl/TShell/Dac/Cmd/Print_.h"
-                                                 
+#include "Cpl/TShell/Dac/Cmd/Command.h"
+
 
 
 /** Usage
                                       "         1         2         3         4         5         6         7         8"
                                       "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define CPLTSHELLDACMD_USAGE_TPRINT_  "tprint [<etext>]"
+#define CPLTSHELLDACMD_CMD_TPRINT_	  "tprint"
+#define CPLTSHELLDACMD_USAGE_TPRINT_  "tprint [<text>]"
 
 /// Detailed Help text
 #ifndef CPLTSHELLDACMD_DETAIL_TPRINT_
-#define CPLTSHELLDACMD_DETAIL_TPRINT_ "  Same operation as 'print', except the current elasped time is prepended to the\n" \
-                                      "  expanded text."
+#define CPLTSHELLDACMD_DETAIL_TPRINT_ "  Outputs the optionally specified text with the current elasped time is\n" \
+                                      "  prepended to the text."
 
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
@@ -38,7 +39,7 @@ namespace Cpl { namespace TShell { namespace Dac { namespace Cmd {
 
 /** This class implements a DAC Shell command
  */
-class TPrint: public Print_
+class TPrint : public Command
 {
 public:
     /// See Cpl::TShell::Dac::Command
@@ -58,7 +59,7 @@ public:
 
 public:
     /// See Cpl::TShell::Dac::Command
-    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawInputString, Cpl::Io::Output& outfd ) noexcept;
+    Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, Cpl::Io::Output& outfd ) noexcept;
 
 };
 
