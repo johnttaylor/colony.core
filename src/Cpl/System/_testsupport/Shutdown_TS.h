@@ -1,33 +1,35 @@
 #ifndef Cpl_System_x_testsupport_Shutdown_TS_h_
 #define Cpl_System_x_testsupport_Shutdown_TS_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include <stddef.h>
 
 
 /// 
-namespace Cpl { namespace System { 
+namespace Cpl {
+/// 
+namespace System {
 
 
 /** This class provides methods to access the unit testing support
     for the Cpl::System::Shutdown interface.
-    
+
     This class provides an implementation of Shutdown interface that
     has the ability to count the number times the Shutdown interface
     is/was called instead of exiting.  It can also alter the application's
     exit code.
 
-    Notes: 
+    Notes:
         o The Shutdown implementation assumes/uses the C Library 'exit()'
           method.
  */
@@ -36,16 +38,16 @@ class Shutdown_TS
 public:
     /** This method zero's the exit counter and sets the shutdown behavior
         to NOT exit when called - only count the calls.  Note: This
-        interface starts in the 'counter mode' with the count set to 
+        interface starts in the 'counter mode' with the count set to
         zero.
      */
-    static void clearAndUseCounter(void);
+    static void clearAndUseCounter( void );
 
     /** This method returns the current call count AND clears the
         call counter.
      */
     static size_t getAndClearCounter( void );
-     
+
 
 public:
     /** This method allows the application to exit - but always with

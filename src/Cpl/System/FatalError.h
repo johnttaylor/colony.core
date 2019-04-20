@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2018  John T. Taylor
+* Copyright (c) 2014-2019  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -24,7 +24,7 @@
 #endif
 
 
-/// 
+ /// 
 namespace Cpl {
 /// 
 namespace System {
@@ -63,13 +63,16 @@ public:
 
 public:
     /** Same as log(..) method, except NO "...other useful info
-        such as current task,..." is logged.  This allows routines that are
-        supplying the extra info to be able to log fatal errors WITHOUT
-        creating a recursive death loop.
+        such as current task,..." is logged, AND the "storage media" is
+        restricted to 'media' that is ALWAYS available.
+
+        This allows routines that are supplying the extra info OR routines that
+        write to media to be able to log fatal errors WITHOUT creating a
+        recursive death loop.
      */
     static void logRaw( const char* message );
 
-    /// Same as log(..) method, except NO 'extra info'
+    /// Same as log(..) method, except NO 'extra info' and restricted media
     static void logRaw( const char* message, size_t value );
 
 

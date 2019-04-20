@@ -10,7 +10,7 @@
 #include "Catch/catch.hpp"
 
 
-int main( int argc, char* const argv[] )
+int main( int argc, char* argv[] )
     {
     // Initialize Colony
     Cpl::System::Api::initialize();
@@ -24,11 +24,6 @@ int main( int argc, char* const argv[] )
     CPL_SYSTEM_TRACE_ENABLE();
     CPL_SYSTEM_TRACE_ENABLE_SECTION("_0test");
     CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eINFO );
-
-    // THIS CODE DOES NOTHING.  It is needed to force the inclusion of
-    // the test code due to the combination of how CATCH auto registers
-    // test cases and how NQBP links by libraries.  Short version is do NOT
-    // remove these call(s).
 
     // Run the test(s)
     int result = Catch::Session().run( argc, argv );

@@ -1,7 +1,4 @@
-/** @file */
 /** @namespace Cpl::Itc
-@htmlonly
-<pre>    
 
 The Itc namespace provides classes for message based Inter Thread Communications
 (ITC) as well as Event Flags.  The ITC message mechanism has the following 
@@ -46,7 +43,7 @@ characteristics:
 
 The ITC Event Flags mechanism has the following characteristics:
 
-    o Each thread supports up to 31 unique event flags. Event flags are not 
+    o Each thread supports up to N unique event flags. Event flags are not 
       unique across threads, i.e. The semantics associated with event flag1 
       for Thread A, is independent/different than the semantics associated with 
       event flag1 for Thread B.
@@ -60,8 +57,6 @@ The ITC Event Flags mechanism has the following characteristics:
       Events that were in the signaled state when the thread was unblock are
       cleared.
 
-</pre>    
-@endhtmlonly
 */  
 
 

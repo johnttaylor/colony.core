@@ -1,5 +1,5 @@
 # Test App
-src/Cpl/Io/Serial/_0test/hw_loopback
+src/Cpl/Io/Serial/_0test/_hw_loopback
 
 
 # supporting infrastructure
@@ -7,6 +7,7 @@ src/Driver/Uart/Stream
 src/Cpl/System
 src/Cpl/Container
 src/Cpl/Text
+src/Cpl/Text/_mappings/_kpitrx
 src/Cpl/Io
 src/Cpl/System/FreeRTOS
 src/Cpl/System/FreeRTOS/_fatalerror

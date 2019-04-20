@@ -9360,10 +9360,10 @@ html .solidborders td {  border: 1px solid black; }</pre>
 <div created="20180715194054070" modified="20180715194054070" title="$:/state/sidebar">
 <pre>no</pre>
 </div>
-<div created="20180715193946790" modified="20180715194040835" title="$:/state/toc/Contents-Coding Standards--242358753">
-<pre>close</pre>
+<div created="20180715193946790" modified="20180721213300986" title="$:/state/toc/Contents-Coding Standards--242358753">
+<pre>open</pre>
 </div>
-<div list="Terms $:/core/ui/MoreSideBar/All [[Coding Standards]] [[Remaining core interfaces.....]] Overview [[Naming Conventions]]" title="$:/StoryList">
+<div list="[[Coding Standards]] [[Unit Testing Conventions]] [[Naming Conventions]] Overview" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -9560,7 +9560,7 @@ html .solidborders td {  border: 1px solid black; }</pre>
 |John Taylor |john.t.taylor@gmail.com|principal author |
 </pre>
 </div>
-<div created="20141021014317835" modified="20150809043627670" tags="Contents Standards" title="Coding Standards">
+<div created="20141021014317835" modified="20180721214129901" tags="Contents Standards" title="Coding Standards">
 <pre>!!!Colony.Core adheres to the following coding standard (a recommended [[Outcast|http://integerfox.com/outcast]] coding standard).  
 
 * [[John's Coding Standard|http://integerfox.com/outcast/documentation/codingstandard.htm]]
@@ -9586,9 +9586,7 @@ The following are additional coding standards.
 | Rule |The following header files are reserved names and cannot be used in the general code - they are used for [[LConfig|Late Config (LConfig)]] design pattern within the Colony.* packages:  `colony_config.h` - Used for project specific preprocessor directives and/or symbol overrides;  `colony_map.h` - Used for providing project specific platform functions. |
 | Rule |Source code shall be organized such that the directory structure reflects the dependencies of the contained source code. The dependency for directories is that a sub-directory is dependent on its parent directory.  For example: given the the two directories: `Foo/` and `Bar/` such that the files in `Bar/` are dependent on `Foo/` (i.e. files in `Bar/` implement interfaces defined in `Foo/`), the directory structure would be `src/Foo` and `src/Foo/Bar`.  //Note: Also see the [[Naming Conventions]] for the rules of naming directories after namespaces.//  |
 | Rule |Header includes shall not directly reference sub-directories.  Because the directory structure is used to reflect dependencies (see above) then a `#include` of a header file in a direct sub-directory creates/is-a-indication of a circular dependency.  For example: given the directory structure of `src/Foo/` and `src/Foo/Bar/`. It is a ''coding standard violation'' for a header file in the `src/Foo/` directory to have `#include &quot;Foo/Bar/SomeFile.h` |
-| Rule |All C/C++ source code shall be based on/compliant with the [[C++03 ISO/IEC standard|http://en.wikipedia.org/wiki/C%2B%2B03]] with the exceptions listed below.  ''//Note://'' all code is required to compile without errors and run correctly when using a  [[C++11 ISO/IEC standard|http://en.wikipedia.org/wiki/C%2B%2B11]] compiler.   |
-| Rule |''C++03 extension:'' assumes that `&lt;stdint.h&gt;` header file is available as defined per [[C99|http://en.wikipedia.org/wiki/C99]] and/or C++11. ''//Note://'' Any file that includes `&lt;stdint.h&gt;` shall also include `colony_map.h` header file.  This allows platforms that do not have `&lt;stdint.h&gt;` to provide the missing type definitions. |
-| Rule |''C++03 extension:'' assumes that `long long` integer (and its variants) are available (as defined per [[C99|http://en.wikipedia.org/wiki/C99]] and/or C++11. ''//Note://'' Any file that uses `long long` shall also include `colony_map.h` header file.  This allows platforms that do not have `long long` to provide the missing type definitions. |
+| Rule |All C/C++ source code shall be based on/compliant with the [[C++11 ISO/IEC standard|http://en.wikipedia.org/wiki/C%2B%2B11]].   |
 | Rule |A flat memory space/model is assumed/required.  In addition a single memory bus model is assumed/required, i.e. code and data share the same address space.  |
 | Rule |No assumption shall be made about the number bits in an `long` variable, i.e. all code shall compile and run successfully even when compiling for 64bit targets.  |
 | Rule |''All'' code shall have unit test code.  See [[Unit Testing]] for additional details on definition/requirements for unit testing |
@@ -9839,7 +9837,7 @@ Testing or AUTs ''shall'' be done by namespace, i.e. each namespace has AUTs.
 
 </pre>
 </div>
-<div created="20141130152118736" modified="20150215030529725" tags="Testing Standards [[Coding Standards]]" title="Unit Testing Conventions">
+<div created="20141130152118736" modified="20180721213709971" tags="Testing Standards [[Coding Standards]]" title="Unit Testing Conventions">
 <pre>!!The following naming/organization convetions are used to meet the required [[Unit Testing]] requirements.
 
 * The source for the AUTs shall be organized under a directory named `_0test/` for each namespace.
@@ -9849,6 +9847,7 @@ Testing or AUTs ''shall'' be done by namespace, i.e. each namespace has AUTs.
 *** ''Example:''
 **** `tests/Cpl/Text/_0test/windows/mingw`
 **** `tests/Cpl/Text/_0test/windows/vc12`
+* ''All'' AUT &quot;executables&quot; shall be named `a.exe`, `a.out` or `a.py`.  The Outcast publish/CI scripts will ignore any projects under the `tests/` directory tree that have &quot;executables&quot; other then the ones listed here.
 </pre>
 </div>
 

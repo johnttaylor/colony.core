@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Script to run unittests (leverages NQBP python code base)
 
@@ -12,7 +12,7 @@ import subprocess
 #------------------------------------------------------------------------------
 def run_test( root, subdir ):
     utils.push_dir( subdir )
-    print "Running unit test dir: {} ...".format( subdir )
+    print( "Running unit test dir: {} ...".format( subdir ) )
     p = subprocess.Popen( 'b.exe', shell=True )
     p.communicate()
     if ( p.returncode != 0 ):

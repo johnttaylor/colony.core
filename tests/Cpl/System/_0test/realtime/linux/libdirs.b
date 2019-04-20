@@ -9,8 +9,6 @@ src/Cpl/System/_0test
 # supporting infrastructure
 src/Cpl/Container
 src/Cpl/Text
-src/Cpl/Log
-src/Cpl/Log/_default
 
 # Platforms
 src/Cpl/Io/Stdio/_ansi

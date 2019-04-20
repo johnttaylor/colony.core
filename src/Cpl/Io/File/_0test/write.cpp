@@ -1,13 +1,13 @@
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 
 #include "Catch/catch.hpp"
 #include "Cpl/Io/File/Output.h"
@@ -19,12 +19,6 @@
 #include "Cpl/Text/FString.h"
 
 
-/// This method is used as part of 'forcing' this object to being actualled 
-/// linked during the NQBP link process (it is artifact of linking libraries 
-/// and how CATCH auto-registers (via static objects) test case
-void link_write(void) {}
-
-
 #define SECT_     "_0test"
 
 /// 
@@ -34,18 +28,18 @@ using namespace Cpl::Io::File;
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "write", "[write]" )
-    {
+{
     CPL_SYSTEM_TRACE_FUNC( SECT_ );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
 
     //
     Cpl::Text::FString<256> sum;
-    Cpl::Text::FString<10>  buffer("bob");
+    Cpl::Text::FString<10>  buffer( "bob" );
     char                    myBuffer[10] = { 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29 };
     int                     bytesWritten;
-    Output                  fd("output1.txt",true,true);
+    Output                  fd( "output1.txt", true, true );
     REQUIRE( fd.isOpened() );
-    REQUIRE( fd.write('a') );
+    REQUIRE( fd.write( 'a' ) );
     sum = 'a';
     REQUIRE( fd.write( "bob's your uncle" ) );
     sum += "bob's your uncle";
@@ -54,18 +48,18 @@ TEST_CASE( "write", "[write]" )
     REQUIRE( fd.write( buffer, "Hello %s", "World" ) );
     REQUIRE( buffer == "Hello Worl" );
     sum += buffer;
-    REQUIRE( fd.write( myBuffer, sizeof(myBuffer) ) );
-    for(size_t i=0; i<sizeof(myBuffer); i++) { sum += myBuffer[i]; }
-    REQUIRE( fd.write( myBuffer, sizeof(myBuffer), bytesWritten ) );
-    REQUIRE( (size_t)bytesWritten == sizeof(myBuffer) );
-    for(int i=0; i<bytesWritten; i++) { sum += myBuffer[i]; }
+    REQUIRE( fd.write( myBuffer, sizeof( myBuffer ) ) );
+    for ( size_t i=0; i < sizeof( myBuffer ); i++ ) { sum += myBuffer[i]; }
+    REQUIRE( fd.write( myBuffer, sizeof( myBuffer ), bytesWritten ) );
+    REQUIRE( (size_t) bytesWritten == sizeof( myBuffer ) );
+    for ( int i=0; i < bytesWritten; i++ ) { sum += myBuffer[i]; }
 
-    fd.flush(); 
-    fd.close(); 
-    REQUIRE( fd.write('a') == false );
+    fd.flush();
+    fd.close();
+    REQUIRE( fd.write( 'a' ) == false );
     REQUIRE( fd.isOpened() == false );
 
-    Input infd("output1.txt");
+    Input infd( "output1.txt" );
     REQUIRE( infd.isOpened() );
     Cpl::Text::FString<256> inbuffer;
     infd.read( inbuffer );
@@ -77,8 +71,8 @@ TEST_CASE( "write", "[write]" )
 
 
     //
-    Output fd2("output2.txt",true,true);
-    Cpl::Io::LineWriter writer(fd2);
+    Output fd2( "output2.txt", true, true );
+    Cpl::Io::LineWriter writer( fd2 );
     REQUIRE( writer.println() );
     REQUIRE( writer.println( "Hello World" ) );
     REQUIRE( writer.print( "Hello" ) );
@@ -87,12 +81,12 @@ TEST_CASE( "write", "[write]" )
     REQUIRE( writer.println() );
     writer.close();
     REQUIRE( writer.println() == false );
-    REQUIRE( fd.write('a') == false );
+    REQUIRE( fd.write( 'a' ) == false );
 
     Cpl::Text::FString<256> buffer2;
-    Input infd2("output2.txt");
+    Input infd2( "output2.txt" );
     REQUIRE( infd2.isOpened() );
-    Cpl::Io::LineReader reader(infd2);
+    Cpl::Io::LineReader reader( infd2 );
     REQUIRE( reader.readln( buffer2 ) );
     REQUIRE( buffer2.isEmpty() );
     REQUIRE( reader.readln( buffer2 ) );
@@ -106,4 +100,30 @@ TEST_CASE( "write", "[write]" )
     REQUIRE( infd2.isOpened() == false );
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
-    }
+}
+
+TEST_CASE( "write/close", "[write/close]" )
+{
+    CPL_SYSTEM_TRACE_FUNC( SECT_ );
+    Cpl::System::Shutdown_TS::clearAndUseCounter();
+
+    Output fd( "output2.txt", true, true );
+    REQUIRE( fd.isOpened() );
+    fd.close();
+    char dummyChar = 29;
+    REQUIRE( fd.write( dummyChar ) == false );
+    REQUIRE( dummyChar == 29 );
+    fd.flush();
+    
+    REQUIRE( fd.isEof() == true );
+    unsigned long pos;
+    REQUIRE( fd.currentPos( pos ) == false );
+    REQUIRE( fd.setAbsolutePos( 1 ) == false );
+    REQUIRE( fd.setRelativePos( 1 ) == false );
+    REQUIRE( fd.setToEof() == false );
+    unsigned long len = 22;
+    REQUIRE( fd.length( len ) == false );
+
+
+    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+}

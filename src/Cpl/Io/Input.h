@@ -1,15 +1,15 @@
 #ifndef Cpl_Io_Input_h_
 #define Cpl_Io_Input_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "Cpl/Text/String.h"
@@ -18,7 +18,9 @@
 
 
 ///
-namespace Cpl { namespace Io {
+namespace Cpl {
+///
+namespace Io {
 
 /** This partially abstract class defines a interface for operating on an
     input stream (example of a stream is 'stdin' or a socket connection).
@@ -27,10 +29,10 @@ namespace Cpl { namespace Io {
 
     Note: There is really only just one read() method (the one the returns
           'bytesRead').  All of the other read() are convenience methods
-          and as such a default implementation is provided for these methods. 
+          and as such a default implementation is provided for these methods.
 
  */
-class Input: virtual public Close
+class Input : virtual public Close
 {
 public:
     /** Reads a single byte from the stream.  Returns true if successful,
@@ -38,7 +40,7 @@ public:
      */
     virtual bool read( char& c );
 
-    /** Reads N bytes into the String's internal buffer.  The number of 
+    /** Reads N bytes into the String's internal buffer.  The number of
         bytes read will be less or equal to the String's max length.  The
         String is guaranteed to be terminated by a '\0'.  The placement
         of the '\0' is determined by the number of bytes read from the
@@ -51,17 +53,18 @@ public:
     virtual bool read( Cpl::Text::String& destString );
 
     /** Attempts to read the specified number of bytes from the stream in the
-        supplied buffer.  The actual number of bytes read is returned via 
-        'bytesRead'. Returns true if successful, or false if End-of-Stream 
+        supplied buffer.  The actual number of bytes read is returned via
+        'bytesRead'. Returns true if successful, or false if End-of-Stream
         was encountered.
      */
     virtual bool read( void* buffer, int numBytes, int& bytesRead ) = 0;
 
     /** Returns true if there data available to be read from the stream.
-        NOTE: The implemenation of this method is VERY PLATFORM dependant! If
+
+        NOTE: The implementation of this method is VERY PLATFORM dependent! If
               your code uses it - it may not be portable to all platforms.
-              If a platform does not/can not support this method it is 
-              guaranteed to return 'true' 
+              If a platform does not/can not support this method it is
+              guaranteed to return 'true'
 
      */
     virtual bool available() = 0;
@@ -69,7 +72,7 @@ public:
 
 public:
     /// Lets the make the destructor virtual
-    virtual ~Input(){}
+    virtual ~Input() {}
 
 };
 

@@ -1,13 +1,13 @@
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Private_.h"
@@ -26,17 +26,17 @@ static Mutex sysListMutex_;
 
 ////////////////////////////////////////////////////////////////////////////////
 void Api::initialize( void )
-    {
+{
     // Init the Colony.Core sub-systems
     StartupHook_::notifyStartupClients();
-    }
-    
+}
+
 
 void Api::enableScheduling( void )
-    {
+{
     // Assumption is that I am in user space, ergo thread schedule is already
     // started/active -->nothing needed!
-    }
+}
 
 bool Api::isSchedulingEnabled( void )
 {
@@ -44,25 +44,25 @@ bool Api::isSchedulingEnabled( void )
 }
 
 
-void Api::sleepInRealTime( unsigned long milliseconds) throw()
-    {
-    std::this_thread::sleep_for( std::chrono::milliseconds(milliseconds) );
-    }
+void Api::sleepInRealTime( unsigned long milliseconds ) noexcept
+{
+    std::this_thread::sleep_for( std::chrono::milliseconds( milliseconds ) );
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
-Mutex& Locks_::system(void) 
-    {
+Mutex& Locks_::system( void )
+{
     return systemMutex_;
-    }
+}
 
-Mutex& Locks_::sysLists(void) 
-    {
+Mutex& Locks_::sysLists( void )
+{
     return sysListMutex_;
-    }
+}
 
-Mutex& Locks_::tracing(void) 
-    {
+Mutex& Locks_::tracing( void )
+{
     return tracingMutex_;
-    }
+}
 

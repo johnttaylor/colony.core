@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Clean script when publishing the package
 ===============================================================================
@@ -38,7 +38,7 @@ def _use_outcast():
     cmd       = "bob.py build -v --path {} --file {}".format(path, cleanlist)
 
     # Invoke the build
-    print "EXECUTING: " + cmd
+    print("EXECUTING: " + cmd)
     p = subprocess.Popen( cmd, shell=True )
     r = p.communicate()
     if ( p.returncode != 0 ):

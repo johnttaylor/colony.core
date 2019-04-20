@@ -1,22 +1,24 @@
 #ifndef Cpl_Itc_PostApi_h_
 #define Cpl_Itc_PostApi_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "Cpl/Itc/Message.h"
 
 
 ///
-namespace Cpl { namespace Itc {
+namespace Cpl {
+///
+namespace Itc {
 
 
 
@@ -25,7 +27,7 @@ namespace Cpl { namespace Itc {
     this interface is always invoked by the client.
  */
 
-class PostApi 
+class PostApi
 {
 public:
     /** This operation is called by clients, which wish to send a message
@@ -34,20 +36,20 @@ public:
         returns immediately. The client relinquishes ownership of the memory
         until the message's returnToSender() function is invoked.
      */
-    virtual void post(Message& msg) throw()=0;
+    virtual void post( Message& msg ) noexcept=0;
 
     /** This operation is called by clients which wish to send a message
         to the owner of this mailbox, and then block on the client's thread
         semaphore. First, the message is threaded into the mailbox queue
         for the mailbox owner to receive. Next, the client waits on its
-        thread semaphore until the semaphore is signaled. 
+        thread semaphore until the semaphore is signaled.
      */
-    virtual void postSync(Message& msg) throw()=0;
+    virtual void postSync( Message& msg ) noexcept=0;
 
 
 public:
-	/// Virtual destructor
-	virtual ~PostApi(){}
+    /// Virtual destructor
+    virtual ~PostApi() {}
 };
 
 };      // end namespaces

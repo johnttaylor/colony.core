@@ -1,15 +1,15 @@
 #ifndef Cpl_Io_TeeOutput_h_
 #define Cpl_Io_TeeOutput_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "Cpl/Io/Output.h"
@@ -17,25 +17,27 @@
 
 
 ///
-namespace Cpl { namespace Io {
+namespace Cpl {
+///
+namespace Io {
 
 
 
 /** This concrete class implements a Output stream that outputs
     the data to MANY (or none) output streams. The write() methods will
     return false when at least of the Output stream(s) had an error.  There
-    are methods provided (firstFailed(), nextFailed()) which returns a list of 
-    all currently failed Output streams.  Once a stream has been marked as failed 
-    it will not be added back to the list of "good/active" streams.  The user 
-    must explicitly delete the stream and then re-add it. NOTE: There is no 
-    guaranty of order or 'atomicity' with respect to other streams when 
-    writing to multiple streams. 
+    are methods provided (firstFailed(), nextFailed()) which returns a list of
+    all currently failed Output streams.  Once a stream has been marked as failed
+    it will not be added back to the list of "good/active" streams.  The user
+    must explicitly delete the stream and then re-add it. NOTE: There is no
+    guaranty of order or 'atomicity' with respect to other streams when
+    writing to multiple streams.
 
     NOTE: The implementation is NOT thread safe.  The application must provide
           its own locking/critical section logic if calling a TeeOutput instance
           from multiple threads.
  */
-class TeeOutput: public Output
+class TeeOutput : public Output
 {
 private:
     /// List of active writers
@@ -66,9 +68,9 @@ public:
     /** Adds a stream */
     void add( Output& stream );
 
-    /** Removes a stream.  Returns true if the stream was actually 
+    /** Removes a stream.  Returns true if the stream was actually
         removed (i.e. that it was in the list to start with).  NOTE: If
-        the stream exists it will be delete regardless if it is consider
+        the stream exists it will be deleted regardless if it is consider
         good or failed.
      */
     bool remove( Output& stream );
@@ -93,9 +95,9 @@ public:
         current failed stream object!!!
      */
     Output* removeAndGetNextFailed( Output& currentFailedStream );
-             
 
-public: 
+
+public:
     /// Pull in overloaded methods from base class
     using Cpl::Io::Output::write;
 

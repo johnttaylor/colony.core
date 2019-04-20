@@ -1,13 +1,13 @@
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 
 #include "Catch/catch.hpp"
 #include "Cpl/System/Trace.h"
@@ -28,11 +28,6 @@
 
 
 
-/// This method is used as part of 'forcing' this object to being actualled 
-/// linked during the NQBP link process (it is artifact of linking libraries 
-/// and how CATCH auto-registers (via static objects) test case
-void link_shell(void) {}
-
 
 
 /// 
@@ -42,25 +37,25 @@ using namespace Cpl::System;
 
 
 
-/** OKAY - SMALL HACK -->testing BOTH supported and not-supporter use cases by 
+/** OKAY - SMALL HACK -->testing BOTH supported and not-supporter use cases by
            using #if/#else .
  */
 #if CPL_SYSTEM_SHELL_SUPPORTED_ == 0 
-    #define ANSWER_IS_AVAILABLE             false
-    #define ANSWER_EXECUTE_CMD              -1
-    #define ANSWER_EXECUTE_NOT_BAD_CMD      0
+#define ANSWER_IS_AVAILABLE             false
+#define ANSWER_EXECUTE_CMD              -1
+#define ANSWER_EXECUTE_NOT_BAD_CMD      0
 
 #else
-    #define ANSWER_IS_AVAILABLE             true
-    #define ANSWER_EXECUTE_CMD              0
-    #define ANSWER_EXECUTE_NOT_BAD_CMD      0
+#define ANSWER_IS_AVAILABLE             true
+#define ANSWER_EXECUTE_CMD              0
+#define ANSWER_EXECUTE_NOT_BAD_CMD      0
 
 #endif  // end CPL_SYSTEM_SHELL_SUPPORTED_ == 0
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "shell", "[shell]" )
-    {
+{
     CPL_SYSTEM_TRACE_FUNC( SECT_ );
     Shutdown_TS::clearAndUseCounter();
 
@@ -78,4 +73,4 @@ TEST_CASE( "shell", "[shell]" )
     REQUIRE( Shell::execute( MY_BAD_COMMAND, true, false ) != ANSWER_EXECUTE_NOT_BAD_CMD );
 
     REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
-    }
+}

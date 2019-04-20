@@ -7,7 +7,7 @@ extern void loopback_test( Driver_Uart_Hal_T uartHdl, bool manualFirstTx );
 
 // UNIT TEST -->Only checks if the code compiles & links using different compilers
 
-int main( int argc, char* const argv[] )
+int main( int argc, char* argv[] )
     {
     // Initialize the board
     Bsp_Api_initialize();

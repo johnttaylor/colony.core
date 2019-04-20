@@ -1,15 +1,15 @@
 #ifndef Cpl_Io_LineWriter_h_
 #define Cpl_Io_LineWriter_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "Cpl/Io/LineWriterApi.h"
@@ -19,51 +19,53 @@
 
 
 ///
-namespace Cpl { namespace Io {
+namespace Cpl {
+///
+namespace Io {
 
 
 /** This concrete class implements a Line Writer stream using a previously
-    opened Output stream.  
+    opened Output stream.
 
     NOTE: The LineWriter class does NOT provide any multi-thread mechanisms
-          and/or protections.  In addition, using an instance of the 
-          AtomicOutputApi interface as the underlying Output stream will NOT 
+          and/or protections.  In addition, using an instance of the
+          AtomicOutputApi interface as the underlying Output stream will NOT
           make output of the println() calls atomic! The intended way to
           have an 'Atomic' LineWriter is to use the AtomicOutput callback
           mechanism (i.e. requestOutputs()) and within the callback create
           the desired LineWriter using the supplied Output stream.
  */
-class LineWriter: public LineWriterApi
+class LineWriter : public LineWriterApi
 {
 protected:
     /// Data source
-    Output&     m_stream;
+    Output & m_stream;
 
     /// Newline
     const char* m_newline;
 
 
 public:
-    /** Constructor. 
+    /** Constructor.
      */
     LineWriter( Output& stream, const char* newline=NewLine::standard() );
 
 
 public:
     /// See LineWriterApi
-    bool print( const char* srcstring);
+    bool print( const char* srcstring );
 
     /// See LineWriterApi
-    bool println( const char* srcstring);
+    bool println( const char* srcstring );
 
     /// See LineWriterApi
     bool println();
 
     /// See LineWriterApi
-    bool print( const char* srcstring, int numbytes);
+    bool print( const char* srcstring, int numbytes );
 
     /// See LineWriterApi
-    bool println( const char* srcstring, int numbytes);
+    bool println( const char* srcstring, int numbytes );
 
     /// See LineWriterApi
     bool print( Cpl::Text::String& formatBuffer, const char* format, ... );
