@@ -27,15 +27,6 @@
 
 #define SECT_     "_0test"
 
-#ifndef MAXVARS_
-#define MAXVARS_                4
-#endif
-
-#ifndef MAX_CMD_BUFFER_
-#define MAX_CMD_BUFFER_         64
-#endif
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace {
@@ -131,7 +122,7 @@ public:
 
 public:
 	/// See Cpl::TShell::Command
-	Cpl::TShell::Command::Result_T execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, Cpl::Io::Output& outfd ) noexcept
+	Cpl::TShell::Command::Result_T execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept
 	{
 		Cpl::Text::String& token = context.getTokenBuffer();
 

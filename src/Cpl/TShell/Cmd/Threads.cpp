@@ -37,7 +37,7 @@ Threads::Threads( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const 
 
 
 ///////////////////////////
-Cpl::TShell::Command::Result_T Threads::execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, Cpl::Io::Output& outfd ) noexcept
+Cpl::TShell::Command::Result_T Threads::execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept
 {
 	// Error checking
 	if ( tokens.numParameters() != 1 )

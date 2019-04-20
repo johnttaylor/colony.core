@@ -128,6 +128,9 @@ protected:
 	/// Input Frame buffer
 	char                                m_inputBuffer[OPTION_CPL_TSHELL_PROCESSOR_INPUT_SIZE + 1];
 
+	/// Copy of raw input string (because tokenizing is destructive process)
+	char                                m_inputCopy[OPTION_CPL_TSHELL_PROCESSOR_INPUT_SIZE + 1];
+
 
 	/// Buffer that is used to construct output messages
 	Cpl::Text::FString<OPTION_CPL_TSHELL_PROCESSOR_OUTPUT_SIZE>  m_outputBuffer;

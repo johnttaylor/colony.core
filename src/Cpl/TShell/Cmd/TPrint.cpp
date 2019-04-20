@@ -32,7 +32,7 @@ TPrint::TPrint( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const ch
 
 
 ///////////////////////////
-Cpl::TShell::Command::Result_T TPrint::execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, Cpl::Io::Output& outfd ) noexcept
+Cpl::TShell::Command::Result_T TPrint::execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept
 {
 	Cpl::Text::String&  outtext = context.getOutputBuffer();
 

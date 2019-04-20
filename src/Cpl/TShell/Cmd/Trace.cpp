@@ -40,7 +40,7 @@ Trace::Trace( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char
 
 
 ///////////////////////////
-Cpl::TShell::Command::Result_T Trace::execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, Cpl::Io::Output& outfd ) noexcept
+Cpl::TShell::Command::Result_T Trace::execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept
 {
 	Cpl::Text::String&  token    = context.getTokenBuffer();
 	Cpl::Text::String&  outtext  = context.getOutputBuffer();

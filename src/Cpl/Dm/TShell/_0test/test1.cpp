@@ -14,6 +14,9 @@
 
 
 #include "Cpl/TShell/Stdio.h"
+#include "Cpl/System/Api.h"
+#include "Cpl/System/Assert.h"
+#include "Cpl/System/Shutdown.h"
 
 /// 
 extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
@@ -33,6 +36,24 @@ void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
 
 	// Start the scheduler
 	Cpl::System::Api::enableScheduling();
+
+	// Give time for the commands to run
+	Cpl::System::Api::sleep( 3 * 1000 );
+	int32_t value;
+	int8_t valid = mp_apple_.read( value );
+	CPL_SYSTEM_ASSERT( value == 111 );
+	CPL_SYSTEM_ASSERT( Cpl::Dm::ModelPoint::IS_VALID( valid ) );
+	valid = mp_orange_.read( value );
+	CPL_SYSTEM_ASSERT( value == 0x100 );
+	CPL_SYSTEM_ASSERT( Cpl::Dm::ModelPoint::IS_VALID( valid ) );
+	Cpl::Text::FString<128> valString;
+	valid = mp_plum_.read( valString );
+	CPL_SYSTEM_ASSERT( valString == "Hello Mr. Plum" );
+	CPL_SYSTEM_ASSERT( Cpl::Dm::ModelPoint::IS_VALID( valid ) );
+	CPL_SYSTEM_ASSERT( mp_plum_.isLocked() );
+	
+	// Exit the application with a 'pass' result
+	Cpl::System::Shutdown::success();
 }
 
 

@@ -19,23 +19,13 @@
 #include "Cpl/Text/atob.h"
 #include "Cpl/Text/FString.h"
 
-#include "Cpl/TShell/Dac/Cmd/Help.h"
-#include "Cpl/TShell/Dac/Cmd/Bye.h"
-#include "Cpl/TShell/Dac/Cmd/Trace.h"
-#include "Cpl/TShell/Dac/Cmd/TPrint.h"
+#include "Cpl/TShell/Cmd/Help.h"
+#include "Cpl/TShell/Cmd/Bye.h"
+#include "Cpl/TShell/Cmd/Trace.h"
+#include "Cpl/TShell/Cmd/TPrint.h"
 
 
 #define SECT_     "_0test"
-
-#ifndef MAXVARS_
-#define MAXVARS_                4
-#endif
-
-#ifndef MAX_CMD_BUFFER_
-#define MAX_CMD_BUFFER_         64
-#endif
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace {
@@ -100,13 +90,13 @@ public:
 };
 
 
-class Bob : public Cpl::TShell::Dac::Cmd::Command
+class Bob : public Cpl::TShell::Cmd::Command
 {
 public:
-	/// See Cpl::TShell::Dac::Command
+	/// See Cpl::TShell::Command
 	const char* getUsage() const noexcept { return "bob on|off [delay]"; }
 
-	/// See Cpl::TShell::Dac::Command
+	/// See Cpl::TShell::Command
 	const char* getHelp() const noexcept { return "  Sets the test trace output to on/off and delay time between msgs"; }
 
 	///
@@ -115,14 +105,14 @@ public:
 
 public:
 	/// Constructor
-	Bob( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Apple& application ) noexcept
+	Bob( Cpl::Container::Map<Cpl::TShell::Command>& commandList, Apple& application ) noexcept
 		:Command( commandList, "bob" )
 		, m_app( application )
 	{
 	}
 
 	/// Constructor
-	Bob( Cpl::Container::Map<Cpl::TShell::Dac::Command>& commandList, Apple& application, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
+	Bob( Cpl::Container::Map<Cpl::TShell::Command>& commandList, Apple& application, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
 		:Command( commandList, "bob", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
 		, m_app( application )
 	{
@@ -130,8 +120,8 @@ public:
 
 
 public:
-	/// See Cpl::TShell::Dac::Command
-	Cpl::TShell::Dac::Command::Result_T execute( Cpl::TShell::Dac::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, Cpl::Io::Output& outfd ) noexcept
+	/// See Cpl::TShell::Command
+	Cpl::TShell::Command::Result_T execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept
 	{
 		Cpl::Text::String& token = context.getTokenBuffer();
 

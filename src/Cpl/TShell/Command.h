@@ -48,7 +48,7 @@ public:
 public:
 	/** This method executes the command.
 	 */
-	virtual Result_T execute( Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, Cpl::Io::Output& outfd ) noexcept = 0;
+	virtual Result_T execute( Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept = 0;
 
 
 public:

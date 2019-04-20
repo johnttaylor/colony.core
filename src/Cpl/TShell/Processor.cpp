@@ -118,6 +118,7 @@ void Processor::requestStop() noexcept
 Command::Result_T Processor::executeCommand( char* deframedInput, Cpl::Io::Output& outfd ) noexcept
 {
 	// Tokenize/parse the input (Note: This is a destructive parse)
+	strcpy( m_inputCopy, deframedInput );
 	Cpl::Text::Tokenizer::TextBlock tokens( deframedInput, m_del, m_term, m_quote, m_esc );
 
 	// Skip something that doesn't parse
@@ -141,7 +142,7 @@ Command::Result_T Processor::executeCommand( char* deframedInput, Cpl::Io::Outpu
 	}
 
 	// Execute the found command
-	Command::Result_T result = cmdPtr->execute( *this, tokens, outfd );
+	Command::Result_T result = cmdPtr->execute( *this, tokens, m_inputCopy, outfd );
 	if ( result != Command::eSUCCESS )
 	{
 		return outputCommandError( result, deframedInput ) ? result : Command::eERROR_IO;
