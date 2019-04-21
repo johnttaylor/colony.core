@@ -32,7 +32,7 @@ from nqbplib.base import BuildValues
 FINAL_OUTPUT_NAME = 'a.exe'
 
 # Link unittest directory by object module so that Catch's self-registration mechanism 'works'
-unit_test_objects = '_BUILT_DIR_.src/Cpl/System/_0test/sim'
+unit_test_objects = '_BUILT_DIR_.src/Cpl/System/_0test/_sim'
 
 #
 # For build config/variant: "Release" (aka C++11 threading)
