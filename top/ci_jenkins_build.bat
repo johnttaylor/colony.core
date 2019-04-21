@@ -19,6 +19,7 @@ git log --max-count=1 >> build_number_%BLDNUM%.txt
 IF "/%1"=="/" goto :beginbuild
 set TAG=%PKG_BRANCH%-bldnum-%BLDNUM%
 echo:build tag: %TAG% >> build_number_%BLDNUM%.txt
+pushd colony.core
 git tag %TAG%
 IF NOT ERRORLEVEL 1 goto :tagready
 git tag -d %TAG%
@@ -26,6 +27,7 @@ git tag %TAG%
 :tagready
 git push origin HEAD:%PKG_BRANCH% %TAG%
 IF ERRORLEVEL 1 exit /b 1
+popd
 
 :: Use Outcast's publish script to build and test everything (but do NOT actually publish)
 :beginbuild
