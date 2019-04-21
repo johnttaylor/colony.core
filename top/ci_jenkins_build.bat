@@ -22,6 +22,9 @@ IF "/%1"=="/" goto :beginbuild
 set TAG=%PKG_BRANCH%-bldnum-%BLDNUM%
 echo:build tag: %TAG% >> build_number_%BLDNUM%.txt
 pushd colony.core
+set HELPER=top\git-credential-helper.bat
+set HELPER="%HELPER:\=\\%"
+set GIT_ASKPASS=%HELPER%
 git tag %TAG%
 IF NOT ERRORLEVEL 1 goto :tagready
 git tag -d %TAG%
