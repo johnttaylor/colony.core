@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2018  John T. Taylor
+* Copyright (c) 2014-2019  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -29,7 +29,7 @@ ElapsedTime::Precision_T& ElapsedTime::Precision_T::operator +=( const ElapsedTi
 
 
 ///////////////////////////////////////////////////////
-ElapsedTime::Precision_T ElapsedTime::deltaPrecision( Precision_T startTime, Precision_T endTime ) throw()
+ElapsedTime::Precision_T ElapsedTime::deltaPrecision( Precision_T startTime, Precision_T endTime ) noexcept
 {
     Precision_T delta;
 
@@ -48,7 +48,7 @@ ElapsedTime::Precision_T ElapsedTime::deltaPrecision( Precision_T startTime, Pre
 }
 
 
-bool ElapsedTime::expiredPrecision( Precision_T timeMarker, Precision_T duration, Precision_T currentTime ) throw()
+bool ElapsedTime::expiredPrecision( Precision_T timeMarker, Precision_T duration, Precision_T currentTime ) noexcept
 {
     Precision_T delta = ElapsedTime::deltaPrecision( timeMarker, currentTime );
     return delta.m_seconds >= duration.m_seconds && delta.m_thousandths >= duration.m_thousandths;

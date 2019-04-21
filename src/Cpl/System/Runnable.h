@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2018  John T. Taylor
+* Copyright (c) 2014-2019  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -57,7 +57,7 @@ public:
                method.
             2) This method is an attempted work-around for terminating
                threads by having the thread run itself to completion.
-               Not all OSs support a polite way (i.e. reclaiming
+               Not all OSes support a polite way (i.e. reclaiming
                resource, memory, etc.) of killing threads.
      */
     virtual void pleaseStop() {}
@@ -66,7 +66,7 @@ public:
         run method; false is returned, i.e. the run() method has
         completed.
      */
-    virtual bool isRunning() throw();
+    virtual bool isRunning() noexcept;
 
 
 protected:
@@ -85,8 +85,8 @@ protected:
     bool m_running;
 
 public:
-    /** This method is PRIVATE, it is only made public to avoid the tight
-        coupling of the 'friend mechanism' for friending current and future
+    /** This method has COMPONENT Scope, it is only made public to avoid the
+        tight coupling of the 'friend mechanism' for friending current and future
         concrete thread classes.  The application SHOULD NEVER call/use this
         method.
 

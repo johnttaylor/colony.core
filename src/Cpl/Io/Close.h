@@ -1,32 +1,34 @@
 #ifndef Cpl_Io_Close_h_
 #define Cpl_Io_Close_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "Cpl/Container/Item.h"
 
 
 ///
-namespace Cpl { namespace Io {
+namespace Cpl {
+///
+namespace Io {
 
 /** This abstract class defines a close operation that is intended to be used
-    Input and Output streams/files.  Since InputOutput streams/files are 
-    supported we end up with with 2 close() method when the InputOutput class
-    inherients from Input and Output interfaces.  This causes basically a
+    Input and Output streams/files.  Since InputOutput streams/files are
+    supported we end up with 2 close() method when the InputOutput class
+    inherits from Input and Output interfaces.  This causes basically a
     'diamond' problem.  By making the close() it owns interface and a parent
     class - we can use the 'virtual mechanism' in C++ to ensure that for
     InputOutput classes there is one and only one close() method.
  */
-class Close: public Cpl::Container::Item
+class Close : public Cpl::Container::Item
 {
 public:
     /** This method will close the stream.  The result of closing the
@@ -37,7 +39,7 @@ public:
 
 public:
     /// Lets the make the destructor virtual
-    virtual ~Close(){}
+    virtual ~Close() {}
 
 };
 

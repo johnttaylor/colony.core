@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """Invokes NQBP's mk.py script"""
 
 import os

@@ -1,7 +1,4 @@
-/** @file */
 /** @namespace Cpl::TShell
-@htmlonly
-<pre>    
 
 The 'Cpl::TShell' namespace provides a Text based shell that can be used
 interact with an Application.  What functionality the TShell provides is
@@ -13,8 +10,6 @@ Note: The TShell is ONLY a framework/pattern for a Text based shell - the
       application is responsible for connecting it to the application and 
       filling in the 'missing bits'.
              
-</pre>    
-@endhtmlonly
 */  
 
 

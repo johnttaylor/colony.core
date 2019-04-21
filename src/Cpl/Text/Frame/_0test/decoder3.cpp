@@ -1,13 +1,13 @@
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 
 #include "Catch/catch.hpp"
 #include "Cpl/Text/FString.h"
@@ -20,11 +20,6 @@
 
 /// 
 using namespace Cpl::Text::Frame;
-
-/// This method is used as part of 'forcing' this object to being actualled 
-/// linked during the NQBP link process (it is artifact of linking libraries 
-/// and how CATCH auto-registers (via static objects) test case
-void link_decoder3(void) {}
 
 
 #define SECT_   "_0test"
@@ -46,89 +41,89 @@ void link_decoder3(void) {}
 #define BUFSIZE_     16
 #endif
 
-static Cpl::Text::FString<BUFSIZE_+1> instring;
+static Cpl::Text::FString<BUFSIZE_ + 1> instring;
 static char                           buffer_[BUFSIZE_];
 
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "stringdecoder", "[stringdecoder]" )
-    {
-    Cpl::System::Shutdown_TS::clearAndUseCounter();
-    
-    StringDecoder   decoder( SOF_, EOF_, ESC_ );
-    const char*     endPtr;
-    size_t          fsize;
+{
+	Cpl::System::Shutdown_TS::clearAndUseCounter();
 
-    // test null pointer error
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) == false );
+	StringDecoder   decoder( SOF_, EOF_, ESC_ );
+	const char*     endPtr;
+	size_t          fsize;
 
-    decoder.setInput( ".hello world;" );
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == "hello world" );
-    endPtr = decoder.getRemainder();
-    REQUIRE( *endPtr == '\0' );
+	// test null pointer error
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) == false );
 
-    // Test scan of exhausted string
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) == false );
+	decoder.setInput( ".hello world;" );
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == "hello world" );
+	endPtr = decoder.getRemainder();
+	REQUIRE( *endPtr == '\0' );
 
-    decoder.setInput( ".start" );
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) == false );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == "start" );
-    endPtr = decoder.getRemainder();
-    REQUIRE( *endPtr == '\0' );
+	// Test scan of exhausted string
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) == false );
 
-    decoder.setInput( ".this frame exceeds client's buffer;.just kidding;" );
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == "just kidding" );
-    endPtr = decoder.getRemainder();
-    REQUIRE( *endPtr == '\0' );
+	decoder.setInput( ".start" );
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) == false );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == "start" );
+	endPtr = decoder.getRemainder();
+	REQUIRE( *endPtr == '\0' );
 
-    decoder.setInput( "..sof; .~.more sof;." );
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == ".sof" );
-    endPtr = decoder.getRemainder();
-    REQUIRE( *endPtr == ' ' );
+	decoder.setInput( ".this frame exceeds client's buffer;.just kidding;" );
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == "just kidding" );
+	endPtr = decoder.getRemainder();
+	REQUIRE( *endPtr == '\0' );
 
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == ".more sof" );
-    endPtr = decoder.getRemainder();
-    REQUIRE( *endPtr == '.' );
+	decoder.setInput( "..sof; .~.more sof;." );
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == ".sof" );
+	endPtr = decoder.getRemainder();
+	REQUIRE( *endPtr == ' ' );
 
-    decoder.setInput( "not-rejected;" );
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == "not-rejected" );
-    endPtr = decoder.getRemainder();
-    REQUIRE( *endPtr == '\0' );
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == ".more sof" );
+	endPtr = decoder.getRemainder();
+	REQUIRE( *endPtr == '.' );
 
-    decoder.setInput( ".~;eof;x.~.~~~;sef;y" );
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == ";eof" );
-    endPtr = decoder.getRemainder();
-    REQUIRE( *endPtr == 'x' );
+	decoder.setInput( "not-rejected;" );
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == "not-rejected" );
+	endPtr = decoder.getRemainder();
+	REQUIRE( *endPtr == '\0' );
 
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == ".~;sef" );
-    endPtr = decoder.getRemainder();
-    REQUIRE( *endPtr == 'y' );
+	decoder.setInput( ".~;eof;x.~.~~~;sef;y" );
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == ";eof" );
+	endPtr = decoder.getRemainder();
+	REQUIRE( *endPtr == 'x' );
 
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1u );
-    }
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == ".~;sef" );
+	endPtr = decoder.getRemainder();
+	REQUIRE( *endPtr == 'y' );
+
+	REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 1u );
+}
 
 
 

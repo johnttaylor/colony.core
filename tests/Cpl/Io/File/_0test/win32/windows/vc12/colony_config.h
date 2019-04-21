@@ -12,5 +12,8 @@
 #define CPL_IO_NEW_LINE_NATIVE_MAP              "\015\012"
 #endif
 
+//
+#define POSIX_EOF_SEMANTICS
+
 
 #endif

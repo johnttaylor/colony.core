@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at           
 * http://integerfox.com/colony.core/license.txt
 *                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
+* Copyright (c) 2014-2019  John T. Taylor                                        
 *                                                                               
 * Redistributions of the source code must retain the above copyright notice.    
 *----------------------------------------------------------------------------*/ 
@@ -17,13 +17,8 @@
 
 /// 
 using namespace Cpl::Container;
+/// 
 using namespace Cpl::System;
-
-/// This method is used as part of 'forcing' this object to being actualled 
-/// linked during the NQBP link process (it is artifact of linking libraries 
-/// and how CATCH auto-registers (via static objects) test case
-void link_ringbuffer(void) {}
-
 
 
 ////////////////////////////////////////////////////////////////////////////////

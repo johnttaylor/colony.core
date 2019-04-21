@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014 John T. Taylor
+* Copyright (c) 2014-2019  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -36,29 +36,24 @@ static void removeThreadFromActiveList_( Thread& thread );
 #ifdef USE_CPL_SYSTEM_FREERTOS_NATIVE_THREAD 
 namespace {
 
-    /// This class is used to turn the entry/native/main thread into a Cpl::System::Thread (i.e. add the thread semaphore)    
+/// This class is used to turn the entry/native/main thread into a Cpl::System::Thread (i.e. add the thread semaphore)    
 class RegisterInitHandler_ : public Cpl::System::StartupHook_,
     public Cpl::System::Runnable
 {
 protected:
-    // Empty run function
-    // Note: Leave my 'running state' set to false -->this is so I don't 
-    // terminate the native thread prematurely when/if the Thread instance
-    // is deleted.  In theory this can't happen since the Thread and Runnable
-    // instance pointers for the native thread are never exposed to the 
-    // application and/or explicitly deleted.
-    void appRun() {}
+    // Empty 'run' function -- it is never called!
+    void appRun( void ) {} 
 
 public:
     ///
-    RegisterInitHandler_() :StartupHook_( eSYSTEM ) {}
+    RegisterInitHandler_():StartupHook_( eSYSTEM ) {}
 
 
 protected:
     ///
     void notify( InitLevel_T init_level )
     {
-    // Create a thread object for the native thread
+        // Create a thread object for the native thread
         m_running = true;
         new Cpl::System::FreeRTOS::Thread( "main", *this );
     }
@@ -97,7 +92,7 @@ Thread::Thread( const char* threadName, Cpl::System::Runnable& dummyRunnable )
     }
 
     // Plant the address of my TLS array into FreeRTOS's TCB
-    vTaskSetApplicationTaskTag( m_threadHandle, (TaskHookFunction_t)this );
+    vTaskSetApplicationTaskTag( m_threadHandle, (TaskHookFunction_t) this );
 
     // Add the native thread to the list of active threads
     addThreadToActiveList_( *this );
@@ -108,7 +103,7 @@ Thread::Thread( Cpl::System::Runnable&   runnable,
                 const char*              name,
                 int                      priority,
                 unsigned                 stackSize
-                )
+)
     :m_runnable( runnable ),
     m_name( name ),
     m_threadHandle( NULL )
@@ -122,10 +117,11 @@ Thread::Thread( Cpl::System::Runnable&   runnable,
     // Calculate stack size in terms of 'depth' (not bytes)
     if ( stackSize == 0 )
     {
-        stackSize = OPTION_CPL_SYSTEM_FREERTOS_DEFAULT_STACK_SIZE >> sizeof(StackType_t)/2;
-    } else
+        stackSize = OPTION_CPL_SYSTEM_FREERTOS_DEFAULT_STACK_SIZE >> sizeof( StackType_t ) / 2;
+    }
+    else
     {
-        stackSize = stackSize >> sizeof(StackType_t)/2; 
+        stackSize = stackSize >> sizeof( StackType_t ) / 2;
     }
 
 
@@ -144,7 +140,7 @@ Thread::~Thread()
     //       of the associated Runnable object complete.  If you do
     //       need to kill a thread - be dang sure that it is state such
     //       that it is ok to die - i.e. it has released all of its acquired
-    //       resources: mutexs, semaphores, file handles, etc.
+    //       resources: mutexes, semaphores, file handles, etc.
     if ( m_runnable.isRunning() )
     {
         // Ask the runnable object nicely to stop 
@@ -162,7 +158,7 @@ Thread::~Thread()
 
 
 //////////////////////////////
-int Thread::signal() throw()
+int Thread::signal() noexcept
 {
     xTaskNotifyGive( m_threadHandle );
     return 0; // Always return success
@@ -173,7 +169,7 @@ int Thread::signal() throw()
           defined 'return zero on success' semantics.  This is to overcome
           the oddities of FreeRTOS.
  */
-int Thread::su_signal() throw()
+int Thread::su_signal() noexcept
 {
     BaseType_t higherPriorityTaskWoken = pdFALSE;
     vTaskNotifyGiveFromISR( m_threadHandle, &higherPriorityTaskWoken );
@@ -182,25 +178,29 @@ int Thread::su_signal() throw()
 
 
 
-const char* Thread::getName() throw()
+const char* Thread::getName() noexcept
 {
     return m_name;
 }
 
-size_t Thread::getId() throw()
+size_t Thread::getId() noexcept
 {
     return (size_t) m_threadHandle;
 }
 
-bool Thread::isRunning() throw()
+bool Thread::isRunning() noexcept
 {
     return m_runnable.isRunning();
 }
 
-
-Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) throw()
+Cpl_System_Thread_NativeHdl_T Thread::getNativeHandle( void ) noexcept
 {
     return m_threadHandle;
+}
+
+Cpl::System::Runnable& Thread::getRunnable( void ) noexcept
+{
+    return m_runnable;
 }
 
 //////////////////////////////
@@ -230,23 +230,28 @@ void Thread::entryPoint( void* data )
 
 
 //////////////////////////////
-Cpl::System::Thread& Cpl::System::Thread::getCurrent() throw()
+Cpl::System::Thread& Cpl::System::Thread::getCurrent() noexcept
 {
     return *((Thread*) xTaskGetApplicationTaskTag( xTaskGetCurrentTaskHandle() ));
 }
 
 
-void Cpl::System::Thread::wait() throw()
+void Cpl::System::Thread::wait() noexcept
 {
     ulTaskNotifyTake( pdFALSE, portMAX_DELAY );
 }
 
-bool Cpl::System::Thread::timedWait( unsigned long msecs ) throw()
+bool Cpl::System::Thread::tryWait() noexcept
+{
+    return ulTaskNotifyTake( pdFALSE, 0 ) > 0;
+}
+
+bool Cpl::System::Thread::timedWait( unsigned long msecs ) noexcept
 {
     return ulTaskNotifyTake( pdFALSE, msecs * portTICK_PERIOD_MS ) > 0;
 }
 
-const char* Cpl::System::Thread::myName() throw()
+const char* Cpl::System::Thread::myName() noexcept
 {
     // Provide some protection in case this method is called before the scheduler is running (e.g. called by the trace engine)
     if ( !Cpl::System::Api::isSchedulingEnabled() )
@@ -258,7 +263,7 @@ const char* Cpl::System::Thread::myName() throw()
 }
 
 
-size_t Cpl::System::Thread::myId() throw()
+size_t Cpl::System::Thread::myId() noexcept
 {
     // Provide some protection in case this method is called before the scheduler is running (e.g. called by the trace engine)
     if ( !Cpl::System::Api::isSchedulingEnabled() )
@@ -270,14 +275,14 @@ size_t Cpl::System::Thread::myId() throw()
 }
 
 
-void** Thread::getTlsArray() throw()
+void** Thread::getTlsArray() noexcept
 {
     return ((Cpl::System::FreeRTOS::Thread*) xTaskGetApplicationTaskTag( xTaskGetCurrentTaskHandle() ))->m_tlsArray;
 }
 
 
 //////////////////////////////
-void Cpl::System::Thread::traverse( Cpl::System::Thread::Traverser& client ) throw()
+void Cpl::System::Thread::traverse( Cpl::System::Thread::Traverser& client ) noexcept
 {
     Cpl::System::Mutex::ScopeBlock mylock( Cpl::System::Locks_::sysLists() );
     Cpl::System::FreeRTOS::Thread* t = threadList_.first();
@@ -312,7 +317,7 @@ Cpl::System::Thread* Cpl::System::Thread::create( Runnable&   runnable,
                                                   int         stackSize,
                                                   void*       stackPtr,
                                                   bool        allowSimTicks
-                                                  )
+)
 {
     return new Cpl::System::FreeRTOS::Thread( runnable, name, priority, stackSize );
 }

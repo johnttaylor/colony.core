@@ -4,7 +4,7 @@
 //
 #define USE_CPL_SYSTEM_TRACE
 
-// Set Posix/Linux
-#define TESTING_POSIX
+//
+#define POSIX_EOF_SEMANTICS
 
 #endif

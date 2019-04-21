@@ -4,20 +4,11 @@
 #define CATCH_CONFIG_RUNNER  
 #include "Catch/catch.hpp"
 
-// External references
-extern void link_basic(void);
 
-
-int main( int argc, char* const argv[] )
+int main( int argc, char* argv[] )
 {
     // Initialize Colony
     Cpl::System::Api::initialize();
-
-    // THIS CODE DOES NOTHING.  It is needed to force the inclusion of
-    // the test code due to the combination of how CATCH auto registers
-    // test cases and how NQBP links by libraries.  Short version is do NOT
-    // remove these call(s).
-    link_basic();
 
     CPL_SYSTEM_TRACE_ENABLE();
     CPL_SYSTEM_TRACE_ENABLE_SECTION("_0test");

@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2018  John T. Taylor
+* Copyright (c) 2014-2019  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -77,11 +77,11 @@ public:
     {
     private:
         /// Reference to the mutex to be used for synchronization
-        Mutex&  m_mutex;
+        Mutex & m_mutex;
 
     public:
         /// Constructor.  This will block until the mutex lock is acquired.
-        inline ScopeBlock( Mutex& mutex ) throw() :m_mutex( mutex ) { m_mutex.lock(); }
+        inline ScopeBlock( Mutex& mutex ) noexcept:m_mutex( mutex ) { m_mutex.lock(); }
 
         /// Destructor.  This method releases ownership of the mutex
         inline ~ScopeBlock() { m_mutex.unlock(); }

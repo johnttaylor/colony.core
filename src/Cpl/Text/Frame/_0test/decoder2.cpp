@@ -1,13 +1,13 @@
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 
 #include "Catch/catch.hpp"
 #include "Cpl/Text/FString.h"
@@ -21,12 +21,6 @@
 /// 
 using namespace Cpl::Text::Frame;
 
-/// This method is used as part of 'forcing' this object to being actualled 
-/// linked during the NQBP link process (it is artifact of linking libraries 
-/// and how CATCH auto-registers (via static objects) test case
-void link_decoder2(void) {}
-
-
 #define SECT_   "_0test"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,47 +30,47 @@ void link_decoder2(void) {}
 #define BUFSIZE_     16
 #endif
 
-static Cpl::Text::FString<BUFSIZE_+1> instring;
+static Cpl::Text::FString<BUFSIZE_ + 1> instring;
 static char                           buffer_[BUFSIZE_];
 
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "linedecoder", "[linedecoder]" )
-    {
-    Cpl::System::Shutdown_TS::clearAndUseCounter();
-    
-    Cpl::Io::File::Input  infd( "testinput2.txt" );
-    LineDecoder<7>        decoder( &infd );
-    size_t                fsize;
+{
+	Cpl::System::Shutdown_TS::clearAndUseCounter();
 
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == "hello world" );
+	Cpl::Io::File::Input  infd( "testinput2.txt" );
+	LineDecoder<7>        decoder( &infd );
+	size_t                fsize;
 
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == "  start" );
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == "hello world" );
 
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == "not really end" );
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == "  start" );
 
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == ".good frame;" );
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == "not really end" );
 
-    REQUIRE( decoder.scan( sizeof(buffer_), buffer_, fsize ) );
-    instring.copyIn( buffer_, fsize );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ));
-    REQUIRE( instring == " just kidding  " );
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == ".good frame;" );
 
-    infd.close();
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
-    }
+	REQUIRE( decoder.scan( sizeof( buffer_ ), buffer_, fsize ) );
+	instring.copyIn( buffer_, fsize );
+	CPL_SYSTEM_TRACE_MSG( SECT_, ( "Frame=[%s]", instring.getString() ) );
+	REQUIRE( instring == " just kidding  " );
+
+	infd.close();
+	REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
+}
 
 
 

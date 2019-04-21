@@ -7,34 +7,10 @@
 #define CATCH_CONFIG_RUNNER  
 #include "Catch/catch.hpp"
 
-// External references
-extern void link_fstring(void);
-extern void link_dstring(void);
-extern void link_dfstring(void);
-extern void link_string(void);
-extern void link_strip(void);
-extern void link_atob(void);
-extern void link_format(void);
-extern void link_stringItem(void);
-
-
-int main( int argc, char* const argv[] )
+int main( int argc, char* argv[] )
 {
     // Initialize Colony
     Cpl::System::Api::initialize();
-
-    // THIS CODE DOES NOTHING.  It is needed to force the inclusion of
-    // the test code due to the combination of how CATCH auto registers
-    // test cases and how NQBP links by libraries.  Short version is do NOT
-    // remove these call(s).
-    link_fstring();
-    link_dstring();
-    link_dfstring();
-    link_string();
-    link_strip();
-    link_atob();
-    link_format();
-    link_stringItem();
 
 	// With the gcc 5.3.1 compiler the new/delete calls no longer match (hmm...)
     Cpl::Memory::New_TS::setNewDelete_delta( 0, true );

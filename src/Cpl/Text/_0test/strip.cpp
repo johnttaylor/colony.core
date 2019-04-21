@@ -1,13 +1,13 @@
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 
 #include "Catch/catch.hpp"
 #include "Cpl/Text/strip.h"    
@@ -19,60 +19,53 @@
 using namespace Cpl::Text;
 using namespace Cpl::System;
 
-/// This method is used as part of 'forcing' this object to being actually
-/// linked during the NQBP link process (it is artifact of linking libraries 
-/// and how CATCH auto-registers (via static objects) test case
-void link_strip(void) {}
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "strip", "[strip]" )
-    {
+{
 
-    Shutdown_TS::clearAndUseCounter();
+	Shutdown_TS::clearAndUseCounter();
 
-    SECTION( "stripSpace" )
-        {
-        const char* input = "  hello  world, \t bobs your uncle ";
-        const char* ptr;
-        
-        ptr = stripSpace(input);
-        REQUIRE( strcmp(ptr,"hello  world, \t bobs your uncle ") == 0 );
-        ptr = stripSpace(stripNotSpace(ptr));
-        REQUIRE( strcmp(ptr,"world, \t bobs your uncle ") == 0 );
-        ptr = stripSpace(stripNotSpace(ptr));
-        REQUIRE( strcmp(ptr,"bobs your uncle ") == 0 );
-        ptr = stripSpace(stripNotSpace(ptr));
-        REQUIRE( strcmp(ptr,"your uncle ") == 0 );
-        ptr = stripSpace(stripNotSpace(ptr));
-        REQUIRE( strcmp(ptr,"uncle ") == 0 );
-        ptr = stripSpace(stripNotSpace(ptr));
-        REQUIRE( strcmp(ptr,"") == 0 );
-        }
+	SECTION( "stripSpace" )
+	{
+		const char* input = "  hello  world, \t bobs your uncle ";
+		const char* ptr;
 
-    SECTION( "stripChars" )
-        {
-        const char* input = "::hello,world,\t bobs your . uncle, ";
-        const char* ptr;
-        
-        ptr = stripChars(input,":.,");
-        REQUIRE( strcmp(ptr,"hello,world,\t bobs your . uncle, ") == 0 );
-        ptr = stripChars(stripNotChars(ptr,":.,"), ":.,");
-        REQUIRE( strcmp(ptr,"world,\t bobs your . uncle, ") == 0 );
-        ptr = stripChars(stripNotChars(ptr,":.,"), ":.,");
-        REQUIRE( strcmp(ptr,"\t bobs your . uncle, ") == 0 );
-        ptr = stripChars(stripNotChars(ptr,":.,"), ":.,");
-        REQUIRE( strcmp(ptr," uncle, ") == 0 );
-        ptr = stripChars(stripNotChars(ptr,":.,"), ":.,");
-        REQUIRE( strcmp(ptr," ") == 0 );
-        ptr = stripChars(stripNotChars(ptr,":.,"), ":.,");
-        REQUIRE( strcmp(ptr,"") == 0 );
-        }
+		ptr = stripSpace( input );
+		REQUIRE( strcmp( ptr, "hello  world, \t bobs your uncle " ) == 0 );
+		ptr = stripSpace( stripNotSpace( ptr ) );
+		REQUIRE( strcmp( ptr, "world, \t bobs your uncle " ) == 0 );
+		ptr = stripSpace( stripNotSpace( ptr ) );
+		REQUIRE( strcmp( ptr, "bobs your uncle " ) == 0 );
+		ptr = stripSpace( stripNotSpace( ptr ) );
+		REQUIRE( strcmp( ptr, "your uncle " ) == 0 );
+		ptr = stripSpace( stripNotSpace( ptr ) );
+		REQUIRE( strcmp( ptr, "uncle " ) == 0 );
+		ptr = stripSpace( stripNotSpace( ptr ) );
+		REQUIRE( strcmp( ptr, "" ) == 0 );
+	}
 
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
-    }
+	SECTION( "stripChars" )
+	{
+		const char* input = "::hello,world,\t bobs your . uncle, ";
+		const char* ptr;
+
+		ptr = stripChars( input, ":.," );
+		REQUIRE( strcmp( ptr, "hello,world,\t bobs your . uncle, " ) == 0 );
+		ptr = stripChars( stripNotChars( ptr, ":.," ), ":.," );
+		REQUIRE( strcmp( ptr, "world,\t bobs your . uncle, " ) == 0 );
+		ptr = stripChars( stripNotChars( ptr, ":.," ), ":.," );
+		REQUIRE( strcmp( ptr, "\t bobs your . uncle, " ) == 0 );
+		ptr = stripChars( stripNotChars( ptr, ":.," ), ":.," );
+		REQUIRE( strcmp( ptr, " uncle, " ) == 0 );
+		ptr = stripChars( stripNotChars( ptr, ":.," ), ":.," );
+		REQUIRE( strcmp( ptr, " " ) == 0 );
+		ptr = stripChars( stripNotChars( ptr, ":.," ), ":.," );
+		REQUIRE( strcmp( ptr, "" ) == 0 );
+	}
+
+	REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
+}

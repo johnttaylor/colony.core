@@ -12,10 +12,10 @@
 #include "Cpl/System/Private_.h"
 #include "Cpl/Io/InputOutput.h"
 
-extern Cpl::Io::InputOutput& Bsp_Serial(void);
+extern Cpl::Io::InputOutput& Bsp_Serial( void );
 
 /*-----------------------------------------------------------*/
-Cpl::Io::Output* Cpl::System::Trace::getDefaultOutputStream_( void ) throw()
+Cpl::Io::Output* Cpl::System::Trace::getDefaultOutputStream_( void ) noexcept
 {
     return &Bsp_Serial();
 }

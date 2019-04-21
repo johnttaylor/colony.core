@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2018  John T. Taylor
+* Copyright (c) 2014-2019  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -40,7 +40,7 @@ bool Api::isSchedulingEnabled( void )
     return true; // Always return true since scheduling is always enabled by definition of running in user space
 }
 
-void Api::sleepInRealTime( unsigned long milliseconds ) throw()
+void Api::sleepInRealTime( unsigned long milliseconds ) noexcept
 {
     Sleep( (DWORD) milliseconds );
 }

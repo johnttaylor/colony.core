@@ -3,7 +3,7 @@
 
 // UNIT TEST -->tests that the generic API compiles & link
 
-int main( int argc, char* const argv[] )
+int main( int argc, char* argv[] )
     {
     /// Initialize the BSP
     Bsp_Api_initialize();

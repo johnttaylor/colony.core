@@ -9,8 +9,6 @@ src/Cpl/Io/Stdio/_0test
 src/Cpl/Container
 src/Cpl/Text
 src/Cpl/System
-src/Cpl/Log
-src/Cpl/Log/_default
 
 
 # Platforms

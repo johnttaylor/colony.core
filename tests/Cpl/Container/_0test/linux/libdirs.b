@@ -6,8 +6,6 @@ src/Cpl/Container/_0test
 
 # supporting infrastructure
 src/Cpl/System
-src/Cpl/Log
-src/Cpl/Log/_default
 
 
 # Platforms

@@ -1,15 +1,15 @@
 #ifndef Cpl_Container_AvlTree_x_h_
 #define Cpl_Container_AvlTree_x_h_
-/*----------------------------------------------------------------------------- 
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an   
-* open source project with a BSD type of licensing agreement.  See the license  
-* agreement (license.txt) in the top/ directory or on the Internet at           
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
-*                                                                               
-* Copyright (c) 2014-2018  John T. Taylor                                        
-*                                                                               
-* Redistributions of the source code must retain the above copyright notice.    
-*----------------------------------------------------------------------------*/ 
+*
+* Copyright (c) 2014-2019  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
 /** @file */
 
 #include "colony_config.h"
@@ -25,7 +25,9 @@
 
 
 /// 
-namespace Cpl { namespace Container {
+namespace Cpl {
+/// 
+namespace Container {
 
 /** This concrete class implements the core functionality of for
     AVL Binary tree (i.e. a sorted list with fast searches, inserts,
@@ -39,17 +41,17 @@ namespace Cpl { namespace Container {
     The original code is in the public domain and is available at:
         https://sourceforge.net/snippet/detail.php?type=snippet&id=100933
  */
-    
+
 class AvlTree_
 {
 private:
     /// Helper class so that the root node can behave like all the other nodes
-    class AvlRoot: public MapItem,
-                   public Key
+    class AvlRoot : public MapItem,
+        public Key
     {
     public:
         /// 
-        const Key& getKey() const throw();
+        const Key& getKey() const noexcept;
         /// 
         int compareKey( const Key& key ) const;
         /// 
@@ -60,7 +62,7 @@ private:
         AvlRoot();
 
         /// Special constructor
-        AvlRoot( const char* ignoreThisParameter_usedToCreateAUniqueConstructor ); 
+        AvlRoot( const char* ignoreThisParameter_usedToCreateAUniqueConstructor );
 
     };
 
@@ -68,30 +70,30 @@ private:
     AvlRoot  m_root;
 
 
-public: 
+public:
     /// Constructor
     AvlTree_();
 
-    /** This is a special constructor for when the list is 
-		statically declared (i.e. it is initialized as part of
-		C++ startup BEFORE main() is executed.  C/C++ guarantees
-		that all statically declared data will be initialized
-		to zero by default (see r.8.4 in C++ Programming Language, 
-		Second Edition).  Since the head & tail pointers are
-		initialized to zero - then the C/C++ default is OK.  Why
-		do I care about all this?  Because if you attempt to build
-		static list(s), then the order of when the list is 
-		constructed vs. when the static elements are added to the 
-		list is a problem!  To avoid this problem, a alternate 
-		constructor that does NOT initialize the head & tail pointers
-		is provided.  It assumes that the pointers are already set 
-		zero because the list is "static". Whew!
-	 */
+    /** This is a special constructor for when the list is
+        statically declared (i.e. it is initialized as part of
+        C++ startup BEFORE main() is executed.  C/C++ guarantees
+        that all statically declared data will be initialized
+        to zero by default (see r.8.4 in C++ Programming Language,
+        Second Edition).  Since the head & tail pointers are
+        initialized to zero - then the C/C++ default is OK.  Why
+        do I care about all this?  Because if you attempt to build
+        static list(s), then the order of when the list is
+        constructed vs. when the static elements are added to the
+        list is a problem!  To avoid this problem, a alternate
+        constructor that does NOT initialize the head & tail pointers
+        is provided.  It assumes that the pointers are already set
+        zero because the list is "static". Whew!
+     */
     AvlTree_( const char* ignoreThisParameter_usedToCreateAUniqueConstructor );
 
 public:
     /** Inserts an item into the tree.  If the node is successfully inserted,
-        then the method return true.  If the tree already contains a node 
+        then the method return true.  If the tree already contains a node
         with the same key, then the method returns false.
      */
     bool insert( MapItem& node );
@@ -102,7 +104,7 @@ public:
      */
     MapItem* removeItem( MapItem& node );
 
-    /// Searchs for a item with a matching key.  Returns 0 if not found
+    /// Searches for a item with a matching key.  Returns 0 if not found
     MapItem* find( const Key& keyToFind ) const;
 
     /// Returns the first item in the tree. Returns 0 if tree is empty
@@ -112,10 +114,10 @@ public:
     MapItem* last() const;
 
     /// Returns the next item in the tree.  Returns 0 if at the end-of-tree
-    static MapItem* next(MapItem& current);
+    static MapItem* next( MapItem& current );
 
     /// Returns the previous item in the tree.  Returns 0 if at the start-of-tree
-    static MapItem* previous(MapItem& current);
+    static MapItem* previous( MapItem& current );
 
 
 private: // Helpers

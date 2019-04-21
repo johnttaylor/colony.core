@@ -1,7 +1,9 @@
 # Test App
-src/Cpl/System/_0test/hw_basic
+src/Cpl/System/_0test/_hw_basic
 
 # supporting infrastructure
+src/Cpl/System/_assert
+src/Cpl/Text/_mappings/_kpitrx
 /top/libdirs/platform_freertos_default_realtime_libdirs.b
 
 # drivers

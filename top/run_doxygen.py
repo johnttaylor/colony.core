@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 This script runs 'doxygen' (to generate HTML documention of the package's
 header files) on the package and checks for warnings.  Colony's coding 
@@ -19,34 +19,37 @@ def filter_warnings( output ):
     at_least_one = False
     lines = output.splitlines()
     for line in lines:
-        # Filter auto generated FSM code
-        if ( re.search( "^.*Fsm_.h", line ) or re.search( "^.*Fsm_ext_.h", line ) or re.search( "^.*Fsm_trace_.h", line )):
-            continue
-            
         # Filter
-        if ( re.search( r"src/Cpl/Text/Frame/LineDecoder.h:.*warning: Found unknown command.*\\r", line ) ):
+        if ( re.search( r"^.*src/Cpl/Type/enum.h:.*warning:.*", line ) ):
             continue
+
+        # Filter
+        if ( re.search( r"^.*src/.*warning: argument .* of command @param is not found in the argument list of .*BETTER_ENUM.*", line ) ):
+            continue
+
+        # Filter
+        #if ( re.search( r"src/Cpl/Text/Frame/LineDecoder.h:.*warning: Found unknown command.*\\r", line ) ):
+        #    continue
  
         # Filter
-        if ( re.search( 'src/Cpl/TShell/Dac/Cmd/Command.h:.*warning: Unsupported xml/html tag <esc> found', line ) ):
-            continue
+        #if ( re.search( 'src/Cpl/TShell/Dac/Cmd/Command.h:.*warning: Unsupported xml/html tag <esc> found', line ) ):
+        #    continue
             
         # Passed ALL filters
-        print line
+        print( line )
         at_least_one = True
 
     # Display the results of the filtering
     if ( at_least_one == False ):
-        print "    All warnings are known warnings -->so you are good!"
-        print
+        print( "    All warnings are known warnings -->so you are good!")
+        print()
         exit(0)
     else:
-        print
-        # exit(1)
-        exit(0)
+        print()
+        exit(1)
         
 #------------------------------------------------------------------------------
-print "Running doxygen..."     
+print( "Running doxygen..." )    
 
 # run doxygen
 cmd = "doxygen"
@@ -57,9 +60,9 @@ if ( p.returncode != 0 ):
 
 
 # check for errors
-if ( " warning: " in r[1] ):
-    print
-    print "*** Doxygen had one or more warnings! ***"
-    filter_warnings( r[1] )
+if ( " warning: " in r[1].decode() ):
+    print()
+    print( "*** Doxygen had one or more warnings! ***" )
+    filter_warnings( r[1].decode() )
     
-print "Completed without warnings or errors."
+print( "Completed without warnings or errors." )
