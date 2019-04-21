@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-This script runs 'doxygen' (to generate HTML documention of the package's
+This script runs 'doxygen' (to generate HTML documentation of the package's
 header files) on the package and checks for warnings.  Colony's coding 
 standards require that doxygen execute without warning.
 
