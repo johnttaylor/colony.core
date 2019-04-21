@@ -7,7 +7,9 @@
 set PKG_BRANCH=%1
 
 :: Calculate the build number (is the total number of commits acrossed master and develop branches in the Git repo)
+pushd colony.core
 for /f %%i in ('git rev-list --count origin/master') do set MASTER_COUNT=%%i
+popd
 for /f %%i in ('git rev-list --count origin/develop') do set DEVELOP_COUNT=%%i
 set /A BLDNUM=%MASTER_COUNT%+%DEVELOP_COUNT%
 echo:BuildNumber=%BLDNUM% > build_number_%BLDNUM%.txt
