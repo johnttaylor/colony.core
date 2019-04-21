@@ -1,5 +1,4 @@
-@echo on
-echo: %1 %2 %3 %4
+@echo off
 :: Script to access the git username/password via Environment variables
 echo:username=%GITHUB_USERNAME%
 echo:password=%GITHUB_PASSWORD%
