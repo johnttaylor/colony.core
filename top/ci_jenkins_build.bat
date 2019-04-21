@@ -4,7 +4,7 @@
 :: Usage: ci_jenkins_build.bat [<branch>]
 
 :: Cache branch info
-set ROOT_DIR=%~p0
+set TOP_DIR=%~p0
 set PKG_BRANCH=%1
 
 :: Calculate the build number (is the total number of commits acrossed master and develop branches in the Git repo)
@@ -23,7 +23,7 @@ IF "/%1"=="/" goto :beginbuild
 set TAG=%PKG_BRANCH%-bldnum-%BLDNUM%
 echo:build tag: %TAG% >> build_number_%BLDNUM%.txt
 pushd colony.core
-set HELPER=%ROOT_DIR%top\git-credential-helper.bat
+set HELPER=%TOP_DIR\git-credential-helper.bat
 set GIT_ASKPASS=%HELPER%
 git tag %TAG%
 IF NOT ERRORLEVEL 1 goto :tagready
