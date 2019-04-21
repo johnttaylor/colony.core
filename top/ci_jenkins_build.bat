@@ -23,8 +23,6 @@ IF "/%1"=="/" goto :beginbuild
 set TAG=%PKG_BRANCH%-bldnum-%BLDNUM%
 echo:build tag: %TAG% >> build_number_%BLDNUM%.txt
 pushd colony.core
-echo:%GITHUB_USER%
-echo:%GITHUB_PASSWORD%
 set HELPER=%TOP_DIR%git-credential-helper.bat
 set GIT_ASKPASS=%HELPER%
 git tag %TAG%

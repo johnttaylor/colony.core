@@ -1,5 +1,6 @@
 @echo off
-echo:args %1 %2 %3 > log.txt
 :: Script to access the git username/password via Environment variables
-echo:username=%GITHUB_USERNAME%
-echo:password=%GITHUB_PASSWORD%
+set arg=%1
+IF "%arg:~0,4%"=="Pass" echo:%GITHUB_PASSWORD%
+IF "%arg:~0,4%"=="User" echo:%GITHUB_USER%
+
