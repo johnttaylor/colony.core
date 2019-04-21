@@ -13,7 +13,9 @@ for /f %%i in ('git rev-list --count origin/develop') do set DEVELOP_COUNT=%%i
 popd
 set /A BLDNUM=%MASTER_COUNT%+%DEVELOP_COUNT%
 echo:BuildNumber=%BLDNUM% > build_number_%BLDNUM%.txt
-git log --max-count=1 >> build_number_%BLDNUM%.txt
+pushd colony.core
+git log --max-count=1 >> ..\colony.core\build_number_%BLDNUM%.txt
+popd
 
 :: Tag the Build (note: Even failed builds will be tagged - this is the lesser of the evils because if I tag at the end (builds take awhile) - the tag will fail because my snapshot is behead the head)
 IF "/%1"=="/" goto :beginbuild
