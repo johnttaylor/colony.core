@@ -68,9 +68,6 @@ base_win64.linkflags  = '-m64 -fprofile-arcs'
 base_win64.linklibs   = '-lgcov'
 base_win64.firstobjs  = unit_test_objects
 
-# Set 'Optimized' options
-optimzed_cpp11.cflags = '-O0'
-
 #-------------------------------------------------
 # ONLY edit this section if you are ADDING options
 # for build configurations/variants OTHER than the
