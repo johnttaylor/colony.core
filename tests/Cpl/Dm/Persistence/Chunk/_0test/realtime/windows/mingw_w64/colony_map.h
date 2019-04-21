@@ -4,13 +4,7 @@
 // Cpl::System mappings
 
 #ifdef BUILD_VARIANT_CPP11
-#include <stdlib.h>
-#define CPL_IO_FILE_NATIVE_DIR_SEP_MAP          '\\'
-#define CPL_IO_FILE_MAX_NAME_MAP                _MAX_PATH
-
-#include "Cpl/System/Cpp11/mappings_.h"
-
-
+#include "Cpl/System/Cpp11/_win32/mappings_.h"
 #else
 #include "Cpl/System/Win32/mappings_.h"
 #endif

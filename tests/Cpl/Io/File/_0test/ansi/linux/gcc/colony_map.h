@@ -7,12 +7,8 @@
 #endif
 
 #ifdef BUILD_VARIANT_CPP11
-#include <limits.h>
-#define CPL_IO_FILE_NATIVE_DIR_SEP_MAP          '/'
-#define CPL_IO_FILE_MAX_NAME_MAP                PATH_MAX
-#include "Cpl/System/Cpp11/mappings_.h"
+#include "Cpl/System/Cpp11/_posix/mappings_.h"
 #endif
-
 
 
 // strapi mapping

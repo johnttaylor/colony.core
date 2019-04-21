@@ -14,7 +14,7 @@
 
 #ifdef BUILD_VARIANT_CPP11
 // Cpl::System mappings
-#include "Cpl/System/Cpp11/mappings_.h"
+#include "Cpl/System/Cpp11/_win32/mappings_.h"
 #endif
 
 

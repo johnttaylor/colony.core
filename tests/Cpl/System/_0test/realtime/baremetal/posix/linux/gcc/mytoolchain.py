@@ -56,28 +56,6 @@ debug_release = BuildValues()       # Do NOT comment out this line
 
 
 # 
-# For build config/variant: "cpp11"
-# (note: uses same internal toolchain options as the 'Release' variant, 
-#        only the 'User' options will/are different)
-#
-
-# Construct option structs
-base_cpp11     = BuildValues()  
-optimzed_cpp11 = BuildValues()
-debug_cpp11    = BuildValues()
-
-# Set 'base' options
-base_cpp11.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++ -fprofile-arcs -ftest-coverage'
-base_cpp11.linkflags  = '-m64 -fprofile-arcs -std=c++11'
-base_cpp11.linklibs   = '-lgcov -lpthread'
-base_cpp11.firstobjs  = unit_test_objects
-
-# Set 'Optimized' options
-optimzed_cpp11.cflags = '-O3'
-
-
-
-# 
 # For build config/variant: "posix64" (same as release, except 64bit target)
 # (note: uses same internal toolchain options as the 'Release' variant, 
 #        only the 'User' options will/are different)
@@ -112,12 +90,6 @@ release_opts = { 'user_base':base_release,
                }
                
                
-# Add new dictionary of for new build configuration options
-cpp11_opts = { 'user_base':base_cpp11, 
-               'user_optimized':optimzed_cpp11, 
-               'user_debug':debug_cpp11
-             }
-  
 posix64_opts = { 'user_base':base_posix64, 
                  'user_optimized':optimzed_posix64, 
                  'user_debug':debug_posix64
@@ -127,8 +99,7 @@ posix64_opts = { 'user_base':base_posix64,
 # Add new variant option dictionary to # dictionary of 
 # build varaints
 build_variants = { 'posix':release_opts,
-                   'posix64':posix64_opts,
-                   'cpp11':cpp11_opts,
+                   'posix64':posix64_opts
                  }    
 
 #---------------------------------------------------

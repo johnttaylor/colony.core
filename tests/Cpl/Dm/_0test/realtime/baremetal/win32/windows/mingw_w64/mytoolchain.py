@@ -51,27 +51,6 @@ debug_release = BuildValues()       # Do NOT comment out this line
 
 
 
-# 
-# For build config/variant: "cpp11"
-# (note: uses same internal toolchain options as the 'Release' variant, 
-#        only the 'User' options will/are different)
-#
-
-# Construct option structs
-base_cpp11     = BuildValues()  
-optimzed_cpp11 = BuildValues()
-debug_cpp11    = BuildValues()
-
-# Set 'base' options
-base_cpp11.cflags     = '-O0 -m32 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
-base_cpp11.linkflags  = '-m64 -fprofile-arcs'
-base_cpp11.linklibs   = '-lgcov'
-base_cpp11.firstobjs  = unit_test_objects
-
-# Set 'Optimized' options
-optimzed_cpp11.cflags = '-O0'
-
-
 #
 # For build config/variant: "win64"
 # (note: uses same internal toolchain options as the 'Release' variant,
@@ -104,12 +83,6 @@ release_opts = { 'user_base':base_release,
                }
                
 # Add new dictionary of for new build configuration options
-cpp11_opts = { 'user_base':base_cpp11, 
-               'user_optimized':optimzed_cpp11, 
-               'user_debug':debug_cpp11
-             }
-  
-# Add new dictionary of for new build configuration options
 win64_opts = { 'user_base':base_win64,
                'user_optimized':optimzed_win64,
                'user_debug':debug_win64
@@ -119,8 +92,7 @@ win64_opts = { 'user_base':base_win64,
 # Add new variant option dictionary to # dictionary of 
 # build variants
 build_variants = { 'win32':release_opts,
-                   'win64':win64_opts,
-                   'cpp11':cpp11_opts,
+                   'win64':win64_opts
                  }    
 
 
