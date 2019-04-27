@@ -28,6 +28,7 @@ set GIT_ASKPASS=%HELPER%
 git tag %TAG%
 IF NOT ERRORLEVEL 1 goto :tagready
 git tag -d %TAG%
+git push --delete origin %TAG%
 git tag %TAG%
 :tagready
 git push origin HEAD:%PKG_BRANCH% %TAG%
@@ -44,7 +45,7 @@ orc -v publish --ci %WORKSPACE%\colony.core\top\ci_local_packages.bat --version 
 
 :: Run doxygen
 pushd top
-run-doxygen.py
+run_doxygen.py
 IF ERRORLEVEL 1 exit /b 1
 popd
 
