@@ -16,11 +16,12 @@
 #include "Cpl/TShell/Cmd/Command.h"
 
 
-/** Usage
+/** Command
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLCMD_CMD_HELP_	    "help"
+/// Usage
 #define CPLTSHELLCMD_USAGE_HELP_    "help [* | <cmd>]"
 
 /// Detailed Help text

@@ -16,11 +16,12 @@
 #include "Cpl/TShell/Cmd/Command.h"
 
 
-/** Usage
+/** Command
 									"         1         2         3         4         5         6         7         8"
 									"12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLCMD_CMD_TRACE_		"trace"
+/// Usage
 #define CPLTSHELLCMD_USAGE_TRACE_	"trace [on|off]\n" \
                                     "trace section (on|off) <sect1> [<sect2>]...\n" \
                                     "trace threadfilters [<threadname1> [<threadname2>]]...\n" \
