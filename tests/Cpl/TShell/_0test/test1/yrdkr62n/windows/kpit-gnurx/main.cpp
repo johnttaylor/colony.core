@@ -2,7 +2,7 @@
 #include "Cpl/Io/Serial/Renesas/Rx62n/InputOutput.h"               
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Trace.h"
-#include "Cpl/TShell/Dac/Cmd/FreeRTOS/Threads.h"
+#include "Cpl/TShell/Cmd/FreeRTOS/Threads.h"
 #include <stdlib.h>
 
 
@@ -13,8 +13,8 @@ static Cpl::Io::Serial::Renesas::Rx62n::InputOutput<256,32> fd_( BSP_DB9_CONSOLE
 // External references
 extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 
-Cpl::Container::Map<Cpl::TShell::Dac::Command>  cmdlist("ignore_this_parameter-used to invoke the static constructor" );
-Cpl::TShell::Dac::Cmd::FreeRTOS::Threads        threadsCmd_( cmdlist );
+Cpl::Container::Map<Cpl::TShell::Command>  cmdlist("ignore_this_parameter-used to invoke the static constructor" );
+Cpl::TShell::Cmd::FreeRTOS::Threads        threadsCmd_( cmdlist );
 
 
 /*-----------------------------------------------------------*/

@@ -29,6 +29,9 @@
 *.out
 *.app
 *.x
+*.elf
+*.hex
+*.zip
 
 # e2studio junk
 .metadata
@@ -44,3 +47,4 @@ make.log
 *.map
 
 docs/*
+myMediaFile

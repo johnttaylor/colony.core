@@ -23,7 +23,7 @@ src/Cpl/Text
 src/Cpl/Io/Serial/Adafruit/Nrf5
 //Arduino/src/Bsp/Adafruit/feather52/gcc
 
-# Ardunio Core library for the Nordic nrf52 Feather52
+# Arduino Core library for the Nordic nrf52 Feather52
 $ARDUINO_TOOLS$/hardware/nrf52/$ARDUINO_BSP_VER$/variants/feather52
 $ARDUINO_TOOLS$/hardware/nrf52/$ARDUINO_BSP_VER$/cores/nRF5
 $ARDUINO_TOOLS$/hardware/nrf52/$ARDUINO_BSP_VER$/cores/nRF5/avr
