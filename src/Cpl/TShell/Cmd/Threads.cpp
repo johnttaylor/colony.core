@@ -11,6 +11,7 @@
 
 #include "Threads.h"
 #include "Cpl/Text/atob.h"
+#include "Cpl/Text/Tokenizer/TextBlock.h"
 #include "Cpl/System/Shutdown.h"
 #include <string.h>         
 
@@ -37,8 +38,10 @@ Threads::Threads( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const 
 
 
 ///////////////////////////
-Cpl::TShell::Command::Result_T Threads::execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept
+Cpl::TShell::Command::Result_T Threads::execute( Cpl::TShell::Context_& context, char* cmdString, Cpl::Io::Output& outfd ) noexcept
 {
+	Cpl::Text::Tokenizer::TextBlock tokens( cmdString, context.getDelimiterChar(), context.getTerminatorChar(), context.getQuoteChar(), context.getEscapeChar() );
+
 	// Error checking
 	if ( tokens.numParameters() != 1 )
 	{

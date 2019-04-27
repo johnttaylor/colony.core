@@ -12,6 +12,7 @@
 #include "Trace.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/Text/strip.h"
+#include "Cpl/Text/Tokenizer/TextBlock.h"
 #include <string.h>
 
 
@@ -40,12 +41,13 @@ Trace::Trace( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char
 
 
 ///////////////////////////
-Cpl::TShell::Command::Result_T Trace::execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept
+Cpl::TShell::Command::Result_T Trace::execute( Cpl::TShell::Context_& context, char* cmdString, Cpl::Io::Output& outfd ) noexcept
 {
-	Cpl::Text::String&  token    = context.getTokenBuffer();
-	Cpl::Text::String&  outtext  = context.getOutputBuffer();
-	unsigned            numParms = tokens.numParameters();
-	bool                io       = true;
+	Cpl::Text::Tokenizer::TextBlock tokens( cmdString, context.getDelimiterChar(), context.getTerminatorChar(), context.getQuoteChar(), context.getEscapeChar() );
+	Cpl::Text::String&              token    = context.getTokenBuffer();
+	Cpl::Text::String&              outtext  = context.getOutputBuffer();
+	unsigned                        numParms = tokens.numParameters();
+	bool                            io       = true;
 
 	// Do nothing if trace was not compiled in
 	if ( CPL_SYSTEM_TRACE_IS_COMPILED() == false )

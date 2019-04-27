@@ -59,7 +59,7 @@ public:
 
 public:
     /// See Cpl::TShell::Command
-    Cpl::TShell::Command::Result_T execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept;
+    Cpl::TShell::Command::Result_T execute( Cpl::TShell::Context_& context, char* cmdString, Cpl::Io::Output& outfd ) noexcept;
 
 };
 

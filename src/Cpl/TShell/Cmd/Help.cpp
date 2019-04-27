@@ -10,6 +10,7 @@
 *----------------------------------------------------------------------------*/
 
 #include "Help.h"
+#include "Cpl/Text/Tokenizer/TextBlock.h"
 
 
 ///
@@ -33,8 +34,10 @@ Help::Help( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* 
 
 
 ///////////////////////////
-Cpl::TShell::Command::Result_T Help::execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept
+Cpl::TShell::Command::Result_T Help::execute( Cpl::TShell::Context_& context, char* cmdString, Cpl::Io::Output& outfd ) noexcept
 {
+	Cpl::Text::Tokenizer::TextBlock tokens( cmdString, context.getDelimiterChar(), context.getTerminatorChar(), context.getQuoteChar(), context.getEscapeChar() );
+
 	// Error checking
 	if ( tokens.numParameters() > 2 )
 	{
