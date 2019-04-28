@@ -50,7 +50,7 @@ IF ERRORLEVEL 1 exit /b 1
 popd
 
 :: Generate code coverage reports (clean the linux projects as to not confuse the gcovr files)
-pushd test
+pushd tests
 bob.py build linux -z
 chuck.py -v --match tca.py args rpt --xml-pretty -o gcovr.xml
 IF ERRORLEVEL 1 exit /b 1
