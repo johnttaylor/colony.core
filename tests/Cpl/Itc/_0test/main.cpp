@@ -1,10 +1,6 @@
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Trace.h"
-
-
-
-#define CATCH_CONFIG_RUNNER  
-#include "Catch/catch.hpp"
+#include "Catch/precompiled/main.h"
 
 
 int main( int argc, char* argv[] )
@@ -17,9 +13,9 @@ int main( int argc, char* argv[] )
     CPL_SYSTEM_TRACE_ENABLE_SECTION( "_0test" );
     CPL_SYSTEM_TRACE_ENABLE_SECTION( "Cpl::Itc" );
     CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eBRIEF );
-    //CPL_SYSTEM_TRACE_SET_THREAD_FILTER( "MASTER" );
+	CPL_SYSTEM_TRACE_SET_THREAD_FILTER( "Viewer" );
+	//CPL_SYSTEM_TRACE_SET_THREAD_2FILTER( "MASTER" );
 
     // Run the test(s)
-    int result = Catch::Session().run( argc, argv );
-    return result;
+	return run_catch2_tests( argc, argv );
 }
