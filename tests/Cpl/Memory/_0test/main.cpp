@@ -1,9 +1,6 @@
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Trace.h"
-
-#define CATCH_CONFIG_RUNNER  
-#include "Catch/catch.hpp"
-
+#include "Catch/precompiled/main.h"
 
 int main( int argc, char* argv[] )
 {
@@ -16,6 +13,5 @@ int main( int argc, char* argv[] )
     CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eBRIEF );
 
     // Run the test(s)
-    int result = Catch::Session().run( argc, argv );
-    return result;
+	return run_catch2_tests( argc, argv );
 }
