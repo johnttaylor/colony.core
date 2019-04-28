@@ -3,10 +3,8 @@
 #include "Cpl/System/Trace.h"
 #include "Cpl/System/_testsupport/Shutdown_TS.h"
 #include "Cpl/Memory/_testsupport/New_TS.h"
+#include "Catch/precompiled/main.h"
 
-
-#define CATCH_CONFIG_RUNNER  
-#include "Catch/catch.hpp"
 
 int main( int argc, char* argv[] )
 {
@@ -19,12 +17,12 @@ int main( int argc, char* argv[] )
     CPL_SYSTEM_TRACE_FUNC( "_0test");
 
 	// Expect EQUAL new/delete calls
-	// Ignoring memory stats on Windoze -->can't account for 'extra' news
+	// Ignoring memory stats, Between the Catch framework (and Windoze) -->can't account for 'extra' news
     Cpl::Memory::New_TS::setNewDelete_delta( 0, true );
 
 
     // Run the test(s)
-    int result = Catch::Session().run( argc, argv );
+    int result = run_catch2_tests( argc, argv );
 
 	// Shutdown Cpl so my testing infra-structure cleanup/post processing gets done
     Cpl::System::Shutdown_TS::restore();
