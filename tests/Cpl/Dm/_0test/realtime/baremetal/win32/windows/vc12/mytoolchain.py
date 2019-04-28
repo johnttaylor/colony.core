@@ -22,7 +22,7 @@
 
 # get definition of the Options structure
 from nqbplib.base import BuildValues
-
+from nqbplib.my_globals import NQBP_WORK_ROOT
 
 #===================================================
 # BEGIN EDITS/CUSTOMIZATIONS
@@ -35,24 +35,24 @@ FINAL_OUTPUT_NAME = 'a.exe'
 unit_test_objects = '_BUILT_DIR_.src/Cpl/Dm/_0test _BUILT_DIR_.src/Cpl/Dm/_0test/_baremetal'
 
 #
-# For build config/variant: "Release" (aka C++11 threading)
+# For build config/variant: "Release" 
 #
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags = '/W3 /WX /EHsc /D "CATCH_CONFIG_FAST_COMPILE"'  # /EHsc enables exceptions
-
+base_release.cflags    = '/W3 /WX /EHsc /D CATCH_CONFIG_FAST_COMPILE'  # /EHsc enables exceptions
 base_release.firstobjs = unit_test_objects
 
+
 # Set project specific 'optimized' options
-optimzed_release = BuildValues()    # Do NOT comment out this line
-optimzed_release.cflags = '/O2'
+optimzed_release          = BuildValues()    # Do NOT comment out this line
+optimzed_release.cflags   = '/O2'
+optimzed_release.linklibs = r'{}\xpkgs\catch\src\Catch\libs\x86\windows\vc14\cpp11\32bit\release\library.lib'.format( NQBP_WORK_ROOT() )
 
 # Set project specific 'debug' options
-debug_release = BuildValues()       # Do NOT comment out this line
-debug_release.cflags = '/D "_MY_APP_DEBUG_SWITCH_"'
-
-
+debug_release          = BuildValues()       # Do NOT comment out this line
+debug_release.cflags   = '/D "_MY_APP_DEBUG_SWITCH_"'
+debug_release.linklibs = r'{}\xpkgs\catch\src\Catch\libs\x86\windows\vc14\cpp11\32bit\debug\library.lib'.format( NQBP_WORK_ROOT() )
 
 #-------------------------------------------------
 # ONLY edit this section if you are ADDING options
@@ -66,9 +66,8 @@ release_opts = { 'user_base':base_release,
                }
                
                
-        
 # Add new variant option dictionary to # dictionary of 
-# build varaints
+# build variants
 build_variants = { 'win32':release_opts
                  }    
 

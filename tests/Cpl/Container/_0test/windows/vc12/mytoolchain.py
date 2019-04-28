@@ -40,7 +40,7 @@ unit_test_objects = '_BUILT_DIR_.src/Cpl/Container/_0test'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags    = '/W3 /WX /EHsc'  # /EHsc enables exceptions
+base_release.cflags    = '/W3 /WX /EHsc /D CATCH_CONFIG_FAST_COMPILE'  # /EHsc enables exceptions
 base_release.firstobjs = unit_test_objects
 
 
@@ -67,7 +67,7 @@ debug_cpp11    = BuildValues()
 
 
 # Set 'base' options
-base_cpp11.cflags     = '/W3 /WX /EHsc'  # /EHsc enables exceptions
+base_cpp11.cflags     = '/W3 /WX /EHsc /D CATCH_CONFIG_FAST_COMPILE'  # /EHsc enables exceptions
 base_cpp11.firstobjs  = unit_test_objects
 
 # Set 'Optimized' options
