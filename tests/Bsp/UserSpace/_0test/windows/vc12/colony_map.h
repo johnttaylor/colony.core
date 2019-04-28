@@ -7,7 +7,7 @@
 
 // Cpl::System mappings
 #ifdef BUILD_VARIANT_WIN32
-#include "Cpl/System/Win32/_win32/mappings_.h"
+#include "Cpl/System/Win32/mappings_.h"
 #endif
 #ifdef BUILD_VARIANT_CPP11
 #include "Cpl/System/Cpp11/mappings_.h"
