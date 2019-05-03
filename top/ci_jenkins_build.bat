@@ -41,7 +41,7 @@ orc mkwrk
 pushd colony.core
 call  setnqbp.bat
 @echo on
-orc -v publish --ci %WORKSPACE%\colony.core\top\ci_local_packages.bat --version 0.0.0 colony.core "dummy comment - not really publishing" --nonewer --nopending --nons --keeptars --nodeps --nogetdeps
+orc -v publish --ci %WORKSPACE%\colony.core\top\ci_local_packages.bat --version 0.0.0 colony.core "dummy comment - not really publishing" --dry-run --nonewer --nopending --nons --keeptars --nodeps --nogetdeps --noclean
 IF ERRORLEVEL 1 exit /b 1
 
 :: Run doxygen
