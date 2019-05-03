@@ -13,6 +13,8 @@ Usage: doxygen
 
 import subprocess
 import re
+import shutil
+import os
 
 #------------------------------------------------------------------------------
 def filter_warnings( output ):
@@ -58,7 +60,10 @@ r   = p.communicate()
 if ( p.returncode != 0 ):
     exit( "ERROR: Doxygen failed to run.  Check if doxygen.exe is in your command path" )
 
-
+# delete the HTML files - only keep the Windows Help (.chm) file
+path = os.path.join( '..', 'docs', 'html' )
+shutil.rmtree( path, ignore_errors=True  )
+shutil.rm( path)
 # check for errors
 if ( " warning: " in r[1].decode() ):
     print()
