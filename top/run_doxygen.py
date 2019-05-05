@@ -63,7 +63,7 @@ if ( p.returncode != 0 ):
 # delete the HTML files - only keep the Windows Help (.chm) file
 path = os.path.join( '..', 'docs', 'html' )
 shutil.rmtree( path, ignore_errors=True  )
-shutil.rm( path)
+
 # check for errors
 if ( " warning: " in r[1].decode() ):
     print()
