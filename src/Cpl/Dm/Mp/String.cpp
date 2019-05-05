@@ -197,7 +197,7 @@ size_t String::getSize() const noexcept
 	return m_data.maxLength;
 }
 
-size_t String::getInternalDataSize() const noexcept
+size_t String::getInternalDataSize_() const noexcept
 {
 	return m_data.maxLength;
 }

@@ -140,7 +140,7 @@ public:
     const void* getImportExportDataPointer_() const noexcept;
 
     /// See Cpl::Dm::ModelPoint.  
-    size_t getInternalDataSize() const noexcept;
+    size_t getInternalDataSize_() const noexcept;
 };
 
 
