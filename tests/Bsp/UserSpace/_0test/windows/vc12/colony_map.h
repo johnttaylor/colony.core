@@ -10,7 +10,7 @@
 #include "Cpl/System/Win32/mappings_.h"
 #endif
 #ifdef BUILD_VARIANT_CPP11
-#include "Cpl/System/Cpp11/mappings_.h"
+#include "Cpl/System/Cpp11/_win32/mappings_.h"
 #endif
 
 // strapi mapping

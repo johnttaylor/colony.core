@@ -8,7 +8,7 @@ Usage: test <pkgroot> [<host>]
 Notes:
     o Default host is "windows" 
 
-Returns: If all of the test(s) are succesful, then the script returns '0'; else
+Returns: If all of the test(s) are successful, then the script returns '0'; else
          a non-zero value is returned.
 """
 

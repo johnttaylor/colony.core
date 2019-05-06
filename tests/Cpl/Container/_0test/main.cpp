@@ -1,8 +1,5 @@
 #include "Cpl/System/Api.h"
-
-#define CATCH_CONFIG_RUNNER  
-#include "Catch/catch.hpp"
-
+#include "Catch/precompiled/main.h"
 
 int main( int argc, char* argv[] )
 {
@@ -10,6 +7,5 @@ int main( int argc, char* argv[] )
     Cpl::System::Api::initialize();
 
     // Run the test(s)
-    int result = Catch::Session().run( argc, argv );
-    return result;
+    return run_catch2_tests( argc, argv );
 }

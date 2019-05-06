@@ -16,11 +16,12 @@
 #include "Cpl/TShell/Cmd/Command.h"
 
 
-/** Usage
+/** Command
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
 #define CPLTSHELLCMD_CMD_HELP_	    "help"
+/// Usage
 #define CPLTSHELLCMD_USAGE_HELP_    "help [* | <cmd>]"
 
 /// Detailed Help text
@@ -63,7 +64,7 @@ public:
 
 public:
     /// See Cpl::TShell::Command
-    Cpl::TShell::Command::Result_T execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept;
+    Cpl::TShell::Command::Result_T execute( Cpl::TShell::Context_& context, char* cmdString, Cpl::Io::Output& outfd ) noexcept;
 
 };
 

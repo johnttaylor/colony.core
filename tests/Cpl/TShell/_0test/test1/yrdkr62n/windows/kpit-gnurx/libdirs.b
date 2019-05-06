@@ -1,11 +1,10 @@
 # Unit under test
 src/Cpl/TShell
-src/Cpl/TShell/Dac
-src/Cpl/TShell/Dac/Cmd
-src/Cpl/TShell/Dac/Cmd/FreeRTOS
+src/Cpl/TShell/Cmd
+src/Cpl/TShell/Cmd/FreeRTOS
 
 # tests
-src/Cpl/TShell/Dac/_0test
+src/Cpl/TShell/_0test
 
 # supporting infrastructure
 src/Cpl/Text/Frame

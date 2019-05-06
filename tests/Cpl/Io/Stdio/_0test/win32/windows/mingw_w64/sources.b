@@ -1,2 +1,2 @@
 # use common main.cpp
-../main.cpp
+../../../main.cpp

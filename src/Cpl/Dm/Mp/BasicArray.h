@@ -228,7 +228,7 @@ public:
 	}
 
 	/// See Cpl::Dm::Point.  
-	size_t getInternalDataSize() const noexcept
+	size_t getInternalDataSize_() const noexcept
 	{
 		return m_data.numElements * sizeof( ELEMTYPE );
 	}

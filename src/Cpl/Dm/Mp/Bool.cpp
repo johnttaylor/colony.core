@@ -76,7 +76,7 @@ bool Bool::toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
 	JsonDocument& doc = beginJSON( valid, locked, seqnum );
 
 	// Construct the 'val' key/value pair (as a simple numeric)
-	if( IS_VALID( valid ) )
+	if ( IS_VALID( valid ) )
 	{
 		doc["val"] = value;
 	}
@@ -91,9 +91,9 @@ bool Bool::fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& ret
 	// Attempt to parse the value key/value pair
 	bool checkForError = src | false;
 	bool newValue      = src | true;
-	if( newValue == true && checkForError == false )
+	if ( newValue == true && checkForError == false )
 	{
-		if( errorMsg )
+		if ( errorMsg )
 		{
 			*errorMsg = "Invalid syntax for the 'val' key/value pair";
 		}

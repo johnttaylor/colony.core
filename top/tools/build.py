@@ -8,7 +8,7 @@ Usage: build <pkgroot> [<host>]
 Notes:
     o Default host is "windows" 
 
-Returns: If the build is succesful, then the script returns '0'; else
+Returns: If the build is successful, then the script returns '0'; else
          a non-zero value is returned.
 """
 
@@ -49,5 +49,5 @@ def _use_outcast():
 # Uncomment out the following line if using the Outcast Bob build tool
 _use_outcast()
 
-# Delete this line if using the Outcast default namespace algorihtm
+# Delete this line if using the Outcast default namespace algorithm
 #print "Building...."

@@ -80,13 +80,13 @@ public:
     uint16_t setLockState( LockRequest_T lockRequest ) noexcept;
 
     /// See Cpl::Dm::ModelPoint 
-    size_t getExternalSize() const noexcept;
+    size_t getExternalSize( bool includeLockedState = false ) const noexcept;
 
     /// See Cpl::Dm::ModelPoint.  Note: The implementation does NOT account for Endianess, i.e. assumes the 'platform' is the same for export/import
-    size_t exportData( void* dstDataStream, size_t maxDstLength, uint16_t* retSequenceNumber = 0 ) const noexcept;
+    size_t exportData( void* dstDataStream, size_t maxDstLength, uint16_t* retSequenceNumber = 0, bool includeLockedState = false ) const noexcept;
 
     /// See Cpl::Dm::ModelPoint.  Note: The implementation does NOT account for Endianess, i.e. assumes the 'platform' is the same for export/import
-    size_t importData( const void* srcDataStream, size_t srcLength, uint16_t* retSequenceNumber = 0 ) noexcept;
+    size_t importData( const void* srcDataStream, size_t srcLength, uint16_t* retSequenceNumber = 0, bool includeLockedState = false ) noexcept;
 
 
 protected:

@@ -71,16 +71,6 @@ typedef struct Cpl_System_Cpp11_Sema_Tag
 #define Cpl_System_TlsKey_T_MAP                 int
 
 
-/// C++11 Mapping
-#ifndef CPL_SYSTEM_SHELL_SUPPORTED_x_MAP
-#define CPL_SYSTEM_SHELL_SUPPORTED_x_MAP        0   // Default to NOT supported (since this requires knowledge of the native OS)
-#endif 
-
-/// Default the native new line to the standard newline
-#ifndef CPL_IO_NEW_LINE_NATIVE_MAP
-#define CPL_IO_NEW_LINE_NATIVE_MAP              "\n"
-#endif
-
 
 /// Thread Priorities
 #define CPL_SYSTEM_THREAD_PRIORITY_HIGHEST_MAP      0

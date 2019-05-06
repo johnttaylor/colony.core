@@ -11,6 +11,7 @@
 
 #include "Processor.h"
 #include "Cpl/System/GlobalLock.h"
+#include "Cpl/Text/strip.h"
 
 ///
 using namespace Cpl::TShell;
@@ -117,24 +118,17 @@ void Processor::requestStop() noexcept
 ///////////////////////////////////
 Command::Result_T Processor::executeCommand( char* deframedInput, Cpl::Io::Output& outfd ) noexcept
 {
-	// Tokenize/parse the input (Note: This is a destructive parse)
-	strcpy( m_inputCopy, deframedInput );
-	Cpl::Text::Tokenizer::TextBlock tokens( deframedInput, m_del, m_term, m_quote, m_esc );
-
-	// Skip something that doesn't parse
-	if ( tokens.isValidTokens() == false )
-	{
-		return outputCommandError( Command::eERROR_BAD_SYNTAX, deframedInput ) ? Command::eERROR_BAD_SYNTAX : Command::eERROR_IO;
-	}
+	const char* firstToken = Cpl::Text::stripSpace( deframedInput );
 
 	// Skip blank and comment lines
-	if ( tokens.numParameters() == 0 || *( tokens.getParameter( 0 ) ) == m_comment )
+	if ( *firstToken == 0 || *firstToken == m_comment )
 	{
 		return Command::eSUCCESS;
 	}
 
 	// Lookup the command to be executed
-	Cpl::Container::KeyLiteralString verb( tokens.getParameter( 0 ) );
+	const char* endFirstToken = Cpl::Text::stripNotSpace( firstToken );
+	Cpl::Container::KeyStringBuffer verb( firstToken, endFirstToken - firstToken );
 	Command*                         cmdPtr;
 	if ( ( cmdPtr=m_commands.find( verb ) ) == 0 )
 	{
@@ -142,7 +136,7 @@ Command::Result_T Processor::executeCommand( char* deframedInput, Cpl::Io::Outpu
 	}
 
 	// Execute the found command
-	Command::Result_T result = cmdPtr->execute( *this, tokens, m_inputCopy, outfd );
+	Command::Result_T result = cmdPtr->execute( *this, (char*) firstToken, outfd );
 	if ( result != Command::eSUCCESS )
 	{
 		return outputCommandError( result, deframedInput ) ? result : Command::eERROR_IO;
@@ -202,6 +196,25 @@ Cpl::Text::String& Processor::getTokenBuffer2() noexcept
 	return m_tokenBuffer2;
 }
 
+char Processor::getEscapeChar() noexcept
+{
+	return m_esc;
+}
+
+char Processor::getDelimiterChar() noexcept
+{
+	return m_del;
+}
+
+char Processor::getQuoteChar() noexcept
+{
+	return m_quote;
+}
+
+char Processor::getTerminatorChar() noexcept
+{
+	return m_term;
+}
 
 const char* resultToString_( Command::Result_T errcode )
 {

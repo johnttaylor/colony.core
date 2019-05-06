@@ -239,33 +239,35 @@ TEST_CASE( "lock", "[lock]" )
     callbackClient.m_returnResult   = ModelPoint::eCHANGED;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
     valid = mp_apple_.read( value);
-    REQUIRE( mp_apple_.isNotValid() == true );
-    REQUIRE( ModelPoint::IS_VALID( valid ) == false );
+    REQUIRE( mp_apple_.isNotValid() == false );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     locked = mp_apple_.isLocked();
     REQUIRE( locked == true );
-    REQUIRE( callbackClient.m_callbackCount == 1 + 1 + 1 + 1 );
+    REQUIRE( callbackClient.m_callbackCount == 1 + 1 + 1 + 1 + 1);
 
     callbackClient.m_incValue       = 5;
     callbackClient.m_returnResult   = ModelPoint::eINVALIDATE;
     mp_apple_.readModifyWrite( callbackClient );
     valid = mp_apple_.read( value);
-    REQUIRE( mp_apple_.isNotValid() == true );
-    REQUIRE( ModelPoint::IS_VALID( valid ) == false );
+    REQUIRE( mp_apple_.isNotValid() == false );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     locked = mp_apple_.isLocked();
     REQUIRE( locked == true );
-    REQUIRE( callbackClient.m_callbackCount == 1 + 1 + 1 + 1 );
+    REQUIRE( callbackClient.m_callbackCount == 1 + 1 + 1 + 1 + 1 );
 
     callbackClient.m_incValue       = 6;
     callbackClient.m_returnResult   = ModelPoint::eNO_CHANGE;
     mp_apple_.readModifyWrite( callbackClient, ModelPoint::eUNLOCK );
     valid = mp_apple_.read( value);
-    REQUIRE( mp_apple_.isNotValid() == true );
-    REQUIRE( ModelPoint::IS_VALID( valid ) == false );
+	REQUIRE( value == 30 );
+    REQUIRE( mp_apple_.isNotValid() == false );
+    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     locked = mp_apple_.isLocked();
     REQUIRE( locked == false );
-    REQUIRE( callbackClient.m_callbackCount == 1 + 1 + 1 + 1 + 1 );
+    REQUIRE( callbackClient.m_callbackCount == 1 + 1 + 1 + 1 + 1 + 1 );
 
     // NOTE: Test must leave the model point in the invalid state
+	mp_apple_.setInvalid();
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }

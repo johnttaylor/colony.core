@@ -20,4 +20,4 @@ export NQBP_BIN=$_root_/$4
 export PATH=$PATH:./
 
 # Build all linux projects
-bob.py build -v linux  --bld-all
+bob.py build -v linux  --bld-all -t

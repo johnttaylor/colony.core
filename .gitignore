@@ -4,6 +4,7 @@
 *.o
 *.obj
 *.pyc
+*.d
 
 # Precompiled Headers
 *.gch
@@ -27,6 +28,10 @@
 *.exe
 *.out
 *.app
+*.x
+*.elf
+*.hex
+*.zip
 
 # e2studio junk
 .metadata
@@ -37,4 +42,9 @@ make.log
 *.gcno
 *.idb
 *.pdb
+*.ilk
 *.lst
+*.map
+
+docs/*
+myMediaFile

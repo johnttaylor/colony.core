@@ -12,6 +12,7 @@
 #include "TPrint.h"
 #include "Cpl/System/ElapsedTime.h"
 #include "Cpl/Text/format.h"
+#include "Cpl/Text/Tokenizer/TextBlock.h"
 
 ///
 using namespace Cpl::TShell::Cmd;
@@ -32,9 +33,10 @@ TPrint::TPrint( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const ch
 
 
 ///////////////////////////
-Cpl::TShell::Command::Result_T TPrint::execute( Cpl::TShell::Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept
+Cpl::TShell::Command::Result_T TPrint::execute( Cpl::TShell::Context_& context, char* cmdString, Cpl::Io::Output& outfd ) noexcept
 {
-	Cpl::Text::String&  outtext = context.getOutputBuffer();
+	Cpl::Text::Tokenizer::TextBlock tokens( cmdString, context.getDelimiterChar(), context.getTerminatorChar(), context.getQuoteChar(), context.getEscapeChar() );
+	Cpl::Text::String&              outtext = context.getOutputBuffer();
 
 	// Error checking
 	if ( tokens.numParameters() > 2 )

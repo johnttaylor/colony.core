@@ -50,6 +50,18 @@ public:
 	 */
 	virtual void requestStop() noexcept = 0;
 
+public:
+	/// Getter for escape character
+	virtual char getEscapeChar() noexcept = 0;
+
+	/// Getter for delimiter character
+	virtual char getDelimiterChar() noexcept = 0;
+
+	/// Getter for quote character
+	virtual char getQuoteChar() noexcept = 0;
+
+	/// Getter for terminator character
+	virtual char getTerminatorChar() noexcept = 0;
 
 public:
 	/// Virtual destructor

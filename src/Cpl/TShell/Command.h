@@ -13,7 +13,6 @@
 /** @file */
 
 #include "Cpl/Container/MapItem.h"
-#include "Cpl/Text/Tokenizer/TextBlock.h"
 #include "Cpl/Io/Output.h"
 
 
@@ -48,7 +47,7 @@ public:
 public:
 	/** This method executes the command.
 	 */
-	virtual Result_T execute( Context_& context, Cpl::Text::Tokenizer::TextBlock& tokens, const char* rawCmdString, Cpl::Io::Output& outfd ) noexcept = 0;
+	virtual Result_T execute( Context_& context, char* rawCmdString, Cpl::Io::Output& outfd ) noexcept = 0;
 
 
 public:
