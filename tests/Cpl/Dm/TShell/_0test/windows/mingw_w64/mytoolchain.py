@@ -59,9 +59,8 @@ optimzed_cpp11 = BuildValues()
 debug_cpp11    = BuildValues()
 
 # Set 'base' options
-base_cpp11.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
-base_cpp11.linkflags  = '-m64 -fprofile-arcs'
-base_cpp11.linklibs   = '-lgcov'
+base_cpp11.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++'
+base_cpp11.linkflags  = '-m64'
 
 # Set 'Optimized' options
 optimzed_cpp11.cflags = '-O3'
@@ -79,9 +78,8 @@ optimzed_win64 = BuildValues()
 debug_win64    = BuildValues()
 
 # Set 'base' options
-base_win64.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
-base_win64.linkflags  = '-m64 -fprofile-arcs'
-base_win64.linklibs   = '-lgcov'
+base_win64.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++'
+base_win64.linkflags  = '-m64'
 
 # Set 'Optimized' options
 optimzed_win64.cflags = '-O3'
