@@ -2,8 +2,4 @@
 build -v --config top/compilers/kpit-rx.bat		  kpit-gnurx --bld-all -t  --bldnum %BLDNUM%
 build -v --config top/compilers/vcvars32-vc16.bat vc12       --bld-all -t  --bldnum %BLDNUM%  
 build -v --config top/compilers/nrf52-arduino.bat feather52  --bld-all     --bldnum %BLDNUM%
-
-# Build the mingw/win32 build LAST so that the gcov files don't get cleaned!
-build -v --config top/compilers/mingw-64.bat	  mingw_w64  -b win64 -gt --bldnum %BLDNUM%
-build -v --config top/compilers/mingw-64.bat	  mingw_w64  -b cpp11 -gt --bldnum %BLDNUM%
-build -v --config top/compilers/mingw-64.bat	  mingw_w64  -b win32 -gt --bldnum %BLDNUM%
+build -v --config top/compilers/mingw-64.bat	  mingw_w64  --bld-all -gt --bldnum %BLDNUM%
