@@ -109,8 +109,10 @@ bool Output_::write( const void* buffer, int maxBytes, int& bytesWritten )
     unsigned long work;
     BOOL result  = WriteFile( (HANDLE) (m_outFd.m_handlePtr), buffer, maxBytes, &work, 0 );
     bytesWritten = (int) work;
-    m_outEos     = result && bytesWritten == 0 ? true : false;
-    return !m_outEos && result != 0;
+	DWORD lastError = GetLastError();
+	m_outEos = result != 0 ? false : lastError == ERROR_HANDLE_EOF || lastError == ERROR_BROKEN_PIPE ? true : false;
+	//printf( "m_outEos=%d, result=%ld, LastError=%ld\n", m_outEos, result, lastError );
+	return m_outEos ? true : result != 0;
 }
 
 
@@ -121,6 +123,11 @@ void Output_::flush()
     {
         FlushFileBuffers( (HANDLE) (m_outFd.m_handlePtr) );
     }
+}
+
+bool Output_::isEos()
+{
+	return m_outEos;
 }
 
 void Output_::close()

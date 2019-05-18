@@ -134,6 +134,23 @@ void TeeOutput::flush()
     }
 }
 
+bool TeeOutput::isEos()
+{
+	bool    rc     = false;
+	Output* stream = m_streams.first();
+	while ( stream )
+	{
+		if ( stream->isEos() )
+		{
+			// move the stream with an error to the failed list
+			m_streams.remove( *stream );
+			m_failed.put( *stream );
+			rc = true;
+		}
+	}
+
+	return rc;
+}
 
 void TeeOutput::close()
 {
