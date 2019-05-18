@@ -36,20 +36,20 @@ namespace {
 class RegisterInitHandler : public Cpl::System::StartupHook_
 {
 public:
-    ///
-    RegisterInitHandler():StartupHook_( eMIDDLE_WARE ) {}
+	///
+	RegisterInitHandler() :StartupHook_( eMIDDLE_WARE ) {}
 
 
 protected:
-    /// 
-    void notify( InitLevel_T init_level )
-    {
-        // Set up TLS storage for working buffer for File/Path names
-        if ( !workNameTlsPtr_ )
-        {
-            workNameTlsPtr_ = new(std::nothrow) Cpl::System::Tls();
-        }
-    }
+	/// 
+	void notify( InitLevel_T init_level )
+	{
+		// Set up TLS storage for working buffer for File/Path names
+		if ( !workNameTlsPtr_ )
+		{
+			workNameTlsPtr_ = new( std::nothrow ) Cpl::System::Tls();
+		}
+	}
 
 };
 }; // end namespace
@@ -60,227 +60,219 @@ static RegisterInitHandler autoRegister_systemInit_hook;
 
 static bool copyHelper_( Input& src, Output& dst )
 {
-    int  bytesRead = 0;
-    bool eof       = false;
-    char buf[256];
-    while ( !eof )
-    {
-        if ( !src.read( buf, sizeof( buf ), bytesRead ) )
-        {
-            if ( src.isEof() )
-            {
-                eof = true;
-            }
-            else
-            {
-                // read error
-                return false;
-            }
-        }
+	int  bytesRead = 0;
+	char buf[256];
+	while ( src.isEof() == false )
+	{
+		if ( !src.read( buf, sizeof( buf ), bytesRead ) )
+		{
+			// read error
+			return false;
+		}
 
-        if ( !dst.write( buf, bytesRead ) && !dst.isEof() )
-        {
-            return false;   // write error
-        }
-    }
+		if ( !dst.write( buf, bytesRead ) && !dst.isEof() )
+		{
+			return false;   // write error
+		}
+	}
 
-    return true;
+	return true;
 }
 
 
 /////////////////////////////////////////////////////////////////////////////
 const char* Api::getNative( const char* fsEntryName )
 {
-    // Convert any/all directory separators -->Use Brute force to ensure I ALWAYS ended up with ALL native separators (i.e. handle mixed-separator cases)
-    Cpl::Text::String& workName = getWorkBuffer();
-    workName = fsEntryName;
-    workName.replace( '/', nativeDirectorySep() );
-    workName.replace( '\\', nativeDirectorySep() );
-    return workName;
+	// Convert any/all directory separators -->Use Brute force to ensure I ALWAYS ended up with ALL native separators (i.e. handle mixed-separator cases)
+	Cpl::Text::String& workName = getWorkBuffer();
+	workName = fsEntryName;
+	workName.replace( '/', nativeDirectorySep() );
+	workName.replace( '\\', nativeDirectorySep() );
+	return workName;
 }
 
 const char* Api::getStandard( const char* fsEntryName )
 {
-    // Convert any/all directory separators -->Use Brute force to ensure I ALWAYS ended up with ALL Standard separators (i.e. handle mixed-separator cases)
-    Cpl::Text::String& workName = getWorkBuffer();
-    workName = fsEntryName;
-    workName.replace( '/', directorySep() );
-    workName.replace( '\\', directorySep() );
-    return workName;
+	// Convert any/all directory separators -->Use Brute force to ensure I ALWAYS ended up with ALL Standard separators (i.e. handle mixed-separator cases)
+	Cpl::Text::String& workName = getWorkBuffer();
+	workName = fsEntryName;
+	workName.replace( '/', directorySep() );
+	workName.replace( '\\', directorySep() );
+	return workName;
 }
 
 
 const char* Api::dos2unix( const char* fsEntryName )
 {
-    Cpl::Text::String& workName = getWorkBuffer();
-    workName = fsEntryName;
-    workName.replace( '\\', '/' );
-    return workName;
+	Cpl::Text::String& workName = getWorkBuffer();
+	workName = fsEntryName;
+	workName.replace( '\\', '/' );
+	return workName;
 }
 
 const char* Api::unix2dos( const char* fsEntryName )
 {
-    Cpl::Text::String& workName = getWorkBuffer();
-    workName = fsEntryName;
-    workName.replace( '/', '\\' );
-    return workName;
+	Cpl::Text::String& workName = getWorkBuffer();
+	workName = fsEntryName;
+	workName.replace( '/', '\\' );
+	return workName;
 }
 
 
 
 /////////////////////////////////////////////////////////////////////////////
-void Api::split( const char*        fileEntryName,
-                 Cpl::Text::String* fullPath,
-                 Cpl::Text::String* drive,
-                 Cpl::Text::String* path,
-                 Cpl::Text::String* fullName,
-                 Cpl::Text::String* name,
-                 Cpl::Text::String* extension,
-                 char               dirSeparator,
-                 char               extensionSeparator,
-                 char               driveSeparator
+void Api::split( const char* fileEntryName,
+	Cpl::Text::String* fullPath,
+	Cpl::Text::String* drive,
+	Cpl::Text::String* path,
+	Cpl::Text::String* fullName,
+	Cpl::Text::String* name,
+	Cpl::Text::String* extension,
+	char               dirSeparator,
+	char               extensionSeparator,
+	char               driveSeparator
 )
 {
-    // Initialize all parameters to 'NULL'
-    if ( drive )     *drive     = "";
-    if ( fullPath )  *fullPath  = "";
-    if ( path )      *path      = "";
-    if ( fullName )  *fullName  = "";
-    if ( name )      *name      = "";
-    if ( extension ) *extension = "";
+	// Initialize all parameters to 'NULL'
+	if ( drive )* drive     = "";
+	if ( fullPath )* fullPath  = "";
+	if ( path )* path      = "";
+	if ( fullName )* fullName  = "";
+	if ( name )* name      = "";
+	if ( extension )* extension = "";
 
-    // Split off the Drive letter
-    const char* entry = fileEntryName;
-    const char* ptr;
-    if ( (ptr=strchr( entry, driveSeparator )) != 0 )
-    {
-        int len = ptr - entry + 1;
-        if ( drive )
-        {
-            drive->copyIn( entry, len - 1 );
-        }
-        if ( fullPath )
-        {
-            fullPath->copyIn( entry, len );
-        }
-        entry += len;
-    }
+	// Split off the Drive letter
+	const char* entry = fileEntryName;
+	const char* ptr;
+	if ( ( ptr=strchr( entry, driveSeparator ) ) != 0 )
+	{
+		int len = ptr - entry + 1;
+		if ( drive )
+		{
+			drive->copyIn( entry, len - 1 );
+		}
+		if ( fullPath )
+		{
+			fullPath->copyIn( entry, len );
+		}
+		entry += len;
+	}
 
-    // Split off the path
-    if ( (ptr=strrchr( entry, dirSeparator )) != 0 )
-    {
-        int len = ptr - entry + 1;
-        if ( fullPath )
-        {
-            fullPath->appendTo( entry, len );
-        }
-        if ( path )
-        {
-            path->copyIn( entry, len );
-        }
-        entry += len;
-    }
+	// Split off the path
+	if ( ( ptr=strrchr( entry, dirSeparator ) ) != 0 )
+	{
+		int len = ptr - entry + 1;
+		if ( fullPath )
+		{
+			fullPath->appendTo( entry, len );
+		}
+		if ( path )
+		{
+			path->copyIn( entry, len );
+		}
+		entry += len;
+	}
 
-    // Get full name
-    if ( fullName )
-    {
-        *fullName = entry;
-    }
+	// Get full name
+	if ( fullName )
+	{
+		*fullName = entry;
+	}
 
-    // Split off name+extension
-    if ( (ptr=strrchr( entry, extensionSeparator )) != 0 )
-    {
-        int len = ptr - entry;
-        if ( name )
-        {
-            name->copyIn( entry, len );
-        }
-        if ( extension )
-        {
-            *extension = entry + len + 1;
-        }
-    }
+	// Split off name+extension
+	if ( ( ptr=strrchr( entry, extensionSeparator ) ) != 0 )
+	{
+		int len = ptr - entry;
+		if ( name )
+		{
+			name->copyIn( entry, len );
+		}
+		if ( extension )
+		{
+			*extension = entry + len + 1;
+		}
+	}
 
-    // Just name ->no extension
-    else
-    {
-        if ( name )
-        {
-            *name = entry;
-        }
-    }
+	// Just name ->no extension
+	else
+	{
+		if ( name )
+		{
+			*name = entry;
+		}
+	}
 }
 
 
 /////////////////////////////////////////////////////////////////////////////
 bool Api::isFile( const char* fsEntryName )
 {
-    Api::Info entryInfo;
-    if ( Api::getInfo( fsEntryName, entryInfo ) )
-    {
-        return entryInfo.m_isFile;
-    }
+	Api::Info entryInfo;
+	if ( Api::getInfo( fsEntryName, entryInfo ) )
+	{
+		return entryInfo.m_isFile;
+	}
 
-    return false;
+	return false;
 }
 
 
 bool Api::isDirectory( const char* fsEntryName )
 {
-    Api::Info entryInfo;
-    if ( Api::getInfo( fsEntryName, entryInfo ) )
-    {
-        return entryInfo.m_isDir;
-    }
+	Api::Info entryInfo;
+	if ( Api::getInfo( fsEntryName, entryInfo ) )
+	{
+		return entryInfo.m_isDir;
+	}
 
-    return false;
+	return false;
 }
 
 
 bool Api::isReadable( const char* fsEntryName )
 {
-    Api::Info entryInfo;
-    if ( Api::getInfo( fsEntryName, entryInfo ) )
-    {
-        return entryInfo.m_readable;
-    }
+	Api::Info entryInfo;
+	if ( Api::getInfo( fsEntryName, entryInfo ) )
+	{
+		return entryInfo.m_readable;
+	}
 
-    return false;
+	return false;
 }
 
 
 bool Api::isWriteable( const char* fsEntryName )
 {
-    Api::Info entryInfo;
-    if ( Api::getInfo( fsEntryName, entryInfo ) )
-    {
-        return entryInfo.m_writeable;
-    }
+	Api::Info entryInfo;
+	if ( Api::getInfo( fsEntryName, entryInfo ) )
+	{
+		return entryInfo.m_writeable;
+	}
 
-    return false;
+	return false;
 }
 
 
 unsigned long Api::size( const char* fsEntryName )
 {
-    Api::Info entryInfo;
-    if ( Api::getInfo( fsEntryName, entryInfo ) )
-    {
-        return entryInfo.m_size;
-    }
-    return 0;
+	Api::Info entryInfo;
+	if ( Api::getInfo( fsEntryName, entryInfo ) )
+	{
+		return entryInfo.m_size;
+	}
+	return 0;
 }
 
 
 time_t Api::timeModified( const char* fsEntryName )
 {
-    Api::Info entryInfo;
-    if ( Api::getInfo( fsEntryName, entryInfo ) )
-    {
-        return entryInfo.m_mtime;
-    }
+	Api::Info entryInfo;
+	if ( Api::getInfo( fsEntryName, entryInfo ) )
+	{
+		return entryInfo.m_mtime;
+	}
 
-    return -1;
+	return -1;
 }
 
 
@@ -288,28 +280,28 @@ time_t Api::timeModified( const char* fsEntryName )
 /////////////////////////////////////////////////////////////////////////////
 bool Api::copyFile( const char* srcName, const char* dstName )
 {
-    if ( !isFile( srcName ) || isDirectory( dstName ) )
-    {
-        return false;
-    }
+	if ( !isFile( srcName ) || isDirectory( dstName ) )
+	{
+		return false;
+	}
 
-    Input  src( srcName );
-    Output dst( dstName );
-    return copyHelper_( src, dst );
+	Input  src( srcName );
+	Output dst( dstName );
+	return copyHelper_( src, dst );
 }
 
 
 bool Api::appendFile( const char* srcName, const char* dstName )
 {
-    if ( !isFile( srcName ) || isDirectory( dstName ) )
-    {
-        return false;
-    }
+	if ( !isFile( srcName ) || isDirectory( dstName ) )
+	{
+		return false;
+	}
 
-    Input  src( srcName );
-    Output dst( dstName );
-    dst.setToEof();
-    return copyHelper_( src, dst );
+	Input  src( srcName );
+	Output dst( dstName );
+	dst.setToEof();
+	return copyHelper_( src, dst );
 }
 
 
@@ -317,19 +309,19 @@ bool Api::appendFile( const char* srcName, const char* dstName )
 /////////////////////////////////////////////////////////////////////////////
 Cpl::Text::String& Api::getWorkBuffer( void )
 {
-    // Trap the first time this method is called (per thread)
-    Cpl::Text::String* workNamePtr = (Cpl::Text::String*) workNameTlsPtr_->get();
-    if ( workNamePtr == 0 )
-    {
-        workNamePtr = new(std::nothrow) NameString;
-        if ( !workNamePtr )
-        {
-            Cpl::System::FatalError::logf( "Failed to allocate work string for Cpl::Io::File namespace in thread=%s", Cpl::System::Thread::myName() );
-        }
+	// Trap the first time this method is called (per thread)
+	Cpl::Text::String* workNamePtr = ( Cpl::Text::String* ) workNameTlsPtr_->get();
+	if ( workNamePtr == 0 )
+	{
+		workNamePtr = new( std::nothrow ) NameString;
+		if ( !workNamePtr )
+		{
+			Cpl::System::FatalError::logf( "Failed to allocate work string for Cpl::Io::File namespace in thread=%s", Cpl::System::Thread::myName() );
+		}
 
-        workNameTlsPtr_->set( workNamePtr );
-    }
+		workNameTlsPtr_->set( workNamePtr );
+	}
 
-    return *workNamePtr;
+	return *workNamePtr;
 }
 

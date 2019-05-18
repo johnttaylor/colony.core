@@ -112,6 +112,9 @@ public:
 	/// See Cpl::Io::Output.  This method does nothing.  See comments about the semantics of the write() methods
 	void flush();
 
+	/// See Cpl::Io::IsEos.
+	bool isEos();
+	
 	/// See Cpl::Io::Output.  Note: An can be 're-opened' by calling the start() method.
 	void close();
 

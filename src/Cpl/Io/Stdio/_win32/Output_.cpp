@@ -110,7 +110,7 @@ bool Output_::write( const void* buffer, int maxBytes, int& bytesWritten )
     BOOL result  = WriteFile( (HANDLE) (m_outFd.m_handlePtr), buffer, maxBytes, &work, 0 );
     bytesWritten = (int) work;
 	DWORD lastError = GetLastError();
-	m_outEos = result != 0 ? false : lastError == ERROR_HANDLE_EOF || lastError == ERROR_BROKEN_PIPE ? true : false;
+	m_outEos = (result != 0 || bytesWritten > 0)? false : lastError == ERROR_HANDLE_EOF || lastError == ERROR_BROKEN_PIPE || bytesWritten == 0? true : false;
 	//printf( "m_outEos=%d, result=%ld, LastError=%ld\n", m_outEos, result, lastError );
 	return m_outEos ? true : result != 0;
 }

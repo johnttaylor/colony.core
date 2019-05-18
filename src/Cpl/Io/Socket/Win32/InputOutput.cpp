@@ -81,12 +81,14 @@ using namespace Cpl::Io::Socket;
 
 /////////////////////
 InputOutput::InputOutput()
-	:m_fd( ( (void*) INVALID_SOCKET ) )
+	: m_fd( ( (void*) INVALID_SOCKET ) )
+	, m_eos( false )
 {
 }
 
 InputOutput::InputOutput( Cpl::Io::Descriptor fd )
 	: m_fd( fd )
+	, m_eos( false )
 {
 }
 
@@ -129,7 +131,8 @@ bool InputOutput::read( void* buffer, int numBytes, int& bytesRead )
 
 	// perform the read
 	bytesRead = recv( ( (SOCKET) ( m_fd.m_handlePtr ) ), (char*) buffer, numBytes, 0 );
-	return bytesRead <= 0 ? false : true;
+	m_eos =  bytesRead <= 0;
+	return !m_eos;
 }
 
 bool InputOutput::available()
@@ -158,7 +161,8 @@ bool InputOutput::write( const void* buffer, int maxBytes, int& bytesWritten )
 
 	// perform the write
 	bytesWritten = send( ( (SOCKET) ( m_fd.m_handlePtr ) ), (char*) buffer, maxBytes, 0 );
-	return bytesWritten <= 0 ? false : true;
+	m_eos =  bytesWritten <= 0;
+	return !m_eos;
 }
 
 void InputOutput::flush()
@@ -167,6 +171,11 @@ void InputOutput::flush()
 	// to the Microsoft documentation - WSAIoctrl w/SIO_FLUSH could
 	// block (unless using overlapped IO) - which is not the designed
 	// behavior for this call -->so we will skip it for now (jtt 2-14-2015)
+}
+
+bool InputOutput::isEos()
+{
+	return m_eos;
 }
 
 void InputOutput::close()

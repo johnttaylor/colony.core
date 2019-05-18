@@ -23,12 +23,14 @@ using namespace Cpl::Io::Socket;
 
 /////////////////////
 InputOutput::InputOutput()
-	:m_fd( -1 )
+	: m_fd( -1 )
+	, m_eos( false )
 {
 }
 
 InputOutput::InputOutput( Cpl::Io::Descriptor fd )
 	: m_fd( fd )
+	, m_eos( false )
 {
 }
 
@@ -71,7 +73,8 @@ bool InputOutput::read( void* buffer, int numBytes, int& bytesRead )
 
 	// perform the read
 	bytesRead = recv( m_fd.m_fd, (char*) buffer, numBytes, 0 );
-	return bytesRead <= 0 ? false : true;
+	m_eos =  bytesRead <= 0;
+	return !m_eos;
 }
 
 bool InputOutput::available()
@@ -99,12 +102,18 @@ bool InputOutput::write( const void* buffer, int maxBytes, int& bytesWritten )
 
 	// perform the write
 	bytesWritten = send( m_fd.m_fd, (char*) buffer, maxBytes, MSG_NOSIGNAL );
-	return bytesWritten <= 0 ? false : true;
+	m_eos =  bytesWritten <= 0;
+	return !m_eos;
 }
 
 void InputOutput::flush()
 {
 	// Do not know how to implement using only Posix  (jtt 2-14-2015)
+}
+
+bool InputOutput::isEos()
+{
+	return m_eos;
 }
 
 void InputOutput::close()

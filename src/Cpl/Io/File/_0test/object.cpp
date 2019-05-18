@@ -69,9 +69,11 @@ TEST_CASE( "objectapi output", "[objectapi-output]" )
         REQUIRE( infd.length( len ) == true );
         REQUIRE( len == strlen( OUTPUT_TXT ) );
         REQUIRE( infd.read( buffer ) == true );
-        REQUIRE( infd.isEof() == true );
+        REQUIRE( infd.isEof() == false );
         REQUIRE( buffer == OUTPUT_TXT3 );
-        infd.close();
+		REQUIRE( infd.read( buffer ) == true );
+		REQUIRE( infd.isEof() == true );
+		infd.close();
     }
 
     SECTION( "relative" )
@@ -95,9 +97,11 @@ TEST_CASE( "objectapi output", "[objectapi-output]" )
         REQUIRE( infd.length( len ) == true );
         REQUIRE( len == strlen( OUTPUT_TXT ) );
         REQUIRE( infd.read( buffer ) == true );
-        REQUIRE( infd.isEof() == true);
+        REQUIRE( infd.isEof() == false);
         REQUIRE( buffer == OUTPUT_TXT3 );
-        infd.close();
+		REQUIRE( infd.read( buffer ) == true );
+		REQUIRE( infd.isEof() == true );
+		infd.close();
     }
 
 
@@ -142,9 +146,11 @@ TEST_CASE( "objectapi in/out", "[objectapi-inout]" )
         REQUIRE( infd.length( len ) == true );
         REQUIRE( len == strlen( OUTPUT_TXT ) );
         REQUIRE( infd.read( buffer ) == true );
-        REQUIRE( infd.isEof() == true );
+        REQUIRE( infd.isEof() == false );
         REQUIRE( buffer == OUTPUT_TXT3 );
-        infd.close();
+		REQUIRE( infd.read( buffer ) == true );
+		REQUIRE( infd.isEof() == true );
+		infd.close();
     }
 
     SECTION( "relative" )
@@ -168,9 +174,11 @@ TEST_CASE( "objectapi in/out", "[objectapi-inout]" )
         REQUIRE( infd.length( len ) == true );
         REQUIRE( len == strlen( OUTPUT_TXT ) );
         REQUIRE( infd.read( buffer ) == true );
-        REQUIRE( infd.isEof() == true );
+        REQUIRE( infd.isEof() == false );
         REQUIRE( buffer == OUTPUT_TXT3 );
-        infd.close();
+		REQUIRE( infd.read( buffer ) == true );
+		REQUIRE( infd.isEof() == true );
+		infd.close();
     }
 
 
@@ -203,11 +211,12 @@ TEST_CASE( "objectapi in", "[objectapi-in]" )
         unsigned long curpos;
         REQUIRE( infd.currentPos( curpos ) == true );
         REQUIRE( curpos == strlen( OUTPUT_TXT2 ) );
-
         REQUIRE( infd.read( buffer ) == true );
-        REQUIRE( infd.isEof() == true );
+        REQUIRE( infd.isEof() == false );
         REQUIRE( buffer == OUTPUT_TXT4 );
-        infd.close();
+		REQUIRE( infd.read( buffer ) == true );
+		REQUIRE( infd.isEof() == true );
+		infd.close();
     }
 
     SECTION( "relative" )
@@ -228,9 +237,11 @@ TEST_CASE( "objectapi in", "[objectapi-in]" )
         REQUIRE( curpos == strlen( OUTPUT_TXT2 ) );
 
         REQUIRE( infd.read( buffer ) == true );
-        REQUIRE( infd.isEof() == true );
+        REQUIRE( infd.isEof() == false );
         REQUIRE( buffer == OUTPUT_TXT4 );
-        infd.close();
+		REQUIRE( infd.read( buffer ) == true );
+		REQUIRE( infd.isEof() == true );
+		infd.close();
     }
 
 

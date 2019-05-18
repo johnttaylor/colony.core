@@ -107,10 +107,10 @@ bool Input_::read( void* buffer, int numBytes, int& bytesRead )
 
     // perform the read
     bytesRead = (int) ::read( m_inFd.m_fd, buffer, numBytes );
-	int lastError = errno;
-	m_inEos = bytesRead == 0 && lastError == 0 ? true : false;
+	//int lastError = errno;
+	m_inEos = bytesRead == 0? true : false;
 	//printf( "m_inEos=%d, bytesRead=%d, errno=%d\n", m_inEos, bytesRead, lastError );
-	return m_inEos ? true : bytesRead > 0;
+	return bytesRead >= 0;
 }
 
 
