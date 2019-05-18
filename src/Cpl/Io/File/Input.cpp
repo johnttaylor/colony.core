@@ -65,6 +65,11 @@ bool Input::available()
     return m_stream.available();
 }
 
+bool Input::isEos()
+{
+	return isEof();
+}
+
 void Input::close()
 {
     m_stream.close();

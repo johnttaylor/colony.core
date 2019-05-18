@@ -14,6 +14,7 @@
 
 #include "Cpl/Text/String.h"
 #include "Cpl/Io/Close.h"
+#include "Cpl/Io/IsEos.h"
 
 
 
@@ -32,7 +33,7 @@ namespace Io {
           and as such a default implementation is provided for these methods.
 
  */
-class Input : virtual public Close
+class Input : virtual public Close, virtual public IsEos
 {
 public:
     /** Reads a single byte from the stream.  Returns true if successful,

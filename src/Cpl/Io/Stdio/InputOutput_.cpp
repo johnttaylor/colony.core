@@ -203,6 +203,11 @@ void InputOutput_::flush()
     m_out.flush();
 }
 
+bool InputOutput_::isEos()
+{
+	return m_in.m_inEos || m_out.m_outEos;
+}
+
 void InputOutput_::close()
 {
     if ( m_single )

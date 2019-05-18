@@ -34,11 +34,6 @@
 #define TESTINPUT_TEXT_HELLO_OFFEST 0x58
 #endif
 
-#ifdef POSIX_EOF_SEMANTICS
-#define RESULT_WHEN_READ_TO_EOF     true
-#else
-#define RESULT_WHEN_READ_TO_EOF     false
-#endif
 
  /// 
 using namespace Cpl::Io::File;
@@ -100,12 +95,12 @@ TEST_CASE( "read", "[read]" )
     char myBuffer[10] = { 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29 };
     int  bytesRead    = 1;
     REQUIRE( fd2.available() == true );
-    REQUIRE( fd2.read( myBuffer, sizeof( myBuffer ), bytesRead ) == RESULT_WHEN_READ_TO_EOF );
-    REQUIRE( fd2.isEof() == !RESULT_WHEN_READ_TO_EOF );
+    REQUIRE( fd2.read( myBuffer, sizeof( myBuffer ), bytesRead ) == true );
+    REQUIRE( fd2.isEof() == true );
     REQUIRE( bytesRead == 2 );
     REQUIRE( myBuffer[0] == 'd' );
     REQUIRE( myBuffer[1] == '.' );
-    REQUIRE( fd2.read( myBuffer, sizeof( myBuffer ), bytesRead ) == false );
+    REQUIRE( fd2.read( myBuffer, sizeof( myBuffer ), bytesRead ) == true );
     REQUIRE( fd2.isEof() == true );
     REQUIRE( bytesRead == 0 );
 

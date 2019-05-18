@@ -14,6 +14,7 @@
 
 #include "Cpl/Text/String.h"
 #include "Cpl/Io/Close.h"
+#include "Cpl/Io/IsEos.h"
 #include <stdarg.h>
 
 
@@ -29,7 +30,7 @@ namespace Io {
           'bytesWritten').  All of the other write() are convenience methods
           and as such a default implementation is provided for these methods.
  */
-class Output : virtual public Close
+class Output : virtual public Close, virtual public IsEos
 {
 public:
     /** Writes a single byte to the stream.  Returns true if successful,

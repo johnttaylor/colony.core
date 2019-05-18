@@ -82,7 +82,7 @@ TEST_CASE( "basic", "[basic]" )
     REQUIRE( bytesRead == 2 );
     REQUIRE( myBuffer[0] == 'd' );
     REQUIRE( myBuffer[1] == '.' );
-    REQUIRE( infd.read( myBuffer, sizeof( myBuffer ), bytesRead ) == false );
+    REQUIRE( infd.read( myBuffer, sizeof( myBuffer ), bytesRead ) == true );
 
     infd.close();
     REQUIRE( infd.isOpened() == false );

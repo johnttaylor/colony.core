@@ -64,7 +64,7 @@ TEST_CASE( "write", "[write]" )
     Cpl::Text::FString<256> inbuffer;
     infd.read( inbuffer );
     REQUIRE( inbuffer == sum );
-    REQUIRE( infd.read( inbuffer ) == false ); // Ensure EOF is hit
+    REQUIRE( infd.read( inbuffer ) == true ); // Ensure EOF is hit
     REQUIRE( infd.isEof() );
     infd.close();
     REQUIRE( infd.isOpened() == false );
@@ -93,9 +93,8 @@ TEST_CASE( "write", "[write]" )
     REQUIRE( buffer2 == "Hello World" );
     REQUIRE( reader.readln( buffer2 ) );
     REQUIRE( buffer2 == "HelloWorld again!" );
-    REQUIRE( reader.readln( buffer2 ) == false );
-    REQUIRE( buffer2.isEmpty() );
-    REQUIRE( infd2.isEof() );
+	REQUIRE( reader.readln( buffer2 ) == false );
+	REQUIRE( infd2.isEof() );
     reader.close();
     REQUIRE( infd2.isOpened() == false );
 

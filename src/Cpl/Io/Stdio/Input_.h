@@ -115,7 +115,10 @@ public:
     /// See Cpl::Io::Input
     bool available();
 
-    /// See Cpl::Io::Input
+	/// See Cpl::Io::IsEos
+	bool isEos();
+
+	/// See Cpl::Io::Input
     void close();
 
 

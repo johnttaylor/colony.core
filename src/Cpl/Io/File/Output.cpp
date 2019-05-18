@@ -92,6 +92,11 @@ void Output::flush()
     m_stream.flush();
 }
 
+bool Output::isEos()
+{
+	return isEof();
+}
+
 void Output::close()
 {
     m_stream.close();

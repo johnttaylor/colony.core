@@ -52,7 +52,7 @@ bool LineReader::readln( Cpl::Text::String& destString )
     // Loop till newline is found
     while ( (io = m_stream.read( nextChar )) )
     {
-        // Read one character at a time
+		// Read one character at a time
         destString += nextChar;
 
         // Trap the case: the current line exceeds the size of my destination buffer
@@ -71,7 +71,14 @@ bool LineReader::readln( Cpl::Text::String& destString )
 
         // cache the previous/last character read
         prevChar = nextChar;
-    }
+
+		// Check for EOS/EOF
+		if ( m_stream.isEos() )
+		{
+			io = false;
+			break;
+		}
+	}
 
     // Return the underlying stream status 
     return io;

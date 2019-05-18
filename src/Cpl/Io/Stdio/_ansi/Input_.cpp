@@ -105,13 +105,18 @@ bool Input_::read( void* buffer, int numBytes, int& bytesRead )
     // perform the read
     bytesRead = (int) fread( buffer, sizeof( char ), numBytes, (FILE*) (m_inFd.m_handlePtr) );
     m_inEos   = feof( (FILE*) (m_inFd.m_handlePtr) ) ? true : false;
-    return !m_inEos && (ferror( (FILE*) (m_inFd.m_handlePtr) ) ? false : true);
+    return ferror( (FILE*) (m_inFd.m_handlePtr) ) ? false : true;
 }
 
 bool Input_::available()
 {
     // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract) WHEN OPENED
     return m_inFd.m_handlePtr != 0;
+}
+
+bool Input_::isEos()
+{
+	return m_inEos;
 }
 
 void Input_::close()
