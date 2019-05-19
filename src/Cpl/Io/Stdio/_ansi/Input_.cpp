@@ -103,9 +103,20 @@ bool Input_::read( void* buffer, int numBytes, int& bytesRead )
     }
 
     // perform the read
-    bytesRead = (int) fread( buffer, sizeof( char ), numBytes, (FILE*) (m_inFd.m_handlePtr) );
-    m_inEos   = feof( (FILE*) (m_inFd.m_handlePtr) ) ? true : false;
-    return ferror( (FILE*) (m_inFd.m_handlePtr) ) ? false : true;
+    bytesRead   = (int) fread( buffer, sizeof( char ), numBytes, (FILE*) (m_inFd.m_handlePtr) );
+	bool result = true;
+	m_inEos     = false;
+	if ( bytesRead <= 0 )
+	{
+		m_inEos   = feof( (FILE*) ( m_inFd.m_handlePtr ) );
+		if ( ferror( (FILE*) ( m_inFd.m_handlePtr ) ) )
+		{
+			result = false;
+		}
+	}
+	//printf( "eos=%d, ferr=%d, bytesRead=%d, result=%d\n", m_inEos, ferror( (FILE*) ( m_inFd.m_handlePtr ) ), bytesRead, result );
+	clearerr( (FILE*) ( m_inFd.m_handlePtr ) );
+    return result;
 }
 
 bool Input_::available()
