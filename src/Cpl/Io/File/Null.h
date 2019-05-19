@@ -59,7 +59,10 @@ public:
     /// See Cpl::Io::Output
     void flush();
 
-    /// See Cpl::Io::Close. Note: Once closed() has been called, all of the write() and ObjecApi methods will return false;
+	/// See Cpl::Io::IsEos (is equivalent to isEof())
+	bool isEos();
+	
+	/// See Cpl::Io::Close. Note: Once closed() has been called, all of the write() and ObjecApi methods will return false;
     void close();
 
 
