@@ -59,7 +59,7 @@ TEST_CASE( "readwrite", "[readwrite]" )
     REQUIRE( fd.setAbsolutePos( 0 ) );
     fd.read( inbuffer );
     REQUIRE( inbuffer == sum );
-    REQUIRE( fd.read( inbuffer ) == true ); // Ensure EOF is hit
+    REQUIRE( fd.read( inbuffer ) == false ); // Ensure EOF is hit
     REQUIRE( fd.isEof() );
     fd.close();
     REQUIRE( fd.isOpened() == false );

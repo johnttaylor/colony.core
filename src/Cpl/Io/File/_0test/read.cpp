@@ -100,7 +100,7 @@ TEST_CASE( "read", "[read]" )
     REQUIRE( bytesRead == 2 );
     REQUIRE( myBuffer[0] == 'd' );
     REQUIRE( myBuffer[1] == '.' );
-    REQUIRE( fd2.read( myBuffer, sizeof( myBuffer ), bytesRead ) == true );
+    REQUIRE( fd2.read( myBuffer, sizeof( myBuffer ), bytesRead ) == false );
     REQUIRE( fd2.isEof() == true );
     REQUIRE( bytesRead == 0 );
 

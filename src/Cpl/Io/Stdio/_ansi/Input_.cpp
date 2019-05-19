@@ -108,11 +108,8 @@ bool Input_::read( void* buffer, int numBytes, int& bytesRead )
 	m_inEos     = false;
 	if ( bytesRead <= 0 )
 	{
-		m_inEos   = feof( (FILE*) ( m_inFd.m_handlePtr ) );
-		if ( ferror( (FILE*) ( m_inFd.m_handlePtr ) ) )
-		{
-			result = false;
-		}
+		result  = false;
+		m_inEos = feof( (FILE*) ( m_inFd.m_handlePtr ) );
 	}
 	//printf( "eos=%d, ferr=%d, bytesRead=%d, result=%d\n", m_inEos, ferror( (FILE*) ( m_inFd.m_handlePtr ) ), bytesRead, result );
 	clearerr( (FILE*) ( m_inFd.m_handlePtr ) );

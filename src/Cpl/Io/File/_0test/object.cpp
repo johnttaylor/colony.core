@@ -71,7 +71,7 @@ TEST_CASE( "objectapi output", "[objectapi-output]" )
         REQUIRE( infd.read( buffer ) == true );
         REQUIRE( infd.isEof() == false );
         REQUIRE( buffer == OUTPUT_TXT3 );
-		REQUIRE( infd.read( buffer ) == true );
+		REQUIRE( infd.read( buffer ) == false );
 		REQUIRE( infd.isEof() == true );
 		infd.close();
     }
@@ -99,7 +99,7 @@ TEST_CASE( "objectapi output", "[objectapi-output]" )
         REQUIRE( infd.read( buffer ) == true );
         REQUIRE( infd.isEof() == false);
         REQUIRE( buffer == OUTPUT_TXT3 );
-		REQUIRE( infd.read( buffer ) == true );
+		REQUIRE( infd.read( buffer ) == false );
 		REQUIRE( infd.isEof() == true );
 		infd.close();
     }
@@ -148,7 +148,7 @@ TEST_CASE( "objectapi in/out", "[objectapi-inout]" )
         REQUIRE( infd.read( buffer ) == true );
         REQUIRE( infd.isEof() == false );
         REQUIRE( buffer == OUTPUT_TXT3 );
-		REQUIRE( infd.read( buffer ) == true );
+		REQUIRE( infd.read( buffer ) == false );
 		REQUIRE( infd.isEof() == true );
 		infd.close();
     }
@@ -176,7 +176,7 @@ TEST_CASE( "objectapi in/out", "[objectapi-inout]" )
         REQUIRE( infd.read( buffer ) == true );
         REQUIRE( infd.isEof() == false );
         REQUIRE( buffer == OUTPUT_TXT3 );
-		REQUIRE( infd.read( buffer ) == true );
+		REQUIRE( infd.read( buffer ) == false );
 		REQUIRE( infd.isEof() == true );
 		infd.close();
     }
@@ -214,7 +214,7 @@ TEST_CASE( "objectapi in", "[objectapi-in]" )
         REQUIRE( infd.read( buffer ) == true );
         REQUIRE( infd.isEof() == false );
         REQUIRE( buffer == OUTPUT_TXT4 );
-		REQUIRE( infd.read( buffer ) == true );
+		REQUIRE( infd.read( buffer ) == false );
 		REQUIRE( infd.isEof() == true );
 		infd.close();
     }
@@ -239,7 +239,7 @@ TEST_CASE( "objectapi in", "[objectapi-in]" )
         REQUIRE( infd.read( buffer ) == true );
         REQUIRE( infd.isEof() == false );
         REQUIRE( buffer == OUTPUT_TXT4 );
-		REQUIRE( infd.read( buffer ) == true );
+		REQUIRE( infd.read( buffer ) == false );
 		REQUIRE( infd.isEof() == true );
 		infd.close();
     }

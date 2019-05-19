@@ -112,7 +112,7 @@ bool Input_::read( void* buffer, int numBytes, int& bytesRead )
 	DWORD lastError = GetLastError();
 	m_inEos = (result != 0 && bytesRead > 0)? false: lastError == ERROR_HANDLE_EOF || lastError == ERROR_BROKEN_PIPE || bytesRead == 0? true : false;
 	//printf( "m_inEos=%d, result=%ld, bytesRead=%d, LastError=%ld\n", m_inEos, result, bytesRead, lastError );
-	return m_inEos ? true : result != 0;
+	return result != 0 && bytesRead > 0;
 }
 
 

@@ -66,8 +66,8 @@ static bool copyHelper_( Input& src, Output& dst )
 	{
 		if ( !src.read( buf, sizeof( buf ), bytesRead ) )
 		{
-			// read error
-			return false;
+			// was it a read error OR eof?
+			return src.isEof()? true: false;
 		}
 
 		if ( !dst.write( buf, bytesRead ) && !dst.isEof() )

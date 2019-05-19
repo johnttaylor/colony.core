@@ -64,7 +64,7 @@ TEST_CASE( "write", "[write]" )
     Cpl::Text::FString<256> inbuffer;
     infd.read( inbuffer );
     REQUIRE( inbuffer == sum );
-    REQUIRE( infd.read( inbuffer ) == true ); // Ensure EOF is hit
+    REQUIRE( infd.read( inbuffer ) == false ); // Ensure EOF is hit
     REQUIRE( infd.isEof() );
     infd.close();
     REQUIRE( infd.isOpened() == false );

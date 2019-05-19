@@ -109,7 +109,7 @@ bool Output_::write( const void* buffer, int maxBytes, int& bytesWritten )
 	//int lastError = errno;
 	m_outEos = bytesWritten == 0? true : false;
 	//printf( "m_outEos=%d, bytesWritten=%d, errno=%d\n", m_outEos, bytesWritten, lastError );
-	return bytesWritten >= 0;
+	return bytesWritten > 0;
 }
 
 

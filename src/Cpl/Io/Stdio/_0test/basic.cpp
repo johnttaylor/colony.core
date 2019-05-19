@@ -84,7 +84,7 @@ TEST_CASE( "basic", "[basic]" )
     REQUIRE( myBuffer[1] == '.' );
     bool result = infd.read( myBuffer, sizeof( myBuffer ), bytesRead );
 	CPL_SYSTEM_TRACE_MSG( SECT_, ( "result=%d, bytesRead=%d, myBuffer=[%.*s]", result, bytesRead, bytesRead, myBuffer ) );
-	REQUIRE( result == true );
+	REQUIRE( result == false );
 
     infd.close();
     REQUIRE( infd.isOpened() == false );
