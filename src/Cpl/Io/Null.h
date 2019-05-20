@@ -57,7 +57,10 @@ public:
     /// See Cpl::Io::Output
     void flush();
 
-    /// See Cpl::Io::Close. Note: Once closed() has been called, all of the write() method will return false;
+	/// See Cpl::Io::IsEos
+	bool isEos();
+
+	/// See Cpl::Io::Close. Note: Once closed() has been called, all of the write() method will return false;
     void close();
 
 

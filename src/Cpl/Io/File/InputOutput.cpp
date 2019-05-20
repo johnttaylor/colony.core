@@ -118,6 +118,11 @@ void InputOutput::flush()
     m_stream.flush();
 }
 
+bool InputOutput::isEos()
+{
+	return isEof();
+}
+
 void InputOutput::close()
 {
     m_stream.close();

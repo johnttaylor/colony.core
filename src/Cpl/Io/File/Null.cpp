@@ -52,6 +52,11 @@ void Null::flush()
 {
 }
 
+bool Null::isEos()
+{
+	return isEof();
+}
+
 void Null::close()
 {
     m_opened = false;

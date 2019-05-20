@@ -123,6 +123,10 @@ void InputOutput::flush()
 	}
 }
 
+bool InputOutput::isEos()
+{
+	return !m_started;
+}
 
 void InputOutput::close()
 {

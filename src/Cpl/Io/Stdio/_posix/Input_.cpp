@@ -12,6 +12,7 @@
 #include "Cpl/Io/Stdio/Input_.h"
 #include "Cpl/System/FatalError.h"
 #include <unistd.h>
+#include <errno.h>
 
 //
 using namespace Cpl::Io::Stdio;
@@ -106,8 +107,10 @@ bool Input_::read( void* buffer, int numBytes, int& bytesRead )
 
     // perform the read
     bytesRead = (int) ::read( m_inFd.m_fd, buffer, numBytes );
-    m_inEos = bytesRead == 0 ? true : false;
-    return !m_inEos && bytesRead > 0;
+	//int lastError = errno;
+	m_inEos = bytesRead == 0? true : false;
+	//printf( "m_inEos=%d, bytesRead=%d, errno=%d\n", m_inEos, bytesRead, lastError );
+	return bytesRead > 0;
 }
 
 
@@ -115,6 +118,11 @@ bool Input_::available()
 {
     // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract) WHEN OPENED
     return m_inFd.m_fd != -1;
+}
+
+bool Input_::isEos( void )
+{
+	return m_inEos;
 }
 
 void Input_::close()

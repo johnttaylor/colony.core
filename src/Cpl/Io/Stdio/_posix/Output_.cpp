@@ -106,8 +106,10 @@ bool Output_::write( const void* buffer, int maxBytes, int& bytesWritten )
 
     // perform the write
     bytesWritten = (int) ::write( m_outFd.m_fd, buffer, maxBytes );
-    m_outEos = bytesWritten == 0 ? true : false;
-    return !m_outEos && bytesWritten > 0;
+	//int lastError = errno;
+	m_outEos = bytesWritten == 0? true : false;
+	//printf( "m_outEos=%d, bytesWritten=%d, errno=%d\n", m_outEos, bytesWritten, lastError );
+	return bytesWritten > 0;
 }
 
 
@@ -118,6 +120,11 @@ void Output_::flush()
     {
         fsync( m_outFd.m_fd );
     }
+}
+
+bool Output_::isEos( void )
+{
+	return m_outEos;
 }
 
 void Output_::close()

@@ -86,7 +86,10 @@ public:
     /// See Cpl::Io::Output
     void flush();
 
-    /// See Cpl::Io::Close
+	/// See Cpl::Io::IsEos (is equivalent to isEof())
+	bool isEos();
+
+	/// See Cpl::Io::Close
     void close();
 
 

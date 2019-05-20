@@ -70,9 +70,8 @@ optimzed_cpp11 = BuildValues()
 debug_cpp11    = BuildValues()
 
 # Set 'base' options
-base_cpp11.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage -DCATCH_CONFIG_FAST_COMPILE'
-base_cpp11.linkflags  = '-m64 -fprofile-arcs'
-base_cpp11.linklibs   = '-lgcov'
+base_cpp11.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++ -DCATCH_CONFIG_FAST_COMPILE'
+base_cpp11.linkflags  = '-m64'
 base_cpp11.firstobjs  = unit_test_objects
 
 # Set 'Optimized' options
@@ -97,9 +96,8 @@ optimzed_win64 = BuildValues()
 debug_win64    = BuildValues()
 
 # Set 'base' options
-base_win64.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage -DCATCH_CONFIG_FAST_COMPILE'
-base_win64.linkflags  = '-m64 -fprofile-arcs'
-base_win64.linklibs   = '-lgcov'
+base_win64.cflags     = '-m64 -std=c++11 -Wall -Werror -x c++ -DCATCH_CONFIG_FAST_COMPILE'
+base_win64.linkflags  = '-m64'
 base_win64.firstobjs  = unit_test_objects
 
 # Set 'Optimized' options

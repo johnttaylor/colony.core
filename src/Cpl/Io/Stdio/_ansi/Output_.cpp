@@ -107,9 +107,16 @@ bool Output_::write( const void* buffer, int maxBytes, int& bytesWritten )
 
     // perform the write
     bytesWritten = (int) fwrite( buffer, sizeof( char ), maxBytes, (FILE*) (m_outFd.m_handlePtr) );
-    m_outEos     = feof( (FILE*) (m_outFd.m_handlePtr) ) ? true : false;
-    return !m_outEos & (ferror( (FILE*) (m_outFd.m_handlePtr) ) ? false : true);
-
+	bool result  = true;
+	m_outEos     = false;
+	if ( bytesWritten <= 0 )
+	{
+		m_outEos = feof( (FILE*) ( m_outFd.m_handlePtr ) );
+		result   = false;
+	}
+	//printf( "eos=%d, ferr=%d, bytesRead=%d, result=%d\n", m_outEos, ferror( (FILE*) ( m_inFd.m_handlePtr ) ), bytesWritten, result );
+	clearerr( (FILE*) ( m_outFd.m_handlePtr ) );
+	return result;
 }
 
 void Output_::flush()
@@ -119,6 +126,11 @@ void Output_::flush()
     {
         fflush( (FILE*) (m_outFd.m_handlePtr) );
     }
+}
+
+bool Output_::isEos()
+{
+	return m_outEos;
 }
 
 void Output_::close()

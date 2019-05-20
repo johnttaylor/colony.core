@@ -33,6 +33,8 @@ protected:
 	/// Socket handle
 	Cpl::Io::Descriptor  m_fd;
 
+	/// End-of-Stream status
+	bool                 m_eos;
 
 public:
 	/** Constructor. No 'fd' provided -->the instance MUST be activated prior
@@ -79,6 +81,9 @@ public:
 
 	/// See Cpl::Io::Output
 	void flush();
+
+	/// See Cpl::Io::IsEos
+	bool isEos();
 
 	/// See Cpl::Io::Output
 	void close();

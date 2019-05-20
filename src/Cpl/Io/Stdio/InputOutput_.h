@@ -195,7 +195,10 @@ public:
     /// See Cpl::Io::Output
     void flush();
 
-    /// See Cpl::Io::Output
+	/// See Cpl::Io::IsEos
+	bool isEos();
+
+	/// See Cpl::Io::Output
     void close();
 
 

@@ -73,12 +73,15 @@ public:
     /// See Cpl::Io::Input
     bool available();
 
-    /// See Cpl::Io::Close
+	/// See Cpl::Io::IsEos (is equivalent to isEof())
+	bool isEos();
+	
+	/// See Cpl::Io::Close
     void close();
 
 
 public:
-    /// See Cpl::Io::File::ObjectApi
+    /// See Cpl::Io::File::ObjectApi (is quantile to isEos())
     bool isEof();
 
     /// See Cpl::Io::File::ObjectApi

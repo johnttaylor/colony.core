@@ -109,8 +109,10 @@ bool Input_::read( void* buffer, int numBytes, int& bytesRead )
     unsigned long work;
     BOOL result = ReadFile( (HANDLE) (m_inFd.m_handlePtr), buffer, numBytes, &work, 0 );
     bytesRead   = (int) work;
-    m_inEos     = result && bytesRead == 0 ? true : false;
-    return !m_inEos && result != 0;
+	DWORD lastError = GetLastError();
+	m_inEos = (result != 0 && bytesRead > 0)? false: lastError == ERROR_HANDLE_EOF || lastError == ERROR_BROKEN_PIPE || bytesRead == 0? true : false;
+	//printf( "m_inEos=%d, result=%ld, bytesRead=%d, LastError=%ld\n", m_inEos, result, bytesRead, lastError );
+	return result != 0 && bytesRead > 0;
 }
 
 
@@ -118,6 +120,11 @@ bool Input_::available()
 {
     // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract) WHEN OPENED
     return m_inFd.m_handlePtr != (void*) INVALID_HANDLE_VALUE;
+}
+
+bool Input_::isEos()
+{
+	return m_inEos;
 }
 
 void Input_::close()

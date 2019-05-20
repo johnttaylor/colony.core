@@ -65,7 +65,10 @@ public:
     /// See Cpl::Io::Output
     void flush();
 
-    /// See Cpl::Io::Output
+	/// See Cpl::Io::IsEos
+	bool isEos();
+	
+	/// See Cpl::Io::Output
     void close();
 
 };
@@ -104,6 +107,13 @@ void AtomicOutput<CONTEXT>::flush()
 {
     Cpl::System::Mutex::ScopeBlock criticalSection( m_lock );
     m_stream.flush();
+}
+
+template <class CONTEXT>
+bool AtomicOutput<CONTEXT>::isEos()
+{
+	Cpl::System::Mutex::ScopeBlock criticalSection( m_lock );
+	return m_stream.isEos();
 }
 
 template <class CONTEXT>

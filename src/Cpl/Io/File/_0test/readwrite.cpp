@@ -66,7 +66,8 @@ TEST_CASE( "readwrite", "[readwrite]" )
     REQUIRE( fd.write( 'a' ) == false );
     char dummy;
     REQUIRE( fd.read( dummy ) == false );
-    REQUIRE( fd.isOpened() == false );
+	REQUIRE( fd.isEof() );
+	REQUIRE( fd.isOpened() == false );
 
     //
     InputOutput fd2( "output4.txt", true, true );
@@ -88,12 +89,10 @@ TEST_CASE( "readwrite", "[readwrite]" )
     REQUIRE( buffer2 == "Hello World" );
     REQUIRE( reader.readln( buffer2 ) );
     REQUIRE( buffer2 == "HelloWorld again!" );
-    REQUIRE( reader.readln( buffer2 ) == false );
-    REQUIRE( buffer2.isEmpty() );
-    REQUIRE( fd2.isEof() );
+	REQUIRE( reader.readln( buffer2 ) == false );
+	REQUIRE( fd2.isEof() );
     reader.close();
     REQUIRE( fd2.isOpened() == false );
-    REQUIRE( fd2.read( dummy ) == false );
     writer.close();
     REQUIRE( writer.println() == false );
     REQUIRE( fd2.write( 'a' ) == false );

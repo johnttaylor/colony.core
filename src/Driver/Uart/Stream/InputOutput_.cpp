@@ -71,6 +71,11 @@ void InputOutput_::flush()
 	// Not supported/has no meaning for a serial port
 }
 
+bool InputOutput_::isEos()
+{
+	// Does not really have meaning for serial port (assuming the serial port is opened/active)
+	return false;
+}
 
 void InputOutput_::close()
 {

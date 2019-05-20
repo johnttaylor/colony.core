@@ -329,8 +329,7 @@ void Server::reportDataCorruptError() noexcept
 
 void Server::reportFileWriteError() noexcept
 {
-    const char* recname = m_writerPtr->getName();
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportFileWriteError (rec=%s)", recname) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::reportFileWriteError (rec=%s)", m_writerPtr->getName() ) );
 
     // Delay reporting media error if I am the processing of 'opening'
     if ( m_localStatus == +ServerStatus::eOPENING )

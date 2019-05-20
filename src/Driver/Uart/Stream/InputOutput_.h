@@ -90,6 +90,9 @@ public:
 	/// See Cpl::Io::Output
 	void flush();
 
+	/// See Cpl::Io::IsEos. Note: This method always returns false
+	bool isEos();
+
 	/// See Cpl::Io::Output
 	void close();
 

@@ -5,7 +5,9 @@
 #define BUILD_TEST_B_
 
 
-// Enable trace
+// Enable Trace (but NOT on code coverage builds)
+#ifndef BUILD_VARIANT_WIN32
 #define USE_CPL_SYSTEM_TRACE
+#endif
 
 #endif

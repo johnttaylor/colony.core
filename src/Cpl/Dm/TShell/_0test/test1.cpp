@@ -17,6 +17,7 @@
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Assert.h"
 #include "Cpl/System/Shutdown.h"
+#include <stdio.h>
 
 /// 
 extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
@@ -41,13 +42,16 @@ void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
 	Cpl::System::Api::sleep( 3 * 1000 );
 	int32_t value;
 	int8_t valid = mp_apple_.read( value );
+	printf( "valid=%d\n", valid );
 	CPL_SYSTEM_ASSERT( value == 111 );
 	CPL_SYSTEM_ASSERT( Cpl::Dm::ModelPoint::IS_VALID( valid ) );
 	valid = mp_orange_.read( value );
+	printf( "valid=%d\n", valid );
 	CPL_SYSTEM_ASSERT( value == 0x100 );
 	CPL_SYSTEM_ASSERT( Cpl::Dm::ModelPoint::IS_VALID( valid ) );
 	Cpl::Text::FString<128> valString;
 	valid = mp_plum_.read( valString );
+	printf( "valid=%d\n", valid );
 	CPL_SYSTEM_ASSERT( valString == "Hello Mr. Plum" );
 	CPL_SYSTEM_ASSERT( Cpl::Dm::ModelPoint::IS_VALID( valid ) );
 	CPL_SYSTEM_ASSERT( mp_plum_.isLocked() );
