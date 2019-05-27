@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Mp_Bool_h_
-#define Cpl_Rte_Mp_Bool_h_
+#ifndef Cpl_Dm_Mp_Bool_h_
+#define Cpl_Dm_Mp_Bool_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -79,7 +79,7 @@ public:
 
 public:
 	/// See Cpl::Dm::Point.  
-	bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept;
+	bool toJSON( char* dst, size_t dstSize, bool& truncated, bool verbose=true ) noexcept;
 
 public:
     /// See Cpl::Dm::Point.  

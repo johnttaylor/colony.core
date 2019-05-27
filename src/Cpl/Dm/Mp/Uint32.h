@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Mp_Uint32_h_
-#define Cpl_Rte_Mp_Uint32_h_
+#ifndef Cpl_Dm_Mp_Uint32_h_
+#define Cpl_Dm_Mp_Uint32_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license

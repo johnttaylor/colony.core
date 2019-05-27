@@ -128,7 +128,7 @@ const char* RefCounter::getTypeAsText() const noexcept
 	return "Cpl::Dm::Mp::RefCounter";
 }
 
-bool RefCounter::toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
+bool RefCounter::toJSON( char* dst, size_t dstSize, bool& truncated, bool verbose ) noexcept
 {
 	// Get a snapshot of the my data and state
 	m_modelDatabase.lock_();
@@ -139,7 +139,7 @@ bool RefCounter::toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
 	m_modelDatabase.unlock_();
 
 	// Start the conversion
-	JsonDocument& doc = beginJSON( valid, locked, seqnum );
+	JsonDocument& doc = beginJSON( valid, locked, seqnum, verbose );
 
 	// Construct the 'val' key/value pair (as a string)
 	if ( IS_VALID( valid ) )
@@ -149,7 +149,7 @@ bool RefCounter::toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
 	}
 
 	// End the conversion
-	Cpl::Dm::ModelPointCommon_::endJSON( dst, dstSize, truncated );
+	Cpl::Dm::ModelPointCommon_::endJSON( dst, dstSize, truncated, verbose );
 	return true;
 }
 

@@ -172,10 +172,10 @@ protected:
     virtual void transitionToSubscribed( SubscriberApi& subscriber ) noexcept;
 
     /// Helper method when converting MP to a JSON string
-    virtual JsonDocument& beginJSON( int8_t validState, bool locked, uint16_t seqnum ) noexcept;
+    virtual JsonDocument& beginJSON( int8_t validState, bool locked, uint16_t seqnum, bool verbose=true ) noexcept;
 
     /// Helper method when converting MP to a JSON string
-    virtual void endJSON( char* dst, size_t dstSize, bool& truncated  ) noexcept;
+    virtual void endJSON( char* dst, size_t dstSize, bool& truncated, bool verbose=true ) noexcept;
 
 
 };

@@ -118,7 +118,7 @@ uint16_t String::write( const Data& srcData, LockRequest_T lockRequest ) noexcep
 		return seqNum;
 	}
 
-	return write( srcData.stringPtr, strlen( srcData.stringPtr ), lockRequest );
+    return ModelPointCommon_::write( &srcData, sizeof( Data ), lockRequest );
 }
 
 uint16_t String::write( const char* newValue, LockRequest_T lockRequest ) noexcept
@@ -208,7 +208,7 @@ const void* String::getImportExportDataPointer_() const noexcept
 	return m_data.stringPtr;
 }
 
-bool String::toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
+bool String::toJSON( char* dst, size_t dstSize, bool& truncated, bool verbose ) noexcept
 {
 	// Get my state
 	m_modelDatabase.lock_();
@@ -217,10 +217,13 @@ bool String::toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
 	bool     locked = m_locked;
 
 	// Start the conversion
-	JsonDocument& doc = beginJSON( valid, locked, seqnum );
+	JsonDocument& doc = beginJSON( valid, locked, seqnum, verbose );
 
 	// Add maxlen key/value
-	doc["maxlen"] = m_data.maxLength;
+    if ( verbose )
+    {
+        doc["maxlen"] = m_data.maxLength;
+    }
 
 	// Construct the 'val' key/value pair 
 	if( IS_VALID( valid ) )
@@ -229,7 +232,7 @@ bool String::toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
 	}
 
 	// End the conversion
-	endJSON( dst, dstSize, truncated );
+	endJSON( dst, dstSize, truncated, verbose );
 
 	m_modelDatabase.unlock_();
 	return true;

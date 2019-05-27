@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Mp_BasicArray_h_
-#define Cpl_Rte_Mp_BasicArray_h_
+#ifndef Cpl_Dm_Mp_BasicArray_h_
+#define Cpl_Dm_Mp_BasicArray_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -271,7 +271,7 @@ public:
 
 public:
 	/// See Cpl::Dm::Point.  
-	bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
+	bool toJSON( char* dst, size_t dstSize, bool& truncated, bool verbose=true ) noexcept
 	{
 		// Lock the Model Point
 		Cpl::Dm::ModelPointCommon_::m_modelDatabase.lock_();
@@ -280,7 +280,7 @@ public:
 		bool     locked = BasicArray<ELEMTYPE>::m_locked;
 
 		// Start the conversion
-		JsonDocument& doc = Cpl::Dm::ModelPointCommon_::beginJSON( valid, locked, seqnum );
+		JsonDocument& doc = Cpl::Dm::ModelPointCommon_::beginJSON( valid, locked, seqnum, verbose );
 
 		// Construct the 'val' array object
 		if (Cpl::Dm::ModelPointCommon_::IS_VALID( valid ))
@@ -304,7 +304,7 @@ public:
 		}
 
 		// End the conversion
-		Cpl::Dm::ModelPointCommon_::endJSON( dst, dstSize, truncated );
+		Cpl::Dm::ModelPointCommon_::endJSON( dst, dstSize, truncated, verbose );
 
 		// unlock the database
 		Cpl::Dm::ModelPointCommon_::m_modelDatabase.unlock_();
