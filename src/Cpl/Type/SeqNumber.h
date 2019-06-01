@@ -34,7 +34,7 @@ protected:
 
 public:
 	/// Constructor
-	SeqNumber( int32_t initialValue=1 ) {};
+	SeqNumber( int32_t initialValue=1 );
 
 
 public:
@@ -61,7 +61,16 @@ public:
 	 */
 	void invalidate( void );
 
-	/** This method return true if 'other' does not match this sequence number
+    /// Returns true if the sequence number is valid (i.e NOT in the invalid state)
+    inline bool isValid( void ) const { return m_counter > 0;  }
+
+    /// Cast to an int32_t 
+    inline operator int32_t ( ) const { return m_counter; }
+
+public:
+    /** This method return true if 'other' does not match this sequence number
+        Note: If this instance or 'other' is invalid (aka zero), then the method 
+        always returns false;
 	 */
 	bool compare( const SeqNumber& other ) const;
 
@@ -70,6 +79,20 @@ public:
 
 	/// Short hand for the !compare() method
 	inline bool operator != ( const SeqNumber& other ) const { return !compare( other ); }
+
+public:
+    /** This method return true if 'other' does not match this sequence number
+        Note: If this instance or 'other' is invalid (aka zero), then the method 
+        always returns false;
+     */
+    bool compare( int32_t other ) const;
+
+    /// Short hand for the compare() method
+    inline bool operator == ( int32_t other ) const { return compare( other ); }
+
+    /// Short hand for the !compare() method
+    inline bool operator != ( int32_t other ) const { return !compare( other ); }
+
 };
 
 };      // end namespaces
