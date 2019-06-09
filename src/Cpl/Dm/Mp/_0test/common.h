@@ -28,6 +28,7 @@
 #include "Cpl/Dm/Mp/String.h"
 #include "Cpl/Dm/Mp/RefCounter.h"
 #include "Cpl/Dm/Mp/ArrayUint8.h"
+#include "Cpl/Dm/Mp/ElapsedPrecisionTime.h"
 #include "Cpl/Type/enum.h"
 
 
@@ -533,7 +534,7 @@ class RmwBool : public Mp::Bool::Client
 {
 public:
 	///
-	int m_callbackCount;
+	int                             m_callbackCount;
 	///
 	ModelPoint::RmwCallbackResult_T m_returnResult;
 	///
@@ -554,6 +555,82 @@ public:
 	}
 };
 
+
+/////////////////////////////////////////////////////////////////
+class ViewerElapsedPrecisionTime : public ViewerBase, public Mp::ElapsedPrecisionTime::Observer
+{
+public:
+    ///
+    Mp::ElapsedPrecisionTime&  m_mp1;
+
+    /// Constructor
+    ViewerElapsedPrecisionTime( MailboxServer& myMbox, Cpl::System::Thread& masterThread, Mp::ElapsedPrecisionTime& mp1 )
+        :ViewerBase( myMbox, masterThread )
+        , Mp::ElapsedPrecisionTime::Observer( myMbox )
+        , m_mp1( mp1 )
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "ViewerElapsedPrecisionTime(%p). mp1=%s", this, mp1.getName() ) );
+    }
+
+public:
+    ///
+    void subscribe() { m_mp1.attach( *this ); }
+    ///
+    void unsubscribe() { m_mp1.detach( *this ); }
+    ///
+    void modelPointChanged( Mp::ElapsedPrecisionTime& modelPointThatChanged ) noexcept
+    {
+        if ( m_done != true )
+        {
+            m_notifCount++;
+            CPL_SYSTEM_TRACE_MSG( SECT_, ( "ViewerElapsedPrecisionTime(%p) Changed!: count=%lu", this, ( unsigned long) m_notifCount ) );
+
+            m_lastSeqNumber  = modelPointThatChanged.getSequenceNumber();
+            m_lastValidState = modelPointThatChanged.getValidState();
+
+            if ( m_pendingOpenMsgPtr != 0 && m_notifCount == 1 )
+            {
+                m_pendingOpenMsgPtr->returnToSender();
+                m_opened            = true;
+                m_pendingOpenMsgPtr = 0;
+                CPL_SYSTEM_TRACE_MSG( SECT_, ( "..ViewerElapsedPrecisionTime(%p) Returning Open Msg." ) );
+            }
+
+            if ( m_notifCount >= 2 )
+            {
+                m_masterThread.signal();
+                m_done = true;
+            }
+        }
+    }
+};
+
+class RmwElapsedPrecisionTime : public Mp::ElapsedPrecisionTime::Client
+{
+public:
+    ///
+    int m_callbackCount;
+    ///
+    ModelPoint::RmwCallbackResult_T m_returnResult;
+    ///
+    unsigned                        m_newMsecs;
+
+public:
+    ///
+    RmwElapsedPrecisionTime() :m_callbackCount( 0 ), m_returnResult( ModelPoint::eNO_CHANGE ), m_newMsecs( 0 ) {}
+
+
+    ///
+    ModelPoint::RmwCallbackResult_T callback( Cpl::System::ElapsedTime::Precision_T& data, int8_t validState ) noexcept
+    {
+        m_callbackCount++;
+        if ( m_returnResult != ModelPoint::eNO_CHANGE )
+        {
+            data.m_thousandths = m_newMsecs;
+        }
+        return m_returnResult;
+    }
+};
 
 /////////////////////////////////////////////////////////////////
 class ViewerString : public ViewerBase, public Mp::String::Observer

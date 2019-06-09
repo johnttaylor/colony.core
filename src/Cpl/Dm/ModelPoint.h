@@ -186,7 +186,7 @@ public:
         The general output format:
         \code
 
-        { name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:<value> }
+        { name:"<mpname>", type:"<mptypestring>", invalid:nn, seqnum:nnnn, locked:true|false, val:<value> }
 
         Notes:
             - The MP is in the valid state if/when the 'invalid' value is 0

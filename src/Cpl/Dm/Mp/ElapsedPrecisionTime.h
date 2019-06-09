@@ -1,5 +1,5 @@
-#ifndef Cpl_Dm_Mp_Bool_h_
-#define Cpl_Dm_Mp_Bool_h_
+#ifndef Cpl_Dm_Mp_ElapsedPrecisionTime_h_
+#define Cpl_Dm_Mp_ElapsedPrecisionTime_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -14,6 +14,7 @@
 
 
 #include "Cpl/Dm/Mp/Basic.h"
+#include "Cpl/System/ElapsedTime.h"
 
 ///
 namespace Cpl {
@@ -23,37 +24,35 @@ namespace Dm {
 namespace Mp {
 
 
-/** This class provides a concrete implementation for a Point who's data is a
-    bool.
+/** This class provides a concrete implementation for a Point who's data a
+    Cpl::System::ElapsedTime::Precision_T data structure
 
- 	The toJSON()/fromJSON format is:
-	\code
-	
-	{ name:"<mpname>", type:"<mptypestring>", invalid:nn, seqnum:nnnn, locked:true|false, val:true|false }
-	
-	\endcode
-	
-	NOTE: All methods in this class ARE thread Safe unless explicitly
+    The toJSON/fromJSON() format is:
+    \code
+
+    { name:"<mpname>", type=:<mptypestring>", invalid:nn, seqnum:nnnn, locked:true|false, val:"DD HH:MM:SS.sss" }
+
+    Note: When writing a value, the 'DD' and 'sss' fields are optional.
+
+    \endcode
+
+
+    NOTE: All methods in this class ARE thread Safe unless explicitly
           documented otherwise.
  */
-class Bool : public Basic<bool>
+class ElapsedPrecisionTime : public Basic<Cpl::System::ElapsedTime::Precision_T>
 {
 public:
-    /// Constructor. Invalid MP. 
-    Bool( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo );
+    /// Constructor. Invalid MP
+    ElapsedPrecisionTime( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo );
 
     /// Constructor. Valid MP.  Requires an initial value
-    Bool( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool initialValue );
+    ElapsedPrecisionTime( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, Cpl::System::ElapsedTime::Precision_T initialValue );
+    
 
 public:
-    /// Type safe read. See Cpl::Dm::ModelPoint
-    virtual int8_t read( bool& dstData, uint16_t* seqNumPtr=0 ) const noexcept;
-
-    /// Type safe write. See Cpl::Dm::ModelPoint
-    virtual uint16_t write( bool newValue, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
-
     /// Type safe read-modify-write client callback interface
-    typedef Cpl::Dm::ModelPointRmwCallback<bool> Client;
+    typedef Cpl::Dm::ModelPointRmwCallback<Cpl::System::ElapsedTime::Precision_T> Client;
 
     /** Type safe read-modify-write. See Cpl::Dm::ModelPoint
 
@@ -66,10 +65,9 @@ public:
      */
     virtual uint16_t readModifyWrite( Client& callbackClient, LockRequest_T lockRequest = eNO_REQUEST );
 
-
 public:
     /// Type safe subscriber
-    typedef Cpl::Dm::Subscriber<Bool> Observer;
+    typedef Cpl::Dm::Subscriber<ElapsedPrecisionTime> Observer;
 
     /// Type safe register observer
     virtual void attach( Observer& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
@@ -77,16 +75,17 @@ public:
     /// Type safe un-register observer
     virtual void detach( Observer& observer ) noexcept;
 
+
 public:
-	/// See Cpl::Dm::Point.  
-	bool toJSON( char* dst, size_t dstSize, bool& truncated, bool verbose=true ) noexcept;
+    /// See Cpl::Dm::Point.  
+    bool toJSON( char* dst, size_t dstSize, bool& truncated, bool verbose=true ) noexcept;
+    
+    ///  See Cpl::Dm::ModelPoint.
+    const char* getTypeAsText() const noexcept;
 
 public:
     /// See Cpl::Dm::Point.  
     bool fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept;
-
-    ///  See Cpl::Dm::ModelPoint.
-    const char* getTypeAsText() const noexcept;
 
 };
 

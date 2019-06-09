@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include "colony_map.h"
+#include "Cpl/System/ElapsedTime.h"
 
 
 ///
@@ -91,6 +92,10 @@ bool a2b( bool& convertedValue, const char* string, const char* trueToken="T", c
 long asciiHexToBuffer( void* dstBinary, const char* srcString, size_t dstMaxLen );
 
 
+/** This method parses a 'timestamp' with the following format: [DD ]HH:MM:SS[.sss]
+    The method returns true if the parse was successful.
+ */
+bool parsePrecisionTimeStamp( const char* timeStampToParse, Cpl::System::ElapsedTime::Precision_T& convertedValue );
 
 
 };      // end namespaces

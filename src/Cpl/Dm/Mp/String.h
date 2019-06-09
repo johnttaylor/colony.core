@@ -13,7 +13,6 @@
 /** @file */
 
 #include "Cpl/Dm/ModelPointCommon_.h"
-#include "Cpl/Text/DFString.h"
 
 
 
@@ -33,7 +32,7 @@ namespace Mp {
 	The toJSON()/fromJSON format is:
 	\code
 
-	{ name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, maxlen=nnn, val:"<newvalue>" }
+	{ name:"<mpname>", type:"<mptypestring>", invalid:nn, seqnum:nnnn, locked:true|false, maxlen:nnn, val:"<newvalue>" }
 
 	\endcode
 

@@ -36,7 +36,7 @@ namespace Mp {
 	The toJSON()/fromJSON format is:
 	\code
 
-	{ name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:"<enumsymbol>" }
+	{ name:"<mpname>", type:"<mptypestring>", invalid:nn, seqnum:nnnn, locked:true|false, val:"<enumsymbol>" }
 
 	\endcode
 

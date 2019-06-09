@@ -347,7 +347,7 @@ TEST_CASE( "string-toJSON" )
     SECTION( "Value/terse" )
     {
         // Invalid (Default value)
-        uint16_t seqnum = mp_apple_.write( "hi bob", ModelPoint::eUNLOCK );
+        mp_apple_.write( "hi bob", ModelPoint::eUNLOCK );
         mp_apple_.toJSON( string, MAX_STR_LENG, truncated, false );
         CPL_SYSTEM_TRACE_MSG( SECT_, ( "toJSON: terse [%s])", string ) );
 

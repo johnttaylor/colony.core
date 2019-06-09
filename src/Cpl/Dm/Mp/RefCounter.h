@@ -38,7 +38,7 @@ namespace Mp {
     The toJSON/fromJSON() format is:
     \code
 
-    { name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:"[<act>]<numvalue>" }
+    { name:"<mpname>", type:"<mptypestring>", invalid:nn, seqnum:nnnn, locked:true|false, val:"[<act>]<numvalue>" }
 
         where <act> can be:
             "+"				-->increment the counter

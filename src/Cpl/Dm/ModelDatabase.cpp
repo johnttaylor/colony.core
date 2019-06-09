@@ -134,7 +134,7 @@ bool ModelDatabase::fromJSON( const char* src, Cpl::Text::String* errorMsg, Mode
         return false;
     }
 
-    //    { name="<mpname>", type="<mptypestring>", valid=nn, seqnum=nnnn, locked=true|false val:<value> }
+    //    { name="<mpname>", type="<mptypestring>", valid=nn, seqnum:nnnn, locked:true|false val:<value> }
 
     // Valid JSON... Parse the Model Point name
     const char* name = ModelDatabase::g_doc_["name"];
