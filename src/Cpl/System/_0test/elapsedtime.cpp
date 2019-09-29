@@ -105,5 +105,40 @@ TEST_CASE( "elaspedtime", "[elaspedtime]" )
         REQUIRE( secs <= precision.m_seconds );
     }
 
+    // Comparison operators
+    ElapsedTime::Precision_T timeA = { 10, 11 };
+    ElapsedTime::Precision_T timeB = { 10, 12 };
+    REQUIRE( timeA < timeB );
+    REQUIRE( timeA <= timeB );
+    REQUIRE( timeB > timeA );
+    REQUIRE( timeB >= timeA );
+    REQUIRE( timeA != timeB );
+    REQUIRE( (timeA == timeB) == false );
+
+    timeA = timeB;
+    REQUIRE( (timeA < timeB) == false );
+    REQUIRE( timeA <= timeB );
+    REQUIRE( (timeB > timeA) == false );
+    REQUIRE( timeB >= timeA );
+    REQUIRE( (timeA != timeB) == false );
+    REQUIRE( timeA == timeB  );
+
+    timeA = { 12, 10 };
+    timeB = { 13, 10 };
+    REQUIRE( timeA < timeB );
+    REQUIRE( timeA <= timeB );
+    REQUIRE( timeB > timeA );
+    REQUIRE( timeB >= timeA );
+    REQUIRE( timeA != timeB );
+    REQUIRE( ( timeA == timeB ) == false );
+
+    timeA = timeB;
+    REQUIRE( ( timeA < timeB ) == false );
+    REQUIRE( timeA <= timeB );
+    REQUIRE( ( timeB > timeA ) == false );
+    REQUIRE( timeB >= timeA );
+    REQUIRE( ( timeA != timeB ) == false );
+    REQUIRE( timeA == timeB );
+
     REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
 }

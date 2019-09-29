@@ -19,7 +19,7 @@ using namespace Cpl::System;
 #define MAX_POSITVE_MSEC_   0x7FFF
 
 ///////////////////////////////////////////////////////
-ElapsedTime::Precision_T& ElapsedTime::Precision_T::operator +=( const ElapsedTime::Precision_T& x )
+ElapsedTime::Precision_T & ElapsedTime::Precision_T::operator +=( const ElapsedTime::Precision_T & x )
 {
     this->m_thousandths += x.m_thousandths;
     this->m_seconds     += x.m_seconds + this->m_thousandths / 1000;
@@ -27,6 +27,45 @@ ElapsedTime::Precision_T& ElapsedTime::Precision_T::operator +=( const ElapsedTi
     return *this;
 }
 
+bool ElapsedTime::Precision_T::operator > ( Precision_Tag other ) const
+{
+    if ( m_seconds > other.m_seconds ||
+        ( m_seconds == other.m_seconds && m_thousandths > other.m_thousandths ) )
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool ElapsedTime::Precision_T::operator >= ( Precision_Tag other ) const
+{
+    if ( *this == other || *this > other )
+    {
+        return true;
+    }
+
+    return false;
+}
+bool ElapsedTime::Precision_T::operator < ( Precision_Tag other ) const
+{
+    if ( m_seconds < other.m_seconds ||
+        ( m_seconds == other.m_seconds && m_thousandths < other.m_thousandths ) )
+    {
+        return true;
+    }
+
+    return false;
+}
+bool ElapsedTime::Precision_T::operator <= ( Precision_Tag other ) const
+{
+    if ( *this == other || *this < other )
+    {
+        return true;
+    }
+
+    return false;
+}
 
 ///////////////////////////////////////////////////////
 ElapsedTime::Precision_T ElapsedTime::deltaPrecision( Precision_T startTime, Precision_T endTime ) noexcept
