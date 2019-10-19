@@ -59,9 +59,14 @@ public:
         /// less than (i.e. is this instance older then 'other')
         bool operator < ( Precision_Tag const other ) const;
 
-        /// less than or equalt (i.e. is this instance the same as 'other' or is it older then 'other')
+        /// less than or equal (i.e. is this instance the same as 'other' or is it older then 'other')
         bool operator <= ( Precision_Tag const other ) const;
 
+        /// Sets the Precision value from a millisecond value
+        Precision_Tag& setFromMilliseconds( uint32_t milliseconds );
+
+        /// Assign my value based on total milliseconds
+        Precision_Tag& operator =( uint32_t milliseconds );
 
     } Precision_T;
 

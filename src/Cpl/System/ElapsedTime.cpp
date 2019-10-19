@@ -27,6 +27,18 @@ ElapsedTime::Precision_T & ElapsedTime::Precision_T::operator +=( const ElapsedT
     return *this;
 }
 
+ElapsedTime::Precision_T & ElapsedTime::Precision_T::setFromMilliseconds( uint32_t milliseconds )
+{
+    this->m_seconds     = milliseconds / 1000;
+    this->m_thousandths = milliseconds % 1000;
+    return *this;
+}
+
+ElapsedTime::Precision_T & ElapsedTime::Precision_T::operator =( uint32_t milliseconds )
+{
+    return setFromMilliseconds( milliseconds );
+}
+
 bool ElapsedTime::Precision_T::operator > ( Precision_Tag other ) const
 {
     if ( m_seconds > other.m_seconds ||
