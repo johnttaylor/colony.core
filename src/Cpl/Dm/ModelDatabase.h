@@ -24,14 +24,14 @@
     instance of this buffer is allocated.
 */
 #ifndef OPTION_CPL_DM_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC
-#define OPTION_CPL_DM_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC          1024
+#define OPTION_CPL_DM_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC          (1024*2)
 #endif
 
 /** This symbol defines the size, in bytes, of temporary storage allocated for
     use by the fromJSON_() method (e.g. create a temporary array instance)
  */
 #ifndef OPTION_CPL_DM_MODEL_DATABASE_TEMP_STORAGE_SIZE
-#define OPTION_CPL_DM_MODEL_DATABASE_TEMP_STORAGE_SIZE              1024
+#define OPTION_CPL_DM_MODEL_DATABASE_TEMP_STORAGE_SIZE              (1024*2)
 #endif
 
 
