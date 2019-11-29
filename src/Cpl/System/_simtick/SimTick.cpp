@@ -75,7 +75,7 @@ bool SimTick::advance( size_t numTicks ) noexcept
             while ( ElapsedTime::expiredMilliseconds( start, OPTION_CPL_SYSTEM_SIM_TICK_NO_ACTIVITY_LIMIT, now ) == false )
             {
                 // yield the CPU to give other threads a chance at the CPU
-                Api::sleepInRealTime( 1 );
+                Api::sleepInRealTime( 0 );
 
                 // Peek into the waiters list 
                 myLock_.lock();

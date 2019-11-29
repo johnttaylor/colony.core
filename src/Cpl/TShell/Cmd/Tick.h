@@ -1,5 +1,5 @@
-#ifndef Cpl_TShell_Cmd_Bye_h
-#define Cpl_TShell_Cmd_Bye_h
+#ifndef Cpl_TShell_Cmd_Tick_h
+#define Cpl_TShell_Cmd_Tick_h
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -19,15 +19,15 @@
                                     "         1         2         3         4         5         6         7         8"
                                     "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define CPLTSHELLCMD_CMD_BYE_		"bye"
+#define CPLTSHELLCMD_CMD_TICK_		"tick"
 /// Usage
-#define CPLTSHELLCMD_USAGE_BYE_     "bye [app [<exitcode>]]"
+#define CPLTSHELLCMD_USAGE_TICK_    "tick [+nn|@mm]"
 
 /// Detailed Help text
-#ifndef CPLTSHELLCMD_DETAIL_BYE_
-#define CPLTSHELLCMD_DETAIL_BYE_    "  Requests the  shell to exit. If the optional argument 'app' is specified\n" \
-                                    "  then the application is exited with the specifed <exitcode>. The default\n" \
-                                    "  <exitcode> is '0'."
+#ifndef CPLTSHELLCMD_DETAIL_TICK_
+#define CPLTSHELLCMD_DETAIL_TICK_   "  Advances the simulated time by nn number of milliseconds and/or advances time\n" \
+                                    "  to an absolute time at mm milliseconds.  When no arguments are use the current\n" \
+                                    "  simulated and real time is displayed."
 
 #endif // ifndef allows detailed help to be compacted down to a single character if FLASH/code space is an issue
 
@@ -39,24 +39,25 @@ namespace TShell {
 ///
 namespace Cmd {
 
-/** This class implements a  Shell command
+/** This class implements a  Shell command.  This command is only 'useful' if
+    the application was built to use simulated time (see Cpl::System::SimTick.h).
  */
-class Bye : public Command
+class Tick : public Command
 {
 protected:
     /// See Cpl::TShell::Command
-    const char* getUsage() const noexcept { return CPLTSHELLCMD_USAGE_BYE_; }
+    const char* getUsage() const noexcept { return CPLTSHELLCMD_USAGE_TICK_; }
 
     /// See Cpl::TShell::Command
-    const char* getHelp() const noexcept { return CPLTSHELLCMD_DETAIL_BYE_; }
+    const char* getHelp() const noexcept { return CPLTSHELLCMD_DETAIL_TICK_; }
 
 
 public:
     /// Constructor
-    Bye( Cpl::Container::Map<Cpl::TShell::Command>& commandList ) noexcept;
+    Tick( Cpl::Container::Map<Cpl::TShell::Command>& commandList ) noexcept;
 
     /// Constructor.  Used to create a static instance of the command
-    Bye( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept;
+    Tick( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept;
 
 public:
     /// See Cpl::TShell::Command

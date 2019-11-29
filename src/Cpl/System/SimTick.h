@@ -227,23 +227,6 @@ public:
         consumes one simulated system tick. This method SHOULD only be used
         at the very most top level of a thread's 'forever' loop.  
 
-        For example: if OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS is set to
-                     1, and advance(5) is called then this method will return
-                     (i.e. not block) 5 times and then on the sixth call to
-                     this method it will block until the next simulated tick.
-
-        What is 'OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS'? This compile
-        time constant defines the 'number of iterations' of a thread's main
-        loop is executed per simulated tick. This parameter attempts to
-        functional simulate the execution time that occurs between system
-        ticks.
-
-        For example: if OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS is set to
-                     3, and advance(5) is called then this method will return
-                     (i.e. not block) 15 (5*3) times and then on the sixteenth
-                     call to this method it will block until the next simulated
-                     tick.
-
         This method SHOULD NEVER be called directly, but via the preprocessor
         macro CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT().  This allows the simulate
         tick code to be compiled out of production versions of the application.
