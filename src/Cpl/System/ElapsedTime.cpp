@@ -102,5 +102,5 @@ ElapsedTime::Precision_T ElapsedTime::deltaPrecision( Precision_T startTime, Pre
 bool ElapsedTime::expiredPrecision( Precision_T timeMarker, Precision_T duration, Precision_T currentTime ) noexcept
 {
     Precision_T delta = ElapsedTime::deltaPrecision( timeMarker, currentTime );
-    return delta.m_seconds >= duration.m_seconds && delta.m_thousandths >= duration.m_thousandths;
+    return (delta.m_seconds > duration.m_seconds) || ( delta.m_seconds == duration.m_seconds && delta.m_thousandths >= duration.m_thousandths);
 }
