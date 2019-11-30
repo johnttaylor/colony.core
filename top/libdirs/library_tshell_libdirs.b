@@ -8,6 +8,5 @@ src/Bsp/UserSpace
 
 # Core TShell libraries
 src/Cpl/TShell
-src/Cpl/TShell/
 src/Cpl/TShell/Cmd
 

@@ -22,9 +22,10 @@
 /// 
 using namespace Cpl::System;
 
-static Tls*                           simTlsPtr_    = 0;
-static size_t                         milliseconds_ = 0;
-static unsigned long                  seconds_      = 0;
+static Tls*                           simTlsPtr_      = 0;
+static size_t                         milliseconds_   = 0;
+static size_t                         remainingTicks_ = 0;
+static unsigned long                  seconds_        = 0;
 static Semaphore                      tickSource_;
 static Mutex                          myLock_;
 static Cpl::Container::SList<SimTick> waiters_;
@@ -49,17 +50,19 @@ unsigned SimTick::wakeUpWaiters( void ) noexcept
 
 bool SimTick::advance( size_t numTicks ) noexcept
 {
-    while ( numTicks-- )
+    bool result = true;
+    numTicks += remainingTicks_;
+
+    while ( numTicks >= OPTION_CPL_SYSTEM_SIM_TICK_MIN_TICKS_FOR_ADVANCE )
     {
+        numTicks -= OPTION_CPL_SYSTEM_SIM_TICK_MIN_TICKS_FOR_ADVANCE;
+
         // START critical section
         myLock_.lock();
 
         // Increment my system time
-        milliseconds_++;
-        if ( milliseconds_ % 1000 == 0 )
-        {
-            seconds_++;
-        }
+        milliseconds_ += OPTION_CPL_SYSTEM_SIM_TICK_MIN_TICKS_FOR_ADVANCE;
+        seconds_       = milliseconds_ / 1000;
 
         // Wake-up all of threads waiting on a simulate tick
         unsigned waiters = wakeUpWaiters();
@@ -75,7 +78,7 @@ bool SimTick::advance( size_t numTicks ) noexcept
             while ( ElapsedTime::expiredMilliseconds( start, OPTION_CPL_SYSTEM_SIM_TICK_NO_ACTIVITY_LIMIT, now ) == false )
             {
                 // yield the CPU to give other threads a chance at the CPU
-                Api::sleepInRealTime( 0 );
+                Api::sleepInRealTime( OPTION_CPL_SYSTEM_SIM_TICK_YEILD_SLEEP_TIME );
 
                 // Peek into the waiters list 
                 myLock_.lock();
@@ -96,7 +99,8 @@ bool SimTick::advance( size_t numTicks ) noexcept
             // IF I get here and STILL have no waiter ->then the 'simulated threads' are all blocked on something other than the next tick (or all terminated)
             if ( waiters == 0 )
             {
-                return false;
+                result = false;
+                break;
             }
         }
 
@@ -107,7 +111,8 @@ bool SimTick::advance( size_t numTicks ) noexcept
         }
     }
 
-    return true;
+    remainingTicks_ = numTicks;
+    return result;
 }
 
 
