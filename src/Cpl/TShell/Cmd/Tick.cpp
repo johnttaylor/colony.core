@@ -69,7 +69,6 @@ Cpl::TShell::Command::Result_T Tick::execute( Cpl::TShell::Context_& context, ch
             outtext.format( "Invalid '@mm' argument (%s)", tokens.getParameter( 1 ) );
             context.writeFrame( outtext );
             return Cpl::TShell::Command::eERROR_INVALID_ARGS;
-
         }
 
         Cpl::System::ElapsedTime::Precision_T simTime  = Cpl::System::ElapsedTime::precision();
