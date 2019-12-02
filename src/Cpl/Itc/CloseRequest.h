@@ -46,12 +46,12 @@ public:
     };
 
 
-    /// Message Type: Open
+    /// Message Type: Close
     typedef RequestMessage<CloseRequest, ClosePayload> CloseMsg;
 
 
 public:
-    /// Request: Open
+    /// Request: Close
     virtual void request( CloseMsg& msg ) = 0;
 
 public:

@@ -79,11 +79,11 @@ public:
      */
     uint16_t setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
-    /// Increments the counter
-    virtual uint16_t increment( uint32_t incrementAmount=1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
+    /// Increments the counter.  Note: The counter is protected from overflowing
+    uint16_t increment( uint32_t incrementAmount=1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
-    /// Decrements the counter
-    virtual uint16_t decrement( uint32_t decrementAmount=1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
+    /// Decrements the counter. Note: The counter is protected from underflowing
+    uint16_t decrement( uint32_t decrementAmount=1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
     /// Resets the counter to zero (or to a specific value)
     virtual uint16_t reset( uint32_t newValue=0, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;

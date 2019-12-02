@@ -70,7 +70,6 @@ public:
 		return ModelPointCommon_::write( &newValue, sizeof( ELEMTYPE ), lockRequest );
 	}
 
-
 public:
 	/// See Cpl::Dm::ModelPoint.  This method IS thread safe.
 	size_t getSize() const noexcept
@@ -141,6 +140,26 @@ public:
 		, m_decimal( decimalFormat )
 	{
 	}
+
+
+    /// Atomic increment
+    virtual uint16_t increment( ELEMTYPE incSize = 1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
+    {
+        m_modelDatabase.lock_();
+        uint16_t result = write( m_data + incSize, lockRequest );
+        m_modelDatabase.unlock_();
+        return result;
+    }
+
+    /// Atomic decrement
+    virtual uint16_t decrement( ELEMTYPE decSize = 1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
+    {
+        m_modelDatabase.lock_();
+        uint16_t result = write( m_data - decSize, lockRequest );
+        m_modelDatabase.unlock_();
+        return result;
+    }
+
 
 public:
 	/// See Cpl::Dm::Point.  
@@ -245,6 +264,25 @@ public:
 	}
 
 
+public:
+    /// Atomic increment
+    virtual uint16_t increment( ELEMTYPE incSize = 1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
+    {
+        m_modelDatabase.lock_();
+        uint16_t result = write( m_data + incSize, lockRequest );
+        m_modelDatabase.unlock_();
+        return result;
+    }
+
+    /// Atomic decrement
+    virtual uint16_t decrement( ELEMTYPE decSize = 1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
+    {
+        m_modelDatabase.lock_();
+        uint16_t result = write( m_data - decSize, lockRequest );
+        m_modelDatabase.unlock_();
+        return result;
+    }
+
 
 public:
 	/// See Cpl::Dm::Point.  
@@ -277,7 +315,7 @@ public:
 	{
 		ELEMTYPE checkForError = src | (ELEMTYPE) 2;
 		ELEMTYPE newValue      = src | (ELEMTYPE) 1;
-		if( newValue == (ELEMTYPE) 1 && checkForError == (ELEMTYPE) 2 )
+		if( newValue <= (ELEMTYPE) 1 && checkForError >= (ELEMTYPE) 2 )
 		{
 			if( errorMsg )
 			{

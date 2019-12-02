@@ -53,8 +53,8 @@ protected:
 public:
     /// Constructor
     SubscriberComposer( Cpl::Dm::EventLoop&     myEventLoop,
-                        CONTEXT&                 context,
-                        NotificationFunc_T       notifyCallback );
+                        CONTEXT&                context,
+                        NotificationFunc_T      notifyCallback );
 
 
 public:
