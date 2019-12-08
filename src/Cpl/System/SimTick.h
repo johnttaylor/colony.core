@@ -340,6 +340,9 @@ protected:
     /// Helper method. 
     static unsigned wakeUpWaiters( void ) noexcept;
 
+    /// Helper method. 
+    static unsigned getCurrentWaitersCount( void ) noexcept;
+
     /// Friend(s)
     friend class ElapsedTime;
     friend class Api;

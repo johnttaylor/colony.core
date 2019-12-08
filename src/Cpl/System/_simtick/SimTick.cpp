@@ -19,6 +19,8 @@
 #include "Cpl/Container/SList.h"
 #include <new>
 
+#include <stdio.h>
+
 /// 
 using namespace Cpl::System;
 
@@ -47,6 +49,17 @@ unsigned SimTick::wakeUpWaiters( void ) noexcept
     return waiters;
 }
 
+unsigned SimTick::getCurrentWaitersCount( void ) noexcept
+{
+    unsigned waiters    = 0;
+    SimTick* simInfoPtr = waiters_.first();
+    while ( simInfoPtr )
+    {
+        waiters++;
+        simInfoPtr = waiters_.next( *simInfoPtr );
+    }
+    return waiters;
+}
 
 bool SimTick::advance( size_t numTicks ) noexcept
 {
@@ -56,6 +69,10 @@ bool SimTick::advance( size_t numTicks ) noexcept
     while ( numTicks >= OPTION_CPL_SYSTEM_SIM_TICK_MIN_TICKS_FOR_ADVANCE )
     {
         numTicks -= OPTION_CPL_SYSTEM_SIM_TICK_MIN_TICKS_FOR_ADVANCE;
+
+        // Drain any 'left-over/initial' sim-thread-ack-signals
+        while ( tickSource_.tryWait() )
+            ;
 
         // START critical section
         myLock_.lock();
@@ -70,8 +87,10 @@ bool SimTick::advance( size_t numTicks ) noexcept
         // END critical section
         myLock_.unlock();
 
-        // There MUST be a least one waiter
-        if ( !waiters )
+        unsigned currentWaiters = waiters;
+
+        // Wait for the sim threads to execute now that they have been woken up (There MUST be a least one waiter)
+        if ( waiters )
         {
             unsigned long  start = ElapsedTime::millisecondsInRealTime();
             unsigned long  now   = start;
@@ -82,30 +101,21 @@ bool SimTick::advance( size_t numTicks ) noexcept
 
                 // Peek into the waiters list 
                 myLock_.lock();
-                SimTick* waiterPtr = waiters_.head();
+                currentWaiters = getCurrentWaitersCount();
                 myLock_.unlock();
 
-                // If there is at least ONE waiter -->go wake them all up
-                if ( waiterPtr )
+                // Finished the current tick once all the Sim threads are waiting again
+                if ( currentWaiters >= waiters )
                 {
-                    myLock_.lock();
-                    waiters = wakeUpWaiters();
-                    myLock_.unlock();
+                    //printf( "waiters=%u, curWaiters=%u, msec_=%lu, numTicks=%lu\n", waiters, currentWaiters, milliseconds_, numTicks );
                     break;
                 }
                 now = ElapsedTime::millisecondsInRealTime();
             }
-
-            // IF I get here and STILL have no waiter ->then the 'simulated threads' are all blocked on something other than the next tick (or all terminated)
-            if ( waiters == 0 )
-            {
-                result = false;
-                break;
-            }
         }
 
         // Wait for all the 'sim threads' to complete their tick processing
-        while ( waiters-- )
+        while ( currentWaiters-- )
         {
             tickSource_.wait();
         }
@@ -174,8 +184,8 @@ bool SimTick::testAndQueue( SimTick* simInfoPtr ) noexcept
         return true;
     }
 
-    // Increment my threads internal tick count 
-    simInfoPtr->m_curTicks++; //  = milliseconds_;
+    // Update my threads internal tick count 
+    simInfoPtr->m_curTicks = milliseconds_;
     return false;
 }
 
@@ -230,7 +240,7 @@ void SimTick::threadInit_( bool useSimTicks ) noexcept
     // Create the TLS key/index needed to store the per thread info (do a lazy create)
     if ( !simTlsPtr_ )
     {
-        simTlsPtr_ = new(std::nothrow) Tls();
+        simTlsPtr_ = new( std::nothrow ) Tls();
     }
 
     // Set my TLS SimInfo block to NULL since the thread has be requested to NOT USE simulated ticks
@@ -241,7 +251,7 @@ void SimTick::threadInit_( bool useSimTicks ) noexcept
     }
 
     // Create an instance of SimTick for my per thread simInfo and store the newly created instance in TLS
-    SimTick* simInfoPtr = new(std::nothrow) SimTick();
+    SimTick* simInfoPtr = new( std::nothrow ) SimTick();
     if ( !simInfoPtr )
     {
         FatalError::logRaw( "SimTick::threadInit_().  Failed to alloc an instance SimTick for thread", Thread::myId() );
@@ -371,7 +381,7 @@ ElapsedTime::Precision_T ElapsedTime::precision( void ) noexcept
     myLock_.lock();
     Precision_T now;
     now.m_seconds      = seconds_;
-    now.m_thousandths  = (unsigned long) (milliseconds_ % 1000);
+    now.m_thousandths  = (unsigned long) ( milliseconds_ % 1000 );
     myLock_.unlock();
     return now;
 }
