@@ -21,12 +21,12 @@ static const char* state2text_( eTaskState state );
 
 ///////////////////////////
 Threads::Threads( Cpl::Container::Map<Cpl::TShell::Command>& commandList ) noexcept
-	:Cpl::TShell::Cmd::Threads( commandList )
+    :Cpl::TShell::Cmd::Threads( commandList )
 {
 }
 
 Threads::Threads( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
-	:Cpl::TShell::Cmd::Threads( commandList, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
+    :Cpl::TShell::Cmd::Threads( commandList, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
 {
 }
 
@@ -34,33 +34,34 @@ Threads::Threads( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const 
 /////////////////////////////////////////////////////////
 void Threads::hookHeader1( Cpl::Text::String& text )
 {
-	text.formatAppend( "  %-3s  %-5s  %-5s", "Pri", "State", "Stack" );
+    text.formatAppend( "  %-3s  %-5s  %-5s", "Pri", "State", "Stack" );
 }
 
 void Threads::hookHeader2( Cpl::Text::String& text )
 {
-	text.formatAppend( "  %-3s  %-5s  %-5s", "---", "-----", "-----" );
+    text.formatAppend( "  %-3s  %-5s  %-5s", "---", "-----", "-----" );
 }
 
 void Threads::hookThreadEntry( Cpl::Text::String& text, Cpl::System::Thread& currentThread )
 {
-	Cpl_System_Thread_NativeHdl_T hdl = currentThread.getNativeHandle();
+    Cpl_System_Thread_NativeHdl_T hdl = currentThread.getNativeHandle();
 
-	text.formatAppend( "  %3u  %-5s  %5u", uxTaskPriorityGet( hdl ), state2text_( eTaskGetState( hdl ) ), uxTaskGetStackHighWaterMark( hdl ) );
+    text.formatAppend( "  %3u  %-5s  %5u", uxTaskPriorityGet( hdl ), state2text_( eTaskGetState( hdl ) ), uxTaskGetStackHighWaterMark( hdl ) );
 }
 
 
 
 const char* state2text_( eTaskState state )
 {
-	switch ( state )
-	{
-	case eReady:      return "Ready";
-	case eRunning:    return " Run ";
-	case eBlocked:    return "Blckd";
-	case eSuspended:  return "Suspd";
-	case eDeleted:    return " Del ";
-	}
+    switch ( state )
+    {
+    case eReady:      return "Ready";
+    case eRunning:    return " Run ";
+    case eBlocked:    return "Blckd";
+    case eSuspended:  return "Suspd";
+    case eDeleted:    return " Del ";
+    default:          return " ??? ";
+    }
 
-	return "*ERROR*";
+    return "*ERROR*";
 }
