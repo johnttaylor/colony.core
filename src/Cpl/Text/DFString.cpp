@@ -25,9 +25,9 @@ using namespace Cpl::Text;
 ////////////////////////////
 DFString::DFString( void ) :FString_( (const char*) 0, new( std::nothrow ) char[OPTION_CPL_TEXT_DFSTRING_ALLOC_BLOCK_SIZE], OPTION_CPL_TEXT_DFSTRING_ALLOC_BLOCK_SIZE - 1 ) {}
 DFString::DFString( const DFString& string ) : FString_( string.getString(), new( std::nothrow ) char[string.maxLength() + 1], string.maxLength() ) {}
-DFString::DFString( const String& string ) : FString_( string.getString(), new( std::nothrow ) char[string.maxLength() + 1], string.maxLength() ) {}
+DFString::DFString( const Cpl::Text::String& string ) : FString_( string.getString(), new( std::nothrow ) char[string.maxLength() + 1], string.maxLength() ) {}
 DFString::DFString( size_t memSize, const DFString& string ) : FString_( string.getString(), new( std::nothrow ) char[MEMSIZE], MEMSIZE - 1 ) {}
-DFString::DFString( size_t memSize, const String& string ) : FString_( string.getString(), new( std::nothrow ) char[MEMSIZE], MEMSIZE - 1 ) {}
+DFString::DFString( size_t memSize, const Cpl::Text::String& string ) : FString_( string.getString(), new( std::nothrow ) char[MEMSIZE], MEMSIZE - 1 ) {}
 DFString::DFString( size_t memSize, const char* string ) : FString_( string, new( std::nothrow ) char[MEMSIZE], MEMSIZE - 1 ) {}
 DFString::DFString( size_t memSize, char c ) : FString_( c, new( std::nothrow ) char[MEMSIZE], MEMSIZE - 1 ) {}
 DFString::DFString( size_t memSize, int num ) : FString_( num, new( std::nothrow ) char[MEMSIZE], MEMSIZE - 1 ) {}
@@ -46,22 +46,22 @@ DFString::~DFString()
 }
 
 ////////////////////////////
-String& DFString::operator=( const String& string ) { copyIn( string, string.length() ); return *this; }
-String& DFString::operator=( const char* string ) { copyIn( string, string ? strlen( string ) : 0 ); return *this; }
-String& DFString::operator=( char c ) { copyIn( &c, 1 ); return *this; }
-String& DFString::operator=( int num ) { format( "%d", num ); return *this; }
-String& DFString::operator=( unsigned int num ) { format( "%u", num ); return *this; }
-String& DFString::operator=( long num ) { format( "%ld", num ); return *this; }
-String& DFString::operator=( long long num ) { format( "%lld", num ); return *this; }
-String& DFString::operator=( unsigned long num ) { format( "%lu", num ); return *this; }
-String& DFString::operator=( unsigned long long num ) { format( "%llu", num ); return *this; }
-String& DFString::operator +=( const String& string ) { appendTo( string, string.length() ); return *this; }
-String& DFString::operator +=( const char* string ) { appendTo( string, string ? strlen( string ) : 0 ); return *this; }
-String& DFString::operator +=( char c ) { appendTo( &c, 1 ); return *this; }
-String& DFString::operator +=( int num ) { formatAppend( "%d", num ); return *this; }
-String& DFString::operator +=( unsigned int num ) { formatAppend( "%u", num ); return *this; }
-String& DFString::operator +=( long num ) { formatAppend( "%ld", num ); return *this; }
-String& DFString::operator +=( long long num ) { formatAppend( "%lld", num ); return *this; }
-String& DFString::operator +=( unsigned long num ) { formatAppend( "%lu", num ); return *this; }
-String& DFString::operator +=( unsigned long long num ) { formatAppend( "%llu", num ); return *this; }
+Cpl::Text::String& DFString::operator=( const String& string ) { copyIn( string, string.length() ); return *this; }
+Cpl::Text::String& DFString::operator=( const char* string ) { copyIn( string, string ? strlen( string ) : 0 ); return *this; }
+Cpl::Text::String& DFString::operator=( char c ) { copyIn( &c, 1 ); return *this; }
+Cpl::Text::String& DFString::operator=( int num ) { format( "%d", num ); return *this; }
+Cpl::Text::String& DFString::operator=( unsigned int num ) { format( "%u", num ); return *this; }
+Cpl::Text::String& DFString::operator=( long num ) { format( "%ld", num ); return *this; }
+Cpl::Text::String& DFString::operator=( long long num ) { format( "%lld", num ); return *this; }
+Cpl::Text::String& DFString::operator=( unsigned long num ) { format( "%lu", num ); return *this; }
+Cpl::Text::String& DFString::operator=( unsigned long long num ) { format( "%llu", num ); return *this; }
+Cpl::Text::String& DFString::operator +=( const String& string ) { appendTo( string, string.length() ); return *this; }
+Cpl::Text::String& DFString::operator +=( const char* string ) { appendTo( string, string ? strlen( string ) : 0 ); return *this; }
+Cpl::Text::String& DFString::operator +=( char c ) { appendTo( &c, 1 ); return *this; }
+Cpl::Text::String& DFString::operator +=( int num ) { formatAppend( "%d", num ); return *this; }
+Cpl::Text::String& DFString::operator +=( unsigned int num ) { formatAppend( "%u", num ); return *this; }
+Cpl::Text::String& DFString::operator +=( long num ) { formatAppend( "%ld", num ); return *this; }
+Cpl::Text::String& DFString::operator +=( long long num ) { formatAppend( "%lld", num ); return *this; }
+Cpl::Text::String& DFString::operator +=( unsigned long num ) { formatAppend( "%lu", num ); return *this; }
+Cpl::Text::String& DFString::operator +=( unsigned long long num ) { formatAppend( "%llu", num ); return *this; }
 

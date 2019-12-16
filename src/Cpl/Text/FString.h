@@ -45,7 +45,7 @@ public:
 	FString( const FString<S>& string ) :FString_( string.getString(), m_strMem, S ) {}
 
 	/// Constructor
-	FString( const String& string ) :FString_( string.getString(), m_strMem, S ) {}
+	FString( const Cpl::Text::String& string ) :FString_( string.getString(), m_strMem, S ) {}
 
 	/// Constructor
 	FString( const char* string="" ) :FString_( string, m_strMem, S ) {}
@@ -75,64 +75,64 @@ public:
 public:
 	///@{
 	/// Assignment
-	inline String& operator =( const FString<S>& string ) { copyIn( string, string.length() ); return *this; }
+	inline Cpl::Text::String& operator =( const FString<S>& string ) { copyIn( string, string.length() ); return *this; }
 
 	/// Assignment
-	String& operator=( const String& string ) { copyIn( string, string.length() ); return *this; }
+    Cpl::Text::String& operator=( const Cpl::Text::String& string ) { copyIn( string, string.length() ); return *this; }
 
 	/// Assignment
-	String& operator=( const char* string ) { copyIn( string, string ? strlen( string ) : 0 ); return *this; }
+    Cpl::Text::String& operator=( const char* string ) { copyIn( string, string ? strlen( string ) : 0 ); return *this; }
 
 	/// Assignment
-	String& operator=( char c ) { copyIn( &c, 1 ); return *this; }
+    Cpl::Text::String& operator=( char c ) { copyIn( &c, 1 ); return *this; }
 
 	/// Assignment
-	String& operator=( int num ) { format( "%d", num ); return *this; }
+    Cpl::Text::String& operator=( int num ) { format( "%d", num ); return *this; }
 
 	/// Assignment
-	String& operator=( unsigned int num ) { format( "%u", num ); return *this; }
+    Cpl::Text::String& operator=( unsigned int num ) { format( "%u", num ); return *this; }
 
 	/// Assignment
-	String& operator=( long num ) { format( "%ld", num ); return *this; }
+    Cpl::Text::String& operator=( long num ) { format( "%ld", num ); return *this; }
 
 	/// Assignment
-	String& operator=( long long num ) { format( "%lld", num ); return *this; }
+    Cpl::Text::String& operator=( long long num ) { format( "%lld", num ); return *this; }
 
 	/// Assignment
-	String& operator=( unsigned long num ) { format( "%lu", num ); return *this; }
+    Cpl::Text::String& operator=( unsigned long num ) { format( "%lu", num ); return *this; }
 
 	/// Assignment
-	String& operator=( unsigned long long num ) { format( "%llu", num ); return *this; }
+    Cpl::Text::String& operator=( unsigned long long num ) { format( "%llu", num ); return *this; }
 	///@}
 
 public:
 	///@{
 	/// Append
-	String & operator +=( const String& string ) { appendTo( string, string.length() ); return *this; }
+    Cpl::Text::String & operator +=( const String& string ) { appendTo( string, string.length() ); return *this; }
 
 	/// Append
-	String& operator +=( const char* string ) { appendTo( string, string ? strlen( string ) : 0 ); return *this; }
+    Cpl::Text::String& operator +=( const char* string ) { appendTo( string, string ? strlen( string ) : 0 ); return *this; }
 
 	/// Append
-	String& operator +=( char c ) { appendTo( &c, 1 ); return *this; }
+    Cpl::Text::String& operator +=( char c ) { appendTo( &c, 1 ); return *this; }
 
 	/// Append
-	String& operator +=( int num ) { formatAppend( "%d", num ); return *this; }
+    Cpl::Text::String& operator +=( int num ) { formatAppend( "%d", num ); return *this; }
 
 	/// Append
-	String& operator +=( unsigned int num ) { formatAppend( "%u", num ); return *this; }
+    Cpl::Text::String& operator +=( unsigned int num ) { formatAppend( "%u", num ); return *this; }
 
 	/// Append
-	String& operator +=( long num ) { formatAppend( "%ld", num ); return *this; }
+    Cpl::Text::String& operator +=( long num ) { formatAppend( "%ld", num ); return *this; }
 
 	/// Append
-	String& operator +=( long long num ) { formatAppend( "%lld", num ); return *this; }
+    Cpl::Text::String& operator +=( long long num ) { formatAppend( "%lld", num ); return *this; }
 
 	/// Append
-	String& operator +=( unsigned long num ) { formatAppend( "%lu", num ); return *this; }
+    Cpl::Text::String& operator +=( unsigned long num ) { formatAppend( "%lu", num ); return *this; }
 
 	/// Append
-	String& operator +=( unsigned long long num ) { formatAppend( "%llu", num ); return *this; }
+    Cpl::Text::String& operator +=( unsigned long long num ) { formatAppend( "%llu", num ); return *this; }
 	///@}
 };
 
