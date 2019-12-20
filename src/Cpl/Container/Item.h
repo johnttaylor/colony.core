@@ -58,8 +58,6 @@ public:
         more than on container.
 
         Notes:
-            o Calling this method with 'newContainerP' set to zero will have
-              the same effect as calling remove_().
             o The method returns false when there is error - which is ONLY
               usefully during unittesting when the invoking a FatalError
               does NOT terminate the application.
