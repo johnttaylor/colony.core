@@ -41,12 +41,12 @@ static int shutdown_application_( int exit_code )
 
 int Shutdown::success( void )
 {
-    return shutdown_application_( notifyShutdownHandlers( OPTION_CPL_SYSTEM_SHUTDOWN_SUCCESS_ERROR_CODE ) );
+    return shutdown_application_( notifyShutdownHandlers_( OPTION_CPL_SYSTEM_SHUTDOWN_SUCCESS_ERROR_CODE ) );
 }
 
 int Shutdown::failure( int exit_code )
 {
-    return shutdown_application_( notifyShutdownHandlers( exit_code ) );
+    return shutdown_application_( notifyShutdownHandlers_( exit_code ) );
 }
 
 

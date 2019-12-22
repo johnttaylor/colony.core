@@ -38,7 +38,7 @@ void Shutdown::registerHandler( Shutdown::Handler& instanceToRegister )
 
 
 ////////////////////////////////////////////////////////////////////////////////
-int Shutdown::notifyShutdownHandlers( int exit_code )
+int Shutdown::notifyShutdownHandlers_( int exit_code )
 {
     Locks_::system().lock();
     Shutdown::Handler* ptr = callbacks_.get();
