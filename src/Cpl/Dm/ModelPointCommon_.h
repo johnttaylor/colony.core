@@ -28,7 +28,7 @@ namespace Dm {
 
 /** This concrete class provide common infrastructure for a Model Point.
  */
-class ModelPointCommon_ : public ModelPoint
+class ModelPointCommon_ : public Cpl::Dm::ModelPoint
 {
 protected:
     /// List of Active Subscribers

@@ -45,14 +45,14 @@ protected:
 
 public:
 	/// Constructor: Invalid MP
-	Basic( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo )
-		:ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+	Basic( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo )
+		:Cpl::Dm::ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
 	{
 	}
 
 	/// Constructor: Valid MP (requires initial value)
-	Basic( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue )
-		:ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Dm::ModelPoint::MODEL_POINT_STATE_VALID )
+	Basic( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, ELEMTYPE initialValue )
+		:Cpl::Dm::ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Dm::ModelPoint::MODEL_POINT_STATE_VALID )
 	{
 		m_data = initialValue;
 	}
@@ -61,13 +61,13 @@ public:
 	/// Type safe read. See Cpl::Dm::ModelPoint
 	virtual int8_t read( ELEMTYPE& dstData, uint16_t* seqNumPtr = 0 ) const noexcept
 	{
-		return ModelPointCommon_::read( &dstData, sizeof( ELEMTYPE ), seqNumPtr );
+		return Cpl::Dm::ModelPointCommon_::read( &dstData, sizeof( ELEMTYPE ), seqNumPtr );
 	}
 
 	/// Type safe write. See Cpl::Dm::ModelPoint
-	virtual uint16_t write( ELEMTYPE newValue, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
+	virtual uint16_t write( ELEMTYPE newValue, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept
 	{
-		return ModelPointCommon_::write( &newValue, sizeof( ELEMTYPE ), lockRequest );
+		return Cpl::Dm::ModelPointCommon_::write( &newValue, sizeof( ELEMTYPE ), lockRequest );
 	}
 
 public:
@@ -120,7 +120,7 @@ public:
 		   documented otherwise.
  */
 template<class ELEMTYPE>
-class BasicInteger : public Basic<ELEMTYPE>
+class BasicInteger : public Cpl::Dm::Mp::Basic<ELEMTYPE>
 {
 protected:
 	/// Flag for to/from json() methods
@@ -128,14 +128,14 @@ protected:
 
 public:
 	/// Constructor: Invalid MP
-	BasicInteger( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, bool decimalFormat = true )
+	BasicInteger( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, bool decimalFormat = true )
 		:Basic<ELEMTYPE>( myModelBase, staticInfo )
 		, m_decimal( decimalFormat )
 	{
 	}
 
 	/// Constructor: Valid MP (requires initial value)
-	BasicInteger( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, ELEMTYPE initialValue, bool decimalFormat = true )
+	BasicInteger( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, ELEMTYPE initialValue, bool decimalFormat = true )
 		:Basic<ELEMTYPE>( myModelBase, staticInfo, initialValue )
 		, m_decimal( decimalFormat )
 	{
@@ -143,20 +143,20 @@ public:
 
 
     /// Atomic increment
-    virtual uint16_t increment( ELEMTYPE incSize = 1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
+    virtual uint16_t increment( ELEMTYPE incSize = 1, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept
     {
-        m_modelDatabase.lock_();
-        uint16_t result = write( m_data + incSize, lockRequest );
-        m_modelDatabase.unlock_();
+        Cpl::Dm::ModelPointCommon_::m_modelDatabase.lock_();
+        uint16_t result = Basic<ELEMTYPE>::write( Basic<ELEMTYPE>::m_data + incSize, lockRequest );
+        Cpl::Dm::ModelPointCommon_::m_modelDatabase.unlock_();
         return result;
     }
 
     /// Atomic decrement
-    virtual uint16_t decrement( ELEMTYPE decSize = 1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
+    virtual uint16_t decrement( ELEMTYPE decSize = 1, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept
     {
-        m_modelDatabase.lock_();
-        uint16_t result = write( m_data - decSize, lockRequest );
-        m_modelDatabase.unlock_();
+        Cpl::Dm::ModelPointCommon_::m_modelDatabase.lock_();
+        uint16_t result = Basic<ELEMTYPE>::write( Basic<ELEMTYPE>::m_data - decSize, lockRequest );
+        Cpl::Dm::ModelPointCommon_::m_modelDatabase.unlock_();
         return result;
     }
 
@@ -248,7 +248,7 @@ public:
 	documented otherwise.
  */
 template<class ELEMTYPE>
-class BasicReal : public Basic<ELEMTYPE>
+class BasicReal : public Cpl::Dm::Mp::Basic<ELEMTYPE>
 {
 public:
 	/// Constructor: Invalid MP
@@ -266,20 +266,20 @@ public:
 
 public:
     /// Atomic increment
-    virtual uint16_t increment( ELEMTYPE incSize = 1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
+    virtual uint16_t increment( ELEMTYPE incSize = 1, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept
     {
-        m_modelDatabase.lock_();
-        uint16_t result = write( m_data + incSize, lockRequest );
-        m_modelDatabase.unlock_();
+        Cpl::Dm::ModelPointCommon_::m_modelDatabase.lock_();
+        uint16_t result = Basic<ELEMTYPE>::write( Basic<ELEMTYPE>::m_data + incSize, lockRequest );
+        Cpl::Dm::ModelPointCommon_::m_modelDatabase.unlock_();
         return result;
     }
 
     /// Atomic decrement
-    virtual uint16_t decrement( ELEMTYPE decSize = 1, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
+    virtual uint16_t decrement( ELEMTYPE decSize = 1, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept
     {
-        m_modelDatabase.lock_();
-        uint16_t result = write( m_data - decSize, lockRequest );
-        m_modelDatabase.unlock_();
+        Cpl::Dm::ModelPointCommon_::m_modelDatabase.lock_();
+        uint16_t result = Basic<ELEMTYPE>::write( Basic<ELEMTYPE>::m_data - decSize, lockRequest );
+        Cpl::Dm::ModelPointCommon_::m_modelDatabase.unlock_();
         return result;
     }
 

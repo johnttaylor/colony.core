@@ -243,7 +243,7 @@ TEST_CASE( "uint32-toJSON" )
     SECTION( "Invalid/terse" )
     {
         // Invalid (Default value)
-        uint16_t seqnum = mp_apple_.setInvalid();
+        mp_apple_.setInvalid();
         mp_apple_.toJSON( string, MAX_STR_LENG, truncated, false );
         CPL_SYSTEM_TRACE_MSG( SECT_, ( "toJSON: terse [%s])", string ) );
         REQUIRE( truncated == false );
