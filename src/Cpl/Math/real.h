@@ -21,6 +21,7 @@
 #include <cmath>
 #include <cfloat>
 
+#undef abs
 
 /** This symbols provides the default Epsilon value when testing for 'almost
 	equal' between to float numbers.  Note: This is a GLOBAL setting.

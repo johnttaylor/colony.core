@@ -24,245 +24,245 @@ using namespace Cpl::Dm::Mp;
 static char emptyString_[1] = { '\0' };
 
 ///////////////////////////////////////////////////////////////////////////////
-String::String( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, size_t maxLength )
-	:ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
-	, m_data( { new( std::nothrow ) char[maxLength + 1], 0, maxLength } )
+Cpl::Dm::Mp::String::String( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, size_t maxLength )
+    :ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+    , m_data( { new( std::nothrow ) char[maxLength + 1], 0, maxLength } )
 {
-	// Throw a fatal error if global parse buffer is too small
-	if( ( OPTION_CPL_DM_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC - ESTIMATED_JSON_OVERHEAD ) < maxLength )
-	{
-		Cpl::System::FatalError::logf( "Cpl::Dm::String().  Creating a string of size %lu which is greater than the fromString() parser buffer", maxLength );
-	}
+    // Throw a fatal error if global parse buffer is too small
+    if ( ( OPTION_CPL_DM_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC - ESTIMATED_JSON_OVERHEAD ) < maxLength )
+    {
+        Cpl::System::FatalError::logf( "Cpl::Dm::String().  Creating a string of size %lu which is greater than the fromString() parser buffer", maxLength );
+    }
 
-	// Trapped failed to allocate memory -->silent fail and set string size to zero
-	if( m_data.stringPtr == 0 )
-	{
-		m_data.stringPtr = emptyString_;
-		m_data.maxLength = 0;
-	}
-	else
-	{
-		// For deterministic value - initialize data to 'empty string'Null pointer for initial value -->set initial value to an empty string
-		m_data.stringPtr[0] = '\0';
-		m_data.stringLen    = 0;
-	}
+    // Trapped failed to allocate memory -->silent fail and set string size to zero
+    if ( m_data.stringPtr == 0 )
+    {
+        m_data.stringPtr = emptyString_;
+        m_data.maxLength = 0;
+    }
+    else
+    {
+        // For deterministic value - initialize data to 'empty string'Null pointer for initial value -->set initial value to an empty string
+        m_data.stringPtr[0] = '\0';
+        m_data.stringLen    = 0;
+    }
 }
 
-String::String( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, size_t maxLength, const char* initialValue )
-	:ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Dm::ModelPoint::MODEL_POINT_STATE_VALID )
-	, m_data( { new( std::nothrow ) char[maxLength + 1], 0, maxLength } )
+Cpl::Dm::Mp::String::String( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, size_t maxLength, const char* initialValue )
+    :ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Dm::ModelPoint::MODEL_POINT_STATE_VALID )
+    , m_data( { new( std::nothrow ) char[maxLength + 1], 0, maxLength } )
 {
-	// Throw a fatal error if global parse buffer is too small
-	if( ( OPTION_CPL_DM_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC - ESTIMATED_JSON_OVERHEAD ) < maxLength )
-	{
-		Cpl::System::FatalError::logf( "Cpl::Dm::String().  Creating a string of size %lu which is greater than the fromString() parser buffer", maxLength );
-	}
+    // Throw a fatal error if global parse buffer is too small
+    if ( ( OPTION_CPL_DM_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC - ESTIMATED_JSON_OVERHEAD ) < maxLength )
+    {
+        Cpl::System::FatalError::logf( "Cpl::Dm::String().  Creating a string of size %lu which is greater than the fromString() parser buffer", maxLength );
+    }
 
-	// Trapped failed to allocate memory -->silent fail and set string size to zero
-	if( m_data.stringPtr == 0 )
-	{
-		m_data.stringPtr = emptyString_;
-		m_data.maxLength = 0;
-	}
+    // Trapped failed to allocate memory -->silent fail and set string size to zero
+    if ( m_data.stringPtr == 0 )
+    {
+        m_data.stringPtr = emptyString_;
+        m_data.maxLength = 0;
+    }
 
-	// Set the initial value
-	if( initialValue )
-	{
-		strncpy( m_data.stringPtr, initialValue, maxLength );
-		m_data.stringPtr[m_data.maxLength] = '\0';
-	}
+    // Set the initial value
+    if ( initialValue )
+    {
+        strncpy( m_data.stringPtr, initialValue, maxLength );
+        m_data.stringPtr[m_data.maxLength] = '\0';
+    }
 
-	// Null pointer for initial value -->set initial value to an empty string
-	else
-	{
-		m_data.stringPtr[0] = '\0';
-	}
+    // Null pointer for initial value -->set initial value to an empty string
+    else
+    {
+        m_data.stringPtr[0] = '\0';
+    }
 
-	// Set my string length
-	m_data.stringLen = strlen( m_data.stringPtr );
+    // Set my string length
+    m_data.stringLen = strlen( m_data.stringPtr );
 }
 
-String::~String()
+Cpl::Dm::Mp::String::~String()
 {
-	// Free up the memory IF it was allocated from the heap
-	if( m_data.maxLength > 0 )
-	{
-		delete m_data.stringPtr;
-	}
+    // Free up the memory IF it was allocated from the heap
+    if ( m_data.maxLength > 0 )
+    {
+        delete m_data.stringPtr;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-int8_t String::read( Cpl::Text::String& dstData, uint16_t* seqNumPtr ) const noexcept
+int8_t Cpl::Dm::Mp::String::read( Cpl::Text::String& dstData, uint16_t* seqNumPtr ) const noexcept
 {
-	Data dst;
-	int  bufferMaxLength;
-	dst.stringPtr   = dstData.getBuffer( bufferMaxLength );
-	dst.maxLength   = bufferMaxLength;
-	return ModelPointCommon_::read( &dst, sizeof( Data ), seqNumPtr );
+    Data dst;
+    int  bufferMaxLength;
+    dst.stringPtr   = dstData.getBuffer( bufferMaxLength );
+    dst.maxLength   = bufferMaxLength;
+    return ModelPointCommon_::read( &dst, sizeof( Data ), seqNumPtr );
 }
 
-int8_t String::read( Data& dstData, uint16_t* seqNumPtr ) const noexcept
+int8_t Cpl::Dm::Mp::String::read( Data& dstData, uint16_t* seqNumPtr ) const noexcept
 {
-	return ModelPointCommon_::read( &dstData, sizeof( Data ), seqNumPtr );
+    return ModelPointCommon_::read( &dstData, sizeof( Data ), seqNumPtr );
 }
 
 
-uint16_t String::write( const Data& srcData, LockRequest_T lockRequest ) noexcept
+uint16_t Cpl::Dm::Mp::String::write( const Data& srcData, LockRequest_T lockRequest ) noexcept
 {
-	// Trap the null pointer case -->Do NOTHING
-	if( srcData.stringPtr == 0 )
-	{
-		m_modelDatabase.lock_();
-		uint16_t seqNum = m_seqNum;
-		m_modelDatabase.unlock_();
-		return seqNum;
-	}
+    // Trap the null pointer case -->Do NOTHING
+    if ( srcData.stringPtr == 0 )
+    {
+        m_modelDatabase.lock_();
+        uint16_t seqNum = m_seqNum;
+        m_modelDatabase.unlock_();
+        return seqNum;
+    }
 
     return ModelPointCommon_::write( &srcData, sizeof( Data ), lockRequest );
 }
 
-uint16_t String::write( const char* newValue, LockRequest_T lockRequest ) noexcept
+uint16_t Cpl::Dm::Mp::String::write( const char* newValue, LockRequest_T lockRequest ) noexcept
 {
-	// Trap the null pointer case -->Do NOTHING
-	if( newValue == 0 )
-	{
-		m_modelDatabase.lock_();
-		uint16_t seqNum = m_seqNum;
-		m_modelDatabase.unlock_();
-		return seqNum;
-	}
+    // Trap the null pointer case -->Do NOTHING
+    if ( newValue == 0 )
+    {
+        m_modelDatabase.lock_();
+        uint16_t seqNum = m_seqNum;
+        m_modelDatabase.unlock_();
+        return seqNum;
+    }
 
-	return write( newValue, strlen( newValue ), lockRequest );
+    return write( newValue, strlen( newValue ), lockRequest );
 }
 
-uint16_t String::write( const char* srcData, size_t srcLen, LockRequest_T lockRequest ) noexcept
+uint16_t Cpl::Dm::Mp::String::write( const char* srcData, size_t srcLen, LockRequest_T lockRequest ) noexcept
 {
-	Data src = { (char*) srcData, srcLen, srcLen };
-	return ModelPointCommon_::write( &src, sizeof( Data ), lockRequest );
+    Data src = { (char*) srcData, srcLen, srcLen };
+    return ModelPointCommon_::write( &src, sizeof( Data ), lockRequest );
 }
 
-uint16_t String::readModifyWrite( Client& callbackClient, LockRequest_T lockRequest )
+uint16_t Cpl::Dm::Mp::String::readModifyWrite( Client& callbackClient, LockRequest_T lockRequest )
 {
-	return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
+    return ModelPointCommon_::readModifyWrite( callbackClient, lockRequest );
 }
 
-void String::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
+void Cpl::Dm::Mp::String::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
-	ModelPointCommon_::attach( observer, initialSeqNumber );
+    ModelPointCommon_::attach( observer, initialSeqNumber );
 }
 
-void String::detach( Observer& observer ) noexcept
+void Cpl::Dm::Mp::String::detach( Observer& observer ) noexcept
 {
-	ModelPointCommon_::detach( observer );
+    ModelPointCommon_::detach( observer );
 }
 
-bool String::isDataEqual_( const void* otherData ) const noexcept
+bool Cpl::Dm::Mp::String::isDataEqual_( const void* otherData ) const noexcept
 {
-	Data*  otherDataPtr = (Data*) otherData;
+    Data*  otherDataPtr = (Data*) otherData;
 
-	return otherDataPtr->stringLen == m_data.stringLen && strncmp( m_data.stringPtr, otherDataPtr->stringPtr, m_data.stringLen ) == 0;
+    return otherDataPtr->stringLen == m_data.stringLen && strncmp( m_data.stringPtr, otherDataPtr->stringPtr, m_data.stringLen ) == 0;
 }
 
-void String::copyDataTo_( void* dstData, size_t dstSize ) const noexcept
+void Cpl::Dm::Mp::String::copyDataTo_( void* dstData, size_t dstSize ) const noexcept
 {
-	CPL_SYSTEM_ASSERT( dstSize == sizeof( Data ) );
-	Data* dataDstPtr = (Data*) dstData;
+    CPL_SYSTEM_ASSERT( dstSize == sizeof( Data ) );
+    Data* dataDstPtr = (Data*) dstData;
 
-	dstSize = dataDstPtr->maxLength >= m_data.stringLen ? m_data.stringLen : dataDstPtr->maxLength;
-	memcpy( dataDstPtr->stringPtr, m_data.stringPtr, dstSize );
-	dataDstPtr->stringPtr[dstSize] = '\0';
-	dataDstPtr->stringLen          = dstSize;
+    dstSize = dataDstPtr->maxLength >= m_data.stringLen ? m_data.stringLen : dataDstPtr->maxLength;
+    memcpy( dataDstPtr->stringPtr, m_data.stringPtr, dstSize );
+    dataDstPtr->stringPtr[dstSize] = '\0';
+    dataDstPtr->stringLen          = dstSize;
 }
 
-void String::copyDataFrom_( const void* srcData, size_t srcSize ) noexcept
+void Cpl::Dm::Mp::String::copyDataFrom_( const void* srcData, size_t srcSize ) noexcept
 {
-	CPL_SYSTEM_ASSERT( srcSize == sizeof( Data ) );
-	Data* dataSrcPtr = (Data*) srcData;
+    CPL_SYSTEM_ASSERT( srcSize == sizeof( Data ) );
+    Data* dataSrcPtr = (Data*) srcData;
 
-	srcSize = dataSrcPtr->stringLen <= m_data.maxLength ? dataSrcPtr->stringLen : m_data.maxLength;
-	memcpy( m_data.stringPtr, dataSrcPtr->stringPtr, srcSize );
-	m_data.stringPtr[srcSize] = '\0';
-	m_data.stringLen          = srcSize;
+    srcSize = dataSrcPtr->stringLen <= m_data.maxLength ? dataSrcPtr->stringLen : m_data.maxLength;
+    memcpy( m_data.stringPtr, dataSrcPtr->stringPtr, srcSize );
+    m_data.stringPtr[srcSize] = '\0';
+    m_data.stringLen          = srcSize;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
-const char* String::getTypeAsText() const noexcept
+const char* Cpl::Dm::Mp::String::getTypeAsText() const noexcept
 {
-	return "Cpl::Dm::Mp::String";
+    return "Cpl::Dm::Mp::String";
 }
 
-size_t String::getSize() const noexcept
+size_t Cpl::Dm::Mp::String::getSize() const noexcept
 {
-	return m_data.maxLength;
+    return m_data.maxLength;
 }
 
-size_t String::getInternalDataSize_() const noexcept
+size_t Cpl::Dm::Mp::String::getInternalDataSize_() const noexcept
 {
-	return m_data.maxLength;
+    return m_data.maxLength;
 }
 
 
-const void* String::getImportExportDataPointer_() const noexcept
+const void* Cpl::Dm::Mp::String::getImportExportDataPointer_() const noexcept
 {
-	return m_data.stringPtr;
+    return m_data.stringPtr;
 }
 
-bool String::toJSON( char* dst, size_t dstSize, bool& truncated, bool verbose ) noexcept
+bool Cpl::Dm::Mp::String::toJSON( char* dst, size_t dstSize, bool& truncated, bool verbose ) noexcept
 {
-	// Get my state
-	m_modelDatabase.lock_();
-	uint16_t seqnum = m_seqNum;
-	int8_t   valid  = m_validState;
-	bool     locked = m_locked;
+    // Get my state
+    m_modelDatabase.lock_();
+    uint16_t seqnum = m_seqNum;
+    int8_t   valid  = m_validState;
+    bool     locked = m_locked;
 
-	// Start the conversion
-	JsonDocument& doc = beginJSON( valid, locked, seqnum, verbose );
+    // Start the conversion
+    JsonDocument& doc = beginJSON( valid, locked, seqnum, verbose );
 
-	// Add maxlen key/value
+    // Add maxlen key/value
     if ( verbose )
     {
         doc["maxlen"] = m_data.maxLength;
     }
 
-	// Construct the 'val' key/value pair 
-	if( IS_VALID( valid ) )
-	{
-		doc["val"] = m_data.stringPtr;
-	}
+    // Construct the 'val' key/value pair 
+    if ( IS_VALID( valid ) )
+    {
+        doc["val"] = m_data.stringPtr;
+    }
 
-	// End the conversion
-	endJSON( dst, dstSize, truncated, verbose );
+    // End the conversion
+    endJSON( dst, dstSize, truncated, verbose );
 
-	m_modelDatabase.unlock_();
-	return true;
+    m_modelDatabase.unlock_();
+    return true;
 }
 
-bool String::fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept
+bool Cpl::Dm::Mp::String::fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept
 {
-	// Does the value key/value pair exist?
-	const char* newValue = src;
-	if( newValue == nullptr )
-	{
-		if( errorMsg )
-		{
-			*errorMsg = "Invalid syntax for the 'val' key/value pair";
-		}
-		return false;
-	}
-	
-	// Is the string too long?
-	if( strlen( newValue ) > m_data.maxLength )
-	{
-		if( errorMsg )
-		{
-			errorMsg->format( "String is too long (len=%lu) for the model point (max len=%lu)", (unsigned long) strlen( newValue ), (unsigned long) m_data.maxLength );
-		}
-		return false;
+    // Does the value key/value pair exist?
+    const char* newValue = src;
+    if ( newValue == nullptr )
+    {
+        if ( errorMsg )
+        {
+            *errorMsg = "Invalid syntax for the 'val' key/value pair";
+        }
+        return false;
+    }
 
-	}
-	retSequenceNumber = write( newValue, lockRequest );
-	return true;
+    // Is the string too long?
+    if ( strlen( newValue ) > m_data.maxLength )
+    {
+        if ( errorMsg )
+        {
+            errorMsg->format( "String is too long (len=%lu) for the model point (max len=%lu)", (unsigned long) strlen( newValue ), (unsigned long) m_data.maxLength );
+        }
+        return false;
+
+    }
+    retSequenceNumber = write( newValue, lockRequest );
+    return true;
 }
 
 
