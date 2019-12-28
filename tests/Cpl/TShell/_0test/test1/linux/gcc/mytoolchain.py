@@ -29,7 +29,7 @@ from nqbplib.base import BuildValues
 #---------------------------------------------------
 
 # Set the name for the final output item
-FINAL_OUTPUT_NAME = 'a.out'
+FINAL_OUTPUT_NAME = 'b.out'
 
 #
 # For build config/variant: "Release" (aka posix build variant)

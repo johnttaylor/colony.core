@@ -237,11 +237,11 @@ TEST_CASE( "atob", "[atob]" )
 
         text   = "02 12:13:14";
         result = parsePrecisionTimeStamp( text, time );
-        REQUIRE( result == false );
+        REQUIRE( result == true );
 
         text   = "12:13:14";
         result = parsePrecisionTimeStamp( text, time );
-        REQUIRE( result == false );
+        REQUIRE( result == true );
 
         text   = "02-12:13:14";
         result = parsePrecisionTimeStamp( text, time );
