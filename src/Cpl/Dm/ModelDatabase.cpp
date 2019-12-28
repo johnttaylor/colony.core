@@ -32,9 +32,7 @@ ModelDatabase::ModelDatabase() noexcept
 
 ModelDatabase::ModelDatabase( const char* ignoreThisParameter_usedToCreateAUniqueConstructor ) noexcept
     : m_map( ignoreThisParameter_usedToCreateAUniqueConstructor )
-    , m_lock( 0 )
 {
-    createLock();
 }
 
 ModelDatabase::~ModelDatabase() noexcept

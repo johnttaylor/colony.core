@@ -89,7 +89,7 @@ public:
 
        This method inserts a new Model Point into the Model Database.
    */
-    virtual void insert_( ModelPoint& mpToAdd ) noexcept;
+    void insert_( ModelPoint& mpToAdd ) noexcept;
 
     /** This method has 'PACKAGE Scope' in that is should only be called by
         other classes in the Cpl::Dm namespace.  It is ONLY public to avoid
@@ -98,7 +98,7 @@ public:
         This method locks the Model Database.  For every call to lock() there must
         be corresponding call to unlock();
     */
-    virtual void lock_() noexcept;
+    void lock_() noexcept;
 
     /** This method has 'PACKAGE Scope' in that is should only be called by
         other classes in the Cpl::Dm namespace.  It is ONLY public to avoid
@@ -106,7 +106,7 @@ public:
 
         This method unlocks the Model Database.
     */
-    virtual void unlock_() noexcept;
+    void unlock_() noexcept;
 
 
 
