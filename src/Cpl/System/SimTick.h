@@ -19,14 +19,35 @@
 #include "Cpl/Container/Item.h"
 
 
- /** The amount of (real) time, in milliseconds, for the simulated-tick engine to
-     wait for at least one response from a simulated-tick-thread before aborting
-     an advance() command (i.e. declaring all threads terminated OR deadlocked)
-  */
+/** The amount of (real) time, in milliseconds, for the simulated-tick engine to
+    wait for at least one response from a simulated-tick-thread before aborting
+    an advance() command (i.e. declaring all threads terminated OR deadlocked)
+ */
 #ifndef OPTION_CPL_SYSTEM_SIM_TICK_NO_ACTIVITY_LIMIT
 #define OPTION_CPL_SYSTEM_SIM_TICK_NO_ACTIVITY_LIMIT    (2*1000)
 #endif
 
+/** Minimum number of ticks required to advance the simulated time.  This
+    parameter is a work-around for a non-Real Time OS (such as Windoze) which
+    can not actually sleep/wait for 1msec.  The parameter is defaulted to
+    10, i.e. after the simulation has been advance 10 tick -->the simulated 
+    time will be advanced 10msec.
+
+    NOTE: The parameter also allows the simulation to be "speed-up" if the 
+          timing requirements of the application under test do not require
+          millisecond resolution, e.g. setting this value to 1000 (aka 1 second)
+          the simulation runs MUCH faster than real time
+ */
+#ifndef OPTION_CPL_SYSTEM_SIM_TICK_MIN_TICKS_FOR_ADVANCE
+#define OPTION_CPL_SYSTEM_SIM_TICK_MIN_TICKS_FOR_ADVANCE    10
+#endif
+
+/** Value passed to the Cpl::System::sleep() call to effectively yield the CPU
+    do allow the threads running in simulated time to actually begin executing
+ */
+#ifndef OPTION_CPL_SYSTEM_SIM_TICK_YEILD_SLEEP_TIME
+#define OPTION_CPL_SYSTEM_SIM_TICK_YEILD_SLEEP_TIME         1
+#endif
 
 #ifdef USE_CPL_SYSTEM_SIM_TICK
 /** This macro is a wrapper for the topLevelWait() call. The macro allows the
@@ -227,23 +248,6 @@ public:
         consumes one simulated system tick. This method SHOULD only be used
         at the very most top level of a thread's 'forever' loop.  
 
-        For example: if OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS is set to
-                     1, and advance(5) is called then this method will return
-                     (i.e. not block) 5 times and then on the sixth call to
-                     this method it will block until the next simulated tick.
-
-        What is 'OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS'? This compile
-        time constant defines the 'number of iterations' of a thread's main
-        loop is executed per simulated tick. This parameter attempts to
-        functional simulate the execution time that occurs between system
-        ticks.
-
-        For example: if OPTION_CPL_SYSTEM_SIM_TICK_DEFAULT_NUM_ITERS is set to
-                     3, and advance(5) is called then this method will return
-                     (i.e. not block) 15 (5*3) times and then on the sixteenth
-                     call to this method it will block until the next simulated
-                     tick.
-
         This method SHOULD NEVER be called directly, but via the preprocessor
         macro CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT().  This allows the simulate
         tick code to be compiled out of production versions of the application.
@@ -335,6 +339,9 @@ protected:
 
     /// Helper method. 
     static unsigned wakeUpWaiters( void ) noexcept;
+
+    /// Helper method. 
+    static unsigned getCurrentWaitersCount( void ) noexcept;
 
     /// Friend(s)
     friend class ElapsedTime;

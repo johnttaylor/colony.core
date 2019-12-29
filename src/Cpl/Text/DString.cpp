@@ -30,7 +30,7 @@ static char      noMemory_[1]     = { '\0' };
 
 
 ///////////////////////////////
-DString::DString( const String& string, int initialSize, int blocksize )
+DString::DString( const Cpl::Text::String& string, int initialSize, int blocksize )
 	:String_( 0 ),
 	m_blockSize( blocksize ),
 	m_storageLen( calcMemSize( my_max( string.length(), initialSize ) ) )
@@ -309,66 +309,66 @@ DString::insertAt( int insertOffset, const char* stringToInsert )
 }
 
 
-String& DString::operator =( const DString& string )
+Cpl::Text::String& DString::operator =( const DString& string )
 {
 	copyIn( string, string.length() );
 	return *this;
 }
 
-String& DString::operator =( const String& string )
+Cpl::Text::String& DString::operator =( const Cpl::Text::String& string )
 {
 	copyIn( string, string.length() );
 	return *this;
 }
 
-String& DString::operator =( const char* string )
+Cpl::Text::String& DString::operator =( const char* string )
 {
 	copyIn( string, string ? strlen( string ) : 0 );
 	return *this;
 }
 
-String& DString::operator =( char c )
+Cpl::Text::String& DString::operator =( char c )
 {
 	copyIn( &c, 1 );
 	return *this;
 }
 
-String& DString::operator =( int num )
+Cpl::Text::String& DString::operator =( int num )
 {
 	FString<maxIntegerChars_> string( num );
 	copyIn( string, string.length() );
 	return *this;
 }
 
-String& DString::operator =( unsigned num )
+Cpl::Text::String& DString::operator =( unsigned num )
 {
 	FString<maxIntegerChars_> string( num );
 	copyIn( string, string.length() );
 	return *this;
 }
 
-String& DString::operator =( long num )
+Cpl::Text::String& DString::operator =( long num )
 {
 	FString<maxIntegerChars_> string( num );
 	copyIn( string, string.length() );
 	return *this;
 }
 
-String& DString::operator =( long long num )
+Cpl::Text::String& DString::operator =( long long num )
 {
 	FString<maxIntegerChars_> string( num );
 	copyIn( string, string.length() );
 	return *this;
 }
 
-String& DString::operator =( unsigned long num )
+Cpl::Text::String& DString::operator =( unsigned long num )
 {
 	FString<maxIntegerChars_> string( num );
 	copyIn( string, string.length() );
 	return *this;
 }
 
-String& DString::operator =( unsigned long long num )
+Cpl::Text::String& DString::operator =( unsigned long long num )
 {
 	FString<maxIntegerChars_> string( num );
 	copyIn( string, string.length() );
@@ -376,60 +376,60 @@ String& DString::operator =( unsigned long long num )
 }
 
 
-String& DString::operator +=( const String& string )
+Cpl::Text::String& DString::operator +=( const Cpl::Text::String& string )
 {
 	appendTo( string, string.length() );
 	return *this;
 }
 
-String& DString::operator +=( const char* string )
+Cpl::Text::String& DString::operator +=( const char* string )
 {
 	appendTo( string, string ? strlen( string ) : 0 );
 	return *this;
 }
 
-String& DString::operator +=( char c )
+Cpl::Text::String& DString::operator +=( char c )
 {
 	appendTo( &c, 1 );
 	return *this;
 }
 
-String& DString::operator +=( int num )
+Cpl::Text::String& DString::operator +=( int num )
 {
 	FString<maxIntegerChars_> string( num );
 	appendTo( string, string.length() );
 	return *this;
 }
 
-String& DString::operator +=( unsigned int num )
+Cpl::Text::String& DString::operator +=( unsigned int num )
 {
 	FString<maxIntegerChars_> string( num );
 	appendTo( string, string.length() );
 	return *this;
 }
 
-String& DString::operator +=( long num )
+Cpl::Text::String& DString::operator +=( long num )
 {
 	FString<maxIntegerChars_> string( num );
 	appendTo( string, string.length() );
 	return *this;
 }
 
-String& DString::operator +=( long long num )
+Cpl::Text::String& DString::operator +=( long long num )
 {
 	FString<maxIntegerChars_> string( num );
 	appendTo( string, string.length() );
 	return *this;
 }
 
-String& DString::operator +=( unsigned long num )
+Cpl::Text::String& DString::operator +=( unsigned long num )
 {
 	FString<maxIntegerChars_> string( num );
 	appendTo( string, string.length() );
 	return *this;
 }
 
-String& DString::operator +=( unsigned long long num )
+Cpl::Text::String& DString::operator +=( unsigned long long num )
 {
 	FString<maxIntegerChars_> string( num );
 	appendTo( string, string.length() );

@@ -6,10 +6,10 @@ src/Cpl/System
 src/Cpl/Text
 src/Cpl/Text/Tokenizer
 src/Cpl/Memory
-src/Cpl/Log
-src/Cpl/Log/_default
 src/Cpl/Itc
-src/Cpl/Timer
+src/Cpl/Dm
+src/Cpl/Dm/Mp
 src/Cpl/Io
 src/Cpl/Io/Stdio
+src/Cpl/Type
 

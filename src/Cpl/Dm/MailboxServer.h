@@ -44,9 +44,6 @@ class MailboxServer : public Cpl::Dm::EventLoop, public Cpl::Itc::Mailbox
 public:
     /** Constructor.  The argument 'timingTickInMsec' specifies the timing
         resolution that will be used for Cpl::Timer::Local Timers.
-
-        NOTE: A value of zero for 'timingTickInMsec' will disable support
-              for Local Timers.
      */
     MailboxServer( unsigned long timingTickInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD ) noexcept;
 

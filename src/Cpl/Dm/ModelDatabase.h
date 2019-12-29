@@ -24,14 +24,14 @@
     instance of this buffer is allocated.
 */
 #ifndef OPTION_CPL_DM_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC
-#define OPTION_CPL_DM_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC          1024
+#define OPTION_CPL_DM_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC          (1024*2)
 #endif
 
 /** This symbol defines the size, in bytes, of temporary storage allocated for
     use by the fromJSON_() method (e.g. create a temporary array instance)
  */
 #ifndef OPTION_CPL_DM_MODEL_DATABASE_TEMP_STORAGE_SIZE
-#define OPTION_CPL_DM_MODEL_DATABASE_TEMP_STORAGE_SIZE              1024
+#define OPTION_CPL_DM_MODEL_DATABASE_TEMP_STORAGE_SIZE              (1024*2)
 #endif
 
 
@@ -89,7 +89,7 @@ public:
 
        This method inserts a new Model Point into the Model Database.
    */
-    virtual void insert_( ModelPoint& mpToAdd ) noexcept;
+    void insert_( ModelPoint& mpToAdd ) noexcept;
 
     /** This method has 'PACKAGE Scope' in that is should only be called by
         other classes in the Cpl::Dm namespace.  It is ONLY public to avoid
@@ -98,7 +98,7 @@ public:
         This method locks the Model Database.  For every call to lock() there must
         be corresponding call to unlock();
     */
-    virtual void lock_() noexcept;
+    void lock_() noexcept;
 
     /** This method has 'PACKAGE Scope' in that is should only be called by
         other classes in the Cpl::Dm namespace.  It is ONLY public to avoid
@@ -106,7 +106,7 @@ public:
 
         This method unlocks the Model Database.
     */
-    virtual void unlock_() noexcept;
+    void unlock_() noexcept;
 
 
 

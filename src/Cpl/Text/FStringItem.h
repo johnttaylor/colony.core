@@ -38,7 +38,7 @@ protected:
 
 public:
 	/// Constructor
-	FStringItem( const String& string ) :StringItem( m_internalString ), m_internalString( string ) {}
+	FStringItem( const Cpl::Text::String& string ) :StringItem( m_internalString ), m_internalString( string ) {}
 
 	/// Constructor
 	FStringItem( const char* string="" ) :StringItem( m_internalString ), m_internalString( string ) {}

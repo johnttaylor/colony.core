@@ -105,64 +105,64 @@ public:
 
 public:
 	/// Assignment
-	String & operator =( const DString& string );
+    Cpl::Text::String & operator =( const DString& string );
 
 	/// Assignment
-	String& operator =( const String& string );
+    Cpl::Text::String& operator =( const Cpl::Text::String& string );
 
 	/// Assignment
-	String& operator =( const char* string );
+    Cpl::Text::String& operator =( const char* string );
 
 	/// Assignment
-	String& operator =( char c );
+    Cpl::Text::String& operator =( char c );
 
 	/// Assignment
-	String& operator =( int num );
+    Cpl::Text::String& operator =( int num );
 
 	/// Assignment
-	String& operator =( unsigned int num );
+    Cpl::Text::String& operator =( unsigned int num );
 
 	/// Assignment
-	String& operator =( long num );
+    Cpl::Text::String& operator =( long num );
 
 	/// Assignment
-	String& operator =( long long num );
+    Cpl::Text::String& operator =( long long num );
 
 	/// Assignment
-	String& operator =( unsigned long num );
+    Cpl::Text::String& operator =( unsigned long num );
 
 	/// Assignment
-	String& operator =( unsigned long long num );
+    Cpl::Text::String& operator =( unsigned long long num );
 	///@}
 
 public:
 	///@{
 	/// Append
-	String & operator +=( const String& string );
+    Cpl::Text::String & operator +=( const String& string );
 
 	/// Append
-	String& operator +=( const char* string );
+    Cpl::Text::String& operator +=( const char* string );
 
 	/// Append
-	String& operator +=( char c );
+    Cpl::Text::String& operator +=( char c );
 
 	/// Append
-	String& operator +=( int num );
+    Cpl::Text::String& operator +=( int num );
 
 	/// Append
-	String& operator +=( unsigned int num );
+    Cpl::Text::String& operator +=( unsigned int num );
 
 	/// Append
-	String& operator +=( long num );
+    Cpl::Text::String& operator +=( long num );
 
 	/// Append
-	String& operator +=( long long num );
+    Cpl::Text::String& operator +=( long long num );
 
 	/// Append
-	String& operator +=( unsigned long num );
+    Cpl::Text::String& operator +=( unsigned long num );
 
 	/// Append
-	String& operator +=( unsigned long long num );
+    Cpl::Text::String& operator +=( unsigned long long num );
 	///@}
 
 

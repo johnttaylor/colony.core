@@ -34,9 +34,9 @@ FINAL_OUTPUT_NAME = 'b.exe'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
-base_release.cflags    = '-m32 -std=c++11 -Wall -Werror -x c++  -fprofile-arcs -ftest-coverage'
-base_release.linkflags = '-m32 -fprofile-arcs'
-base_release.linklibs  = '-lgcov -lws2_32'
+base_release.cflags    = '-m32 -std=c++11 -Wall -Werror -x c++ '
+base_release.linkflags = '-m32'
+base_release.linklibs  = '-lws2_32'
 
 # Set project specific 'optimized' options
 optimzed_release = BuildValues()    # Do NOT comment out this line

@@ -35,7 +35,7 @@ namespace Text {
 	'buffer' pointer, 'len' equals zero, or not enough memory in 'destString'
 	to contain the final result).
  */
-bool bufferToString( const void* buffer, int len, String& destString, bool appendToString=false );
+bool bufferToString( const void* buffer, int len, Cpl::Text::String& destString, bool appendToString=false );
 
 
 /** This method will convert a binary buffer to 'ASCII HEX', e.g.
@@ -48,7 +48,7 @@ bool bufferToString( const void* buffer, int len, String& destString, bool appen
 	Note: The default operation is to use uppercase text and to clear
 		  the destString before the conversion.
  */
-bool bufferToAsciiHex( const void* binaryData, int len, String& destString, bool upperCase=true, bool appendToString=false );
+bool bufferToAsciiHex( const void* binaryData, int len, Cpl::Text::String& destString, bool upperCase=true, bool appendToString=false );
 
 
 /** This method converts the binary millisecond count of 'timeStampInMsecs'

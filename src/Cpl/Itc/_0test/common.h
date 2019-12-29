@@ -79,7 +79,6 @@ public:
         int i;
         for ( i=0; i < m_numSequences; i++ )
         {
-            CPL_SYSTEM_SIM_TICK_TOP_LEVEL_WAIT();
 
             CPL_SYSTEM_TRACE_MSG( SECT_, ("----- Starting Sequence#: %d....", i + 1) );
             m_viewer.open();

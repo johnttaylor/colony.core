@@ -12,9 +12,9 @@ int main( int argc, char* argv[] )
     CPL_SYSTEM_TRACE_ENABLE();
     CPL_SYSTEM_TRACE_ENABLE_SECTION( "_0test" );
     CPL_SYSTEM_TRACE_ENABLE_SECTION( "Cpl::Itc" );
-    CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eBRIEF );
-	CPL_SYSTEM_TRACE_SET_THREAD_FILTER( "Viewer" );
-	//CPL_SYSTEM_TRACE_SET_THREAD_2FILTER( "MASTER" );
+    CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eVERBOSE );
+	//CPL_SYSTEM_TRACE_SET_THREAD_FILTER( "Viewer" );
+	//CPL_SYSTEM_TRACE_SET_THREAD_2FILTERS( "Viewer", "MASTER" );
 
     // Run the test(s)
 	return run_catch2_tests( argc, argv );

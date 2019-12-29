@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Mp_ArrayUint8_h_
-#define Cpl_Rte_Mp_ArrayUint8_h_
+#ifndef Cpl_Dm_Mp_ArrayUint8_h_
+#define Cpl_Dm_Mp_ArrayUint8_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -32,7 +32,7 @@ namespace Mp {
 	The toJSON()/fromJSON format is:
 		\code
 
-		{ name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:{start:<idx>, elems:[<n0>,<n1>,...]} }
+		{ name:"<mpname>", type:"<mptypestring>", invalid:nn, seqnum:nnnn, locked:true|false, val:{start:<idx>, elems:[<n0>,<n1>,...]} }
 
 		where <idx> is the start index for the values in 'elems'. If <idx> is
 		not specified, then it defaults to 0.

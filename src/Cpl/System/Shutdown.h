@@ -121,10 +121,14 @@ public:
     static void registerHandler( Shutdown::Handler& instanceToRegister );
 
 
-private:
-    /** Helper method used to notify registered shutdown handlers
+public:
+    /** This COMPONENT Scoped method.  The application SHOULD not directly
+        access this method (unless you are REALLY REALLY REALLY sure you
+        know what you are doing).
+        
+        Helper method used to notify registered shutdown handlers
      */
-    static int notifyShutdownHandlers( int exit_code );
+    static int notifyShutdownHandlers_( int exit_code );
 
 };
 

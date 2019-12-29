@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Mp_Double_h_
-#define Cpl_Rte_Mp_Double_h_
+#ifndef Cpl_Dm_Mp_Double_h_
+#define Cpl_Dm_Mp_Double_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -30,7 +30,7 @@ namespace Mp {
 	The toJSON()/fromJSON format is:
 	\code
 	
-	{ name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:<numvalue> }
+	{ name:"<mpname>", type:"<mptypestring>", invalid:nn, seqnum:nnnn, locked:true|false, val:<numvalue> }
 	
 	\endcode
 	

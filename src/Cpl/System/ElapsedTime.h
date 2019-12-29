@@ -36,19 +36,37 @@ public:
         uint16_t       m_thousandths;  //!< fractional number of milliseconds (i.e. a value between 0 and 999)
 
         /// Comparison operator (explicitly provided to avoid potential issue with pad bytes in the structure)
-        bool operator == ( Precision_Tag other ) const
+        bool operator == ( Precision_Tag const other ) const
         {
             return m_seconds == other.m_seconds && m_thousandths == other.m_thousandths;
         }
 
         /// Not equals operator
-        bool operator != ( Precision_Tag other ) const
+        bool operator != ( Precision_Tag const other ) const
         {
             return m_seconds != other.m_seconds || m_thousandths != other.m_thousandths;
         }
 
         /// Increment elapsed time by 'x'
         Precision_Tag& operator +=( const Precision_Tag& x );
+
+        /// Greater than (i.e. is this instance newer/more-recent then 'other')
+        bool operator > ( Precision_Tag const other ) const;
+
+        /// Greater than or equal (i.e. is this instance the same as 'other' or is it newer/more-recent then 'other')
+        bool operator >= ( Precision_Tag const other ) const;
+
+        /// less than (i.e. is this instance older then 'other')
+        bool operator < ( Precision_Tag const other ) const;
+
+        /// less than or equal (i.e. is this instance the same as 'other' or is it older then 'other')
+        bool operator <= ( Precision_Tag const other ) const;
+
+        /// Sets the Precision value from a millisecond value
+        Precision_Tag& setFromMilliseconds( uint32_t milliseconds );
+
+        /// Assign my value based on total milliseconds
+        Precision_Tag& operator =( uint32_t milliseconds );
 
     } Precision_T;
 

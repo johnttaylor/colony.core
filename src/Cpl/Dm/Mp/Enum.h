@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Mp_Enum_h_
-#define Cpl_Rte_Mp_Enum_h_
+#ifndef Cpl_Dm_Mp_Enum_h_
+#define Cpl_Dm_Mp_Enum_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -36,7 +36,7 @@ namespace Mp {
 	The toJSON()/fromJSON format is:
 	\code
 
-	{ name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, val:"<enumsymbol>" }
+	{ name:"<mpname>", type:"<mptypestring>", invalid:nn, seqnum:nnnn, locked:true|false, val:"<enumsymbol>" }
 
 	\endcode
 
@@ -142,7 +142,7 @@ public:
 
 public:
 	/// See Cpl::Dm::Point.  
-	bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
+	bool toJSON( char* dst, size_t dstSize, bool& truncated, bool verbose=true ) noexcept
 	{
 		// Get a snapshot of the my data and state
 		m_modelDatabase.lock_();
@@ -153,7 +153,7 @@ public:
 		m_modelDatabase.unlock_();
 
 		// Start the conversion
-		JsonDocument& doc = beginJSON( valid, locked, seqnum );
+		JsonDocument& doc = beginJSON( valid, locked, seqnum, verbose );
 
 		// Construct the 'val' key/value pair 
 		if( IS_VALID( valid ) )
@@ -162,7 +162,7 @@ public:
 		}
 
 		// End the conversion
-		endJSON( dst, dstSize, truncated );
+		endJSON( dst, dstSize, truncated, verbose );
 		return true;
 	}
 

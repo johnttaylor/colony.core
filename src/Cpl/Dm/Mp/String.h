@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Mp_String_h_
-#define Cpl_Rte_Mp_String_h_
+#ifndef Cpl_Dm_Mp_String_h_
+#define Cpl_Dm_Mp_String_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -13,7 +13,6 @@
 /** @file */
 
 #include "Cpl/Dm/ModelPointCommon_.h"
-#include "Cpl/Text/DFString.h"
 
 
 
@@ -33,7 +32,7 @@ namespace Mp {
 	The toJSON()/fromJSON format is:
 	\code
 
-	{ name="<mpname>", type="<mptypestring>", invalid=nn, seqnum=nnnn, locked=true|false, maxlen=nnn, val:"<newvalue>" }
+	{ name:"<mpname>", type:"<mptypestring>", invalid:nn, seqnum:nnnn, locked:true|false, maxlen:nnn, val:"<newvalue>" }
 
 	\endcode
 
@@ -114,7 +113,7 @@ public:
 
 public:
 	/// See Cpl::Dm::Point.  
-	bool toJSON( char* dst, size_t dstSize, bool& truncated ) noexcept;
+	bool toJSON( char* dst, size_t dstSize, bool& truncated, bool verbose=true ) noexcept;
 
     ///  See Cpl::Dm::ModelPoint.
     const char* getTypeAsText() const noexcept;

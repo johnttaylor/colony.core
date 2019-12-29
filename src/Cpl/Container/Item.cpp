@@ -21,7 +21,7 @@ using namespace Cpl::System;
 ////////////////////////////////////////////////////////////////////////////////
 bool Item::insert_( void* newContainerPtr )
 {
-    if ( m_inListPtr_ && newContainerPtr )
+    if ( m_inListPtr_ )
     {
         FatalError::logf( "Container Error: Double Insert. item=%p, prev container=%p, new container=%p", this, m_inListPtr_, newContainerPtr );
         return false;

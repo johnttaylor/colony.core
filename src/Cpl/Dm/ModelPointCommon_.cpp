@@ -514,7 +514,7 @@ bool ModelPointCommon_::testAndUpdateLock( LockRequest_T lockRequest ) noexcept
 }
 
 /////////////////
-JsonDocument& ModelPointCommon_::beginJSON( int8_t validState, bool locked, uint16_t seqnum ) noexcept
+JsonDocument& ModelPointCommon_::beginJSON( int8_t validState, bool locked, uint16_t seqnum, bool verbose ) noexcept
 {
 	// Get access to the Global JSON document
 	ModelDatabase::globalLock_();
@@ -522,15 +522,17 @@ JsonDocument& ModelPointCommon_::beginJSON( int8_t validState, bool locked, uint
 
 	// Construct the JSON
 	ModelDatabase::g_doc_["name"]      = getName();
-	ModelDatabase::g_doc_["type"]      = getTypeAsText();
-	ModelDatabase::g_doc_["invalid"]   = validState;
-	ModelDatabase::g_doc_["seqnum"]    = seqnum;
-	ModelDatabase::g_doc_["locked"]    = locked;
-
+    ModelDatabase::g_doc_["invalid"]   = validState;
+    if ( verbose )
+    {
+        ModelDatabase::g_doc_["type"]      = getTypeAsText();
+        ModelDatabase::g_doc_["seqnum"]    = seqnum;
+        ModelDatabase::g_doc_["locked"]    = locked;
+    }
 	return ModelDatabase::g_doc_;
 }
 
-void ModelPointCommon_::endJSON( char* dst, size_t dstSize, bool& truncated ) noexcept
+void ModelPointCommon_::endJSON( char* dst, size_t dstSize, bool& truncated, bool verbose ) noexcept
 {
 	// Generate the actual output string 
 	size_t num = serializeJson( ModelDatabase::g_doc_, dst, dstSize );

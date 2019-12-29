@@ -48,47 +48,47 @@ public:
 	/** Assignment of a string. The argument string is copied
 		to the internal storage of the object.
 	 */
-	virtual String& operator=( const String& string ) = 0;
+	virtual Cpl::Text::String& operator=( const String& string ) = 0;
 
 	/** Assignment of a string. The argument string is copied
 		to the internal storage of the object.
 	 */
-	virtual String& operator=( const char* string ) = 0;
+	virtual Cpl::Text::String& operator=( const char* string ) = 0;
 
 	/** Assigns the character to first position in string and then
 		NULL terminates the string.
 	 */
-	virtual String& operator=( char c ) = 0;
+	virtual Cpl::Text::String& operator=( char c ) = 0;
 
 	/** Converts the 'number' to a string and stores its in
 		the internal storage of the object.
 	 */
-	virtual String& operator=( int num ) = 0;
+	virtual Cpl::Text::String& operator=( int num ) = 0;
 
 	/** Converts the 'number' to a string and stores its in
 		the internal storage of the object.
 	 */
-	virtual String& operator=( unsigned int num ) = 0;
+	virtual Cpl::Text::String& operator=( unsigned int num ) = 0;
 
 	/** Converts the 'number' to a string and stores its in
 		the internal storage of the object.
 	 */
-	virtual String& operator=( long num ) = 0;
+	virtual Cpl::Text::String& operator=( long num ) = 0;
 
 	/** Converts the 'number' to a string and stores its in
 		the internal storage of the object.
 	 */
-	virtual String& operator=( long long num ) = 0;
+	virtual Cpl::Text::String& operator=( long long num ) = 0;
 
 	/** Converts the 'number' to a string and stores its in
 		the internal storage of the object.
 	 */
-	virtual String& operator=( unsigned long num ) = 0;
+	virtual Cpl::Text::String& operator=( unsigned long num ) = 0;
 
 	/** Converts the 'number' to a string and stores its in
 		the internal storage of the object.
 	 */
-	virtual String& operator=( unsigned long long num ) = 0;
+	virtual Cpl::Text::String& operator=( unsigned long long num ) = 0;
 
 	/** This method copies the content of the source string,
 		up to 'n' characters, into internal storage of the object.
@@ -118,46 +118,46 @@ public:
 	/** Append a string. The argument string is concatenated
 		to the end of the string object.
 	 */
-	virtual String& operator +=( const String& string ) = 0;
+	virtual Cpl::Text::String& operator +=( const Cpl::Text::String& string ) = 0;
 
 	/** Append a string. The argument string is concatenated
 		to the end of the string object.
 	 */
-	virtual String& operator +=( const char* string ) = 0;
+	virtual Cpl::Text::String& operator +=( const char* string ) = 0;
 
 	/** Appends the character to the end of the string.
 	 */
-	virtual String& operator +=( char c ) = 0;
+	virtual Cpl::Text::String& operator +=( char c ) = 0;
 
 	/** Converts the 'number' to a string and appends its to the
 		end of the string.
 	 */
-	virtual String& operator +=( int num ) = 0;
+	virtual Cpl::Text::String& operator +=( int num ) = 0;
 
 	/** Converts the 'number' to a string and appends its to the
 		end of the string.
 	 */
-	virtual String& operator +=( unsigned int num ) = 0;
+	virtual Cpl::Text::String& operator +=( unsigned int num ) = 0;
 
 	/** Converts the 'number' to a string and appends its to the
 		end of the string.
 	 */
-	virtual String& operator +=( long num ) = 0;
+	virtual Cpl::Text::String& operator +=( long num ) = 0;
 
 	/** Converts the 'number' to a string and appends its to the
 		end of the string.
 	 */
-	virtual String& operator +=( long long num ) = 0;
+	virtual Cpl::Text::String& operator +=( long long num ) = 0;
 
 	/** Converts the 'number' to a string and appends its to the
 		end of the string.
 	 */
-	virtual String& operator +=( unsigned long num ) = 0;
+	virtual Cpl::Text::String& operator +=( unsigned long num ) = 0;
 
 	/** Converts the 'number' to a string and appends its to the
 		end of the string.
 	 */
-	virtual String& operator +=( unsigned long long num ) = 0;
+	virtual Cpl::Text::String& operator +=( unsigned long long num ) = 0;
 
 	/** This method appends the content of the source string,
 		up to 'n' characters, into internal storage of the object.
@@ -227,7 +227,7 @@ public:
 	virtual bool operator ==( const char* string ) const = 0;
 
 	/// Compares two Strings and returns true if they are equal
-	virtual bool operator ==( const String& string ) const = 0;
+	virtual bool operator ==( const Cpl::Text::String& string ) const = 0;
 
 	/** Compares two Strings and returns true if they are NOT equal
 		NOTE: if 'string' is a null pointer, then true is returned.
@@ -235,7 +235,7 @@ public:
 	virtual bool operator !=( const char* string ) const = 0;
 
 	/// Compares two Strings and returns true if they are NOT equal
-	virtual bool operator !=( const String& string ) const = 0;
+	virtual bool operator !=( const Cpl::Text::String& string ) const = 0;
 
 	/** Compares two strings independently of case and return true if equal
 		NOTE: if 'string' is a null pointer, then false is returned.

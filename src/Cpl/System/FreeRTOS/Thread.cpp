@@ -42,11 +42,11 @@ class RegisterInitHandler_ : public Cpl::System::StartupHook_,
 {
 protected:
     // Empty 'run' function -- it is never called!
-    void appRun( void ) {} 
+    void appRun( void ) {}
 
 public:
     ///
-    RegisterInitHandler_():StartupHook_( eSYSTEM ) {}
+    RegisterInitHandler_() :StartupHook_( eSYSTEM ) {}
 
 
 protected:
@@ -75,7 +75,7 @@ void Thread::makeNativeMainThreadACplThread( void )
         once                                         = true;
         cpl_system_thread_freertos_schedulerStarted_ = true;
         new Cpl::System::FreeRTOS::MakeCurrentThreadACplThread();
-        CPL_SYSTEM_TRACE_MSG( AREA_, ("loop(): Main thread has be converted to a CPL thread - I can know use Tracing safely!") );
+        CPL_SYSTEM_TRACE_MSG( AREA_, ( "loop(): Main thread has be converted to a CPL thread - I can know use Tracing safely!" ) );
     }
 }
 
@@ -117,11 +117,11 @@ Thread::Thread( Cpl::System::Runnable&   runnable,
     // Calculate stack size in terms of 'depth' (not bytes)
     if ( stackSize == 0 )
     {
-        stackSize = OPTION_CPL_SYSTEM_FREERTOS_DEFAULT_STACK_SIZE >> sizeof( StackType_t ) / 2;
+        stackSize = OPTION_CPL_SYSTEM_FREERTOS_DEFAULT_STACK_SIZE >> ( sizeof( StackType_t ) / 2 );
     }
     else
     {
-        stackSize = stackSize >> sizeof( StackType_t ) / 2;
+        stackSize = stackSize >> ( sizeof( StackType_t ) / 2 );
     }
 
 
@@ -232,7 +232,7 @@ void Thread::entryPoint( void* data )
 //////////////////////////////
 Cpl::System::Thread& Cpl::System::Thread::getCurrent() noexcept
 {
-    return *((Thread*) xTaskGetApplicationTaskTag( xTaskGetCurrentTaskHandle() ));
+    return *( (Thread*) xTaskGetApplicationTaskTag( xTaskGetCurrentTaskHandle() ) );
 }
 
 
@@ -259,7 +259,7 @@ const char* Cpl::System::Thread::myName() noexcept
         return emptyString_;
     }
 
-    return ((Cpl::System::FreeRTOS::Thread*) xTaskGetApplicationTaskTag( xTaskGetCurrentTaskHandle() ))->m_name;
+    return ( ( Cpl::System::FreeRTOS::Thread* ) xTaskGetApplicationTaskTag( xTaskGetCurrentTaskHandle() ) )->m_name;
 }
 
 
@@ -271,13 +271,13 @@ size_t Cpl::System::Thread::myId() noexcept
         return 0;
     }
 
-    return (size_t) (((Cpl::System::FreeRTOS::Thread*)(&getCurrent()))->m_threadHandle);
+    return (size_t) ( ( ( Cpl::System::FreeRTOS::Thread* )( &getCurrent() ) )->m_threadHandle );
 }
 
 
 void** Thread::getTlsArray() noexcept
 {
-    return ((Cpl::System::FreeRTOS::Thread*) xTaskGetApplicationTaskTag( xTaskGetCurrentTaskHandle() ))->m_tlsArray;
+    return ( ( Cpl::System::FreeRTOS::Thread* ) xTaskGetApplicationTaskTag( xTaskGetCurrentTaskHandle() ) )->m_tlsArray;
 }
 
 

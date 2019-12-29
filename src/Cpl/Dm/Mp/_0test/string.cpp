@@ -344,6 +344,24 @@ TEST_CASE( "string-toJSON" )
 		REQUIRE( STRCMP( doc["val"], "hi bob" ) );
 	}
 
+    SECTION( "Value/terse" )
+    {
+        // Invalid (Default value)
+        mp_apple_.write( "hi bob", ModelPoint::eUNLOCK );
+        mp_apple_.toJSON( string, MAX_STR_LENG, truncated, false );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "toJSON: terse [%s])", string ) );
+
+        StaticJsonDocument<1024> doc;
+        DeserializationError err = deserializeJson( doc, string );
+        REQUIRE( err == DeserializationError::Ok );
+        REQUIRE( STRCMP( doc["name"], "APPLE" ) );
+        REQUIRE( doc["type"].as<char*>() == 0 );
+        REQUIRE( doc["seqnum"].as<char*>() == 0 );
+        REQUIRE( doc["locked"].as<char*>() == 0 );
+        REQUIRE( STRCMP( doc["val"], "hi bob" ) );
+        REQUIRE( doc["invalid"] == 0 );
+    }
+
 	SECTION( "Value + Lock" )
 	{
 		mp_apple_.applyLock();

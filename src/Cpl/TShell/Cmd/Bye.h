@@ -39,7 +39,7 @@ namespace TShell {
 ///
 namespace Cmd {
 
-/** This Private Namespace class defines the interface for a  shell command.
+/** This class implements a  Shell command
  */
 class Bye : public Command
 {

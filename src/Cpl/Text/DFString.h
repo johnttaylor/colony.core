@@ -49,13 +49,13 @@ public:
 	DFString( const DFString& string );
 
 	/// Constructor.  The new instance uses the 'memSize' of 'string'
-	DFString( const String& string );
+	DFString( const Cpl::Text::String& string );
 
 	/// Constructor.  'memSize' is the max length of the string storage WITHOUT the null terminator.  If 'memSize' is zero, the storage is defaulted to OPTION_CPL_TEXT_DFSTRING_ALLOC_BLOCK_SIZE - 1. 
 	DFString( size_t memSize, const DFString& string );
 
 	/// Constructor.
-	DFString( size_t memSize, const String& string );
+	DFString( size_t memSize, const Cpl::Text::String& string );
 
 	/// Constructor
 	DFString( size_t memSize, const char* string="" );
@@ -88,64 +88,64 @@ public:
 public:
 	///@{
 	/// Assignment
-	inline String& operator =( const DFString& string ) { copyIn( string, string.length() ); return *this; }
+	inline Cpl::Text::String& operator =( const DFString& string ) { copyIn( string, string.length() ); return *this; }
 
 	/// Assignment
-	String& operator=( const String& string );
+    Cpl::Text::String& operator=( const String& string );
 
 	/// Assignment
-	String& operator=( const char* string );
+    Cpl::Text::String& operator=( const char* string );
 
 	/// Assignment
-	String& operator=( char c );
+    Cpl::Text::String& operator=( char c );
 
 	/// Assignment
-	String& operator=( int num );
+    Cpl::Text::String& operator=( int num );
 
 	/// Assignment
-	String& operator=( unsigned int num );
+    Cpl::Text::String& operator=( unsigned int num );
 
 	/// Assignment
-	String& operator=( long num );
+    Cpl::Text::String& operator=( long num );
 
 	/// Assignment
-	String& operator=( long long num );
+    Cpl::Text::String& operator=( long long num );
 
 	/// Assignment
-	String& operator=( unsigned long num );
+    Cpl::Text::String& operator=( unsigned long num );
 
 	/// Assignment
-	String& operator=( unsigned long long num );
+    Cpl::Text::String& operator=( unsigned long long num );
 	///@}
 
 public:
 	///@{
 	/// Append
-	String & operator +=( const String& string );
+    Cpl::Text::String & operator +=( const String& string );
 
 	/// Append
-	String& operator +=( const char* string );
+    Cpl::Text::String& operator +=( const char* string );
 
 	/// Append
-	String& operator +=( char c );
+    Cpl::Text::String& operator +=( char c );
 
 	/// Append
-	String& operator +=( int num );
+    Cpl::Text::String& operator +=( int num );
 
 	/// Append
-	String& operator +=( unsigned int num );
+    Cpl::Text::String& operator +=( unsigned int num );
 
 	/// Append
-	String& operator +=( long num );
+    Cpl::Text::String& operator +=( long num );
 
 	/// Append
-	String& operator +=( long long num );
+    Cpl::Text::String& operator +=( long long num );
 
 	/// Append
-	String& operator +=( unsigned long num );
+    Cpl::Text::String& operator +=( unsigned long num );
 
 	/// Append
-	String& operator +=( unsigned long long num );
+    Cpl::Text::String& operator +=( unsigned long long num );
 	///@}
 
 

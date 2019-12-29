@@ -64,3 +64,9 @@ bool SeqNumber::compare( const SeqNumber& other ) const
 
 	return m_counter == other.m_counter;
 }
+
+bool SeqNumber::compare( int32_t other ) const
+{
+    SeqNumber t( other );
+    return compare( t );
+}
