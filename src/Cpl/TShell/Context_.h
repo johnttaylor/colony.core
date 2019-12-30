@@ -22,7 +22,7 @@ namespace Cpl {
 ///
 namespace TShell {
 
-/** This Private Namespace class defines a "Context" for a DAC shell. The
+/** This Private Namespace class defines a "Context" for a TShell command. The
 	Context provide common infrastructure, information, buffers, etc. that
 	facilitates interaction between the Command Processor and individual
 	commands.  The application SHOULD NEVER directly access this interface.

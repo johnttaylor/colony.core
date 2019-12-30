@@ -27,7 +27,7 @@ namespace Win32 {
 
 
 
-/** This class implements a DAC Shell command
+/** This class implements a TShell command
  */
 class Threads : public Cpl::TShell::Cmd::Threads
 {

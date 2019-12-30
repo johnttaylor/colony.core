@@ -48,7 +48,7 @@ namespace TShell {
 
 
 
-/** This class implements a DAC Shell command.  Note: Up to 10 different
+/** This class implements a TShell command.  Note: Up to 10 different
 	instance of this command can be instantiated - but each instance MUST
 	have a different database number.  The database number specified by
 	specifying the actual command name, e.g. 'dm0' is database number 0,

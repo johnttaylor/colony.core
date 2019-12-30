@@ -68,7 +68,7 @@ public:
     inline operator int32_t ( ) const { return m_counter; }
 
 public:
-    /** This method return true if 'other' does not match this sequence number
+    /** This method return true if 'other' matches this sequence number
         Note: If this instance or 'other' is invalid (aka zero), then the method 
         always returns false;
 	 */
@@ -81,7 +81,7 @@ public:
 	inline bool operator != ( const SeqNumber& other ) const { return !compare( other ); }
 
 public:
-    /** This method return true if 'other' does not match this sequence number
+    /** This method return true if 'other' matches this sequence number
         Note: If this instance or 'other' is invalid (aka zero), then the method 
         always returns false;
      */
