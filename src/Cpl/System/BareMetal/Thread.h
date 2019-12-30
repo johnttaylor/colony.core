@@ -25,11 +25,9 @@ namespace System {
 ///
 namespace BareMetal {
 
-/** This concrete class implements a Thread object using Win32 threads
-    NOTE: The class/implementation uses _beginthread() instead of
-          CreateThread() ->this is per Microsoft's documentation
-          that says the _beginthread() properly initializes/cleans-up
-          the C-Runtime library as where CreateThread() does NOT.
+/** This concrete class implements 'enough' of a Thread object to support 
+    Cpl::System framework on a bare metal system (a system that has only
+    ONE thread and potentially ISR contexts).
  */
 class Thread : public Cpl::System::Thread
 {

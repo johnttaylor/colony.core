@@ -60,7 +60,7 @@ namespace Cpl {
 namespace TShell {
 
 /** This concrete class provides the implementation of Command Processor for
-	a DAC TShell.
+	a TShell engine.
 
 	The implementation assumes a single threaded model, i.e. the Command
 	Processor and all of its  commands run in a single thread.  It is

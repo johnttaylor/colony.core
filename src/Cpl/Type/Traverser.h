@@ -36,7 +36,7 @@ public:
 
 public:
 	/** This constructor does NOTHING.  It is work-around/hack to get Doxygen
-		to properly document the enum below when there is ONLY a enum in the
+		to properly document the enum above when there is ONLY a enum in the
 		class.
 	 */
 	Traverser() {};

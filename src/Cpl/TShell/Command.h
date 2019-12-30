@@ -25,7 +25,7 @@ namespace TShell {
 class Context_;
 
 
-/** This class defines the interface for a DAC shell command.
+/** This class defines the interface for a TShell command.
  */
 class Command : public Cpl::Container::MapItem
 {

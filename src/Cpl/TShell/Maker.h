@@ -23,7 +23,7 @@ namespace TShell {
 
 
 /** This concrete class is a "Maker" that assembles the objects needed
-	for a 'basic' DAC Shell Processor engine.
+	for a 'basic' TShell Processor engine.
  */
 class Maker
 {
