@@ -5,5 +5,7 @@
 # tests
 src/Cpl/Dm/Mp/_0test 
 
+src/Cpl/Io/Stdio/_ansi
+
 
 
