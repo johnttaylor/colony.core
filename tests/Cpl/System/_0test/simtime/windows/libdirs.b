@@ -1,13 +1,10 @@
 # Unit under test
-src/Cpl/System
-src/Cpl/System/_simtick
+#src/Cpl/System
+#src/Cpl/System/_simtick
 
 # tests
 src/Cpl/System/_0test/_sim
 
-# supporting infrastructure
-src/Cpl/Container
-src/Cpl/Text
 
 # Platforms
 src/Cpl/Io/Stdio/_ansi

@@ -1,14 +1,11 @@
 # Unit under test
-src/Cpl/System
-src/Cpl/System/_trace
-src/Cpl/System/_trace/_stdout
+#src/Cpl/System
+#src/Cpl/System/_trace
+#src/Cpl/System/_trace/_stdout
 
 # tests
 src/Cpl/System/_0test
 
-# supporting infrastructure
-src/Cpl/Container
-src/Cpl/Text
 
 # Platforms
 src/Cpl/Io/Stdio/_ansi

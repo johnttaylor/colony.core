@@ -1,13 +1,9 @@
 # Unit under test
-src/Cpl/Text/Tokenizer
+#src/Cpl/Text/Tokenizer
 
 # tests
 src/Cpl/Text/Tokenizer/_0test
 
-# supporting infrastructure
-src/Cpl/Container
-src/Cpl/System
-src/Cpl/Text
 
 # Platforms
 src/Cpl/Io/Stdio/_ansi

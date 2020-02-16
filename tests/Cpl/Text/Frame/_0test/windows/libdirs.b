@@ -5,9 +5,6 @@ src/Cpl/Text/Frame
 src/Cpl/Text/Frame/_0test
 
 # supporting infrastructure
-src/Cpl/System
-src/Cpl/Container
-src/Cpl/Text
 src/Cpl/Io/File
 src/Cpl/Io/File/_win32
 src/Cpl/Io/File/_win32/_api

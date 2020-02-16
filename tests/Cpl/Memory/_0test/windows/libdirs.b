@@ -1,13 +1,9 @@
 # Unit under test
-src/Cpl/Memory
+#src/Cpl/Memory
 
 # tests
 src/Cpl/Memory/_0test
 
-# supporting infrastructure
-src/Cpl/Container
-src/Cpl/Text
-src/Cpl/System
 
 # Platforms
 src/Cpl/Io/Stdio/_ansi
