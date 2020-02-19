@@ -26,11 +26,6 @@ TPrint::TPrint( Cpl::Container::Map<Cpl::TShell::Command>& commandList ) noexcep
 {
 }
 
-TPrint::TPrint( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
-	:Command( commandList, CPLTSHELLCMD_CMD_TPRINT_, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
-{
-}
-
 
 ///////////////////////////
 Cpl::TShell::Command::Result_T TPrint::execute( Cpl::TShell::Context_& context, char* cmdString, Cpl::Io::Output& outfd ) noexcept

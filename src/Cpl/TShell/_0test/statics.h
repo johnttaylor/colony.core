@@ -19,12 +19,12 @@ extern Cpl::Container::Map<Cpl::TShell::Command>   cmdlist;
 
 static Cpl::TShell::Maker cmdProcessor_( cmdlist );
 
-static Cpl::TShell::Cmd::Help	helpCmd_( cmdlist, "invoke_special_static_constructor"  );
-static Cpl::TShell::Cmd::Bye	byeCmd_( cmdlist, "invoke_special_static_constructor"  );
-static Cpl::TShell::Cmd::Trace	traceCmd_( cmdlist, "invoke_special_static_constructor" );
-static Cpl::TShell::Cmd::TPrint	tprintCmd_( cmdlist, "invoke_special_static_constructor" );
+static Cpl::TShell::Cmd::Help	helpCmd_( cmdlist );
+static Cpl::TShell::Cmd::Bye	byeCmd_( cmdlist  );
+static Cpl::TShell::Cmd::Trace	traceCmd_( cmdlist );
+static Cpl::TShell::Cmd::TPrint	tprintCmd_( cmdlist );
 
 
 static Apple   mockApp;
-static Bob     bobCmd( cmdlist, mockApp, "invoke_special_static_constructor"  );
+static Bob     bobCmd( cmdlist, mockApp  );
 

@@ -25,22 +25,22 @@ extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 ////////////////////////////////////////////////////////////////////////////////
 static Cpl::TShell::Stdio shell_( cmdProcessor_ );
 
-static Cpl::TShell::Cmd::Tick	    tick_( cmdlist, "invoke_special_static_constructor" );
-static Cpl::TShell::Cmd::Threads	threads_( cmdlist, "invoke_special_static_constructor" );
+static Cpl::TShell::Cmd::Tick	    tick_( cmdlist );
+static Cpl::TShell::Cmd::Threads	threads_( cmdlist );
 
 // Dummy 'timing' runnable object required by SimTick implementation
 static Cpl::Dm::MailboxServer appMailbox;
 
 void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
 {
-	// Start the shell
-	shell_.launch( infd, outfd );
+    // Start the shell
+    shell_.launch( infd, outfd );
 
     // Create my 'dummy' thread
     Cpl::System::Thread::create( appMailbox, "AppThread", CPL_SYSTEM_THREAD_PRIORITY_NORMAL + CPL_SYSTEM_THREAD_PRIORITY_RAISE );
 
     // Start the scheduler
-	Cpl::System::Api::enableScheduling();
+    Cpl::System::Api::enableScheduling();
 }
 
 

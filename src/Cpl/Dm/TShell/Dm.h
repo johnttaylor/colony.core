@@ -73,9 +73,6 @@ public:
 	/// Constructor
 	Dm( Cpl::Container::Map<Cpl::TShell::Command>& commandList, Cpl::Dm::ModelDatabaseApi& modelDatabase, const char* cmdNameAndDatabaseNumber ) noexcept;
 
-	/// Constructor.  Used to create a static instance of the command
-	Dm( Cpl::Container::Map<Cpl::TShell::Command>& commandList, Cpl::Dm::ModelDatabaseApi& modelDatabase, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance, const char* cmdNameAndDatabaseNumber ) noexcept;
-
 
 public:
 	/// See Cpl::TShell::Command

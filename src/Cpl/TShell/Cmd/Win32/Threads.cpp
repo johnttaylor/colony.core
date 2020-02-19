@@ -24,11 +24,6 @@ Threads::Threads( Cpl::Container::Map<Cpl::TShell::Command>& commandList ) noexc
 {
 }
 
-Threads::Threads( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
-	:Cpl::TShell::Cmd::Threads( commandList, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
-{
-}
-
 
 /////////////////////////////////////////////////////////
 void Threads::hookHeader1( Cpl::Text::String& text )

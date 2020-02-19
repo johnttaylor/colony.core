@@ -48,9 +48,6 @@ protected:
 	/// Constructor
 	Command( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* verb ) noexcept;
 
-	/// Constructor. Used when creating a static instance of a command
-	Command( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept;
-
 
 public:
 	/// See Cpl::TShell::Command

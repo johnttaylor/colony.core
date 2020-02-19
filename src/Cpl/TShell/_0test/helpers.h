@@ -113,13 +113,6 @@ public:
 	{
 	}
 
-	/// Constructor
-	Bob( Cpl::Container::Map<Cpl::TShell::Command>& commandList, Apple& application, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
-		:Command( commandList, "bob", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
-		, m_app( application )
-	{
-	}
-
 
 public:
 	/// See Cpl::TShell::Command

@@ -27,12 +27,6 @@ Dm::Dm( Cpl::Container::Map<Cpl::TShell::Command>& commandList, Cpl::Dm::ModelDa
 {
 }
 
-Dm::Dm( Cpl::Container::Map<Cpl::TShell::Command>& commandList, Cpl::Dm::ModelDatabaseApi& modelDatabase, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance, const char* cmdNameAndDatabaseNumber ) noexcept
-	: Cpl::TShell::Cmd::Command( commandList, cmdNameAndDatabaseNumber, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
-	, m_database( modelDatabase )
-{
-}
-
 
 ///////////////////////////
 Cpl::TShell::Command::Result_T Dm::execute( Cpl::TShell::Context_& context, char* cmdString, Cpl::Io::Output& outfd ) noexcept

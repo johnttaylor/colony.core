@@ -28,14 +28,6 @@ Threads::Threads( Cpl::Container::Map<Cpl::TShell::Command>& commandList ) noexc
 {
 }
 
-Threads::Threads( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
-	:Command( commandList, CPLTSHELLCMD_CMD_THREADS_, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
-	, m_contextPtr( 0 )
-	, m_count( 0 )
-	, m_io( true )
-{
-}
-
 
 ///////////////////////////
 Cpl::TShell::Command::Result_T Threads::execute( Cpl::TShell::Context_& context, char* cmdString, Cpl::Io::Output& outfd ) noexcept

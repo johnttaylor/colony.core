@@ -27,11 +27,6 @@ Tick::Tick( Cpl::Container::Map<Cpl::TShell::Command>& commandList ) noexcept
 {
 }
 
-Tick::Tick( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
-    :Command( commandList, CPLTSHELLCMD_CMD_TICK_, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
-{
-}
-
 
 ///////////////////////////
 Cpl::TShell::Command::Result_T Tick::execute( Cpl::TShell::Context_& context, char* cmdString, Cpl::Io::Output& outfd ) noexcept

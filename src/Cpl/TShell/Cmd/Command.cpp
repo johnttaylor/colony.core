@@ -24,14 +24,6 @@ Command::Command( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const 
 }
 
 
-Command::Command( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
-	:Cpl::TShell::Command( ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
-	, m_mapKey( verb )
-{
-	commandList.insert( *this );
-}
-
-
 ////////////////////////////
 const char* Command::getVerb() const noexcept
 {

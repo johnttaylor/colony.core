@@ -25,11 +25,6 @@ Bye::Bye( Cpl::Container::Map<Cpl::TShell::Command>& commandList ) noexcept
 {
 }
 
-Bye::Bye( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
-	:Command( commandList, CPLTSHELLCMD_CMD_BYE_, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
-{
-}
-
 
 ///////////////////////////
 Cpl::TShell::Command::Result_T Bye::execute( Cpl::TShell::Context_& context, char* cmdString, Cpl::Io::Output& outfd ) noexcept

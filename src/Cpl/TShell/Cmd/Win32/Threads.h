@@ -35,9 +35,6 @@ public:
 	/// Constructor
 	Threads( Cpl::Container::Map<Cpl::TShell::Command>& commandList ) noexcept;
 
-	/// Constructor.  Used to create a static instance of the command
-	Threads( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept;
-
 
 protected:
 	/// See Cpl::TShell::Cmd::Threads

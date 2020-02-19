@@ -58,9 +58,6 @@ public:
 	/// Constructor
 	TPrint( Cpl::Container::Map<Cpl::TShell::Command>& commandList ) noexcept;
 
-	/// Constructor.  Used to create a static instance of the command
-	TPrint( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept;
-
 
 public:
 	/// See Cpl::TShell::Command
