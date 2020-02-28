@@ -40,9 +40,17 @@ public:
     /// Same as 'system', except usage is for 'long' critical sections (i.e. walking lists, printing, etc.)
     static Mutex& sysLists( void );
 
-    /// Global mutex for use for tracing sub-system
+    /** Global mutex for use for tracing sub-system.  This mutex is to protect 
+        the Trace engine's internal/meta data.  This mutex is NOT used to guard
+        the Trace output.  The Trace engine uses two mutex so that its output
+        can be 'serialized' with the TShell's output (or other sub-systems) BUT
+        not cause high priority threads to block on the trace output when their
+        trace statements are not enabled at run time.
+     */
     static Mutex& tracing( void );
 
+    /// Global mutex for use for the tracing sub-system OUTPUT (see above for more details)
+    static Mutex& tracingOutput( void );
 };
 
 

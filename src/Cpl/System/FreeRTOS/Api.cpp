@@ -24,6 +24,7 @@ using namespace Cpl::System;
 ///
 static Mutex systemMutex_;
 static Mutex tracingMutex_;
+static Mutex tracingOutputMutex_;
 static Mutex sysList_;
 
 bool cpl_system_thread_freertos_schedulerStarted_ = false;
@@ -85,3 +86,7 @@ Mutex& Locks_::sysLists( void )
     return sysList_;
 }
 
+Mutex& Locks_::tracingOutput( void )
+{
+    return tracingOutputMutex_;
+}

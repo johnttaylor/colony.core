@@ -21,6 +21,7 @@ using namespace Cpl::System;
 ///
 static Mutex systemMutex_;
 static Mutex tracingMutex_;
+static Mutex tracingOutputMutex_;
 static Mutex sysList_;
 
 
@@ -77,3 +78,7 @@ Mutex& Locks_::sysLists( void )
     return sysList_;
 }
 
+Mutex& Locks_::tracingOutput( void )
+{
+    return tracingOutputMutex_;
+}
