@@ -55,7 +55,7 @@ static const char* convert_( size_t num, char* dstString, size_t maxChars, unsig
 		while ( num != 0 && maxChars > sign )
 		{
 			char remainder = (char) ( num % base );
-			if ( remainder < 9 )
+			if ( remainder <= 9 )
 			{
 				dstString[--maxChars] = remainder + '0';
 			}

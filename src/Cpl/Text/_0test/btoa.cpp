@@ -100,16 +100,16 @@ TEST_CASE( "btoa", "[btoa]" )
 		const char* leftPtr;
 		long        value;
 
-		value   = 0x32;
+		value   = 0x3B;
 		leftPtr = ulongToStr( value, buffer, 4 + 1, 10 );
 		CPL_SYSTEM_TRACE_MSG( SECT_, ( "value=%lu, rstr=[%s], lstr=[%s]", value, buffer, leftPtr ) );
-		REQUIRE( strcmp( leftPtr, "50" ) == 0 );
-		REQUIRE( strcmp( buffer, "  50" ) == 0 );
+		REQUIRE( strcmp( leftPtr, "59" ) == 0 );
+		REQUIRE( strcmp( buffer, "  59" ) == 0 );
 
 		leftPtr = ulongToStr( value, buffer, 4 + 1, 10, '0' );
 		CPL_SYSTEM_TRACE_MSG( SECT_, ( "value=%lu, rstr=[%s], lstr=[%s]", value, buffer, leftPtr ) );
-		REQUIRE( strcmp( leftPtr, "50" ) == 0 );
-		REQUIRE( strcmp( buffer, "0050" ) == 0 );
+		REQUIRE( strcmp( leftPtr, "59" ) == 0 );
+		REQUIRE( strcmp( buffer, "0059" ) == 0 );
 	}
 
 	SECTION( "size_t..." )
