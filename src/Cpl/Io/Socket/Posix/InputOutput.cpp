@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-
+#include <sys/ioctl.h>
 
 
 ///
@@ -79,8 +79,15 @@ bool InputOutput::read( void* buffer, int numBytes, int& bytesRead )
 
 bool InputOutput::available()
 {
-	// CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract)
-	return true;
+    // Throw an error if the socket had already been closed
+    if (m_fd.m_fd < 0)
+    {
+        return false;
+    }
+    
+    int nbytes;
+    ioctl( m_fd.m_fd, FIONREAD, &nbytes );
+    return nbytes > 0;
 }
 
 

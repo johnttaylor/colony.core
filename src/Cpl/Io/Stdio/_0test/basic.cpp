@@ -86,6 +86,8 @@ TEST_CASE( "basic", "[basic]" )
 	CPL_SYSTEM_TRACE_MSG( SECT_, ( "result=%d, bytesRead=%d, myBuffer=[%.*s]", result, bytesRead, bytesRead, myBuffer ) );
 	REQUIRE( result == false );
 
+    REQUIRE( infd.available() == false );
+
     infd.close();
     REQUIRE( infd.isOpened() == false );
     REQUIRE( infd.read( dummyChar ) == false );

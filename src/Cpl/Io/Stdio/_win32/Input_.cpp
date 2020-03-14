@@ -118,8 +118,14 @@ bool Input_::read( void* buffer, int numBytes, int& bytesRead )
 
 bool Input_::available()
 {
-    // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract) WHEN OPENED
-    return m_inFd.m_handlePtr != (void*) INVALID_HANDLE_VALUE;
+    // Trap that the stream has been CLOSED!
+    if (m_inFd.m_handlePtr == (void*)INVALID_HANDLE_VALUE)
+    {
+        return false;
+    }
+
+    DWORD signaled = WaitForSingleObject( m_inFd.m_handlePtr, 0 );
+    return signaled == WAIT_OBJECT_0;
 }
 
 bool Input_::isEos()

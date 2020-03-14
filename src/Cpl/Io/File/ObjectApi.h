@@ -1,3 +1,4 @@
+
 #ifndef Cpl_Io_File_ObjectApi_h_
 #define Cpl_Io_File_ObjectApi_h_
 /*-----------------------------------------------------------------------------
