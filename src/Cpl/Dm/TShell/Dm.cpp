@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2019  John T. Taylor
+* Copyright (c) 2014-2020  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -23,12 +23,6 @@ using namespace Cpl::Dm::TShell;
 ///////////////////////////
 Dm::Dm( Cpl::Container::Map<Cpl::TShell::Command>& commandList, Cpl::Dm::ModelDatabaseApi& modelDatabase, const char* cmdNameAndDatabaseNumber ) noexcept
 	: Cpl::TShell::Cmd::Command( commandList, cmdNameAndDatabaseNumber )
-	, m_database( modelDatabase )
-{
-}
-
-Dm::Dm( Cpl::Container::Map<Cpl::TShell::Command>& commandList, Cpl::Dm::ModelDatabaseApi& modelDatabase, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance, const char* cmdNameAndDatabaseNumber ) noexcept
-	: Cpl::TShell::Cmd::Command( commandList, cmdNameAndDatabaseNumber, ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
 	, m_database( modelDatabase )
 {
 }

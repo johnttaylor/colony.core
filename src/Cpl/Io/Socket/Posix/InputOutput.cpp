@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2019  John T. Taylor
+* Copyright (c) 2014-2020  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-
+#include <sys/ioctl.h>
 
 
 ///
@@ -79,8 +79,15 @@ bool InputOutput::read( void* buffer, int numBytes, int& bytesRead )
 
 bool InputOutput::available()
 {
-	// CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract)
-	return true;
+    // Throw an error if the socket had already been closed
+    if (m_fd.m_fd < 0)
+    {
+        return false;
+    }
+    
+    int nbytes;
+    ioctl( m_fd.m_fd, FIONREAD, &nbytes );
+    return nbytes > 0;
 }
 
 

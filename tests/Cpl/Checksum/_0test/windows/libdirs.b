@@ -4,11 +4,6 @@ src/Cpl/Checksum
 # tests
 src/Cpl/Checksum/_0test
 
-# supporting infrastructure
-src/Cpl/Container
-src/Cpl/Text
-src/Cpl/System
-
 # Platforms
 src/Cpl/Io/Stdio/_ansi
 [win32|win64] /top/libdirs/platform_win32_default_for_test_libdirs.b

@@ -1,11 +1,8 @@
 # Unit under test
-src/Cpl/Container
+#src/Cpl/Container
 
 # tests
 src/Cpl/Container/_0test
-
-# supporting infrastructure
-src/Cpl/System
 
 
 # Platforms

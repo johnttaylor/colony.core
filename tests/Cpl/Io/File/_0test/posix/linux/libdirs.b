@@ -6,13 +6,6 @@ src/Cpl/Io/File/_posix/_api
 # tests
 src/Cpl/Io/File/_0test
 
-# supporting infrastructure
-src/Cpl/Io/File
-src/Cpl/Io/Stdio
-src/Cpl/Container
-src/Cpl/Text
-src/Cpl/System
-
 
 # Platforms
 src/Cpl/Io/Stdio/_posix

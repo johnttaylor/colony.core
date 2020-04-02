@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2019  John T. Taylor
+* Copyright (c) 2014-2020  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -109,13 +109,6 @@ public:
 	/// Constructor
 	Bob( Cpl::Container::Map<Cpl::TShell::Command>& commandList, Apple& application ) noexcept
 		:Command( commandList, "bob" )
-		, m_app( application )
-	{
-	}
-
-	/// Constructor
-	Bob( Cpl::Container::Map<Cpl::TShell::Command>& commandList, Apple& application, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
-		:Command( commandList, "bob", ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
 		, m_app( application )
 	{
 	}

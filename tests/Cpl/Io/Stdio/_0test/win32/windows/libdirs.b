@@ -5,11 +5,6 @@
 # tests
 src/Cpl/Io/Stdio/_0test
 
-# supporting infrastructure
-src/Cpl/System
-src/Cpl/Container
-src/Cpl/Text
-
 
 # Platforms
 src/Cpl/Io/Stdio/_win32

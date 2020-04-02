@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2019  John T. Taylor
+* Copyright (c) 2014-2020  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -63,9 +63,15 @@ Trace::~Trace()
 //
 void Trace::traceLocation_( const char* section, const char* filename, int linenum, const char* funcname )
 {
+    // Get the current tracing level parameter
     Locks_::tracing().lock();
+    Trace::InfoLevel_T infoLevel = infoLevel_;
+    Locks_::tracing().unlock();
+
+    // Serialize the output
+    Locks_::tracingOutput().lock();
     buffer_ = OPTION_CPL_SYSTEM_TRACE_PREFIX_STRING;
-    TracePlatform_::appendInfo( buffer_, infoLevel_, section, filename, linenum, funcname );
+    TracePlatform_::appendInfo( buffer_, infoLevel, section, filename, linenum, funcname );
 }
 
 
@@ -86,7 +92,7 @@ void Trace::traceUserMsg_( const char* format, ... )
     }
 
     TracePlatform_::output( buffer_ );
-    Locks_::tracing().unlock();
+    Locks_::tracingOutput().unlock();
 }
 
 

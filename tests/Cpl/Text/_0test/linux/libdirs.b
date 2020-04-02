@@ -1,12 +1,10 @@
 # Unit under test
-src/Cpl/Text
+#src/Cpl/Text
 
 # tests
 src/Cpl/Text/_0test
 
 # supporting infrastructure
-src/Cpl/System
-src/Cpl/Container
 src/Cpl/Memory/_testsupport
 
 

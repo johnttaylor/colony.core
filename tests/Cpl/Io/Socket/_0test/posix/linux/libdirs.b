@@ -7,11 +7,6 @@ src/Cpl/Io/Socket/_0test
 
 # supporting infrastructure
 src/Cpl/Io/File
-src/Cpl/Io/Stdio
-src/Cpl/Container
-src/Cpl/Text
-src/Cpl/System
-src/Cpl/Itc
 
 
 # Platforms

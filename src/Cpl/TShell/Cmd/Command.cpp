@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2019  John T. Taylor
+* Copyright (c) 2014-2020  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -19,14 +19,6 @@ using namespace Cpl::TShell::Cmd;
 ////////////////////////////
 Command::Command( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* verb ) noexcept
 	:m_mapKey( verb )
-{
-	commandList.insert( *this );
-}
-
-
-Command::Command( Cpl::Container::Map<Cpl::TShell::Command>& commandList, const char* verb, const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) noexcept
-	:Cpl::TShell::Command( ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance )
-	, m_mapKey( verb )
 {
 	commandList.insert( *this );
 }

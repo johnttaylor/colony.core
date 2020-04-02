@@ -1,13 +1,8 @@
 # Unit under test
-src/Cpl/Itc
+#src/Cpl/Itc
 
 # tests
 src/Cpl/Itc/_0test
-
-# supporting infrastructure
-src/Cpl/Container
-src/Cpl/Text
-src/Cpl/System
 
 
 # Platforms

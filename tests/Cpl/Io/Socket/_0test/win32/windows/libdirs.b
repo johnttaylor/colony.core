@@ -5,12 +5,6 @@ src/Cpl/Io/Socket/Win32
 # tests
 src/Cpl/Io/Socket/_0test
 
-# supporting infrastructure
-src/Cpl/System
-src/Cpl/Container
-src/Cpl/Text
-src/Cpl/Itc
-
 
 # Platforms
 src/Cpl/Io/Stdio/_win32

@@ -4,11 +4,12 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2019  John T. Taylor
+* Copyright (c) 2014-2020  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
+#include "colony_config.h"
 #include "Catch/catch.hpp"
 #include "Cpl/Io/Stdio/StdIn.h"
 #include "Cpl/Io/Stdio/StdOut.h"
@@ -85,6 +86,10 @@ TEST_CASE( "basic", "[basic]" )
     bool result = infd.read( myBuffer, sizeof( myBuffer ), bytesRead );
 	CPL_SYSTEM_TRACE_MSG( SECT_, ( "result=%d, bytesRead=%d, myBuffer=[%.*s]", result, bytesRead, bytesRead, myBuffer ) );
 	REQUIRE( result == false );
+
+#ifndef SKIP_AVAILABLE_TEST // Work-around for the Stdio::Ansi implementation not implementing the available() method
+    REQUIRE( infd.available() == false );
+#endif
 
     infd.close();
     REQUIRE( infd.isOpened() == false );

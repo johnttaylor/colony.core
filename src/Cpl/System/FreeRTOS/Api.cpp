@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2019  John T. Taylor
+* Copyright (c) 2014-2020  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -24,6 +24,7 @@ using namespace Cpl::System;
 ///
 static Mutex systemMutex_;
 static Mutex tracingMutex_;
+static Mutex tracingOutputMutex_;
 static Mutex sysList_;
 
 bool cpl_system_thread_freertos_schedulerStarted_ = false;
@@ -85,3 +86,7 @@ Mutex& Locks_::sysLists( void )
     return sysList_;
 }
 
+Mutex& Locks_::tracingOutput( void )
+{
+    return tracingOutputMutex_;
+}

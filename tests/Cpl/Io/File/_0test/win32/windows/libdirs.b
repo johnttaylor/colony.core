@@ -6,11 +6,6 @@ src/Cpl/Io/File/_win32/_api
 # tests
 src/Cpl/Io/File/_0test
 
-# supporting infrastructure
-src/Cpl/System
-src/Cpl/Container
-src/Cpl/Text
-
 
 # Platforms
 src/Cpl/Io/Stdio/_win32

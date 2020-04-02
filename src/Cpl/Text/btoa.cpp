@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2019  John T. Taylor
+* Copyright (c) 2014-2020  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -55,7 +55,7 @@ static const char* convert_( size_t num, char* dstString, size_t maxChars, unsig
 		while ( num != 0 && maxChars > sign )
 		{
 			char remainder = (char) ( num % base );
-			if ( remainder < 9 )
+			if ( remainder <= 9 )
 			{
 				dstString[--maxChars] = remainder + '0';
 			}

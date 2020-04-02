@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2019  John T. Taylor
+* Copyright (c) 2014-2020  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -69,10 +69,6 @@ public:
 protected:
 	/// Constructor
 	Command() {};
-
-	/// Constructor use to create a static instance of a command
-	Command( const char* ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) :Cpl::Container::MapItem( ignoreThisParameter_onlyUsedWhenCreatingAStaticInstance ) {}
-
 
 public:
 	/// Virtual destructor

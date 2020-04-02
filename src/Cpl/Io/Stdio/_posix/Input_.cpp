@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2019  John T. Taylor
+* Copyright (c) 2014-2020  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -13,6 +13,7 @@
 #include "Cpl/System/FatalError.h"
 #include <unistd.h>
 #include <errno.h>
+#include <sys/ioctl.h>
 
 //
 using namespace Cpl::Io::Stdio;
@@ -116,8 +117,15 @@ bool Input_::read( void* buffer, int numBytes, int& bytesRead )
 
 bool Input_::available()
 {
-    // CURRENTLY NOT SUPPORTED -->RETURN TRUE (as per documentation/contract) WHEN OPENED
-    return m_inFd.m_fd != -1;
+    // Trap that the stream has been CLOSED!
+    if (m_inFd.m_fd == -1)
+    {
+        return false;
+    }
+
+    int nbytes;
+    ioctl( m_inFd.m_fd, FIONREAD, &nbytes );
+    return nbytes > 0 ;
 }
 
 bool Input_::isEos( void )

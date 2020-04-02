@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2019  John T. Taylor
+* Copyright (c) 2014-2020  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -79,7 +79,8 @@ public:
     {
     public:
         /// Generic callback for the readModifyWrite() operation
-        virtual RmwCallbackResult_T genericCallback( void* data, int8_t validState ) noexcept = 0;
+        virtual RmwCallbackResult_T genericCallback( void*  data, 
+                                                     int8_t validState ) noexcept = 0;
 
     public:
         /// Virtual destructor
@@ -149,7 +150,8 @@ public:
               the new lock state is applied
 
      */
-    virtual uint16_t setInvalidState( int8_t newInvalidState, LockRequest_T lockRequest = eNO_REQUEST ) noexcept = 0;
+    virtual uint16_t setInvalidState( int8_t        newInvalidState, 
+                                      LockRequest_T lockRequest = eNO_REQUEST ) noexcept = 0;
 
     /// Returns the Model Point's actual Valid/Invalid state value
     virtual int8_t getValidState( void ) const noexcept = 0;
@@ -197,7 +199,10 @@ public:
 
         \endcode
      */
-    virtual bool toJSON( char* dst, size_t dstSize, bool& truncated, bool verbose=true ) noexcept = 0;
+    virtual bool toJSON( char*  dst, 
+                         size_t dstSize, 
+                         bool&  truncated, 
+                         bool   verbose=true ) noexcept = 0;
 
 
     /** This method returns a string identifier for the Model Point's data type.
@@ -255,7 +260,10 @@ public:
         The method optionally return the Model Point's sequence number at the
         time of the export.
      */
-    virtual size_t exportData( void* dstDataStream, size_t maxDstLength, uint16_t* retSequenceNumber=0, bool includeLockedState = false ) const noexcept = 0;
+    virtual size_t exportData( void*     dstDataStream, 
+                               size_t    maxDstLength, 
+                               uint16_t* retSequenceNumber=0, 
+                               bool      includeLockedState = false ) const noexcept = 0;
 
     /** This method is used to populate the Model Point's data content from the
         a raw data stream/pointer.  It is the responsibility of the caller to
@@ -276,7 +284,10 @@ public:
 
         The method ALWAYS triggers a change notification(s) for the Model Point
      */
-    virtual size_t importData( const void* srcDataStream, size_t srcLength, uint16_t* retSequenceNumber=0, bool includeLockedState = false ) noexcept = 0;
+    virtual size_t importData( const void* srcDataStream, 
+                               size_t      srcLength, 
+                               uint16_t*   retSequenceNumber=0, 
+                               bool        includeLockedState = false ) noexcept = 0;
 
     /** Returns the size, in bytes, of the element's data content.
 
@@ -329,7 +340,9 @@ protected:
            when coping the data from 'srcData'
         3)
      */
-    virtual uint16_t write( const void* srcData, size_t srcSize, LockRequest_T lockRequest = eNO_REQUEST ) noexcept = 0;
+    virtual uint16_t write( const void*   srcData, 
+                            size_t        srcSize, 
+                            LockRequest_T lockRequest = eNO_REQUEST ) noexcept = 0;
 
     /** This method is used to perform a Read-Modify-Write operation on the
         Model Point's data.  The method returns the Model Point's sequence
@@ -360,7 +373,8 @@ protected:
               specific read, write, read-modify-write methods in addition or in
               lieu of the read/write methods in this interface.
      */
-    virtual uint16_t readModifyWrite( GenericRmwCallback& callbackClient, LockRequest_T lockRequest = eNO_REQUEST ) = 0;
+    virtual uint16_t readModifyWrite( GenericRmwCallback& callbackClient, 
+                                      LockRequest_T       lockRequest = eNO_REQUEST ) = 0;
 
 
 protected:
@@ -402,7 +416,8 @@ protected:
               subscribers will have received change notification for the Model
               Point's current value.
      */
-    virtual void attach( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept = 0;
+    virtual void attach( SubscriberApi& observer, 
+                         uint16_t       initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept = 0;
 
     /** This method is used to detach a Subscriber to a Model Point.  See the
         attach() method for more details about the Subscription/Change
@@ -435,7 +450,8 @@ public:
 
         This method is Thread Safe
      */
-    virtual void processSubscriptionEvent_( SubscriberApi& subscriber, Event_T event ) noexcept =0;
+    virtual void processSubscriptionEvent_( SubscriberApi& subscriber, 
+                                            Event_T        event ) noexcept =0;
 
 
 public:
@@ -522,7 +538,10 @@ public:
 
         See Cpl::Dm::ModelDatabaseApi::fromJSON() method for JSON format.
      */
-    virtual bool fromJSON_( JsonVariant& src, LockRequest_T lockRequest, uint16_t& retSequenceNumber, Cpl::Text::String* errorMsg ) noexcept = 0;
+    virtual bool fromJSON_( JsonVariant&       src, 
+                            LockRequest_T      lockRequest, 
+                            uint16_t&          retSequenceNumber, 
+                            Cpl::Text::String* errorMsg ) noexcept = 0;
 
 
 public:
@@ -543,7 +562,8 @@ class ModelPointRmwCallback : public ModelPoint::GenericRmwCallback
 {
 public:
     /// Type safe change read-modify-write function.  See Cpl::Dm::ModelPoint
-    virtual ModelPoint::RmwCallbackResult_T callback( DATA& data, int8_t validState ) noexcept = 0;
+    virtual ModelPoint::RmwCallbackResult_T callback( DATA&  data, 
+                                                      int8_t validState ) noexcept = 0;
 
 public:
     /// Constructor
@@ -551,7 +571,8 @@ public:
 
 public:
     /// See Cpl::Dm::ModelPoint
-    ModelPoint::RmwCallbackResult_T genericCallback( void* data, int8_t validState ) noexcept { return callback( *( ( DATA*) data ), validState ); }
+    ModelPoint::RmwCallbackResult_T genericCallback( void*  data, 
+                                                     int8_t validState ) noexcept { return callback( *( ( DATA*) data ), validState ); }
 };
 
 
