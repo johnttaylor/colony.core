@@ -23,8 +23,8 @@ namespace Record {
 /** This symbol defines the maximum size, in bytes, of record name.  Note: the
     length does NOT include a null terminator.
  */
-#ifndef OPTION_CPL_RTE_PERSISTENCE_RECORD_MAX_RECORD_NAME_LEN
-#define OPTION_CPL_RTE_PERSISTENCE_RECORD_MAX_RECORD_NAME_LEN   31
+#ifndef OPTION_CPL_DM_PERSISTENCE_RECORD_MAX_RECORD_NAME_LEN
+#define OPTION_CPL_DM_PERSISTENCE_RECORD_MAX_RECORD_NAME_LEN   31
 #endif
 
 /** This class defines the interface for the Application to interact with a

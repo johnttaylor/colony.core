@@ -153,7 +153,7 @@ public:
         , m_masterThread( masterThread )
         , m_pendingOpenMsgPtr( 0 )
         , m_lastSeqNumber( ModelPoint::SEQUENCE_NUMBER_UNKNOWN )
-        , m_lastValidState( OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+        , m_lastValidState( OPTION_CPL_DM_MODEL_POINT_STATE_INVALID )
         , m_done( false )
         , m_notifCount( 0 )
     {

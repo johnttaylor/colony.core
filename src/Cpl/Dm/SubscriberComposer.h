@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_SubscriberComposer_h_
-#define Cpl_Rte_SubscriberComposer_h_
+#ifndef Cpl_Dn_SubscriberComposer_h_
+#define Cpl_Dn_SubscriberComposer_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license

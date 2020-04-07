@@ -59,7 +59,7 @@ protected:
 public:
 	/// Constructor: Invalid MP
 	BasicArray( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo, size_t numElements )
-		:ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+		:ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_DM_MODEL_POINT_STATE_INVALID )
 		, m_data( { new( std::nothrow ) ELEMTYPE[numElements], numElements, 0 } )
 	{
 		// Throw a fatal error if global parse buffer is too small

@@ -68,7 +68,7 @@ uint16_t ModelPointCommon_::setInvalidState( int8_t newInvalidState, LockRequest
 	// Force a 'valid Invalid State value
 	if ( newInvalidState <= 0 )
 	{
-		newInvalidState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID;
+		newInvalidState = OPTION_CPL_DM_MODEL_POINT_STATE_INVALID;
 	}
 
 	m_modelDatabase.lock_();
@@ -151,7 +151,7 @@ void ModelPointCommon_::processRmwCallbackResult( RmwCallbackResult_T result ) n
 		{
 			if ( IS_VALID( m_validState ) )
 			{
-				m_validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID;
+				m_validState = OPTION_CPL_DM_MODEL_POINT_STATE_INVALID;
 				processChangeNotifications();
 			}
 		}

@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_ModelPointBase_h_
-#define Cpl_Rte_ModelPointBase_h_
+#ifndef Cpl_Dm_ModelPointBase_h_
+#define Cpl_Dm_ModelPointBase_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -55,7 +55,7 @@ protected:
 
 protected:
     /// Constructor
-    ModelPointCommon_( ModelDatabase& myModelBase, void* myDataPtr, StaticInfo& staticInfo, int8_t validState = OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
+    ModelPointCommon_( ModelDatabase& myModelBase, void* myDataPtr, StaticInfo& staticInfo, int8_t validState = OPTION_CPL_DM_MODEL_POINT_STATE_INVALID );
 
 public:
     /// See Cpl::Dm::ModelPoint

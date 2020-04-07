@@ -66,7 +66,7 @@ public:
         , m_observerMp1( myMbox, *this, &Viewer::mp1_changed )
         , m_lastSeqNumber( ModelPoint::SEQUENCE_NUMBER_UNKNOWN )
         , m_lastValue( 0 )
-        , m_lastValidState( OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+        , m_lastValidState( OPTION_CPL_DM_MODEL_POINT_STATE_INVALID )
         , m_done( false )
     {
         CPL_SYSTEM_TRACE_MSG( SECT_, ("VIEWER(%p). mp1=%s, endVal=%lu", this, mp1.getName(), mpEndValue1) );

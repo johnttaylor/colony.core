@@ -53,7 +53,7 @@ protected:
 public:
 	/// Constructor. 
 	Enum( Cpl::Dm::ModelDatabase& myModelBase, StaticInfo& staticInfo )
-		:ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+		:ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_DM_MODEL_POINT_STATE_INVALID )
 		, m_data( BETTERENUM_TYPE::_values()[0] )
 	{
 	}

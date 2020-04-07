@@ -61,7 +61,7 @@ void Server::modelPointChanged( Cpl::Dm::Mp::String& modelPointThatChanged ) noe
 {
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::modelPointChanged") );
 
-    Cpl::Text::FString<OPTION_CPL_RTE_PERSISTENCE_RECORD_MAX_RECORD_NAME_LEN> name;
+    Cpl::Text::FString<OPTION_CPL_DM_PERSISTENCE_RECORD_MAX_RECORD_NAME_LEN> name;
     if ( Cpl::Dm::ModelPoint::IS_VALID( modelPointThatChanged.read( name ) ) )
     {
         // Default ALL records

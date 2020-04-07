@@ -23,7 +23,7 @@
    - Three client threads, one contains viewers, the other two contain writers
    - One master thread (which the main thread)
 */
-// Create my RTE mailboxes
+// Create my Data Model mailboxes
 static MailboxServer     t1Mbox_;
 static MailboxServer     t2Mbox_;
 static MailboxServer     t3Mbox_;

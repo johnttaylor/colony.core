@@ -46,7 +46,7 @@ protected:
 public:
 	/// Constructor: Invalid MP
 	Basic( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo )
-		:Cpl::Dm::ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+		:Cpl::Dm::ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_DM_MODEL_POINT_STATE_INVALID )
 	{
 	}
 

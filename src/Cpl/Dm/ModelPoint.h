@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Model_Point_h_
-#define Cpl_Rte_Model_Point_h_
+#ifndef Cpl_Dm_Model_Point_h_
+#define Cpl_Dm_Model_Point_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -29,8 +29,8 @@
     i.e. between 1 and 127.  Zero and negative values ARE Reserved by the RTE
     Engine.
  */
-#ifndef OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID
-#define OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID            1
+#ifndef OPTION_CPL_DM_MODEL_POINT_STATE_INVALID
+#define OPTION_CPL_DM_MODEL_POINT_STATE_INVALID            1
 #endif
 
 
@@ -129,11 +129,12 @@ public:
     /** This method sets the invalid state of the Model Point. Any value
         greater zero indicates represent 'invalid'. If a zero or negative
         values is specified, the method will treat the value as
-        'OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID'.
+        'OPTION_CPL_DM_MODEL_POINT_STATE_INVALID'.
 
         The application is free define/apply its own meaning to the set of
         'invalid-values'.  The value MUST be greater than zero, i.e. between
-        1 and 127.  Zero and negative values ARE Reserved by the RTE Engine.
+        1 and 127.  Zero and negative values ARE Reserved by the Data Model 
+        Engine.
 
         The method returns the Model Point's sequence number after updating
         the valid state.
@@ -162,7 +163,7 @@ public:
     /** This method is used to mark the element's data as invalid.  Note: See
         setInvalidState() for details about the lockRequest.
      */
-    inline uint16_t setInvalid( LockRequest_T lockRequest = eNO_REQUEST ) noexcept { return setInvalidState( OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, lockRequest ); }
+    inline uint16_t setInvalid( LockRequest_T lockRequest = eNO_REQUEST ) noexcept { return setInvalidState( OPTION_CPL_DM_MODEL_POINT_STATE_INVALID, lockRequest ); }
 
     /** Short-hand method to improve readability for testing the a return invalid
         state for 'valid'
@@ -401,8 +402,8 @@ protected:
         Subscriber will get an 'immediate' change notification.
 
         The callbacks for the Change Notifications are called as part of the
-        RTE's Mailbox server.  As part of the asynchronous processing (timers,
-        ITC, EventFlags, etc.) of the RTE Mailbox server will also process
+        Data Model's Mailbox server.  As part of the asynchronous processing (timers,
+        ITC, EventFlags, etc.) of the Data Model Mailbox server will also process
         all pending Change Notification and invoke the call backs.  What does
         that all mean?  The Change notifications are "local" to the Subscriber's
         thread very similar to how the Cpl::Timers work.  It also means that

@@ -25,7 +25,7 @@ namespace Persistence {
 namespace Chunk {
 
 
-/** This concrete server implements the Chunk Layer of the RTE Persistent
+/** This concrete server implements the Chunk Layer of the Data Model Persistent
     storage sub-system. The server is intended to run in its own thread -
     separated from the Record layer.  Note: multiple instances of this server
     can share a single thread

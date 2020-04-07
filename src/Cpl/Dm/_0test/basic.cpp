@@ -114,7 +114,7 @@ TEST_CASE( "invalid", "[invalid]" )
     validState = mp_apple_.getValidState();
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( validState != ModelPoint::MODEL_POINT_STATE_VALID );
-    REQUIRE( validState == OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
+    REQUIRE( validState == OPTION_CPL_DM_MODEL_POINT_STATE_INVALID );
     REQUIRE( ModelPoint::IS_VALID( validState ) == false );
 
     mp_apple_.write( 0 );
@@ -127,7 +127,7 @@ TEST_CASE( "invalid", "[invalid]" )
     validState = mp_apple_.getValidState();
     REQUIRE( mp_apple_.isNotValid() == true );
     REQUIRE( validState != ModelPoint::MODEL_POINT_STATE_VALID );
-    REQUIRE( validState == OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID );
+    REQUIRE( validState == OPTION_CPL_DM_MODEL_POINT_STATE_INVALID );
     REQUIRE( ModelPoint::IS_VALID( validState ) == false );
 
     // NOTE: Test must leave the model point in the invalid state
