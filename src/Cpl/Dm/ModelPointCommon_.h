@@ -35,13 +35,13 @@ protected:
     Cpl::Container::DList<SubscriberApi>    m_subscribers;
 
     /// Pointer to the Model Point's static information
-    const StaticInfo&                       m_staticInfo;
+    const StaticInfo& m_staticInfo;
 
     /// Reference to the containing Model Base
-    ModelDatabase&                          m_modelDatabase;
+    ModelDatabase& m_modelDatabase;
 
     /// Reference to my Data
-    void*                                   m_dataPtr;
+    void* m_dataPtr;
 
     /// Sequence number used for tracking changes in the Point data
     uint16_t                                m_seqNum;
@@ -88,6 +88,11 @@ public:
     /// See Cpl::Dm::ModelPoint.  Note: The implementation does NOT account for Endianess, i.e. assumes the 'platform' is the same for export/import
     size_t importData( const void* srcDataStream, size_t srcLength, uint16_t* retSequenceNumber = 0, bool includeLockedState = false ) noexcept;
 
+    /// See Cpl::Dm::ModelPoint
+    void genericAttach( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
+
+    /// See Cpl::Dm::ModelPoint
+    void genericDetach( SubscriberApi& observer ) noexcept;
 
 protected:
     /// See Cpl::Dm::ModelPoint

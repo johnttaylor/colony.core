@@ -377,4 +377,137 @@ public:
     }
 };
 
+/////////////////////////////////////////////////////////////////
+class GenericViewer : public Cpl::Itc::CloseSync
+{
+public:
+    ///
+    volatile bool                       m_opened;
+    ///
+    Cpl::System::Thread&                m_masterThread;
+    ///
+    Cpl::Itc::OpenRequest::OpenMsg*     m_pendingOpenMsgPtr;
+    ///
+    ModelPoint&                         m_mp1;
+    ///
+    ModelPoint&                         m_mp2;
+    ///
+    ModelPoint&                         m_mp3;
+    ///
+    uint32_t                            m_mpNotificationCount;
+    ///
+    uint32_t                            m_mpEndValue;
+    ///
+    SubscriberComposer<GenericViewer, ModelPoint> m_observerMp1;
+    ///
+    SubscriberComposer<GenericViewer, ModelPoint> m_observerMp2;
+    ///
+    SubscriberComposer<GenericViewer, ModelPoint> m_observerMp3;
+    ///
+    uint16_t                            m_lastSeqNumber;
+    ///
+    uint32_t                            m_lastValue;
+    ///
+    int8_t                              m_lastValidState;
+    ///
+    bool                                m_done;
+
+    /// Constructor
+    GenericViewer( MailboxServer& myMbox, Cpl::System::Thread& masterThread, ModelPoint& mp1, ModelPoint& mp2, ModelPoint& mp3, uint32_t mpEndValue3 )
+        :Cpl::Itc::CloseSync( myMbox )
+        , m_opened( false )
+        , m_masterThread( masterThread )
+        , m_pendingOpenMsgPtr( 0 )
+        , m_mp1( mp1 )
+        , m_mp2( mp2 )
+        , m_mp3( mp3 )
+        , m_mpNotificationCount( 0 )
+        , m_mpEndValue( mpEndValue3 )
+        , m_observerMp1( myMbox, *this, &GenericViewer::mpChanged )
+        , m_observerMp2( myMbox, *this, &GenericViewer::mpChanged )
+        , m_observerMp3( myMbox, *this, &GenericViewer::mpChanged )
+        , m_lastSeqNumber( ModelPoint::SEQUENCE_NUMBER_UNKNOWN )
+        , m_lastValidState( OPTION_CPL_DM_MODEL_POINT_STATE_INVALID )
+        , m_done( false )
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "GENERIC VIEWER(%p). mp1=%s, endVal3=%lu", this, mp1.getName(), mpEndValue3 ) );
+    }
+
+public:
+    ///
+    void request( Cpl::Itc::OpenRequest::OpenMsg& msg )
+    {
+        if ( m_opened )
+        {
+            FAIL( "OPENING Generic Viewer more than ONCE" );
+        }
+
+        m_pendingOpenMsgPtr   = &msg;
+        m_mpNotificationCount = 0;
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "GENERIC SUBSCRIBING (%p) for Change notification. current value =%u", this, m_mpNotificationCount ) );
+
+        // Subscribe to my model point
+        m_mp1.genericAttach( m_observerMp1 );
+        m_mp2.genericAttach( m_observerMp2 );
+        m_mp3.genericAttach( m_observerMp3 );
+
+        // Note: The open message will be returned once all the model point receives its initial callback
+    }
+
+    ///
+    void request( Cpl::Itc::CloseRequest::CloseMsg& msg )
+    {
+        if ( !m_opened )
+        {
+            FAIL( "CLOSING GENERIC Viewer more than ONCE" );
+        }
+
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "GENERIC VIEWER(%p): Closing... ", this ) );
+
+        // Un-subscribe to my model point
+        m_mp1.genericDetach( m_observerMp1 );
+        m_mp2.genericDetach( m_observerMp2 );
+        m_mp3.genericDetach( m_observerMp3 );
+        m_opened = false;
+        msg.returnToSender();
+    }
+
+
+public:
+    void mpChanged( ModelPoint& modelPointThatChanged ) noexcept
+    {
+        uint32_t prevValue  = m_lastValue;
+        int8_t   prevState  = m_lastValidState;
+        uint16_t prevSeqNum = m_lastSeqNumber;
+
+        m_mpNotificationCount++;
+        m_lastValidState = modelPointThatChanged.getValidState();
+        m_lastSeqNumber  = m_observerMp1.getSequenceNumber_();
+
+        if ( m_pendingOpenMsgPtr != 0 && m_mpNotificationCount == 3 )
+        {
+            m_pendingOpenMsgPtr->returnToSender();
+            m_opened            = true;
+            m_pendingOpenMsgPtr = 0;
+        }
+
+        if ( ModelPoint::IS_VALID( m_lastValidState ) && m_mpNotificationCount >= m_mpEndValue )
+        {
+            if ( m_done )
+            {
+                CPL_SYSTEM_TRACE_MSG( SECT_, ( "Generic Viewer::mpChanged(%p): Received Change notification after signaling the master thread, may or may not be an error. Prev: value=%lu, state=%d, seqNum=%u.  Rcvd: state=%d, seqNum=%u.  read_seq_num=%u, notifyCount=%d", this, prevValue, prevState, prevSeqNum, m_lastValidState, m_lastSeqNumber, m_mpNotificationCount ) );
+            }
+            else
+            {
+                CPL_SYSTEM_TRACE_MSG( SECT_, ( "GenericViewer::mp1Changed(%p): Signaling master thread", this ) );
+                m_mp1.genericDetach( m_observerMp1 );
+                m_mp2.genericDetach( m_observerMp2 );
+                m_mp3.genericDetach( m_observerMp3 );
+                m_masterThread.signal();
+                m_done = true;
+            }
+        }
+    }
+};
+
 #endif

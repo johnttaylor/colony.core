@@ -119,6 +119,16 @@ void Server::request( Cpl::Itc::OpenRequest::OpenMsg& msg )
     m_openCount  = m_totalRecordCount;
     m_closeCount = m_totalRecordCount;
 
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Server::request::OpenMsg - record count=%d", m_totalRecordCount ) );
+
+    // Do NOTHING if I don't have registered records
+    if ( m_openCount == 0 )
+    {
+        m_openMsgPtr  = 0;
+        msg.returnToSender();
+        return;
+    }
+
     // Start all registered records (MUST be done AFTER I have obtained my total record count) 
     recordPtr = m_records.first();
     while ( recordPtr )
@@ -127,7 +137,6 @@ void Server::request( Cpl::Itc::OpenRequest::OpenMsg& msg )
         recordPtr = m_records.next( *recordPtr );
     }
 
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("Server::request::OpenMsg - record count=%d", m_totalRecordCount) );
 
 
     // Start the Record Handler

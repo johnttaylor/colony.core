@@ -344,6 +344,17 @@ void ModelPointCommon_::detach( SubscriberApi& observer ) noexcept
 	m_modelDatabase.unlock_();
 }
 
+void ModelPointCommon_::genericAttach( SubscriberApi& observer, uint16_t initialSeqNumber) noexcept
+{
+    attach( observer, initialSeqNumber );
+}
+
+void ModelPointCommon_::genericDetach( SubscriberApi& observer ) noexcept
+{
+    detach( observer );
+}
+
+
 /////////////////
 void ModelPointCommon_::processSubscriptionEvent_( SubscriberApi& subscriber, Event_T event ) noexcept
 {
