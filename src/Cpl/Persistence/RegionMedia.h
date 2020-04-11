@@ -68,6 +68,14 @@ public:
 
 
 public:
+    /// Returns the Region's starting address
+    virtual size_t getStartAddress() const { return m_startAddress; };
+
+    /// Returns the Region's length in bytes
+    virtual size_t getRegionLength() const { return m_regionLength; };
+
+
+public:
     /// Virtual destructor
     virtual ~RegionMedia() {}
 

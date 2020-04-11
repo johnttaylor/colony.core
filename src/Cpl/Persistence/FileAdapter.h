@@ -28,11 +28,9 @@ namespace Persistence {
 class FileAdapter : public RegionMedia
 {
 public:
-    /** Constructor.  Note: The default region parameter are set to zero because
-        are not used by the FileAdapter - but place holders are provided to full
-        support the semantics of the RegionMedia interface
+    /** Constructor.  
      */
-    FileAdapter( const char* fileName, size_t regionStartAddress = 0, size_t regionLen = 0 ) noexcept;
+    FileAdapter( const char* fileName, size_t regionStartAddress, size_t regionLen ) noexcept;
 
 public:
     /// See Cpl::Persistence::RegionMedia

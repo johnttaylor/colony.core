@@ -32,7 +32,7 @@ from nqbplib.my_globals import NQBP_WORK_ROOT
 FINAL_OUTPUT_NAME = 'a.exe'
 
 # Link unittest directory by object module so that Catch's self-registration mechanism 'works'
-unit_test_objects = '_BUILT_DIR_.src/Cpl/Dm/_0test'
+unit_test_objects = '_BUILT_DIR_.src/Cpl/Persistence/_0test'
 
 #
 # For build config/variant: "Release"
@@ -158,5 +158,5 @@ from nqbplib.toolchains.windows.mingw_w64.console_exe import ToolChain
 
 # Function that instantiates an instance of the toolchain
 def create():
-    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "win64" )
+    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "win32" )
     return tc 

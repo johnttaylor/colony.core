@@ -1,5 +1,6 @@
 # Platforms
 src/Cpl/Io/File/_win32
+src/Cpl/Io/File/_win32/_api
 src/Cpl/Io/Stdio/_win32
 [cpp11] /top/libdirs/platform_cpp11_default_for_test_libdirs.b
 [cpp11] /top/libdirs/platform_cpp11_default_realtime_libdirs.b

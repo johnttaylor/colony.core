@@ -35,6 +35,8 @@ MirroredChunk::MirroredChunk( RegionMedia& regionA, RegionMedia& regionB )
 
 void MirroredChunk::start( Cpl::Itc::PostApi& myMbox ) noexcept
 {
+    CPL_SYSTEM_ASSERT( m_regionA.getRegionLength() == m_regionB.getRegionLength() );
+
     m_regionA.start( myMbox );
     m_regionB.start( myMbox );
     m_transId       = 0;
@@ -63,6 +65,7 @@ bool MirroredChunk::loadData( Payload& dstHandler ) noexcept
     {
         m_currentRegion = &m_regionA;
         m_transId       = 0;
+        m_dataLen       = m_currentRegion->getRegionLength();
         return false;
     }
 
@@ -88,6 +91,7 @@ bool MirroredChunk::loadData( Payload& dstHandler ) noexcept
         m_dataLen       = dataLenB;
     }
 
+    CPL_SYSTEM_ASSERT( m_dataLen > m_currentRegion->getRegionLength() );
     return true;
 }
 
@@ -133,29 +137,44 @@ uint64_t MirroredChunk::getTransactionId( RegionMedia& region, size_t& dataLen )
 {
     Cpl::Checksum::Crc32EthernetFast crc;
     crc.reset();
+    uint64_t result  = 0;
     uint64_t transId = 0;
     size_t   offset  = 0;
 
     // Read the Transaction ID
-    region.read( offset, &transId, sizeof( transId ) );
-    crc.accumulate( &transId, sizeof( transId ) );
-    offset += sizeof( transId );
-
-    // Read the data length
-    region.read( offset, &dataLen, sizeof( dataLen ) );
-    crc.accumulate( &dataLen, sizeof( dataLen ) );
-    offset += sizeof( dataLen );
-    
-    // Read data AND the CRC bytes
-    dataLen += CRC_SIZE;
-    while ( dataLen )
+    if ( region.read( offset, &transId, sizeof( transId ) ) == sizeof( transId ) )
     {
-        size_t bytesRead = region.read( offset, g_workBuffer_, sizeof( g_workBuffer_ ) );
-        crc.accumulate( g_workBuffer_, bytesRead );
-        offset  += bytesRead;
-        dataLen -= bytesRead;
+        crc.accumulate( &transId, sizeof( transId ) );
+        offset += sizeof( transId );
+
+        // Read the data length
+        if ( region.read( offset, &dataLen, sizeof( dataLen ) ) == sizeof( dataLen ) )
+        {
+            crc.accumulate( &dataLen, sizeof( dataLen ) );
+            offset += sizeof( dataLen );
+
+            // Read data AND the CRC bytes
+            size_t dataRemaining = dataLen + CRC_SIZE;
+            while ( dataRemaining )
+            {
+                size_t bytesRead = region.read( offset, g_workBuffer_, sizeof( g_workBuffer_ ) );
+                if ( bytesRead == 0 )
+                {
+                    break;
+                }
+                crc.accumulate( g_workBuffer_, bytesRead );
+                offset        += bytesRead;
+                dataRemaining -= bytesRead;
+            }
+
+            // Check the CRC
+            if ( crc.isOkay() )
+            {
+                result = transId;
+            }
+        }
     }
 
     // Return the result.  A value of ZERO indicates bad CRC
-    return crc.isOkay() ? transId : 0;
+    return result;
 }

@@ -1,4 +1,3 @@
-#if 0
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -14,465 +13,140 @@
 #include "Cpl/System/_testsupport/Shutdown_TS.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/System/Thread.h"
+#include "Cpl/System/Assert.h"
 #include "Cpl/System/Api.h"
-#include "Cpl/Text/FString.h"
-#include "Cpl/Text/DString.h"
-#include "Cpl/Dm/ModelDatabase.h"
-#include "common.h"
-#include <string.h>
+#include "Cpl/Persistence/MirroredChunk.h"
+#include "Cpl/Persistence/FileAdapter.h"
+#include "Cpl/Io/File/Api.h"
+#include <memory.h>
 
+#define SECT_   "_0test"
 
-#define STRCMP(s1,s2)  (strcmp(s1,s2)==0)
+using namespace Cpl::Persistence;
 
-////////////////////////////////////////////////////////////////////////////////
-
-// Allocate/create my Model Database
-static ModelDatabase    modelDb_( "ignoreThisParameter_usedToInvokeTheStaticConstructor" );
-
-// Allocate my Model Points
-static Cpl::Dm::StaticInfo                  info_mp_apple_( "APPLE" );
-static Persistence::Record::MpServerStatus  mp_apple_( modelDb_, info_mp_apple_ );
-
-static Cpl::Dm::StaticInfo                  info_mp_orange_( "ORANGE" );
-static Persistence::Record::MpServerStatus  mp_orange_( modelDb_, info_mp_orange_, Persistence::Record::ServerStatus::eRUNNING_MINOR_UPGRADE );
-
-
-////////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "serverstatus-readwrite", "[serverstatus-readwrite]" )
+class MyUut : public MirroredChunk
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "SERVERSTATUS-READWRITE test" );
-    Cpl::System::Shutdown_TS::clearAndUseCounter();
+public:
+    int m_startCount;
+    int m_stopCount;
 
-    // Read
-    Persistence::Record::ServerStatus value = Persistence::Record::ServerStatus::eRUNNING;
-    uint16_t seqNum;
-    int8_t valid = mp_orange_.read( value, &seqNum );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("read:orange:= [%s])", value._to_string()) );
-    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-    REQUIRE( value == +Persistence::Record::ServerStatus::eRUNNING_MINOR_UPGRADE );
-    valid = mp_apple_.read( value, &seqNum );
-    REQUIRE( ModelPoint::IS_VALID( valid ) == false );
+    MyUut( RegionMedia& r1, RegionMedia& r2 ) : MirroredChunk( r1, r2 ), m_startCount( 0 ), m_stopCount( 0 )
+    {
+    }
 
-    // Write
-    uint16_t seqNum2 = mp_apple_.write( Persistence::Record::ServerStatus::eOPENING );
-    valid = mp_apple_.read( value );
-    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("write:apple:= [%s])", value._to_string()) );
-    REQUIRE( value == +Persistence::Record::ServerStatus::eOPENING );
-    REQUIRE( seqNum + 1 == seqNum2 );
+    void start( Cpl::Itc::PostApi& myMbox ) noexcept
+    {
+        MirroredChunk::start( myMbox );
+        m_startCount++;
+    }
 
-    // Read-Modify-Write with Lock
-    RmwServerStatus callbackClient;
-    callbackClient.m_callbackCount  = 0;
-    callbackClient.m_incValue       = 1;
-    callbackClient.m_returnResult   = ModelPoint::eCHANGED;
-    mp_apple_.readModifyWrite( callbackClient, ModelPoint::eLOCK );
-    valid = mp_apple_.read( value );
-    REQUIRE( mp_apple_.isNotValid() == false );
-    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-    bool locked = mp_apple_.isLocked();
-    REQUIRE( locked == true );
-    REQUIRE( value == +Persistence::Record::ServerStatus::eRUNNING );
-    REQUIRE( callbackClient.m_callbackCount == 1 );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("rmw:apple:= [%s])", value._to_string()) );
+    /// See Cpl::Persistence::Chunk
+    void stop() noexcept
+    {
+        MirroredChunk::stop();
+        m_stopCount++; 
+    }
+};
 
-    // Invalidate with Unlock
-    mp_apple_.setInvalidState( 112, ModelPoint::eUNLOCK );
-    REQUIRE( mp_apple_.isNotValid() == true );
-    valid = mp_apple_.getValidState();
-    REQUIRE( ModelPoint::IS_VALID( valid ) == false );
-    REQUIRE( valid == 112 );
-}
+class MyPayload : public Payload
+{
+public:
+    char m_buffer[1024];
+    int  m_getCount;
+    int  m_putCount;
+    const char* m_getString;
+
+    MyPayload( const char* getString ) :m_getCount( 0 ), m_putCount( 0 ), m_getString( getString )
+    {
+    }
+
+    size_t getData( void* dst, size_t maxDstLen ) noexcept
+    {
+        size_t len = strlen( m_getString ) + 1;
+        CPL_SYSTEM_ASSERT( maxDstLen >= len );
+        m_getCount++;
+
+        memcpy( dst, m_getString, len );
+        return len;
+    }
+
+    void putData( const void* src, size_t srcLen ) noexcept
+    {
+        CPL_SYSTEM_ASSERT( srcLen <= sizeof( m_buffer ) );
+        m_putCount++;
+        memcpy( m_buffer, src, srcLen );
+    };
+};
+
+class MyMockPostApi : public Cpl::Itc::PostApi
+{
+public:
+    MyMockPostApi() {}
+
+    void post( Cpl::Itc::Message& msg ) noexcept {}
+    void postSync( Cpl::Itc::Message& msg ) noexcept {}
+};
+
+static MyPayload payload1_( "Hello" );
+static MyPayload payload2_( "World" );
+static MyMockPostApi mockMailbox_;
+
+#define FILE_NAME_REGION1   "region1.nvram"
+#define FILE_NAME_REGION2   "region2.nvram"
 
 ////////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "serverstatus-get", "[serverstatus-get]" )
+TEST_CASE( "MirroredChunk" )
 {
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "SERVERSTATUS-GET test" );
+    CPL_SYSTEM_TRACE_SCOPE( SECT_, "MIRRORED-CHUNK test" );
     Cpl::System::Shutdown_TS::clearAndUseCounter();
+    
+    FileAdapter fd1( FILE_NAME_REGION1, 0, 128 );
+    FileAdapter fd2( FILE_NAME_REGION2, 0, 128 );
+    MyUut uut( fd1, fd2 );
 
-    // Gets...
-    const char* name = mp_apple_.getName();
-    REQUIRE( strcmp( name, "APPLE" ) == 0 );
-    name = mp_orange_.getName();
-    REQUIRE( strcmp( name, "ORANGE" ) == 0 );
+    SECTION( "start/stop" )
+    {
+        REQUIRE( uut.m_startCount == 0 );
+        REQUIRE( uut.m_stopCount == 0 );
+        uut.start( mockMailbox_ );
+        REQUIRE( uut.m_startCount == 1 );
+        REQUIRE( uut.m_stopCount == 0 );
+        uut.stop();
+        REQUIRE( uut.m_startCount == 1 );
+        REQUIRE( uut.m_stopCount == 1 );
+    }
 
-    size_t s = mp_apple_.getSize();
-    REQUIRE( s == sizeof( int ) );
-    s = mp_orange_.getSize();
-    REQUIRE( s == sizeof( int ) );
+    SECTION( "Load/update" )
+    {
+        // Delete files
+        Cpl::Io::File::Api::remove( FILE_NAME_REGION1 );
+        Cpl::Io::File::Api::remove( FILE_NAME_REGION2 );
 
-    s = mp_apple_.getExternalSize();
-    REQUIRE( s == sizeof( int ) + sizeof( int8_t ) );
-    s = mp_orange_.getExternalSize();
-    REQUIRE( s == sizeof( int ) + sizeof( int8_t ) );
+        bool result = uut.loadData( payload1_ );
+        REQUIRE( result == false );
+        REQUIRE( payload1_.m_putCount == 0 );
 
-    const char* mpType = mp_apple_.getTypeAsText();
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s])", mpType) );
-    REQUIRE( strcmp( mpType, "Cpl::Dm::Persistence::Record::ServerStatus" ) == 0 );
+        REQUIRE( payload1_.m_getCount == 0 );
+        uut.updateData( payload1_ );
+        REQUIRE( payload1_.m_getCount == 1 );
 
-    mpType = mp_orange_.getTypeAsText();
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s])", mpType) );
-    REQUIRE( strcmp( mpType, "Cpl::Dm::Persistence::Record::ServerStatus" ) == 0 );
+        result = uut.loadData( payload1_ );
+        REQUIRE( result == true );
+        REQUIRE( payload1_.m_putCount == 1 );
+        REQUIRE( strcmp( payload1_.m_buffer, payload1_.m_getString ) == 0 );
+
+        REQUIRE( payload2_.m_getCount == 0 );
+        uut.updateData( payload2_ );
+        REQUIRE( payload2_.m_getCount == 1 );
+        REQUIRE( payload1_.m_putCount == 1 );
+ 
+        result = uut.loadData( payload2_ );
+        REQUIRE( result == true );
+        REQUIRE( payload2_.m_putCount == 1 );
+        REQUIRE( payload1_.m_putCount == 1 );
+        printf( "buffer=[%s], expected=[%s]\n", payload2_.m_buffer, payload2_.m_getString );
+        REQUIRE( strcmp( payload2_.m_buffer, payload2_.m_getString ) == 0 );
+    }
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
-
-////////////////////////////////////////////////////////////////////////////////
-#define STREAM_BUFFER_SIZE  100
-
-TEST_CASE( "serverstatus-export", "[serverstatus-export]" )
-{
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "SERVERSTATUS-EXPORT test" );
-    Cpl::System::Shutdown_TS::clearAndUseCounter();
-
-    //  Export/Import Buffer
-    uint8_t streamBuffer[STREAM_BUFFER_SIZE];
-    REQUIRE( mp_apple_.getExternalSize() <= STREAM_BUFFER_SIZE );
-
-
-    // Export...
-    REQUIRE( mp_apple_.isNotValid() == true );
-    uint16_t seqNum  = mp_apple_.getSequenceNumber();
-    uint16_t seqNum2 = mp_apple_.getSequenceNumber();
-    size_t b = mp_apple_.exportData( streamBuffer, sizeof( streamBuffer ), &seqNum2 );
-    REQUIRE( b != 0 );
-    REQUIRE( b == mp_apple_.getExternalSize() );
-    REQUIRE( seqNum == seqNum2 );
-
-    // Update the MP
-    seqNum = mp_apple_.write( Persistence::Record::ServerStatus::eUNKNOWN );
-    REQUIRE( seqNum == seqNum2 + 1 );
-    Persistence::Record::ServerStatus   value = Persistence::Record::ServerStatus::eRUNNING;
-    int8_t   valid= mp_apple_.read( value );
-    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-    REQUIRE( mp_apple_.isNotValid() == false );
-    REQUIRE( value == +Persistence::Record::ServerStatus::eUNKNOWN );
-
-    // Import...
-    b = mp_apple_.importData( streamBuffer, sizeof( streamBuffer ), &seqNum2 );
-    REQUIRE( b != 0 );
-    REQUIRE( b == mp_apple_.getExternalSize() );
-    REQUIRE( seqNum + 1 == seqNum2 );
-
-    // Read import value/state
-    valid = mp_apple_.read( value );
-    REQUIRE( mp_apple_.isNotValid() == true );
-    REQUIRE( ModelPoint::IS_VALID( valid ) == false );
-
-    // Update the MP
-    seqNum = mp_apple_.write( Persistence::Record::ServerStatus::eOPENING );
-    REQUIRE( seqNum == seqNum2 + 1 );
-    valid = mp_apple_.read( value );
-    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-    REQUIRE( mp_apple_.isNotValid() == false );
-    REQUIRE( value == +Persistence::Record::ServerStatus::eOPENING );
-
-    // Export...
-    REQUIRE( mp_apple_.isNotValid() == false );
-    b = mp_apple_.exportData( streamBuffer, sizeof( streamBuffer ), &seqNum2 );
-    REQUIRE( b != 0 );
-    REQUIRE( b == mp_apple_.getExternalSize() );
-    REQUIRE( seqNum == seqNum2 );
-
-    // Set and new value AND invalidate the MP
-    mp_apple_.write( Persistence::Record::ServerStatus::eRUNNING );
-    seqNum = mp_apple_.setInvalid();
-    REQUIRE( seqNum == seqNum2 + 2 );
-    REQUIRE( mp_apple_.isNotValid() == true );
-
-    // Import...
-    b = mp_apple_.importData( streamBuffer, sizeof( streamBuffer ), &seqNum2 );
-    REQUIRE( b != 0 );
-    REQUIRE( b == mp_apple_.getExternalSize() );
-    REQUIRE( seqNum + 1 == seqNum2 );
-
-    // Read import value/state
-    valid = mp_apple_.read( value );
-    REQUIRE( mp_apple_.isNotValid() == false );
-    REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-    REQUIRE( value == +Persistence::Record::ServerStatus::eOPENING );
-
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-#define MAX_STR_LENG    1024
-
-TEST_CASE( "serverstatus-toJSON" )
-{
-	CPL_SYSTEM_TRACE_SCOPE( SECT_, "SERVERSTATUS-TOJSON test" );
-	Cpl::System::Shutdown_TS::clearAndUseCounter();
-	char string[MAX_STR_LENG + 1];
-	bool truncated;
-
-
-	SECTION( "Invalid" )
-	{
-		// Invalid (Default value)
-		uint16_t seqnum = mp_apple_.setInvalid();
-		mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "toJSON: [%s])", string ) );
-		REQUIRE( truncated == false );
-
-		StaticJsonDocument<1024> doc;
-		DeserializationError err = deserializeJson( doc, string );
-		REQUIRE( err == DeserializationError::Ok );
-		REQUIRE( STRCMP( doc["name"], "APPLE" ) );
-		REQUIRE( STRCMP( doc["type"], mp_apple_.getTypeAsText() ) );
-		REQUIRE( doc["seqnum"] == seqnum );
-		REQUIRE( doc["locked"] == false );
-		REQUIRE( doc["invalid"] > 0 );
-	}
-
-	SECTION( "Invalid + Locked" )
-	{
-		mp_apple_.applyLock();
-		mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "toJSON: [%s])", string ) );
-
-		StaticJsonDocument<1024> doc;
-		DeserializationError err = deserializeJson( doc, string );
-		REQUIRE( err == DeserializationError::Ok );
-		REQUIRE( doc["locked"] == true );
-		REQUIRE( doc["invalid"] > 0 );
-	}
-
-	SECTION( "Invalid - custom value" )
-	{
-		mp_apple_.removeLock();
-		uint16_t seqnum = mp_apple_.setInvalidState( 100 );
-		mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "toJSON: [%s])", string ) );
-
-		StaticJsonDocument<1024> doc;
-		DeserializationError err = deserializeJson( doc, string );
-		REQUIRE( err == DeserializationError::Ok );
-		REQUIRE( doc["seqnum"] == seqnum );
-		REQUIRE( doc["invalid"] == 100 );
-		REQUIRE( doc["locked"] == false );
-	}
-
-	SECTION( "Invalid - custom value + locked" )
-	{
-		// Invalid (custom value) + Locked
-		mp_apple_.applyLock();
-		mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "toJSON: [%s])", string ) );
-
-		StaticJsonDocument<1024> doc;
-		DeserializationError err = deserializeJson( doc, string );
-		REQUIRE( err == DeserializationError::Ok );
-		REQUIRE( doc["invalid"] == 100 );
-		REQUIRE( doc["locked"] == true );
-	}
-
-	SECTION( "Value" )
-	{
-		uint16_t seqnum = mp_apple_.write( Persistence::Record::ServerStatus::eRUNNING, ModelPoint::eUNLOCK );
-		mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "toJSON: [%s])", string ) );
-
-		StaticJsonDocument<1024> doc;
-		DeserializationError err = deserializeJson( doc, string );
-		REQUIRE( err == DeserializationError::Ok );
-		REQUIRE( doc["seqnum"] == seqnum );
-		REQUIRE( doc["locked"] == false );
-		REQUIRE( doc["invalid"] == 0 );
-		REQUIRE( STRCMP( doc["val"], "eRUNNING" ) );
-	}
-
-	SECTION( "Value + Lock" )
-	{
-		mp_apple_.applyLock();
-		mp_apple_.toJSON( string, MAX_STR_LENG, truncated );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "toJSON: [%s])", string ) );
-
-		StaticJsonDocument<1024> doc;
-		DeserializationError err = deserializeJson( doc, string );
-		REQUIRE( err == DeserializationError::Ok );
-		REQUIRE( doc["locked"] == true );
-		REQUIRE( doc["invalid"] == 0 );
-		REQUIRE( STRCMP( doc["val"], "eRUNNING" ) );
-	}
-
-	REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "enum-fromJSON" )
-{
-	CPL_SYSTEM_TRACE_SCOPE( SECT_, "ENUM-FROMJSON test" );
-	Cpl::System::Shutdown_TS::clearAndUseCounter();
-
-	// Start with MP in the invalid state
-	Cpl::Text::FString<MAX_STR_LENG> string;
-	Cpl::Text::DString               errorMsg( "noerror", 1024 );
-	mp_apple_.removeLock();
-	mp_orange_.removeLock();
-	mp_orange_.setInvalid();
-	uint16_t seqNum = mp_apple_.setInvalid();
-	uint16_t seqNum2;
-	ModelPoint* mp;
-
-	SECTION( "Write value" )
-	{
-		const char* json = "{name:\"APPLE\", val:\"eNO_STORAGE_MEDIA_ERR\"}";
-		bool result = modelDb_.fromJSON( json, &errorMsg, &mp, &seqNum2 );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == true );
-		REQUIRE( seqNum2 == seqNum + 1 );
-		Persistence::Record::ServerStatus value = Persistence::Record::ServerStatus::eUNKNOWN;
-		int8_t   valid = mp_apple_.read( value, &seqNum );
-		REQUIRE( seqNum == seqNum2 );
-		REQUIRE( ModelPoint::IS_VALID( valid ) );
-		REQUIRE( value == +Persistence::Record::ServerStatus::eNO_STORAGE_MEDIA_ERR );
-		REQUIRE( errorMsg == "noerror" );
-		REQUIRE( mp == &mp_apple_ );
-	}
-
-	SECTION( "Write value - error cases" )
-	{
-		const char* json   = "{name:\"APPLE\", val:\"abc\"}";
-		bool        result = modelDb_.fromJSON( json, &errorMsg );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == false );
-
-		errorMsg = "noerror";
-		json     = "{name:\"APPLE\"}";
-		result   = modelDb_.fromJSON( json, &errorMsg );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == false );
-
-		errorMsg = "noerror";
-		json     = "{namex:\"APPLE\"}";
-		result   = modelDb_.fromJSON( json, &errorMsg );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == false );
-
-		errorMsg = "noerror";
-		json     = "{name:\"APPLE\", val:123}";
-		result   = modelDb_.fromJSON( json, &errorMsg );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == false );
-
-		errorMsg = "noerror";
-		json     = "{name:\"APPLE\", val:\"eBIRDS\"}";
-		result   = modelDb_.fromJSON( json, &errorMsg );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == false );
-		REQUIRE( errorMsg != "noerror" );
-
-		errorMsg = "noerror";
-		json     = "{name:\"APPLE\", val:2.2e10}";
-		result   = modelDb_.fromJSON( json, &errorMsg );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg =[%s])", errorMsg.getString() ) );
-		REQUIRE( result == false );
-		REQUIRE( errorMsg != "noerror" );
-
-		errorMsg = "noerror";
-		json     = "{name:\"BOB\", invalid:1}";
-		result   = modelDb_.fromJSON( json, &errorMsg );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == false );
-	}
-
-
-
-	SECTION( "Set Invalid" )
-	{
-		seqNum = mp_apple_.write( Persistence::Record::ServerStatus::eNO_STORAGE_WRONG_SCHEMA );
-		const char* json = "{name:\"APPLE\", val:\"ePIGS\", invalid:1}";
-		bool result = modelDb_.fromJSON( json, &errorMsg, &mp, &seqNum2 );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == true );
-		REQUIRE( seqNum2 == seqNum + 1 );
-		Persistence::Record::ServerStatus value = Persistence::Record::ServerStatus::eUNKNOWN;
-		int8_t valid = mp_apple_.read( value, &seqNum );
-		REQUIRE( seqNum == seqNum2 );
-		REQUIRE( ModelPoint::IS_VALID( valid ) == false );
-		REQUIRE( errorMsg == "noerror" );
-		REQUIRE( mp == &mp_apple_ );
-	}
-
-	SECTION( "lock..." )
-	{
-		const char* json = "{name:\"APPLE\", val:\"eCLOSING\", locked:true}";
-		bool result = modelDb_.fromJSON( json, &errorMsg );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == true );
-		Persistence::Record::ServerStatus value = Persistence::Record::ServerStatus::eUNKNOWN;
-		int8_t   valid = mp_apple_.read( value );
-		REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-		REQUIRE( errorMsg == "noerror" );
-		REQUIRE( mp_apple_.isLocked() == true );
-		REQUIRE( value == +Persistence::Record::ServerStatus::eCLOSING );
-
-		json   = "{name:\"APPLE\", invalid:21, locked:false}";
-		result = modelDb_.fromJSON( json, &errorMsg );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == true );
-		REQUIRE( mp_apple_.isNotValid() == true );
-		REQUIRE( mp_apple_.isLocked() == false );
-		REQUIRE( mp_apple_.getValidState() == 21 );
-
-		json   = "{name:\"APPLE\", val:\"eCLOSED\", locked:true}";
-		result = modelDb_.fromJSON( json, &errorMsg );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == true );
-		REQUIRE( mp_apple_.isLocked() == true );
-		valid = mp_apple_.read( value );
-		REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-		REQUIRE( value == +Persistence::Record::ServerStatus::eCLOSED );
-
-		json   = "{name:\"APPLE\", val:\"eOPENING\" }";
-		result = modelDb_.fromJSON( json, &errorMsg );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == true );
-		REQUIRE( mp_apple_.isLocked() == true );
-		valid = mp_apple_.read( value );
-		REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-		REQUIRE( value == +Persistence::Record::ServerStatus::eCLOSED );
-
-		json   = "{name:\"APPLE\", locked:false}";
-		result = modelDb_.fromJSON( json, &errorMsg );
-		CPL_SYSTEM_TRACE_MSG( SECT_, ( "fromSJON errorMsg=[%s])", errorMsg.getString() ) );
-		REQUIRE( result == true );
-		valid = mp_apple_.read( value );
-		REQUIRE( ModelPoint::IS_VALID( valid ) == true );
-		REQUIRE( value == +Persistence::Record::ServerStatus::eCLOSED );
-		REQUIRE( mp_apple_.isLocked() == false );
-	}
-
-	REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-
-static Cpl::Dm::MailboxServer     t1Mbox_;
-
-TEST_CASE( "serverstatus-observer", "[serverstatus-observer]" )
-{
-    CPL_SYSTEM_TRACE_SCOPE( SECT_, "SERVERSTATUS-OBSERVER test" );
-    Cpl::System::Shutdown_TS::clearAndUseCounter();
-
-    Cpl::System::Thread* t1 = Cpl::System::Thread::create( t1Mbox_, "T1" );
-    ViewerMpServerStatus viewer1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_ );
-
-    // Open, write a value, wait for Viewer to see the change, then close
-    mp_apple_.write( Persistence::Record::ServerStatus::eRUNNING, ModelPoint::eUNLOCK );
-    viewer1.open();
-    uint16_t seqNum = mp_apple_.write( Persistence::Record::ServerStatus::eOPENING );
-    Cpl::System::Thread::wait();
-    viewer1.close();
-    REQUIRE( viewer1.m_lastSeqNumber == seqNum );
-
-    // Shutdown threads
-    t1Mbox_.pleaseStop();
-    Cpl::System::Api::sleep( 100 ); // allow time for threads to stop
-    REQUIRE( t1->isRunning() == false );
-    Cpl::System::Thread::destroy( *t1 );
-
-    REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
-}
-#endif

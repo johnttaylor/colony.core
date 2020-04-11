@@ -5,7 +5,9 @@ src/Cpl/Persistence
 src/Cpl/Persistence/_0test
 
 # infra-structure
-src/Cpl/Io/File
+src/Cpl/Io/File 
+src/Cpl/Checksum
+
 
 
 
