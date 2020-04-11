@@ -1,11 +1,10 @@
 # Unit under test
 #src/Cpl/Dm
 #src/Cpl/Dm/Mp
-src/Cpl/Dm/Persistence/Record
-src/Cpl/Dm/Persistence/Chunk
+src/Cpl/Dm/Persistence
 
 # tests
-src/Cpl/Dm/Persistence/Record/_0test
+src/Cpl/Dm/Persistence/_0test
 
 # supporting infrastructure
 src/Cpl/Checksum

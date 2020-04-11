@@ -15,6 +15,7 @@
 
 #include "Cpl/Persistence/Payload.h"
 #include "Cpl/Itc/PostApi.h"
+#include "Cpl/Dm/EventLoop.h"
 
 ///
 namespace Cpl {
@@ -33,10 +34,12 @@ public:
         called once at the startup of the application.  However, start() can be
         called after a previous call to the stop() method.
  
+        This method is called when the corresponding Record instance is 'started'
+
         The 'myMbox' is reference to the RecordServer's ITC mailbox, i.e. the
         mailbox for the thread that the Chunk executes in.
      */
-    virtual void start( Cpl::Itc::PostApi& myMbox ) noexcept = 0;
+    virtual void start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop ) noexcept = 0;
 
     /** This method is to stop/shutdown the chunk.  It is typically only
         called once during an orderly shutdown of the application. However,

@@ -33,7 +33,7 @@ public:
         NOTE: 'recordList' is variable length array where the last entry in the
               array MUST BE a nullptr. 
      */
-    RecordServer( Record** recordList, unsigned long timingTickInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD ) noexcept;
+    RecordServer( Record* recordList[], unsigned long timingTickInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD ) noexcept;
 
 public:
     /// This method starts the server (See Cpl::Itc::OpenSync)

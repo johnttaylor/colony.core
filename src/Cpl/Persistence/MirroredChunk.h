@@ -36,7 +36,7 @@ public:
 
 public:
     /// See Cpl::Persistence::Chunk
-    void start( Cpl::Itc::PostApi& myMbox ) noexcept;
+    void start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop ) noexcept;
 
     /// See Cpl::Persistence::Chunk
     void stop() noexcept;

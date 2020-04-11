@@ -33,12 +33,12 @@ MirroredChunk::MirroredChunk( RegionMedia& regionA, RegionMedia& regionB )
 {
 }
 
-void MirroredChunk::start( Cpl::Itc::PostApi& myMbox ) noexcept
+void MirroredChunk::start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop ) noexcept
 {
     CPL_SYSTEM_ASSERT( m_regionA.getRegionLength() == m_regionB.getRegionLength() );
 
-    m_regionA.start( myMbox );
-    m_regionB.start( myMbox );
+    m_regionA.start( myMbox, myEventLoop );
+    m_regionB.start( myMbox, myEventLoop );
     m_transId       = 0;
     m_currentRegion = 0;
     m_dataLen       = 0;
@@ -55,6 +55,7 @@ void MirroredChunk::stop() noexcept
 bool MirroredChunk::loadData( Payload& dstHandler ) noexcept
 {
     // Determine which Region (if any is the latest copy)
+    bool     result = false;
     size_t   dataLenA;
     size_t   dataLenB;
     uint64_t transA = getTransactionId( m_regionA, dataLenA );
@@ -66,18 +67,17 @@ bool MirroredChunk::loadData( Payload& dstHandler ) noexcept
         m_currentRegion = &m_regionA;
         m_transId       = 0;
         m_dataLen       = m_currentRegion->getRegionLength();
-        return false;
     }
 
     // Region A is newest/valid 
-    if ( transA > transB )
+    else if ( transA > transB )
     {
         CPL_SYSTEM_ASSERT( dataLenA <= sizeof( g_workBuffer_ ) );
         size_t bytesRead = m_regionA.read( FRAME_OFFSET_DATA, g_workBuffer_, sizeof( g_workBuffer_ ) );
-        dstHandler.putData( g_workBuffer_, bytesRead );
-        m_currentRegion = &m_regionA;
-        m_transId       = transA;
-        m_dataLen       = dataLenA;
+        result           = dstHandler.putData( g_workBuffer_, bytesRead );
+        m_currentRegion  = &m_regionA;
+        m_transId        = transA;
+        m_dataLen        = dataLenA;
     }
 
     // Region B is newest/valid 
@@ -85,14 +85,14 @@ bool MirroredChunk::loadData( Payload& dstHandler ) noexcept
     {
         CPL_SYSTEM_ASSERT( dataLenB <= sizeof( g_workBuffer_ ) );
         size_t bytesRead = m_regionB.read( FRAME_OFFSET_DATA, g_workBuffer_, sizeof( g_workBuffer_ ) );
-        dstHandler.putData( g_workBuffer_, bytesRead );
-        m_currentRegion = &m_regionB;
-        m_transId       = transB;
-        m_dataLen       = dataLenB;
+        result           = dstHandler.putData( g_workBuffer_, bytesRead );
+        m_currentRegion  = &m_regionB;
+        m_transId        = transB;
+        m_dataLen        = dataLenB;
     }
 
     CPL_SYSTEM_ASSERT( m_dataLen > m_currentRegion->getRegionLength() );
-    return true;
+    return result;
 }
 
 bool MirroredChunk::updateData( Payload& srcHandler ) noexcept
@@ -120,8 +120,11 @@ bool MirroredChunk::updateData( Payload& srcHandler ) noexcept
 
     // Payload
     memset( g_workBuffer_, 0, sizeof( g_workBuffer_ ) );     // zero out all of the data - to ensure known values for the 'extra-space' (if there is any)
-    srcHandler.getData( g_workBuffer_, m_dataLen );
-    result &= m_currentRegion->write( offset, g_workBuffer_, m_dataLen  );
+    if ( srcHandler.getData( g_workBuffer_, m_dataLen ) == 0 )
+    {
+        return false;
+    }
+    result &= m_currentRegion->write( offset, g_workBuffer_, m_dataLen );
     crc.accumulate( g_workBuffer_, m_dataLen );
     offset += m_dataLen;
 

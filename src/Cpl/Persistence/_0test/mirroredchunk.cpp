@@ -16,8 +16,10 @@
 #include "Cpl/System/Assert.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/Persistence/MirroredChunk.h"
+#include "Cpl/Persistence/RecordServer.h"
 #include "Cpl/Persistence/FileAdapter.h"
 #include "Cpl/Io/File/Api.h"
+#include "Cpl/Io/File/Output.h"
 #include <memory.h>
 
 #define SECT_   "_0test"
@@ -34,9 +36,9 @@ public:
     {
     }
 
-    void start( Cpl::Itc::PostApi& myMbox ) noexcept
+    void start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop ) noexcept
     {
-        MirroredChunk::start( myMbox );
+        MirroredChunk::start( myMbox, myEventLoop );
         m_startCount++;
     }
 
@@ -54,9 +56,10 @@ public:
     char m_buffer[1024];
     int  m_getCount;
     int  m_putCount;
+    bool m_putResult;
     const char* m_getString;
 
-    MyPayload( const char* getString ) :m_getCount( 0 ), m_putCount( 0 ), m_getString( getString )
+    MyPayload( const char* getString ) :m_getCount( 0 ), m_putCount( 0 ), m_putResult(true), m_getString( getString )
     {
     }
 
@@ -70,11 +73,12 @@ public:
         return len;
     }
 
-    void putData( const void* src, size_t srcLen ) noexcept
+    bool putData( const void* src, size_t srcLen ) noexcept
     {
         CPL_SYSTEM_ASSERT( srcLen <= sizeof( m_buffer ) );
         m_putCount++;
         memcpy( m_buffer, src, srcLen );
+        return m_putResult;
     };
 };
 
@@ -87,9 +91,9 @@ public:
     void postSync( Cpl::Itc::Message& msg ) noexcept {}
 };
 
-static MyPayload payload1_( "Hello" );
-static MyPayload payload2_( "World" );
-static MyMockPostApi mockMailbox_;
+static MyPayload    payload1_( "Hello" );
+static MyPayload    payload2_( "World" );
+static RecordServer mockEvents_( { 0 } );
 
 #define FILE_NAME_REGION1   "region1.nvram"
 #define FILE_NAME_REGION2   "region2.nvram"
@@ -108,7 +112,7 @@ TEST_CASE( "MirroredChunk" )
     {
         REQUIRE( uut.m_startCount == 0 );
         REQUIRE( uut.m_stopCount == 0 );
-        uut.start( mockMailbox_ );
+        uut.start( mockEvents_, mockEvents_ );
         REQUIRE( uut.m_startCount == 1 );
         REQUIRE( uut.m_stopCount == 0 );
         uut.stop();
@@ -146,6 +150,33 @@ TEST_CASE( "MirroredChunk" )
         REQUIRE( payload1_.m_putCount == 1 );
         printf( "buffer=[%s], expected=[%s]\n", payload2_.m_buffer, payload2_.m_getString );
         REQUIRE( strcmp( payload2_.m_buffer, payload2_.m_getString ) == 0 );
+    }
+
+    SECTION( "corrupt CRC" )
+    {
+        // Delete one of the files (to force REGION2 as the 'good'
+        Cpl::Io::File::Api::remove( FILE_NAME_REGION1 );
+
+        // Read the data (should be good - and the current region should be '2')
+        payload1_.m_putCount = 0;
+        payload1_.m_getCount = 0;
+        bool result = uut.loadData( payload1_ );
+        REQUIRE( result == true );
+        REQUIRE( payload1_.m_getCount == 0 );
+        REQUIRE( payload1_.m_putCount == 1 );
+        REQUIRE( strcmp( payload1_.m_buffer, payload1_.m_getString ) == 0 );
+
+        // Corrupt region 2
+        Cpl::Io::File::Output fd( FILE_NAME_REGION2 );
+        REQUIRE( fd.isOpened() );
+        fd.write( "junk" );
+        fd.close();
+
+        // Read the data (should be good - and the current region should be '2')
+        result = uut.loadData( payload1_ );
+        REQUIRE( result == false );
+        REQUIRE( payload1_.m_getCount == 0 );
+        REQUIRE( payload1_.m_putCount == 1 );
     }
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );

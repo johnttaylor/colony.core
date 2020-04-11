@@ -19,7 +19,7 @@
 using namespace Cpl::Persistence;
 
 /////////////////////
-RecordServer::RecordServer( Record** recordList, unsigned long timingTickInMsec ) noexcept
+RecordServer::RecordServer( Record* recordList[], unsigned long timingTickInMsec ) noexcept
     : Cpl::Dm::MailboxServer( timingTickInMsec )
     , Cpl::Itc::CloseSync( *((Cpl::Itc::PostApi*)this) )
     , m_records( recordList )
@@ -37,7 +37,7 @@ void RecordServer::request( OpenMsg& msg )
         // Start each record
         for ( unsigned i=0; m_records[i]; i++)
         {
-            m_records[i]->start( *this );
+            m_records[i]->start( *this, *this );
         }
     }
     msg.returnToSender();

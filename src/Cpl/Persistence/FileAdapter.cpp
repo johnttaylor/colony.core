@@ -28,7 +28,7 @@ FileAdapter::FileAdapter( const char* fileName, size_t regionStartAddress, size_
 {
 }
 
-void FileAdapter::start( Cpl::Itc::PostApi& myMbox ) noexcept
+void FileAdapter::start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop ) noexcept
 {
     // Nothing needed
 }
