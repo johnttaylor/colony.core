@@ -9,35 +9,75 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
-#include "MailboxServer.h"
+#include "FileAdapter.h"
+#include "Cpl/Io/File/Input.h"
+#include "Cpl/Io/File/Output.h"
+#include "Cpl/System/Assert.h"
 
 
-#define SECT_ "Cpl::Dm"
+#define SECT_ "Cpl::Persistence"
 
 
 ///
-using namespace Cpl::Dm;
+using namespace Cpl::Persistence;
 
 /////////////////////
-MailboxServer::MailboxServer( unsigned long timingTickInMsec ) noexcept
-    :Cpl::Dm::EventLoop( timingTickInMsec )
-    ,Cpl::Itc::Mailbox( *((Cpl::System::EventLoop*)this) )
+FileAdapter::FileAdapter( const char* fileName, size_t regionStartAddress, size_t regionLen ) noexcept
+    : RegionMedia( regionStartAddress, regionLen )
+    , m_fileName( fileName )
 {
+}
+
+void FileAdapter::start( Cpl::Itc::PostApi& myMbox ) noexcept
+{
+    // Nothing needed
+}
+
+void FileAdapter::stop() noexcept
+{
+    // Nothing needed
 }
 
 
 /////////////////////
-void MailboxServer::appRun()
+bool FileAdapter::write( size_t offset, const void* srcData, size_t srcLen ) noexcept
 {
-    startEventLoop();
-    bool run = true;
-    while ( run )
+    CPL_SYSTEM_ASSERT( srcData );
+    CPL_SYSTEM_ASSERT( srcLen > 0 );
+
+    Cpl::Io::File::Output fd( m_fileName );
+    if ( !fd.isOpened() )
     {
-        run = waitAndProcessEvents();
-        if ( run )
-        {
-            processChangeNotifications();
-            processMessages();
-        }
+        return false;
     }
+
+    bool result = fd.setAbsolutePos( offset );
+    if ( result )
+    {
+        result = fd.write( srcData, srcLen );
+    }
+    fd.close();
+    return result;
+}
+
+size_t FileAdapter::read( size_t offset, void* dstBuffer, size_t bytesToRead ) noexcept
+{
+    CPL_SYSTEM_ASSERT( dstBuffer );
+    CPL_SYSTEM_ASSERT( bytesToRead > 0 );
+    int actualBytesRead = 0;
+
+    Cpl::Io::File::Input fd( m_fileName );
+    if ( !fd.isOpened() )
+    {
+        return 0;
+    }
+
+    bool result = fd.setAbsolutePos( offset );
+    if ( result )
+    {
+        result = fd.read( dstBuffer, bytesToRead, actualBytesRead );
+    }
+    fd.close();
+
+    return result? actualBytesRead : 0;
 }

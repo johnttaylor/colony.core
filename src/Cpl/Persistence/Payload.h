@@ -38,7 +38,11 @@ public:
      */
     virtual size_t getData( void* dst, size_t maxDstLen ) noexcept = 0;
 
-    /** This method us to transfer persistently stored data into a Record.  
+    /** This method used to transfer persistently stored data into a Record.  
+
+        Note: The application is not required to consume all of the incoming
+              data.  This is because typically region are 'over-allocated'
+              in order to leave room to grow.
      */
     virtual void putData( const void* src, size_t srcLen ) noexcept = 0;
 

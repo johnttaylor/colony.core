@@ -1,5 +1,5 @@
-#ifndef Cpl_Itc_OpenSync_h_
-#define Cpl_Itc_OpenSync_h_
+#ifndef Cpl_Persistence_Private_h_
+#define Cpl_Persistence_Private_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -12,38 +12,26 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Cpl/Itc/OpenApi.h"
-#include "Cpl/Itc/OpenRequest.h"
+#include "colony_config.h"
+#include <stdint.h>
+
+/** The number of bytes of the 'work-buffer'
+ */
+#ifndef OPTION_CPL_PERSISTENCE_WORK_BUFFER_SIZE
+#define OPTION_CPL_PERSISTENCE_WORK_BUFFER_SIZE     1024
+#endif
 
 
 ///
 namespace Cpl {
 ///
-namespace Itc {
+namespace Persistence {
 
-
-/** This partially concrete class implements the synchronous ITC open
-    call for the OpenApi.  The subclass is still required to implement the ITC
-    request() method.
+/** This PACKAGE SCOPED buffer is a singleton that is available as 'work buffer'
+    for Chunk and Record instance to use WHEN executing in the RecordServer's
+    thread.
  */
-class OpenSync : public OpenApi,
-    public OpenRequest
-{
-protected:
-    /// Mailbox (of the server implementing the ITC request() method
-    PostApi & m_mbox;
-
-
-public:
-    /// Constructor
-    OpenSync( PostApi& myMbox ) noexcept;
-
-
-public:
-    /// See OpenApi
-    bool open( void );
-};
-
+extern uint8_t g_workBuffer_[OPTION_CPL_PERSISTENCE_WORK_BUFFER_SIZE];
 
 
 };      // end namespaces

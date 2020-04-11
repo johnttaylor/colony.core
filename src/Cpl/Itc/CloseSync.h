@@ -34,7 +34,7 @@ class CloseSync : public OpenSync,
 {
 public:
     /// Constructor
-    CloseSync( PostApi& myMbox );
+    CloseSync( PostApi& myMbox ) noexcept;
 
 
 public:

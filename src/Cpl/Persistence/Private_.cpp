@@ -9,26 +9,8 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
-#include "OpenSync.h"
-#include "SyncReturnHandler.h"
-
-///
-using namespace Cpl::Itc;
+#include "Private_.h"
 
 
-///////////////////
-OpenSync::OpenSync( PostApi& myMbox ) noexcept
-    :m_mbox( myMbox )
-{
-}
+uint8_t Cpl::Persistence::g_workBuffer_[OPTION_CPL_PERSISTENCE_WORK_BUFFER_SIZE];
 
-
-///////////////////
-bool OpenSync::open( void )
-{
-    OpenPayload         payload;
-    SyncReturnHandler   srh;
-    OpenMsg 	        msg( *this, payload, srh );
-    m_mbox.postSync( msg );
-    return payload.m_success;
-}

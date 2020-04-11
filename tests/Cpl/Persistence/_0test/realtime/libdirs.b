@@ -1,10 +1,11 @@
 # Unit under test
-#src/Cpl/Dm
-#src/Cpl/Dm/Mp < Uint32.cpp
+src/Cpl/Persistence
 
 # tests
-src/Cpl/Dm/_0test
+src/Cpl/Persistence/_0test
 
-src/Cpl/Io/Stdio/_ansi
+# infra-structure
+src/Cpl/Io/File
+
 
 

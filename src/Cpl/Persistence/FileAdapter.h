@@ -1,5 +1,5 @@
-#ifndef Cpl_Dm_MailboxServer_h_
-#define Cpl_Dm_MailboxServer_h_
+#ifndef Cpl_Persistence_File_Adapter_h_
+#define Cpl_Persistence_File_Adapter_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -12,44 +12,45 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Cpl/Dm/EventLoop.h"
-#include "Cpl/Itc/Mailbox.h"
+#include "Cpl/Persistence/RegionMedia.h"
 
 
 ///
 namespace Cpl {
 ///
-namespace Dm {
+namespace Persistence {
 
-/** This class extends the Cpl::Dm::EventLoop and Cpl::Itc:Mailbox classes
-    to support the asynchronous change notification generated from Model Points
-    with ITC messaging.
-
-    The order of processing is:
-
-       1. Event Flags are processed.  Events are processed in LSb order.
-       2. The timers and their callbacks (if any timers have expired) are
-          processed.
-       3. A single Model Point Change notification (if there is one pending) is
-          processed.
-       4. A single ITC message (it there is on pending) is dispatched.
-       5. The loop is repeated until there are no expired timers, no event
-          flags, no MP change notifications, and no ITC messages - at which 
-          point the thread blocks and wait for any of the above asynchronous 
-          actions to wake up the thread.
-
+/** This concrete class implements the RegionMedia interface using the 
+    Cpl::Io::File interfaces. Each instance of this class uses a single file 
+    as the storage media.  It is the responsibility of the application to ensure
+    that each instance has a unique file name
  */
-class MailboxServer : public Cpl::Dm::EventLoop, public Cpl::Itc::Mailbox
+class FileAdapter : public RegionMedia
 {
 public:
-    /** Constructor.  The argument 'timingTickInMsec' specifies the timing
-        resolution that will be used for Cpl::Timer::Local Timers.
+    /** Constructor.  Note: The default region parameter are set to zero because
+        are not used by the FileAdapter - but place holders are provided to full
+        support the semantics of the RegionMedia interface
      */
-    MailboxServer( unsigned long timingTickInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD ) noexcept;
+    FileAdapter( const char* fileName, size_t regionStartAddress = 0, size_t regionLen = 0 ) noexcept;
 
 public:
-    /// See Cpl::System::Runnable
-    void appRun();
+    /// See Cpl::Persistence::RegionMedia
+    void start( Cpl::Itc::PostApi& myMbox ) noexcept;
+
+    /// See Cpl::Persistence::RegionMedia
+    void stop() noexcept;
+
+    /// See Cpl::Persistence::RegionMedia
+    bool write( size_t offset, const void* srcData, size_t srcLen ) noexcept;
+
+    /// See Cpl::Persistence::RegionMedia
+    size_t read( size_t offset, void* dstBuffer, size_t bytesToRead ) noexcept;
+
+
+protected:
+    /// Remember my file name
+    const char* m_fileName;
 };
 
 };      // end namespaces

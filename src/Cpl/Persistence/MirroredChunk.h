@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Persistence_Chunk_Media_h_
-#define Cpl_Rte_Persistence_Chunk_Media_h_
+#ifndef Cpl_Persistence_Mirrored_Chunk_h_
+#define Cpl_Persistence_Mirrored_Chunk_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -13,61 +13,63 @@
 /** @file */
 
 
-#include "Cpl/Io/File/InputOutputApi.h"
-
+#include "Cpl/Persistence/Chunk.h"
+#include "Cpl/Persistence/RegionMedia.h"
+#include <stdint.h>
 
 ///
 namespace Cpl {
-namespace Dm {
+///
 namespace Persistence {
-namespace Chunk {
 
 
-/** This abstract class defines the interface for opening/closing a Storage
-    Media 'file'.  This allows the Chunk Server/Layer to be decoupled from the
-    specifics of opening traditional file system "files". This allows the 
-    Chunk Layer to work with a non file-system based persistent storage.
+/** This concrete class implements the Chunk interface by storing two copies
+    of the Record's data.  This ensures that if power fails during a write
+    operation to persistent media - there will also be a good 'previous' copy
+    of the data available.
  */
-class Media
+class MirroredChunk: public Chunk
 {
 public:
-    /** This method opens the Storage Media 'file' that is associated with the
-        instance of this interface. The method returns a pointer to an IO Stream
-        upon success; else zero is returned.  The concrete implementation of
-        this interface is responsible for managing the life cycle/memory of the
-        returned IO stream.
-
-        The 'newfile' flag is set true if media file did not physically exist
-        before the call to openFile(). The Chunk Layer is responsible for
-        signing (i.e. writing the db signature string)  new media files.
-     */
-    virtual Cpl::Io::File::InputOutputApi* openFile( bool& newfile ) noexcept = 0;
-
-
-    /** This method closes the associated storage media file.  If this method 
-        is called when the storage media file is not in the open state - no 
-        error is generated.
-     */
-    virtual void closeFile() noexcept = 0;
-
+    /// Constructor
+    MirroredChunk( RegionMedia& regionA, RegionMedia& regionB );
 
 public:
-    /** This method is used to delete the associated storage media file. The
-        Chunk Layer is responsible for ONLY calling this method when the
-        media file is in the CLOSED state. The method returns true if
-        successful; else false is returned.
-     */
-    virtual bool deleteFile() noexcept = 0;
+    /// See Cpl::Persistence::Chunk
+    void start( Cpl::Itc::PostApi& myMbox ) noexcept;
 
+    /// See Cpl::Persistence::Chunk
+    void stop() noexcept;
 
-public:
-    /// Virtual destructor
-    virtual ~Media() {}
+    /// See Cpl::Persistence::Chunk
+    bool loadData( Payload& dstHandler ) noexcept;
+
+    /// See Cpl::Persistence::Chunk
+    bool updateData( Payload& srcHandler ) noexcept;
+
+protected:
+    /// Helper method.  If the region is 'corrupt' a transaction ID of zero is returned
+    uint64_t getTransactionId( RegionMedia& region, size_t& dataLen );
+
+protected:
+    /// Region/Media for copy A
+    RegionMedia& m_regionA;
+
+    /// Region/Media for copy B
+    RegionMedia& m_regionB;
+
+    /// Current Transaction ID (the larger the value - the newer the data)
+    uint64_t     m_transId;
+
+    /// Data Length for the region
+    size_t       m_dataLen;
+
+    /// Pointer to the current region (i.e. newest read/written region)
+    RegionMedia* m_currentRegion;
+
 };
 
 
 };      // end namespaces
-};
-};
 };
 #endif  // end header latch

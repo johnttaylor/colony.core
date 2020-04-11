@@ -12,6 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
+#include "Cpl/Itc/PostApi.h"
 #include <stdlib.h>
 
 
@@ -34,9 +35,12 @@ public:
     /** This method is to start/initialize the Region.  It is typically only
         called once at the startup of the application.  However, start() can be
         called after a previous call to the stop() method.
+        
+        The 'myMbox' is reference to the RecordServer's ITC mailbox, i.e. the
+        mailbox for the thread that the Chunk executes in.
      */
-    virtual void start() noexcept = 0;
-
+    virtual void start( Cpl::Itc::PostApi& myMbox ) noexcept = 0;
+    
     /** This method is to stop/shutdown the Region.  It is typically only
         called once during an orderly shutdown of the application. However,
         start() can be after a previous call to the stop() method.
@@ -53,21 +57,14 @@ public:
      */
     virtual bool write( size_t offset, const void* srcData, size_t srcLen ) noexcept = 0;
 
-    /** This method reads 'dstBufferLen' bytes from the media at the specified 
+    /** This method reads 'bytesToRead' bytes from the media at the specified 
         offset.  The offset is relative to the start of the Region's start 
         address.
 
-        The method return true of the read operation was successful, else false
-        is returned.
+        The method returns the number of bytes read.  A return value of ZERO 
+        indicates that an error occurred.
      */
-    virtual bool read( size_t offset, void* dstBuffer, size_t dstBufferLen ) noexcept = 0;
-
-    /** This method is used to 'delete' the region.  What 'delete' means is
-        specific to the concrete media (e.g. for EEPROM - delete would
-        erase the entire region (but not the whole EEPROM); for a file in 
-        file system it would delete the file)
-     */
-    virtual void deleteRegion() noexcept = 0;
+    virtual size_t read( size_t offset, void* dstBuffer, size_t bytesToRead ) noexcept = 0;
 
 
 public:

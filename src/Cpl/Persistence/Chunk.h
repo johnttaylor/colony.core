@@ -14,6 +14,7 @@
 
 
 #include "Cpl/Persistence/Payload.h"
+#include "Cpl/Itc/PostApi.h"
 
 ///
 namespace Cpl {
@@ -25,14 +26,17 @@ namespace Persistence {
     for managing the meta-data (e.g. CRC) associated with a Record's data.  There
     is one-to-one relationship between a Chunk and Record instances.
  */
-class Media
+class Chunk
 {
 public:
     /** This method is to start/initialize the chunk.  It is typically only
         called once at the startup of the application.  However, start() can be
         called after a previous call to the stop() method.
+ 
+        The 'myMbox' is reference to the RecordServer's ITC mailbox, i.e. the
+        mailbox for the thread that the Chunk executes in.
      */
-    virtual void start() noexcept = 0;
+    virtual void start( Cpl::Itc::PostApi& myMbox ) noexcept = 0;
 
     /** This method is to stop/shutdown the chunk.  It is typically only
         called once during an orderly shutdown of the application. However,
@@ -64,12 +68,10 @@ public:
 
 public:
     /// Virtual destructor
-    virtual ~Media() {}
+    virtual ~Chunk() {}
 };
 
 
 };      // end namespaces
-};
-};
 };
 #endif  // end header latch
