@@ -7,6 +7,7 @@ src/Cpl/Dm/Persistence
 src/Cpl/Dm/Persistence/_0test
 
 # supporting infrastructure
+src/Cpl/Persistence
 src/Cpl/Checksum
 src/Cpl/Io/File
 

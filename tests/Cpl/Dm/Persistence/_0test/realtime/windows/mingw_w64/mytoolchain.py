@@ -33,7 +33,7 @@ from nqbplib.my_globals import NQBP_WORK_ROOT
 FINAL_OUTPUT_NAME = 'a.exe'
 
 # Link unittest directory by object module so that Catch's self-registration mechanism 'works'
-unit_test_objects = '_BUILT_DIR_.src/Cpl/Dm/Persistence/Record/_0test'
+unit_test_objects = '_BUILT_DIR_.src/Cpl/Dm/Persistence/_0test'
 
 #
 # For build config/variant: "Release"
