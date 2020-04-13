@@ -154,17 +154,17 @@ TEST_CASE( "MirroredChunk" )
 
     SECTION( "corrupt CRC" )
     {
-        // Delete one of the files (to force REGION2 as the 'good'
-        Cpl::Io::File::Api::remove( FILE_NAME_REGION1 );
-
-        // Read the data (should be good - and the current region should be '2')
-        payload1_.m_putCount = 0;
-        payload1_.m_getCount = 0;
-        bool result = uut.loadData( payload1_ );
+        // Read the data 
+        payload2_.m_putCount = 0;
+        payload2_.m_getCount = 0;
+        bool result = uut.loadData( payload2_ );
         REQUIRE( result == true );
-        REQUIRE( payload1_.m_getCount == 0 );
-        REQUIRE( payload1_.m_putCount == 1 );
-        REQUIRE( strcmp( payload1_.m_buffer, payload1_.m_getString ) == 0 );
+        REQUIRE( payload2_.m_getCount == 0 );
+        REQUIRE( payload2_.m_putCount == 1 );
+        REQUIRE( strcmp( payload2_.m_buffer, payload2_.m_getString ) == 0 );
+
+        // Delete one of the files (to force REGION2 as the 'good' region)
+        Cpl::Io::File::Api::remove( FILE_NAME_REGION1 );
 
         // Corrupt region 2
         Cpl::Io::File::Output fd( FILE_NAME_REGION2 );
@@ -172,11 +172,11 @@ TEST_CASE( "MirroredChunk" )
         fd.write( "junk" );
         fd.close();
 
-        // Read the data (should be good - and the current region should be '2')
-        result = uut.loadData( payload1_ );
+        // Read the data (should be bad)
+        result = uut.loadData( payload2_ );
         REQUIRE( result == false );
-        REQUIRE( payload1_.m_getCount == 0 );
-        REQUIRE( payload1_.m_putCount == 1 );
+        REQUIRE( payload2_.m_getCount == 0 );
+        REQUIRE( payload2_.m_putCount == 1 );
     }
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );

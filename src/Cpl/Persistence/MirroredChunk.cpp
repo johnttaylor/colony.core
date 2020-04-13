@@ -99,38 +99,46 @@ bool MirroredChunk::updateData( Payload& srcHandler ) noexcept
 {
     CPL_SYSTEM_ASSERT( m_currentRegion );
 
-    // Select the region to update
-    m_currentRegion = m_currentRegion == &m_regionA ? &m_regionB : &m_regionA;
-
-    // Update the region
-    Cpl::Checksum::Crc32EthernetFast crc;
-    size_t                           offset  = 0;
-    crc.reset();
-    m_transId++;
-
-    // Transaction ID
-    bool result = m_currentRegion->write( offset, &m_transId, sizeof( m_transId ) );
-    crc.accumulate( &m_transId, sizeof( m_transId ) );
-    offset += sizeof( m_transId );
-
-    // Data Length
-    result &= m_currentRegion->write( offset, &m_dataLen, sizeof( m_dataLen ) );
-    crc.accumulate( &m_dataLen, sizeof( m_dataLen ) );
-    offset += sizeof( m_dataLen );
-
-    // Payload
+    // Get the Payload data
     memset( g_workBuffer_, 0, sizeof( g_workBuffer_ ) );     // zero out all of the data - to ensure known values for the 'extra-space' (if there is any)
     if ( srcHandler.getData( g_workBuffer_, m_dataLen ) == 0 )
     {
         return false;
     }
-    result &= m_currentRegion->write( offset, g_workBuffer_, m_dataLen );
-    crc.accumulate( g_workBuffer_, m_dataLen );
-    offset += m_dataLen;
 
-    // CRC
-    crc.finalize( g_workBuffer_ );
-    result &= m_currentRegion->write( offset, g_workBuffer_, CRC_SIZE );
+    bool result = true;
+    // Write the data twice!
+    for ( int i=0; i < 2; i++ )
+    {
+        // Select the region to update
+        m_currentRegion = m_currentRegion == &m_regionA ? &m_regionB : &m_regionA;
+
+        // Update the region
+        Cpl::Checksum::Crc32EthernetFast crc;
+        size_t                           offset  = 0;
+        crc.reset();
+        m_transId++;
+
+        // Transaction ID
+        result = m_currentRegion->write( offset, &m_transId, sizeof( m_transId ) );
+        crc.accumulate( &m_transId, sizeof( m_transId ) );
+        offset += sizeof( m_transId );
+
+        // Data Length
+        result &= m_currentRegion->write( offset, &m_dataLen, sizeof( m_dataLen ) );
+        crc.accumulate( &m_dataLen, sizeof( m_dataLen ) );
+        offset += sizeof( m_dataLen );
+
+        // Payload
+        result &= m_currentRegion->write( offset, g_workBuffer_, m_dataLen );
+        crc.accumulate( g_workBuffer_, m_dataLen );
+        offset += m_dataLen;
+
+        // CRC
+        uint8_t crcBuffer[CRC_SIZE];
+        crc.finalize( crcBuffer );
+        result &= m_currentRegion->write( offset, crcBuffer, CRC_SIZE );
+    }
 
     return result;
 }

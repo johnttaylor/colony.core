@@ -19,9 +19,11 @@
 using namespace Cpl::Dm::Persistence;
 
 //////////////////////////////////////////////////////
-Record::Record( Item_T itemList[], Cpl::Persistence::Chunk& chunkHandler ) noexcept
+Record::Record( Item_T itemList[], Cpl::Persistence::Chunk& chunkHandler, uint8_t schemaMajorIndex, uint8_t schemaMinorIndex ) noexcept
     : m_items( itemList )
     , m_chunkHandler( chunkHandler )
+    , m_major( schemaMajorIndex )
+    , m_minor( schemaMinorIndex )
     , m_started( false )
 {
     CPL_SYSTEM_ASSERT( itemList );
@@ -98,9 +100,16 @@ void Record::stop() noexcept
 //////////////////////////////////////////////////////
 size_t Record::getData( void* dst, size_t maxDstLen ) noexcept
 {
+    CPL_SYSTEM_ASSERT( maxDstLen > 2 );
+
+    // Write Schema identifiers
+    uint8_t* buffer = (uint8_t*)dst;
+    *buffer++       = m_major;
+    *buffer++       = m_minor;
+    maxDstLen      -= 2;
+
     // Export the Model Point data
-    uint8_t* buffer     = (uint8_t*) dst;
-    size_t bytesWritten = 0;
+    size_t bytesWritten = 2;
     for ( unsigned i = 0; m_items[i].mpPtr != 0; i++ )
     {
         // Check to see if we would overflow the buffer
@@ -127,8 +136,21 @@ size_t Record::getData( void* dst, size_t maxDstLen ) noexcept
 
 bool Record::putData( const void* src, size_t srcLen ) noexcept
 {
-    // Import the Model Point data
+    CPL_SYSTEM_ASSERT( srcLen > 2 );
+
+    // Get schema identifiers
     const uint8_t* buffer = (const uint8_t*)src;
+    uint8_t major         = *buffer++;
+    uint8_t minor         = *buffer++;
+    srcLen               -= 2;
+
+    // Enforce schema rules
+    if ( major != m_major || minor != m_minor )
+    {
+        return schemaChange( major, minor, buffer, srcLen );
+    }
+
+    // Import the Model Point data
     for ( unsigned i = 0; m_items[i].mpPtr != 0; i++ )
     {
         // Check to see if there is enough data in the buffer

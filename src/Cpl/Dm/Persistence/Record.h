@@ -47,8 +47,15 @@ public:
         in the list MUST be a 'null' entry, e.g. {0,0}.  The application is 
         responsible for ALLOCATING all of the Model Point and Subscriber 
         instances in the itemList.
+
+        If the schema indexes does not match when reading data from persistent
+        storage, THEN the upgrade method is called.record data is defaulted.  If the schema minor index from
+        persistent storage does is less than 'schemaMinorIndex' argument, the
+        the record is data loaded and the upgrade() method is called. If the 
+        schema minor index from persistent storage is greater than the 
+        'schemaMinorIndex' argument, THEN the record data is defaulted.
      */
-    Record( Item_T itemList[], Cpl::Persistence::Chunk& chunkHandler ) noexcept;
+    Record( Item_T itemList[], Cpl::Persistence::Chunk& chunkHandler, uint8_t schemaMajorIndex, uint8_t schemaMinorIndex ) noexcept;
 
     /// Destructor
     ~Record();
@@ -75,6 +82,23 @@ protected:
      */
     virtual void resetData() noexcept = 0;
 
+    /** This method is called when the stored record data has different
+        schema indexes. It is up to the child record class on what to do when
+        the schema is different.  The default behavior is default all of the
+        data.
+
+        The 'src' argument contains the record data (as stored in persistent
+        storage).  The child class can make use of the data as needed.  Note:
+        the data in 'src' is AFTER the schema indexes fields.
+
+        The method should return true if the child class has successfully
+        processed in the incoming data.  Returning false will cause the
+        record data to be defaulted;
+     */
+    virtual bool schemaChange( uint8_t      previousSchemaMajorIndex, 
+                               uint8_t      previousSchemaMinorIndex,
+                               const void*  src, 
+                               size_t       srcLen ) noexcept { return false; }
 
 protected:
     /// Callback method for Model Point change notifications
@@ -87,6 +111,12 @@ protected:
 
     /// Chunk handler for the Record
     Cpl::Persistence::Chunk&    m_chunkHandler;
+
+    /// Schema Major version
+    uint8_t                     m_major;
+
+    /// Schema Minor version
+    uint8_t                     m_minor;
 
     /// Remember my started state
     bool                        m_started;
