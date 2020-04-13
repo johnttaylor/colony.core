@@ -14,8 +14,7 @@
 
 
 #include "Cpl/Persistence/Payload.h"
-#include "Cpl/Itc/PostApi.h"
-#include "Cpl/Dm/EventLoop.h"
+#include "Cpl/Dm/MailboxServer.h"
 
 ///
 namespace Cpl {
@@ -36,10 +35,10 @@ public:
  
         This method is called when the corresponding Record instance is 'started'
 
-        The 'myMbox' is reference to the RecordServer's ITC mailbox, i.e. the
+        The 'myMbox' is reference to the RecordServer's DM/ITC mailbox, i.e. the
         mailbox for the thread that the Chunk executes in.
      */
-    virtual void start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop ) noexcept = 0;
+    virtual void start( Cpl::Dm::MailboxServer& myMbox ) noexcept = 0;
 
     /** This method is to stop/shutdown the chunk.  It is typically only
         called once during an orderly shutdown of the application. However,

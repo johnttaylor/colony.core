@@ -12,8 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Cpl/Itc/PostApi.h"
-#include "Cpl/Dm/EventLoop.h"
+#include "Cpl/Dm/MailboxServer.h"
 
 
 ///
@@ -34,11 +33,10 @@ public:
 
         This method is called when the RecordServer is 'opened'.
 
-        The 'myMbox' is a reference to the RecordServer's ITC mailbox, i.e. the
-        mailbox for the thread that the Record executes in. The 'myEventLoop'
-        is a reference to the RecordServer's Event Loop.
+        The 'myMbox' is a reference to the RecordServer's DM/ITC mailbox, i.e. the
+        mailbox for the thread that the Record executes in. 
      */
-    virtual void start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop ) noexcept = 0;
+    virtual void start( Cpl::Dm::MailboxServer& myMbox ) noexcept = 0;
 
     /** This method is to stop/shutdown the record.  It is typically only
         called once during an orderly shutdown of the application. However, 

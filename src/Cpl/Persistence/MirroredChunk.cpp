@@ -33,12 +33,12 @@ MirroredChunk::MirroredChunk( RegionMedia& regionA, RegionMedia& regionB )
 {
 }
 
-void MirroredChunk::start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop ) noexcept
+void MirroredChunk::start( Cpl::Dm::MailboxServer& myMbox  ) noexcept
 {
     CPL_SYSTEM_ASSERT( m_regionA.getRegionLength() == m_regionB.getRegionLength() );
 
-    m_regionA.start( myMbox, myEventLoop );
-    m_regionB.start( myMbox, myEventLoop );
+    m_regionA.start( myMbox );
+    m_regionB.start( myMbox );
     m_transId       = 0;
     m_currentRegion = 0;
     m_dataLen       = 0;

@@ -35,14 +35,14 @@ Record::~Record()
     stop();
 }
 
-void Record::start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop ) noexcept
+void Record::start( Cpl::Dm::MailboxServer& myMbox ) noexcept
 {
     if ( !m_started )
     {
         m_started = true;
 
         // Start the chunk handler
-        m_chunkHandler.start( myMbox, myEventLoop );
+        m_chunkHandler.start( myMbox );
 
         // Load the record's data from persistent storage
         if ( !m_chunkHandler.loadData( *this ) )
@@ -58,7 +58,7 @@ void Record::start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop )
             if ( m_items[i].observerPtr != CPL_DM_PERISTENCE_RECORD_NO_SUBSCRIBER )
             {
                 // Allocate Subscriber
-                m_items[i].observerPtr = new Cpl::Dm::SubscriberComposer<Record, Cpl::Dm::ModelPoint>( myEventLoop, *this, &Record::dataChanged );
+                m_items[i].observerPtr = new Cpl::Dm::SubscriberComposer<Record, Cpl::Dm::ModelPoint>( myMbox, *this, &Record::dataChanged );
                 if ( m_items[i].observerPtr )
                 {
                     // subscribe with the current sequence number so there will be NO IMMEDIATE call back

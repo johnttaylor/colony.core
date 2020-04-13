@@ -34,7 +34,7 @@ public:
 
 public:
     /// See Cpl::Persistence::RegionMedia
-    void start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop ) noexcept;
+    void start( Cpl::Dm::MailboxServer& myMbox ) noexcept;
 
     /// See Cpl::Persistence::RegionMedia
     void stop() noexcept;

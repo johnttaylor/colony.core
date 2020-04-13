@@ -28,7 +28,7 @@ public:
 
     MyRecord() :m_startCount( 0 ), m_stopCount( 0 ) {}
     
-    void start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop ) noexcept
+    void start( Cpl::Dm::MailboxServer& myMbox ) noexcept
     {
         m_startCount++;
     }

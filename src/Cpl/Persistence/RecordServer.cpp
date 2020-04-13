@@ -37,7 +37,7 @@ void RecordServer::request( OpenMsg& msg )
         // Start each record
         for ( unsigned i=0; m_records[i]; i++)
         {
-            m_records[i]->start( *this, *this );
+            m_records[i]->start( *this );
         }
     }
     msg.returnToSender();

@@ -36,9 +36,9 @@ public:
     {
     }
 
-    void start( Cpl::Itc::PostApi& myMbox, Cpl::Dm::EventLoop& myEventLoop ) noexcept
+    void start( Cpl::Dm::MailboxServer& myMbox ) noexcept
     {
-        MirroredChunk::start( myMbox, myEventLoop );
+        MirroredChunk::start( myMbox );
         m_startCount++;
     }
 
@@ -112,7 +112,7 @@ TEST_CASE( "MirroredChunk" )
     {
         REQUIRE( uut.m_startCount == 0 );
         REQUIRE( uut.m_stopCount == 0 );
-        uut.start( mockEvents_, mockEvents_ );
+        uut.start( mockEvents_ );
         REQUIRE( uut.m_startCount == 1 );
         REQUIRE( uut.m_stopCount == 0 );
         uut.stop();
