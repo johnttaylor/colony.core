@@ -111,7 +111,7 @@ bool Output_::write( const void* buffer, int maxBytes, int& bytesWritten )
 	m_outEos     = false;
 	if ( bytesWritten <= 0 )
 	{
-		m_outEos = feof( (FILE*) ( m_outFd.m_handlePtr ) );
+		m_outEos = feof( (FILE*) ( m_outFd.m_handlePtr ) )? true: false;
 		result   = false;
 	}
 	//printf( "eos=%d, ferr=%d, bytesRead=%d, result=%d\n", m_outEos, ferror( (FILE*) ( m_inFd.m_handlePtr ) ), bytesWritten, result );

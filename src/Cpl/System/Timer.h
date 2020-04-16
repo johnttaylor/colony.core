@@ -47,7 +47,7 @@ class Timer : public CounterCallback_
 {
 protected:
     /// The timer's tick source
-    TimerManager & m_timingSource;
+    TimerManager* m_timingSource;
     
     /// Current count
     unsigned long           m_count;
@@ -56,6 +56,8 @@ public:
     /// Constructor    
     Timer( TimerManager& timingSource );
 
+    /// Constructor. Alternate constructor - that defers the assignment of the timing source    
+    Timer();
 
 public:
     /** Starts the timer with an initial count down count duration of
@@ -69,6 +71,11 @@ public:
      */
     virtual void stop() noexcept;
 
+public:
+    /** Sets the timing source.  This method CAN ONLY BE CALLED when the
+        timer is has never been started or it has been stopped
+     */
+    virtual void setTimingSource( TimerManager& timingSource ) noexcept;
 
 protected:  // CounterCallback_ API
     /// See Cpl::System::CounterCallback_
