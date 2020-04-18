@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_Model_Point_h_
-#define Cpl_Rte_Model_Point_h_
+#ifndef Cpl_Dm_Model_Point_h_
+#define Cpl_Dm_Model_Point_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -29,8 +29,8 @@
     i.e. between 1 and 127.  Zero and negative values ARE Reserved by the RTE
     Engine.
  */
-#ifndef OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID
-#define OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID            1
+#ifndef OPTION_CPL_DM_MODEL_POINT_STATE_INVALID
+#define OPTION_CPL_DM_MODEL_POINT_STATE_INVALID            1
 #endif
 
 
@@ -79,7 +79,7 @@ public:
     {
     public:
         /// Generic callback for the readModifyWrite() operation
-        virtual RmwCallbackResult_T genericCallback( void*  data, 
+        virtual RmwCallbackResult_T genericCallback( void* data,
                                                      int8_t validState ) noexcept = 0;
 
     public:
@@ -129,11 +129,12 @@ public:
     /** This method sets the invalid state of the Model Point. Any value
         greater zero indicates represent 'invalid'. If a zero or negative
         values is specified, the method will treat the value as
-        'OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID'.
+        'OPTION_CPL_DM_MODEL_POINT_STATE_INVALID'.
 
         The application is free define/apply its own meaning to the set of
         'invalid-values'.  The value MUST be greater than zero, i.e. between
-        1 and 127.  Zero and negative values ARE Reserved by the RTE Engine.
+        1 and 127.  Zero and negative values ARE Reserved by the Data Model
+        Engine.
 
         The method returns the Model Point's sequence number after updating
         the valid state.
@@ -150,7 +151,7 @@ public:
               the new lock state is applied
 
      */
-    virtual uint16_t setInvalidState( int8_t        newInvalidState, 
+    virtual uint16_t setInvalidState( int8_t        newInvalidState,
                                       LockRequest_T lockRequest = eNO_REQUEST ) noexcept = 0;
 
     /// Returns the Model Point's actual Valid/Invalid state value
@@ -162,7 +163,7 @@ public:
     /** This method is used to mark the element's data as invalid.  Note: See
         setInvalidState() for details about the lockRequest.
      */
-    inline uint16_t setInvalid( LockRequest_T lockRequest = eNO_REQUEST ) noexcept { return setInvalidState( OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID, lockRequest ); }
+    inline uint16_t setInvalid( LockRequest_T lockRequest = eNO_REQUEST ) noexcept { return setInvalidState( OPTION_CPL_DM_MODEL_POINT_STATE_INVALID, lockRequest ); }
 
     /** Short-hand method to improve readability for testing the a return invalid
         state for 'valid'
@@ -199,9 +200,9 @@ public:
 
         \endcode
      */
-    virtual bool toJSON( char*  dst, 
-                         size_t dstSize, 
-                         bool&  truncated, 
+    virtual bool toJSON( char* dst,
+                         size_t dstSize,
+                         bool& truncated,
                          bool   verbose=true ) noexcept = 0;
 
 
@@ -260,9 +261,9 @@ public:
         The method optionally return the Model Point's sequence number at the
         time of the export.
      */
-    virtual size_t exportData( void*     dstDataStream, 
-                               size_t    maxDstLength, 
-                               uint16_t* retSequenceNumber=0, 
+    virtual size_t exportData( void* dstDataStream,
+                               size_t    maxDstLength,
+                               uint16_t* retSequenceNumber=0,
                                bool      includeLockedState = false ) const noexcept = 0;
 
     /** This method is used to populate the Model Point's data content from the
@@ -284,9 +285,9 @@ public:
 
         The method ALWAYS triggers a change notification(s) for the Model Point
      */
-    virtual size_t importData( const void* srcDataStream, 
-                               size_t      srcLength, 
-                               uint16_t*   retSequenceNumber=0, 
+    virtual size_t importData( const void* srcDataStream,
+                               size_t      srcLength,
+                               uint16_t* retSequenceNumber=0,
                                bool        includeLockedState = false ) noexcept = 0;
 
     /** Returns the size, in bytes, of the element's data content.
@@ -301,6 +302,24 @@ public:
               data content.
      */
     virtual size_t getExternalSize( bool includeLockedState = false ) const = 0;
+
+
+public:
+    /** This method is used to subscribe to on-change notification in a GENERIC
+        manner. This means the on-change callback notification WILL NOT be type 
+        specific.  USE WITH CAUTION - using type specific callbacks is the 
+        preferred usage.
+
+        See the attach() method below for additional details of subscribing
+     */
+    virtual void genericAttach( SubscriberApi& observer,
+                                uint16_t       initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept = 0;
+
+    /** This is method is used to detach a GENERIC Subscriber from a Model Point.  
+    
+        See the detach() method below for additional details of subscribing
+     */
+    virtual void genericDetach( SubscriberApi& observer ) noexcept = 0;
 
 
 protected:
@@ -340,8 +359,8 @@ protected:
            when coping the data from 'srcData'
         3)
      */
-    virtual uint16_t write( const void*   srcData, 
-                            size_t        srcSize, 
+    virtual uint16_t write( const void* srcData,
+                            size_t        srcSize,
                             LockRequest_T lockRequest = eNO_REQUEST ) noexcept = 0;
 
     /** This method is used to perform a Read-Modify-Write operation on the
@@ -373,7 +392,7 @@ protected:
               specific read, write, read-modify-write methods in addition or in
               lieu of the read/write methods in this interface.
      */
-    virtual uint16_t readModifyWrite( GenericRmwCallback& callbackClient, 
+    virtual uint16_t readModifyWrite( GenericRmwCallback& callbackClient,
                                       LockRequest_T       lockRequest = eNO_REQUEST ) = 0;
 
 
@@ -401,8 +420,8 @@ protected:
         Subscriber will get an 'immediate' change notification.
 
         The callbacks for the Change Notifications are called as part of the
-        RTE's Mailbox server.  As part of the asynchronous processing (timers,
-        ITC, EventFlags, etc.) of the RTE Mailbox server will also process
+        Data Model's Mailbox server.  As part of the asynchronous processing (timers,
+        ITC, EventFlags, etc.) of the Data Model Mailbox server will also process
         all pending Change Notification and invoke the call backs.  What does
         that all mean?  The Change notifications are "local" to the Subscriber's
         thread very similar to how the Cpl::Timers work.  It also means that
@@ -416,10 +435,10 @@ protected:
               subscribers will have received change notification for the Model
               Point's current value.
      */
-    virtual void attach( SubscriberApi& observer, 
+    virtual void attach( SubscriberApi& observer,
                          uint16_t       initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept = 0;
 
-    /** This method is used to detach a Subscriber to a Model Point.  See the
+    /** This method is used to detach a Subscriber from a Model Point.  See the
         attach() method for more details about the Subscription/Change
         Notification mechanism.
 
@@ -450,7 +469,7 @@ public:
 
         This method is Thread Safe
      */
-    virtual void processSubscriptionEvent_( SubscriberApi& subscriber, 
+    virtual void processSubscriptionEvent_( SubscriberApi& subscriber,
                                             Event_T        event ) noexcept =0;
 
 
@@ -538,9 +557,9 @@ public:
 
         See Cpl::Dm::ModelDatabaseApi::fromJSON() method for JSON format.
      */
-    virtual bool fromJSON_( JsonVariant&       src, 
-                            LockRequest_T      lockRequest, 
-                            uint16_t&          retSequenceNumber, 
+    virtual bool fromJSON_( JsonVariant& src,
+                            LockRequest_T      lockRequest,
+                            uint16_t& retSequenceNumber,
                             Cpl::Text::String* errorMsg ) noexcept = 0;
 
 
@@ -562,7 +581,7 @@ class ModelPointRmwCallback : public ModelPoint::GenericRmwCallback
 {
 public:
     /// Type safe change read-modify-write function.  See Cpl::Dm::ModelPoint
-    virtual ModelPoint::RmwCallbackResult_T callback( DATA&  data, 
+    virtual ModelPoint::RmwCallbackResult_T callback( DATA& data,
                                                       int8_t validState ) noexcept = 0;
 
 public:
@@ -571,8 +590,10 @@ public:
 
 public:
     /// See Cpl::Dm::ModelPoint
-    ModelPoint::RmwCallbackResult_T genericCallback( void*  data, 
-                                                     int8_t validState ) noexcept { return callback( *( ( DATA*) data ), validState ); }
+    ModelPoint::RmwCallbackResult_T genericCallback( void* data,
+                                                     int8_t validState ) noexcept {
+        return callback( *( (DATA*)data ), validState );
+    }
 };
 
 

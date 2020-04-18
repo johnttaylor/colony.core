@@ -17,7 +17,7 @@ using namespace Cpl::Itc;
 
 
 ///////////////////
-CloseSync::CloseSync( PostApi& myMbox )
+CloseSync::CloseSync( PostApi& myMbox ) noexcept
     :OpenSync( myMbox )
 {
 }

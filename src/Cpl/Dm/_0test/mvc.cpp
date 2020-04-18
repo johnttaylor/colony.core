@@ -23,7 +23,7 @@
    - Three client threads, one contains viewers, the other two contain writers
    - One master thread (which the main thread)
 */
-// Create my RTE mailboxes
+// Create my Data Model mailboxes
 static MailboxServer     t1Mbox_;
 static MailboxServer     t2Mbox_;
 static MailboxServer     t3Mbox_;
@@ -50,6 +50,8 @@ static Mp::Uint32       mp_plum_( modelDb_, info_mp_plum_ );
 #define VIEWER_ORANGE1_END_VALUE    101
 #define VIEWER_CHERRY1_END_VALUE    11
 #define VIEWER_PLUM1_END_VALUE      101
+#define GENERIC_VIEWER_END_COUNT    (VIEWER_APPLE1_END_VALUE+VIEWER_ORANGE1_END_VALUE+VIEWER_CHERRY1_END_VALUE)
+
 
 ////////////////////////////////////////////////////////////////////////////////
 TEST_CASE( "mvc", "[mvc]" )
@@ -62,7 +64,7 @@ TEST_CASE( "mvc", "[mvc]" )
     //Cpl::System::Thread* t3 = Cpl::System::Thread::create( t3Mbox_, "ReaderModifyWriters" );
 
     // Create my viewers, writers
-#define NUM_INSTANCES   11
+#define NUM_INSTANCES   12
     Viewer viewer_apple1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_, VIEWER_APPLE1_END_VALUE );
     Viewer viewer_apple2( t2Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_, VIEWER_APPLE2_END_VALUE );
     Writer writer_apple1( t2Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_, 10, 1, VIEWER_APPLE1_END_VALUE, 1 );
@@ -78,6 +80,8 @@ TEST_CASE( "mvc", "[mvc]" )
     Viewer viewer_plum1( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_plum_, VIEWER_PLUM1_END_VALUE );
     Rmw rmw_plum1( t2Mbox_, Cpl::System::Thread::getCurrent(), mp_plum_, 1, 1, VIEWER_PLUM1_END_VALUE * 2, 1 );
 
+    GenericViewer generic_viewer( t1Mbox_, Cpl::System::Thread::getCurrent(), mp_apple_, mp_orange_, mp_cherry_, GENERIC_VIEWER_END_COUNT );
+
 
     // Open my viewers, writers
     viewer_apple1.open();
@@ -85,6 +89,7 @@ TEST_CASE( "mvc", "[mvc]" )
     viewer_orange1.open();
     viewer_cherry1.open();
     viewer_plum1.open();
+    generic_viewer.open();
     writer_apple1.open();
     writer_apple2.open();
     writer_orange1.open();
@@ -104,14 +109,17 @@ TEST_CASE( "mvc", "[mvc]" )
     REQUIRE( viewer_orange1.m_lastValue == VIEWER_ORANGE1_END_VALUE );
     REQUIRE( viewer_cherry1.m_lastValue == VIEWER_CHERRY1_END_VALUE );
     REQUIRE( viewer_plum1.m_lastValue >= VIEWER_PLUM1_END_VALUE );
+    REQUIRE( generic_viewer.m_mpNotificationCount >= GENERIC_VIEWER_END_COUNT );
 
     CPL_SYSTEM_TRACE_MSG( SECT_, ("viewer_apple1(%p). m_lastValue=%lu (expected == %lu)", &viewer_apple1, viewer_apple1.m_lastValue, VIEWER_APPLE1_END_VALUE) );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("viewer_apple2(%p). m_lastValue=%lu (expected >= %lu)", &viewer_apple2, viewer_apple2.m_lastValue, VIEWER_APPLE2_END_VALUE) );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("viewer_orange1(%p). m_lastValue=%lu (expected == %lu)", &viewer_orange1, viewer_orange1.m_lastValue, VIEWER_ORANGE1_END_VALUE) );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("viewer_cherry1(%p). m_lastValue=%lu (expected == %lu)", &viewer_cherry1, viewer_cherry1.m_lastValue, VIEWER_CHERRY1_END_VALUE) );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ("viewer_plum1(%p). m_lastValue=%lu (expected >= %lu)", &viewer_plum1, viewer_plum1.m_lastValue, VIEWER_PLUM1_END_VALUE) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "viewer_plum1(%p). m_lastValue=%lu (expected >= %lu)", &viewer_plum1, viewer_plum1.m_lastValue, VIEWER_PLUM1_END_VALUE ) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("generic_viewer(%p). m_notifCount=%lu (expected >= %lu)", &generic_viewer, generic_viewer.m_mpNotificationCount, GENERIC_VIEWER_END_COUNT ) );
 
     // Close my viewers, writers, 
+    generic_viewer.close();
     viewer_apple1.close();
     viewer_apple2.close();
     viewer_orange1.close();

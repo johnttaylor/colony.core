@@ -25,7 +25,7 @@ static char emptyString_[1] = { '\0' };
 
 ///////////////////////////////////////////////////////////////////////////////
 Cpl::Dm::Mp::String::String( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::StaticInfo& staticInfo, size_t maxLength )
-    :ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_RTE_MODEL_POINT_STATE_INVALID )
+    :ModelPointCommon_( myModelBase, &m_data, staticInfo, OPTION_CPL_DM_MODEL_POINT_STATE_INVALID )
     , m_data( { new( std::nothrow ) char[maxLength + 1], 0, maxLength } )
 {
     // Throw a fatal error if global parse buffer is too small

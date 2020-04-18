@@ -36,7 +36,7 @@ protected:
 
 public:
     /// Constructor
-    OpenSync( PostApi& myMbox );
+    OpenSync( PostApi& myMbox ) noexcept;
 
 
 public:

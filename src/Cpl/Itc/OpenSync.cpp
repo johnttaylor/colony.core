@@ -17,7 +17,7 @@ using namespace Cpl::Itc;
 
 
 ///////////////////
-OpenSync::OpenSync( PostApi& myMbox )
+OpenSync::OpenSync( PostApi& myMbox ) noexcept
     :m_mbox( myMbox )
 {
 }

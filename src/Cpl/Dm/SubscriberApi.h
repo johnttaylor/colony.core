@@ -1,5 +1,5 @@
-#ifndef Cpl_Rte_SubscriberApi_h_
-#define Cpl_Rte_SubscriberApi_h_
+#ifndef Cpl_Dm_SubscriberApi_h_
+#define Cpl_Dm_SubscriberApi_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -23,7 +23,7 @@ namespace Dm {
 /// Forward reference to a Model point -->used to avoid circular dependencies
 class ModelPoint;
 
-/// Forward reference to the RTE Mailbox server -->used to avoid circular dependencies
+/// Forward reference to the Data Model Mailbox server -->used to avoid circular dependencies
 class NotificationApi_;
 
 

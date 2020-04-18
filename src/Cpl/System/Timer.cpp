@@ -11,6 +11,7 @@
 /** @file */
 
 #include "Timer.h"
+#include "Assert.h"
 
 
 ///
@@ -18,24 +19,34 @@ using namespace Cpl::System;
 
 /////////////////////////////
 Timer::Timer( TimerManager& timingSource )
-    :m_timingSource( timingSource )
+    :m_timingSource( &timingSource )
     , m_count( 0 )
 {
 }
 
+Timer::Timer()
+    : m_timingSource( 0 )
+    , m_count( 0 )
+{
+}
+void Timer::setTimingSource( TimerManager& timingSource ) noexcept
+{
+    m_timingSource = &timingSource;
+}
 
 /////////////////////////////
 void Timer::start( unsigned long timerDurationInMilliseconds ) noexcept
 {
-
-    m_timingSource.detach( *this );
-    m_count = m_timingSource.msecToCounts( timerDurationInMilliseconds );
-    m_timingSource.attach( *this );
+    CPL_SYSTEM_ASSERT( m_timingSource );
+    m_timingSource->detach( *this );
+    m_count = m_timingSource->msecToCounts( timerDurationInMilliseconds );
+    m_timingSource->attach( *this );
 }
 
 void Timer::stop() noexcept
 {
-    m_timingSource.detach( *this );
+    CPL_SYSTEM_ASSERT( m_timingSource );
+    m_timingSource->detach( *this );
 }
 
 
