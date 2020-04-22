@@ -35,13 +35,13 @@ protected:
     Cpl::Container::DList<SubscriberApi>    m_subscribers;
 
     /// Pointer to the Model Point's static information
-    const StaticInfo& m_staticInfo;
+    const StaticInfo&                       m_staticInfo;
 
     /// Reference to the containing Model Base
-    ModelDatabase& m_modelDatabase;
+    ModelDatabase&                          m_modelDatabase;
 
     /// Reference to my Data
-    void* m_dataPtr;
+    void*                                   m_dataPtr;
 
     /// Sequence number used for tracking changes in the Point data
     uint16_t                                m_seqNum;

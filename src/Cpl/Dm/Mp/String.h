@@ -57,7 +57,7 @@ public:
 
 protected:
     /// Storage for the MP's data
-    Data                m_data;
+    Data* m_data;
 
 public:
     /// Constructor.  Invalid MP. The 'maxLength' specifies the size, in bytes, of the string storage EXCLUDING the null terminator
@@ -140,6 +140,13 @@ public:
 
     /// See Cpl::Dm::ModelPoint.  
     size_t getInternalDataSize_() const noexcept;
+
+    /// See Cpl::Dm::ModelPoint.  
+    bool importMetadata_( const void* srcDataStream, size_t& bytesConsumed ) noexcept;
+
+    /// See Cpl::Dm::ModelPoint.  
+    bool exportMetadata_( void* dstDataStream, size_t& bytesAdded ) const noexcept;
+
 };
 
 
