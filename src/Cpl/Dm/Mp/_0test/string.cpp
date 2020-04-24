@@ -229,6 +229,20 @@ TEST_CASE( "string-export", "[string-export]" )
     REQUIRE( ModelPoint::IS_VALID( valid ) == true );
     REQUIRE( dataValue.stringLen == strlen( "13.99F" ) );
 
+    // Unwise - but valid Export/Import
+    b = mp_apple_.exportData( streamBuffer, sizeof( streamBuffer ) );
+    REQUIRE( b > 0 );
+    b = mp_orange_.importData( streamBuffer, sizeof( streamBuffer ) );
+    REQUIRE( b > 0 );   // This will work because orange has large maxLen than apple
+    REQUIRE( mp_orange_.getSize() == ORANGE_MAX_SIZE );
+
+    // Invalid Export/Import
+    b = mp_orange_.exportData( streamBuffer, sizeof( streamBuffer ) );
+    REQUIRE( b > 0 );
+    b = mp_apple_.importData( streamBuffer, sizeof( streamBuffer ) );
+    REQUIRE( b == 0 );   
+    REQUIRE( mp_apple_.getSize() == APPLE_MAX_SIZE );
+
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
 }
 

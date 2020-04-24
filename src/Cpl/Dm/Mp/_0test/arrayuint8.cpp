@@ -137,9 +137,9 @@ TEST_CASE( "arrayuint8-get" )
     REQUIRE( s == ORANGE_NUM_ELEMENTS * sizeof( uint8_t ) );
 
     s = mp_apple_.getExternalSize();
-    REQUIRE( s == APPLE_NUM_ELEMENTS * sizeof( uint8_t ) + sizeof( int8_t ) );
+    REQUIRE( s == APPLE_NUM_ELEMENTS * sizeof( uint8_t ) + sizeof( int8_t ) + sizeof( size_t ) * 2 + sizeof( uint8_t* ) );
     s = mp_orange_.getExternalSize();
-    REQUIRE( s == ORANGE_NUM_ELEMENTS * sizeof( uint8_t ) + sizeof( int8_t ) );
+    REQUIRE( s == ORANGE_NUM_ELEMENTS * sizeof( uint8_t ) + sizeof( int8_t ) + sizeof( size_t ) * 2 + sizeof( uint8_t* ) );
 
     const char* mpType = mp_apple_.getTypeAsText();
     CPL_SYSTEM_TRACE_MSG( SECT_, ("typeText: [%s]", mpType) );
@@ -194,6 +194,7 @@ TEST_CASE( "arrayuint8-export" )
     REQUIRE( b != 0 );
     REQUIRE( b == mp_apple_.getExternalSize() );
     REQUIRE( seqNum + 1 == seqNum2 );
+    REQUIRE( mp_apple_.getNumElements() == APPLE_NUM_ELEMENTS );
 
     // Read import value/state
     valid = mp_apple_.read( value2, APPLE_NUM_ELEMENTS );
@@ -241,6 +242,10 @@ TEST_CASE( "arrayuint8-export" )
     REQUIRE( value2[2] == 3 );
     REQUIRE( value2[3] == 2 );
     REQUIRE( value2[4] == 1 );
+
+    // Invalid import
+    b = mp_orange_.importData( streamBuffer, sizeof( streamBuffer ) );
+    REQUIRE( b == 0 );
 
 
     REQUIRE( Cpl::System::Shutdown_TS::getAndClearCounter() == 0u );
