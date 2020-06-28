@@ -57,7 +57,7 @@ public:
 
 protected:
     /// Storage for the MP's data
-    Data                m_data;
+    Data m_data;
 
 public:
     /// Constructor.  Invalid MP. The 'maxLength' specifies the size, in bytes, of the string storage EXCLUDING the null terminator
@@ -75,7 +75,6 @@ public:
 
     /// Type safe read. See Cpl::Dm::ModelPoint
     virtual int8_t read( Cpl::Text::String& dstData, uint16_t* seqNumPtr=0 ) const noexcept;
-
 
     /// Type safe write. See Cpl::Dm::ModelPoint
     virtual uint16_t write( const Data& srcData, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
@@ -140,6 +139,13 @@ public:
 
     /// See Cpl::Dm::ModelPoint.  
     size_t getInternalDataSize_() const noexcept;
+
+    /// See Cpl::Dm::ModelPoint.  
+    bool importMetadata_( const void* srcDataStream, size_t& bytesConsumed ) noexcept;
+
+    /// See Cpl::Dm::ModelPoint.  
+    bool exportMetadata_( void* dstDataStream, size_t& bytesAdded ) const noexcept;
+
 };
 
 

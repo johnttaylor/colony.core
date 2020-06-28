@@ -541,11 +541,51 @@ public:
         This method is NOT Thread Safe.
 
         This method returns the "internal size" of the Model Point's data point.
-        This length (when applicable) includes any 'meta/extra' data that is
+        This length (when applicable) INCLUDES ANY 'META/EXTRA' DATA that is
         not exposed to the Model Point consumers - but is used with the
         internal import()/export() methods.
    */
     virtual size_t getInternalDataSize_() const noexcept = 0;
+
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Dm namespace.  The Application should
+        NEVER call this method.
+
+        This method is NOT Thread Safe.
+
+        This method is used to export meta data when exporting a model
+        point.  If there is error in exporting the metadata false is returned;
+        else true is returned.
+
+        A default implementation is provided that always returns true, i.e. for
+        model points that do not have metadata.
+
+        NOTE: The overall size of the destination has been validated with respect
+              holding both the Model Point's metadata and the data - so the 
+              no 'dstLength' argument is passed/provided.
+    */
+    virtual bool exportMetadata_( void* dstDataStream, size_t& bytesAdded ) const noexcept { bytesAdded = 0;  return true; }
+
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::Dm namespace.  The Application should
+        NEVER call this method.
+
+        This method is NOT Thread Safe.
+
+        This method is used to import meta data when importing a model
+        point.  If the incoming meta data is 'not-valid/not-compatible' then
+        false is returned and the import operation will fail; else true is
+        returned.
+
+        A default implementation is provided that always returns true, i.e. for
+        model points that do not have metadata
+
+        NOTE: The overall size of the source has been validated with respect
+              containing both the Model Point's metadata and the data - so the 
+              no 'srcLength' argument is passed/provided.
+   */
+    virtual bool importMetadata_( const void* srcDataStream, size_t& bytesConsumed ) noexcept { bytesConsumed = 0;  return true; }
+
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::Dm namespace.  The Application should

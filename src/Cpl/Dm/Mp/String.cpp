@@ -15,8 +15,11 @@
 #include "Cpl/System/Assert.h"
 #include "Cpl/System/FatalError.h"
 #include <string.h>
+#include <new>
 
 #define ESTIMATED_JSON_OVERHEAD		128
+
+#define META_DATA_OVERHEAD          (1 + sizeof( String::Data ))    // Include the Metadata and space for the null terminator
 
 ///
 using namespace Cpl::Dm::Mp;
@@ -42,7 +45,7 @@ Cpl::Dm::Mp::String::String( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::Stati
     }
     else
     {
-        // For deterministic value - initialize data to 'empty string'Null pointer for initial value -->set initial value to an empty string
+        // For a deterministic value - initialize data to 'empty string'Null pointer for initial value -->set initial value to an empty string
         m_data.stringPtr[0] = '\0';
         m_data.stringLen    = 0;
     }
@@ -52,12 +55,6 @@ Cpl::Dm::Mp::String::String( Cpl::Dm::ModelDatabase& myModelBase, Cpl::Dm::Stati
     :ModelPointCommon_( myModelBase, &m_data, staticInfo, Cpl::Dm::ModelPoint::MODEL_POINT_STATE_VALID )
     , m_data( { new( std::nothrow ) char[maxLength + 1], 0, maxLength } )
 {
-    // Throw a fatal error if global parse buffer is too small
-    if ( ( OPTION_CPL_DM_MODEL_DATABASE_MAX_CAPACITY_JSON_DOC - ESTIMATED_JSON_OVERHEAD ) < maxLength )
-    {
-        Cpl::System::FatalError::logf( "Cpl::Dm::String().  Creating a string of size %lu which is greater than the fromString() parser buffer", maxLength );
-    }
-
     // Trapped failed to allocate memory -->silent fail and set string size to zero
     if ( m_data.stringPtr == 0 )
     {
@@ -96,8 +93,8 @@ int8_t Cpl::Dm::Mp::String::read( Cpl::Text::String& dstData, uint16_t* seqNumPt
 {
     Data dst;
     int  bufferMaxLength;
-    dst.stringPtr   = dstData.getBuffer( bufferMaxLength );
-    dst.maxLength   = bufferMaxLength;
+    dst.stringPtr = dstData.getBuffer( bufferMaxLength );
+    dst.maxLength = bufferMaxLength;
     return ModelPointCommon_::read( &dst, sizeof( Data ), seqNumPtr );
 }
 
@@ -199,9 +196,35 @@ size_t Cpl::Dm::Mp::String::getSize() const noexcept
 
 size_t Cpl::Dm::Mp::String::getInternalDataSize_() const noexcept
 {
-    return m_data.maxLength;
+    return m_data.maxLength + META_DATA_OVERHEAD;
 }
 
+
+bool Cpl::Dm::Mp::String::importMetadata_( const void* srcDataStream, size_t& bytesConsumed ) noexcept
+{
+    // Incoming data MUST fit with the previously allocated memory
+    String::Data* incoming = ( String::Data* ) srcDataStream;
+    if ( incoming->maxLength > m_data.maxLength || incoming->stringLen > m_data.maxLength )
+    {
+        return false;
+    }
+
+    // Capture the incoming string length and ensure that the incoming string data gets null terminated        
+    bytesConsumed                         = sizeof( String::Data );
+    m_data.stringLen                      = incoming->stringLen;
+    m_data.stringPtr[incoming->stringLen] = '\0';
+    return true;
+}
+
+bool Cpl::Dm::Mp::String::exportMetadata_( void* dstDataStream, size_t& bytesAdded ) const noexcept
+{
+    String::Data* dst = ( String::Data* ) dstDataStream;
+    dst->maxLength    = m_data.maxLength;
+    dst->stringLen    = m_validState == MODEL_POINT_STATE_VALID ? m_data.stringLen : 0;
+    dst->stringPtr    = 0;
+    bytesAdded        = sizeof( String::Data );
+    return true;
+}
 
 const void* Cpl::Dm::Mp::String::getImportExportDataPointer_() const noexcept
 {

@@ -211,28 +211,32 @@ size_t ModelPointCommon_::exportData( void* dstDataStream, size_t maxDstLength, 
 		// Do nothing if there is not enough space left in the destination stream
 		if ( maxDstLength >= getExternalSize() )
 		{
-			// Export Data
-			size_t dataSize = getInternalDataSize_();
-			memcpy( dstDataStream, getImportExportDataPointer_(), dataSize );
+			// Export metadata (if there is any)
+            size_t bytesAdded = 0;
+            if ( exportMetadata_( dstDataStream, bytesAdded ) )
+            {
+                // Export Data
+                uint8_t* dstPtr   = ( (uint8_t*)dstDataStream ) + bytesAdded;
+                size_t   dataSize = getSize();
+                memcpy( dstPtr, getImportExportDataPointer_(), dataSize );
 
-			// Export Valid State
-			uint8_t* ptr = (uint8_t*) dstDataStream;
-			memcpy( ptr + dataSize, &m_validState, sizeof( m_validState ) );
+                // Export Valid State
+                memcpy( dstPtr + dataSize, &m_validState, sizeof( m_validState ) );
 
-			// Export Locked state
-			if ( includeLockedState )
-			{
-				ptr =  (uint8_t*) dstDataStream;
-				memcpy( ptr + dataSize + sizeof( m_validState ), &m_locked, sizeof( m_locked ) );
-			}
+                // Export Locked state
+                if ( includeLockedState )
+                {
+                    memcpy( dstPtr + dataSize + sizeof( m_validState ), &m_locked, sizeof( m_locked ) );
+                }
 
-			// Return the Sequence number when requested
-			if ( retSeqNum )
-			{
-				*retSeqNum = m_seqNum;
-			}
+                // Return the Sequence number when requested
+                if ( retSeqNum )
+                {
+                    *retSeqNum = m_seqNum;
+                }
 
-			result = getExternalSize( includeLockedState );
+                result = getExternalSize( includeLockedState );
+            }
 		}
 
 		m_modelDatabase.unlock_();
@@ -250,28 +254,33 @@ size_t ModelPointCommon_::importData( const void* srcDataStream, size_t srcLengt
 		// Fail the import when there is not enough data left in the input stream
 		if ( getExternalSize() <= srcLength )
 		{
-			// Import Data
-			size_t dataSize = getInternalDataSize_();
-			memcpy( (void*) getImportExportDataPointer_(), srcDataStream, dataSize );
+			// Consume incoming metadata (if there is any)
+            size_t bytesConsumed = 0;
+            if ( importMetadata_( srcDataStream, bytesConsumed ) )
+            {
+                // Import Data
+                const uint8_t* srcPtr   = ( (const uint8_t*)srcDataStream ) + bytesConsumed;
+                size_t   dataSize = getSize();
+                memcpy( (void*)getImportExportDataPointer_(), srcPtr, dataSize );
 
-			// Import Valid State
-			uint8_t* ptr = (uint8_t*) srcDataStream;
-			memcpy( &m_validState, ptr + dataSize, sizeof( m_validState ) );
+                // Import Valid State
+                memcpy( &m_validState, srcPtr + dataSize, sizeof( m_validState ) );
 
-			// Import Locked state
-			if ( includeLockedState )
-			{
-				memcpy( &m_locked, ptr + dataSize + sizeof( m_validState ), sizeof( m_locked ) );
-			}
+                // Import Locked state
+                if ( includeLockedState )
+                {
+                    memcpy( &m_locked, srcPtr + dataSize + sizeof( m_validState ), sizeof( m_locked ) );
+                }
 
-			// Generate change notifications and return the Sequence number when requested
-			processChangeNotifications();
-			if ( retSeqNum )
-			{
-				*retSeqNum = m_seqNum;
-			}
+                // Generate change notifications and return the Sequence number when requested
+                processChangeNotifications();
+                if ( retSeqNum )
+                {
+                    *retSeqNum = m_seqNum;
+                }
 
-			result = getExternalSize( includeLockedState );
+                result = getExternalSize( includeLockedState );
+            }
 		}
 
 		m_modelDatabase.unlock_();
