@@ -48,7 +48,7 @@ base_release.firstobjs = unit_test_objects
 # Set project specific 'optimized' options
 optimzed_release          = BuildValues()    # Do NOT comment out this line
 optimzed_release.cflags   = '/O2'
-optimzed_release.linklibs = r'{}\xpkgs\catch\src\Catch\libs\x86\windows\vc14\cpp11\32bit\release\library.lib'.format( NQBP_WORK_ROOT() )
+optimzed_release.linklibs = ''
 
 # Set project specific 'debug' options
 debug_release          = BuildValues()       # Do NOT comment out this line

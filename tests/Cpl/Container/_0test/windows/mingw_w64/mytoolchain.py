@@ -49,8 +49,7 @@ base_release.firstobjs = unit_test_objects
 # Set project specific 'optimized' options
 optimzed_release           = BuildValues()    # Do NOT comment out this line
 optimzed_release.cflags    = '-O3'
-optimzed_release.linklibs  = r'{}\xpkgs\catch\src\Catch\libs\x86\windows\mingw_64\cpp11\32bit\release\library.a'.format( NQBP_WORK_ROOT() )
-optimzed_release.linklibs += ' -lstdc++'
+optimzed_release.linklibs  = '-lstdc++'
 
 # Set project specific 'debug' options
 debug_release           = BuildValues()       # Do NOT comment out this line
