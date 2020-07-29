@@ -22,7 +22,7 @@
                                         "         1         2         3         4         5         6         7         8"
                                         "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 */
-#define CPLDMTSHELL_USAGE_DM_		    "dm ls [<filter>]\n" \
+#define CPLDMTSHELL_USAGE_DM_           "dm ls [<filter>]\n" \
                                         "dm write {<mp-json>}\n" \
                                         "dm read <mpname>\n" 
 
