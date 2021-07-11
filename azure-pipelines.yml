@@ -22,12 +22,6 @@ variables:
 trigger:
 - develop
 
-steps:
-- checkout: self
-  clean: true
-  fetchDepth: 1
-  path: colony.core
-
 jobs:
   - job: WindozeBuild
     timeoutInMinutes: 180
@@ -38,5 +32,10 @@ jobs:
         - agent.name -equals Picaso
         
     steps:
+      - checkout: self
+        clean: true
+        fetchDepth: 1
+        path: colony.core
+
      - script: colony.core/top/build_all_windows.bat $(myBuildType) $(Build.BuildNumber)
        displayName: 'Windoze build'
