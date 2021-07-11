@@ -37,5 +37,5 @@ jobs:
         fetchDepth: 1
         path: colony.core
 
-      - script: colony.core/top/build_all_windows.bat $(myBuildType) $(Build.BuildNumber)
+      - script: colony.core\top\build_all_windows.bat $(myBuildType) $(Build.BuildNumber)
         displayName: 'Windoze build'
