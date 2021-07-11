@@ -3,12 +3,40 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+# Set build number.
+name: $(Date:yyMMdd)$(Rev:rrr)
+
+  
+# Set pipeline variables
+variables:
+- name: myBuildType
+  ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
+    value: 'pr'
+  ${{ if and( ne(variables['Build.Reason'], 'PullRequest'), eq( variables['Build.SourceBranchName'], 'master')) }}:  
+    value: 'master'
+  ${{ if and( ne(variables['Build.Reason'], 'PullRequest'), eq( variables['Build.SourceBranchName'], 'develop')) }}:  
+    value: 'develop'
+  ${{ if and( ne(variables['Build.Reason'], 'PullRequest'), ne( variables['Build.SourceBranchName'], 'develop'), ne( variables['Build.SourceBranchName'], 'master'))  }}:  
+    value: 'unknown'
+    
 trigger:
 - develop
 
-pool:
-  vmImage: ubuntu-latest
-
 steps:
-- script: top/build_all_linux.sh
-  displayName: 'Linux build'
+- checkout: self
+  clean: true
+  fetchDepth: 1
+  path: colony.core
+
+jobs:
+  - job: WindozeBuild
+    timeoutInMinutes: 180
+    displayName: 'Run Windows build script'
+    pool:
+      name: Default
+      demands:
+        - agent.name -equals Picaso
+        
+    steps:
+     - script: colony.core/top/build_all_windows.bat $(myBuildType) $(Build.BuildNumber)
+       displayName: 'Windoze build'
