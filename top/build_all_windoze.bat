@@ -8,9 +8,15 @@
 set _TOPDIR=%~dp0
 
 :: Create the outcast workspace
-orc.py --clean ../
+cd
+dir ..\
+echo:orc.py --clean ..\
+orc.py --clean ..\
+dir ..\
 
 :: Get dependent packages
+cd
+echo:orc.py -v getdeps . 
 orc.py -v getdeps . 
 
 :: Build Visual Studio 32-bit projects
