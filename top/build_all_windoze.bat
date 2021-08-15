@@ -10,8 +10,8 @@ set _TOPDIR=%~dp0
 :: Create the outcast workspace
 cd
 dir ..\
-echo:orc.py --clean ..\
-orc.py --clean ..\
+echo:orc.py mkwrk --clean ..\
+orc.py mkwrk --clean ..\
 dir ..\
 
 :: Get dependent packages
