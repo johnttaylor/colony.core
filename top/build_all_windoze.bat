@@ -7,6 +7,9 @@
 
 set _TOPDIR=%~dp0
 
+:: Create the outcast workspace
+orc.py --clean ../
+
 :: Get dependent packages
 orc.py -v getdeps . 
 
