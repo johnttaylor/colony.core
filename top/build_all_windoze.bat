@@ -7,6 +7,9 @@
 
 set _TOPDIR=%~dp0
 
+:: Get dependent packages
+orc.py -v getdeps . 
+
 :: Build Visual Studio 32-bit projects
 call %_TOPDIR%..\env.bat 1
 echo:%1 %2
