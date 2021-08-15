@@ -20,6 +20,7 @@ echo:orc.py -v getdeps .
 orc.py -v getdeps . 
 
 :: Build Visual Studio 32-bit projects
+echo on
 call %_TOPDIR%..\env.bat 1
 echo:%1 %2
 set
