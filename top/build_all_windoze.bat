@@ -23,8 +23,6 @@ orc.py -v getdeps .
 echo on
 call %_TOPDIR%..\env.bat 1
 echo:%1 %2
-set
-exit /B 0
 
 cd %_TOPDIR%..\tests
 %_TOPDIR%..\..\xpkgs\nqbp\other\bob.py  -v vc12 -t --try win32
