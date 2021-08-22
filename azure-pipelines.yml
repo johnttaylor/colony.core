@@ -39,3 +39,10 @@ jobs:
 
       - script: cd && top\build_all_windoze.bat $(myBuildType) $(Build.BuildNumber)
         displayName: 'Windoze build'
+  - job: autoOff
+    displayName: Auto-off
+    steps:
+      - checkout: none
+      - task: AzureCLI@2
+        inputs:
+          azureSubscription: 
