@@ -37,12 +37,6 @@ jobs:
         fetchDepth: 1
         path: colony.core
 
-      - script: cd && top\build_all_windoze.bat $(myBuildType) $(Build.BuildNumber)
-        displayName: 'Windoze build'
-  - job: autoOff
-    displayName: Auto-off
-    steps:
-      - checkout: none
-      - task: AzureCLI@2
-        inputs:
-          azureSubscription: 
+      - script: |
+          call c:\bin\cancel_shutdown.bat
+          call c:\bin\exec_and_trigger_shutdown.bat top\build_all_windoze.bat $(myBuildType) $(Build.BuildNumber)
