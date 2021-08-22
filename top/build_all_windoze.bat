@@ -27,8 +27,8 @@ echo:%1 %2
 cd %_TOPDIR%..\tests
 %_TOPDIR%..\..\xpkgs\nqbp\other\bob.py  -v vc12 -t --try win32
 IF ERRORLEVEL 1 EXIT /b 1
-%_TOPDIR%..\..\xpkgs\nqbp\other\bob.py  -v vc12 -t --try cpp11
-IF ERRORLEVEL 1 EXIT /b 1
+::%_TOPDIR%..\..\xpkgs\nqbp\other\bob.py  -v vc12 -t --try cpp11
+::IF ERRORLEVEL 1 EXIT /b 1
 
 :: Run unit tests
 cd %_TOPDIR%\..\tests
