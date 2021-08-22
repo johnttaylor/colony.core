@@ -24,9 +24,6 @@ echo on
 call %_TOPDIR%..\env.bat 1
 echo:%1 %2
 
-:: FIXME: DELETE AFTER TESTING FOR AUTO-SHUTDOWN IS DONE
-exit /b 1
-
 cd %_TOPDIR%..\tests
 %_TOPDIR%..\..\xpkgs\nqbp\other\bob.py  -v vc12 -t --try win32
 IF ERRORLEVEL 1 EXIT /b 1
