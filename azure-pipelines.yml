@@ -38,6 +38,7 @@ jobs:
         path: colony.core
 
       - script: |
-         c:\bin\cancel_shutdown.bat
-         top\build_all_windoze.bat $(myBuildType) $(Build.BuildNumber)
-         c:\bin\trigger_shutdown.bat
+          dir c:\bin
+          c:\bin\cancel_shutdown.bat
+          top\build_all_windoze.bat $(myBuildType) $(Build.BuildNumber)
+          c:\bin\trigger_shutdown.bat
