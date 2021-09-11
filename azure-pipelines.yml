@@ -30,10 +30,10 @@ jobs:
       - checkout: none
       - task: AzureCLI@1
         inputs:
-          azureSubscription: 'Azure-IntegerFox'
+          azureSubscription: Azure-IntegerFox
           scriptLocation: inlineScript
           inlineScript: |
-            addSpnToEnvironment: az vm start --resource-group Picasso_group --name Picasso
+            az vm start --resource-group Picasso_group --name Picasso
 
   - job: WindozeBuild
     condition: False
