@@ -4,7 +4,7 @@
 # https://aka.ms/yaml
 
 # Set build number.
-name: $(Date:yyMMdd)$(Rev:rrr)
+name: $(Build.BuildId)
 
   
 # Set pipeline variables
