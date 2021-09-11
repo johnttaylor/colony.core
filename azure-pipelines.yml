@@ -4,7 +4,7 @@
 # https://aka.ms/yaml
 
 # Set build number.
-name: $(Build.BuildId)
+name: $(Date:yyMMdd)$(Rev:rrr)
 
   
 # Set pipeline variables
@@ -52,7 +52,7 @@ jobs:
 
       - script: |
           call c:\bin\cancel_shutdown.bat
-          call c:\bin\exec_and_trigger_shutdown.bat top\build_all_windoze.bat $(myBuildType) $(Build.BuildId)
+          call c:\bin\exec_and_trigger_shutdown.bat top\build_all_windoze.bat $(myBuildType) $(Build.BuildNumber)
 
 #  - job: LinuxBuild
 #    timeoutInMinutes: 180
