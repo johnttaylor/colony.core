@@ -23,7 +23,21 @@ trigger:
 - develop
 
 jobs:
+  - job: StartServer
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+      - checkout: none
+      - task: AzureCLI@1
+        inputs:
+          azureSubscription: 'Azure Subscription 1'
+          scriptLocation: inlineScript
+          inlineScript: |
+            addSpnToEnvironment: az vm start --resource-group Picasso_group --name Picasso
+
   - job: WindozeBuild
+    condition: False
+    dependsOn: StartServer
     timeoutInMinutes: 180
     displayName: 'Run Windows build script'
     pool:
