@@ -53,3 +53,11 @@ jobs:
       - script: |
           call c:\bin\cancel_shutdown.bat
           call c:\bin\exec_and_trigger_shutdown.bat top\build_all_windoze.bat $(myBuildType) $(Build.BuildNumber)
+
+#  - job: LinuxBuild
+#    timeoutInMinutes: 180
+#    displayName: 'Linux build'
+#    pool:
+#      vmImage: ubuntu-latest
+#    steps:
+#      - script: top/build_all_linux.sh
