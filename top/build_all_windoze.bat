@@ -19,6 +19,11 @@ cd
 echo:orc.py -v getdeps . 
 orc.py -v getdeps . 
 
+:: Build linux projects (under WSL)
+pushd %_TOPDIR%..\
+wsl %_TOPDIR%/wsl_build.sh
+popd
+
 :: Build Visual Studio 32-bit projects
 echo on
 call %_TOPDIR%..\env.bat 1
