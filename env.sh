@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # This script sets up the PIM environment to use NQBP and the GCC compiler
-#
+# 
 # This script MUST BE 'sourced' since it sets environment variables
 #
 
