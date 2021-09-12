@@ -12,16 +12,16 @@ HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 export PATH=$PATH:./
 
 # Configure NQBP
-export NQBP_XPKG_MODEL=mixed
-export NQBP_PKG_ROOT=$HERE
-export NQBP_WORK_ROOT=$HERE/..
-export NQBP_XPKGS_ROOT=$HERE/xsrc
+export NQBP_XPKG_MODEL=outcast
+#export NQBP_PKG_ROOT=$HERE/../xpkg/nqbp
+#export NQBP_WORK_ROOT=$HERE/../xpkg
+export NQBP_XPKGS_ROOT=$HERE/../xpkgs
 export NQBP_BIN=$NQBP_XPKGS_ROOT/nqbp
 
 
 alias t="cd $HERE"
-alias bob="$HERE/xsrc/nqbp/other/bob.py"
-alias chuck="$HERE/xsrc/nqbp/other/chuck.py"
+alias bob="$NQBP_BIN/other/bob.py"
+alias chuck="$NQBP_BIN/other/chuck.py"
 
 # Assumes the GCC is already in the command path
 echo "Environment set (using native GCC compiler)"
