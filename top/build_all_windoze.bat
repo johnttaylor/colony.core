@@ -21,7 +21,7 @@ orc.py -v getdeps .
 
 :: Build linux projects (under WSL)
 pushd %_TOPDIR%..\
-wsl %_TOPDIR%/wsl_build.sh
+wsl -u john -d debian %_TOPDIR%/wsl_build.sh
 popd
 
 :: Build Visual Studio 32-bit projects
