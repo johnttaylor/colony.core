@@ -8,11 +8,13 @@ set -e
 #
 # usage: wsl_build.sh <bldnum>
 #
-# Example: wsl 32
+# Example: wsl_build.sh 32
 
 # setup the environment
-. ./env.sh
+pwd
+set
+source ./env.sh
 
 # Build all linux projects
 cd tests
-bob.py build -v linux  --bld-all -t
+$NQBP_BIN/other/bob.py -v linux  --bld-all -t --bldnum $1

@@ -13,8 +13,8 @@ export PATH=$PATH:./
 
 # Configure NQBP
 export NQBP_XPKG_MODEL=outcast
-#export NQBP_PKG_ROOT=$HERE/../xpkg/nqbp
-#export NQBP_WORK_ROOT=$HERE/../xpkg
+export NQBP_PKG_ROOT=$HERE
+export NQBP_WORK_ROOT=$HERE/..
 export NQBP_XPKGS_ROOT=$HERE/../xpkgs
 export NQBP_BIN=$NQBP_XPKGS_ROOT/nqbp
 
