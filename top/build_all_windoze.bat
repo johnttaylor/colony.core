@@ -20,8 +20,9 @@ echo:orc.py -v getdeps .
 orc.py -v getdeps . 
 
 :: Build linux projects (under WSL)
+FOR /F "tokens=*" %%g IN ('%_TOPDIR%win2wsl %_TOPDIR%') do (SET WSL_TOPDIR=%%g)
 pushd %_TOPDIR%..\
-wsl -u john -d debian %_TOPDIR%/wsl_build.sh
+wsl -u john -d debian %WSL_TOPDIR%/wsl_build.sh
 popd
 
 :: Build Visual Studio 32-bit projects
