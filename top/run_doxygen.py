@@ -60,7 +60,7 @@ filename  = "colony.core-library"
 
 # set the build info/number
 buildtype = 'private'
-builtnum  = 0
+buildnum  = 0
 debug     = False
 if ( len(sys.argv) > 3 and sys.argv[3] == 'debug' ):
     debug = True

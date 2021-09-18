@@ -17,8 +17,8 @@ echo:BUILD TYPE=%BUILD_TYPE%, BUILD_NUMBER=%BUILD_NUMBER%
 echo:
 
 :: Run Doxygen first 
-cd %_TOPDIR%..
-run_doxygen.py
+cd %_TOPDIR%
+run_doxygen.py %BUILD_TYPE% %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Create the outcast workspace
