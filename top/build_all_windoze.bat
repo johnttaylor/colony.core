@@ -18,7 +18,8 @@ echo:
 
 :: Run Doxygen first 
 cd %_TOPDIR%..
-run_doxygen
+run_doxygen.py
+IF ERRORLEVEL 1 EXIT /b 1
 
 :: Create the outcast workspace
 cd
