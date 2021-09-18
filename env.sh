@@ -25,3 +25,5 @@ alias chuck="$NQBP_BIN/other/chuck.py"
 
 # Assumes the GCC is already in the command path
 echo "Environment set (using native GCC compiler)"
+gcc --version
+
