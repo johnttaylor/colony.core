@@ -9,6 +9,8 @@ set _TOPDIR=%~dp0
 
 set BUILD_TYPE=%1
 set BUILD_NUMBER=%2
+IF %BUILD_TYPE%=="pr" set BUILD_NUMBER=0
+IF %BUILD_TYPE%=="unknown" set BUILD_NUMBER=0
 
 :: Create the outcast workspace
 cd
