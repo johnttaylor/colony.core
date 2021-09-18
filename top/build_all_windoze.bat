@@ -7,6 +7,9 @@
 
 set _TOPDIR=%~dp0
 
+set BUILD_TYPE=%1
+set BUILD_NUMBER=%2
+
 :: Create the outcast workspace
 cd
 dir ..\
@@ -23,7 +26,7 @@ orc.py -v getdeps .
 :: Note: Because of Windows/Linux/Git newline issues - we brute force the build script to have the correct newline characters
 FOR /F "tokens=*" %%g IN ('%_TOPDIR%win2wsl %_TOPDIR%') do (SET WSL_TOPDIR=%%g)
 pushd %_TOPDIR%..\
-wsl cd %WSL_TOPDIR%; dos2unix wsl_build.sh; cd ..; dos2unix env.sh; top/wsl_build.sh
+wsl cd %WSL_TOPDIR%; dos2unix wsl_build.sh; cd ..; dos2unix env.sh; top/wsl_build.sh %BUILD_NUMBER%
 popd
 
 :: Build Visual Studio 32-bit projects
@@ -32,7 +35,7 @@ call %_TOPDIR%..\env.bat 1
 echo:%1 %2
 
 cd %_TOPDIR%..\tests
-%_TOPDIR%..\..\xpkgs\nqbp\other\bob.py  -v vc12 -t --try win32
+%_TOPDIR%..\..\xpkgs\nqbp\other\bob.py  -v vc12 -t --try win32 --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 ::%_TOPDIR%..\..\xpkgs\nqbp\other\bob.py  -v vc12 -t --try cpp11
 ::IF ERRORLEVEL 1 EXIT /b 1
