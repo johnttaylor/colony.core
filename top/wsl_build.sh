@@ -15,4 +15,4 @@ source ./env.sh
 
 # Build all linux projects
 cd tests
-$NQBP_BIN/other/bob.py -v linux  --bld-all -vt --bldnum $1
+$NQBP_BIN/other/bob.py -v linux  --bld-all -t --bldnum $1

@@ -15,6 +15,9 @@ set NQBP_WORK_ROOT=%_HERE%..\
 set NQBP_XPKGS_ROOT=%_HERE%xsrc
 set NQBP_BIN=%NQBP_WORK_ROOT%xpkgs\nqbp
 
+:: Make sure the Outcast environment is setup.  Assumes that the Outcast batch file is in command path
+call outcast.bin
+
 :: Set helper macros
 doskey top=cd %_HERE%
 doskey t=cd %_HERE%
