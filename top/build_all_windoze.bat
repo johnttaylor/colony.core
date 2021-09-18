@@ -20,9 +20,10 @@ echo:orc.py -v getdeps .
 orc.py -v getdeps . 
 
 :: Build linux projects (under WSL)
+:: Note: Because of Windows/Linux/Git newline issues - we brute force the build script to have the correct newline characters
 FOR /F "tokens=*" %%g IN ('%_TOPDIR%win2wsl %_TOPDIR%') do (SET WSL_TOPDIR=%%g)
 pushd %_TOPDIR%..\
-wsl cd %WSL_TOPDIR%; dos2unix wsl_build.sh; cd ..; top/wsl_build.sh
+wsl cd %WSL_TOPDIR%; dos2unix wsl_build.sh; cd ..; dos2unix env.sh; top/wsl_build.sh
 popd
 
 :: Build Visual Studio 32-bit projects
