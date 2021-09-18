@@ -20,10 +20,10 @@ echo:
 cd %_TOPDIR%
 run_doxygen.py %BUILD_TYPE% %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
+cd ..
 
 :: Create the outcast workspace
 cd
-dir ..\
 set cmd=orc.py mkwrk --clean ..\
 echo:%cmd%
 %cmd%
