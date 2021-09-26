@@ -20,10 +20,9 @@ echo:
 cd %_TOPDIR%
 run_doxygen.py %BUILD_TYPE% %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
-cd ..
 
 :: Create the outcast workspace
-cd
+cd %_TOPDIR%..
 set cmd=orc.py mkwrk --clean ..\
 echo:%cmd%
 %cmd%
@@ -45,16 +44,16 @@ echo on
 call %_TOPDIR%..\env.bat 1
 
 cd %_TOPDIR%..\tests
-%_TOPDIR%..\..\xpkgs\nqbp\other\bob.py  -v vc12 -t --bld-all --bldnum %BUILD_NUMBER%
+%_TOPDIR%..\..\xpkgs\nqbp\other\bob.py -vt vc12 -t --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Run unit tests
 cd %_TOPDIR%\..\tests
-%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -v --match a.exe --dir vc12
+%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -vt --match a.exe --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1
 %_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -v --match aa.exe --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1
-%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -v --match a.py --dir vc12
+%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -vt --match a.py --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1
 %_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -v --match aa.py --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1

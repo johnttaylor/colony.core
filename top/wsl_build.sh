@@ -16,3 +16,9 @@ source ./env.sh
 # Build all linux projects
 cd tests
 $NQBP_BIN/other/bob.py -v linux  --bld-all -t --bldnum $1
+
+# Run unit tests (but only 64bit builds since WSL does not support 32bit executables)
+$NQBP_BIN/other/chuck.py -vt --match a.out --dir _posix64
+$NQBP_BIN/other/chuck.py -v --match aa.out --dir _posix64
+$NQBP_BIN/other/chuck.py -vt --match a.py --dir _posix64
+$NQBP_BIN/other/chuck.py -v --match aa.py --dir _posix64
