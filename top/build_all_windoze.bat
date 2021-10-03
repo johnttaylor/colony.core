@@ -26,12 +26,20 @@ cd %_TOPDIR%..
 set cmd=orc.py mkwrk --clean ..\
 echo:%cmd%
 %cmd%
+IF ERRORLEVEL 1 EXIT /b 1
+
+::  Ensure the Native Package Universe is up to data
+set cmd=ceres.py -v referensh
+echo:%cmd%
+%cmd%
+IF ERRORLEVEL 1 EXIT /b 1
 
 :: Get dependent packages
 cd
 set cmd=orc.py -v getdeps --rmlocal . 
 echo:%cmd%
 %cmd%
+IF ERRORLEVEL 1 EXIT /b 1
 
 :: Build linux projects (under WSL)
 :: Note: Because of Windows/Linux/Git newline issues - we brute force the shell scripts to have the correct newline characters
