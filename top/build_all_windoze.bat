@@ -47,7 +47,7 @@ FOR /F "tokens=*" %%g IN ('%_TOPDIR%win2wsl %_TOPDIR%') do (SET WSL_TOPDIR=%%g)
 wsl cd %WSL_TOPDIR%; dos2unix wsl_build.sh; cd ..; dos2unix env.sh; top/wsl_build.sh %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
-:: Build Visual Studio 32-bit projects
+:: Build Visual Studio projects
 echo on
 call %_TOPDIR%..\env.bat 1
 
@@ -64,6 +64,26 @@ IF ERRORLEVEL 1 EXIT /b 1
 %_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -vt --match a.py --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1
 %_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -v --match aa.py --dir vc12
+IF ERRORLEVEL 1 EXIT /b 1
+
+
+:: Build Mingw projects
+echo on
+call %_TOPDIR%..\env.bat 3
+
+cd %_TOPDIR%..\tests
+%_TOPDIR%..\..\xpkgs\nqbp\other\bob.py -v4 mingw_w64 -t --bld-all --bldnum %BUILD_NUMBER%
+IF ERRORLEVEL 1 EXIT /b 1
+
+:: Run unit tests
+cd %_TOPDIR%\..\tests
+%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -vt --match a.exe --dir mingw_w64
+IF ERRORLEVEL 1 EXIT /b 1
+%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -v --match aa.exe --dir mingw_w64
+IF ERRORLEVEL 1 EXIT /b 1
+%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -vt --match a.py --dir mingw_w64
+IF ERRORLEVEL 1 EXIT /b 1
+%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -v --match aa.py --dir mingw_w64
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Everything worked!
