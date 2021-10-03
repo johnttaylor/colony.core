@@ -29,7 +29,7 @@ echo:%cmd%
 IF ERRORLEVEL 1 EXIT /b 1
 
 ::  Ensure the Native Package Universe is up to data
-set cmd=ceres.py -v referesh
+set cmd=ceres.py -v refresh
 echo:%cmd%
 %cmd%
 IF ERRORLEVEL 1 EXIT /b 1
