@@ -50,14 +50,20 @@ jobs:
         fetchDepth: 1
         path: colony.core
 
+      # Build and run tests...
       - script: |
           call c:\bin\cancel_shutdown.bat
           call c:\bin\exec_and_trigger_shutdown.bat top\build_all_windoze.bat $(myBuildType) $(Build.BuildNumber)
 
-#  - job: LinuxBuild
-#    timeoutInMinutes: 180
-#    displayName: 'Linux build'
-#    pool:
-#      vmImage: ubuntu-latest
-#    steps:
-#      - script: top/build_all_linux.sh
+      # Stage (for publishding) the Doxygen output
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)/docs'
+          Contents: '*.chm'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    
+      # Publish all artifacts
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish: $(Build.ArtifactStagingDirectory)
+          artifactName: BuildOutputs
