@@ -29,7 +29,7 @@ from nqbplib.base import BuildValues
 #---------------------------------------------------
 
 # Set the name for the final output item
-FINAL_OUTPUT_NAME = 'b.exe'
+FINAL_OUTPUT_NAME = 'bb.exe'
 
 # Set project specific 'base' (i.e always used) options
 base_release = BuildValues()        # Do NOT comment out this line
@@ -132,6 +132,6 @@ from nqbplib.toolchains.windows.mingw_w64.console_exe import ToolChain
 
 # Function that instantiates an instance of the toolchain
 def create():
-    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "win64" )
+    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, "win32" )
     return tc 
 
