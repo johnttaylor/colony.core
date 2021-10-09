@@ -13,11 +13,11 @@ url = www.integerfox.com/colony.core
 colony.bsp\\0.0.4
 
 [weak_deps]
-nqbp\\2.1.0
+nqbp\\2.1.1
 catch\\2.2.2
 
 [transitive_deps]
 
 [local_overrides]
-nqbp;nqbp;master;https://github.com/johnttaylor
+#nqbp;nqbp;master;https://github.com/johnttaylor
 
