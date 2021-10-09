@@ -1,0 +1,69 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# Set build number.
+name: $(Date:yyMMdd)$(Rev:rrr)
+
+  
+# Set pipeline variables
+variables:
+- name: myBuildType
+  ${{ if eq(variables['Build.Reason'], 'PullRequest')}}:
+    value: 'pr'
+  ${{ if and( ne(variables['Build.Reason'], 'PullRequest'), eq( variables['Build.SourceBranchName'], 'master')) }}:  
+    value: 'master'
+  ${{ if and( ne(variables['Build.Reason'], 'PullRequest'), eq( variables['Build.SourceBranchName'], 'develop')) }}:  
+    value: 'develop'
+  ${{ if and( ne(variables['Build.Reason'], 'PullRequest'), ne( variables['Build.SourceBranchName'], 'develop'), ne( variables['Build.SourceBranchName'], 'master'))  }}:  
+    value: 'unknown'
+    
+trigger:
+- develop
+
+jobs:
+  - job: StartServer
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+      - checkout: none
+      - task: AzureCLI@1
+        inputs:
+          azureSubscription: Azure-IntegerFox
+          scriptLocation: inlineScript
+          inlineScript: |
+            az vm start --resource-group Picasso_group --name Picasso
+
+  - job: WindozeBuild
+    dependsOn: StartServer
+    timeoutInMinutes: 180
+    displayName: 'Run Windows build script'
+    pool:
+      name: Default
+      demands:
+        - agent.name -equals Picasso
+        
+    steps:
+      - checkout: self
+        clean: true
+        fetchDepth: 1
+        path: colony.core
+
+      # Build and run tests...
+      - script: |
+          call c:\bin\cancel_shutdown.bat
+          call c:\bin\exec_and_trigger_shutdown.bat top\build_all_windoze.bat $(myBuildType) $(Build.BuildNumber)
+
+      # Stage (for publishding) the Doxygen output
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)/docs'
+          Contents: '*.chm'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    
+      # Publish all artifacts
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish: $(Build.ArtifactStagingDirectory)
+          artifactName: BuildOutputs

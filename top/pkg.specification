@@ -10,12 +10,14 @@ email = John.T.Taylor@gmail.com
 url = www.integerfox.com/colony.core
 
 [immediate_deps]
-colony.bsp\\0.0.1
+colony.bsp\\0.0.4
 
 [weak_deps]
-nqbp\\1.1.0
-colony.bsp.renesas.rx\\1.0.0
-catch\\1.0.54
+nqbp\\2.1.1
+catch\\2.2.2
 
 [transitive_deps]
+
+[local_overrides]
+#nqbp;nqbp;master;https://github.com/johnttaylor
 
