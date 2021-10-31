@@ -89,7 +89,7 @@ bool MirroredChunk::loadData( Payload& dstHandler ) noexcept
         result          = pushToRecord( dstHandler );
     }
 
-    CPL_SYSTEM_ASSERT( m_dataLen <= m_currentRegion->getRegionLength() );
+    CPL_SYSTEM_ASSERT( m_dataLen <= m_currentRegion->getRegionLength() - FRAME_OVERHEAD);
     return result;
 }
 
@@ -159,14 +159,14 @@ uint64_t MirroredChunk::getTransactionId( RegionMedia& region, size_t& dataLen )
         // Read the data length
         if ( region.read( offset, &dataLen, sizeof( dataLen ) ) == sizeof( dataLen ) )
         {
-            // Make sure we have enough buffer space
-            if ( ( dataLen + CRC_SIZE ) <= sizeof( g_workBuffer_ ) )
+            // Make sure we have enough buffer space (check for roll-over on the integer math)
+            size_t dataRemaining = dataLen + CRC_SIZE;
+            if ( dataRemaining <= sizeof( g_workBuffer_ ) && dataLen < dataRemaining)
             {
                 crc.accumulate( &dataLen, sizeof( dataLen ) );
                 offset += sizeof( dataLen );
 
                 // Read the data AND CRC bytes
-                size_t dataRemaining = dataLen + CRC_SIZE;
                 uint8_t* dstPtr      = g_workBuffer_;
                 while ( dataRemaining )
                 {
