@@ -20,17 +20,17 @@
     ],
     "weak": [
       {
-        "pkgname": "nqbp",
-        "pkgtype": "foreign",
-        "adoptedDate": "2021 Nov 14 12:59:25",
-        "parentDir": "xsrc",
+        "pkgname": "catch",
+        "pkgtype": "overlay",
+        "adoptedDate": "2021 Nov 14 15:17:10",
+        "parentDir": null,
         "version": {
-          "semanticVersion": "2.2.0",
+          "semanticVersion": "2.13.7",
           "branch": null,
-          "tag": "OUTCAST2-main-2.2.0"
+          "tag": "OUTCAST2-main-2.13.7"
         },
         "repo": {
-          "name": "nqbp",
+          "name": "catch",
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }

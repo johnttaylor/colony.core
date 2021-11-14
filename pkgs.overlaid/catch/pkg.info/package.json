@@ -1,0 +1,32 @@
+{
+  "dependencies": {
+    "immediate": [],
+    "weak": []
+  },
+  "directories": {
+    "primary": [
+      "src"
+    ],
+    "adoptedExtras": null
+  },
+  "info": {
+    "desc": "A modern, C++ native, header-only, framework for unit-tests, TDD and BDD",
+    "owner": "Phil Nash, Two Blue Cubes Ltd",
+    "email": "github@philnash.me",
+    "url": "www.levelofindirection.com",
+    "repo": {
+      "name": "catch",
+      "type": "git",
+      "origin": "https://github.com/johnttaylor"
+    }
+  },
+  "publish": {
+    "current": {
+      "comment": "Latest version of Catch2 and Outcast2",
+      "version": "2.13.7",
+      "date": "Sun Nov 14 19:40:09 2021",
+      "timestamp": 1636918809
+    },
+    "history": []
+  }
+}
