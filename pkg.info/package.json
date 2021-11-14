@@ -34,22 +34,6 @@
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
-      },
-      {
-        "pkgname": "catch",
-        "pkgtype": "overlay",
-        "adoptedDate": "2021 Nov 14 13:45:07",
-        "parentDir": null,
-        "version": {
-          "semanticVersion": "2.13.7-a",
-          "branch": null,
-          "tag": "OUTCAST2-main-2.13.7-a"
-        },
-        "repo": {
-          "name": "catch",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        }
       }
     ]
   },
