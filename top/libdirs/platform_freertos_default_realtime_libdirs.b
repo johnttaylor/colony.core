@@ -21,10 +21,10 @@ src/Cpl/Io
 # Below is example of the above list:
 
 # BSP
-#//colony.bsp.renesas.rx/top/libdirs/yrdkr62n_gnurx_libdirs.b
+#pkg.overlaid/colony.bsp.renesas.rx/top/libdirs/yrdkr62n_gnurx_libdirs.b
 
 # FreeRTOS
-#//freertos/top/libdirs/gcc_rx600_libdirs.b
+#pkg.overload/freertos/top/libdirs/gcc_rx600_libdirs.b
 
 # drivers for trace output
 #src/Cpl/Io/Serial/Renesas/Rx62n
