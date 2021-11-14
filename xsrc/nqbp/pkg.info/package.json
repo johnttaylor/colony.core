@@ -1,0 +1,32 @@
+{
+  "dependencies": {
+    "immediate": [],
+    "weak": []
+  },
+  "directories": {
+    "primary": null,
+    "adoptedExtras": [
+      "top"
+    ]
+  },
+  "info": {
+    "desc": "N)ot (Q)uite (B)env - (P)ython: is multi-host build engine for C/C++",
+    "owner": "John Taylor",
+    "email": "John.T.Taylor@gmail.com",
+    "url": "www.integerfox.com/nqbp",
+    "repo": {
+      "name": null,
+      "type": null,
+      "origin": null
+    }
+  },
+  "publish": {
+    "current": {
+      "comment": "publish using Outcast 2.0.  No new functionality vs tagged 2.0.0",
+      "version": "2.2.0",
+      "date": "Sun Nov 14 16:35:24 2021",
+      "timestamp": 1636907724
+    },
+    "history": []
+  }
+}
