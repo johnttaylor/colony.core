@@ -4,7 +4,7 @@
       {
         "pkgname": "colony.bsp",
         "pkgtype": "overlay",
-        "adoptedDate": "2021 Nov 14 13:00:26",
+        "adoptedDate": "2021 Nov 20 13:56:46",
         "parentDir": null,
         "version": {
           "semanticVersion": "0.1.0",
@@ -20,25 +20,9 @@
     ],
     "weak": [
       {
-        "pkgname": "catch",
-        "pkgtype": "overlay",
-        "adoptedDate": "2021 Nov 14 15:17:10",
-        "parentDir": null,
-        "version": {
-          "semanticVersion": "2.13.7",
-          "branch": null,
-          "tag": "OUTCAST2-main-2.13.7"
-        },
-        "repo": {
-          "name": "catch",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        }
-      },
-      {
         "pkgname": "nqbp",
         "pkgtype": "foreign",
-        "adoptedDate": "2021 Nov 14 16:23:24",
+        "adoptedDate": "2021 Nov 20 13:59:12",
         "parentDir": "xsrc",
         "version": {
           "semanticVersion": "2.2.0",
@@ -54,7 +38,7 @@
       {
         "pkgname": "freertos",
         "pkgtype": "readonly",
-        "adoptedDate": "2021 Nov 20 13:24:27",
+        "adoptedDate": "2021 Nov 20 14:06:17",
         "parentDir": "xsrc",
         "version": {
           "semanticVersion": "8.2.1",
@@ -63,22 +47,6 @@
         },
         "repo": {
           "name": "freertos",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        }
-      },
-      {
-        "pkgname": "colony.bsp.renesas.rx",
-        "pkgtype": "overlay",
-        "adoptedDate": "2021 Nov 20 14:12:49",
-        "parentDir": null,
-        "version": {
-          "semanticVersion": "1.0.1",
-          "branch": null,
-          "tag": "OUTCAST2-main-1.0.1"
-        },
-        "repo": {
-          "name": "colony.bsp.renesas.rx",
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
@@ -95,18 +63,23 @@
     ]
   },
   "info": {
-    "desc": "Colony is C++ class library targeted specifically for embedded development.  Colony.Core is the base system/interfaces for the Colony packages.",
+    "desc": "Colony.Bsp package is part of the Colony.* eco system and provides a collection of Board Support Packages - for Renesas RX microcontroller based boards - that support the Colony.Core root level BSP interaces.",
     "owner": "John Taylor",
     "email": "John.T.Taylor@gmail.com",
-    "url": "www.integerfox.com/colony.core",
+    "url": "www.integerfox.com/colony.bsp.renesas.rx",
     "repo": {
-      "name": "colony.core",
+      "name": "colony.bsp.renesas.rx",
       "type": "git",
       "origin": "https://github.com/johnttaylor"
     }
   },
   "publish": {
-    "current": null,
+    "current": {
+      "comment": "Publish as an Outcast2 package",
+      "version": "1.0.1",
+      "date": "Sat Nov 20 19:07:47 2021",
+      "timestamp": 1637435267
+    },
     "history": []
   }
 }
