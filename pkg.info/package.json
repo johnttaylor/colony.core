@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "immediate": [],
+    "weak": []
+  },
+  "directories": {
+    "primary": null,
+    "adoptedExtras": null
+  },
+  "info": {
+    "desc": "Colony.FreeRTOS package is an Outcast'ized distribution of the FreeRTOS kernel",
+    "owner": "Real Time Engineers Ltd.",
+    "email": "John.T.Taylor@gmail.com",
+    "url": "http://www.freertos.org",
+    "repo": {
+      "name": "freertos",
+      "type": "git",
+      "origin": "https://github.com/johnttaylor"
+    }
+  },
+  "publish": {
+    "current": {
+      "comment": "Publish as an Outcat2.0 package",
+      "version": "8.2.1",
+      "date": "Sat Nov 20 18:16:10 2021",
+      "timestamp": 1637432170
+    },
+    "history": []
+  }
+}
