@@ -21,26 +21,6 @@ cd %_TOPDIR%
 run_doxygen.py %BUILD_TYPE% %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
-:: Create the outcast workspace
-cd %_TOPDIR%..
-set cmd=orc.py mkwrk --clean ..\
-echo:%cmd%
-%cmd%
-IF ERRORLEVEL 1 EXIT /b 1
-
-::  Ensure the Native Package Universe is up to data
-set cmd=ceres.py -v refresh
-echo:%cmd%
-%cmd%
-IF ERRORLEVEL 1 EXIT /b 1
-
-:: Get dependent packages
-cd
-set cmd=orc.py -v getdeps --rmlocal . 
-echo:%cmd%
-%cmd%
-IF ERRORLEVEL 1 EXIT /b 1
-
 ::
 :: Build Mingw projects
 ::
