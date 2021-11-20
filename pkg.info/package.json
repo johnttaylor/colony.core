@@ -106,7 +106,12 @@
     }
   },
   "publish": {
-    "current": null,
+    "current": {
+      "comment": "Publishing as Outcast2 pacakge",
+      "version": "2.0.1",
+      "date": "Sat Nov 20 20:15:42 2021",
+      "timestamp": 1637439342
+    },
     "history": []
   }
 }
