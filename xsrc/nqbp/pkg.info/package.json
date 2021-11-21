@@ -21,7 +21,12 @@
     }
   },
   "publish": {
-    "current": null,
+    "current": {
+      "comment": "Publish as Outcast2 package",
+      "version": "2.2.0",
+      "date": "Sun Nov 21 21:12:39 2021",
+      "timestamp": 1637529159
+    },
     "history": []
   }
 }

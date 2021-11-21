@@ -25,7 +25,7 @@
         "adoptedDate": "2021 Nov 21 16:32:08",
         "parentDir": "xsrc",
         "version": {
-          "semanticVersion": null,
+          "semanticVersion": "2.2.0",
           "branch": null,
           "tag": "OUTCAST2-main-2.2.0"
         },
