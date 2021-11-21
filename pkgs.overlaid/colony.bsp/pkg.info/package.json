@@ -1,0 +1,52 @@
+{
+  "dependencies": {
+    "strong": [],
+    "weak": [
+      {
+        "pkgname": "nqbp",
+        "pkgtype": "foreign",
+        "adoptedDate": "2021 Nov 14 11:55:05",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": "2.2.0",
+          "branch": null,
+          "tag": "fe803e93dfb6e5de120279a386e44ccdc2cec6c4"
+        },
+        "repo": {
+          "name": "nqbp",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      }
+    ]
+  },
+  "directories": {
+    "primary": [
+      "src",
+      "tests"
+    ],
+    "adoptedExtras": [
+      "top"
+    ]
+  },
+  "info": {
+    "desc": "The abstract/generic BSP interfaces definition for Colony C++ class library and packages",
+    "owner": "John Taylor",
+    "email": "John.T.Taylor@gmail.com",
+    "url": "www.integerfox.com/colony.bsp",
+    "repo": {
+      "name": "colony.bsp",
+      "type": "git",
+      "origin": "https://github.com/johnttaylor"
+    }
+  },
+  "publish": {
+    "current": {
+      "comment": "Publish as Outcast2 package",
+      "version": "0.1.0",
+      "date": "Sun Nov 21 21:14:46 2021",
+      "timestamp": 1637529286
+    },
+    "history": []
+  }
+}
