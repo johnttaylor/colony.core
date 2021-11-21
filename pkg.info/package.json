@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "strong": [],
+    "weak": []
+  },
+  "directories": {
+    "primary": null,
+    "adoptedExtras": [
+      "top"
+    ]
+  },
+  "info": {
+    "desc": "N)ot (Q)uite (B)env - (P)ython: is multi-host build engine for C/C++",
+    "owner": "John Taylor",
+    "email": "John.T.Taylor@gmail.com",
+    "url": "www.integerfox.com/nqbp",
+    "repo": {
+      "name": "nqbp",
+      "type": "git",
+      "origin": "https://github.com/johnttaylor"
+    }
+  },
+  "publish": {
+    "current": null,
+    "history": []
+  }
+}
