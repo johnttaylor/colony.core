@@ -1,0 +1,117 @@
+{
+  "dependencies": {
+    "strong": [
+      {
+        "pkgname": "colony.bsp",
+        "pkgtype": "overlay",
+        "adoptedDate": "2021 Nov 21 16:33:51",
+        "parentDir": null,
+        "version": {
+          "semanticVersion": "0.1.0",
+          "branch": null,
+          "tag": "OUTCAST2-main-0.1.0"
+        },
+        "repo": {
+          "name": "colony.bsp",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      }
+    ],
+    "weak": [
+      {
+        "pkgname": "nqbp",
+        "pkgtype": "foreign",
+        "adoptedDate": "2021 Nov 21 16:32:08",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": null,
+          "branch": null,
+          "tag": "OUTCAST2-main-2.2.0"
+        },
+        "repo": {
+          "name": "nqbp",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      },
+      {
+        "pkgname": "catch",
+        "pkgtype": "overlay",
+        "adoptedDate": "2021 Nov 21 16:32:59",
+        "parentDir": null,
+        "version": {
+          "semanticVersion": "2.13.7",
+          "branch": null,
+          "tag": "OUTCAST2-main-2.13.7"
+        },
+        "repo": {
+          "name": "catch",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      },
+      {
+        "pkgname": "colony.bsp.renesas.rx",
+        "pkgtype": "overlay",
+        "adoptedDate": "2021 Nov 21 16:34:44",
+        "parentDir": null,
+        "version": {
+          "semanticVersion": "1.0.1",
+          "branch": null,
+          "tag": "OUTCAST2-main-1.0.1"
+        },
+        "repo": {
+          "name": "colony.bsp.renesas.rx",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      },
+      {
+        "pkgname": "freertos",
+        "pkgtype": "readonly",
+        "adoptedDate": "2021 Nov 21 16:36:40",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": "8.2.1",
+          "branch": null,
+          "tag": "OUTCAST2-main-8.2.1"
+        },
+        "repo": {
+          "name": "freertos",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      }
+    ]
+  },
+  "directories": {
+    "primary": [
+      "src",
+      "tests"
+    ],
+    "adoptedExtras": [
+      "top"
+    ]
+  },
+  "info": {
+    "desc": "Colony is C++ class library targeted specifically for embedded development.  Colony.Core is the base system/interfaces for the Colony packages.",
+    "owner": "John Taylor",
+    "email": "John.T.Taylor@gmail.com",
+    "url": "www.integerfox.com/colony.core",
+    "repo": {
+      "name": "colony.core",
+      "type": "git",
+      "origin": "https://github.com/johnttaylor"
+    }
+  },
+  "publish": {
+    "current": {
+      "comment": "Publishing as Outcast2 pacakge",
+      "version": "2.0.1",
+      "date": "Sat Nov 20 20:15:42 2021",
+      "timestamp": 1637439342
+    },
+    "history": []
+  }
+}
