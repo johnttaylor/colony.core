@@ -66,6 +66,22 @@
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
+      },
+      {
+        "pkgname": "freertos",
+        "pkgtype": "readonly",
+        "adoptedDate": "2021 Nov 21 16:36:40",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": "8.2.1",
+          "branch": null,
+          "tag": "OUTCAST2-main-8.2.1"
+        },
+        "repo": {
+          "name": "freertos",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
       }
     ]
   },

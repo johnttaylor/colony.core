@@ -1,3 +1,4 @@
+*.chm
 html/
 ~*
 !*.svg
