@@ -1,7 +1,57 @@
 {
   "dependencies": {
-    "strong": [],
-    "weak": []
+    "strong": [
+      {
+        "pkgname": "colony.bsp",
+        "pkgtype": "overlay",
+        "adoptedDate": "Sun Nov 21 23:26:26 2021",
+        "parentDir": null,
+        "version": {
+          "semanticVersion": "0.1.0",
+          "branch": null,
+          "tag": "OUTCAST2-main-0.1.0"
+        },
+        "repo": {
+          "name": "colony.bsp",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      },
+      {
+        "pkgname": "colony.bsp.renesas.rx",
+        "pkgtype": "overlay",
+        "adoptedDate": "Sun Nov 21 23:26:49 2021",
+        "parentDir": null,
+        "version": {
+          "semanticVersion": "1.0.1",
+          "branch": null,
+          "tag": "OUTCAST2-main-1.0.1"
+        },
+        "repo": {
+          "name": "colony.bsp.renesas.rx",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      }
+    ],
+    "weak": [
+      {
+        "pkgname": "catch",
+        "pkgtype": "overlay",
+        "adoptedDate": "Sun Nov 21 23:25:57 2021",
+        "parentDir": null,
+        "version": {
+          "semanticVersion": "2.13.7",
+          "branch": null,
+          "tag": "OUTCAST2-main-2.13.7"
+        },
+        "repo": {
+          "name": "catch",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      }
+    ]
   },
   "directories": {
     "primary": [
