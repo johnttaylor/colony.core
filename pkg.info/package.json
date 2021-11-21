@@ -66,6 +66,22 @@
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
+      },
+      {
+        "pkgname": "nqbp",
+        "pkgtype": "foreign",
+        "adoptedDate": "Sun Nov 21 23:28:52 2021",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": "2.2.0",
+          "branch": null,
+          "tag": "OUTCAST2-main-2.2.0"
+        },
+        "repo": {
+          "name": "nqbp",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
       }
     ]
   },
