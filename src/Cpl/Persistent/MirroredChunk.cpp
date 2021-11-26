@@ -41,9 +41,9 @@ void MirroredChunk::start( Cpl::Dm::MailboxServer& myMbox ) noexcept
 
     m_regionA.start( myMbox );
     m_regionB.start( myMbox );
-    m_transId = 0;
+    m_transId       = 0;
     m_currentRegion = 0;
-    m_dataLen = 0;
+    m_dataLen       = 0;
 }
 
 void MirroredChunk::stop() noexcept
