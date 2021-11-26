@@ -1,0 +1,70 @@
+{
+  "dependencies": {
+    "strong": [
+      {
+        "pkgname": "colony.bsp.renesas.rx",
+        "pkgtype": "overlay",
+        "adoptedDate": "Fri Nov 26 19:45:53 2021",
+        "parentDir": null,
+        "version": {
+          "semanticVersion": "1.0.1",
+          "branch": null,
+          "tag": "OUTCAST2-main-1.0.1"
+        },
+        "repo": {
+          "name": "colony.bsp.renesas.rx",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      }
+    ],
+    "weak": [
+      {
+        "pkgname": "nqbp",
+        "pkgtype": "foreign",
+        "adoptedDate": "Fri Nov 26 03:15:39 2021",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": "2.2.0",
+          "branch": null,
+          "tag": "OUTCAST2-main-2.2.0"
+        },
+        "repo": {
+          "name": "nqbp",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      }
+    ]
+  },
+  "directories": {
+    "primary": [
+      "src",
+      "tests"
+    ],
+    "adoptedExtras": [
+      "top"
+    ]
+  },
+  "info": {
+    "desc": "Colony is C++ class library targeted specifically for embedded development.  Colony.Core is the base system/interfaces for the Colony packages.",
+    "owner": "John Taylor",
+    "email": "John.T.Taylor@gmail.com",
+    "url": "www.integerfox.com/colony.core",
+    "repo": {
+      "name": "colony.core",
+      "type": "git",
+      "origin": "https://github.com/johnttaylor"
+    },
+    "pkgname": "colony.core"
+  },
+  "publish": {
+    "current": {
+      "comment": "Publishing as Outcast2 pacakge",
+      "version": "2.0.1",
+      "date": "Sat Nov 20 20:15:42 2021",
+      "timestamp": 1637439342
+    },
+    "history": []
+  }
+}
