@@ -15,7 +15,8 @@
           "name": "colony.bsp.renesas.rx",
           "type": "git",
           "origin": "https://github.com/johnttaylor"
-        }
+        },
+        "depType": "S"
       }
     ],
     "weak": [
@@ -33,7 +34,8 @@
           "name": "nqbp",
           "type": "git",
           "origin": "https://github.com/johnttaylor"
-        }
+        },
+        "depType": "S"
       }
     ]
   },
@@ -60,7 +62,7 @@
   },
   "publish": {
     "current": {
-      "comment": "Publishing as Outcast2 pacakge",
+      "comment": "New Comment",
       "version": "2.0.1",
       "date": "Sat Nov 20 20:15:42 2021",
       "timestamp": 1637439342
