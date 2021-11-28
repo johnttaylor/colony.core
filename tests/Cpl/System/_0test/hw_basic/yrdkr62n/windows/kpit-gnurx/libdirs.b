@@ -14,5 +14,5 @@ src/Driver/Uart/Stream
 //colony.bsp.renesas.rx/top/libdirs/yrdkr62n_gnurx_libdirs.b
 
 # FreeRTOS
-//freertos/top/libdirs/gcc_rx600_libdirs.b
-
+xsrc/freertos/src/
+xsrc/freertos/src/portable/GCC/RX600

@@ -7,7 +7,7 @@ standards require that doxygen execute without warning.
 The script assumes that doxygen is in the command path.
 
 
-Usage: doxygen
+Usage: doxygen [<buildtype> <buildNumber>] [debug]
 
 """
 
@@ -15,6 +15,7 @@ import subprocess
 import re
 import shutil
 import os
+import sys
 
 #------------------------------------------------------------------------------
 def filter_warnings( output ):
@@ -50,24 +51,76 @@ def filter_warnings( output ):
         print()
         exit(1)
         
+
 #------------------------------------------------------------------------------
 print( "Running doxygen..." )    
 
+# File name MUST match the base file name that is set for CHM_FILE in the 'Doxyfile' file
+filename  = "colony.core-library"
+
+# set the build info/number
+buildtype = 'private'
+buildnum  = 0
+debug     = False
+if ( len(sys.argv) > 3 and sys.argv[3] == 'debug' ):
+    debug = True
+if ( len(sys.argv) > 2 ):
+    buildtype = sys.argv[1]
+    buildnum  = sys.argv[2]
+
+buildInfo = f"Build: {buildnum}-{buildtype}"
+if ( debug ):
+    print( "= buildInfo: ", buildInfo )
+
+# Create a temporary config file that includes the build info
+cfgfile = "Doxyfile.tmp"
+indata  = ""
+with open ("Doxyfile", "r") as inf:
+    indata=inf.read()
+indata = indata.replace('$$$PROJECT_NUMBER$$$',buildInfo)
+if ( debug ):
+    print("= Config File...")
+with open (cfgfile, "w") as outf:
+    outf.writelines(indata)
+    if ( debug ):
+        print(indata)
+        
 # run doxygen
-cmd = "doxygen"
+cmd = "doxygen " + cfgfile
+if ( debug ):
+    print("= Command: ", cmd )
 p   = subprocess.Popen( cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE )
 r   = p.communicate()
+if ( debug ):
+    print( "= Return code: ", p.returncode)
+    print( "= Output: " )
+    print( r[0].decode() )
+    print( r[1].decode() )
 if ( p.returncode != 0 ):
     exit( "ERROR: Doxygen failed to run.  Check if doxygen.exe is in your command path" )
+
+# Remove temporary config file
+try:
+    os.remove(cfgfile)
+except:
+    pass
 
 # delete the HTML files - only keep the Windows Help (.chm) file
 path = os.path.join( '..', 'docs', 'html' )
 shutil.rmtree( path, ignore_errors=True  )
 
-# check for errors
-if ( " warning: " in r[1].decode() ):
+
+# check for errors (note: filter_warnings exits on an error)
+if ( "warning: " in r[1].decode() or "error: " in r[1].decode() ):
     print()
     print( "*** Doxygen had one or more warnings! ***" )
     filter_warnings( r[1].decode() )
     
-print( "Completed without warnings or errors." )
+else:
+    print( "Completed without warnings or errors." )
+
+# Rename help file output to include the build info
+if ( len(sys.argv) > 2 ):
+    outfile = os.path.join( '..', 'docs', f'{filename}.chm' )
+    newfile = os.path.join( '..', 'docs', f'{filename}_{buildnum}-{buildtype}.chm' )
+    shutil.move( outfile, newfile )
