@@ -110,11 +110,18 @@
   },
   "publish": {
     "current": {
-      "comment": "New Comment",
-      "version": "2.0.1",
-      "date": "Sat Nov 20 20:15:42 2021",
-      "timestamp": 1637439342
+      "comment": "Try again at publishing as a Outcast2 package",
+      "version": "2.0.2",
+      "date": "Sun Nov 28 14:33:57 2021",
+      "timestamp": 1638110037
     },
-    "history": []
+    "history": [
+      {
+        "comment": "Initial publish as a Outcast2 package",
+        "version": "2.0.1.",
+        "date": "Sat Nov 20 20:15:42 2021",
+        "timestamp": 1637439342
+      }
+    ]
   }
 }
