@@ -93,7 +93,8 @@
   "directories": {
     "primary": [
       "src",
-      "tests"
+      "tests",
+      "top"
     ],
     "adoptedExtras": [
       "top"

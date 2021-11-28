@@ -13,3 +13,7 @@ tests/**/mingw_w64/src/
 tests/**/mingw_w64/xsrc/
 tests/**/gcc/src/
 tests/**/gcc/xsrc/
+
+# Ignore most of the top/
+top/
+!top/libdirs
