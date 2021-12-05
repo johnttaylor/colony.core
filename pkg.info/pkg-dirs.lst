@@ -290,3 +290,4 @@ tests/Driver/Uart/Stream/_0test/freertos/yrdkr62n/windows/kpit-gnurx/e2studio/de
 tests/Driver/Uart/Stream/_0test/freertos/yrdkr62n/windows/kpit-gnurx/e2studio/debug/.settings/CodeGenerator
 tests/Driver/Uart/Stream/_0test/win32/windows
 tests/Driver/Uart/Stream/_0test/win32/windows/vc12
+top/libdirs

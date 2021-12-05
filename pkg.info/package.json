@@ -2,23 +2,6 @@
   "dependencies": {
     "strong": [
       {
-        "pkgname": "colony.bsp.renesas.rx",
-        "pkgtype": "overlay",
-        "adoptedDate": "Fri Nov 26 19:45:53 2021",
-        "parentDir": null,
-        "version": {
-          "semanticVersion": "1.0.1",
-          "branch": null,
-          "tag": "OUTCAST2-main-1.0.1"
-        },
-        "repo": {
-          "name": "colony.bsp.renesas.rx",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        },
-        "depType": "S"
-      },
-      {
         "pkgname": "colony.bsp",
         "pkgtype": "overlay",
         "adoptedDate": "Sat Nov 27 19:21:22 2021",
@@ -32,7 +15,8 @@
           "name": "colony.bsp",
           "type": "git",
           "origin": "https://github.com/johnttaylor"
-        }
+        },
+        "depType": "S"
       }
     ],
     "weak": [
@@ -51,7 +35,7 @@
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         },
-        "depType": "S"
+        "depType": "W"
       },
       {
         "pkgname": "catch",
@@ -67,7 +51,8 @@
           "name": "catch",
           "type": "git",
           "origin": "https://github.com/johnttaylor"
-        }
+        },
+        "depType": "W"
       },
       {
         "pkgname": "freertos",
@@ -83,14 +68,33 @@
           "name": "freertos",
           "type": "git",
           "origin": "https://github.com/johnttaylor"
-        }
+        },
+        "depType": "W"
+      },
+      {
+        "pkgname": "colony.bsp.renesas.rx",
+        "pkgtype": "overlay",
+        "adoptedDate": "Fri Nov 26 19:45:53 2021",
+        "parentDir": null,
+        "version": {
+          "semanticVersion": "1.0.1",
+          "branch": null,
+          "tag": "OUTCAST2-main-1.0.1"
+        },
+        "repo": {
+          "name": "colony.bsp.renesas.rx",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        },
+        "depType": "S"
       }
     ]
   },
   "directories": {
     "primary": [
       "src",
-      "tests"
+      "tests",
+      "top"
     ],
     "adoptedExtras": [
       "top"

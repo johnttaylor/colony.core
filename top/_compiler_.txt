@@ -1,4 +1,0 @@
-1,01-vcvars32-vc16.bat,Visual Studio VC16 (32bit) compiler for Windows  
-2,02-vcvars64-vc16.bat,Visual Studio VC16 (64bit) compiler for Windows  
-3,03-mingw64-v9.2.0.bat,MINGW64 v9.2.0 compiler for Windows (32bit and 64 bit)  
-4,04-atsamd51-arduino-v9.bat,GCC-ARM compiler for Grand Central BSP 1.6.0  
