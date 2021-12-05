@@ -47,3 +47,4 @@ make.log
 *.map
 
 myMediaFile
+_compiler_.txt
