@@ -59,7 +59,7 @@ TEST_CASE( "simmvc", "[simmvc]" )
     {
         modelMbox.notify( MY_EVENT_NUMBER );
         CPL_SYSTEM_TRACE_MSG( SECT_, ("@@ TICK SOURCE: Starting sequence# %d...", i + 1) );
-        Cpl::System::SimTick::advance( 500 );  // Note: This method will 'time out' once the MASTER thread is blocked at the end of the each Sequence, i.e. ALL Application threads blocked for non-time/tick reasons
+        Cpl::System::SimTick::advance( 1000 );  
         CPL_SYSTEM_TRACE_MSG( SECT_, ("  @@ TICK SOURCE: pause before checking result for seq# %d.  Seq completed at sim tick count of: %lu", i + 1, Cpl::System::SimTick::current()) );
         Cpl::System::Api::sleepInRealTime( 1000 );
         REQUIRE( myModel.m_value == (NUM_WRITES_ - 1) * ATOMIC_MODIFY_ );
