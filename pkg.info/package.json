@@ -36,22 +36,6 @@
     ],
     "weak": [
       {
-        "pkgname": "nqbp",
-        "pkgtype": "foreign",
-        "adoptedDate": "Fri Nov 26 03:15:39 2021",
-        "parentDir": "xsrc",
-        "version": {
-          "semanticVersion": "2.2.0",
-          "branch": null,
-          "tag": "OUTCAST2-main-2.2.0"
-        },
-        "repo": {
-          "name": "nqbp",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        }
-      },
-      {
         "pkgname": "freertos",
         "pkgtype": "readonly",
         "adoptedDate": "Sat Nov 27 19:23:36 2021",
