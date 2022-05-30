@@ -5339,19 +5339,19 @@ html .solidborders td {  border: 1px solid black; }</pre>
 <div modified="20200421034642586" title="$:/state/toc/Contents-Overview--1025088837">
 <pre>open</pre>
 </div>
-<div modified="20190112030821518" title="$:/state/toc/Contents-Overview--242358753">
+<div modified="20211205170104780" title="$:/state/toc/Contents-Overview--242358753">
 <pre>close</pre>
 </div>
 <div modified="20200421034638993" title="$:/state/toc/Contents-Using NQBP--1025088837">
 <pre>open</pre>
 </div>
-<div modified="20200421034705726" title="$:/state/toc/Contents-Using NQBP--242358753">
-<pre>open</pre>
+<div modified="20211205170103960" title="$:/state/toc/Contents-Using NQBP--242358753">
+<pre>close</pre>
 </div>
 <div modified="20190112022928289" title="$:/state/toc/Overview-Using NQBP--242358753">
 <pre>open</pre>
 </div>
-<div list="Overview [[NQBP History]] [[External Package Model]]" title="$:/StoryList">
+<div list="[[Installing NQBP]] [[Selecting a ToolChain]] [[Running NQBP]] [[Preprocessing Scripts]] Linking [[External Package Model]] Overview [[Selecting What To Build]] [[Adding a new Toolchain]]" title="$:/StoryList">
 <pre></pre>
 </div>
 <div created="20141011164829984" modified="20141020024516096" title="$:/temp/advancedsearch">
@@ -5502,66 +5502,34 @@ html .solidborders td {  border: 1px solid black; }</pre>
 * `mixed`
 ** Attempts to support Outcast //referencing// of the `xpkgs/` and `xinc/` directories while using the //legacy// model.  This model is ''experimental'' and requires manual placement of the external Outcast packages into the single root directory.  ''Do NOT use this model unless you truly know what you are doing''.</pre>
 </div>
-<div created="20140727042146669" creator="JohnTaylor" modified="20141020024342245" modifier="JohnTaylor" tags="Overview" title="Installing NQBP">
+<div created="20140727042146669" creator="JohnTaylor" modified="20211205170043460" modifier="JohnTaylor" tags="Overview" title="Installing NQBP">
 <pre>!!TODO: specific install instructions once hosted on somewhere on the web
 
 !!General Instructions:
-# First install [[Python|http://www.python.org]].  NQBP was built using Python 2.7.8.  NQBP has not been tested/tried with Python 3.0.0, but NQBP is a basic Python application so in theory is should be straight forward to port any of the 'broken bits' to 3.0
+# First install [[Python 3.x|http://www.python.org]].  
 # Unzip the tar/zip file to directory of your choosing on your box.  A single installation of the NQBP files can be shared across multi-users and/or multiple projects/workspaces on a single box.
-# NQBP requires a single environment variable ''NQBP_BIN'' to be set.  This environment should set to the &lt;code&gt;nqbp/&lt;/code&gt; directory.  For example on if the zip file was unzipped to &lt;code&gt;c:\tools&lt;/code&gt;, then set `NQBP_BIN` to `c:\tools\nqbp`
-# Your installation can be checked for going to the `nqbp/tests/` directory and build on of the test projects.
+# NQBP requires the following environment variables to be set:
 
-!!Example of building one of NQBP's test projects.  
-The projects uses the Mingw_w64 Compiler on a WIndows 7 host. The `zoe/` directory is the workspace root directory.
+#*  `NQBP_BIN` set to the full path to the root directory where the NQBP package is located. to be set.  
+#*  `NQBP_PKG_ROOT` set to the full path to the package that is actively being worked on.  Typically this is root directory of your local repository.
+#* `NQBP_WORK_ROOT` set to the full path of the directory containing one or more packages being developed. In practice this is set to the parent directory of `NQBP_PKG_ROOT`.
+#* `NQB_XPKGS_ROOT` set to the full path of the root directory containing external or third-party source. Typically this is set to `NQBP_PKG_ROOT/xsrc` directory.
 
+&lt;&lt;&lt;
 ```
-c:\_workspaces\zoe\nqbp\tests\workspace1\PkgA\projects\test1\windows\mingw_w64&gt;ls
-libdirs.b       main.c          mytoolchain.py  nqbp.py
+&lt;NQBP_WORK_ROOT&gt;
+└───&lt;NQBP_PKG_ROOT&gt; ; Typically this is the root of your SCM repo
+    ├───&lt;abc&gt;
+    ├───projects ; Build applications/released images
+    ├───&lt;xyz&gt;
+    ├───src ; Source code directory
+    ├───tests ; Build unit tests
+    └───&lt;NQBP_XPKGS_ROOT&gt; ; recommended name for this directory is 'xsrc/'
+         └───nqbp         ; nqbp package 
+```
+&lt;&lt;&lt;
 
-c:\_workspaces\zoe\nqbp\tests\workspace1\PkgA\projects\test1\windows\mingw_w64&gt;echo %NQBP_BIN%
-\_workspaces\zoe\nqbp
-
-c:\_workspaces\zoe\nqbp\tests\workspace1\PkgA\projects\test1\windows\mingw_w64&gt;nqbp.py
-
-================================================================================
-= START of build for:  a.exe
-= Toolchain:           Mingw_W64
-= Build Configuration: release
-= Begin (UTC):         Sun, 27 Jul 2014 04:34:40
-= Build Time:          1406435679 (53D4815F)
-================================================================================
-= Cleaning Project and local Package derived objects...
-= Cleaning External Package derived objects...
-=====================
-= Building Directory: src\bob
-= Compiling: hello.c
-=
-= Archiving: library.a
-=====================
-= Building Directory: \PkgB\src\charlie
-=
-= Archiving: library.a
-=====================
-= Building Directory: src\bob\your\uncle
-= Compiling: hello.c
-=
-= Archiving: library.a
-=====================
-= Building Directory: \PkgB\src\daryl
-=
-= Archiving: library.a
-=====================
-= Building Project Directory:
-= Compiling: main.c
-=====================
-= Linking...
-================================================================================
-= END of build
-= Elapsed Time (hh mm:ss): 00 00:03
-================================================================================
-
-c:\_workspaces\zoe\nqbp\tests\workspace1\PkgA\projects\test1\windows\mingw_w64&gt;
-```</pre>
+</pre>
 </div>
 <div created="20141012031702770" modified="20141019031650552" title="LeftMenu">
 <pre>---
@@ -5777,10 +5745,10 @@ Notes:
 * Make a copy of the file &lt;code&gt;nqbp/nqbp.py&lt;/code&gt; and place it in your project directory
 </pre>
 </div>
-<div created="20190112023024780" modified="20200421040315062" tags="[[Using NQBP]] Usage" title="Selecting What To Build">
+<div created="20190112023024780" modified="20211205164015213" tags="[[Using NQBP]] Usage" title="Selecting What To Build">
 <pre>* In a project directory, create a file named &lt;code&gt;libdirs.b&lt;/code&gt;.  This file contains a list of all source code directories to be built
 ** Directories are referenced relative to the //package// root directory
-** An entry in the file can reference another &lt;code&gt;libdirs.b&lt;/code&gt; file within the &lt;code&gt;projects/&lt;/code&gt; directory tree.  The syntax for this is to use relative directory path qualifer to the reference &lt;code&gt;libdirs.b&lt;/code&gt; file.
+** An entry in the file can reference another &lt;code&gt;libdirs.b&lt;/code&gt; file within the &lt;code&gt;projects/&lt;/code&gt; directory tree.  The syntax for this is to use relative directory path qualifer to the reference &lt;code&gt;libdirs.b&lt;/code&gt; file.  //Alternatively//, you can use the relative-to-package-root syntax. See examples below.
 ** When building within [[Outcast|http://integerfox.com/outcast/index.html]]
 *** Directories within in the package can optionally be referenced from the root of the package by a leading `/`, then the top level directory name.
 *** Directories within an ''external packages'' are referenced by leading `//`, then package name, then the source directory.
