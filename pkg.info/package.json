@@ -109,12 +109,18 @@
   },
   "publish": {
     "current": {
-      "comment": "Try again at publishing as a Outcast2 package",
-      "version": "2.0.2",
-      "date": "Sun Nov 28 14:33:57 2021",
-      "timestamp": 1638110037
+      "comment": "Refactor Model Points for smaller footprint (is a breaking change)",
+      "version": "3.0.0",
+      "date": "Mon May 30 18:11:49 2022",
+      "timestamp": 1653934309
     },
     "history": [
+      {
+        "comment": "Try again at publishing as a Outcast2 package",
+        "version": "2.0.2",
+        "date": "Sun Nov 28 14:33:57 2021",
+        "timestamp": 1638110037
+      },
       {
         "comment": "Initial publish as a Outcast2 package",
         "version": "2.0.1.",
