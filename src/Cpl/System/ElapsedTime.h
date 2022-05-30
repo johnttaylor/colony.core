@@ -77,6 +77,7 @@ public:
             memset( (void*) this, 0, sizeof( Precision_T ) );   
         }
 
+        /// Constructor (to ensure any pad bytes get zero'd)
         Precision_T( unsigned long  seconds, uint16_t thousandths )
         {
             memset( (void*) this, 0, sizeof( Precision_T ) );
