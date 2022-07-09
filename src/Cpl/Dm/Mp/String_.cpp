@@ -68,7 +68,7 @@ bool StringBase_::read( char* dstData, size_t dataSizeInBytesIncludingNullTermin
     }
 
     // Ensure the returned result is always null terminated
-    bool valid = ModelPointCommon_::read( dstData, dataSizeInBytesIncludingNullTerminator, seqNumPtr );
+    bool valid = readData( dstData, dataSizeInBytesIncludingNullTerminator, seqNumPtr );
     dstData[dataSizeInBytesIncludingNullTerminator - 1] = '\0';
     return valid;
 }
@@ -88,13 +88,13 @@ uint16_t StringBase_::write( const char* srcData, size_t srcLenInBytesIncludingN
     }
     
     m_modelDatabase.lock_();
-    uint16_t seqNum = ModelPointCommon_::write( srcData, srcLenInBytesIncludingNullTerminator, lockRequest );
+    uint16_t seqNum = writeData( srcData, srcLenInBytesIncludingNullTerminator, lockRequest );
     ((char*) (m_dataPtr))[m_dataSize - 1] = '\0'; // Ensure my new value properly null terminated
     m_modelDatabase.unlock_();
     return seqNum;
 }
 
-uint16_t StringBase_::copyFrom( const StringBase_& src, LockRequest_T lockRequest ) noexcept
+uint16_t StringBase_::copyStringFrom( const StringBase_& src, LockRequest_T lockRequest ) noexcept
 {
     // Handle the src.invalid case
     if ( src.isNotValid() )

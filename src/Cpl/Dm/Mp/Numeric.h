@@ -68,13 +68,13 @@ public:
     /// Type safe read. See Cpl::Dm::ModelPoint
     inline bool read( ELEMTYPE& dstData, uint16_t* seqNumPtr = 0 ) const noexcept
     {
-        return Cpl::Dm::ModelPointCommon_::read( &dstData, sizeof( ELEMTYPE ), seqNumPtr );
+        return Cpl::Dm::ModelPointCommon_::readData( &dstData, sizeof( ELEMTYPE ), seqNumPtr );
     }
 
     /// Type safe write. See Cpl::Dm::ModelPoint
     inline uint16_t write( ELEMTYPE newValue, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept
     {
-        return Cpl::Dm::ModelPointCommon_::write( &newValue, sizeof( ELEMTYPE ), lockRequest );
+        return Cpl::Dm::ModelPointCommon_::writeData( &newValue, sizeof( ELEMTYPE ), lockRequest );
     }
 
     /// Atomic increment
@@ -98,19 +98,19 @@ public:
     /// Updates the MP with the valid-state/data from 'src'. Note: the src.lock state is NOT copied
     inline uint16_t copyFrom( const MPTYPE& src, LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept
     {
-        return Cpl::Dm::ModelPointCommon_::copyFrom( src, lockRequest );
+        return copyDataAndStateFrom( src, lockRequest );
     }
 
     /// Type safe register observer
     inline void attach( Cpl::Dm::Subscriber<MPTYPE>& observer, uint16_t initialSeqNumber = SEQUENCE_NUMBER_UNKNOWN ) noexcept
     {
-        ModelPointCommon_::attach( observer, initialSeqNumber );
+        attachSubscriber( observer, initialSeqNumber );
     }
 
     /// Type safe un-register observer
     inline void detach( Cpl::Dm::Subscriber<MPTYPE>& observer ) noexcept
     {
-        ModelPointCommon_::detach( observer );
+        detachSubscriber( observer );
     }
 
 

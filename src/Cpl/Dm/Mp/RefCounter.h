@@ -82,7 +82,7 @@ public:
     /// Type safe read. See Cpl::Dm::ModelPoint
     inline bool read( uint32_t& dstData, uint16_t* seqNumPtr=0 ) const noexcept
     {
-        return Cpl::Dm::ModelPointCommon_::read( &dstData, sizeof( m_data ), seqNumPtr );
+        return readData( &dstData, sizeof( m_data ), seqNumPtr );
     }
 
     /// Resets the counter to zero (or to a specific value)
@@ -91,7 +91,7 @@ public:
     /// Updates the MP with the valid-state/data from 'src'. Note: the src.lock state is NOT copied
     inline uint16_t copyFrom( const RefCounter& src, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
     {
-        return Cpl::Dm::ModelPointCommon_::copyFrom( src, lockRequest );
+        return copyDataAndStateFrom( src, lockRequest );
     }
 
     ///  See Cpl::Dm::ModelPoint.

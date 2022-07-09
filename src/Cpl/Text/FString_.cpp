@@ -267,3 +267,19 @@ FString_::maxLength() const
 	return m_internalMaxlen;
 }
 
+
+
+////////////////////////////
+Cpl::Text::String& FString_::operator=( int num ) { format( "%d", num ); return *this; }
+Cpl::Text::String& FString_::operator=( unsigned int num ) { format( "%u", num ); return *this; }
+Cpl::Text::String& FString_::operator=( long num ) { format( "%ld", num ); return *this; }
+Cpl::Text::String& FString_::operator=( long long num ) { format( "%lld", num ); return *this; }
+Cpl::Text::String& FString_::operator=( unsigned long num ) { format( "%lu", num ); return *this; }
+Cpl::Text::String& FString_::operator=( unsigned long long num ) { format( "%llu", num ); return *this; }
+Cpl::Text::String& FString_::operator +=( int num ) { formatAppend( "%d", num ); return *this; }
+Cpl::Text::String& FString_::operator +=( unsigned int num ) { formatAppend( "%u", num ); return *this; }
+Cpl::Text::String& FString_::operator +=( long num ) { formatAppend( "%ld", num ); return *this; }
+Cpl::Text::String& FString_::operator +=( long long num ) { formatAppend( "%lld", num ); return *this; }
+Cpl::Text::String& FString_::operator +=( unsigned long num ) { formatAppend( "%lu", num ); return *this; }
+Cpl::Text::String& FString_::operator +=( unsigned long long num ) { formatAppend( "%llu", num ); return *this; }
+

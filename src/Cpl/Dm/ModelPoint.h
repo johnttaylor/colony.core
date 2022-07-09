@@ -278,7 +278,7 @@ protected:
            data from the Model Point
         3) The Model Point's sequence number is not changed.
      */
-    virtual bool read( void* dstData, size_t dstSize, uint16_t* seqNumPtr=0 ) const noexcept = 0;
+    virtual bool readData( void* dstData, size_t dstSize, uint16_t* seqNumPtr=0 ) const noexcept = 0;
 
     /** This method writes the caller Point instance to the Model Point's
         internal data.  The method returns the Model Point's sequence number
@@ -298,7 +298,7 @@ protected:
         2) The data size of the Model Points data instance is ALWAYS honored
            when coping the data from 'srcData'
      */
-    virtual uint16_t write( const void*   srcData,
+    virtual uint16_t writeData( const void*   srcData,
                             size_t        srcSize,
                             LockRequest_T lockRequest = eNO_REQUEST ) noexcept = 0;
 
@@ -342,8 +342,8 @@ protected:
               subscribers will have received change notification for the Model
               Point's current value.
      */
-    virtual void attach( SubscriberApi& observer,
-                         uint16_t       initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept = 0;
+    virtual void attachSubscriber( SubscriberApi& observer,
+                                   uint16_t       initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept = 0;
 
     /** This method is used to detach a Subscriber from a Model Point.  See the
         attach() method for more details about the Subscription/Change
@@ -353,7 +353,7 @@ protected:
         currently attached.  The detach() method can be called within the
         Change Notification callback.
      */
-    virtual void detach( SubscriberApi& observer ) noexcept = 0;
+    virtual void detachSubscriber( SubscriberApi& observer ) noexcept = 0;
 
 
 public:

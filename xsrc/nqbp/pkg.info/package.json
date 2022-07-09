@@ -23,12 +23,18 @@
   },
   "publish": {
     "current": {
-      "comment": "minor updates to the bob and genfsm scripts",
-      "version": "2.2.1",
-      "date": "Sun May 29 17:06:05 2022",
-      "timestamp": 1653843965
+      "comment": "Update linux-gcc build script to optionally specifing a path to a specific GCC toolchain",
+      "version": "2.2.2",
+      "date": "Sat Jul  9 18:13:20 2022",
+      "timestamp": 1657390400
     },
     "history": [
+      {
+        "comment": "minor updates to the bob and genfsm scripts",
+        "version": "2.2.1",
+        "date": "Sun May 29 17:06:05 2022",
+        "timestamp": 1653843965
+      },
       {
         "comment": "Publish as Outcast2 package",
         "version": "2.2.0",

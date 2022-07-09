@@ -60,19 +60,19 @@ public:
     /// Type safe read. See Cpl::Dm::ModelPoint
     inline bool read( Cpl::System::ElapsedTime::Precision_T& dstData, uint16_t* seqNumPtr=0 ) const noexcept
     {
-        return Cpl::Dm::ModelPointCommon_::read( &dstData, sizeof( m_data ), seqNumPtr );
+        return readData( &dstData, sizeof( m_data ), seqNumPtr );
     }
 
     /// Type safe write. See Cpl::Dm::ModelPoint
     inline uint16_t write( Cpl::System::ElapsedTime::Precision_T newValue, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
     {
-        return Cpl::Dm::ModelPointCommon_::write( &newValue, sizeof( m_data ), lockRequest );
+        return writeData( &newValue, sizeof( m_data ), lockRequest );
     }
 
     /// Updates the MP with the valid-state/data from 'src'. Note: the src.lock state is NOT copied
     inline uint16_t copyFrom( const ElapsedPrecisionTime& src, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
     {
-        return Cpl::Dm::ModelPointCommon_::copyFrom( src, lockRequest );
+        return copyDataAndStateFrom( src, lockRequest );
     }
 
 public:
