@@ -45,23 +45,13 @@ DFString::~DFString()
 	}
 }
 
-////////////////////////////
-Cpl::Text::String& DFString::operator=( const String& string ) { copyIn( string, string.length() ); return *this; }
-Cpl::Text::String& DFString::operator=( const char* string ) { copyIn( string, string ? strlen( string ) : 0 ); return *this; }
-Cpl::Text::String& DFString::operator=( char c ) { copyIn( &c, 1 ); return *this; }
-Cpl::Text::String& DFString::operator=( int num ) { format( "%d", num ); return *this; }
-Cpl::Text::String& DFString::operator=( unsigned int num ) { format( "%u", num ); return *this; }
-Cpl::Text::String& DFString::operator=( long num ) { format( "%ld", num ); return *this; }
-Cpl::Text::String& DFString::operator=( long long num ) { format( "%lld", num ); return *this; }
-Cpl::Text::String& DFString::operator=( unsigned long num ) { format( "%lu", num ); return *this; }
-Cpl::Text::String& DFString::operator=( unsigned long long num ) { format( "%llu", num ); return *this; }
-Cpl::Text::String& DFString::operator +=( const String& string ) { appendTo( string, string.length() ); return *this; }
-Cpl::Text::String& DFString::operator +=( const char* string ) { appendTo( string, string ? strlen( string ) : 0 ); return *this; }
-Cpl::Text::String& DFString::operator +=( char c ) { appendTo( &c, 1 ); return *this; }
-Cpl::Text::String& DFString::operator +=( int num ) { formatAppend( "%d", num ); return *this; }
-Cpl::Text::String& DFString::operator +=( unsigned int num ) { formatAppend( "%u", num ); return *this; }
-Cpl::Text::String& DFString::operator +=( long num ) { formatAppend( "%ld", num ); return *this; }
-Cpl::Text::String& DFString::operator +=( long long num ) { formatAppend( "%lld", num ); return *this; }
-Cpl::Text::String& DFString::operator +=( unsigned long num ) { formatAppend( "%lu", num ); return *this; }
-Cpl::Text::String& DFString::operator +=( unsigned long long num ) { formatAppend( "%llu", num ); return *this; }
-
+Cpl::Text::String& DFString::operator =( const DFString& string )
+{
+	copyIn( string, string.length() );
+	return *this;
+}
+Cpl::Text::String& DFString::operator +=( const DFString& string )
+{
+	appendTo( string, string.length() );
+	return *this;
+}

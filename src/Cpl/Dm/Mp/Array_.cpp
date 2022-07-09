@@ -58,19 +58,19 @@ ArrayBase_::ArrayBase_( Cpl::Dm::ModelDatabase& myModelBase,
 
 
 /////////////////////////////////////////////////////
-bool ArrayBase_::read( void* dstData, size_t dstNumElements, size_t srcIndex, uint16_t* seqNumPtr ) const noexcept
+bool ArrayBase_::readArrayElements( void* dstData, size_t dstNumElements, size_t srcIndex, uint16_t* seqNumPtr ) const noexcept
 {
     MetaData_T dst ={ (uint8_t*) dstData, dstNumElements, srcIndex };
-    return ModelPointCommon_::read( &dst, sizeof( dst ), seqNumPtr );
+    return readData( &dst, sizeof( dst ), seqNumPtr );
 }
 
-uint16_t ArrayBase_::write( const void* srcData, size_t srcNumElements, size_t dstIndex, LockRequest_T lockRequest ) noexcept
+uint16_t ArrayBase_::writeArrayElements( const void* srcData, size_t srcNumElements, size_t dstIndex, LockRequest_T lockRequest ) noexcept
 {
     MetaData_T src ={ (uint8_t*) srcData, srcNumElements, dstIndex };
-    return ModelPointCommon_::write( &src, sizeof( src ), lockRequest );
+    return writeData( &src, sizeof( src ), lockRequest );
 }
 
-uint16_t ArrayBase_::copyFrom( const ArrayBase_& src, LockRequest_T lockRequest ) noexcept
+uint16_t ArrayBase_::copyArrayFrom( const ArrayBase_& src, LockRequest_T lockRequest ) noexcept
 {
     // Handle the src.invalid case
     if ( src.isNotValid() )
@@ -79,7 +79,7 @@ uint16_t ArrayBase_::copyFrom( const ArrayBase_& src, LockRequest_T lockRequest 
     }
 
     m_modelDatabase.lock_();
-    uint16_t seqNum = ArrayBase_::write( src.m_dataPtr, src.m_numElements, 0, lockRequest );
+    uint16_t seqNum = ArrayBase_::writeArrayElements( src.m_dataPtr, src.m_numElements, 0, lockRequest );
     m_modelDatabase.unlock_();
     return seqNum;
 }

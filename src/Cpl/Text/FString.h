@@ -73,67 +73,19 @@ public:
 
 
 public:
-	///@{
-	/// Assignment
-	inline Cpl::Text::String& operator =( const FString<S>& string ) { copyIn( string, string.length() ); return *this; }
+	/// Make parent method visible
+	using Cpl::Text::String::operator=;
 
-	/// Assignment
-    Cpl::Text::String& operator=( const Cpl::Text::String& string ) { copyIn( string, string.length() ); return *this; }
-
-	/// Assignment
-    Cpl::Text::String& operator=( const char* string ) { copyIn( string, string ? strlen( string ) : 0 ); return *this; }
-
-	/// Assignment
-    Cpl::Text::String& operator=( char c ) { copyIn( &c, 1 ); return *this; }
-
-	/// Assignment
-    Cpl::Text::String& operator=( int num ) { format( "%d", num ); return *this; }
-
-	/// Assignment
-    Cpl::Text::String& operator=( unsigned int num ) { format( "%u", num ); return *this; }
-
-	/// Assignment
-    Cpl::Text::String& operator=( long num ) { format( "%ld", num ); return *this; }
-
-	/// Assignment
-    Cpl::Text::String& operator=( long long num ) { format( "%lld", num ); return *this; }
-
-	/// Assignment
-    Cpl::Text::String& operator=( unsigned long num ) { format( "%lu", num ); return *this; }
-
-	/// Assignment
-    Cpl::Text::String& operator=( unsigned long long num ) { format( "%llu", num ); return *this; }
-	///@}
+	/// Assignment 
+	Cpl::Text::String& operator =( const FString<S>& string ) { copyIn( string, string.length() );return *this; }
 
 public:
-	///@{
-	/// Append
-    Cpl::Text::String & operator +=( const String& string ) { appendTo( string, string.length() ); return *this; }
+	/// Make parent method visible
+	using Cpl::Text::String::operator+=;
 
-	/// Append
-    Cpl::Text::String& operator +=( const char* string ) { appendTo( string, string ? strlen( string ) : 0 ); return *this; }
+	/// Append 
+	Cpl::Text::String& operator +=( const FString<S>& string ) { appendTo( string, string.length() ); return *this; }
 
-	/// Append
-    Cpl::Text::String& operator +=( char c ) { appendTo( &c, 1 ); return *this; }
-
-	/// Append
-    Cpl::Text::String& operator +=( int num ) { formatAppend( "%d", num ); return *this; }
-
-	/// Append
-    Cpl::Text::String& operator +=( unsigned int num ) { formatAppend( "%u", num ); return *this; }
-
-	/// Append
-    Cpl::Text::String& operator +=( long num ) { formatAppend( "%ld", num ); return *this; }
-
-	/// Append
-    Cpl::Text::String& operator +=( long long num ) { formatAppend( "%lld", num ); return *this; }
-
-	/// Append
-    Cpl::Text::String& operator +=( unsigned long num ) { formatAppend( "%lu", num ); return *this; }
-
-	/// Append
-    Cpl::Text::String& operator +=( unsigned long long num ) { formatAppend( "%llu", num ); return *this; }
-	///@}
 };
 
 

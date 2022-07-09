@@ -23,13 +23,13 @@ using namespace Cpl::Dm::Mp;
 ///////////////////////////////////////////////////////////////////////////////
 void ElapsedPrecisionTime::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
-    ModelPointCommon_::attach( observer, initialSeqNumber );
+    attachSubscriber( observer, initialSeqNumber );
 }
 
 /// Type safe un-register observer
 void ElapsedPrecisionTime::detach( Observer& observer ) noexcept
 {
-    ModelPointCommon_::detach( observer );
+    detachSubscriber( observer );
 }
 
 const char* ElapsedPrecisionTime::getTypeAsText() const noexcept

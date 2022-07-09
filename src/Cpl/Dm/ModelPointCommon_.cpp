@@ -107,7 +107,7 @@ void ModelPointCommon_::hookSetInvalid() noexcept
     memset( m_dataPtr, 0, m_dataSize );
 }
 
-bool ModelPointCommon_::read( void* dstData, size_t dstSize, uint16_t* seqNumPtr ) const noexcept
+bool ModelPointCommon_::readData( void* dstData, size_t dstSize, uint16_t* seqNumPtr ) const noexcept
 {
     m_modelDatabase.lock_();
     bool valid = m_valid;
@@ -124,7 +124,7 @@ bool ModelPointCommon_::read( void* dstData, size_t dstSize, uint16_t* seqNumPtr
     return valid;
 }
 
-uint16_t ModelPointCommon_::write( const void* srcData, size_t srcSize, LockRequest_T lockRequest ) noexcept
+uint16_t ModelPointCommon_::writeData( const void* srcData, size_t srcSize, LockRequest_T lockRequest ) noexcept
 {
     m_modelDatabase.lock_();
     if ( srcData && testAndUpdateLock( lockRequest ) )
@@ -141,7 +141,7 @@ uint16_t ModelPointCommon_::write( const void* srcData, size_t srcSize, LockRequ
     return result;
 }
 
-uint16_t ModelPointCommon_::copyFrom( const ModelPointCommon_& src, LockRequest_T lockRequest ) noexcept
+uint16_t ModelPointCommon_::copyDataAndStateFrom( const ModelPointCommon_& src, LockRequest_T lockRequest ) noexcept
 {
     // Handle the src.invalid case
     if ( src.isNotValid() )
@@ -150,7 +150,7 @@ uint16_t ModelPointCommon_::copyFrom( const ModelPointCommon_& src, LockRequest_
     }
 
     m_modelDatabase.lock_();
-    uint16_t seqNum = write( src.m_dataPtr, src.m_dataSize, lockRequest );
+    uint16_t seqNum = writeData( src.m_dataPtr, src.m_dataSize, lockRequest );
     m_modelDatabase.unlock_();
     return seqNum;
 }
@@ -366,7 +366,7 @@ void ModelPointCommon_::processChangeNotifications() noexcept
 }
 
 /////////////////
-void ModelPointCommon_::attach( SubscriberApi& observer, uint16_t initialSeqNumber ) noexcept
+void ModelPointCommon_::attachSubscriber( SubscriberApi& observer, uint16_t initialSeqNumber ) noexcept
 {
     m_modelDatabase.lock_();
     observer.setSequenceNumber_( initialSeqNumber );
@@ -375,7 +375,7 @@ void ModelPointCommon_::attach( SubscriberApi& observer, uint16_t initialSeqNumb
     m_modelDatabase.unlock_();
 }
 
-void ModelPointCommon_::detach( SubscriberApi& observer ) noexcept
+void ModelPointCommon_::detachSubscriber( SubscriberApi& observer ) noexcept
 {
     m_modelDatabase.lock_();
     processSubscriptionEvent_( observer, eDETACH );
@@ -385,12 +385,12 @@ void ModelPointCommon_::detach( SubscriberApi& observer ) noexcept
 
 void ModelPointCommon_::genericAttach( SubscriberApi& observer, uint16_t initialSeqNumber) noexcept
 {
-    attach( observer, initialSeqNumber );
+    attachSubscriber( observer, initialSeqNumber );
 }
 
 void ModelPointCommon_::genericDetach( SubscriberApi& observer ) noexcept
 {
-    detach( observer );
+    detachSubscriber( observer );
 }
 
 

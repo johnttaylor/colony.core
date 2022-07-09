@@ -563,3 +563,10 @@ void String_::validateSizeAfterFormat( int availableLen, int formattedLen, int m
 	}
 }
 
+////////////////////////////////////
+Cpl::Text::String& String_::operator=( const String& string ) { copyIn( string, string.length() ); return *this; }
+Cpl::Text::String& String_::operator=( const char* string ) { copyIn( string, string ? strlen( string ) : 0 ); return *this; }
+Cpl::Text::String& String_::operator=( char c ) { copyIn( &c, 1 ); return *this; }
+Cpl::Text::String& String_::operator +=( const String& string ) { appendTo( string, string.length() ); return *this; }
+Cpl::Text::String& String_::operator +=( const char* string ) { appendTo( string, string ? strlen( string ) : 0 ); return *this; }
+Cpl::Text::String& String_::operator +=( char c ) { appendTo( &c, 1 ); return *this; }
