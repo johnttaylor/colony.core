@@ -170,7 +170,7 @@ Thread::~Thread()
         // NOTE: This will NOT free any resources associated with the thread including the stack!
         if ( m_runnable.isRunning() )
         {
-            pthread_cancel( m_threadID );
+            pthread_cancel( (pthread_t) m_threadID );
         }
     }
 }

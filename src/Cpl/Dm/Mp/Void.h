@@ -66,13 +66,13 @@ public:
     /// Type safe read. See Cpl::Dm::ModelPoint
     inline bool read( void*& dstData, uint16_t* seqNumPtr = 0 ) const noexcept
     {
-        return Cpl::Dm::ModelPointCommon_::read( &dstData, sizeof( void* ), seqNumPtr );
+        return readData( &dstData, sizeof( void* ), seqNumPtr );
     }
 
     /// Type safe write. See Cpl::Dm::ModelPoint
     inline uint16_t write( void* newValue, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept
     {
-        return Cpl::Dm::ModelPointCommon_::write( &newValue, sizeof( void* ), lockRequest );
+        return writeData( &newValue, sizeof( void* ), lockRequest );
     }
 
 public:

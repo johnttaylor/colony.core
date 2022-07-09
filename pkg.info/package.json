@@ -36,12 +36,12 @@
       {
         "pkgname": "nqbp",
         "pkgtype": "foreign",
-        "adoptedDate": "Sun May 29 17:08:51 2022",
+        "adoptedDate": "Sat Jul  9 18:18:26 2022",
         "parentDir": "xsrc",
         "version": {
-          "semanticVersion": "2.2.1",
+          "semanticVersion": "2.2.2",
           "branch": null,
-          "tag": "OUTCAST2-main-2.2.1"
+          "tag": "OUTCAST2-main-2.2.2"
         },
         "repo": {
           "name": "nqbp",

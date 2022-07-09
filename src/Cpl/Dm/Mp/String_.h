@@ -83,7 +83,7 @@ public:
 
 protected:
     /// Updates the MP with the valid-state/data from 'src'. Note: the src.lock state is NOT copied
-    virtual uint16_t copyFrom( const StringBase_& src, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
+    virtual uint16_t copyStringFrom( const StringBase_& src, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
     /// See Cpl::Dm::Point.  
     void setJSONVal( JsonDocument& doc ) noexcept;
@@ -120,20 +120,20 @@ public:
     /// Updates the MP's data/valid-state from 'src'. 
     inline uint16_t copyFrom( MPTYPE& src, LockRequest_T lockRequest = eNO_REQUEST ) noexcept
     {
-        return StringBase_::copyFrom( src, lockRequest );
+        return copyStringFrom( src, lockRequest );
     }
 
 public:
     /// Type safe register observer
     inline void attach( Cpl::Dm::Subscriber<MPTYPE>& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept
     {
-        ModelPointCommon_::attach( observer, initialSeqNumber );
+        attachSubscriber( observer, initialSeqNumber );
     }
 
     /// Type safe un-register observer
     inline void detach( Cpl::Dm::Subscriber<MPTYPE>& observer ) noexcept
     {
-        ModelPointCommon_::detach( observer );
+        detachSubscriber( observer );
     }
 
 

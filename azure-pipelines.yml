@@ -20,7 +20,7 @@ variables:
     value: 'unknown'
     
 trigger:
-- develop
+- master
 
 jobs:
   - job: StartServer

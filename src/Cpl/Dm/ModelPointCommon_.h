@@ -83,19 +83,19 @@ public:
 
 protected:
     /// See Cpl::Dm::ModelPoint
-    bool read( void* dstData, size_t dstSize, uint16_t* seqNumPtr=0 ) const noexcept;
+    bool readData( void* dstData, size_t dstSize, uint16_t* seqNumPtr=0 ) const noexcept;
 
     /// See Cpl::Dm::ModelPoint
-    uint16_t write( const void* srcData, size_t srcSize, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
+    uint16_t writeData( const void* srcData, size_t srcSize, LockRequest_T lockRequest = eNO_REQUEST ) noexcept;
 
     /// Updates the MP with the valid-state/data from 'src'. Note: the src.lock state is NOT copied
-    uint16_t copyFrom( const ModelPointCommon_& src, LockRequest_T lockRequest ) noexcept;
+    virtual uint16_t copyDataAndStateFrom( const ModelPointCommon_& src, LockRequest_T lockRequest ) noexcept;
 
     /// See Cpl::Dm::ModelPoint
-    void attach( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
+    void attachSubscriber( SubscriberApi& observer, uint16_t initialSeqNumber=SEQUENCE_NUMBER_UNKNOWN ) noexcept;
 
     /// See Cpl::Dm::ModelPoint 
-    void detach( SubscriberApi& observer ) noexcept;
+    void detachSubscriber( SubscriberApi& observer ) noexcept;
 
     /// See Cpl::Dm::ModelPoint
     void copyDataTo_( void* dstData, size_t dstSize ) const noexcept;

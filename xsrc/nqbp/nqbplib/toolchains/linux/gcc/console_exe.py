@@ -7,6 +7,7 @@
 #   Output:     
 #------------------------------------------------------------------------------
 
+import os
 import sys
 from nqbplib import base
 from nqbplib import utils
@@ -17,7 +18,18 @@ class ToolChain( base.ToolChain ):
     def __init__( self, exename, prjdir, build_variants, default_variant='release' ):
         base.ToolChain.__init__( self, exename, prjdir, build_variants, default_variant )
         self._ccname = 'GCC'
-        
+
+        # Check if there is specific path for the GCC toolchain
+        gcc_bin = os.environ.get('NQBP_GCC_BIN')
+        if ( gcc_bin != None ):
+            self._ccname   = f'GCC @{gcc_bin}'
+            self._cc       = os.path.join(gcc_bin, 'gcc' )
+            self._ld       = os.path.join(gcc_bin, 'gcc' )
+            self._asm      = os.path.join(gcc_bin, 'as' )  
+            self._ar       = os.path.join(gcc_bin, 'ar' )  
+            self._objcpy   = os.path.join(gcc_bin, 'objcpy')
+
+
         #
         # Build Config/Variant: "xyz"
         #

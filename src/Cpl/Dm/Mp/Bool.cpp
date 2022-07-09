@@ -20,12 +20,12 @@ using namespace Cpl::Dm::Mp;
 ///////////////////////////////////////////////////////////////////////////////
 void Bool::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
-    ModelPointCommon_::attach( observer, initialSeqNumber );
+    ModelPointCommon_::attachSubscriber( observer, initialSeqNumber );
 }
 
 void Bool::detach( Observer& observer ) noexcept
 {
-    ModelPointCommon_::detach( observer );
+    ModelPointCommon_::detachSubscriber( observer );
 }
 
 const char* Bool::getTypeAsText() const noexcept

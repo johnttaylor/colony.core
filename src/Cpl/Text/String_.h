@@ -167,6 +167,30 @@ public:
 	/// See Cpl::Text::String
 	char* getBuffer( int& maxAllowedLength );
 
+	/// Make parent method visible
+	using Cpl::Text::String::operator=;
+
+	/// Make parent method visible
+	using Cpl::Text::String::operator+=;
+
+	/// Assignment
+	Cpl::Text::String& operator=( const String& string );
+
+	/// Assignment
+	Cpl::Text::String& operator=( const char* string );
+
+	/// Assignment
+	Cpl::Text::String& operator=( char c );
+
+	/// Append
+	Cpl::Text::String & operator +=( const String& string );
+
+	/// Append
+	Cpl::Text::String& operator +=( const char* string );
+
+	/// Append
+	Cpl::Text::String& operator +=( char c );
+
 public:
 	/// See Cpl::Container::Key
 	int compareKey( const Key& key ) const;

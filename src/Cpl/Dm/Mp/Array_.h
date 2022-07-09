@@ -82,7 +82,7 @@ protected:
         in the Model Point's array.  Note: if srcIndex + dstNumElements exceeds
         the size of the MP's data then the read operation will be truncated.
     */
-    virtual bool read( void* dstData, size_t dstNumElements, size_t srcIndex = 0, uint16_t* seqNumPtr = 0 ) const noexcept;
+    virtual bool readArrayElements( void* dstData, size_t dstNumElements, size_t srcIndex = 0, uint16_t* seqNumPtr = 0 ) const noexcept;
 
     /** The caller can write a subset of array starting from the specified index
         in the Model Point's array.  Note: if dstIndex + srcNumElements exceeds
@@ -95,10 +95,10 @@ protected:
         only partially initialized AND then MP is now in the valid
         state!
     */
-    virtual uint16_t write( const void* srcData, size_t srcNumElements, size_t dstIndex = 0, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept;
+    virtual uint16_t writeArrayElements( const void* srcData, size_t srcNumElements, size_t dstIndex = 0, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept;
 
     /// Updates the MP with the valid-state/data from 'src'. Note: the src.lock state is NOT copied
-    virtual uint16_t copyFrom( const ArrayBase_& src, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept;
+    virtual uint16_t copyArrayFrom( const ArrayBase_& src, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept;
 
 public:
     /// Returns the number of element in the array. This method IS thread safe.
@@ -167,13 +167,13 @@ public:
     /// Type safe read. See Cpl::Dm::ModelPoint
     inline bool read( ELEMTYPE* dstArrray, size_t dstNumElements, size_t srcIndex = 0, uint16_t* seqNumPtr = 0 ) const noexcept
     {
-        return ArrayBase_::read( dstArrray, dstNumElements, srcIndex, seqNumPtr );
+        return ArrayBase_::readArrayElements( dstArrray, dstNumElements, srcIndex, seqNumPtr );
     }
 
     /// Type safe write. See Cpl::Dm::ModelPoint
     inline uint16_t write( const ELEMTYPE* srcArray, size_t srcNumElements, size_t dstIndex = 0, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept
     {
-        return ArrayBase_::write( srcArray, srcNumElements, dstIndex, lockRequest );
+        return ArrayBase_::writeArrayElements( srcArray, srcNumElements, dstIndex, lockRequest );
     }
 
 protected:
@@ -249,7 +249,7 @@ public:
                 }
                 tempArray[idx] = elems[idx + offset].as<ELEMTYPE>();
             }
-            retSequenceNumber = ArrayBase_::write( tempArray, idx, startIdx + offset, lockRequest );
+            retSequenceNumber = ArrayBase_::writeArrayElements( tempArray, idx, startIdx + offset, lockRequest );
             offset      += idx;
             numElements -= idx;
         }
@@ -295,19 +295,19 @@ public:
     /// Updates the MP's data/valid-state from 'src'. 
     inline uint16_t copyFrom( const MPTYPE& src, Cpl::Dm::ModelPoint::LockRequest_T lockRequest = Cpl::Dm::ModelPoint::eNO_REQUEST ) noexcept
     {
-        return ArrayBase_::copyFrom( src, lockRequest );
+        return ArrayBase_::copyArrayFrom( src, lockRequest );
     }
 
     /// Type safe register observer
     inline void attach( Cpl::Dm::Subscriber<MPTYPE>& observer, uint16_t initialSeqNumber = Cpl::Dm::ModelPoint::SEQUENCE_NUMBER_UNKNOWN ) noexcept
     {
-        ModelPointCommon_::attach( observer, initialSeqNumber );
+        ArrayBase_::attachSubscriber( observer, initialSeqNumber );
     }
 
     /// Type safe un-register observer
     inline void detach( Cpl::Dm::Subscriber<MPTYPE>& observer ) noexcept
     {
-        ModelPointCommon_::detach( observer );
+        ArrayBase_::detachSubscriber( observer );
     }
 };
 

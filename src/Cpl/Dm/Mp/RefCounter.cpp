@@ -102,12 +102,12 @@ uint16_t RefCounter::decrement( uint32_t decrementAmount, LockRequest_T lockRequ
 ///////////////////////////////////////////////////////////////////////////////
 void RefCounter::attach( Observer& observer, uint16_t initialSeqNumber ) noexcept
 {
-    ModelPointCommon_::attach( observer, initialSeqNumber );
+    attachSubscriber( observer, initialSeqNumber );
 }
 
 void RefCounter::detach( Observer& observer ) noexcept
 {
-    ModelPointCommon_::detach( observer );
+   detachSubscriber( observer );
 }
 
 const char* RefCounter::getTypeAsText() const noexcept
