@@ -11,7 +11,7 @@ set -e
 # Example: wsl_build.sh 32
 
 # setup the environment
-source ./env.sh
+source ./env.sh default
 
 # Build all linux projects
 cd tests
