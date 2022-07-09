@@ -119,10 +119,18 @@ public:
                    TimerExpiredFunction_T expiredCallbackFunc
     );
 
+    /** Alternate Constructor that is used to defer the assignment of the time source.
+        When using this constructor - the Application logic is REQUIRED to use
+        the setTimingSource() method to set the timing source BEFORE the timer
+        is used.
+     */
+    TimerComposer( CONTEXT&               timerContextInstance,
+                   TimerExpiredFunction_T expiredCallbackFunc
+    );
+
 protected:
     /// See Cpl::System::CounterCallback_
     void expired() noexcept;
-
 };
 
 
@@ -144,6 +152,17 @@ TimerComposer<CONTEXT>::TimerComposer
 {
 }
 
+template <class CONTEXT>
+TimerComposer<CONTEXT>::TimerComposer
+(
+    CONTEXT&                context,
+    TimerExpiredFunction_T  expiredCallback
+)
+    : Timer()
+    , m_context( context )
+    , m_expiredFuncPtr( expiredCallback )
+{
+}
 template <class CONTEXT>
 void TimerComposer<CONTEXT>::expired( void ) noexcept
 {
