@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2020  John T. Taylor
+* Copyright (c) 2014-2022  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -173,5 +173,5 @@ Cpl::System::Thread* Cpl::System::Thread::create( Runnable&   runnable,
 
 void Cpl::System::Thread::destroy( Thread& threadToDestroy )
 {
-    delete &threadToDestroy;
+    // do nothing since there are NOT any 'real threads'
 }

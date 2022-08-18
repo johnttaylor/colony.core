@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2020  John T. Taylor
+* Copyright (c) 2014-2022  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -83,6 +83,13 @@ protected:
         and pending Event Flag events. This method should always be wrapped
         in a loop (typically a forever loop).
         
+        If the 'skipWait' argument is set to true then the method does not 
+        wait for event - it simply processing the current event flags and
+        timers. The use scenario for skipping the wait is for child classes
+        to execute the event loop multiple times to drain their message/notifications
+        queues one message/notification at a time (i.e. give equal time/priority
+        to all types of events)
+
         The method typically returns true.  The method only returns false if
         the pleaseStop() method was called on the Event Loop instance.
 
@@ -112,7 +119,7 @@ protected:
     
         @endcode
      */
-    virtual bool waitAndProcessEvents() noexcept;
+    virtual bool waitAndProcessEvents( bool skipWait = false ) noexcept;
 
     /** This method is used to clean-up the Event Loop's when the thread is
         being stopped.
@@ -182,6 +189,9 @@ protected:
 
     /// Timeout period for waiting on the next event
     unsigned long           m_timeout;
+
+    /// Timestamp, in milliseconds, of start of event/wait loop
+    unsigned long           m_timeStartOfLoop;
 
     /// The variable holds the current state of all Event Flags
     Cpl_System_EventFlag_T  m_events;

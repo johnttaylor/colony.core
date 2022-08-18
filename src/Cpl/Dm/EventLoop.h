@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2020  John T. Taylor
+* Copyright (c) 2014-2022  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -82,23 +82,31 @@ public:
     void addPendingChangingNotification_( SubscriberApi& subscriber ) noexcept;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
-    by other classes in the Cpl::Dm namespace.  The Application should
-    NEVER call this method.
+        by other classes in the Cpl::Dm namespace.  The Application should
+        NEVER call this method.
 
-    This method is used remove a pending 'change notification' from its list
-    of pending change notifications.  It is okay to call this method even if
-    the Subscriber is not current registered for change notifications.
+        This method is used remove a pending 'change notification' from its list
+        of pending change notifications.  It is okay to call this method even if
+        the Subscriber is not current registered for change notifications.
 
-     This method IS thread safe.
+        This method IS thread safe.
 
-     NOTE: The requirements and/or semantics of Model Point subscription is
-           that Subscriptions, Notifications, and Cancel-of-Subscriptions
-           all happen in a SINGLE thread and that thread is the 'Subscribers'
-           thread.
+        NOTE: The requirements and/or semantics of Model Point subscription is
+              that Subscriptions, Notifications, and Cancel-of-Subscriptions
+              all happen in a SINGLE thread and that thread is the 'Subscribers'
+              thread.
      */
     void removePendingChangingNotification_( SubscriberApi& subscriber ) noexcept;
 
+
 protected:
+    /** This method returns true if there is at least one pending change
+        notification.
+
+        This method IS thread safe.
+     */
+    bool isPendingPendingChangingNotifications() noexcept;
+
     /// This helper method processes pending change notifications
     virtual void processChangeNotifications() noexcept;
 };

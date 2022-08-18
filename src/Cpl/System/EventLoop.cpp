@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2020  John T. Taylor
+* Copyright (c) 2014-2022  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -14,6 +14,7 @@
 #include "Trace.h"
 #include "FatalError.h"
 #include "GlobalLock.h"
+#include "ElapsedTime.h"
 
 #define SECT_ "Cpl::System"
 
@@ -28,6 +29,7 @@ EventLoop::EventLoop( unsigned long          timeOutPeriodInMsec,
     , m_eventHandler( eventHandler )
     , m_sema()
     , m_timeout( timeOutPeriodInMsec )
+    , m_timeStartOfLoop( 0 )
     , m_events( 0 )
     , m_run( true )
 {
@@ -55,7 +57,7 @@ void EventLoop::appRun( void )
 {
     startEventLoop();
     bool run = true;
-    while( run )
+    while ( run )
     {
         run = waitAndProcessEvents();
     }
@@ -81,9 +83,8 @@ void EventLoop::processEventFlag( uint8_t eventNumber ) noexcept
     }
 }
 
-bool EventLoop::waitAndProcessEvents() noexcept
+bool EventLoop::waitAndProcessEvents( bool skipWait ) noexcept
 {
-
     // Trap my exit/please-stop condition
     GlobalLock::begin();
     bool stayRunning = m_run;
@@ -93,8 +94,19 @@ bool EventLoop::waitAndProcessEvents() noexcept
         return false;
     }
 
+    // Skip waiting if it has been a 'long time' since we last processed events
+    unsigned long now = ElapsedTime::milliseconds();
+    if ( ElapsedTime::deltaMilliseconds( m_timeStartOfLoop, now ) > m_timeout )
+    {
+        skipWait = true;
+    }
+    m_timeStartOfLoop = now;
+
     // Wait for something to happen...
-    m_sema.timedWait( m_timeout ); // Note: For Tick Simulation: the timedWait() calls topLevelWait() if the semaphore has not been signaled
+    if ( !skipWait )
+    {
+        m_sema.timedWait( m_timeout ); // Note: For Tick Simulation: the timedWait() calls topLevelWait() if the semaphore has not been signaled
+    }
 
     // Trap my exit/please-stop condition AGAIN since a lot could have happen while I was waiting....
     GlobalLock::begin();

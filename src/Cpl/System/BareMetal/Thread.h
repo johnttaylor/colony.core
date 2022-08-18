@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2020  John T. Taylor
+* Copyright (c) 2014-2022  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -46,7 +46,7 @@ public:
      */
     static Runnable& setRunnable( Runnable& newRunnableInstance );
 
-public:
+private:
     /// Private Constructor -->the application can not create threads!
     Thread( Runnable& runnable, const char* name );
 
@@ -56,6 +56,7 @@ public:
     /// Private Constructor -->the application can not create threads!
     Thread( Thread& copy );
 
+public:
     /// Destructor
     ~Thread();
 
