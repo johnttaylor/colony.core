@@ -109,12 +109,18 @@
   },
   "publish": {
     "current": {
-      "comment": "Refactor Model Points for smaller footprint (is a breaking change)",
-      "version": "3.0.0",
-      "date": "Mon May 30 18:11:49 2022",
-      "timestamp": 1653934309
+      "comment": "Add Periodic Scheduler. Add non-blocking TShell processor",
+      "version": "3.1.0",
+      "date": "Thu Aug 18 01:03:06 2022",
+      "timestamp": 1660784586
     },
     "history": [
+      {
+        "comment": "Refactor Model Points for smaller footprint (is a breaking change)",
+        "version": "3.0.0",
+        "date": "Mon May 30 18:11:49 2022",
+        "timestamp": 1653934309
+      },
       {
         "comment": "Try again at publishing as a Outcast2 package",
         "version": "2.0.2",
