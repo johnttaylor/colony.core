@@ -571,7 +571,7 @@ TEST_CASE( "simbasic" )
     REQUIRE( cherryRun.m_delta2 < 50 );
     REQUIRE( cherryRun.m_delta3 >= 40 );
     REQUIRE( cherryRun.m_delta4 >= 333 );
-    REQUIRE( cherryRun.m_delta5 < 50 );
+    REQUIRE( cherryRun.m_delta5 < 200 );
 
     REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
 }
