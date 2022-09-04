@@ -4,7 +4,7 @@
 * agreement (license.txt) in the root directory or on the Internet at
 * http://www.shift-right.com/openrepo/license.htm
 *
-* Copyright (c) 2001-2020  John T. Taylor
+* Copyright (c) 2014-2022  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -21,8 +21,7 @@ using namespace Cpl::Io;
 //////////////////////
 bool Output::write( char c )
 {
-    int dummy;
-    return write( &c, sizeof( c ), dummy );
+    return write( (const void*) &c, sizeof( c ) );
 }
 
 

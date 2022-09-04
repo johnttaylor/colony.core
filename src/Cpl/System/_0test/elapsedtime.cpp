@@ -4,7 +4,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2020  John T. Taylor
+* Copyright (c) 2014-2022  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -56,6 +56,7 @@ TEST_CASE( "elaspedtime", "[elaspedtime]" )
     REQUIRE( precValue != precision );
     precision.m_seconds     = 1;
     precision.m_thousandths = 500;
+    REQUIRE( precValue.asMilliseconds() == 1500 );
     REQUIRE( precValue == precision );
     CPL_SYSTEM_TRACE_MSG( SECT_, ("Post verify: sleep = 1.5") );
 
@@ -141,6 +142,21 @@ TEST_CASE( "elaspedtime", "[elaspedtime]" )
     REQUIRE( timeB >= timeA );
     REQUIRE( ( timeA != timeB ) == false );
     REQUIRE( timeA == timeB );
+
+    timeA ={ 12, 10 };
+    timeB ={ 13, 10 };
+    uint64_t flatTimeA = timeA.asFlatTime();
+    uint64_t flatTimeB = timeB.asFlatTime();
+    REQUIRE( flatTimeA == 12010LL );
+    REQUIRE( flatTimeB == 13010LL );
+    timeA.setFlatTime( 123456LL );
+    REQUIRE( timeA.asFlatTime() == 123456LL );
+    REQUIRE( timeA.m_seconds == 123 );
+    REQUIRE( timeA.m_thousandths == 456 );
+    ElapsedTime::Precision_T timeC( 666005LL );
+    REQUIRE( timeC.m_seconds == 666 );
+    REQUIRE( timeC.m_thousandths == 5 );
+    REQUIRE( timeC.asFlatTime() == 666005LL );
 
     REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
 }

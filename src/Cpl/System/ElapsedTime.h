@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2020  John T. Taylor
+* Copyright (c) 2014-2022  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -69,7 +69,26 @@ public:
         /// Assign my value based on total milliseconds
         Precision_T& operator =( uint32_t milliseconds );
 
+        /// Converts the instance's time into as a single 'large' integer value in milliseconds
+        uint64_t asFlatTime() const { return m_seconds * 1000 + m_thousandths; }
 
+        /// Sets the instance's time from a single 'large' integer value in milliseconds
+        void setFlatTime( uint64_t flatTimeInMs ) 
+        { 
+            m_seconds     = (unsigned long) (flatTimeInMs / 1000);
+            m_thousandths = (uint16_t) (flatTimeInMs % 1000);
+        }
+
+        /** Converts the instance's time to milliseconds.  The result CAN be
+            incorrect if the actual number of milliseconds is greater than what
+            can be stored in an unsigned long (e.g. a 32 bit unsigned integer
+            can only contain ~47 days 'of milliseconds'). USE WITH CAUTION.
+         */
+        unsigned long asMilliseconds() const
+        {
+            return m_seconds * 1000 + m_thousandths;
+        }
+         
     public:
         /// Constructor (to ensure any pad bytes get zero'd)
         Precision_T()
@@ -85,6 +104,13 @@ public:
             m_thousandths = thousandths;
         }
 
+        /// Constructor (to ensure any pad bytes get zero'd)
+        Precision_T( uint64_t flatTimeInMs )
+        {
+            memset( (void*) this, 0, sizeof( Precision_T ) );
+            setFlatTime( flatTimeInMs );
+        }
+        
         /// Copy Constructor (to ensure any pad bytes get zero'd)
         Precision_T( const Precision_T& other )
         {
@@ -185,7 +211,7 @@ public:
 
 
 public:
-    /** This method will initialize the contents 'etime' to the number of seconds
+    /** This method will initialize the contents 'dst' to the number of seconds
         specified by 'seconds' and set the m_thousandths field to zero.
      */
     inline static void initializeWithSeconds( Precision_T& dst, unsigned long seconds )
@@ -193,7 +219,7 @@ public:
         dst.m_seconds = seconds; dst.m_thousandths = 0;
     }
 
-    /** This method will initialize the contents of 'etime' to the number of
+    /** This method will initialize the contents of 'dst' to the number of
         milliseconds specified by 'msec'.  If 'msec' is greater than 1000, the
         m_seconds field will be populate with the "overflow".
      */
