@@ -48,3 +48,12 @@ make.log
 
 myMediaFile
 _compiler_.txt
+
+# ignore Visual Studio stuffs
+.vscode
+.cmake
+.vs
+Debug
+x64
+Release
+*.vcxproj.user
