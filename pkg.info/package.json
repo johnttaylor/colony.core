@@ -109,12 +109,18 @@
   },
   "publish": {
     "current": {
-      "comment": "Add Periodic Scheduler. Add non-blocking TShell processor",
-      "version": "4.1.0",
-      "date": "Thu Aug 18 01:03:06 2022",
-      "timestamp": 1660784586
+      "comment": "Added new Drivers. Tweaked the StreamDecoder. Added VS solution. Added Null Media and RAM IO stream",
+      "version": "4.2.0",
+      "date": "Sun Sep  4 17:55:27 2022",
+      "timestamp": 1662314127
     },
     "history": [
+      {
+        "comment": "Add Periodic Scheduler. Add non-blocking TShell processor",
+        "version": "4.1.0",
+        "date": "Thu Aug 18 01:03:06 2022",
+        "timestamp": 1660784586
+      },
       {
         "comment": "Refactor Model Points for smaller footprint (is a breaking change)",
         "version": "3.0.0",
