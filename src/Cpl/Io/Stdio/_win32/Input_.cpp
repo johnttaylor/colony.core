@@ -9,6 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
+#include "colony_config.h"
 #include "Cpl/Io/Stdio/Input_.h"
 #include "Cpl/System/FatalError.h"
 #include <windows.h>
@@ -16,7 +17,41 @@
 //
 using namespace Cpl::Io::Stdio;
 
+/* THIS IS HACK, but I discovered the issue/partial-solution well after the design
+   and implementation of the Stdio/File-IO stuffs - so here is a hack that
+   is mostly 'transparent' to the clients
 
+   THE PROBLEM with STDIN:
+   Windows consider mouse events, change in focus, etc. as events that get
+   routed to the StdIn Handle.  The ReadFile() method ignores these 'non-character'
+   events, but WaitForSingleObject() does NOT. This means that WaitForSingleObject()
+   can/will return false positive (that data is available) when in fact the
+   ReadFile() call will block.
+
+   AND to make matters worse - the hack ONLY WORKS where is a 'live' terminal
+   window, i.e. when the terminal's stdin is piped from a file - the hack DOES
+   NOT WORK! Not a very good solution :( - but it solved my immediate needs
+*/
+
+#ifdef USE_CPL_IO_STDIO_WIN32_STDIN_CONSOLE_HACK
+#define DATA_AVAILABLE \
+    if ( m_inFd.m_handlePtr == (void*) GetStdHandle( STD_INPUT_HANDLE ) )   \
+    { \
+        return _kbhit(); \
+    } \
+    else \
+    { \
+        DWORD signaled = WaitForSingleObject( m_inFd.m_handlePtr, 0 ); \
+        return signaled == WAIT_OBJECT_0; \
+    }
+
+// NO work-around
+#else
+#define DATA_AVAILABLE \
+    DWORD signaled = WaitForSingleObject( m_inFd.m_handlePtr, 0 ); \
+    return signaled == WAIT_OBJECT_0;
+
+#endif
 
 ///////////////////
 Input_::Input_( int fd )
@@ -124,29 +159,9 @@ bool Input_::available()
     {
         return false;
     }
-
-    /* THIS IS HACK, but I discovered the issue/solution well after the design
-       and implementation of the Stdio/File-IO stuffs - so here is a hack that 
-       is 'transparent' to the clients
-
-       THE PROBLEM with STDIN:
-       Windows consider mouse events, change in focus, etc. as events that get 
-       routed to the StdIn Handle.  The ReadFile() method ignores these 'non-character' 
-       events, but WaitForSingleObject() does NOT. This means that WaitForSingleObject()
-       can/will return false positive (that data is available) when in fact the 
-       ReadFile() call will block.
-    */
     
-    // Handle STDIN differently!
-    if ( m_inFd.m_handlePtr == (void*) GetStdHandle( STD_INPUT_HANDLE ) )
-    {
-        return _kbhit();
-    }
-    else
-    {
-        DWORD signaled = WaitForSingleObject( m_inFd.m_handlePtr, 0 );
-        return signaled == WAIT_OBJECT_0;
-    }
+    // See comments at the top of the file
+    DATA_AVAILABLE
 }
 
 bool Input_::isEos()
