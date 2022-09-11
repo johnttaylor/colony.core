@@ -16,22 +16,6 @@
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
-      },
-      {
-        "pkgname": "colony.bsp.renesas.rx",
-        "pkgtype": "overlay",
-        "adoptedDate": "Sun Sep 11 18:49:55 2022",
-        "parentDir": null,
-        "version": {
-          "semanticVersion": "1.0.2",
-          "branch": null,
-          "tag": "OUTCAST2-main-1.0.2"
-        },
-        "repo": {
-          "name": "colony.bsp.renesas.rx",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        }
       }
     ],
     "weak": [
@@ -82,6 +66,22 @@
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
+      },
+      {
+        "pkgname": "colony.bsp.renesas.rx",
+        "pkgtype": "overlay",
+        "adoptedDate": "Sun Sep 11 18:49:55 2022",
+        "parentDir": null,
+        "version": {
+          "semanticVersion": "1.0.2",
+          "branch": null,
+          "tag": "OUTCAST2-main-1.0.2"
+        },
+        "repo": {
+          "name": "colony.bsp.renesas.rx",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
       }
     ]
   },
@@ -116,12 +116,12 @@
       "changes": "\"- Fix bug in the missing 'blocking' argument for the frame decoders\\n- Fix issue of the Cpl::Io::Stream available() method reporting  mouse/focus events for stdin under Windoze\\n- Get the latest package version of: nqbp, colony.bsp, and colony.bsp.renesas.rx\\n\""
     },
     "history": [
-	{
-		      "comment": "Added new Drivers. Tweaked the StreamDecoder. Added VS solution. Added Null Media and RAM IO stream",
-      "version": "4.2.0",
-      "date": "Sun Sep  4 17:55:27 2022",
-      "timestamp": 1662314127
-	},
+      {
+        "comment": "Added new Drivers. Tweaked the StreamDecoder. Added VS solution. Added Null Media and RAM IO stream",
+        "version": "4.2.0",
+        "date": "Sun Sep  4 17:55:27 2022",
+        "timestamp": 1662314127
+      },
       {
         "comment": "Add Periodic Scheduler. Add non-blocking TShell processor",
         "version": "4.1.0",
