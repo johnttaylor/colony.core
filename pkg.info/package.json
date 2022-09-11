@@ -110,12 +110,18 @@
   "publish": {
     "current": {
       "comment": "Minor bug fixes and external package updates",
-      "version": "4.1.1",
+      "version": "4.2.1",
       "date": "Sun Sep 11 18:56:47 2022",
       "timestamp": 1662922607,
       "changes": "\"- Fix bug in the missing 'blocking' argument for the frame decoders\\n- Fix issue of the Cpl::Io::Stream available() method reporting  mouse/focus events for stdin under Windoze\\n- Get the latest package version of: nqbp, colony.bsp, and colony.bsp.renesas.rx\\n\""
     },
     "history": [
+	{
+		      "comment": "Added new Drivers. Tweaked the StreamDecoder. Added VS solution. Added Null Media and RAM IO stream",
+      "version": "4.2.0",
+      "date": "Sun Sep  4 17:55:27 2022",
+      "timestamp": 1662314127
+	},
       {
         "comment": "Add Periodic Scheduler. Add non-blocking TShell processor",
         "version": "4.1.0",
