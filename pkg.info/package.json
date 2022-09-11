@@ -2,22 +2,6 @@
   "dependencies": {
     "strong": [
       {
-        "pkgname": "catch",
-        "pkgtype": "overlay",
-        "adoptedDate": "Sun May 29 16:57:56 2022",
-        "parentDir": null,
-        "version": {
-          "semanticVersion": "2.13.7b",
-          "branch": null,
-          "tag": "OUTCAST2-main-2.13.7b"
-        },
-        "repo": {
-          "name": "catch",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        }
-      },
-      {
         "pkgname": "colony.bsp",
         "pkgtype": "overlay",
         "adoptedDate": "Sun Sep 11 18:48:31 2022",
@@ -66,6 +50,38 @@
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
+      },
+      {
+        "pkgname": "nqbp",
+        "pkgtype": "foreign",
+        "adoptedDate": "Sun Sep 11 18:51:26 2022",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": "3.0.1",
+          "branch": null,
+          "tag": "OUTCAST2-main-3.0.1"
+        },
+        "repo": {
+          "name": "nqbp",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      },
+      {
+        "pkgname": "catch",
+        "pkgtype": "overlay",
+        "adoptedDate": "Sun May 29 16:57:56 2022",
+        "parentDir": null,
+        "version": {
+          "semanticVersion": "2.13.7b",
+          "branch": null,
+          "tag": "OUTCAST2-main-2.13.7b"
+        },
+        "repo": {
+          "name": "catch",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
       }
     ]
   },
@@ -93,12 +109,19 @@
   },
   "publish": {
     "current": {
-      "comment": "Add Periodic Scheduler. Add non-blocking TShell processor",
-      "version": "4.1.0",
-      "date": "Thu Aug 18 01:03:06 2022",
-      "timestamp": 1660784586
+      "comment": "Minor bug fixes and external package updates",
+      "version": "4.1.1",
+      "date": "Sun Sep 11 18:56:47 2022",
+      "timestamp": 1662922607,
+      "changes": "\"- Fix bug in the missing 'blocking' argument for the frame decoders\\n- Fix issue of the Cpl::Io::Stream available() method reporting  mouse/focus events for stdin under Windoze\\n- Get the latest package version of: nqbp, colony.bsp, and colony.bsp.renesas.rx\\n\""
     },
     "history": [
+      {
+        "comment": "Add Periodic Scheduler. Add non-blocking TShell processor",
+        "version": "4.1.0",
+        "date": "Thu Aug 18 01:03:06 2022",
+        "timestamp": 1660784586
+      },
       {
         "comment": "Refactor Model Points for smaller footprint (is a breaking change)",
         "version": "3.0.0",
