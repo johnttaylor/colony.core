@@ -4,12 +4,12 @@
       {
         "pkgname": "colony.bsp",
         "pkgtype": "overlay",
-        "adoptedDate": "Sun Nov 21 23:18:40 2021",
+        "adoptedDate": "Sun Sep 11 18:43:07 2022",
         "parentDir": null,
         "version": {
-          "semanticVersion": "0.1.0",
+          "semanticVersion": "0.1.1",
           "branch": null,
-          "tag": "OUTCAST2-main-0.1.0"
+          "tag": "OUTCAST2-main-0.1.1"
         },
         "repo": {
           "name": "colony.bsp",
@@ -19,38 +19,38 @@
       }
     ],
     "weak": [
-        {
-            "pkgname": "nqbp",
-            "pkgtype": "foreign",
-            "adoptedDate": "Sun Nov 21 23:17:20 2021",
-            "parentDir": "xsrc",
-            "version": {
-                "semanticVersion": "2.2.0",
-                "branch": null,
-                "tag": "OUTCAST2-main-2.2.0"
-            },
-            "repo": {
-                "name": "nqbp",
-                "type": "git",
-                "origin": "https://github.com/johnttaylor"
-            }
+      {
+        "pkgname": "freertos",
+        "pkgtype": "readonly",
+        "adoptedDate": "Sun Nov 21 23:18:06 2021",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": "8.2.1",
+          "branch": null,
+          "tag": "OUTCAST2-main-8.2.1"
         },
-        {
-            "pkgname": "freertos",
-            "pkgtype": "readonly",
-            "adoptedDate": "Sun Nov 21 23:18:06 2021",
-            "parentDir": "xsrc",
-            "version": {
-                "semanticVersion": "8.2.1",
-                "branch": null,
-                "tag": "OUTCAST2-main-8.2.1"
-            },
-            "repo": {
-                "name": "freertos",
-                "type": "git",
-                "origin": "https://github.com/johnttaylor"
-            }
+        "repo": {
+          "name": "freertos",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
         }
+      },
+      {
+        "pkgname": "nqbp",
+        "pkgtype": "foreign",
+        "adoptedDate": "Sun Sep 11 18:44:05 2022",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": "3.0.1",
+          "branch": null,
+          "tag": "OUTCAST2-main-3.0.1"
+        },
+        "repo": {
+          "name": "nqbp",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      }
     ]
   },
   "directories": {
@@ -76,11 +76,19 @@
   },
   "publish": {
     "current": {
-      "comment": "Publish as Outcast2 package",
-      "version": "1.0.1",
-      "date": "Sun Nov 21 23:19:37 2021",
-      "timestamp": 1637536777
+      "comment": "Uprade the nqbp/colony.bsp packages to the latest releases",
+      "version": "1.0.2",
+      "date": "Sun Sep 11 18:45:52 2022",
+      "timestamp": 1662921952,
+      "changes": null
     },
-    "history": []
+    "history": [
+      {
+        "comment": "Publish as Outcast2 package",
+        "version": "1.0.1",
+        "date": "Sun Nov 21 23:19:37 2021",
+        "timestamp": 1637536777
+      }
+    ]
   }
 }

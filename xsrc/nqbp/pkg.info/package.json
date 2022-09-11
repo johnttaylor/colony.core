@@ -23,12 +23,19 @@
   },
   "publish": {
     "current": {
-      "comment": "Remove support for the original Outcast/Mixed modes",
-      "version": "3.0.0",
-      "date": "Wed Aug 17 23:24:01 2022",
-      "timestamp": 1660778641
+      "comment": "Minor updates to the Pico Toolchains",
+      "version": "3.0.1",
+      "date": "Sun Sep 11 18:35:49 2022",
+      "timestamp": 1662921349,
+      "changes": "\"- for the Pico toolchains: differ the C++ standard to be project specific\\n\""
     },
     "history": [
+      {
+        "comment": "Remove support for the original Outcast/Mixed modes",
+        "version": "3.0.0",
+        "date": "Wed Aug 17 23:24:01 2022",
+        "timestamp": 1660778641
+      },
       {
         "comment": "Update linux-gcc build script to optionally specifing a path to a specific GCC toolchain",
         "version": "2.2.2",
