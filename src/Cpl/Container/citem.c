@@ -44,7 +44,7 @@ bool Cpl_Container_Item_markAsContained_( void* item, void* newContainerPtr )
     }
 }
 
-bool Cpl_Container_Item_isInContainer_( void* item, const void* containerPtr )
+bool Cpl_Container_Item_isInContainer_( const void* item, const void* containerPtr )
 {
     assert( item );
     assert( containerPtr );

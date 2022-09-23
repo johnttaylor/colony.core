@@ -52,9 +52,9 @@ TEST_CASE( "cslist" )
 
         MyItem_T  item; Cpl_Container_Item_initialize( &item ); item.name = "bob";
 
-        REQUIRE( Cpl_Container_SList_put_first( &foo, &item ) );
+        REQUIRE( Cpl_Container_SList_putFirst( &foo, &item ) );
         REQUIRE( Cpl_Container_SList_put( &bar, &item ) == false );
-        REQUIRE( Cpl_Container_SList_put_first( &bar, &item ) == false );
+        REQUIRE( Cpl_Container_SList_putFirst( &bar, &item ) == false );
     }
 
     SECTION( "Validate static Constructor" )
@@ -168,7 +168,7 @@ TEST_CASE( "cslist" )
     SECTION( "Ordered List" )
     {
         REQUIRE( Cpl_Container_SList_put( &list, &orange ) );
-        REQUIRE( Cpl_Container_SList_put_first( &list, &apple ) );
+        REQUIRE( Cpl_Container_SList_putFirst( &list, &apple ) );
         ptr1 = (MyItem_T *) Cpl_Container_SList_peekHead( &list );
         REQUIRE( ptr1 );
         REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
@@ -186,8 +186,8 @@ TEST_CASE( "cslist" )
         REQUIRE( ptr1 );
         REQUIRE( STRING_EQ( ptr1->name, "orange" ) );
 
-        REQUIRE( Cpl_Container_SList_put_first( &list, &apple ) );
-        ptr1 = (MyItem_T*) Cpl_Container_SList_get_last( &list );
+        REQUIRE( Cpl_Container_SList_putFirst( &list, &apple ) );
+        ptr1 = (MyItem_T*) Cpl_Container_SList_getLast( &list );
         REQUIRE( ptr1 != 0 );
         REQUIRE( STRING_EQ( ptr1->name, "orange" ) );
         ptr1 = (MyItem_T *) Cpl_Container_SList_peekHead( &list );

@@ -1,4 +1,3 @@
-#if 0 
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -11,17 +10,9 @@
 *----------------------------------------------------------------------------*/
 
 #include "Catch/catch.hpp"
-#include "Cpl/Container/Item.h"    
-#include "Cpl/Container/DList.h"    
-#include "Cpl/Container/SList.h"    
+#include "Cpl/Container/cdlist.h"    
 #include "Cpl/System/_testsupport/Shutdown_TS.h"
 #include <string.h>
-
-
-/// 
-using namespace Cpl::Container;
-using namespace Cpl::System;
-
 
 
 /// Short hand for brute forcing string compares when not using std::string
@@ -30,328 +21,308 @@ using namespace Cpl::System;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-/// Use un-named namespace to make my class local-to-the-file in scope
-namespace {
-
-class MyItem : public ExtendedItem
+typedef struct MyItem_T
 {
-public:
-	///
-	MyItem( const char* name ) : m_name( name ) {};
-	///
-	const char* m_name;
-};
+	CPL_CONTAINTER_ITEM_DLIST;
+	const char* name;
+} MyItem_T;
 
-class ItemAutoAdd : public ExtendedItem
-{
-public:
-	///
-	ItemAutoAdd( const char* name, DList<ItemAutoAdd>& list )
-		:m_name( name )
-	{
-		list.put( *this );
-	}
-
-	///
-	const char* m_name;
-};
-
-}; // end namespace
 
 ////////////////////////////////////////////////////////////////////////////////
-static DList<ItemAutoAdd> emptylist_( "static constructor" );
-static DList<ItemAutoAdd> staticlist_( "static constructor" );
-static ItemAutoAdd        staticItem_( "staticItem", staticlist_ );
-
+static CplContainerDList_T emptylist_;
+static CplContainerDList_T staticlist_;
 
 
 
 ////////////////////////////////////////////////////////////////////////////////
-TEST_CASE( "DLIST: Validate member functions", "[dlist]" )
+TEST_CASE( "cdlist" )
 {
-	DList<MyItem> list;
-	MyItem        apple( "apple" );
-	MyItem        orange( "orange" );
-	MyItem        cherry( "cherry" );
-	MyItem        pear( "pear" );
-	MyItem        plum( "plum" );
-	MyItem*       ptr1;
+	CplContainerDList_T list; Cpl_Container_DList_initialize( &list );
+	MyItem_T  apple; Cpl_Container_Item_initialize( &apple ); apple.name = "apple";
+	MyItem_T  orange; Cpl_Container_Item_initialize( &orange ); orange.name = "orange";
+	MyItem_T  cherry; Cpl_Container_Item_initialize( &cherry );  cherry.name = "cherry";
+	MyItem_T  pear; Cpl_Container_Item_initialize( &pear );  pear.name = "pear";
+	MyItem_T  plum; Cpl_Container_Item_initialize( &plum );  plum.name = "plum";;
+	MyItem_T* ptr1;
 
-	Shutdown_TS::clearAndUseCounter();
 
 	SECTION( "Validate that an 'item' can be only in one Container" )
 	{
-		DList<MyItem> foo;
-		DList<MyItem> bar;
+		CplContainerDList_T foo; Cpl_Container_DList_initialize( &foo );
+		CplContainerDList_T bar; Cpl_Container_DList_initialize( &bar );
 
-		MyItem item( "bob" );
+		MyItem_T  item; Cpl_Container_Item_initialize( &item ); item.name = "bob";
 
-		foo.put( item );
-		bar.put( item );
-
-		REQUIRE( Shutdown_TS::getAndClearCounter() == 1u );
+		REQUIRE( Cpl_Container_DList_putFirst( &foo, &item ) );
+		REQUIRE( Cpl_Container_DList_put( &bar, &item ) == false );
+		REQUIRE( Cpl_Container_DList_putFirst( &bar, &item ) == false );
 	}
 
 	SECTION( "Validate static Constructor" )
 	{
-		REQUIRE( emptylist_.head() == 0 );
-		REQUIRE( emptylist_.tail() == 0 );
+		REQUIRE( Cpl_Container_DList_peekHead( &emptylist_ ) == 0 );
+		REQUIRE( Cpl_Container_DList_peekTail( &emptylist_ ) == 0 );
 
-		REQUIRE( staticlist_.head() != 0 );
-		REQUIRE( staticlist_.tail() != 0 );
-		REQUIRE( STRING_EQ( staticlist_.get()->m_name, "staticItem" ) );
+		REQUIRE( Cpl_Container_DList_peekHead( &staticlist_ ) == 0 );
+		REQUIRE( Cpl_Container_DList_peekTail( &staticlist_ ) == 0 );
 	}
 
 	SECTION( "List Operations" )
 	{
-		DList<MyItem> foo;
-		DList<MyItem> bar;
-		MyItem        bob( "bob" );
-		MyItem        yours( "yours" );
-		MyItem        uncle( "uncle" );
+		CplContainerDList_T foo; Cpl_Container_DList_initialize( &foo );
+		CplContainerDList_T bar; Cpl_Container_DList_initialize( &bar );
 
-		foo.put( bob );
-		foo.put( yours );
-		foo.put( uncle );
-		REQUIRE( STRING_EQ( foo.head()->m_name, "bob" ) );
-		REQUIRE( STRING_EQ( foo.tail()->m_name, "uncle" ) );
-		REQUIRE( bar.head() == 0 );
-		REQUIRE( bar.tail() == 0 );
+		MyItem_T  bob; Cpl_Container_Item_initialize( &bob ); bob.name = "bob";
+		MyItem_T  yours; Cpl_Container_Item_initialize( &yours ); yours.name = "yours";
+		MyItem_T  uncle; Cpl_Container_Item_initialize( &uncle ); uncle.name = "uncle";
 
-		foo.move( bar );
-		REQUIRE( STRING_EQ( bar.head()->m_name, "bob" ) );
-		REQUIRE( STRING_EQ( bar.tail()->m_name, "uncle" ) );
-		REQUIRE( foo.head() == 0 );
-		REQUIRE( foo.tail() == 0 );
+		REQUIRE( Cpl_Container_DList_put( &foo, &bob ) );
+		REQUIRE( Cpl_Container_DList_put( &foo, &yours ) );
+		REQUIRE( Cpl_Container_DList_put( &foo, &uncle ) );
+		ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &foo );
+		REQUIRE( ptr1 );
+		REQUIRE( STRING_EQ( ptr1->name, "bob" ) );
+		ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &foo );
+		REQUIRE( STRING_EQ( ptr1->name, "uncle" ) );
+		REQUIRE( Cpl_Container_DList_peekHead( &bar ) == 0 );
+		REQUIRE( Cpl_Container_DList_peekTail( &bar ) == 0 );
 
-		bar.clearTheList();
-		REQUIRE( bar.head() == 0 );
-		REQUIRE( bar.tail() == 0 );
+		Cpl_Container_DList_move( &bar, &foo );
+		ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &bar );
+		REQUIRE( ptr1 );
+		REQUIRE( STRING_EQ( ptr1->name, "bob" ) );
+		ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &bar );
+		REQUIRE( STRING_EQ( ptr1->name, "uncle" ) );
+		REQUIRE( Cpl_Container_DList_peekHead( &foo ) == 0 );
+		REQUIRE( Cpl_Container_DList_peekTail( &foo ) == 0 );
+
+		Cpl_Container_DList_clear( &bar );
+		REQUIRE( Cpl_Container_DList_peekHead( &bar ) == 0 );
+		REQUIRE( Cpl_Container_DList_peekTail( &bar ) == 0 );
 	}
 
-	SECTION( "FIFO" )
-	{
-		REQUIRE( list.get() == 0 );
-		REQUIRE( list.head() == 0 );
-		REQUIRE( list.tail() == 0 );
+    SECTION( "FIFO" )
+    {
+        REQUIRE( Cpl_Container_DList_get( &list ) == 0 );
+        REQUIRE( Cpl_Container_DList_peekHead( &list ) == 0 );
+        REQUIRE( Cpl_Container_DList_peekTail( &list ) == 0 );
 
-		list.put( apple );
+        REQUIRE( Cpl_Container_DList_put( &list, &apple ) );
 
-		REQUIRE( list.head() != 0 );
-		REQUIRE( STRING_EQ( list.head()->m_name, "apple" ) );
-		REQUIRE( list.tail() != 0 );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "apple" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
 
-		list.put( orange );
+        REQUIRE( Cpl_Container_DList_put( &list, &orange ) );
 
-		REQUIRE( list.head() != 0 );
-		REQUIRE( STRING_EQ( list.head()->m_name, "apple" ) );
-		REQUIRE( list.tail() != 0 );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "orange" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "orange" ) );
 
-		list.put( cherry );
+        REQUIRE( Cpl_Container_DList_put( &list, &cherry ) );
 
-		REQUIRE( list.head() != 0 );
-		REQUIRE( STRING_EQ( list.head()->m_name, "apple" ) );
-		REQUIRE( list.tail() != 0 );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "cherry" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "cherry" ) );
 
-		ptr1 = list.get();
-		REQUIRE( ptr1 != 0 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "apple" ) );
-		REQUIRE( list.head() != 0 );
-		REQUIRE( STRING_EQ( list.head()->m_name, "orange" ) );
-		REQUIRE( list.tail() != 0 );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "cherry" ) );
+        ptr1 = (MyItem_T*) Cpl_Container_DList_get( &list );
+        REQUIRE( ptr1 != 0 );
+        REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "orange" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "cherry" ) );
 
-		ptr1 = list.get();
-		REQUIRE( ptr1 != 0 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "orange" ) );
-		REQUIRE( list.head() != 0 );
-		REQUIRE( STRING_EQ( list.head()->m_name, "cherry" ) );
-		REQUIRE( list.tail() != 0 );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "cherry" ) );
+        ptr1 = (MyItem_T*) Cpl_Container_DList_get( &list );
+        REQUIRE( ptr1 != 0 );
+        REQUIRE( STRING_EQ( ptr1->name, "orange" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "cherry" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "cherry" ) );
 
-		ptr1 = list.get();
-		REQUIRE( ptr1 != 0 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "cherry" ) );
-		REQUIRE( list.head() == 0 );
-		REQUIRE( list.tail() == 0 );
+        ptr1 = (MyItem_T*) Cpl_Container_DList_get( &list );
+        REQUIRE( ptr1 != 0 );
+        REQUIRE( STRING_EQ( ptr1->name, "cherry" ) );
+        REQUIRE( Cpl_Container_DList_peekHead( &list ) == 0 );
+        REQUIRE( Cpl_Container_DList_peekTail( &list ) == 0 );
 
-		REQUIRE( list.get() == 0 );
-		REQUIRE( list.head() == 0 );
-		REQUIRE( list.tail() == 0 );
-	}
+        ptr1 = (MyItem_T*) Cpl_Container_DList_get( &list );
+        REQUIRE( ptr1 == 0 );
+        REQUIRE( Cpl_Container_DList_peekHead( &list ) == 0 );
+        REQUIRE( Cpl_Container_DList_peekTail( &list ) == 0 );
+    }
 
-	SECTION( "STACK" )
-	{
-		// Note: pop() == get(), top() == head(), push() == putFirst()
-		list.push( apple );
-		REQUIRE( list.top() != 0 );
-		REQUIRE( STRING_EQ( list.head()->m_name, "apple" ) );
-		REQUIRE( list.tail() != 0 );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "apple" ) );
+    SECTION( "Ordered List" )
+    {
+        REQUIRE( Cpl_Container_DList_put( &list, &orange ) );
+        REQUIRE( Cpl_Container_DList_putFirst( &list, &apple ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "orange" ) );
 
-		ptr1 = list.pop();
-		REQUIRE( ptr1 != 0 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "apple" ) );
-		REQUIRE( list.top() == 0 );
-		REQUIRE( list.tail() == 0 );
-		REQUIRE( list.pop() == 0 );
+        ptr1 = (MyItem_T*) Cpl_Container_DList_get( &list );
+        REQUIRE( ptr1 != 0 );
+        REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "orange" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "orange" ) );
 
-		list.push( apple );
-		list.push( orange );
-		list.push( cherry );
-		ptr1 = list.pop();
-		list.push( plum );
-		list.push( pear );
-		REQUIRE( ptr1 != 0 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "cherry" ) );
-		REQUIRE( STRING_EQ( list.top()->m_name, "pear" ) );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "apple" ) );
+        REQUIRE( Cpl_Container_DList_putFirst( &list, &apple ) );
+        ptr1 = (MyItem_T*) Cpl_Container_DList_getLast( &list );
+        REQUIRE( ptr1 != 0 );
+        REQUIRE( STRING_EQ( ptr1->name, "orange" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
 
-		REQUIRE( STRING_EQ( list.pop()->m_name, "pear" ) );
-		REQUIRE( STRING_EQ( list.pop()->m_name, "plum" ) );
-		REQUIRE( STRING_EQ( list.pop()->m_name, "orange" ) );
-		REQUIRE( STRING_EQ( list.pop()->m_name, "apple" ) );
-		REQUIRE( list.top() == 0 );
-		REQUIRE( list.tail() == 0 );
-		REQUIRE( list.pop() == 0 );
-	}
+        REQUIRE( Cpl_Container_DList_put( &list, &orange ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "orange" ) );
 
-	SECTION( "Ordered List" )
-	{
-		// Note: getFirst() == get(), putLast() == put(), putFirst() == push(), first() == head(), last() == tail()
-		list.putLast( orange );
-		list.putFirst( apple );
-		REQUIRE( STRING_EQ( list.first()->m_name, "apple" ) );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "orange" ) );
-
-		ptr1 = list.getFirst();
-		REQUIRE( ptr1 != 0 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "apple" ) );
-		REQUIRE( list.head() != 0 );
-		REQUIRE( STRING_EQ( list.head()->m_name, "orange" ) );
-		REQUIRE( list.tail() != 0 );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "orange" ) );
-		list.putFirst( *ptr1 );
-
-		ptr1 = list.getLast();
-		REQUIRE( ptr1 != 0 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "orange" ) );
-		REQUIRE( list.head() != 0 );
-		REQUIRE( STRING_EQ( list.head()->m_name, "apple" ) );
-		REQUIRE( list.tail() != 0 );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "apple" ) );
-		list.putLast( *ptr1 );
-
-		list.insertBefore( apple, cherry );
-		list.insertAfter( orange, plum );
-		REQUIRE( STRING_EQ( list.first()->m_name, "cherry" ) );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "plum" ) );
-
-		ptr1 = list.first();
-		REQUIRE( STRING_EQ( ptr1->m_name, "cherry" ) );
-		ptr1 = list.next( *ptr1 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "apple" ) );
-		ptr1 = list.next( *ptr1 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "orange" ) );
-		ptr1 = list.next( *ptr1 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "plum" ) );
-
-		list.insertBefore( plum, pear );
-		list.remove( orange );
-		list.insertAfter( cherry, orange );
-		ptr1 = list.first();
-		REQUIRE( STRING_EQ( ptr1->m_name, "cherry" ) );
-		ptr1 = list.next( *ptr1 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "orange" ) );
-		ptr1 = list.next( *ptr1 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "apple" ) );
-		ptr1 = list.next( *ptr1 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "pear" ) );
-		ptr1 = list.next( *ptr1 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "plum" ) );
-
-		REQUIRE( list.remove( plum ) == true );
-		REQUIRE( list.remove( cherry ) == true );
-		REQUIRE( list.remove( plum ) == false );
-		ptr1 = list.first();
-		REQUIRE( STRING_EQ( ptr1->m_name, "orange" ) );
-		ptr1 = list.next( *ptr1 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "apple" ) );
-		ptr1 = list.next( *ptr1 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "pear" ) );
-
-		REQUIRE( list.find( plum ) == false );
-		REQUIRE( list.find( orange ) == true );
-		REQUIRE( list.find( pear ) == true );
-		REQUIRE( list.find( apple ) == true );
-		REQUIRE( list.find( cherry ) == false );
-
-		REQUIRE( list.remove( orange ) == true );
-		REQUIRE( list.remove( apple ) == true );
-		REQUIRE( list.remove( pear ) == true );
-
-		// 
-		// START 'new' to DList tests...
-		//
-		list.put( cherry );
-		list.put( apple );
-		list.put( orange );
-		list.put( plum );
-		ptr1 = list.last();
-		REQUIRE( STRING_EQ( ptr1->m_name, "plum" ) );
-		ptr1 = list.previous( *ptr1 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "orange" ) );
-		ptr1 = list.previous( *ptr1 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "apple" ) );
-		ptr1 = list.previous( *ptr1 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "cherry" ) );
-	}
-
-	// 
-	// START 'new' to DList tests...
-	//
-	SECTION( "STACK: SList using ExtendedItem" )
-	{
-		SList<MyItem> list;
-
-		// Note: pop() == get(), top() == head(), push() == putFirst()
-		list.push( apple );
-		REQUIRE( list.top() != 0 );
-		REQUIRE( STRING_EQ( list.head()->m_name, "apple" ) );
-		REQUIRE( list.tail() != 0 );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "apple" ) );
-
-		ptr1 = list.pop();
-		REQUIRE( ptr1 != 0 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "apple" ) );
-		REQUIRE( list.top() == 0 );
-		REQUIRE( list.tail() == 0 );
-		REQUIRE( list.pop() == 0 );
-
-		list.push( apple );
-		list.push( orange );
-		list.push( cherry );
-		ptr1 = list.pop();
-		list.push( plum );
-		list.push( pear );
-		REQUIRE( ptr1 != 0 );
-		REQUIRE( STRING_EQ( ptr1->m_name, "cherry" ) );
-		REQUIRE( STRING_EQ( list.top()->m_name, "pear" ) );
-		REQUIRE( STRING_EQ( list.tail()->m_name, "apple" ) );
-
-		REQUIRE( STRING_EQ( list.pop()->m_name, "pear" ) );
-		REQUIRE( STRING_EQ( list.pop()->m_name, "plum" ) );
-		REQUIRE( STRING_EQ( list.pop()->m_name, "orange" ) );
-		REQUIRE( STRING_EQ( list.pop()->m_name, "apple" ) );
-		REQUIRE( list.top() == 0 );
-		REQUIRE( list.tail() == 0 );
-		REQUIRE( list.pop() == 0 );
-	}
+        REQUIRE( Cpl_Container_DList_put( &list, &cherry ) );
+        REQUIRE( Cpl_Container_DList_put( &list, &pear ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
+        ptr1 = (MyItem_T*) Cpl_Container_DList_next( ptr1 );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "orange" ) );
+        ptr1 = (MyItem_T*) Cpl_Container_DList_next( ptr1 );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "cherry" ) );
+        ptr1 = (MyItem_T*) Cpl_Container_DList_next( ptr1 );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "pear" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "pear" ) );
 
 
-	REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
+
+        REQUIRE( Cpl_Container_DList_remove( &list, &orange ) == true );
+        REQUIRE( Cpl_Container_DList_remove( &list, &cherry ) == true );
+        REQUIRE( Cpl_Container_DList_remove( &list, &orange ) == false );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "apple" ) );
+        ptr1 = (MyItem_T*) Cpl_Container_DList_next( ptr1 );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "pear" ) );
+
+        REQUIRE( Cpl_Container_DList_remove( &list, &apple ) == true );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "pear" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &list );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "pear" ) );
+
+        REQUIRE( Cpl_Container_DList_isInList( &list, &plum ) == false );
+        REQUIRE( Cpl_Container_DList_isInList( &list, &orange ) == false );
+        REQUIRE( Cpl_Container_DList_isInList( &list, &pear ) == true );
+        REQUIRE( Cpl_Container_DList_isInList( &list, &apple ) == false );
+        REQUIRE( Cpl_Container_DList_isInList( &list, &cherry ) == false );
+
+        REQUIRE( Cpl_Container_DList_remove( &list, &pear ) == true );
+    }
+
+    SECTION( "Previous" )
+    {
+        CplContainerDList_T foo; Cpl_Container_DList_initialize( &foo );
+
+        MyItem_T  bob; Cpl_Container_Item_initialize( &bob ); bob.name = "bob";
+        MyItem_T  yours; Cpl_Container_Item_initialize( &yours ); yours.name = "yours";
+        MyItem_T  uncle; Cpl_Container_Item_initialize( &uncle ); uncle.name = "uncle";
+
+        REQUIRE( Cpl_Container_DList_put( &foo, &bob ) );
+        REQUIRE( Cpl_Container_DList_put( &foo, &yours ) );
+        REQUIRE( Cpl_Container_DList_put( &foo, &uncle ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &foo );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "bob" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &foo );
+        REQUIRE( STRING_EQ( ptr1->name, "uncle" ) );
+
+        ptr1 = (MyItem_T *) Cpl_Container_DList_prev( &bob );
+        REQUIRE( ptr1 == 0 );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_prev( &yours );
+        REQUIRE( ptr1 == &bob );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_prev( &uncle );
+        REQUIRE( ptr1 == &yours );
+    }
+
+    SECTION( "inserts" )
+    {
+        CplContainerDList_T foo; Cpl_Container_DList_initialize( &foo );
+
+        MyItem_T  bob; Cpl_Container_Item_initialize( &bob ); bob.name = "bob";
+        MyItem_T  yours; Cpl_Container_Item_initialize( &yours ); yours.name = "yours";
+        MyItem_T  uncle; Cpl_Container_Item_initialize( &uncle ); uncle.name = "uncle";
+
+        REQUIRE( Cpl_Container_DList_put( &foo, &bob ) );
+        REQUIRE( Cpl_Container_DList_put( &foo, &yours ) );
+        REQUIRE( Cpl_Container_DList_put( &foo, &uncle ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekHead( &foo );
+        REQUIRE( ptr1 );
+        REQUIRE( STRING_EQ( ptr1->name, "bob" ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_peekTail( &foo );
+        REQUIRE( STRING_EQ( ptr1->name, "uncle" ) );
+
+        REQUIRE( Cpl_Container_DList_insertAfter( &foo, &bob, &plum ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_prev( &plum );
+        REQUIRE( ptr1 == &bob );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_next( &plum );
+        REQUIRE( ptr1 == &yours );
+
+        REQUIRE( Cpl_Container_DList_insertAfter( &foo, &uncle, &apple ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_prev( &apple );
+        REQUIRE( ptr1 == &uncle );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_next( &apple );
+        REQUIRE( ptr1 == 0 );
+
+        REQUIRE( Cpl_Container_DList_insertBefore( &foo, &bob, &cherry ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_prev( &cherry );
+        REQUIRE( ptr1 == 0);
+        ptr1 = (MyItem_T *) Cpl_Container_DList_next( &cherry );
+        REQUIRE( ptr1 == &bob );
+
+        REQUIRE( Cpl_Container_DList_insertBefore( &foo, &plum, &orange ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_prev( &orange );
+        REQUIRE( ptr1 == &bob );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_next( &orange );
+        REQUIRE( ptr1 == &plum );
+
+        REQUIRE( Cpl_Container_DList_insertBefore( &foo, &bob, &pear ) );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_prev( &pear );
+        REQUIRE( ptr1 == &cherry );
+        ptr1 = (MyItem_T *) Cpl_Container_DList_next( &pear );
+        REQUIRE( ptr1 == &bob );
+    }
 }
-#endif

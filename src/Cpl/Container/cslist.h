@@ -70,20 +70,17 @@ void* Cpl_Container_SList_get( CplContainerSList_T* list );
     NOTE: This is 'expensive' operation in that the entire list will be 
           traversed.
 */
-void* Cpl_Container_SList_get_last( CplContainerSList_T* list );
+void* Cpl_Container_SList_getLast( CplContainerSList_T* list );
 
 /** Adds the item as the LAST item in the list.  Returns true if the
     operation was successful; else false is returned. 
-    
-    NOTE: If the 'Note: If the item is already
-    'in' another container - a fatal error will be generated.
  */
 bool Cpl_Container_SList_put( CplContainerSList_T* list, void* item );
 
-/** Adds the item as the FIRST item in the list.  Note: If the item already
-    'in' another container - a fatal error will be generated.
+/** Adds the item as the FIRST item in the list.  Returns true if the
+    operation was successful; else false is returned. 
  */
-bool Cpl_Container_SList_put_first( CplContainerSList_T* list, void* item );
+bool Cpl_Container_SList_putFirst( CplContainerSList_T* list, void* item );
 
 /** Returns a pointer to the FIRST item in the list. The returned item remains
     in the list.  Returns 0 if the list is empty.

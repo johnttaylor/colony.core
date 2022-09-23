@@ -51,44 +51,54 @@ typedef struct CplContainerDList_T
 void Cpl_Container_DList_initialize( CplContainerDList_T* listToInitialize );
 
 
+/** Moves the content of 'srcList' to the 'dstList'.  The 'dstList' is cleared
+    before the move operation occurs.
+ */
+void Cpl_Container_DList_move( CplContainerDList_T* dstList, CplContainerDList_T* srcList );
+
+/** Empties the list.  All references to the item(s) in the
+    list are lost.
+ */
+void Cpl_Container_DList_clear( CplContainerDList_T* listToClear );
+
+
 /** Removes the FIRST item in the list.  Returns NULL if the list is empty.
  */
 void* Cpl_Container_DList_get( CplContainerDList_T* list );
 
-/** Adds the item as the LAST item in the list.  Note: If the item is already
-    'in' another container - a fatal error will be generated.
+/** Adds the item as the LAST item in the list.  Returns true if the
+    operation was successful; else false is returned. 
  */
-void Cpl_Container_DList_put( CplContainerDList_T* list, void* item );
+bool Cpl_Container_DList_put( CplContainerDList_T* list, void* item );
 
 /** Removes the LAST item in the list.  Returns NULL if the list is empty.
 */
-void* Cpl_Container_DList_get_last( CplContainerDList_T* list );
+void* Cpl_Container_DList_getLast( CplContainerDList_T* list );
 
-/** Adds the item as the FIRST item in the list.  Note: If the item already
-    'in' another container - a fatal error will be generated.
+/** Adds the item as the FIRST item in the list.  Returns true if the
+    operation was successful; else false is returned. 
  */
-void Cpl_Container_DList_put_first( CplContainerDList_T* list, void* item );
+bool Cpl_Container_DList_putFirst( CplContainerDList_T* list, void* item );
 
 /** Insert the 'newItem' into the list ahead of the 'beforeItem' element. 
-    Note: If the item is already 'in' another container - a fatal error will be 
-    generated.
+    Returns true if the operation was successful; else false is returned. 
  */
-void Cpl_Container_DList_insert_before( CplContainerDList_T* list, void* beforeItem, void* newItem );
+bool Cpl_Container_DList_insertBefore( CplContainerDList_T* list, void* beforeItem, void* newItem );
 
-/** Insert the 'newItem' into the list behind the 'afterItem' element. Note: If 
-    the item is already 'in' another container - a fatal error will be generated.
+/** Insert the 'newItem' into the list behind the 'afterItem' element. 
+    Returns true if the operation was successful; else false is returned. 
  */
-void Cpl_Container_DList_insert_after( CplContainerDList_T* list, void* afterItem, void* newItem );
+bool Cpl_Container_DList_insertAfter( CplContainerDList_T* list, void* afterItem, void* newItem );
 
 /** Return a pointer to the FIRST item in the list. The returned item remains
     in the list.  Returns 0 if the list is empty.
  */
-void* Cpl_Container_DList_peek_head( const CplContainerDList_T* list );
+void* Cpl_Container_DList_peekHead( const CplContainerDList_T* list );
 
 /** Return a pointer to the LAST item in the list. The returned item remains
     in the list.  Returns 0 if the list is empty.
  */
-void* Cpl_Container_DList_peek_tail( const CplContainerDList_T* );
+void* Cpl_Container_DList_peekTail( const CplContainerDList_T* list );
 
 /** This function searches the list and - if found - removes the specified
     item from the list.  Returns true of the item was found and removed form
@@ -102,7 +112,7 @@ bool Cpl_Container_DList_remove( CplContainerDList_T* list, void* itemToRemove )
     no next item the method returns 0.  The method will also return 0 if the
     specified item is NOT in the list.
  */
- void* Cpl_Container_DList_next( const CplContainerDList_T* list, const void* item );
+ void* Cpl_Container_DList_next( const void* item );
 
 /** This function returns the previous item in the list BEFORE the specified item.
     The returned item is NOT removed from the list.  This method is typically
@@ -110,7 +120,7 @@ bool Cpl_Container_DList_remove( CplContainerDList_T* list, void* itemToRemove )
     no previous item the method returns 0.  The method will also return 0 if the
     specified item is NOT in the list.
  */
- void* Cpl_Container_DList_prev( const CplContainerDList_T* list, const void* item );
+ void* Cpl_Container_DList_prev( const void* item );
 
  /** Returns 'true' if the instance is in the specified list.
   */

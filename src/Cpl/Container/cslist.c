@@ -11,7 +11,6 @@
 /** @file */
 
 #include "cslist.h"
-#include "citem.h"
 #include <assert.h>
 
 void Cpl_Container_SList_initialize( CplContainerSList_T* listToInitialize )
@@ -57,7 +56,7 @@ void* Cpl_Container_SList_get( CplContainerSList_T* list )
 
     if ( (nextPtr=list->headPtr) )
     {
-        if ( !(list->headPtr=(CplContainerItemSListLinkage_T*) (nextPtr->nextPtr)) )
+        if ( !(list->headPtr=nextPtr->nextPtr) )
         {
             list->tailPtr = 0;
         }
@@ -66,7 +65,7 @@ void* Cpl_Container_SList_get( CplContainerSList_T* list )
     return nextPtr;
 }
 
-void* Cpl_Container_SList_get_last( CplContainerSList_T* list )
+void* Cpl_Container_SList_getLast( CplContainerSList_T* list )
 {
     assert( list );
     CplContainerItemSListLinkage_T* lastPtr;
@@ -105,7 +104,7 @@ bool Cpl_Container_SList_put( CplContainerSList_T* list, void* item )
     return false;
 }
 
-bool Cpl_Container_SList_put_first( CplContainerSList_T* list, void* item )
+bool Cpl_Container_SList_putFirst( CplContainerSList_T* list, void* item )
 {
     assert( list );
     assert( item );
@@ -151,7 +150,7 @@ bool Cpl_Container_SList_remove( CplContainerSList_T* list, void* itemToRemove )
     {
         CplContainerItemSListLinkage_T* nxtPtr;
         CplContainerItemSListLinkage_T* prvPtr;
-        for ( nxtPtr=list->headPtr, prvPtr=0; nxtPtr; prvPtr=nxtPtr, nxtPtr=(CplContainerItemSListLinkage_T*)nxtPtr->nextPtr )
+        for ( nxtPtr=list->headPtr, prvPtr=0; nxtPtr; prvPtr=nxtPtr, nxtPtr=nxtPtr->nextPtr )
         {
             if ( nxtPtr == itemPtr )
             {
@@ -164,7 +163,7 @@ bool Cpl_Container_SList_remove( CplContainerSList_T* list, void* itemToRemove )
                 }
                 else
                 {
-                    if ( !(list->headPtr=(CplContainerItemSListLinkage_T*) nxtPtr->nextPtr) )
+                    if ( !(list->headPtr=nxtPtr->nextPtr) )
                     {
                         list->tailPtr = 0;
                     }
@@ -187,9 +186,5 @@ void* Cpl_Container_SList_next( const void* item )
 
 bool Cpl_Container_SList_isInList( const CplContainerSList_T* list, const void* item )
 {
-    assert( list );
-    assert( item );
-    CplContainerItemSListLinkage_T* itemPtr = (CplContainerItemSListLinkage_T*) item;
-   
-    return Cpl_Container_Item_isInContainer_( itemPtr, list );
+    return Cpl_Container_Item_isInContainer_( item, list );
 }

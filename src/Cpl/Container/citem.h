@@ -69,8 +69,8 @@ typedef void (*CplContainerItemFatalErrorCbFunc_T)(void* item, void* currentList
 /// Type definition for a singly linked item
 typedef struct CplContainerItemSListLinkage_T
 {
-    void* containerPtr;
-    void* nextPtr;
+    void*                           containerPtr;
+    CplContainerItemSListLinkage_T* nextPtr;
 } CplContainerItemSListLinkage_T;
 
 /** Single-Link field.  This symbol must be placed as the FIRST entry in a
@@ -82,9 +82,9 @@ typedef struct CplContainerItemSListLinkage_T
 /// Type definition for a Doubly linked item
 typedef struct CplContainerItemDListLinkage_T
 {
-    void* containerPtr;
-    void* nextPtr;
-    void* prevPtr;
+    void*                           containerPtr;
+    CplContainerItemDListLinkage_T* nextPtr;
+    CplContainerItemDListLinkage_T* prevPtr;
 } CplContainerItemDListLinkage_T;
 
 /** Double-Link field.  This symbol must be placed as the FIRST entry in a
@@ -126,7 +126,7 @@ bool Cpl_Container_Item_markAsContained_( void* item, void* newContainerPtr );
     This function returns true if the item is in the specified container
     else false is returned
  */
-bool Cpl_Container_Item_isInContainer_( void* item, const void* containerPtr );
+bool Cpl_Container_Item_isInContainer_( const void* item, const void* containerPtr );
 
 /** This function is private and/or has 'PACKAGE_SCOPE'.  This means that the
     application should NEVER call/use this functions.  The functions are
