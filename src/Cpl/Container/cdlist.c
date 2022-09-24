@@ -134,7 +134,8 @@ bool Cpl_Container_DList_insertBefore( CplContainerDList_T* list, void* beforeIt
 
     if ( Cpl_Container_Item_markAsContained_( itemPtr, list ) )
     {
-        CplContainerItemDListLinkage_T* prvPtr = itemPtr->prevPtr = beforePtr->prevPtr;
+        itemPtr->prevPtr                       = beforePtr->prevPtr;
+        CplContainerItemDListLinkage_T* prvPtr = (CplContainerItemDListLinkage_T*) itemPtr->prevPtr;
         itemPtr->nextPtr                       = beforePtr;
         beforePtr->prevPtr                     = itemPtr;
         if ( !prvPtr )
@@ -162,7 +163,8 @@ bool Cpl_Container_DList_insertAfter( CplContainerDList_T* list, void* afterItem
 
     if ( Cpl_Container_Item_markAsContained_( itemPtr, list ) )
     {
-        CplContainerItemDListLinkage_T* nxtPtr = itemPtr->nextPtr = afterPtr->nextPtr;
+        itemPtr->nextPtr                       = afterPtr->nextPtr;
+        CplContainerItemDListLinkage_T* nxtPtr = (CplContainerItemDListLinkage_T*) afterPtr->nextPtr;
         itemPtr->prevPtr                       = afterPtr;
         afterPtr->nextPtr                      = itemPtr;
         if ( !nxtPtr )
@@ -200,8 +202,8 @@ bool Cpl_Container_DList_remove( CplContainerDList_T* list, void* itemToRemove )
 
     if ( Cpl_Container_Item_isInContainer_( itemPtr, list ) )
     {
-        CplContainerItemDListLinkage_T* prvPtr = itemPtr->prevPtr;
-        CplContainerItemDListLinkage_T* nxtPtr = itemPtr->nextPtr;
+        CplContainerItemDListLinkage_T* prvPtr = (CplContainerItemDListLinkage_T*) itemPtr->prevPtr;
+        CplContainerItemDListLinkage_T* nxtPtr = (CplContainerItemDListLinkage_T*)itemPtr->nextPtr;
         if ( prvPtr )
         {
             if ( !(prvPtr->nextPtr=nxtPtr) )

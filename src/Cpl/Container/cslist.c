@@ -54,9 +54,9 @@ void* Cpl_Container_SList_get( CplContainerSList_T* list )
     assert( list );
     CplContainerItemSListLinkage_T* nextPtr;
 
-    if ( (nextPtr=list->headPtr) )
+    if ( (nextPtr=(CplContainerItemSListLinkage_T*) list->headPtr) )
     {
-        if ( !(list->headPtr=nextPtr->nextPtr) )
+        if ( !(list->headPtr=(CplContainerItemSListLinkage_T*) nextPtr->nextPtr) )
         {
             list->tailPtr = 0;
         }
@@ -150,7 +150,7 @@ bool Cpl_Container_SList_remove( CplContainerSList_T* list, void* itemToRemove )
     {
         CplContainerItemSListLinkage_T* nxtPtr;
         CplContainerItemSListLinkage_T* prvPtr;
-        for ( nxtPtr=list->headPtr, prvPtr=0; nxtPtr; prvPtr=nxtPtr, nxtPtr=nxtPtr->nextPtr )
+        for ( nxtPtr=list->headPtr, prvPtr=0; nxtPtr; prvPtr=nxtPtr, nxtPtr=(CplContainerItemSListLinkage_T*) nxtPtr->nextPtr )
         {
             if ( nxtPtr == itemPtr )
             {
@@ -163,7 +163,7 @@ bool Cpl_Container_SList_remove( CplContainerSList_T* list, void* itemToRemove )
                 }
                 else
                 {
-                    if ( !(list->headPtr=nxtPtr->nextPtr) )
+                    if ( !(list->headPtr=(CplContainerItemSListLinkage_T*) nxtPtr->nextPtr) )
                     {
                         list->tailPtr = 0;
                     }

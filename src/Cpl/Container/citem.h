@@ -67,10 +67,10 @@ extern "C" {
 typedef void (*CplContainerItemFatalErrorCbFunc_T)(void* item, void* currentList, void* newList);
 
 /// Type definition for a singly linked item
-typedef struct CplContainerItemSListLinkage_T
+typedef struct 
 {
-    void*                           containerPtr;
-    CplContainerItemSListLinkage_T* nextPtr;
+    void* containerPtr;
+    void* nextPtr;
 } CplContainerItemSListLinkage_T;
 
 /** Single-Link field.  This symbol must be placed as the FIRST entry in a
@@ -80,11 +80,11 @@ typedef struct CplContainerItemSListLinkage_T
 
 
 /// Type definition for a Doubly linked item
-typedef struct CplContainerItemDListLinkage_T
+typedef struct 
 {
-    void*                           containerPtr;
-    CplContainerItemDListLinkage_T* nextPtr;
-    CplContainerItemDListLinkage_T* prevPtr;
+    void* containerPtr;
+    void* nextPtr;
+    void* prevPtr;
 } CplContainerItemDListLinkage_T;
 
 /** Double-Link field.  This symbol must be placed as the FIRST entry in a
