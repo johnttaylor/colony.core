@@ -131,13 +131,6 @@
             "changes": "\"- Fix bug in the missing 'blocking' argument for the frame decoders\\n- Fix issue of the Cpl::Io::Stream available() method reporting  mouse/focus events for stdin under Windoze\\n- Get the latest package version of: nqbp, colony.bsp, and colony.bsp.renesas.rx\\n\""
         },
         {
-            "comment": "Add additional driver support and non-blocking TCP socket streams",
-            "version": "4.2.2",
-            "date": "Sun Nov  6 23:15:51 2022",
-            "timestamp": 1667776551,
-            "changes": "\"- Add interface for WIFI Station functionality\\n- Add the ability to read 'out-of-band' input in the command shell.\\n- Add additional JSON support.\\n- Add Nvram driver interface.\\n- Add I2C platform independent interface definition.\\n- Add support for CAT24C512 EEPROM.\\n- Add non-blocking TCP socket interface and Win32 implementation\\n\""
-        },
-        {
             "comment": "Added new Drivers. Tweaked the StreamDecoder. Added VS solution. Added Null Media and RAM IO stream",
             "version": "4.2.0",
             "date": "Sun Sep  4 17:55:27 2022",
