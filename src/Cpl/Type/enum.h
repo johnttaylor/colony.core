@@ -17,10 +17,24 @@
 #include <stdexcept>
 
 
-/// CPL EDIT: Enable default constructors
+/** Reduces the memory footprint (both RAM and FLASH) in exchange for slower
+    compile times.  Note: There is SIGNIFICANT saving for an application that
+    makes extensive use of BETTER_ENUMS (e.g. one application there was ~5K RAM
+    and ~127K FLASH savings)
+ */
+#ifdef USE_CPL_TYPE_BETTERENUM_MIN_FOOTPRINT
+#ifndef BETTER_ENUMS_CONSTEXPR_TO_STRING
+#define BETTER_ENUMS_CONSTEXPR_TO_STRING
+#endif
+#endif  // end USE_CPL_TYPE_BETTERENUM_MIN_FOOTPRINT
+
+/// Enables the default constructor (this simplifies usage of class members and local variables)
+#ifdef USE_CPL_TYPE_BETTERENUM_ENABLE_DEFAULT_CONSTRUCTOR
 #define BETTER_ENUMS_DEFAULT_CONSTRUCTOR(Enum) \
   public:                                      \
     Enum() = default;
+
+#endif // end USE_CPL_TYPE_BETTERENUM_ENABLE_DEFAULT_CONSTRUCTOR
 
 // Feature detection.
 
