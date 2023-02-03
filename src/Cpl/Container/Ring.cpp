@@ -14,7 +14,7 @@
 * and donated to the Colony.Core Project.
 *----------------------------------------------------------------------------*/
 
-#include "ring.h"
+#include "Ring.h"
 
 ///
 using namespace Cpl::Container::Ring;
