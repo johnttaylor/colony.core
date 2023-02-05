@@ -169,7 +169,7 @@ class TxDesc
     which modifies the shared ring buffer announcing the free
     slot to transmitting end.
 
-    This object is accessed only by the transmitter, and may
+    This object is accessed only by the receiver, and may
     live in memory that is NOT shared with the transmitter.
 
     NOTE:
