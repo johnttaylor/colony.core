@@ -25,8 +25,8 @@
 #endif
 #endif  // end USE_CPL_TYPE_BETTERENUM_MIN_FOOTPRINT
 
- /// Enables the default constructor (this simplifies usage of class members and local variables)
-#ifdef USE_CPL_TYPE_BETTERENUM_ENABLE_DEFAULT_CONSTRUCTOR
+ /// Disable the default constructor (when enable it simplifies usage of class members and local variables)
+#ifndef USE_CPL_TYPE_BETTERENUM_DISABLE_DEFAULT_CONSTRUCTOR
 #define BETTER_ENUMS_DEFAULT_CONSTRUCTOR(Enum) \
   public:                                      \
     Enum() = default;
