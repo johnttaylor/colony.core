@@ -9,7 +9,7 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
-#include "Base64.h"
+#include "base64.h"
 #include <stdint.h>
 
 using namespace Cpl::Text;

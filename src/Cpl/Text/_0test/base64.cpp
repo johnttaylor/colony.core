@@ -76,7 +76,6 @@ TEST_CASE( "base64" )
         REQUIRE( strcmp( base64, EXPECTED_OUT ) == 0 );
         REQUIRE( outLen == strlen(EXPECTED_OUT) );
 
-        size_t   numBinBytes = 0;
         char     binary[32];
         outLen = base64Decode( binary, sizeof( binary ), GOLDEN_OUT, strlen(GOLDEN_OUT) );
         CPL_SYSTEM_TRACE_MSG( SECT_, ( "decoded=[%.*s]", outLen, binary ) );
@@ -119,47 +118,4 @@ TEST_CASE( "base64" )
         int outLen = base64Decode( outbuf, sizeof(outbuf), base64, sizeof( base64 ) - 1 );
         REQUIRE( outLen < 0 );
     }
-
-#if 0
-    SECTION( "Decode: invalid power" )
-    {
-        char const* base85 = "aaaaaa";
-        size_t   numBinBytes = 0;
-        uint8_t  binary[32];
-        uint8_t* end = (uint8_t*) b85ToBin( binary, sizeof( binary ), base85, numBinBytes );
-        REQUIRE( end == nullptr );
-    }
-
-    SECTION( "Not-enough-memory" )
-    {
-        char const digits[] = "0123456789"
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            "abcdefghijklmnopqrstuvwxyz"
-            "!#$%&()*+-;<=>?@^_`{|}~";
-
-        size_t   numBinBytes = 0;
-        uint8_t  binary[68 - 1];
-        uint8_t* end = (uint8_t*) b85ToBin( binary, sizeof( binary ), digits, numBinBytes );
-        REQUIRE( end == nullptr );
-        end = (uint8_t*) b85ToBin( binary, 0, digits, numBinBytes );
-        REQUIRE( end == nullptr );
-
-        uint8_t  binary2[64];
-        end = (uint8_t*) b85ToBin( binary2, sizeof( binary2 ), digits, numBinBytes );
-        REQUIRE( end == nullptr );
-
-        uint8_t  binary3[69];
-        end = (uint8_t*) b85ToBin( binary3, sizeof( binary3 ), digits, numBinBytes );
-        REQUIRE( end == nullptr );
-
-        char base85[85 - 1] = { 0, };
-        char* nullchar = binToB85( base85, sizeof( base85 ), binary, 68 );
-        REQUIRE( nullchar == nullptr );
-        nullchar = binToB85( base85, 0, binary, 68 );
-        REQUIRE( nullchar == nullptr );
-
-    }
-#endif
-
-    REQUIRE( Shutdown_TS::getAndClearCounter() == 0u );
 }

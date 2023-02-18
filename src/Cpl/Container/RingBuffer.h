@@ -34,6 +34,9 @@ namespace Container {
           the tail pointer).
         - The clearTheBuffer() operation modifies both the head and tail pointers
         - All other methods only read data members
+        - The implementation ASSUMES there is a single producer and a single
+          consumer of the RingBuffer.  And that ONLY the producer/consumer
+          are the invoking operations on the RingBuffer.
 
     Template Args:
         ITEM:=      Type of the data stored in the Ring Buffer
