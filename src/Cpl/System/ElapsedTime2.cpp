@@ -9,9 +9,10 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
-#include "Cpl/System/ElapsedTime.h"
-#include "Cpl/System/Private_.h"
-#include <chrono>
+#include "PrivateElapsedTime_.h"
+#include "ElapsedTime.h"
+#include "Private_.h"
+#include <stdlib.h>
 
 
 /// 
@@ -20,8 +21,10 @@ using namespace Cpl::System;
 
 
 ///////////////////////////////////////////////////////////////
-static unsigned long elaspedMsec_;
-static uint64_t      lastMsec_;
+static unsigned long elapsedMsec_;
+static unsigned long elapsedSec_;
+static unsigned long lastMsec_;
+static unsigned long sumDeltaMs_;
 
 namespace {
 
@@ -37,8 +40,10 @@ protected:
     ///
     void notify( InitLevel_T init_level )
     {
-        elaspedMsec_  = 0;
-        lastMsec_     = std::chrono::duration_cast<std::chrono::milliseconds> (std::chrono::system_clock::now().time_since_epoch()).count();
+        elapsedMsec_  = 0;
+        elapsedSec_   = 0;
+        sumDeltaMs_   = 0;
+        lastMsec_     = CplSystemElapsedTime_getTimeInMilliseconds();
     }
 
 };
@@ -53,23 +58,30 @@ unsigned long ElapsedTime::millisecondsInRealTime( void ) noexcept
 {
     Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
 
-    uint64_t      newTime = std::chrono::duration_cast<std::chrono::milliseconds> (std::chrono::system_clock::now().time_since_epoch()).count();
-    unsigned long delta   = (unsigned long) (newTime - lastMsec_);
-    elaspedMsec_         += delta;
+    unsigned long newTime = CplSystemElapsedTime_getTimeInMilliseconds();
+    unsigned long delta   = newTime - lastMsec_;
     lastMsec_             = newTime;
+    elapsedMsec_         += delta;
+    sumDeltaMs_          += delta;
+    while ( sumDeltaMs_ >= 1000L )
+    {
+        elapsedSec_++;
+        sumDeltaMs_ -= 1000L;
+    }
+    
 
-    return elaspedMsec_;
+    return elapsedMsec_;
 }
 
 unsigned long ElapsedTime::secondsInRealTime( void ) noexcept
 {
     Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
 
-    // Update my internal elapsedMsec time
-    milliseconds();
+    // Update my internal time
+    millisecondsInRealTime();
 
     // Convert my internal elapsed time to seconds
-    return (unsigned long) (elaspedMsec_ / 1000LL);
+    return (unsigned long) (elapsedMsec_ / 1000LL);
 }
 
 
@@ -77,13 +89,12 @@ ElapsedTime::Precision_T ElapsedTime::precisionInRealTime( void ) noexcept
 {
     Cpl::System::Mutex::ScopeBlock lock( Cpl::System::Locks_::system() );
 
-    // Update my internal elapsedMsec time
-    milliseconds();
+    // Update my internal time
+    millisecondsInRealTime();
 
     // Convert to my Precision format
     Precision_T now;
-    lldiv_t     result = lldiv( elaspedMsec_, 1000LL );
-    now.m_seconds      = (unsigned long) result.quot;
-    now.m_thousandths  = (uint16_t) result.rem;
+    now.m_seconds      = elapsedSec_;
+    now.m_thousandths  = elapsedMsec_ % 1000L;
     return now;
 }
