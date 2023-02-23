@@ -12,7 +12,7 @@ set _HERE=%~dp0
 set NQBP_PKG_ROOT=%_HERE%
 set NQBP_WORK_ROOT=%_HERE%..\
 set NQBP_XPKGS_ROOT=%_HERE%xsrc
-set NQBP_BIN=%NQBP_XPKGS_ROOT%\nqbp
+set NQBP_BIN=%NQBP_XPKGS_ROOT%\nqbp2
 
 :: Make sure the Outcast environment is setup.  Assumes that the Outcast batch file is in command path
 call outcast.bat
@@ -20,8 +20,8 @@ call outcast.bat
 :: Set helper macros
 doskey top=cd %_HERE%
 doskey t=cd %_HERE%
-doskey bob=%NQBP_XPKGS_ROOT%\nqbp\other\bob.py $*
-doskey chuck=%NQBP_XPKGS_ROOT%\nqbp\other\chuck.py $*
+doskey bob=%NQBP_BIN%other\bob.py $*
+doskey chuck=%NQBP_BIN%other\chuck.py $*
 doskey whatcc=echo:%PIM_ENV_COMPILER%
 doskey killpy=taskkill /F /IM python.exe
 doskey gitchmodx=git update-index --chmod=+x $*
