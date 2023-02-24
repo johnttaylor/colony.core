@@ -20,8 +20,8 @@ call outcast.bat
 :: Set helper macros
 doskey top=cd %_HERE%
 doskey t=cd %_HERE%
-doskey bob=%NQBP_BIN%other\bob.py $*
-doskey chuck=%NQBP_BIN%other\chuck.py $*
+doskey bob=%NQBP_BIN%\other\bob.py $*
+doskey chuck=%NQBP_BIN%\other\chuck.py $*
 doskey whatcc=echo:%PIM_ENV_COMPILER%
 doskey killpy=taskkill /F /IM python.exe
 doskey gitchmodx=git update-index --chmod=+x $*
