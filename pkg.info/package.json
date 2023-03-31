@@ -52,22 +52,6 @@
         }
       },
       {
-        "pkgname": "colony.bsp.renesas.rx",
-        "pkgtype": "overlay",
-        "adoptedDate": "Sun Sep 11 18:49:55 2022",
-        "parentDir": null,
-        "version": {
-          "semanticVersion": "1.0.2",
-          "branch": null,
-          "tag": "OUTCAST2-main-1.0.2"
-        },
-        "repo": {
-          "name": "colony.bsp.renesas.rx",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        }
-      },
-      {
         "pkgname": "nqbp2",
         "pkgtype": "readonly",
         "virtualAdoption": false,
@@ -97,6 +81,23 @@
         },
         "repo": {
           "name": "stm32F4-sdk",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      },
+      {
+        "pkgname": "stm32-gcc-arm",
+        "pkgtype": "readonly",
+        "virtualAdoption": false,
+        "adoptedDate": "Fri Mar 31 21:30:22 2023",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": null,
+          "branch": null,
+          "tag": "OUTCAST2-main-10.3-2021.10"
+        },
+        "repo": {
+          "name": "stm32-gcc-arm",
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
