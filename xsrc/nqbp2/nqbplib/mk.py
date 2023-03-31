@@ -311,7 +311,7 @@ def build_single_directory( printer, arguments, toolchain, dir, entry, pkg_root,
     # verify source directory exists
     if ( not os.path.exists( srcpath ) ):
         printer.output( "")
-        printer.output( "ERROR: Build Failed - directory does not exist: " )
+        printer.output( f"ERROR: Build Failed - directory does not exist: {srcpath}" )
         printer.output( "" )
         sys.exit(1)
         

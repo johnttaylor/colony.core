@@ -608,7 +608,7 @@ class ToolChain:
     def _build_objdmp_rule( self ):
         self._ninja_writer.rule( 
             name = 'objdmp_rule', 
-            command = "$objdmp $objdmp_opts $in > $out", 
+            command = "$shell $objdmp $objdmp_opts $in > $out", 
             description = "Objdmp: $in TO $out" )
 
     def _build_generic_rule( self ):

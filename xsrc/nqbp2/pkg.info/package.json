@@ -23,13 +23,20 @@
   },
   "publish": {
     "current": {
-      "comment": "Add toolchain for RP2040-Wireless. Update Windows Host toolchains to use response files (to avoid 8K Windoze limit)",
-      "version": "0.1.1",
-      "date": "Thu Feb 23 18:23:44 2023",
-      "timestamp": 1677176624,
+      "comment": "1. Add missing header paths to the PI Pico toolchains. 2. Update documentation",
+      "version": "0.1.2",
+      "date": "Sun Feb 26 21:58:50 2023",
+      "timestamp": 1677448730,
       "changes": null
     },
     "history": [
+      {
+        "comment": "Add toolchain for RP2040-Wireless. Update Windows Host toolchains to use response files (to avoid 8K Windoze limit)",
+        "version": "0.1.1",
+        "date": "Thu Feb 23 18:23:44 2023",
+        "timestamp": 1677176624,
+        "changes": null
+      },
       {
         "comment": "initial version (most (but not all) toolchains have been verified)",
         "version": "0.1.0",
