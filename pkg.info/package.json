@@ -83,6 +83,23 @@
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
+      },
+      {
+        "pkgname": "stm32F4-sdk",
+        "pkgtype": "readonly",
+        "virtualAdoption": false,
+        "adoptedDate": "Fri Mar 31 21:29:23 2023",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": null,
+          "branch": null,
+          "tag": "OUTCAST2-main-1.27.1"
+        },
+        "repo": {
+          "name": "stm32F4-sdk",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
       }
     ]
   },
