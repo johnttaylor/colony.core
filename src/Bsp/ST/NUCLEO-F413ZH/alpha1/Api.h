@@ -1,0 +1,77 @@
+#ifndef Bsp_Stm32_FreeRTOS_Api_h_
+#define Bsp_Stm32_FreeRTOS_Api_h_
+/*-----------------------------------------------------------------------------
+* This file is part of the Colony.Core Project.  The Colony.Core Project is an
+* open source project with a BSD type of licensing agreement.  See the license
+* agreement (license.txt) in the top/ directory or on the Internet at
+* http://integerfox.com/colony.core/license.txt
+*
+* Copyright (c) 2017  John T. Taylor
+*
+* Redistributions of the source code must retain the above copyright notice.
+*----------------------------------------------------------------------------*/
+/** @file
+
+
+    This BSP is developed/build with a 'just-in-time' approach.  This means
+    as functional is added to the BSP incrementally as there is 'client'
+    need for.  This BSP does not claim to provide full/complete functional
+    and/or APIs for everything the board supports.
+
+
+    DO NOT include this file directly! Instead include the generic BSP
+    interface - src/Bsp/Api.h - and then configure your project's
+    'colony_map.h' to include THIS file.
+
+*----------------------------------------------------------------------------*/
+
+
+#include "colony_config.h"
+#include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/main.h"
+
+
+
+//#include "FreeRTOS.h"
+
+//////////////////////////////////////////////////////////
+/// Generic APIs
+//////////////////////////////////////////////////////////
+
+/// Generic API
+#define Bsp_Api_nop_MAP()                       __asm("nop")                
+
+/// Generic API
+#define Bsp_Api_disableIrqs_MAP()               taskENTER_CRITICAL()
+
+/// Generic API
+#define Bsp_Api_enableIrqs_MAP()                taskEXIT_CRITICAL()
+
+/// Generic API
+#define Bsp_Api_pushAndDisableIrqs_MAP()        taskENTER_CRITICAL()    // FIXME: This really needs to PUSH the IRQ state!!!
+
+/// Generic API
+#define Bsp_Api_popIrqs_MAP()                   taskEXIT_CRITICAL()     // FIXME: This really needs to POP the IRQ state!!!!
+
+
+
+/// Generic API
+#define Bsp_Api_turnOn_debug1_MAP()             HAL_GPIO_WritePin( LD1_GPIO_Port, LD1_Pin, GPIO_PIN_SET )
+
+/// Generic API
+#define Bsp_Api_turnOff_debug1_MAP()            HAL_GPIO_WritePin( LD1_GPIO_Port, LD1_Pin, GPIO_PIN_RESET )
+
+/// Generic API
+#define Bsp_Api_toggle_debug1_MAP()             HAL_GPIO_TogglePin( LD1_GPIO_Port, LD1_Pin )
+
+
+/// Generic API
+#define Bsp_Api_turnOn_debug2_MAP()             HAL_GPIO_WritePin( LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET )
+
+/// Generic API
+#define Bsp_Api_turnOff_debug2_MAP()            HAL_GPIO_WritePin( LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET )
+
+/// Generic API
+#define Bsp_Api_toggle_debug2_MAP()             HAL_GPIO_TogglePin( LD2_GPIO_Port, LD2_Pin )
+
+
+#endif  // end header latch
