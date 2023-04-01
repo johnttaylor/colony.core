@@ -22,12 +22,12 @@ protected:
         for ( ;;)
         {
             uint32_t now = Cpl::System::ElapsedTime::milliseconds();
-            if ( now - timeMark1 >= 1000 )
+            if ( now - timeMark1 >= 100 )
             {
                 Bsp_Api_toggle_debug1();
                 timeMark1 = now;
             }
-            if ( now - timeMark2 >= 2000 )
+            if ( now - timeMark2 >= 1000 )
             {
                 Bsp_Api_toggle_debug2();
                 timeMark2 = now;
@@ -50,12 +50,13 @@ int main( void )
 {
     // Initialize the board
     Bsp_Api_initialize();
+    printf( "\n**** BSP TEST APPLICATION STARTED ****\n\n" );
 
     //// Initialize CPL
     Cpl::System::Api::initialize();
 
     //// Create my test thread
-    Cpl::System::Thread* t1 = Cpl::System::FreeRTOS::Thread::create( runnable_, "Bob", CPL_SYSTEM_THREAD_PRIORITY_NORMAL );
+    Cpl::System::Thread* t1 = Cpl::System::FreeRTOS::Thread::create( runnable_, "TEST", CPL_SYSTEM_THREAD_PRIORITY_NORMAL );
     if ( t1 == nullptr )
     {
         printf( "Failed to created thread!!\n" );
@@ -63,7 +64,7 @@ int main( void )
     }
     else
     {
-        printf( "Thread created: %s\n", t1->getName() );
+        printf( "Thread created %s thread\n", t1->getName() );
     }
 
     //// Start the scheduler

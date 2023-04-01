@@ -37,8 +37,8 @@ FINAL_OUTPUT_NAME = 'blink'
 
 
 # Path to SDK and the ST CubeMX generated BSP files
-bsp_mx   = os.path.join( "src", "Bsp", "ST", "NUCLEO-F413ZH", "alpha1", "MX" )
-sdk_root = os.path.join( NQBP_PKG_ROOT(), "xsrc", "stm32F4-SDK")
+bsp_mx      = os.path.join( "src", "Bsp", "ST", "NUCLEO-F413ZH", "alpha1", "MX" )
+sdk_root    = os.path.join( NQBP_PKG_ROOT(), "xsrc", "stm32F4-SDK")
 bsp_mx_root = os.path.join( NQBP_PKG_ROOT(), bsp_mx )
 
 #

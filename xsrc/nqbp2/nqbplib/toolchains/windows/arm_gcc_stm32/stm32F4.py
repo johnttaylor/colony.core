@@ -74,7 +74,6 @@ class ToolChain( base.ToolChain ):
         # Run the linker
         base.ToolChain.link(self, arguments, inf, local_external_setting, variant, extra_inputs_list=None, outname=self._final_output_name + ".elf" )
 
-
         # Generate the .BIN file
         self._ninja_writer.build(
                outputs    = self._final_output_name + ".bin",

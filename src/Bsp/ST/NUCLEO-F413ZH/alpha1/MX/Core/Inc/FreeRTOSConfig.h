@@ -65,7 +65,7 @@
 #define configTICK_RATE_HZ                       ((TickType_t)1000)
 #define configMAX_PRIORITIES                     ( 7 )
 #define configMINIMAL_STACK_SIZE                 ((uint16_t)768)
-#define configTOTAL_HEAP_SIZE                    ((size_t)32768)
+#define configTOTAL_HEAP_SIZE                    ((size_t)65536)
 #define configMAX_TASK_NAME_LEN                  ( 16 )
 #define configUSE_TRACE_FACILITY                 1
 #define configUSE_STATS_FORMATTING_FUNCTIONS     1
@@ -78,6 +78,7 @@
 #define configUSE_APPLICATION_TASK_TAG           1
 #define configUSE_COUNTING_SEMAPHORES            1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION  1
+#define configRECORD_STACK_HIGH_ADDRESS          1
 /* USER CODE BEGIN MESSAGE_BUFFER_LENGTH_TYPE */
 /* Defaults to size_t for backward compatibility, but can be changed
    if lengths will always be less than the number of bytes in a size_t. */
