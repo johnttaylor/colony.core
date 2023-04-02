@@ -133,7 +133,9 @@ bool StreamDriver::write( const void* data, size_t numBytesToTx ) noexcept
         while ( numBytesToTx )
         {
             // Populate Ring Buffer
+            __HAL_LOCK( m_uartHdl );
             bool result = m_txBuffer.add( *ptr );
+            __HAL_UNLOCK( m_uartHdl );
 
             // Get the next byte if my Ring Buffer was not full
             if ( result )
@@ -155,20 +157,25 @@ bool StreamDriver::write( const void* data, size_t numBytesToTx ) noexcept
             Cpl::System::Thread& myThread = Cpl::System::Thread::getCurrent();
 
             // INTERRUPT/CRITICAL SECTION: Set Waiter
-            Bsp_Api_disableIrqs();
+            __HAL_LOCK( m_uartHdl );
             m_txWaiterPtr = &myThread;
-            Bsp_Api_enableIrqs();
+            __HAL_UNLOCK( m_uartHdl );
         }
 
-        // The HAL expects a 'flat' buffer (not a ring buffer) - so we have to
-        // extract the 'flat portion' of ring buffer to pass to the HAL.
-        uint8_t* txPtr = m_txBuffer.peekNextRemoveItems( m_txSize );
-
-        // Start transmitting 
-        // Note: If there is TX in progress the HAL_UART_Transmit_IT() function does nothing
-        if ( txPtr )
+        // Do nothing if there is a 'transmit in progress' 
+        if ( (HAL_UART_GetState( m_uartHdl ) & HAL_UART_STATE_BUSY_TX) != HAL_UART_STATE_BUSY_TX )
         {
-            HAL_UART_Transmit_IT( m_uartHdl, txPtr, m_txSize );
+            // The HAL expects a 'flat' buffer (not a ring buffer) - so we have to
+            // extract the 'flat portion' of ring buffer to pass to the HAL.
+            __HAL_LOCK( m_uartHdl );
+            uint8_t* txPtr = m_txBuffer.peekNextRemoveItems( m_txSize );
+            __HAL_UNLOCK( m_uartHdl );
+
+            // Start transmitting 
+            if ( txPtr )
+            {
+                HAL_UART_Transmit_IT( m_uartHdl, txPtr, m_txSize );
+            }
         }
 
         // Wait (if necessary) for buffer to be transmitted/drained
@@ -189,11 +196,11 @@ bool StreamDriver::write( const void* data, size_t numBytesToTx ) noexcept
 
 int StreamDriver::su_txDoneIsr( void ) noexcept
 {
-    // Remove the transmitted bytes from TX FIFO
+    // Remove the transmitted bytes from TX FIFO and check if there still more data to transmit
     m_txBuffer.removeElements( m_txSize );
+    uint8_t* txPtr = m_txBuffer.peekNextRemoveItems( m_txSize );
 
     // Start a new transmit if the TX FIFO is NOT empty
-    uint8_t* txPtr = m_txBuffer.peekNextRemoveItems( m_txSize );
     if ( txPtr != nullptr )
     {
         // Start transmitting 

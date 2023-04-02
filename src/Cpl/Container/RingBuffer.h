@@ -28,7 +28,7 @@ namespace Container {
     Thread/ISR Safety Notes:
         - The only mutable (once the Ring buffer is created) data members of the
           class are the head/tail pointers and the buffer contents.
-        - The add() operation only modifies the tail pointer (but does read the 
+        - The add() operation only modifies the tail pointer (but does read the
           head pointer)
         - The remove() operation only modifies the head pointer (but does read
           the tail pointer).
@@ -137,9 +137,9 @@ public:
 
 public:
     /** This method returns a pointer to the next item to be removed. In addition
-        it returns the number of elements that can be removed as linear/flat 
+        it returns the number of elements that can be removed as linear/flat
         buffer (i.e. without wrapping around raw buffer memory)
-        
+
         If the Ring buffer is empty, a null pointer is returned
      */
     ITEM* peekNextRemoveItems( unsigned& dstNumFlatElements ) noexcept;
@@ -228,14 +228,11 @@ inline ITEM* RingBuffer<ITEM>::peekNextRemoveItems( unsigned& dstNumFlatElements
         return nullptr;
     }
 
-    if ( dstNumFlatElements )
+    unsigned totalNumElements = getNumItems();
+    dstNumFlatElements        = m_endOfMemPtr - m_headPtr;
+    if ( dstNumFlatElements > totalNumElements )
     {
-        unsigned totalNumElements = getNumItems();
-        dstNumFlatElements        = m_endOfMemPtr - m_headPtr;
-        if ( dstNumFlatElements > totalNumElements )
-        {
-            dstNumFlatElements = totalNumElements;
-        }
+        dstNumFlatElements = totalNumElements;
     }
 
     return m_headPtr;
