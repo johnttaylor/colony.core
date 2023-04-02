@@ -1,14 +1,13 @@
-# UUT
-src/Cpl/Io/Serial/ST/STM32F1
-
 # Test App
-src/Cpl/Io/Serial/_0test/_hw_loopback
+src/Cpl/System/_0test/_hw_basic
 
 # Application Specific OSAL
 src/Cpl/System/FreeRTOS/_fatalerror
 src/Cpl/System/_trace
 src/Cpl/Io/Stdio/_ansi
 
+# Output stream for the trace engine (and the debug console)
+src/Cpl/Io/Serial/ST/STM32F1
 
 # CPL Middle-ware
 src/Cpl/Container
@@ -23,10 +22,10 @@ src/Cpl/System/_assert
 
 
 # BSP
-src/Bsp/ST/NUCLEO-F413ZH/alpha1 
+src/Bsp/ST/NUCLEO-F413ZH/alpha1
+src/Bsp/ST/NUCLEO-F413ZH/alpha1/console
 src/Bsp/ST/NUCLEO-F413ZH/alpha1/MX 
 src/Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Src
-src/Bsp/ST/NUCLEO-F413ZH/alpha1/console
 
 # SDK
 xsrc/stm32F4-SDK/Drivers/STM32F4xx_HAL_Driver/Src > stm32f4xx_hal_timebase_rtc_alarm_template.c stm32f4xx_hal_timebase_rtc_wakeup_template.c stm32f4xx_hal_timebase_tim_template.c

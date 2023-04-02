@@ -58,7 +58,6 @@ public:
     StreamDriver( Cpl::Container::RingBuffer<uint8_t>& txBuffer,
                   Cpl::Container::RingBuffer<uint8_t>& rxBuffer ) noexcept;
 
-
 public:
     /** This method starts/enables the driver.  Note: The application is
         RESPONSIBLE for performing the low level initialization (Baud Rate,
@@ -88,9 +87,34 @@ public:
     bool write( const void* data, size_t numBytesToTx ) noexcept;
 
 
+public:
+    /** Receives at most the specified maximum number of bytes.  The actual
+        number of bytes received is returned via 'numBytesRx'.  The method does
+        not  return until at least one byte is available in the inbound buffer.
+        The  method returns true if successful; else false is returned.
+
+        NOTE: UART Framing errors are silents discarded, i.e. an incoming
+              byte that is received with an associated framing error is
+              NOT put into the inbound buffer.  A free running counter is
+              maintain of the number of framing errors encountered.
+     */
+    bool read( void* data, int maxBytes, int& numBytesRx ) noexcept;
+
+
+    /** This method returns true if at least one byte is available in the
+        inbound buffer.
+     */
+    bool available( void ) const noexcept;
+
+
+    /** This method returns and optionally clears the driver's RX error
+        counter.
+     */
+    size_t getRXErrorsCounts( bool clearCount=true ) noexcept;
+
 protected:
     /** This method SHOULD only be called when the HAL Transmit operation has
-        completed (aka from the HAL_UART_TxCpltCallback() callback function).
+        completed (aka from the HAL_UART_TxCpltCallback() function).
 
         This method executes in the context of interrupt service routine (ISR)
 
@@ -99,12 +123,28 @@ protected:
      */
     int su_txDoneIsr( void ) noexcept;
 
+    /** The method SHOULD only be called when the HAL Receive operation has 
+        completed (aka from the HAL_UART_RxCpltCallback() or 
+        HAL_UART_ErrorCallback() functions).
+
+        This method executes in the context of interrupt service routine (ISR)
+
+        The method returns the result of signaling waiter (i.e. return code
+        from su_signal()), or zero if no waiter was signaled.
+     */
+    int su_rxDataAndErrorIsr( void ) noexcept;
+
 
 protected:
     /** Used to pre-process the HAL_UART_TxCpltCallback() call to the
         specific Driver instance
      */
     static void su_txCompleteCallback( UART_HandleTypeDef* huart ) noexcept;
+
+    /** Used to pre-process the HAL_UART_RxCpltCallback() and
+        HAL_UART_ErrorCallback() calls to the specific Driver instance
+     */
+    static void su_rxAndErrorCompleteCallback( UART_HandleTypeDef* huart ) noexcept;
 
 private:
     /// Prevent access to the copy constructor -->Driver can not be copied!
@@ -138,12 +178,17 @@ protected:
     /// Receive buffer
     Cpl::Container::RingBuffer<uint8_t>& m_rxBuffer;
 
+    /// A Receive error was encountered
+    size_t                  m_errCount;
+
     /// Number of bytes requested to be transmitted by the HAL
     unsigned                m_txSize;
 
+    /// Incoming Byte
+    uint8_t                 m_rxData;
+
     /// Map the HAL UART to a transmitter instance
     static HalMapping_T		m_mappings[OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS];
-
 };
 
 

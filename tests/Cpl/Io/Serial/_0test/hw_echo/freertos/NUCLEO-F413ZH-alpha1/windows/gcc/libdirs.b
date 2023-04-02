@@ -2,7 +2,7 @@
 src/Cpl/Io/Serial/ST/STM32F1
 
 # Test App
-src/Cpl/Io/Serial/_0test/_hw_loopback
+src/Cpl/Io/Serial/_0test/_hw_echo
 
 # Application Specific OSAL
 src/Cpl/System/FreeRTOS/_fatalerror

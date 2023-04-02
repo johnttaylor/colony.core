@@ -9,7 +9,9 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
-#include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/usart.h"
+#include "Bsp/Api.h"
+#include "Bsp/ST/NUCLEO-F413ZH/alpha1/console/Output.h"
+
 
 // Map printf to the UART3
 #ifdef __GNUC__
@@ -20,11 +22,17 @@
 #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
 #endif /* __GNUC__ */
 
+extern "C" PUTCHAR_PROTOTYPE;
 
 PUTCHAR_PROTOTYPE
 {
-  /* Place your implementation of fputc here */
-  /* e.g. write a character to the USART3 and Loop until the end of transmission */
-  HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFFFFFF);
-  return ch;
+    /* Place your implementation of fputc here */
+    /* e.g. write a character to the USART3 and Loop until the end of transmission */
+    
+    //HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFFFFFF);
+
+    char byte = ch & 0xFF;
+    g_bspConsoleStream.write( byte );
+
+    return ch;
 }

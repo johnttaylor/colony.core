@@ -40,17 +40,17 @@ void InputOutput::start( UART_HandleTypeDef* uartHdl ) noexcept
 ////////////////////////////////////
 bool InputOutput::read( void* buffer, int numBytes, int& bytesRead )
 {
-	//size_t bytesIn = 0;
-	//bool   result  = m_rx.read( buffer, (size_t) numBytes, bytesIn );
-	//bytesRead      = (int) bytesIn;
-	//return result;
-	return false;
+	return m_driver.read( buffer, numBytes, bytesRead );
 }
 
 bool InputOutput::available()
 {
-	//return m_rx.available();
-	return false;
+	return m_driver.available();
+}
+
+size_t InputOutput::getRXErrorsCounts( bool clearCount ) noexcept
+{
+	return m_driver.getRXErrorsCounts( clearCount );
 }
 
 

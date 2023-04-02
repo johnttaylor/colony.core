@@ -5,7 +5,7 @@
 #include "Cpl/Io/Null.h"
 
 
-extern void loopback_test( Cpl::Io::InputOutput& fd );
+extern void echo_test( Cpl::Io::InputOutput& fd );
 
 /*-----------------------------------------------------------*/
 int main( void )
@@ -17,7 +17,7 @@ int main( void )
     Cpl::System::Api::initialize();
 
     // Go run the test(s) (Note: This method should never return)
-    loopback_test( g_bspConsoleStream );
+    echo_test( g_bspConsoleStream );
 
     // I should never get here!
     for ( ;; );

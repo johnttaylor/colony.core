@@ -76,6 +76,8 @@ public:
     /// See Cpl::Io::Input
     bool available();
 
+    /// This method is used to retreive and optionally clear the RX Error counter
+    size_t getRXErrorsCounts( bool clearCount=true ) noexcept;
 
 public:
     /// Pull in overloaded methods from base class
