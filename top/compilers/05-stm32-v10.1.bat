@@ -1,5 +1,5 @@
 echo off
-IF "/%1"=="/name" ECHO:GCC-ARM (none-eabi) compiler & exit /b 0
+IF "/%1"=="/name" ECHO:GCC-ARM (none-eabi) compiler for STM32 & exit /b 0
 
 call set PATH=%NQBP_XPKGS_ROOT%\stm32-gcc-arm\bin;%PATH%
 echo:GCC Arm-none-eabi Environment set to xsrc\stm32-gcc-arm\bin

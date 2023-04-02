@@ -1,8 +1,8 @@
 # Application Specific OSAL
 src/Cpl/System/FreeRTOS/_fatalerror
 src/Cpl/System/_trace
-src/Cpl/System/_trace/_stdout
 src/Cpl/Io/Stdio/_ansi
+src/Bsp/ST/NUCLEO-F413ZH/alpha1/cpltrace
 
 # CPL Middle-ware
 src/Cpl/Container

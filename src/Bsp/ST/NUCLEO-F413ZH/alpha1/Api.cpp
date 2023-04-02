@@ -11,42 +11,26 @@
 
 #include "Bsp/Api.h"
 #include "stm32f4xx_hal.h"
-#include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/usart.h"
 #include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/gpio.h"
-#include <ios>
-
-// Map printf to the UART3
-extern "C" {
-#ifdef __GNUC__
-/* With GCC, small printf (option LD Linker->Libraries->Small printf
-   set to 'Yes') calls __io_putchar() */
-#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
-}
-
+#include "Bsp/ST/NUCLEO-F413ZH/alpha1/console/Output.h"
+#include "Cpl/System/Trace.h"
 
 #define SECT_   "bsp"
-
-
-
 
 ///////////////////////////////////////////
 void Bsp_Api_initialize( void )
 {
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
     HAL_Init();
 
     /* Configure the system clock */
     SystemClock_Config();
 
-
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
     MX_USART3_UART_Init();
 
-      // Configure the LEDs as output pins 
-      //pinMode( OPTION_BSP_DEBUG_LED1_INDEX, OUTPUT );
+    // Start the Console/Trace UART
+    g_bspConsoleStream.start( &huart3 );
 }
 

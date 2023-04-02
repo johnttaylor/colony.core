@@ -1,3 +1,6 @@
+# Test App
+src/Cpl/System/_0test/_hw_basic
+
 # Application Specific OSAL
 src/Cpl/System/FreeRTOS/_fatalerror
 src/Cpl/System/_trace

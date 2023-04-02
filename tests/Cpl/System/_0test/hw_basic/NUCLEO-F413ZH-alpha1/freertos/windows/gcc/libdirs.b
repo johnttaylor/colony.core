@@ -4,8 +4,10 @@ src/Cpl/System/_0test/_hw_basic
 # Application Specific OSAL
 src/Cpl/System/FreeRTOS/_fatalerror
 src/Cpl/System/_trace
-src/Cpl/System/_trace/_stdout
 src/Cpl/Io/Stdio/_ansi
+
+# Output stream for the trace engine (and the debug console)
+src/Cpl/Io/Serial/ST/STM32F1
 
 # CPL Middle-ware
 src/Cpl/Container
@@ -21,6 +23,7 @@ src/Cpl/System/_assert
 
 # BSP
 src/Bsp/ST/NUCLEO-F413ZH/alpha1
+src/Bsp/ST/NUCLEO-F413ZH/alpha1/console
 src/Bsp/ST/NUCLEO-F413ZH/alpha1/MX 
 src/Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Src
 

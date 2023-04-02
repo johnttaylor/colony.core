@@ -135,7 +135,24 @@ public:
      */
     void clearTheBuffer() noexcept;
 
+public:
+    /** This method returns a pointer to the next item to be removed. In addition
+        it returns the number of elements that can be removed as linear/flat 
+        buffer (i.e. without wrapping around raw buffer memory)
+        
+        If the Ring buffer is empty, a null pointer is returned
+     */
+    ITEM* peekNextRemoveItems( unsigned& dstNumFlatElements ) noexcept;
 
+    /** This method remove N elements from the ring buffer.  The assumption
+        is that the elements are no longer needed or where 'manually' removed
+        using the return pointer from peekNextRemoveItem().
+
+        The method return true if the operation was successful; else false is
+        returned, i.e. the Ring buffer is/was empty OR there was less than
+        numElementsToRemove elements in the buffer.
+     */
+    bool removeElements( unsigned numElementsToRemove ) noexcept;
 
 private:
     /// Prevent access to the copy constructor -->Containers can not be copied!
@@ -202,6 +219,42 @@ inline bool RingBuffer<ITEM>::remove( ITEM& dst ) noexcept
     return true;
 }
 
+
+template <class ITEM>
+inline ITEM* RingBuffer<ITEM>::peekNextRemoveItems( unsigned& dstNumFlatElements ) noexcept
+{
+    if ( isEmpty() )
+    {
+        return nullptr;
+    }
+
+    if ( dstNumFlatElements )
+    {
+        unsigned totalNumElements = getNumItems();
+        dstNumFlatElements        = m_endOfMemPtr - m_headPtr;
+        if ( dstNumFlatElements > totalNumElements )
+        {
+            dstNumFlatElements = totalNumElements;
+        }
+    }
+
+    return m_headPtr;
+}
+
+template <class ITEM>
+inline bool RingBuffer<ITEM>::removeElements( unsigned numElementsToRemove ) noexcept
+{
+    ITEM dummy;
+    while ( numElementsToRemove-- )
+    {
+        if ( !remove( dummy ) )
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 template <class ITEM>
 inline ITEM* RingBuffer<ITEM>::peekHead( void ) const noexcept

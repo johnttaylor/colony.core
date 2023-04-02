@@ -27,11 +27,9 @@
 
 
 #include "colony_config.h"
-#include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/main.h"
-
-
-
-//#include "FreeRTOS.h"
+#include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/main.h"   // Access the PINs
+#include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/usart.h"  // Access the UART handles/instances
+#include "task.h"                                           // Access to FreeRTOS's taskXXX functions
 
 //////////////////////////////////////////////////////////
 /// Generic APIs

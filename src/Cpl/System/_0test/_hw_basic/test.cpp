@@ -242,5 +242,6 @@ void runtests( void )
     Thread::create( *t3, "T3" );
 
     // Start the scheduler
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("Starting scheduler...") );
     Api::enableScheduling();
 }
