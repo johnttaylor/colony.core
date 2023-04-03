@@ -15,33 +15,45 @@
 #include "Cpl/System/Thread.h"
 #include "Cpl/System/FatalError.h"
 #include "Cpl/Text/FString.h"
+#include "Cpl/Text/format.h"
 #include "Cpl/Io/InputOutput.h"
+#include "Cpl/Container/RingBuffer.h"
 #include <string.h>
 
 
 #define SECT_     "_0test"
 
+#ifndef OPTION_TEST_END_OF_FRAME_CHAR
+#define OPTION_TEST_END_OF_FRAME_CHAR    0x0D
+#endif
 
 
 extern void echo_test( Cpl::Io::InputOutput& fd );
+extern size_t getErrorCounts( bool clearCounts = false );
 
+#define ECHO_BUFFER_SIZE        (1024*10)
 
+#define RX_READ_BUFFER_SIZE     64
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace {
 
-class Echo : public Cpl::System::Runnable
+class Receiver : public Cpl::System::Runnable
 {
 public:
     ///
     Cpl::Io::InputOutput&           m_fd;
     ///
-    Cpl::Text::FString<64>          m_rxMsg;
+    uint8_t                         m_rxMsg[RX_READ_BUFFER_SIZE];
     ///
-    Cpl::Text::FString<128>         m_txMsg;
+    Cpl::Text::FString<128>         m_tmpBuf;
+    ///
+    int                             m_numEchoBytes;
+    ///
+    uint8_t                         m_echoMemory[ECHO_BUFFER_SIZE + 1];
 
 public:
-    Echo( Cpl::Io::InputOutput& fd )
+    Receiver( Cpl::Io::InputOutput& fd )
         : m_fd( fd )
     {
     }
@@ -52,24 +64,67 @@ public:
         // Throw any trash bytes on startup
         while ( m_fd.available() )
         {
-            m_fd.read( m_rxMsg );
+            int bytesRead;
+            m_fd.read( m_rxMsg, sizeof( m_rxMsg), bytesRead );
         }
 
-        size_t byteCount = 0;
+        size_t   byteCount = 0;
+        uint8_t* dstPtr    = m_echoMemory;
+        m_numEchoBytes     = 0;
+
         for ( ;;)
         {
-            
-            Bsp_Api_toggle_debug1();
-            if ( m_fd.read( m_rxMsg ) )
+
+            int bytesRead;
+            if ( m_fd.read( m_rxMsg, sizeof( m_rxMsg ), bytesRead ) )
             {
-                Bsp_Api_toggle_debug2();
-                byteCount += m_rxMsg.length();
-                m_txMsg.format( "RX (%6u): [%s]\n", byteCount, m_rxMsg.getString() );
-                m_fd.write( m_txMsg );
+                Bsp_Api_toggle_debug1();
+                byteCount += bytesRead;
+
+                // Copy the data to the buffer while looking for ^Q
+                uint8_t* ptr = m_rxMsg;
+                while ( bytesRead-- )
+                {
+                    uint8_t inbyte = *ptr++;
+                    *dstPtr++ = inbyte;
+                    m_numEchoBytes++;
+
+                    // End-of-Frame is the 'trigger' to output data
+                    if ( inbyte == OPTION_TEST_END_OF_FRAME_CHAR )
+                    {
+                        echoMemory( byteCount );
+                        dstPtr         = m_echoMemory;
+                        m_numEchoBytes = 0;
+                    }
+                }
             }
         }
     }
+
+    void echoMemory( size_t byteCount )
+    {
+        m_tmpBuf.format( "\nRX: frame=%6d, total count=%7lu (total errs=%3lu):\n", m_numEchoBytes, byteCount, getErrorCounts() );
+        m_fd.write( m_tmpBuf );
+
+        uint8_t* srcData = m_echoMemory;
+        while ( m_numEchoBytes )
+        {
+            int outlen = 16;
+            if ( m_numEchoBytes < 16 )
+            {
+                outlen = m_numEchoBytes;
+            }
+
+            Cpl::Text::bufferToViewer( srcData, outlen, m_tmpBuf );
+            srcData        += outlen;
+            m_numEchoBytes -= outlen;
+            m_fd.write( m_tmpBuf );
+            m_fd.write( "\n" );
+        }
+    }
 };
+
+
 
 
 };  // end namespace
@@ -81,8 +136,8 @@ public:
 void echo_test( Cpl::Io::InputOutput& fd )
 {
     printf( "\nStarting Echo test...\n\n" );
-    Echo* echoPtr = new(std::nothrow) Echo( fd );
-    Cpl::System::Thread::create( *echoPtr, "ECHO" );
+    Receiver* rxPtr = new(std::nothrow) Receiver( fd  );
+    Cpl::System::Thread::create( *rxPtr, "RX" );
 
     // Start the scheduler
     Cpl::System::Api::enableScheduling();

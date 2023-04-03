@@ -31,6 +31,6 @@ void Bsp_Api_initialize( void )
     MX_USART3_UART_Init();
 
     // Start the Console/Trace UART
-    g_bspConsoleStream.start( &huart3 );
+    g_bspConsoleStream.start( USART3_IRQn, &huart3 );
 }
 

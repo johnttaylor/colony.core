@@ -144,15 +144,42 @@ public:
      */
     ITEM* peekNextRemoveItems( unsigned& dstNumFlatElements ) noexcept;
 
-    /** This method remove N elements from the ring buffer.  The assumption
-        is that the elements are no longer needed or where 'manually' removed
-        using the return pointer from peekNextRemoveItem().
+    /** This method 'removes' N elements - that were removed using the
+        pointer returned from peekNextRemoveItems - from the ring buffer.  
+        Basically it updates the head pointer to reflect items removed using 
+        direct memory access.
 
-        The method return true if the operation was successful; else false is
-        returned, i.e. the Ring buffer is/was empty OR there was less than
-        numElementsToRemove elements in the buffer.
+        'numElementsToRemove' be less than or equal to the 'dstNumFlatElements'
+        returned from peekNextRemoveItems().
+
+        CAUTION: IF YOU DON'T UNDERSTAND THE USE CASE FOR THIS METHOD - THEN 
+                 DON'T USE IT.  If this method is used improperly, it WILL
+                 CORRUPT the Ring Buffer!
      */
-    bool removeElements( unsigned numElementsToRemove ) noexcept;
+    void removeElements( unsigned numElementsToRemove ) noexcept;
+
+public:
+    /** This method returns a pointer to the next item to be added. In addition
+        it returns the number of elements that can be added as linear/flat
+        buffer (i.e. without wrapping around raw buffer memory)
+
+        If the Ring buffer is full, a null pointer is returned
+     */
+    ITEM* peekNextAddItems( unsigned& dstNumFlatElements ) noexcept;
+
+    /** This method 'adds' N elements - that were populated using the
+        pointer returned from peekNextAddItems - to the ring buffer.  Basically
+        its updates the tail pointer to reflect items added using direct
+        memory access.
+
+        'numElementsAdded' be less than or equal to the 'dstNumFlatElements'
+        returned from peekNextAddItems().
+
+        CAUTION: IF YOU DON'T UNDERSTAND THE USE CASE FOR THIS METHOD - THEN 
+                 DON'T USE IT. If this method is used improperly, it WILL
+                 CORRUPT the Ring Buffer!
+     */
+    void addElements( unsigned numElementsAdded ) noexcept;
 
 private:
     /// Prevent access to the copy constructor -->Containers can not be copied!
@@ -239,18 +266,43 @@ inline ITEM* RingBuffer<ITEM>::peekNextRemoveItems( unsigned& dstNumFlatElements
 }
 
 template <class ITEM>
-inline bool RingBuffer<ITEM>::removeElements( unsigned numElementsToRemove ) noexcept
+inline void RingBuffer<ITEM>::removeElements( unsigned numElementsToRemove ) noexcept
 {
-    ITEM dummy;
-    while ( numElementsToRemove-- )
+    // By the defined semantics - I simply update the head pointer
+    m_headPtr += numElementsToRemove;
+    if ( m_headPtr >= m_endOfMemPtr )
     {
-        if ( !remove( dummy ) )
-        {
-            return false;
-        }
+        m_headPtr = m_elements;
+    }
+}
+
+template <class ITEM>
+inline ITEM* RingBuffer<ITEM>::peekNextAddItems( unsigned& dstNumFlatElements ) noexcept
+{
+    if ( isFull() )
+    {
+        return nullptr;
     }
 
-    return true;
+    unsigned totalAvailElements = getMaxItems() - getNumItems();
+    dstNumFlatElements          = m_endOfMemPtr - m_tailPtr;
+    if ( dstNumFlatElements > totalAvailElements )
+    {
+        dstNumFlatElements = totalAvailElements;
+    }
+
+    return m_tailPtr;
+}
+
+template <class ITEM>
+inline void RingBuffer<ITEM>::addElements( unsigned numElementsAdded ) noexcept
+{
+    // By the defined semantics - I simply update the tail pointer
+    m_tailPtr += numElementsAdded;
+    if ( m_tailPtr >= m_endOfMemPtr )
+    {
+        m_tailPtr = m_elements;
+    }
 }
 
 template <class ITEM>

@@ -6,6 +6,7 @@
 
 
 extern void echo_test( Cpl::Io::InputOutput& fd );
+extern size_t getErrorCounts( bool clearCounts = false );
 
 /*-----------------------------------------------------------*/
 int main( void )
@@ -25,6 +26,10 @@ int main( void )
 }
 
 
+size_t getErrorCounts( bool clearCounts )
+{
+    return g_bspConsoleStream.getRxErrorsCounts( clearCounts );
+}
 
 /*-----------------------------------------------------------*/
 /// Trace output

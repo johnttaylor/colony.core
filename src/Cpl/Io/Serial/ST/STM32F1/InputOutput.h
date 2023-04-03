@@ -63,7 +63,8 @@ public:
         NOTE: The stream CAN be restarted (with a possibly different UART handle)
               if close() has been called.
      */
-    void start( UART_HandleTypeDef*	uartHdlToUse ) noexcept;
+    void start( IRQn_Type           uartIrqNum, 
+                UART_HandleTypeDef*	uartHdlToUse ) noexcept;
 
 
 public:
@@ -77,7 +78,7 @@ public:
     bool available();
 
     /// This method is used to retreive and optionally clear the RX Error counter
-    size_t getRXErrorsCounts( bool clearCount=true ) noexcept;
+    size_t getRxErrorsCounts( bool clearCount=true ) noexcept;
 
 public:
     /// Pull in overloaded methods from base class

@@ -18,62 +18,63 @@ using namespace Cpl::Io::Serial::ST::STM32F1;
 
 ////////////////////////////////////
 InputOutput::InputOutput( Cpl::Container::RingBuffer<uint8_t>& txBuffer,
-						  Cpl::Container::RingBuffer<uint8_t>& rxBuffer
+                          Cpl::Container::RingBuffer<uint8_t>& rxBuffer
 )
-	:m_driver( txBuffer, rxBuffer )
+    :m_driver( txBuffer, rxBuffer )
 {
 }
 
 
 InputOutput::~InputOutput( void )
 {
-	close();
+    close();
 }
 
 
-void InputOutput::start( UART_HandleTypeDef* uartHdl ) noexcept
+void InputOutput::start( IRQn_Type           uartIrqNum,
+                         UART_HandleTypeDef* uartHdlToUse ) noexcept
 {
-	m_driver.start( uartHdl );
+    m_driver.start( uartIrqNum, uartHdlToUse );
 }
 
 
 ////////////////////////////////////
 bool InputOutput::read( void* buffer, int numBytes, int& bytesRead )
 {
-	return m_driver.read( buffer, numBytes, bytesRead );
+    return m_driver.read( buffer, numBytes, bytesRead );
 }
 
 bool InputOutput::available()
 {
-	return m_driver.available();
+    return m_driver.available();
 }
 
-size_t InputOutput::getRXErrorsCounts( bool clearCount ) noexcept
+size_t InputOutput::getRxErrorsCounts( bool clearCount ) noexcept
 {
-	return m_driver.getRXErrorsCounts( clearCount );
+    return m_driver.getRXErrorsCounts( clearCount );
 }
 
 
 ////////////////////////////////////
 bool InputOutput::write( const void* buffer, int maxBytes, int& bytesWritten )
 {
-	bytesWritten = maxBytes;
-	return m_driver.write( buffer, (size_t) maxBytes );
+    bytesWritten = maxBytes;
+    return m_driver.write( buffer, (size_t) maxBytes );
 }
 
 
 void InputOutput::flush()
 {
-	// Not supported/has no meaning for a serial port
+    // Not supported/has no meaning for a serial port
 }
 
 bool InputOutput::isEos()
 {
-	// Does not really have meaning for serial port (assuming the serial port is opened/active)
-	return false;
+    // Does not really have meaning for serial port (assuming the serial port is opened/active)
+    return false;
 }
 
 void InputOutput::close()
 {
-	m_driver.stop();
+    m_driver.stop();
 }

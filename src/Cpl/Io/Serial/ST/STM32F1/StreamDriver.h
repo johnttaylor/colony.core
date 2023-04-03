@@ -51,9 +51,6 @@ class StreamDriver
 public:
     /** Constructor. Note: The driver does not begin operating until start() is
         called.
-
-        @param txBuffer         Ring Buffer to use as the transmit buffer.
-        @param rxBuffer         Ring Buffer to use as the receive buffer.
      */
     StreamDriver( Cpl::Container::RingBuffer<uint8_t>& txBuffer,
                   Cpl::Container::RingBuffer<uint8_t>& rxBuffer ) noexcept;
@@ -65,7 +62,8 @@ public:
         application to change the Baud rate, framing, etc - it must first stop
         the driver and then restart it.
      */
-    void start( UART_HandleTypeDef*	uartHdl ) noexcept;
+    void start( IRQn_Type           uartIrqNum,
+                UART_HandleTypeDef*	uartHdl ) noexcept;
 
     /** This method will stop/disable the driver.  The driver can be restarted
         by call start() again.  The state of the contents of the outbound buffer
@@ -132,7 +130,7 @@ protected:
         The method returns the result of signaling waiter (i.e. return code
         from su_signal()), or zero if no waiter was signaled.
      */
-    int su_rxDataAndErrorIsr( void ) noexcept;
+    int su_rxDataAndErrorIsr( uint16_t bytesReceived ) noexcept;
 
 
 protected:
@@ -141,10 +139,15 @@ protected:
      */
     static void su_txCompleteCallback( UART_HandleTypeDef* huart ) noexcept;
 
-    /** Used to pre-process the HAL_UART_RxCpltCallback() and
-        HAL_UART_ErrorCallback() calls to the specific Driver instance
+    /** Used to pre-process the HAL_UARTEx_RxEventCallback() call to the 
+        specific Driver instance
      */
-    static void su_rxAndErrorCompleteCallback( UART_HandleTypeDef* huart ) noexcept;
+    static void su_rxEventCompleteCallback( UART_HandleTypeDef *huart, uint16_t bytesReceived ) noexcept;
+
+    /** Used to pre-process the HAL_UART_ErrorCallback() call to the specific 
+        Driver instance
+     */
+    static void su_rxErrorCompleteCallback( UART_HandleTypeDef* huart ) noexcept;
 
 private:
     /// Prevent access to the copy constructor -->Driver can not be copied!
@@ -172,6 +175,9 @@ protected:
     /// Handle of the blocked RX client thread (if there is one)
     Cpl::System::Thread*    m_rxWaiterPtr;
 
+    /// IRQ number of the UART being used
+    IRQn_Type               m_uartIrqNum;
+
     /// Transmit buffer
     Cpl::Container::RingBuffer<uint8_t>& m_txBuffer;
 
@@ -184,8 +190,8 @@ protected:
     /// Number of bytes requested to be transmitted by the HAL
     unsigned                m_txSize;
 
-    /// Incoming Byte
-    uint8_t                 m_rxData;
+    /// Receive state
+    bool                    m_rxActive;
 
     /// Map the HAL UART to a transmitter instance
     static HalMapping_T		m_mappings[OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS];
