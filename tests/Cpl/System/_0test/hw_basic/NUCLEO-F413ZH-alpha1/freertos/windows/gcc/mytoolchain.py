@@ -56,6 +56,7 @@ base_release.firstobjs   = f'_BUILT_DIR_.{bsp_mx}/Core/Src'
 base_release.firstobjs   = base_release.firstobjs + f' {bsp_mx}/../stdio.o'
 base_release.lastobjs    = base_release.lastobjs + f' {bsp_mx}/../syscalls.o' 
 
+
 # Set project specific 'optimized' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
 
