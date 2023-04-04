@@ -84,9 +84,8 @@ void StreamDriver::start( IRQn_Type             uartIrqNum,
 
     // The HAL expects a 'flat' buffer (not a ring buffer) - so we have to
     // extract the 'flat portion' of ring buffer to pass to the HAL.
-    unsigned availBytes;
-    uint8_t* rxPtr = m_rxBuffer.peekNextAddItems( availBytes );
-    if ( availBytes > 8 ) availBytes = 8;
+    unsigned availBytes = 0;
+    uint8_t* rxPtr      = m_rxBuffer.peekNextAddItems( availBytes );
 
     // Start the receiver
     m_rxActive = true;
@@ -330,10 +329,9 @@ bool StreamDriver::read( void* data, int maxBytes, int& numBytesRx ) noexcept
             ENTER_CRITICAL_SECTION();
             if ( m_rxActive == false )
             {
-                unsigned availBytes;
-                m_rxActive     = true;
-                uint8_t* rxPtr = m_rxBuffer.peekNextAddItems( availBytes );
-                if ( availBytes > 8 ) availBytes = 8;
+                unsigned availBytes = 0;
+                m_rxActive          = true;
+                uint8_t* rxPtr      = m_rxBuffer.peekNextAddItems( availBytes );
 
                 HAL_UARTEx_ReceiveToIdle_IT( m_uartHdl, rxPtr, availBytes );
                 EXIT_CRITICAL_SECTION();        // Note: The Critical section MUST include the call to HAL_UARTEx_ReceiveToIdle_IT()
@@ -381,10 +379,9 @@ int StreamDriver::su_rxDataAndErrorIsr( uint16_t bytesReceived ) noexcept
     // Restart the Receiver if there is space in the RX FIFO
     if ( !m_rxBuffer.isFull() )
     {
-        unsigned availBytes;
-        m_rxActive     = true;
-        uint8_t* rxPtr = m_rxBuffer.peekNextAddItems( availBytes );
-        if ( availBytes > 8 ) availBytes = 8;
+        unsigned availBytes = 0;
+        m_rxActive          = true;
+        uint8_t* rxPtr      = m_rxBuffer.peekNextAddItems( availBytes );
         HAL_UARTEx_ReceiveToIdle_IT( m_uartHdl, rxPtr, availBytes );
     }
     else

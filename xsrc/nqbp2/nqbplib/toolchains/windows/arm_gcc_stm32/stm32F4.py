@@ -59,7 +59,7 @@ class ToolChain( base.ToolChain ):
         
         linker_script                   = os.path.join( bsp_mx_root, linker_script )
         self._base_release.linkflags    = f' --specs=nosys.specs {common_flags} -T{linker_script}  -Wl,-Map={exename}.map -Wl,--gc-sections -static' 
-        self._base_release.linklibs     = ' -Wl,--start-group -lc -lm -lstdc++ -Wl,--end-group'                                        
+        self._base_release.linklibs     = ' -Wl,--start-group -lc -lm -Wl,--end-group'                                        
         
 
         # Optimized options, flags, etc.
