@@ -8,11 +8,27 @@
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
+
+#include "colony_config.h"
 #include <stdlib.h>
 #include <ios>
 #include "FreeRTOS.h"
 
-///// Provide a non-exception-throwing new/delete so exception code does NOT get
+
+/** If using one of FreeRTOS's heap strategies/options that supports freeing
+    memory - THEN define this symbol
+ */
+#ifdef USE_FULL_FEATURED_HEAP
+#define rtosFree    vPortFree
+
+#else
+/** The default is to using a heap that does NOT support freeing memory
+ */
+#define rtosFree(p)
+#endif
+
+
+ ///// Provide a non-exception-throwing new/delete so exception code does NOT get
 ///// linked in (i.e. -fno-exception is NOT enough to get rid of exception code
 ///// from libstdc++.a)
 //
@@ -20,8 +36,8 @@
 void *operator new(size_t size, std::nothrow_t const&) { return pvPortMalloc( size ); }
 void *operator new[]( size_t size, std::nothrow_t const& ) { return pvPortMalloc( size ); }
 
-void operator delete(void* p) throw() { vPortFree( p ); }
-void operator delete[]( void* p ) throw() { vPortFree( p ); }
+void operator delete(void* p) throw() { rtosFree( p ); }
+void operator delete[]( void* p ) throw() { rtosFree( p ); }
 
 const std::nothrow_t std::nothrow;
 //
