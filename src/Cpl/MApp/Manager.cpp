@@ -5,20 +5,21 @@
 
 
 #include "Manager.h"
-#include "TestApi.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/Itc/SyncReturnHandler.h"
 #include "Cpl/Text/FString.h"
 
-using namespace Loki::Test;
+using namespace Cpl::MApp;
 
+static Api* searchList( Cpl::Container::SList<Api>& listToSearch,
+                        const char*                 nameToFind );
 
 ////////////////////////////////////////////////////////////////////////////////
-Manager::Manager( Cpl::Dm::MailboxServer&                   myMbox,
-                  Cpl::Container::Map<Loki::Test::TestApi>& listOfTests )
-    : Cpl::Itc::CloseSync( *( (Cpl::Itc::PostApi*) &myMbox ) )
-    , m_tests( listOfTests )
-    , m_currentTestPtr( 0 )
+Manager::Manager( Cpl::Dm::MailboxServer&     myMbox,
+                  Cpl::Container::SList<Api>& listOfMApps )
+    : Cpl::Itc::CloseSync( *((Cpl::Itc::PostApi*) &myMbox) )
+    , m_inactiveMApps( listOfMApps )
+    , m_startedMApps()
     , m_opened( false )
 {
 }
@@ -28,19 +29,19 @@ void Manager::request( Cpl::Itc::OpenRequest::OpenMsg& msg )
 {
     if ( m_opened )
     {
-        CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ( "Loki::Test::Manager: open() called when already opened" ) );
+        CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ("Cpl::MApp::Manager: open() called when already opened") );
     }
     else
     {
         // Housekeeping
         m_opened  = true;
 
-        // initialize my tests
-        TestApi* itemPtr = m_tests.first();
+        // initialize my instances
+        Api* itemPtr = m_inactiveMApps.first();
         while ( itemPtr )
         {
-            itemPtr->intialize();
-            itemPtr = m_tests.next( *itemPtr );
+            itemPtr->intialize_();
+            itemPtr = m_inactiveMApps.next( *itemPtr );
         }
     }
 
@@ -52,150 +53,211 @@ void Manager::request( Cpl::Itc::CloseRequest::CloseMsg& msg )
 {
     if ( !m_opened )
     {
-        CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ( "Loki::Test::Manager: close() called when not opened" ) );
+        CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ("Cpl::MApp::Manager: close() called when not opened") );
     }
     else
     {
         // Housekeeping
         m_opened  = false;
 
-        // shutdown my tests
-        TestApi* itemPtr = m_tests.first();
+        // shutdown my inactive instances
+        Api* itemPtr = m_inactiveMApps.first();
         while ( itemPtr )
         {
-            itemPtr->shutdown();
-            itemPtr = m_tests.next( *itemPtr );
+            itemPtr->shutdown_();
+            itemPtr = m_inactiveMApps.next( *itemPtr );
+        }
+
+        // shutdown my started instances (and return the instance to the inactive list (for the use case of restarting the Manager)
+        itemPtr = m_startedMApps.get();
+        while ( itemPtr )
+        {
+            itemPtr->stop_();
+            itemPtr->shutdown_();
+
+            // Return the instance to the inactive list
+            m_inactiveMApps.push( *itemPtr );
+
+            // Get the next item
+            itemPtr = m_startedMApps.get();
         }
     }
 
     // Return the message
     msg.returnToSender();
 }
-
 //////////////////////////////////////////////////////////////////////////////
-void Manager::request( StartTestMsg& msg )
+void Manager::request( StartMAppMsg& msg )
 {
-    StartTestRequest::Payload& payload = msg.getPayload();
-    payload.m_success = false;
+    StartMAppRequest::Payload& payload = msg.getPayload();
+    payload.success = false;
 
     // Look-up the test by name
-    Cpl::Container::KeyLiteralString myKey( payload.m_testName );
-    TestApi* test = m_tests.find( myKey );
-    if ( test != 0 )
+    Api* mapp = searchList( m_inactiveMApps, payload.mappName );
+    if ( mapp != nullptr )
     {
-        payload.m_success = true;
+        payload.success = true;
 
-        // Stop the current test if there is one
-        if ( m_currentTestPtr )
-        {
-            m_currentTestPtr->stop();
-        }
+        // Put the MApp instance into the started list
+        m_inactiveMApps.remove( *mapp );
+        m_startedMApps.put( *mapp );
 
         // Start the new test
-        m_currentTestPtr = test;
-        CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ( "Starting: %s", m_currentTestPtr->getName() ) );
-        m_currentTestPtr->start();
+        const char* args = payload.mappArgs;
+        if ( args == nullptr )
+        {
+            args = "";
+        }
+        CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ("Starting: %s %s", mapp->getName(), args) );
+        mapp->start_( args );
     }
 
     msg.returnToSender();
 }
 
-void Manager::request( StopTestMsg & msg )
+void Manager::request( StopMAppMsg & msg )
 {
-    if ( m_currentTestPtr )
+    StopMAppRequest::Payload& payload = msg.getPayload();
+
+    // Look-up the test by name in the 'running' list
+    Api* mapp = searchList( m_startedMApps, payload.mappName );
+    if ( mapp != nullptr )
     {
-        CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ( "Stopping: %s", m_currentTestPtr->getName() ) );
-        m_currentTestPtr->stop();
-        m_currentTestPtr = 0;
+        CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ("Stopping: %s", mapp->getName()) );
+        mapp->stop_();
+
+        // Return the instance to the inactive list
+        m_startedMApps.remove( *mapp );
+        m_inactiveMApps.push( *mapp );
     }
+
     msg.returnToSender();
 }
 
-void Manager::request( PauseTestMsg & msg )
+void Manager::request( GetAvailableMAppMsg& msg )
 {
-    if ( m_currentTestPtr && !m_currentTestPtr->isPaused() )
+    GetAvailableMAppRequest::Payload& payload = msg.getPayload();
+    size_t idx                                = 0;
+    size_t maxElems                           = payload.dstMaxElements;
+
+    // Walk the inactive list
+    Api* item = m_inactiveMApps.first();
+    while ( item && maxElems )
     {
-        CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ( "Pausing: %s", m_currentTestPtr->getName() ) );
-        m_currentTestPtr->pause();
-    }
-    msg.returnToSender();
-}
+        payload.dstList[idx] = item;
+        idx++;
+        maxElems--;
+        payload.numElements++;
 
-void Manager::request( ResumeTestMsg & msg )
-{
-    if ( m_currentTestPtr && m_currentTestPtr->isPaused() )
+        item = m_inactiveMApps.next( *item );
+    }
+
+    // Walk the running list
+    item = m_startedMApps.first();
+    while ( item && maxElems )
     {
-        CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ( "Resuming: %s", m_currentTestPtr->getName() ) );
-        m_currentTestPtr->resume();
+        payload.dstList[idx] = item;
+        idx++;
+        maxElems--;
+        payload.numElements++;
+
+        item = m_startedMApps.next( *item );
     }
+
     msg.returnToSender();
 }
 
-void Manager::request( GetTestStatusMsg & msg )
+void Manager::request( GetStartedMAppMsg & msg )
 {
-    GetTestStatusRequest::Payload& payload = msg.getPayload();
-    payload.m_testExecuting = false;
-    if ( m_currentTestPtr )
+    GetStartedMAppRequest::Payload& payload = msg.getPayload();
+    size_t idx                              = 0;
+    size_t maxElems                         = payload.dstMaxElements;
+
+    // Walk the running list
+    Api* item = m_startedMApps.first();
+    while ( item && maxElems )
     {
-        payload.m_testExecuting = true;
-        payload.m_testName      = m_currentTestPtr->getName();
-        payload.m_testExecuting = !m_currentTestPtr->isPaused();
+        payload.dstList[idx] = item;
+        idx++;
+        maxElems--;
+        payload.numElements++;
+
+        item = m_startedMApps.next( *item );
     }
+
     msg.returnToSender();
 }
 
-const Cpl::Container::Map<Loki::Test::TestApi>& Manager::getAvailableTests() const noexcept
+void Manager::request( LookupMAppMsg & msg )
 {
-    // NO ITC/Critical-Section required since this is all static/const data
-    return m_tests;
+    LookupMAppRequest::Payload& payload = msg.getPayload();
+
+    // Search both lists
+    Api* mapp = searchList( m_inactiveMApps, payload.name );
+    if ( mapp == nullptr )
+    {
+        mapp = searchList( m_startedMApps, payload.name );
+    }
+    payload.foundInstance = mapp;
+
+    msg.returnToSender();
 }
 
 //////////////////////////////////////////////////////////////////////////////
-bool Manager::startTest( const char* testName ) noexcept
+bool Manager::startMApp( const char* name, const char* args ) noexcept
 {
-    StartTestRequest::Payload      payload( testName );
+    StartMAppRequest::Payload      payload( name, args );
     Cpl::Itc::SyncReturnHandler    srh;
-    StartTestMsg                   msg( *this, payload, srh );
+    StartMAppMsg                   msg( *this, payload, srh );
     m_mbox.postSync( msg );
 
-    return payload.m_success;
+    return payload.success;
 }
 
 
-void Manager::stopCurrentTest() noexcept
+void Manager::stopMApp( const char* name ) noexcept
 {
-    StopTestRequest::Payload     payload;
+    StopMAppRequest::Payload     payload( name );
     Cpl::Itc::SyncReturnHandler  srh;
-    StopTestMsg                  msg( *this, payload, srh );
+    StopMAppMsg                  msg( *this, payload, srh );
     m_mbox.postSync( msg );
 }
 
-void Manager::pauseCurrentTest() noexcept
+bool Manager::getAvailableMApps( Cpl::MApp::Api* dstList[], size_t dstMaxElements, size_t& numElemsFound ) noexcept
 {
-    PauseTestRequest::Payload     payload;
-    Cpl::Itc::SyncReturnHandler   srh;
-    PauseTestMsg                  msg( *this, payload, srh );
+    GetAvailableMAppRequest::Payload  payload(dstList,dstMaxElements);
+    Cpl::Itc::SyncReturnHandler       srh;
+    GetAvailableMAppMsg               msg( *this, payload, srh );
     m_mbox.postSync( msg );
+
+    numElemsFound = payload.numElements;
+    return payload.dstMaxElements != 0;
 }
 
-void Manager::resumeCurrentTest() noexcept
+bool Manager::getStartedMApps( Cpl::MApp::Api* dstList[], size_t dstMaxElements, size_t& numElemsFound ) noexcept
 {
-    ResumeTestRequest::Payload  payload;
-    Cpl::Itc::SyncReturnHandler srh;
-    ResumeTestMsg               msg( *this, payload, srh );
+    GetStartedMAppRequest::Payload  payload( dstList, dstMaxElements );
+    Cpl::Itc::SyncReturnHandler     srh;
+    GetStartedMAppMsg               msg( *this, payload, srh );
     m_mbox.postSync( msg );
+
+    numElemsFound = payload.numElements;
+    return payload.dstMaxElements != 0;
 }
 
-bool Manager::getCurrentTestStatus( Cpl::Text::String& testName, bool& testIsRunning ) noexcept
+///////////////////////////////
+Api* searchList( Cpl::Container::SList<Api>&listToSearch,
+                 const char*                 nameToFind )
 {
-    GetTestStatusRequest::Payload  payload;
-    Cpl::Itc::SyncReturnHandler    srh;
-    GetTestStatusMsg               msg( *this, payload, srh );
-    m_mbox.postSync( msg );
+    Api* itemPtr = listToSearch.first();
+    while ( itemPtr )
+    {
+        if ( strcmp( itemPtr->getName(), nameToFind ) == 0 )
+        {
+            return itemPtr;
+        }
+        itemPtr = listToSearch.next( *itemPtr );
+    }
 
-    testName      = payload.m_testName;
-    testIsRunning = payload.m_running;
-    return payload.m_testExecuting;
+    return nullptr;
 }
-
-

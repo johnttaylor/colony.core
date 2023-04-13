@@ -1,5 +1,5 @@
-#ifndef Loki_Test_Manager_h_
-#define Loki_Test_Manager_h_
+#ifndef Cpl_MApp_Manager_h_
+#define Cpl_MApp_Manager_h_
 /*-----------------------------------------------------------------------------
 * COPYRIGHT_HEADER_TO_BE_FILLED_LATER
 *----------------------------------------------------------------------------*/
@@ -8,32 +8,35 @@
 
 #include "Cpl/Itc/CloseSync.h"
 #include "Cpl/Dm/MailboxServer.h"
-#include "Loki/Test/Api.h"
-#include "Loki/Test/Requests.h"
+#include "Cpl/MApp/ManagerApi.h"
+#include "Cpl/MApp/Requests.h"
 
 ///
-namespace Loki {
+namespace Cpl {
 ///
-namespace Test {
+namespace MApp {
 
 
-/** This concrete class implements the Test Manager.  The Test Manager is 
+/** This concrete class implements the MApp Manager.  The MApp Manager is 
     the 'public facing' entity that is responsible for starting, stopping, etc.
-    tests.  It is also responsible for ensure that only AT MOST ONE test is 
-    executing at any given time.
+    MApp instances.  
  */
-class Manager: public Api, public Cpl::Itc::CloseSync,
-    public StartTestRequest,
-    public StopTestRequest,
-    public PauseTestRequest,
-    public ResumeTestRequest,
-    public GetTestStatusRequest
+class Manager: 
+    public ManagerApi, 
+    public Cpl::Itc::CloseSync,
+    public StartMAppRequest,
+    public StopMAppRequest,
+    public GetAvailableMAppRequest,
+    public GetStartedMAppRequest,
+    public LookupMAppRequest
 {
 public:
     /// Constructor
-    Manager( Cpl::Dm::MailboxServer&                   myMbox, 
-             Cpl::Container::Map<Loki::Test::TestApi>& listOfTests );
+    Manager( Cpl::Dm::MailboxServer&     myMbox, 
+             Cpl::Container::SList<Api>& listOfMApps );
 
+    /// Destructor
+    ~Manager() {}
 
 public:
     /// Perform the in-thread initialization of the service
@@ -44,50 +47,47 @@ public:
 
 
 public:
-    /// See Loki::Test::Api
-    bool startTest( const char* testName ) noexcept;
+    /// See Cpl::MApp::Api
+    bool startMApp( const char* name, const char* args ) noexcept;
 
-    /// See Loki::Test::Api
-    void stopCurrentTest() noexcept;
+    /// See Cpl::MApp::Api
+    void stopMApp( const char* name ) noexcept;
 
-    /// See Loki::Test::Api
-    void pauseCurrentTest() noexcept;
+    /// See Cpl::MApp::Api
+    bool getAvailableMApps( Cpl::MApp::Api* dstList[], size_t dstMaxElements, size_t& numElemsFound ) noexcept;
 
-    /// See Loki::Test::Api
-    void resumeCurrentTest() noexcept;
+    /// See Cpl::MApp::Api
+    bool getStartedMApps( Cpl::MApp::Api* dstList[], size_t dstMaxElements, size_t& numElemsFound ) noexcept;
 
-    /// See Loki::Test::Api
-    bool getCurrentTestStatus( Cpl::Text::String& testName, bool& testIsRunning ) noexcept;
+    /// See Cpl::MApp::Api
+    Cpl::MApp::Api* lookUpMApp( const char* mappName ) noexcept;
 
-    /// See Loki::Test::Api
-    const Cpl::Container::Map<Loki::Test::TestApi>& getAvailableTests() const noexcept;
 
 public:
-    /// Set Loki::Test::Requests
-    void request( StartTestMsg& msg );
+    /// Set Cpl::MApp::Requests
+    void request( StartMAppMsg& msg );
 
-    /// Set Loki::Test::Requests
-    void request( StopTestMsg& msg );
+    /// Set Cpl::MApp::Requests
+    void request( StopMAppMsg& msg );
 
-    /// Set Loki::Test::Requests
-    void request( PauseTestMsg& msg );
+    /// Set Cpl::MApp::Requests
+    void request( GetAvailableMAppMsg& msg );
 
-    /// Set Loki::Test::Requests
-    void request( ResumeTestMsg& msg );
+    /// Set Cpl::MApp::Requests
+    void request( GetStartedMAppMsg& msg );
 
-    /// Set Loki::Test::Requests
-    void request( GetTestStatusMsg& msg );
+    /// Set Cpl::MApp::Requests
+    void request( LookupMAppMsg& msg );
 
 protected:
-    /// List of tests
-    Cpl::Container::Map<TestApi>& m_tests;
+    /// List of inactive MApps
+    Cpl::Container::SList<Api>& m_inactiveMApps;
 
-    /// Current test that is executing
-    TestApi*                    m_currentTestPtr;
+    /// List of started MApps
+    Cpl::Container::SList<Api>  m_startedMApps;
 
     /// My open/close state
     bool                        m_opened;
-
 };
 
 };      // end namespaces

@@ -1,50 +1,55 @@
-#ifndef Loki_Test_Test_h_
-#define Loki_Test_Test_h_
+#ifndef Cpl_MApp_Common_h_
+#define Cpl_MApp_Common_h_
 /*-----------------------------------------------------------------------------
 * COPYRIGHT_HEADER_TO_BE_FILLED_LATER
 *----------------------------------------------------------------------------*/
 /** @file */
 
 
-#include "Loki/Test/TestApi.h"
-#include "Cpl/Container/Map.h"
+#include "Cpl/MApp/Api.h"
+#include "Cpl/Container/SList.h"
 
 /*----------------------------------------------------------------------------*/
 ///
-namespace Loki {
+namespace Cpl {
 ///
-namespace Test {
+namespace MApp {
 
 
 /** This partial concrete class provide common infrastructure that is common
-    to all "Test" instances.
+    to all MApp instances.
  */
-class Test: public TestApi
+class Common_: public Api
 {
 public:
     /// Constructor.  
-    Test( Cpl::Container::Map<TestApi>& testList, const char* testName );
+    Common_( Cpl::Container::SList<Api>&    mappList, 
+             const char*                    mappName,
+             const char*                    description,
+             const char*                    usage );
 
 public:
-    /// See Loki::Test::TestApi
+    /// See Cpl::MApp::Api
     const char* getName() const noexcept;
 
-    /// See Loki::Test::TestApi
-    bool isPaused() const noexcept;
+    /// See Cpl::MApp::Api
+    const char* getDescription() const noexcept;
+
+    /// See Cpl::MApp::Api
+    const char* getUsage() const noexcept;
 
 protected:
-    /// See Cpl::Container::Key
-    const Cpl::Container::Key& getKey() const noexcept;
+    /// Command name
+    const char* m_name;
 
-protected:
-    /// Command 
-    Cpl::Container::KeyLiteralString  m_mapKey;
+    /// Description
+    const char* m_description;
+
+    /// Usage
+    const char* m_usage;
 
     /// Started state
-    bool                              m_started;
-
-    /// Run/Pause state
-    bool                              m_running;
+    bool        m_started;
 };
 
 };      // end namespaces

@@ -30,9 +30,8 @@ namespace MApp {
 
     The following are the 'thread safety' requirements for a MApp:
         o Data can safely be exchanged via Model Points
-        o If a MApp is in the stopped or paused state - it can exchange information
-          with the Clients without using critical sections.  It is the responsibility
-          of the individual MApp instances to enforce this convention.
+        o The application can safely pass initial settings, configuration, 
+          options when the MApp is started
  */
 class Api : public Cpl::Container::MapItem
 {
@@ -43,47 +42,64 @@ public:
      */
     virtual const char* getName() const noexcept = 0;
 
-    /** This method returns help/instruction for the MApp.  Typically this
-        information will be displayed on the Debug console to aid the user on
-        how to execute the MApp.  The content/verbosity of the help text is
-        MApp specific.
+    /** This method returns brief description/summary of what the MApp does.  
+        Typically this information will be displayed on the Debug console to 
+        aid the user on how to execute the MApp.  The content/verbosity of the 
+        text is MApp specific. 
      */
-    virtual const char* getHelp() const noexcept = 0;
+    virtual const char* getDescription() const noexcept = 0;
 
+    /** This method returns help for the MApp (optional) command line arguments.
+        Typically this information will be displayed on the Debug console to 
+        aid the user on how to execute the MApp.  The content/verbosity of the 
+        text is MApp specific. 
+     */
+    virtual const char* getUsage() const noexcept = 0;
 
 public:
-    /** This method is used to perform any needed initialization on start-up of
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::MApp namespace.  The Application should
+        NEVER call this method.
+
+        This method is used to perform any needed initialization on start-up of
         Application. This method is called when the MApp Manager is opened.
-     */
-    virtual void intialize() noexcept = 0;
 
-    /** This method is used to perform any needed shutdown when the application
-        is shutdown.  This method is called when the MApp Manager is closed.
+        This method MUST be called in the thread that the MApp executes in.
      */
-    virtual void shutdown() noexcept = 0;
+    virtual void intialize_() noexcept = 0;
+
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::MApp namespace.  The Application should
+        NEVER call this method.
+
+        This method is used to perform any needed shutdown when the application
+        is shutdown.  This method is called when the MApp Manager is closed.
+
+        This method MUST be called in the thread that the MApp executes in.
+     */
+    virtual void shutdown_() noexcept = 0;
 
 
 public:
-    /// This method is used to start a MApp.  
-    virtual void start() noexcept = 0;
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::MApp namespace.  The Application should
+        NEVER call this method, instead the Application must call the Manager
+        to start a MApp.
+        
+        This method is used to start a MApp. 
 
-    /// This method is used to stop a MApp.
-    virtual void stop() noexcept = 0;
-
-    /** This method is used to pause a MApp.  What 'pause' means is MApp
-        specific.
+        This method MUST be called in the thread that the MApp executes in.
      */
-    virtual void pause() noexcept = 0;
+    virtual void start_( const char* optionalArgs ) noexcept = 0;
 
-    /** This method is used to resume a pause a MApp.
+    /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
+        by other classes in the Cpl::MApp namespace.  The Application should
+        NEVER call this method, instead the Application must call the Manager
+        to stop a MApp.
+        
+        This method is used to stop a MApp.
      */
-    virtual void resume() noexcept = 0;
-
-    /// This method returns trues if the MApp is in the started state
-    virtual bool isStarted() noexcept = 0;
-
-    /// This method returns true if the MApp is in the started state AND is it has been paused
-    virtual bool isPaused() noexcept = 0;
+    virtual void stop_() noexcept = 0;
 
 public:
     /// Virtual destructor

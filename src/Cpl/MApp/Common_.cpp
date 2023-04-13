@@ -3,29 +3,33 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Test.h"
+#include "Common_.h"
 
-using namespace Loki::Test;
+using namespace Cpl::MApp;
 
-Test::Test( Cpl::Container::Map<TestApi>& testList, const char* testName )
-	: m_mapKey( testName )
-	, m_started( false )
-	, m_running( false )
+Common_::Common_( Cpl::Container::SList<Api>&   mappList,
+                  const char*                   mappName,
+                  const char*                   description,
+                  const char*                   usage )
+    : m_name( mappName )
+    , m_description( description )
+    , m_usage( usage )
+    , m_started( false )
 {
-	testList.insert( *this );
+    mappList.push( *this );
 }
 
-const char* Test::getName() const noexcept
+const char* Common_::getName() const noexcept
 {
-	return m_mapKey.getKeyValue();
+    return m_name;
 }
 
-const Cpl::Container::Key& Test::getKey() const noexcept
+const char* Common_::getDescription() const noexcept
 {
-	return m_mapKey;
+    return m_description;
 }
 
-bool Test::isPaused() const noexcept
+const char* Common_::getUsage() const noexcept
 {
-	return !m_running;
+    return m_usage;
 }

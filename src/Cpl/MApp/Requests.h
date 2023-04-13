@@ -32,18 +32,21 @@ public:
     {
     public:
         /// INPUT: The name of the MApp to run
-        const char* m_mappName;
+        const char* mappName;
+
+        /// INPUT: Optional 'command line' arguments for the MApp
+        const char* mappArgs;
 
         /** OUTPUT: results
             true  = MApp was found and started
             false = no such MApp
          */
-        bool        m_success;
+        bool        success;
 
     public:
         /// Constructor. Use for getLaMApp() message
-        Payload( const char* mappName )
-            :m_mappName( mappName ), m_success( false )
+        Payload( const char* name, const char* args )
+            :mappName( name ), mappArgs( args), success( false )
         {
         }
     };
@@ -66,7 +69,6 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 /** This abstract class define ITC message type and payload for the application
     to stop the current MApp
-
  */
 class StopMAppRequest
 {
@@ -80,17 +82,17 @@ public:
     {
     public:
         /// INPUT: The name of the MApp to stop
-        const char* m_mappName;
+        const char* mappName;
 
         /** OUTPUT: results
             true  = the MApp was stopped
             false = the specified MApp was not the started state
          */
-        bool        m_success;
+        bool        success;
     public:
         /// Constructor. Use for getLaMApp() message
-        Payload( const char* mappName )
-            :m_mappName( mappName ), m_success( false )
+        Payload( const char* name )
+            :mappName( name ), success( false )
         {
         }
     };
@@ -108,73 +110,53 @@ public:
 };
 
 
+
 ////////////////////////////////////////////////////////////////////////////////
 /** This abstract class define ITC message type and payload for the application
-    to pause the current MApp
+    to get list of all of the MApps instances.
 
  */
-class PauseMAppRequest
+class GetAvailableMAppRequest
 {
 public:
     /// SAP for this API
-    typedef Cpl::Itc::SAP<PauseMAppRequest> SAP;
+    typedef Cpl::Itc::SAP<GetAvailableMAppRequest> SAP;
 
 public:
-    /// Payload for Message: PauseMApp (No actual Data -->just a type name)
+    /// Payload for Message: 
     class Payload
     {
     public:
-        /// Constructor. 
-        Payload() {}
-    };
+        /// INPUT/OUTPUT: Memory to store the returned list
+        Cpl::MApp::Api** dstList;
 
-public:
-    /// Message Type: Pause
-    typedef Cpl::Itc::RequestMessage<PauseMAppRequest, Payload> PauseMAppMsg;
+        /// INPUT/OUTPUT: Maximum number of elements that can be stored in 'dstList'.  Set to zero for the 'overflow' error case
+        size_t           dstMaxElements;
 
-    /// Request: Pause message
-    virtual void request( PauseMAppMsg& msg ) = 0;
+        /// OUTPUT: Number of items returned
+        size_t           numElements;
 
-public:
-    /// Virtual Destructor
-    virtual ~PauseMAppRequest() {}
-};
-
-////////////////////////////////////////////////////////////////////////////////
-/** This abstract class define ITC message type and payload for the application
-    to resume the current MApp
-
- */
-class ResumeMAppRequest
-{
-public:
-    /// SAP for this API
-    typedef Cpl::Itc::SAP<ResumeMAppRequest> SAP;
-
-public:
-    /// Payload for Message: ResumeMApp (No actual Data -->just a type name)
-    class Payload
-    {
     public:
         /// Constructor. 
-        Payload() {}
+        Payload( Cpl::MApp::Api** list, size_t maxElems ) : dstList( list ), dstMaxElements( maxElems ), numElements(0) {}
     };
 
 public:
-    /// Message Type: Pause
-    typedef Cpl::Itc::RequestMessage<ResumeMAppRequest, Payload> ResumeMAppMsg;
+    /// Message Type: GetAvailable
+    typedef Cpl::Itc::RequestMessage<GetAvailableMAppRequest, Payload> GetAvailableMAppMsg;
 
-    /// Request: Pause message
-    virtual void request( ResumeMAppMsg& msg ) = 0;
+    /// Request: GetAvailable message
+    virtual void request( GetAvailableMAppMsg& msg ) = 0;
 
 public:
     /// Virtual Destructor
-    virtual ~ResumeMAppRequest() {}
+    virtual ~GetAvailableMAppRequest() {}
 };
+
 
 ////////////////////////////////////////////////////////////////////////////////
 /** This abstract class define ITC message type and payload for the application
-    to resume the current MApp
+    to Get a list of started MApp instances
 
  */
 class GetStartedMAppRequest
@@ -188,27 +170,69 @@ public:
     class Payload
     {
     public:
-        /// Memory to store the returned list
+        /// INPUT/OUTPUT: Memory to store the returned list
         Cpl::MApp::Api** dstList;
 
-        /// Maximum number of elements that can be stored in 'dstList'
+        /// INPUT/OUTPUT: Maximum number of elements that can be stored in 'dstList'.  Set to zero for the 'overflow' error case
         size_t           dstMaxElements;
+
+        /// OUTPUT: Number of items returned
+        size_t           numElements;
 
     public:
         /// Constructor. 
-        Payload() {}
+        Payload( Cpl::MApp::Api** list, size_t maxElems ) : dstList( list ), dstMaxElements( maxElems ), numElements( 0 ) {}
     };
 
 public:
-    /// Message Type: Pause
+    /// Message Type: GetStarted
     typedef Cpl::Itc::RequestMessage<GetStartedMAppRequest, Payload> GetStartedMAppMsg;
 
-    /// Request: Pause message
+    /// Request: GetStarted message
     virtual void request( GetStartedMAppMsg& msg ) = 0;
 
 public:
     /// Virtual Destructor
     virtual ~GetStartedMAppRequest() {}
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** This abstract class define ITC message type and payload for the application
+    to look-up a MApp by name
+
+ */
+class LookupMAppRequest
+{
+public:
+    /// SAP for this API
+    typedef Cpl::Itc::SAP<LookupMAppRequest> SAP;
+
+public:
+    /// Payload for Message: 
+    class Payload
+    {
+    public:
+        /// INPUT: Name of the MApp instance to lookup
+        const char* name;
+
+        /// OUTPUT: Found instance (or null if not found)
+        Api*        foundInstance;
+
+    public:
+        /// Constructor. 
+        Payload( const char* nameToLookup ): name(nameToLookup), foundInstance(nullptr) {}
+    };
+
+public:
+    /// Message Type: Lookup
+    typedef Cpl::Itc::RequestMessage<LookupMAppRequest, Payload> LookupMAppMsg;
+
+    /// Request: Lookup message
+    virtual void request( LookupMAppMsg& msg ) = 0;
+
+public:
+    /// Virtual Destructor
+    virtual ~LookupMAppRequest() {}
 };
 
 
