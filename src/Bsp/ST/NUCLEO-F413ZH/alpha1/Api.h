@@ -29,7 +29,19 @@
 #include "colony_config.h"
 #include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/main.h"   // Access the PINs
 #include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/usart.h"  // Access the UART handles/instances
-#include "task.h"                                           // Access to FreeRTOS's taskXXX functions
+
+
+//////////////////////////////////////////////////////////
+/// ARM Specific APIs
+//////////////////////////////////////////////////////////
+
+/// Disable a specific interrupt (with memory barrier protection)
+#define Bsp_NVIC_disableIRQ( irqNum )   do { HAL_NVIC_DisableIRQ(irqNum); __DSB(); __ISB(); } while(0)
+
+/// Enable a specific interrupt (with memory barrier protection)
+#define Bsp_NVIC_enableIRQ( irqNum )    do { HAL_NVIC_EnableIRQ(irqNum); __DSB(); __ISB(); } while(0)
+
+
 
 //////////////////////////////////////////////////////////
 /// Generic APIs
@@ -39,16 +51,16 @@
 #define Bsp_Api_nop_MAP()                       __asm("nop")                
 
 /// Generic API
-#define Bsp_Api_disableIrqs_MAP()               taskENTER_CRITICAL()
+#define Bsp_Api_disableIrqs_MAP()               __disable_irq()
+
+/// Generic API (with memory barrier protection)
+#define Bsp_Api_enableIrqs_MAP()                do { __disable_irq(); __ISB(); } while(0)
 
 /// Generic API
-#define Bsp_Api_enableIrqs_MAP()                taskEXIT_CRITICAL()
+#define Bsp_Api_pushAndDisableIrqs_MAP()        Bsp_Api_disableIrqs_MAP()    // FIXME: This really needs to PUSH the IRQ state!!!
 
 /// Generic API
-#define Bsp_Api_pushAndDisableIrqs_MAP()        taskENTER_CRITICAL()    // FIXME: This really needs to PUSH the IRQ state!!!
-
-/// Generic API
-#define Bsp_Api_popIrqs_MAP()                   taskEXIT_CRITICAL()     // FIXME: This really needs to POP the IRQ state!!!!
+#define Bsp_Api_popIrqs_MAP()                   Bsp_Api_enableIrqs_MAP()     // FIXME: This really needs to POP the IRQ state!!!!
 
 
 

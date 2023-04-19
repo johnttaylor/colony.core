@@ -18,8 +18,8 @@ using namespace Cpl::Io::Serial::ST::STM32F1;
 
 StreamDriver::HalMapping_T Cpl::Io::Serial::ST::STM32F1::StreamDriver::m_mappings[OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS] ={ 0, };
 
-#define ENTER_CRITICAL_SECTION()    HAL_NVIC_DisableIRQ( m_uartIrqNum )
-#define EXIT_CRITICAL_SECTION()     HAL_NVIC_EnableIRQ( m_uartIrqNum )
+#define ENTER_CRITICAL_SECTION()    Bsp_NVIC_disableIRQ( m_uartIrqNum )
+#define EXIT_CRITICAL_SECTION()     Bsp_NVIC_enableIRQ( m_uartIrqNum )
 
 ////////////////////////
 StreamDriver::StreamDriver( Cpl::Container::RingBuffer<uint8_t>& txBuffer,

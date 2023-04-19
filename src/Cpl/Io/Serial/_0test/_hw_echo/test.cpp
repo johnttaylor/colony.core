@@ -103,8 +103,7 @@ public:
 
     void echoMemory( size_t byteCount )
     {
-        m_tmpBuf.format( "\nRX: frame=%6d, total count=%7lu (total errs=%3lu):\n", m_numEchoBytes, byteCount, getErrorCounts() );
-        m_fd.write( m_tmpBuf );
+        int bytes = m_numEchoBytes;
 
         uint8_t* srcData = m_echoMemory;
         while ( m_numEchoBytes )
@@ -121,6 +120,10 @@ public:
             m_fd.write( m_tmpBuf );
             m_fd.write( "\n" );
         }
+
+        m_tmpBuf.format( "\nRX: frame=%6d, total count=%7lu (total errs=%3lu):\n", bytes, byteCount, getErrorCounts() );
+        m_fd.write( m_tmpBuf );
+
     }
 };
 
