@@ -26,14 +26,15 @@ class Manager:
     public Cpl::Itc::CloseSync,
     public StartMAppRequest,
     public StopMAppRequest,
+    public StopAllMAppRequest,
     public GetAvailableMAppRequest,
     public GetStartedMAppRequest,
     public LookupMAppRequest
 {
 public:
     /// Constructor
-    Manager( Cpl::Dm::MailboxServer&     myMbox, 
-             Cpl::Container::SList<Api>& listOfMApps );
+    Manager( Cpl::Dm::MailboxServer&         myMbox, 
+             Cpl::Container::SList<MAppApi>& listOfMApps );
 
     /// Destructor
     ~Manager() {}
@@ -47,20 +48,23 @@ public:
 
 
 public:
-    /// See Cpl::MApp::Api
+    /// See Cpl::MApp::MAppApi
     bool startMApp( const char* name, const char* args ) noexcept;
 
-    /// See Cpl::MApp::Api
-    void stopMApp( const char* name ) noexcept;
+    /// See Cpl::MApp::MAppApi
+    bool stopMApp( const char* name ) noexcept;
 
-    /// See Cpl::MApp::Api
-    bool getAvailableMApps( Cpl::MApp::Api* dstList[], size_t dstMaxElements, size_t& numElemsFound ) noexcept;
+    /// See Cpl::MApp::MAppApi
+    void stopAllMApps() noexcept;
 
-    /// See Cpl::MApp::Api
-    bool getStartedMApps( Cpl::MApp::Api* dstList[], size_t dstMaxElements, size_t& numElemsFound ) noexcept;
+    /// See Cpl::MApp::MAppApi
+    bool getAvailableMApps( Cpl::MApp::MAppApi* dstList[], size_t dstMaxElements, size_t& numElemsFound ) noexcept;
 
-    /// See Cpl::MApp::Api
-    Cpl::MApp::Api* lookUpMApp( const char* mappName ) noexcept;
+    /// See Cpl::MApp::MAppApi
+    bool getStartedMApps( Cpl::MApp::MAppApi* dstList[], size_t dstMaxElements, size_t& numElemsFound ) noexcept;
+
+    /// See Cpl::MApp::MAppApi
+    Cpl::MApp::MAppApi* lookUpMApp( const char* mappName ) noexcept;
 
 
 public:
@@ -69,6 +73,9 @@ public:
 
     /// Set Cpl::MApp::Requests
     void request( StopMAppMsg& msg );
+
+    /// Set Cpl::MApp::Requests
+    void request( StopAllMAppMsg& msg );
 
     /// Set Cpl::MApp::Requests
     void request( GetAvailableMAppMsg& msg );
@@ -81,10 +88,10 @@ public:
 
 protected:
     /// List of inactive MApps
-    Cpl::Container::SList<Api>& m_inactiveMApps;
+    Cpl::Container::SList<MAppApi>& m_inactiveMApps;
 
     /// List of started MApps
-    Cpl::Container::SList<Api>  m_startedMApps;
+    Cpl::Container::SList<MAppApi>  m_startedMApps;
 
     /// My open/close state
     bool                        m_opened;

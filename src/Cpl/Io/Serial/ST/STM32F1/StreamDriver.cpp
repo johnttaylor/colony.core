@@ -16,10 +16,10 @@
 using namespace Cpl::Io::Serial::ST::STM32F1;
 
 
-StreamDriver::HalMapping_T Cpl::Io::Serial::ST::STM32F1::StreamDriver::m_mappings[OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS] ={ 0, };
+StreamDriver::HalMapping_T Cpl::Io::Serial::ST::STM32F1::StreamDriver::m_mappings[OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS] = { 0, };
 
-#define ENTER_CRITICAL_SECTION()    Bsp_NVIC_disableIRQ( m_uartIrqNum )
-#define EXIT_CRITICAL_SECTION()     Bsp_NVIC_enableIRQ( m_uartIrqNum )
+#define ENTER_CRITICAL_SECTION()    HAL_NVIC_DisableIRQ( m_uartIrqNum )
+#define EXIT_CRITICAL_SECTION()     HAL_NVIC_EnableIRQ( m_uartIrqNum )
 
 ////////////////////////
 StreamDriver::StreamDriver( Cpl::Container::RingBuffer<uint8_t>& txBuffer,
@@ -152,9 +152,7 @@ bool StreamDriver::write( const void* data, size_t numBytesToTx ) noexcept
         while ( numBytesToTx )
         {
             // Populate Ring Buffer
-            //ENTER_CRITICAL_SECTION();
             bool result = m_txBuffer.add( *ptr );
-            //EXIT_CRITICAL_SECTION();
 
             // Get the next byte if my Ring Buffer was not full
             if ( result )
@@ -182,7 +180,7 @@ bool StreamDriver::write( const void* data, size_t numBytesToTx ) noexcept
         }
 
         // Do nothing if there is a 'transmit in progress' 
-        if ( (HAL_UART_GetState( m_uartHdl ) & HAL_UART_STATE_BUSY_TX) != HAL_UART_STATE_BUSY_TX )
+        if ( ( HAL_UART_GetState( m_uartHdl ) & HAL_UART_STATE_BUSY_TX ) != HAL_UART_STATE_BUSY_TX )
         {
             // The HAL expects a 'flat' buffer (not a ring buffer) - so we have to
             // extract the 'flat portion' of ring buffer to pass to the HAL.
@@ -213,7 +211,7 @@ bool StreamDriver::write( const void* data, size_t numBytesToTx ) noexcept
     return true;
 }
 
-int StreamDriver::su_txDoneIsr( void ) noexcept
+void StreamDriver::su_txDoneIsr( void ) noexcept
 {
     // Remove the transmitted bytes from TX FIFO and check if there still more data to transmit
     m_txBuffer.removeElements( m_txSize );
@@ -228,14 +226,12 @@ int StreamDriver::su_txDoneIsr( void ) noexcept
 
     // By definition if I get here - there is space available in the TX FIFO.
     // Unblock waiting client (if there is one) now that there is space in the FIFO
-    int result = 0;
     if ( m_txWaiterPtr )
     {
-        result        = m_txWaiterPtr->su_signal();
+        int result    = m_txWaiterPtr->su_signal();
         m_txWaiterPtr = nullptr;
+        Bsp_yieldOnExit( result );
     }
-
-    return result;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -353,13 +349,13 @@ bool StreamDriver::read( void* data, int maxBytes, int& numBytesRx ) noexcept
     return true;
 }
 
-int StreamDriver::su_rxDataAndErrorIsr( uint16_t bytesReceived ) noexcept
+void StreamDriver::su_rxDataAndErrorIsr( uint16_t bytesReceived ) noexcept
 {
     // Clear any/all RX Error Flags
     if ( __HAL_UART_GET_FLAG( m_uartHdl,
-                              (UART_FLAG_PE | UART_FLAG_FE | UART_FLAG_NE | UART_FLAG_ORE) ) != RESET )
+         ( UART_FLAG_PE | UART_FLAG_FE | UART_FLAG_NE | UART_FLAG_ORE ) ) != RESET )
     {
-        __HAL_UART_CLEAR_FLAG( m_uartHdl, (UART_FLAG_PE | UART_FLAG_FE | UART_FLAG_NE | UART_FLAG_ORE));
+        __HAL_UART_CLEAR_FLAG( m_uartHdl, ( UART_FLAG_PE | UART_FLAG_FE | UART_FLAG_NE | UART_FLAG_ORE ) );
         m_errCount++;
     }
 
@@ -368,11 +364,11 @@ int StreamDriver::su_rxDataAndErrorIsr( uint16_t bytesReceived ) noexcept
     m_rxBuffer.addElements( bytesReceived );
 
     // unblock waiting client (if there is one) now that I have least one byte
-    int result = 0;
     if ( m_rxWaiterPtr )
     {
-        result        = m_rxWaiterPtr->su_signal();
+        int result    = m_rxWaiterPtr->su_signal();
         m_rxWaiterPtr = nullptr;
+        Bsp_yieldOnExit( result );
     }
 
     // Restart the Receiver if there is space in the RX FIFO
@@ -387,7 +383,6 @@ int StreamDriver::su_rxDataAndErrorIsr( uint16_t bytesReceived ) noexcept
     {
         m_rxActive = false;
     }
-    return result;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -412,7 +407,7 @@ void StreamDriver::su_rxErrorCompleteCallback( UART_HandleTypeDef* huart ) noexc
         if ( m_mappings[idx].halHandle == huart && m_mappings[idx].driver != nullptr )
         {
             m_mappings[idx].driver->su_rxDataAndErrorIsr( 0 );
-            break;
+            return;
         }
     }
 }
@@ -425,7 +420,7 @@ void StreamDriver::su_rxEventCompleteCallback( UART_HandleTypeDef *huart, uint16
         if ( m_mappings[idx].halHandle == huart && m_mappings[idx].driver != nullptr )
         {
             m_mappings[idx].driver->su_rxDataAndErrorIsr( bytesReceived );
-            break;
+            return;
         }
     }
 }

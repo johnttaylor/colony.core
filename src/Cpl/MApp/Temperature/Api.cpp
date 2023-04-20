@@ -6,224 +6,171 @@
 
 #include "Api.h"
 #include "Cpl/System/Trace.h"
-#include "Cpl/Math/real.h"
-#include <stdlib.h>
+#include "Cpl/Text/strip.h"
+#include "Cpl/Text/atob.h"
 
-using namespace Loki::Test::OnOff;
-
-static uint32_t setStatusIntervalTime( uint32_t now, uint32_t intervalTime )
-{
-    // Round down to the nearest interval boundary
-    return ( now / intervalTime ) * intervalTime;
-}
+using namespace Cpl::MApp::Temperature;
 
 /////////////////////////////////////////////////////
-Api::Api( Cpl::Container::Map<TestApi>& testList,
-          Cpl::Dm::MailboxServer&       myMbox,
-          Cpl::Dm::Mp::Float&           processVarMp,
-          Cpl::Dm::Mp::Bool&            valveOutputMp,
-          Cpl::Dm::Mp::Bool&            pumpOuputMp )
-    : Loki::Test::Test( testList, name() )
+Api::Api( Cpl::Container::SList<MAppApi>&    mappList,
+          Cpl::Dm::MailboxServer&            myMbox,
+          Cpl::Dm::Mp::Float&                srcTemperatureMp,
+          const char*                        name )
+    : MApp_( mappList, name, DESCRIPTION, USAGE )
     , Cpl::System::Timer( myMbox )
-    , m_pv( processVarMp )
-    , m_valveOutput( valveOutputMp )
-    , m_pumpOutput( pumpOuputMp )
-    , m_setpoint( 75.0F )
-    , m_onHyseteresis( 0.0F )
-    , m_offHyseteresis( 0.0F )
-    , m_minOnMs( 0 )
-    , m_minOffMs( 0 )
-    , m_statusIntervalMs( OPTION_LOKI_TEST_ONOFF_REPORTING_TIME_MS )
+    , m_temperature( srcTemperatureMp )
 {
 }
 
-void Api::configure( float       setpoint,
-                     uint32_t    statusIntervalMs,
-                     float       onHysteresis,
-                     float       offHysteresis,
-                     uint32_t    minOnMs,
-                     uint32_t    minOffMs )
+
+void Api::intialize_() noexcept
 {
-    m_setpoint         = setpoint;
-    m_statusIntervalMs = statusIntervalMs;
-    m_onHyseteresis    = onHysteresis;
-    m_offHyseteresis   = offHysteresis;
-    m_minOnMs          = minOnMs;
-    m_minOffMs         = minOffMs;
+    // Nothing needed
 }
 
-void Api::getConfig( float&       setpoint,
-                     uint32_t&    statusIntervalMs,
-                     float&       onHysteresis,
-                     float&       offHysteresis,
-                     uint32_t&    minOnMs,
-                     uint32_t&    minOffMs ) const noexcept
-{
-    setpoint         = m_setpoint;
-    statusIntervalMs = m_statusIntervalMs;
-    onHysteresis     = m_onHyseteresis;
-    offHysteresis    = m_offHyseteresis;
-    minOnMs          = m_minOnMs;
-    minOffMs         = m_minOffMs;
-}
-
-const char* Api::getHelp() const noexcept
-{
-    return "No help";
-}
-
-void Api::intialize() noexcept
-{
-}
-
-void Api::shutdown() noexcept
+void Api::shutdown_() noexcept
 {
     // Ensure that everything is stopped
     Cpl::System::Timer::stop();
-    m_valveOutput.write( false );
 }
 
-void Api::start() noexcept
+bool Api::start_( const char* args ) noexcept
 {
-    CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ( "Configuration: setpt=%g, hon=%g, hoff=%g, mon=%lu, moff=%lu",
-                          m_setpoint,
-                          m_onHyseteresis,
-                          m_offHyseteresis,
-                          m_minOnMs,
-                          m_minOffMs ) );
 
-    // Housekeeping
-    m_started          = true;
-    m_running          = true;
-    m_valvePausedState = false;
-
-    // Set initial set
-    float pv     = 0.0F;
-    bool  output = false;
-    if ( m_pv.read( pv ) )
+    // Parse my command line args
+    if ( !m_started || !parse( args ) )
     {
-        if ( pv >= m_setpoint )
-        {
-            output = true;
-        }
-        else
-        {
-            output = false;
-        }
+        return false;
     }
-    m_valveOutput.write( output );
-    m_pumpOutput.write( true );
-    m_marker       = Cpl::System::ElapsedTime::milliseconds();
-    m_markerStatus = setStatusIntervalTime( m_marker, m_statusIntervalMs );
 
-    // Display status
-    CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ( "OnOff Status: pv=%g, setpt=%g, output=%s",
-                          pv, m_setpoint, output ? "ON" : "off" ) );
-
-    // Start my polling timer
-    Cpl::System::Timer::start( OPTION_LOKI_TEST_ONOFF_INTERVAL_TIME_MS );
-}
-
-void Api::stop() noexcept
-{
-    // Stop the algorithm
-    m_pumpOutput.write( false );
-    m_valveOutput.write( false );
-    Cpl::System::Timer::stop();
+    CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("Configuration: sampleMs=%us ms, displayMs=%U ms, units=%s",
+                                                           m_sampleMs,
+                                                           m_displayMs,
+                                                           m_fahrenheit ? "'F" : "'C") );
 
     // Housekeeping
-    m_started = false;
-    m_running = false;
-}
+    m_started      = true;
+    m_maxTemp      = FLT_MIN;
+    m_minTemp      = FLT_MAX;
+    m_sumTemp      = 0.0F;
+    m_numSamples   = 0;
+    m_timeMarkerMs = Cpl::System::ElapsedTime::milliseconds();
 
-
-void Api::pause() noexcept
-{
-    m_running = false;
-    m_valveOutput.read( m_valvePausedState );
-    m_pumpOutput.write( false );
-    m_valveOutput.write( false );
-    m_markerPaused = Cpl::System::ElapsedTime::milliseconds();
-}
-
-
-void Api::Api::resume() noexcept
-{
-    m_running = true;
-    CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ( "Configuration: setpt=%g, hon=%g, hoff=%g, mon=%lu, moff=%lu",
-                          m_setpoint,
-                          m_onHyseteresis,
-                          m_offHyseteresis,
-                          m_minOnMs,
-                          m_minOffMs ) );
-
-    // Resume where we left off (adjust my timing to account for the paused-duration)
-    uint32_t pausedDuration = Cpl::System::ElapsedTime::deltaMilliseconds( m_markerPaused );
-    m_marker += pausedDuration;
-    m_pumpOutput.write( true );
-    m_valveOutput.write( m_valvePausedState );
+    // Poll the first sample
     expired();
 }
 
-void Api::expired() noexcept
+void Api::stop_() noexcept
 {
-    if ( m_running )
+    if ( m_started )
     {
+        // Stop my timer
+        Cpl::System::Timer::stop();
+
         // Housekeeping
-        uint32_t now          = Cpl::System::ElapsedTime::milliseconds();
-        uint32_t deltaCycleMs = Cpl::System::ElapsedTime::deltaMilliseconds( m_marker, now );
-        float pv              = 0.0F;
-        bool  currentOutput   = false;
-        m_pv.read( pv );
-        m_valveOutput.read( currentOutput );
+        m_started = false;
+    }
+}
 
-        //Logic:
-        //     if ( PV > (SP + HON) AND deltaTime >= MON ) THEN O:= true
-        //     if ( PV < (SP - HOFF) AND deltaTime >= MOFF ) THEN O:= false
+bool Api::parse( const char* args ) noexcept
+{
+    // Default the arguments
+    m_sampleMs   = OPTION_CPL_MAPP_TEMPEARTURE_SAMPLE_INTERVAL_MS;
+    m_displayMs  = OPTION_CPL_MAPP_TEMPEARTURE_DISPLAY_INTERVAL_MS;
+    m_fahrenheit = OPTION_CPL_MAPP_TEMPEARTURE_FAHRENHEIT;
 
-        // Currently Off
-        if ( !currentOutput )
-        {
-            // Transition to ON
-            if ( pv > ( m_setpoint + m_onHyseteresis ) && deltaCycleMs >= m_minOffMs )
-            {
-                currentOutput = true;
-                m_valveOutput.write( currentOutput );
-                m_marker = now;
-                CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ( "off->ON: pv=%g, setpt=%g, output=%s",
-                                      pv, m_setpoint, currentOutput ? "ON" : "off" ) );
-            }
-        }
-
-        // Currently ON
-        else
-        {
-            // Transition to OFF
-            if ( Cpl::Math::areFloatsEqual( pv, 0.0F ) ||   // Trap invalid MP input
-                 ( pv < ( m_setpoint - m_offHyseteresis ) && deltaCycleMs >= m_minOnMs ) )
-            {
-                currentOutput = false;
-                m_valveOutput.write( currentOutput );
-                m_marker = now;
-                CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ( "ON->off: pv=%g, setpt=%g, output=%s",
-                                      pv, m_setpoint, currentOutput ? "ON" : "off" ) );
-            }
-        }
-
-        // Check for status interval
-        uint32_t deltaStatus = Cpl::System::ElapsedTime::deltaMilliseconds( m_markerStatus, now );
-        if ( deltaStatus > m_statusIntervalMs )
-        {
-            // set my time marker and account for any delays (i.e. trying to be monotonic)
-            m_markerStatus = setStatusIntervalTime( now, m_statusIntervalMs );
-
-                    // Display status
-            CPL_SYSTEM_TRACE_MSG( OPTION_LOKI_TEST_TRACE_SECTION, ( "Status:  pv=%g, setpt=%g, output=%s",
-                                  pv, m_setpoint, currentOutput ? "ON" : "off" ) );
-        }
+    // No arguments
+    const char* arg1 = Cpl::Text::stripSpace( args );
+    if ( *arg1 == '\0' )
+    {
+        return true;
     }
 
+    // Sample time
+    unsigned long value;
+    const char*   endPtr;
+    if ( !Cpl::Text::a2ul( value, arg1, 10, " ", &endPtr ) )
+    {
+        return false;
+    }
+    m_sampleMs = (uint32_t) value;
+
+    // Display time
+    const char* arg2 = Cpl::Text::stripSpace( endPtr );
+    if ( *arg2 == '\0' )
+    {
+        return true;
+    }
+    if ( !Cpl::Text::a2ul( value, arg2, 10, " ", &endPtr ) )
+    {
+        return false;
+    }
+    m_displayMs = (uint32_t) value;
+
+    // Fahrenheit/Celsius 
+    const char* arg3 = Cpl::Text::stripSpace( endPtr );
+    if ( *arg3 == 'F' || *arg3 == 'f' )
+    {
+        m_fahrenheit = true;
+        return true;
+    }
+    else if ( *arg3 == 'C' || *arg3 == 'c' )
+    {
+        m_fahrenheit = false;
+        return true;
+    }
+
+    // If I get here the parsing failed
+    return false;
+}
+
+void Api::expired( void ) noexcept
+{
+    // Sample the current temperature
+    float t;
+    if ( m_temperature.read( t ) )
+    {
+        // Metrics
+        if ( t < m_minTemp )
+        {
+            m_minTemp = t;
+        }
+        else if ( t > m_maxTemp )
+        {
+            m_maxTemp = t;
+        }
+
+        // Running totals
+        m_numSamples++;
+        m_sumTemp += t;
+
+        uint32_t now = Cpl::System::ElapsedTime::milliseconds();
+        if ( Cpl::System::ElapsedTime::expiredMilliseconds( m_timeMarkerMs, m_displayMs, now ) || m_numSamples == 1)
+        {
+            m_timeMarkerMs = now;
+
+            float avgTemp     = m_sumTemp / m_numSamples;
+            float displayTemp = t;
+            float maxTemp     = m_maxTemp;
+            float minTemp     = m_minTemp;
+            char  units       = 'C';
+            if ( m_fahrenheit )
+            {
+                avgTemp     = (avgTemp * (9.0F / 5.0F)) + 32.0F;
+                displayTemp = (displayTemp * (9.0F / 5.0F)) + 32.0F;
+                maxTemp     = (maxTemp * (9.0F / 5.0F)) + 32.0F;
+                minTemp     = (minTemp * (9.0F / 5.0F)) + 32.0F;
+                units       = 'F';
+            }
+
+            CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("%s: %gs '%c, avg: %g '%c, min: %g '%c, max: %g '%c",
+                                                                   displayTemp, units,
+                                                                   avgTemp, units,
+                                                                   minTemp, units
+                                                                   maxTemp, units) );
+        }
+
     // Restart my timer
-    Cpl::System::Timer::start( OPTION_LOKI_TEST_ONOFF_INTERVAL_TIME_MS );
+    Cpl::System::Timer::start( m_sampleMs );
 }
 

@@ -9,7 +9,7 @@
 #include "Cpl/Itc/RequestMessage.h"
 #include "Cpl/Itc/ResponseMessage.h"
 #include "Cpl/Itc/SAP.h"
-#include "Cpl/MApp/Api.h"
+#include "Cpl/MApp/MAppApi.h"
 
 ///
 namespace Cpl {
@@ -44,7 +44,7 @@ public:
         bool        success;
 
     public:
-        /// Constructor. Use for getLaMApp() message
+        /// Constructor. 
         Payload( const char* name, const char* args )
             :mappName( name ), mappArgs( args), success( false )
         {
@@ -77,7 +77,7 @@ public:
     typedef Cpl::Itc::SAP<StopMAppRequest> SAP;
 
 public:
-    /// Payload for Message: StopMApp (No actual Data -->just a type name)
+    /// Payload for Message: StopMApp 
     class Payload
     {
     public:
@@ -90,7 +90,7 @@ public:
          */
         bool        success;
     public:
-        /// Constructor. Use for getLaMApp() message
+        /// Constructor. 
         Payload( const char* name )
             :mappName( name ), success( false )
         {
@@ -109,6 +109,38 @@ public:
     virtual ~StopMAppRequest() {}
 };
 
+////////////////////////////////////////////////////////////////////////////////
+/** This abstract class define ITC message type and payload for the application
+    to stop the current MApp
+ */
+class StopAllMAppRequest
+{
+public:
+    /// SAP for this API
+    typedef Cpl::Itc::SAP<StopAllMAppRequest> SAP;
+
+public:
+    /// Payload for Message: StopMApp (No actual Data -->just a type name)
+    class Payload
+    {
+    public:
+        /// Constructor. 
+        Payload()
+        {
+        }
+    };
+
+public:
+    /// Message Type: Stop
+    typedef Cpl::Itc::RequestMessage<StopAllMAppRequest, Payload> StopAllMAppMsg;
+
+    /// Request: Stop message
+    virtual void request( StopAllMAppMsg& msg ) = 0;
+
+public:
+    /// Virtual Destructor
+    virtual ~StopAllMAppRequest() {}
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,17 +160,17 @@ public:
     {
     public:
         /// INPUT/OUTPUT: Memory to store the returned list
-        Cpl::MApp::Api** dstList;
+        Cpl::MApp::MAppApi** dstList;
 
         /// INPUT/OUTPUT: Maximum number of elements that can be stored in 'dstList'.  Set to zero for the 'overflow' error case
-        size_t           dstMaxElements;
+        size_t               dstMaxElements;
 
         /// OUTPUT: Number of items returned
-        size_t           numElements;
+        size_t               numElements;
 
     public:
         /// Constructor. 
-        Payload( Cpl::MApp::Api** list, size_t maxElems ) : dstList( list ), dstMaxElements( maxElems ), numElements(0) {}
+        Payload( Cpl::MApp::MAppApi** list, size_t maxElems ) : dstList( list ), dstMaxElements( maxElems ), numElements(0) {}
     };
 
 public:
@@ -171,17 +203,17 @@ public:
     {
     public:
         /// INPUT/OUTPUT: Memory to store the returned list
-        Cpl::MApp::Api** dstList;
+        Cpl::MApp::MAppApi** dstList;
 
         /// INPUT/OUTPUT: Maximum number of elements that can be stored in 'dstList'.  Set to zero for the 'overflow' error case
-        size_t           dstMaxElements;
+        size_t               dstMaxElements;
 
         /// OUTPUT: Number of items returned
-        size_t           numElements;
+        size_t               numElements;
 
     public:
         /// Constructor. 
-        Payload( Cpl::MApp::Api** list, size_t maxElems ) : dstList( list ), dstMaxElements( maxElems ), numElements( 0 ) {}
+        Payload( Cpl::MApp::MAppApi** list, size_t maxElems ) : dstList( list ), dstMaxElements( maxElems ), numElements( 0 ) {}
     };
 
 public:
@@ -216,7 +248,7 @@ public:
         const char* name;
 
         /// OUTPUT: Found instance (or null if not found)
-        Api*        foundInstance;
+        MAppApi*    foundInstance;
 
     public:
         /// Constructor. 

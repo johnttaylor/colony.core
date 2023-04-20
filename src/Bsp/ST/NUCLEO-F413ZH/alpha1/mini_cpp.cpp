@@ -24,17 +24,17 @@
 #else
 /** The default is to using a heap that does NOT support freeing memory
  */
-#define rtosFree(p)
+#define rtosFree(p)     // Ignore the delete/free call
 #endif
 
 
- ///// Provide a non-exception-throwing new/delete so exception code does NOT get
+///// Provide a non-exception-throwing new/delete so exception code does NOT get
 ///// linked in (i.e. -fno-exception is NOT enough to get rid of exception code
 ///// from libstdc++.a)
 //
 //
-void *operator new(size_t size, std::nothrow_t const&) { return pvPortMalloc( size ); }
-void *operator new[]( size_t size, std::nothrow_t const& ) { return pvPortMalloc( size ); }
+void *operator new( size_t size, std::nothrow_t const& ) throw() { return pvPortMalloc(size); }
+void *operator new[]( size_t size, std::nothrow_t const& ) throw() { return pvPortMalloc(size); }
 
 void operator delete(void* p) throw() { rtosFree( p ); }
 void operator delete[]( void* p ) throw() { rtosFree( p ); }

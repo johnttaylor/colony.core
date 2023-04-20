@@ -7,11 +7,26 @@
 
 
 #include "colony_config.h"
-#include "Cpl/MApp/Api.h"
+#include "Cpl/MApp/MApp_.h"
 #include "Cpl/Dm/Mp/Float.h"
 #include "Cpl/Dm/MailboxServer.h"
 #include "Cpl/System/Timer.h"
 
+
+/// Default interval time (in milliseconds) for sampling temperature
+#ifndef OPTION_CPL_MAPP_TEMPEARTURE_SAMPLE_INTERVAL_MS
+#define OPTION_CPL_MAPP_TEMPEARTURE_SAMPLE_INTERVAL_MS      100
+#endif
+
+/// Default interval time (in milliseconds) for displaying temperature
+#ifndef OPTION_CPL_MAPP_TEMPEARTURE_DISPLAY_INTERVAL_MS
+#define OPTION_CPL_MAPP_TEMPEARTURE_DISPLAY_INTERVAL_MS     (5*1000)
+#endif
+
+/// Default temperature Units (false:=Celsius, true:=Fahrenheit)
+#ifndef OPTION_CPL_MAPP_TEMPEARTURE_FAHRENHEIT
+#define OPTION_CPL_MAPP_TEMPEARTURE_FAHRENHEIT              true
+#endif
 
 
 ///
@@ -31,9 +46,9 @@ namespace Temperature {
           instance has a unique 'name'.
 
     The class is intended to be example/template for an MApp - not that it does
-    anything particular noteworthy,
+    anything particular noteworthy.
  */
-class Api : public Cpl::MApp::Api, public Cpl::System::Timer
+class Api : public Cpl::MApp::MApp_, public Cpl::System::Timer
 {
 public:
     /// The default MApp Name
@@ -44,8 +59,8 @@ public:
                                                 12345678901234567890123456789012345678901234567890123456789012345678901234567890
      */
     static constexpr const char* USAGE       = "args: [<samplems> [<displayms> [F|C]]]\n"
-                                               "  <samplems>   milliseconds between samples. Default is 100ms\n"
-                                               "  <displayms>  milliseconds between outputs. Default is 5,000ms\n"
+                                               "  <samplems>   milliseconds between samples. Default is  100ms\n"
+                                               "  <displayms>  milliseconds between outputs. Default is 5000ms\n"
                                                "  F|C          'F' use Fahrenheit, 'C' use Celsius. Default is 'F'";
 
     /** Description string (recommended that lines do not exceed 80 chars)
@@ -57,17 +72,17 @@ public:
 
 public:
     /// Constructor. Note: The myMbox argument is only needed because the class uses a SW timer
-    Api( Cpl::Container::SList<Api>&    mappList,
-         Cpl::Dm::MailboxServer&        myMbox,
-         Cpl::Dm::Mp::Float&            srcTemperatureMp,
-         const char*                    name = DEFAULT_NAME );
+    Api( Cpl::Container::SList<MAppApi>&    mappList,
+         Cpl::Dm::MailboxServer&            myMbox,
+         Cpl::Dm::Mp::Float&                srcTemperatureMp,
+         const char*                        name = DEFAULT_NAME );
 
 protected:
     /// See Cpl::MApp::Api
     void intialize_() noexcept;
 
     /// See Cpl::MApp::Api
-    void start_() noexcept;
+    bool start_( const char* args ) noexcept;
 
     /// See Cpl::MApp::Api
     void stop_() noexcept;
@@ -76,6 +91,9 @@ protected:
     void shutdown_() noexcept;
 
 protected:
+    /// Helper method to parse the 'command line' options
+    bool parse( const char* args ) noexcept;
+
     /// Timer expired callback
     void expired( void ) noexcept;
 
@@ -90,11 +108,11 @@ protected:
     /// Minimum Temp. sampled
     float               m_minTemp;
 
-    /// Average Temp. sampled
-    float               m_avgTemp;
+    /// Cumulative sum Temp
+    float               m_sumTemp;
 
     /// Number of samples
-    float               m_avgTemp;
+    uint32_t            m_numSamples;
 
     /// Sample time in msecs
     uint32_t            m_sampleMs;

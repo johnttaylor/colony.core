@@ -17,7 +17,7 @@ from nqbplib import my_globals
 class ToolChain( base.ToolChain ):
 
     #--------------------------------------------------------------------------
-    def __init__( self, exename, prjdir, build_variants, sdk_root, bsp_mx_root, linker_script, default_variant='release', env_error=None ):
+    def __init__( self, exename, prjdir, build_variants, sdk_root, bsp_mx_root, freertos_root, linker_script, default_variant='release', env_error=None ):
         base.ToolChain.__init__( self, exename, prjdir, build_variants, default_variant )
         self._ccname     = 'GCC Arm-Cortex (none-eabi) Compiler'
         self._cc         = 'arm-none-eabi-gcc' 
@@ -40,10 +40,10 @@ class ToolChain( base.ToolChain ):
                 ' -I' + sdk_root + r'\Drivers\STM32F4xx_HAL_Driver\Inc' + \
                 ' -I' + sdk_root + r'\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy' + \
                 ' -I' + sdk_root + r'\Drivers\CMSIS\Device\ST\STM32F4xx\Include' + \
-                ' -I' + sdk_root + r'\Middlewares\Third_Party\FreeRTOS\Source\Include' + \
-                ' -I' + sdk_root + r'\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS' + \
-                ' -I' + sdk_root + r'\Middlewares\Third_Party\FreeRTOS\Source\portable\GCC\ARM_CM4F' + \
                 ' -I' + sdk_root + r'\Drivers\CMSIS\Include' + \
+                ' -I' + sdk_root + r'\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS' + \
+                ' -I' + freertos_root + r'\Include' + \
+                ' -I' + freertos_root + r'\portable\GCC\ARM_CM4F' + \
                 ' -I' + bsp_mx_root + \
                 ' -I' + bsp_mx_root + r'\Core\Inc'
 
@@ -73,6 +73,7 @@ class ToolChain( base.ToolChain ):
     def link( self, arguments, inf, local_external_setting, variant ):
         # Run the linker
         base.ToolChain.link(self, arguments, inf, local_external_setting, variant, extra_inputs_list=None, outname=self._final_output_name + ".elf" )
+
 
         # Generate the .BIN file
         self._ninja_writer.build(

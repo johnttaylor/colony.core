@@ -22,8 +22,19 @@
 #include "stm32f4xx_it.h"
 #include "FreeRTOS.h"
 #include "task.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+#ifdef ENABLE_BSP_SEGGER_SYSVIEW   
+#include "SEGGER_SYSVIEW.h" 
+#define RECORD_ENTER_ISR()      SEGGER_SYSVIEW_RecordEnterISR()
+#define RECORD_EXIT_ISR()       SEGGER_SYSVIEW_RecordExitISR()
+#else
+#define RECORD_ENTER_ISR()      
+#define RECORD_EXIT_ISR()       
+#endif
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

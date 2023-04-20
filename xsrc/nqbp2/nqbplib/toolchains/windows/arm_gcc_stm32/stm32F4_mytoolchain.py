@@ -37,9 +37,12 @@ FINAL_OUTPUT_NAME = 'blink'
 
 
 # Path to SDK and the ST CubeMX generated BSP files
-bsp_mx      = os.path.join( "src", "Bsp", "ST", "NUCLEO-F413ZH", "alpha1", "MX" )
-sdk_root    = os.path.join( NQBP_PKG_ROOT(), "xsrc", "stm32F4-SDK")
-bsp_mx_root = os.path.join( NQBP_PKG_ROOT(), bsp_mx )
+bsp_mx        = os.path.join( "src", "Bsp", "ST", "NUCLEO-F413ZH", "alpha1", "MX" )
+sdk_root      = os.path.join( NQBP_PKG_ROOT(), "xsrc", "STCubeF4-SDK")
+bsp_mx_root   = os.path.join( NQBP_PKG_ROOT(), bsp_mx )
+freertos_root = os.path.join( NQBP_PKG_ROOT(), "xsrc", "FreeRTOS")
+sysview_root  = os.path.join( NQBP_PKG_ROOT(), "src", "Bsp", "ST", "NUCLEO-F413ZH", "alpha1", "SeggerSysView" )
+sysview_root  = sysview_root.replace("\\", "/")
 
 #
 # For build config/variant: "Release"
@@ -53,8 +56,8 @@ base_release.cflags      = f' -Wall {target_flags}'
 base_release.cppflags    = ' -std=gnu++11'
 base_release.asmflags    = f' {target_flags}'
 base_release.firstobjs   = f'_BUILT_DIR_.{bsp_mx}/Core/Src'
-base_release.lastobjs    = base_release.lastobjs + f' {bsp_mx}/../stdio.o' + \
-                           f' {bsp_mx}/../syscalls.o' 
+base_release.firstobjs   = base_release.firstobjs + f' {bsp_mx}/../stdio.o'
+base_release.lastobjs    = base_release.lastobjs + f' {bsp_mx}/../syscalls.o' 
 
 # Set project specific 'optimized' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
@@ -109,5 +112,5 @@ from nqbplib.toolchains.windows.arm_gcc_stm32.stm32F4 import ToolChain
 # Function that instantiates an instance of the toolchain
 def create():
     lscript  = 'STM32F413ZHTx_FLASH.ld'
-    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, sdk_root, bsp_mx_root, lscript, "stm32" )
+    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, sdk_root, bsp_mx_root, freertos_root, lscript, "stm32" )
     return tc 

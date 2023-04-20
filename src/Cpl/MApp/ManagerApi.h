@@ -7,7 +7,7 @@
 
 
 #include "Cpl/Container/SList.h"
-#include "Cpl/MApp/Api.h"
+#include "Cpl/MApp/MAppApi.h"
 #include "Cpl/Text/String.h"
 
 ///
@@ -36,7 +36,7 @@ public:
         is currently not in the started state, then the method does nothing
         and false is returned; else true is returned.
      */
-    virtual void stopMApp( const char* mappName ) noexcept = 0;
+    virtual bool stopMApp( const char* mappName ) noexcept = 0;
 
     /** This method is used to stop ALL currently started MApp instances.
      */
@@ -50,7 +50,7 @@ public:
 
         NOTE: There is no order to the returned instances.
      */
-    virtual size_t getAvailableMApps( Cpl::MApp::Api* dstList[], size_t dstMaxElements, size_t& numElemsFound ) noexcept = 0;
+    virtual bool getAvailableMApps( Cpl::MApp::MAppApi* dstList[], size_t dstMaxElements, size_t& numElemsFound ) noexcept = 0;
 
 
     /** This method returns a list of started MApps.  If the number of started
@@ -60,12 +60,12 @@ public:
 
         NOTE: There is no order to the returned instances.
      */
-    virtual size_t getStartedMApps( Cpl::MApp::Api* dstList[], size_t dstMaxElements, size_t& numElemsFound ) noexcept = 0;
+    virtual bool getStartedMApps( Cpl::MApp::MAppApi* dstList[], size_t dstMaxElements, size_t& numElemsFound ) noexcept = 0;
 
     /** This method returns a pointer to the named MApp instance.  If no such
         MApp exists, a null pointer is returned;
      */
-    virtual Cpl::MApp::Api* lookUpMApp( const char* mappName ) noexcept = 0;
+    virtual Cpl::MApp::MAppApi* lookUpMApp( const char* mappName ) noexcept = 0;
 
 
 public:

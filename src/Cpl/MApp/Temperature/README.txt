@@ -1,7 +1,7 @@
-/** @namespace Loki::Test::OnOff
+/** @namespace Cpl::MApp::Temperature
 
-The 'OnOff' namespace implements a simple On/Off control scheme for 
-controlling water temperature.
+The 'Temperature' namespace implements a simple/example MApp that samples and
+displays temperature.
 
 */ 
 

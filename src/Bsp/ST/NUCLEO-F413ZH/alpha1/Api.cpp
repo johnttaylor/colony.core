@@ -15,6 +15,12 @@
 #include "Bsp/ST/NUCLEO-F413ZH/alpha1/console/Output.h"
 #include "Cpl/System/Trace.h"
 
+#ifdef ENABLE_BSP_SEGGER_SYSVIEW   
+#define INIT_SEGGER_SYSVIEW()   SEGGER_SYSVIEW_Conf()
+#else
+#define INIT_SEGGER_SYSVIEW()   
+#endif
+
 #define SECT_   "bsp"
 
 ///////////////////////////////////////////
@@ -29,6 +35,9 @@ void Bsp_Api_initialize( void )
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
     MX_USART3_UART_Init();
+
+    // Initialize System View (asap after the basic board initialization has completed)
+    INIT_SEGGER_SYSVIEW();
 
     // Start the Console/Trace UART
     g_bspConsoleStream.start( USART3_IRQn, &huart3 );

@@ -115,22 +115,16 @@ protected:
         completed (aka from the HAL_UART_TxCpltCallback() function).
 
         This method executes in the context of interrupt service routine (ISR)
-
-        The method returns the result of signaling waiter (i.e. return code
-        from su_signal()), or zero if no waiter was signaled.
      */
-    int su_txDoneIsr( void ) noexcept;
+    void su_txDoneIsr( void ) noexcept;
 
     /** The method SHOULD only be called when the HAL Receive operation has 
         completed (aka from the HAL_UART_RxCpltCallback() or 
         HAL_UART_ErrorCallback() functions).
 
         This method executes in the context of interrupt service routine (ISR)
-
-        The method returns the result of signaling waiter (i.e. return code
-        from su_signal()), or zero if no waiter was signaled.
      */
-    int su_rxDataAndErrorIsr( uint16_t bytesReceived ) noexcept;
+    void su_rxDataAndErrorIsr( uint16_t bytesReceived ) noexcept;
 
 
 protected:

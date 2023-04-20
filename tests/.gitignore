@@ -12,3 +12,5 @@ _stm32/
 *.ilk
 *.pdb
 *.sln
+
+*.user

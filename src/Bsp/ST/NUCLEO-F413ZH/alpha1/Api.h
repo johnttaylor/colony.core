@@ -29,7 +29,11 @@
 #include "colony_config.h"
 #include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/main.h"   // Access the PINs
 #include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/usart.h"  // Access the UART handles/instances
+#include "task.h"                                           // Access to FreeRTOS's taskXXX functions
 
+#ifdef ENABLE_BSP_SEGGER_SYSVIEW   
+#include "SEGGER_SYSVIEW.h" // Expose (to the application) the SYSVIEW APIs when enabled
+#endif
 
 //////////////////////////////////////////////////////////
 /// ARM Specific APIs
@@ -82,6 +86,17 @@
 
 /// Generic API
 #define Bsp_Api_toggle_debug2_MAP()             HAL_GPIO_TogglePin( LD2_GPIO_Port, LD2_Pin )
+
+
+//////////////////////////////////////////////////////////
+/// FreeRTOS specific APIs
+//////////////////////////////////////////////////////////
+
+/** This method informs the schedule that a context switch is required on exit 
+    from the ISR.  The 'r' argument is the result for the su_signal() call.
+ */
+#define Bsp_yieldOnExit(r)                      portYIELD_FROM_ISR(r)
+
 
 
 #endif  // end header latch

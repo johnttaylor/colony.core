@@ -1,8 +1,9 @@
 # Unit under test
-src/Cpl/Dm/TShell
+src/Cpl/MApp
+src/Cpl/MApp/Temperature
 
 # tests
-src/Cpl/Dm/TShell/_0test
+src/Cpl/MApp/_0test
 
 # supporting infrastructure
 src/Cpl/Dm
@@ -21,11 +22,7 @@ src/Cpl/Memory
 src/Cpl/Io
 src/Cpl/Io/Stdio
 src/Cpl/System/_ansi
-src/Cpl/System/_ansi/_shutdown
 src/Cpl/System/_trace
 src/Cpl/System/_trace/_stdout
-
-# BSP
-src/Bsp/UserSpace
 
 

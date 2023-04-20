@@ -26,6 +26,12 @@
  *
  * 1 tab == 4 spaces!
  */
+
+// For Segger SystemView support
+#ifdef ENABLE_BSP_SEGGER_SYSVIEW   
+#include "SEGGER_SYSVIEW_FreeRTOS.h"
+#endif
+ 
 /* USER CODE END Header */
 
 #ifndef FREERTOS_CONFIG_H
@@ -105,8 +111,6 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelayUntil              1
 #define INCLUDE_vTaskDelay                   1
 #define INCLUDE_xTaskGetSchedulerState       1
-#define INCLUDE_xEventGroupSetBitFromISR     1
-#define INCLUDE_xTimerPendFunctionCall       1
 #define INCLUDE_pcTaskGetTaskName            1
 #define INCLUDE_uxTaskGetStackHighWaterMark  1
 #define INCLUDE_xTaskGetCurrentTaskHandle    1
@@ -156,6 +160,11 @@ standard names. */
 
 /* USER CODE BEGIN Defines */
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
+
+/* CPL Does not use native FreeRTOS timers */
+#undef  configUSE_TIMERS
+#define configUSE_TIMERS    0
+
 /* USER CODE END Defines */
 
 #endif /* FREERTOS_CONFIG_H */
