@@ -12,7 +12,7 @@
 #include "InputOutput.h"
 
 ///
-using namespace Cpl::Io::Serial::ST::STM32F1;
+using namespace Cpl::Io::Serial::ST::M32F4;
 
 
 

@@ -1,5 +1,5 @@
-#ifndef Cpl_Io_Serial_ST_STM32F1_InputOutput_h_
-#define Cpl_Io_Serial_ST_STM32F1_InputOutput_h_
+#ifndef Cpl_Io_Serial_ST_M32F4_InputOutput_h_
+#define Cpl_Io_Serial_ST_M32F4_InputOutput_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -13,7 +13,7 @@
 /** @file */
 
 #include "Cpl/Io/InputOutput.h"
-#include "Cpl/Io/Serial/ST/STM32F1/StreamDriver.h"
+#include "Cpl/Io/Serial/ST/M32F4/StreamDriver.h"
 
 ///
 namespace Cpl {
@@ -24,7 +24,7 @@ namespace Serial {
 ///
 namespace ST {
 ///
-namespace STM32F1 {
+namespace M32F4 {
 
 
 /** This concrete class implements the InputOutput stream interface

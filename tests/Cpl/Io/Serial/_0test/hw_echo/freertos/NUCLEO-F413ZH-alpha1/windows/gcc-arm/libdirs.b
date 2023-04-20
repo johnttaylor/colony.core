@@ -1,5 +1,5 @@
 # UUT
-src/Cpl/Io/Serial/ST/STM32F1
+src/Cpl/Io/Serial/ST/M32F4
 
 # Test App
 src/Cpl/Io/Serial/_0test/_hw_echo

@@ -17,5 +17,5 @@ static Cpl::Container::RingBuffer<uint8_t> txFifo_( sizeof( txFifoMemory_ ), txF
 static uint8_t                             rxFifoMemory_[OPTION_BSP_CONSOLE_RX_FIFO_SIZE + 1];
 static Cpl::Container::RingBuffer<uint8_t> rxFifo_( sizeof( rxFifoMemory_ ), rxFifoMemory_ );
 
-Cpl::Io::Serial::ST::STM32F1::InputOutput   g_bspConsoleStream( txFifo_, rxFifo_ );
+Cpl::Io::Serial::ST::M32F4::InputOutput     g_bspConsoleStream( txFifo_, rxFifo_ );
 

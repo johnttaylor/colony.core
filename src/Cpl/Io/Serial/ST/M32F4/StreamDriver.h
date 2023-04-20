@@ -1,5 +1,5 @@
-#ifndef Cpl_Io_Serial_ST_STM32F1_StreamDriver_h_
-#define Cpl_Io_Serial_ST_STM32F1_StreamDriver_h_
+#ifndef Cpl_Io_Serial_ST_M32F4_StreamDriver_h_
+#define Cpl_Io_Serial_ST_M32F4_StreamDriver_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -18,8 +18,8 @@
 #include "Cpl/System/Thread.h"
 
 /** Maximum number of UARTs/instances that are supported */
-#ifndef OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS
-#define OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS	1
+#ifndef OPTION_CPL_IO_SERIAL_ST_M32F4_MAX_UARTS
+#define OPTION_CPL_IO_SERIAL_ST_M32F4_MAX_UARTS	    1
 #endif
 
 
@@ -31,9 +31,8 @@ namespace Io {
 namespace Serial {
 /// 
 namespace ST {
-/// 
-namespace STM32F1 {
-
+///
+namespace M32F4 {
 
 /** This concrete class implements a non-busy-wait blocking Transmit/Receive Stream
     UART driver with a SOFTWARE FIFO.
@@ -188,14 +187,14 @@ protected:
     bool                    m_rxActive;
 
     /// Map the HAL UART to a transmitter instance
-    static HalMapping_T		m_mappings[OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS];
+    static HalMapping_T		m_mappings[OPTION_CPL_IO_SERIAL_ST_M32F4_MAX_UARTS];
 };
 
 
 
-};      // end namespaces
-};
-};
-};
-};
+}       // end namespaces
+}
+}
+}
+}
 #endif  // end header latch

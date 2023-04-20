@@ -13,7 +13,7 @@
 /** @file */
 
 #include "colony_config.h"
-#include "Cpl/Io/Serial/ST/STM32F1/InputOutput.h"
+#include "Cpl/Io/Serial/ST/M32F4/InputOutput.h"
 
 /** Default size of the software TX FIFO used by the console UART Stream
  */
@@ -30,7 +30,7 @@
 
 
 /// Expose the Console stream
-extern Cpl::Io::Serial::ST::STM32F1::InputOutput   g_bspConsoleStream;
+extern Cpl::Io::Serial::ST::M32F4::InputOutput   g_bspConsoleStream;
 
 
 #endif  // end header latch

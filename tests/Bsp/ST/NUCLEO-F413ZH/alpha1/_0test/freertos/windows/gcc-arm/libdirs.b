@@ -4,7 +4,7 @@ src/Cpl/System/_trace
 src/Cpl/Io/Stdio/_ansi
 
 # Output stream for the trace engine (and the debug console)
-src/Cpl/Io/Serial/ST/STM32F1
+src/Cpl/Io/Serial/ST/M32F4
 
 
 # CPL Middle-ware

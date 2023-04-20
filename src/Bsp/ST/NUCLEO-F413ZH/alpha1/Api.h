@@ -1,5 +1,5 @@
-#ifndef Bsp_Stm32_FreeRTOS_Api_h_
-#define Bsp_Stm32_FreeRTOS_Api_h_
+#ifndef Bsp_Stm32_alpha1_Api_h_
+#define Bsp_Stm32_alpha1_Api_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -29,7 +29,7 @@
 #include "colony_config.h"
 #include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/main.h"   // Access the PINs
 #include "Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Inc/usart.h"  // Access the UART handles/instances
-#include "task.h"                                           // Access to FreeRTOS's taskXXX functions
+
 
 #ifdef ENABLE_BSP_SEGGER_SYSVIEW   
 #include "SEGGER_SYSVIEW.h" // Expose (to the application) the SYSVIEW APIs when enabled
@@ -52,13 +52,13 @@
 //////////////////////////////////////////////////////////
 
 /// Generic API
-#define Bsp_Api_nop_MAP()                       __asm("nop")                
+#define Bsp_Api_nop_MAP()                       __asm("nop")               
 
 /// Generic API
 #define Bsp_Api_disableIrqs_MAP()               __disable_irq()
 
 /// Generic API (with memory barrier protection)
-#define Bsp_Api_enableIrqs_MAP()                do { __disable_irq(); __ISB(); } while(0)
+#define Bsp_Api_enableIrqs_MAP()                do { __enable_irq(); __ISB(); } while(0)
 
 /// Generic API
 #define Bsp_Api_pushAndDisableIrqs_MAP()        Bsp_Api_disableIrqs_MAP()    // FIXME: This really needs to PUSH the IRQ state!!!

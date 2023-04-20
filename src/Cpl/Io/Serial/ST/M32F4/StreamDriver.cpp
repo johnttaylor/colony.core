@@ -13,10 +13,10 @@
 #include "Cpl/System/FatalError.h"
 
 /// 
-using namespace Cpl::Io::Serial::ST::STM32F1;
+using namespace Cpl::Io::Serial::ST::M32F4;
 
 
-StreamDriver::HalMapping_T Cpl::Io::Serial::ST::STM32F1::StreamDriver::m_mappings[OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS] = { 0, };
+StreamDriver::HalMapping_T Cpl::Io::Serial::ST::M32F4::StreamDriver::m_mappings[OPTION_CPL_IO_SERIAL_ST_M32F4_MAX_UARTS] = { 0, };
 
 #define ENTER_CRITICAL_SECTION()    HAL_NVIC_DisableIRQ( m_uartIrqNum )
 #define EXIT_CRITICAL_SECTION()     HAL_NVIC_EnableIRQ( m_uartIrqNum )
@@ -33,7 +33,7 @@ StreamDriver::StreamDriver( Cpl::Container::RingBuffer<uint8_t>& txBuffer,
 {
     // generating 1st half of the HAL/Driver mapping (basically it 'allocates' a slot in the look-up table for the instance)
     bool mapped = false;
-    for ( unsigned idx=0; idx < OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS; idx++ )
+    for ( unsigned idx=0; idx < OPTION_CPL_IO_SERIAL_ST_M32F4_MAX_UARTS; idx++ )
     {
         if ( m_mappings[idx].driver == nullptr )
         {
@@ -44,7 +44,7 @@ StreamDriver::StreamDriver( Cpl::Container::RingBuffer<uint8_t>& txBuffer,
     }
     if ( !mapped )
     {
-        Cpl::System::FatalError::logf( "Cpl::Io::Serial::ST::STM32F1::StreamDriver. Too many driver instances." );
+        Cpl::System::FatalError::logf( "Cpl::Io::Serial::ST::M32F4::StreamDriver. Too many driver instances." );
     }
 }
 
@@ -60,7 +60,7 @@ void StreamDriver::start( IRQn_Type             uartIrqNum,
     }
 
     // finish the HAL/Driver mapping
-    for ( unsigned idx=0; idx < OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS; idx++ )
+    for ( unsigned idx=0; idx < OPTION_CPL_IO_SERIAL_ST_M32F4_MAX_UARTS; idx++ )
     {
         if ( m_mappings[idx].driver == this )
         {
@@ -102,7 +102,7 @@ void StreamDriver::stop( void ) noexcept
     HAL_UART_UnRegisterCallback( m_uartHdl, HAL_UART_ERROR_CB_ID );
 
     // Remove HAL/driver mapping
-    for ( unsigned idx=0; idx < OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS; idx++ )
+    for ( unsigned idx=0; idx < OPTION_CPL_IO_SERIAL_ST_M32F4_MAX_UARTS; idx++ )
     {
         if ( m_mappings[idx].driver == this )
         {
@@ -389,7 +389,7 @@ void StreamDriver::su_rxDataAndErrorIsr( uint16_t bytesReceived ) noexcept
 void StreamDriver::su_txCompleteCallback( UART_HandleTypeDef* huart ) noexcept
 {
     // Look-up the driver instance from the HAL handle
-    for ( unsigned idx=0; idx < OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS; idx++ )
+    for ( unsigned idx=0; idx < OPTION_CPL_IO_SERIAL_ST_M32F4_MAX_UARTS; idx++ )
     {
         if ( m_mappings[idx].halHandle == huart && m_mappings[idx].driver != nullptr )
         {
@@ -402,7 +402,7 @@ void StreamDriver::su_txCompleteCallback( UART_HandleTypeDef* huart ) noexcept
 void StreamDriver::su_rxErrorCompleteCallback( UART_HandleTypeDef* huart ) noexcept
 {
     // Look-up the driver instance from the HAL handle
-    for ( unsigned idx=0; idx < OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS; idx++ )
+    for ( unsigned idx=0; idx < OPTION_CPL_IO_SERIAL_ST_M32F4_MAX_UARTS; idx++ )
     {
         if ( m_mappings[idx].halHandle == huart && m_mappings[idx].driver != nullptr )
         {
@@ -415,7 +415,7 @@ void StreamDriver::su_rxErrorCompleteCallback( UART_HandleTypeDef* huart ) noexc
 void StreamDriver::su_rxEventCompleteCallback( UART_HandleTypeDef *huart, uint16_t bytesReceived )
 {
     // Look-up the driver instance from the HAL handle
-    for ( unsigned idx=0; idx < OPTION_CPL_IO_SERIAL_ST_SMT32F1_MAX_UARTS; idx++ )
+    for ( unsigned idx=0; idx < OPTION_CPL_IO_SERIAL_ST_M32F4_MAX_UARTS; idx++ )
     {
         if ( m_mappings[idx].halHandle == huart && m_mappings[idx].driver != nullptr )
         {
