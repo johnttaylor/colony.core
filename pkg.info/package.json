@@ -1,40 +1,6 @@
 {
   "dependencies": {
-    "strong": [
-      {
-        "pkgname": "colony.bsp",
-        "pkgtype": "overlay",
-        "adoptedDate": "Sun Sep 11 18:48:31 2022",
-        "parentDir": null,
-        "version": {
-          "semanticVersion": "0.1.1",
-          "branch": null,
-          "tag": "OUTCAST2-main-0.1.1"
-        },
-        "repo": {
-          "name": "colony.bsp",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        }
-      },
-      {
-        "pkgname": "freertos",
-        "pkgtype": "readonly",
-        "virtualAdoption": false,
-        "adoptedDate": "Thu Apr 20 13:48:05 2023",
-        "parentDir": "xsrc",
-        "version": {
-          "semanticVersion": "10.4.3-LTS-Patch1",
-          "branch": null,
-          "tag": "OUTCAST2-main-10.4.3-LTS-Patch1"
-        },
-        "repo": {
-          "name": "freertos",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        }
-      }
-    ],
+    "strong": [],
     "weak": [
       {
         "pkgname": "catch",
@@ -104,18 +70,18 @@
         }
       },
       {
-        "pkgname": "colony.bsp.renesas.rx",
-        "pkgtype": "overlay",
+        "pkgname": "freertos",
+        "pkgtype": "readonly",
         "virtualAdoption": false,
-        "adoptedDate": "Fri Mar 31 21:33:59 2023",
-        "parentDir": null,
+        "adoptedDate": "Thu Apr 20 13:48:05 2023",
+        "parentDir": "xsrc",
         "version": {
-          "semanticVersion": "1.0.2",
+          "semanticVersion": "10.4.3-LTS-Patch1",
           "branch": null,
-          "tag": "OUTCAST2-main-1.0.2"
+          "tag": "OUTCAST2-main-10.4.3-LTS-Patch1"
         },
         "repo": {
-          "name": "colony.bsp.renesas.rx",
+          "name": "freertos",
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
