@@ -35,6 +35,6 @@ src/Bsp/ST/NUCLEO-F413ZH/alpha1/SeggerSysView
 xsrc/stm32F4-SDK/Drivers/STM32F4xx_HAL_Driver/Src > stm32f4xx_hal_timebase_rtc_alarm_template.c stm32f4xx_hal_timebase_rtc_wakeup_template.c stm32f4xx_hal_timebase_tim_template.c
 
 # FreeRTOS
-xsrc/FreeRTOS
-xsrc/FreeRTOS/portable/MemMang
-xsrc/FreeRTOS/portable/GCC/ARM_CM4F
+xsrc/freertos
+xsrc/freertos/portable/MemMang
+xsrc/freertos/portable/GCC/ARM_CM4F

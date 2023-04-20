@@ -16,6 +16,23 @@
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
+      },
+      {
+        "pkgname": "freertos",
+        "pkgtype": "readonly",
+        "virtualAdoption": false,
+        "adoptedDate": "Thu Apr 20 13:48:05 2023",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": "10.4.3-LTS-Patch1",
+          "branch": null,
+          "tag": "OUTCAST2-main-10.4.3-LTS-Patch1"
+        },
+        "repo": {
+          "name": "freertos",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
       }
     ],
     "weak": [
