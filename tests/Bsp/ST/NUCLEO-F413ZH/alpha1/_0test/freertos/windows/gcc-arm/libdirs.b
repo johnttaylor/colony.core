@@ -20,6 +20,7 @@ src/Cpl/System/_assert
 
 
 # BSP
+src/Bsp/ST/NUCLEO-F413ZH/alpha1/trace
 src/Bsp/ST/NUCLEO-F413ZH/alpha1 
 src/Bsp/ST/NUCLEO-F413ZH/alpha1/MX 
 src/Bsp/ST/NUCLEO-F413ZH/alpha1/MX/Core/Src > freertos.c
