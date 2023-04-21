@@ -9,7 +9,7 @@
 ///
 using namespace Cpl::MApp;
 
-#define OVERFLOW_MSG        "WARNING: Insufficient memory to list all MApp instances"
+#define OVERFLOW_MSG    "WARNING: Insufficient memory to list all MApp instances"
 
 #define SUBCMD_START    "start"
 #define SUBCMD_STOP     "stop"
@@ -98,8 +98,8 @@ Cpl::TShell::Command::Result_T Cmd::execute( Cpl::TShell::Context_& context, cha
         }
 
         // Attempt to stop the MApp
-        char*       endName  = (char*) Cpl::Text::stripNotSpace( mappName );
-        *endName             = '\0';
+        char* endName  = (char*) Cpl::Text::stripNotSpace( mappName );
+        *endName       = '\0';
         if ( !m_mappManager.stopMApp( mappName ) )
         {
             outtext.format( "ERROR: The MApp [%s] was not started", mappName );
