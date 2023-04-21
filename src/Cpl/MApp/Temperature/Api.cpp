@@ -12,10 +12,10 @@
 using namespace Cpl::MApp::Temperature;
 
 /////////////////////////////////////////////////////
-Api::Api( Cpl::Container::SList<MAppApi>&    mappList,
-          Cpl::Dm::MailboxServer&            myMbox,
-          Cpl::Dm::Mp::Float&                srcTemperatureMp,
-          const char*                        name )
+Api::Api( Cpl::Container::Map<MAppApi>&    mappList,
+          Cpl::Dm::MailboxServer&          myMbox,
+          Cpl::Dm::Mp::Float&              srcTemperatureMp,
+          const char*                      name )
     : MApp_( mappList, name, DESCRIPTION, USAGE )
     , Cpl::System::Timer( myMbox )
     , m_temperature( srcTemperatureMp )
@@ -38,12 +38,13 @@ bool Api::start_( const char* args ) noexcept
 {
 
     // Parse my command line args
-    if ( !m_started || !parse( args ) )
+    if ( m_started || !parse( args ) )
     {
         return false;
     }
 
-    CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("Configuration: sampleMs=%us ms, displayMs=%U ms, units=%s",
+    CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("%s: Configuration: sampleMs=%u ms, displayMs=%u ms, units=%s",
+                                                           m_name.getKeyValue(),
                                                            m_sampleMs,
                                                            m_displayMs,
                                                            m_fahrenheit ? "'F" : "'C") );
@@ -54,10 +55,12 @@ bool Api::start_( const char* args ) noexcept
     m_minTemp      = FLT_MAX;
     m_sumTemp      = 0.0F;
     m_numSamples   = 0;
+    m_invalidData  = false;
     m_timeMarkerMs = Cpl::System::ElapsedTime::milliseconds();
 
     // Poll the first sample
     expired();
+    return true;
 }
 
 void Api::stop_() noexcept
@@ -130,6 +133,8 @@ void Api::expired( void ) noexcept
     float t;
     if ( m_temperature.read( t ) )
     {
+        m_invalidData = false;
+
         // Metrics
         if ( t < m_minTemp )
         {
@@ -145,7 +150,7 @@ void Api::expired( void ) noexcept
         m_sumTemp += t;
 
         uint32_t now = Cpl::System::ElapsedTime::milliseconds();
-        if ( Cpl::System::ElapsedTime::expiredMilliseconds( m_timeMarkerMs, m_displayMs, now ) || m_numSamples == 1)
+        if ( Cpl::System::ElapsedTime::expiredMilliseconds( m_timeMarkerMs, m_displayMs, now ) || m_numSamples == 1 )
         {
             m_timeMarkerMs = now;
 
@@ -163,12 +168,20 @@ void Api::expired( void ) noexcept
                 units       = 'F';
             }
 
-            CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("%s: %gs '%c, avg: %g '%c, min: %g '%c, max: %g '%c",
+            CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("%s: %g '%c, avg: %g '%c, min: %g '%c, max: %g '%c",
+                                                                   m_name.getKeyValue(),
                                                                    displayTemp, units,
                                                                    avgTemp, units,
-                                                                   minTemp, units
+                                                                   minTemp, units,
                                                                    maxTemp, units) );
         }
+    }
+    // Only print an error message on the transition
+    else if ( !m_invalidData )
+    {
+        m_invalidData = true;
+        CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("%s: <data invalid>", m_name.getKeyValue()) );
+    }
 
     // Restart my timer
     Cpl::System::Timer::start( m_sampleMs );

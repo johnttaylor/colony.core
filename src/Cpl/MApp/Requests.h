@@ -89,6 +89,7 @@ public:
             false = the specified MApp was not the started state
          */
         bool        success;
+
     public:
         /// Constructor. 
         Payload( const char* name )

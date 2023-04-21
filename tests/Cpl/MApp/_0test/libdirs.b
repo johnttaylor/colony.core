@@ -8,6 +8,8 @@ src/Cpl/MApp/_0test
 # supporting infrastructure
 src/Cpl/Dm
 src/Cpl/Dm/Mp
+src/Cpl/Dm/TShell
+src/Cpl/Itc
 src/Cpl/TShell
 src/Cpl/TShell/Cmd
 src/Cpl/Container

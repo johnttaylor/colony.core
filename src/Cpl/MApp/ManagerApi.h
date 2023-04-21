@@ -6,7 +6,6 @@
 /** @file */
 
 
-#include "Cpl/Container/SList.h"
 #include "Cpl/MApp/MAppApi.h"
 #include "Cpl/Text/String.h"
 

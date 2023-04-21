@@ -10,6 +10,7 @@
 #include "Cpl/Dm/MailboxServer.h"
 #include "Cpl/MApp/ManagerApi.h"
 #include "Cpl/MApp/Requests.h"
+#include "Cpl/Container/Map.h"
 
 ///
 namespace Cpl {
@@ -33,8 +34,8 @@ class Manager:
 {
 public:
     /// Constructor
-    Manager( Cpl::Dm::MailboxServer&         myMbox, 
-             Cpl::Container::SList<MAppApi>& listOfMApps );
+    Manager( Cpl::Dm::MailboxServer&       myMbox, 
+             Cpl::Container::Map<MAppApi>& listOfMApps );
 
     /// Destructor
     ~Manager() {}
@@ -88,13 +89,13 @@ public:
 
 protected:
     /// List of inactive MApps
-    Cpl::Container::SList<MAppApi>& m_inactiveMApps;
+    Cpl::Container::Map<MAppApi>& m_inactiveMApps;
 
     /// List of started MApps
-    Cpl::Container::SList<MAppApi>  m_startedMApps;
+    Cpl::Container::Map<MAppApi>  m_startedMApps;
 
     /// My open/close state
-    bool                        m_opened;
+    bool                          m_opened;
 };
 
 };      // end namespaces

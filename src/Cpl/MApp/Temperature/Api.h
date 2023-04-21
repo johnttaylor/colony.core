@@ -72,10 +72,10 @@ public:
 
 public:
     /// Constructor. Note: The myMbox argument is only needed because the class uses a SW timer
-    Api( Cpl::Container::SList<MAppApi>&    mappList,
-         Cpl::Dm::MailboxServer&            myMbox,
-         Cpl::Dm::Mp::Float&                srcTemperatureMp,
-         const char*                        name = DEFAULT_NAME );
+    Api( Cpl::Container::Map<MAppApi>&    mappList,
+         Cpl::Dm::MailboxServer&          myMbox,
+         Cpl::Dm::Mp::Float&              srcTemperatureMp,
+         const char*                      name = DEFAULT_NAME );
 
 protected:
     /// See Cpl::MApp::Api
@@ -125,6 +125,9 @@ protected:
 
     /// When true the values are displayed in Fahrenheit
     bool                m_fahrenheit;
+
+    /// Flag that tracks when I have invalid data
+    bool                m_invalidData;
 };
 
 };      // end namespaces
