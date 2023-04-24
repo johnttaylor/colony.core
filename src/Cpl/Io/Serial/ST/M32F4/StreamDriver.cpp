@@ -11,10 +11,10 @@
 
 #include "StreamDriver.h"
 #include "Cpl/System/FatalError.h"
+#include "stm32f7xx_hal.h"
 
 /// 
 using namespace Cpl::Io::Serial::ST::M32F4;
-
 
 StreamDriver::HalMapping_T Cpl::Io::Serial::ST::M32F4::StreamDriver::m_mappings[OPTION_CPL_IO_SERIAL_ST_M32F4_MAX_UARTS] = { 0, };
 

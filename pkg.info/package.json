@@ -85,6 +85,23 @@
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
+      },
+      {
+        "pkgname": "stm32F7-sdk",
+        "pkgtype": "readonly",
+        "virtualAdoption": false,
+        "adoptedDate": "Sat Apr 22 18:12:32 2023",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": null,
+          "branch": null,
+          "tag": "OUTCAST2-main-1.17.0"
+        },
+        "repo": {
+          "name": "stm32F7-sdk",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
       }
     ]
   },
