@@ -11,7 +11,6 @@
 
 #include "StreamDriver.h"
 #include "Cpl/System/FatalError.h"
-#include "stm32f7xx_hal.h"
 
 /// 
 using namespace Cpl::Io::Serial::ST::M32F4;
