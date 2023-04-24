@@ -86,12 +86,18 @@ public:
         NEVER call this method, instead the Application must call the Manager
         to start a MApp.
         
+        If the client has no 'optionalArgs' to pass to the MApp instance - it must
+        provide an empty/blank null terminated string, i.e can NOT pass a nullptr.
+
         This method is used to start a MApp. If the MApp is unable to start then
         false is returned; else true is returned.
 
         This method MUST be called in the thread that the MApp executes in.
+
+        Note: The MApp is allowed to perform destructive parsing on 'optionalArgs',
+              however it must honor the string len of 'optionalArgs'
      */
-    virtual bool start_( const char* optionalArgs ) noexcept = 0;
+    virtual bool start_( char* optionalArgs ) noexcept = 0;
 
     /** This method has PACKAGE Scope, i.e. it is intended to be ONLY accessible
         by other classes in the Cpl::MApp namespace.  The Application should

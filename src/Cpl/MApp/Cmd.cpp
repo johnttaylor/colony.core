@@ -72,10 +72,13 @@ Cpl::TShell::Command::Result_T Cmd::execute( Cpl::TShell::Context_& context, cha
         }
 
         // Attempt to start the MApp
+        // NOTE: The casting of the string pointers to non-const pointer is OKAY
+        //       because the pointers are derived from 'cmdString' which is const 
+        //       char*
         char*       endName  = (char*) Cpl::Text::stripNotSpace( mappName );
         const char* mappArgs = Cpl::Text::stripSpace( endName );
         *endName             = '\0';
-        if ( !m_mappManager.startMApp( mappName, mappArgs ) )
+        if ( !m_mappManager.startMApp( mappName, (char*) mappArgs ) )
         {
             outtext.format( "ERROR: The MApp [%s] was not found", mappName );
             context.writeFrame( outtext );
@@ -97,14 +100,23 @@ Cpl::TShell::Command::Result_T Cmd::execute( Cpl::TShell::Context_& context, cha
             return Command::eERROR_MISSING_ARGS;
         }
 
-        // Attempt to stop the MApp
-        char* endName  = (char*) Cpl::Text::stripNotSpace( mappName );
-        *endName       = '\0';
-        if ( !m_mappManager.stopMApp( mappName ) )
+        // check for STOP ALL 
+        if ( strncmp( mappName, "ALL", 3 ) == 0 )
         {
-            outtext.format( "ERROR: The MApp [%s] was not started", mappName );
-            context.writeFrame( outtext );
-            return Command::eERROR_INVALID_ARGS;
+            m_mappManager.stopAllMApps();
+        }
+
+        // Attempt to stop the MApp
+        else
+        {
+            char* endName  = (char*) Cpl::Text::stripNotSpace( mappName );
+            *endName       = '\0';
+            if ( !m_mappManager.stopMApp( mappName ) )
+            {
+                outtext.format( "ERROR: The MApp [%s] was not started", mappName );
+                context.writeFrame( outtext );
+                return Command::eERROR_INVALID_ARGS;
+            }
         }
 
         return Command::eSUCCESS;

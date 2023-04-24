@@ -33,7 +33,7 @@ from nqbplib.my_globals import NQBP_PKG_ROOT
 #---------------------------------------------------
 
 # Set the name for the final output item (with NO file extension)
-FINAL_OUTPUT_NAME = 'blink'
+FINAL_OUTPUT_NAME = 'cplsystem-test'
 
 
 # Path to SDK and the ST CubeMX generated BSP files
@@ -58,6 +58,7 @@ base_release.asmflags    = f' {target_flags}'
 base_release.firstobjs   = f'_BUILT_DIR_.{bsp_mx}/Core/Src'
 base_release.firstobjs   = base_release.firstobjs + f' {bsp_mx}/../stdio.o'
 base_release.lastobjs    = base_release.lastobjs + f' {bsp_mx}/../syscalls.o' 
+
 
 # Set project specific 'optimized' options
 optimzed_release = BuildValues()    # Do NOT comment out this line
@@ -107,7 +108,6 @@ prjdir = os.path.dirname(os.path.abspath(__file__))
 
 # Select Module that contains the desired toolchain
 from nqbplib.toolchains.windows.arm_gcc_stm32.stm32F7 import ToolChain
-
 
 # Function that instantiates an instance of the toolchain
 def create():

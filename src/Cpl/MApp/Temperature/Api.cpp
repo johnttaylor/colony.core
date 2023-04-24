@@ -34,7 +34,7 @@ void Api::shutdown_() noexcept
     Cpl::System::Timer::stop();
 }
 
-bool Api::start_( const char* args ) noexcept
+bool Api::start_( char* args ) noexcept
 {
 
     // Parse my command line args
@@ -75,7 +75,7 @@ void Api::stop_() noexcept
     }
 }
 
-bool Api::parse( const char* args ) noexcept
+bool Api::parse( char* args ) noexcept
 {
     // Default the arguments
     m_sampleMs   = OPTION_CPL_MAPP_TEMPEARTURE_SAMPLE_INTERVAL_MS;

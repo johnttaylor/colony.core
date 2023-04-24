@@ -82,7 +82,7 @@ protected:
     void intialize_() noexcept;
 
     /// See Cpl::MApp::Api
-    bool start_( const char* args ) noexcept;
+    bool start_( char* args ) noexcept;
 
     /// See Cpl::MApp::Api
     void stop_() noexcept;
@@ -92,7 +92,7 @@ protected:
 
 protected:
     /// Helper method to parse the 'command line' options
-    bool parse( const char* args ) noexcept;
+    bool parse( char* args ) noexcept;
 
     /// Timer expired callback
     void expired( void ) noexcept;

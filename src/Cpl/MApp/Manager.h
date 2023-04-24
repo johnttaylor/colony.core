@@ -50,7 +50,7 @@ public:
 
 public:
     /// See Cpl::MApp::MAppApi
-    bool startMApp( const char* name, const char* args ) noexcept;
+    bool startMApp( const char* name, char* args ) noexcept;
 
     /// See Cpl::MApp::MAppApi
     bool stopMApp( const char* name ) noexcept;

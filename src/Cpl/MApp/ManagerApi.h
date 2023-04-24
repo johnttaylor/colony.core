@@ -28,8 +28,12 @@ public:
     /** This method is used to the specified MApp.  If a MApp is currently executing,
         that MApp will be stopped before the new MApp is started. If the specified 
         MApp name is not found false is returned; else true is returned. 
+
+        NOTE: If the client has no 'optionalArgs' to pass to the MApp instance, 
+              it must provide an empty/blank null terminated string, i.e can 
+              NOT pass a nullptr.
      */
-    virtual bool startMApp( const char* mappName, const char* optionalArgs ) noexcept = 0;
+    virtual bool startMApp( const char* mappName, char* optionalArgs ) noexcept = 0;
 
     /** This method is used to stop the specified running MApp.  If the MApp
         is currently not in the started state, then the method does nothing

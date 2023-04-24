@@ -103,19 +103,26 @@ void Manager::request( StartMAppMsg& msg )
         m_startedMApps.insert( *mapp );
 
         // Start the MApp
-        const char* args = payload.mappArgs;
+        char* args = payload.mappArgs;
         if ( args == nullptr )
         {
-            args = "";
-        }
-        CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("Starting: %s", mapp->getName()) );
-        if ( !mapp->start_( args ) )
-        {
-            CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("FAILED to start: %s %s", mapp->getName(), args) );
+            CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("FAILED to start: %s due to nullptr for 'args'", mapp->getName()) );
             payload.success = false;
 
             // Restore the MApp to the inactive list
             m_inactiveMApps.insert( *mapp );
+        }
+        else
+        {
+            CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("Starting: %s", mapp->getName()) );
+            if ( !mapp->start_( args ) )
+            {
+                CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("FAILED to start: %s %s", mapp->getName(), args) );
+                payload.success = false;
+
+                // Restore the MApp to the inactive list
+                m_inactiveMApps.insert( *mapp );
+            }
         }
     }
 
@@ -233,7 +240,7 @@ void Manager::request( LookupMAppMsg & msg )
 }
 
 //////////////////////////////////////////////////////////////////////////////
-bool Manager::startMApp( const char* name, const char* args ) noexcept
+bool Manager::startMApp( const char* name, char* args ) noexcept
 {
     StartMAppRequest::Payload      payload( name, args );
     Cpl::Itc::SyncReturnHandler    srh;

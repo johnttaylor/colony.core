@@ -35,7 +35,7 @@ public:
         const char* mappName;
 
         /// INPUT: Optional 'command line' arguments for the MApp
-        const char* mappArgs;
+        char*       mappArgs;
 
         /** OUTPUT: results
             true  = MApp was found and started
@@ -45,7 +45,7 @@ public:
 
     public:
         /// Constructor. 
-        Payload( const char* name, const char* args )
+        Payload( const char* name, char* args )
             :mappName( name ), mappArgs( args), success( false )
         {
         }
