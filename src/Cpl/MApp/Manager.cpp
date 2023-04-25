@@ -158,6 +158,7 @@ void Manager::request( StopAllMAppMsg & msg )
     while ( item  )
     {
         // Stop the instance
+        CPL_SYSTEM_TRACE_MSG( OPTION_CPL_MAPP_TRACE_SECTION, ("Stopping: %s", item->getName()) );
         item->stop_();
 
         // Move the stop instance to the inactive list

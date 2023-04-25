@@ -6,7 +6,7 @@
 
 
 // External references
-extern void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
+extern void runtest( Cpl::Io::Input& infd, Cpl::Io::Output& outfd );
 
 Cpl::Io::Stdio::StdIn   infd_;
 Cpl::Io::Stdio::StdOut  outfd_;
@@ -23,14 +23,7 @@ int main( int argc, char* const argv[] )
 	CPL_SYSTEM_TRACE_ENABLE_SECTION( "_0test" );
 	CPL_SYSTEM_TRACE_SET_INFO_LEVEL( Cpl::System::Trace::eINFO );
 
-	// Run the test
-	shell_test( infd_, outfd_ );
-
-	// do not exit
-	for ( ;;)
-	{
-		Cpl::System::Api::sleep( 1000 );
-	}
-
+	// Run the test (the method never returns)
+	runtest( infd_, outfd_ );
 	return 0;
 }
