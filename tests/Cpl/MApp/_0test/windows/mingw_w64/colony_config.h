@@ -6,9 +6,7 @@
 #define USE_CPL_SYSTEM_ASSERT_MACROS
 #endif
 
-// Enable Trace (but NOT on code coverage builds)
-#ifndef BUILD_VARIANT_WIN32
+// Enable Trace 
 #define USE_CPL_SYSTEM_TRACE
-#endif
 
 #endif
