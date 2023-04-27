@@ -72,6 +72,8 @@ class ToolChain( base.ToolChain ):
                 ' -I' + sdk_src_path + r'\rp2_common\hardware_ireq\include' + \
                 ' -I' + sdk_src_path + r'\rp2_common\hardware_timer\include' + \
                 ' -I' + sdk_src_path + r'\rp2_common\hardware_uart\include' + \
+                ' -I' + sdk_src_path + r'\rp2_common\hardware_pwm\include' + \
+                ' -I' + sdk_src_path + r'\rp2_common\hardware_adc\include' + \
                 ' -I' + sdk_src_path + r'\rp2_common\hardware_i2c\include' + \
                 ' -I' + sdk_src_path + r'\rp2_common\hardware_spi\include' + \
                 ' -I' + sdk_src_path + r'\rp2_common\hardware_divider\include' + \

@@ -143,9 +143,14 @@ class ToolChain:
         self._validate_cc_options = '-v'
         
         self._clean_list     = []
-        self._clean_pkg_dirs = []
-        self._clean_ext_dirs = []
-        self._clean_abs_dirs = []
+        #self._clean_pkg_dirs = []
+        #self._clean_ext_dirs = []
+        #self._clean_abs_dirs = []
+        # Retain cleaning NQBP classic derived directories -->help cleaning up when transition from classic to NQBP2
+        self._clean_pkg_dirs = [ 'src' ]
+        self._clean_ext_dirs = [ NQBP_WRKPKGS_DIRNAME() ]
+        self._clean_abs_dirs = [ '__abs' ]
+
  
         self._ar_library_name = 'library.a'
         self._ar_options      = 'crs'
@@ -229,7 +234,35 @@ class ToolChain:
         if ( os.path.exists(vardir) ):
             shutil.rmtree( vardir, True )   
 
-                
+        # RETAIN support for cleaning nqbp class derived directories/files (helps when transition to NQBP2)
+        if ( not silent ):
+            self._printer.output( "= Cleaning Project and local Package derived objects..." )
+        self._printer.debug( '# Cleaning file extensions: {}'.format( self._clean_list ) )
+        utils.run_clean_dir_pre_processing( NQBP_PRJ_DIR(), self._printer )
+        utils.run_clean_pre_processing( self._printer, self.libdirs, clean_pkg=True, clean_local=True )
+        utils.del_files_by_ext( NQBP_PRJ_DIR(), self._clean_list )
+
+        self._printer.debug( '# Cleaning directories: {}'.format( self._clean_pkg_dirs ) )
+        for d in self._clean_pkg_dirs:
+            if ( os.path.exists(d) ):
+                shutil.rmtree( d, True )
+
+        if ( not silent ):
+            self._printer.output( "= Cleaning External Package derived objects..." )
+        self._printer.debug( '# Cleaning directories: {}'.format( self._clean_ext_dirs ) )
+        utils.run_clean_pre_processing( self._printer, self.libdirs, clean_xpkgs=True )
+        for d in self._clean_ext_dirs:
+            if ( os.path.exists(d) ):
+                shutil.rmtree( d, True )
+
+        if ( not silent ):
+            self._printer.output( "= Cleaning Absolute Path derived objects..." )
+        self._printer.debug( '# Cleaning directories: {}'.format( self._clean_abs_dirs ) )
+        utils.run_clean_pre_processing( self._printer, self.libdirs, clean_absolute=True )
+        for d in self._clean_abs_dirs:
+            if ( os.path.exists(d) ):
+                shutil.rmtree( d, True )
+
  
     #--------------------------------------------------------------------------
     def clean_all( self, arguments, silent=False ):            
@@ -608,7 +641,7 @@ class ToolChain:
     def _build_objdmp_rule( self ):
         self._ninja_writer.rule( 
             name = 'objdmp_rule', 
-            command = "$objdmp $objdmp_opts $in > $out", 
+            command = "$shell $objdmp $objdmp_opts $in > $out", 
             description = "Objdmp: $in TO $out" )
 
     def _build_generic_rule( self ):

@@ -84,6 +84,8 @@ Arguments:
                    build variant) referenced in the libdirs.b file.
   --qry-dirs2      Same as --qry-dirs with the addition of the any source file
                    include/exclude info
+  --deps           Outputs the Header file dependencies. DOES NOT BUILD the 
+                   projects.
   -h,--help        Display help.
   --version        Display version number.
 
@@ -147,6 +149,14 @@ def build( argv, toolchain ):
     
     if ( arguments['--clean-all'] ):
         toolchain.clean_all( arguments, silent=True )
+        sys.exit()
+
+    if ( arguments['--deps'] ):
+        ncmd   = f"ninja -t deps"
+        vardir = "_" + arguments['-b']
+        utils.push_dir( vardir );
+        utils.run_shell2( ncmd, True, "ERROR: Dependency Tool failed." )
+        utils.pop_dir()
         sys.exit()
 
     # Validate Compiler toolchain is set properly (ONLY after non-build options have been processed, i.e. don't have to have an 'active' toolchain for non-build options to work)
@@ -243,7 +253,10 @@ def do_build( printer, toolchain, arguments, variant ):
             ninja_opts = '-v'
         if ( arguments['-1'] ):
             ninja_opts = ninja_opts + ' -j 1'
-        utils.run_shell2( f"ninja {ninja_opts}", True, "ERROR: Build failed." )
+        ncmd = f"ninja {ninja_opts} -d keepdepfile"
+        printer.debug( '# ninja command = ' + ncmd )
+
+        utils.run_shell2( ncmd, True, "ERROR: Build failed." )
 
     # Output end banner
     end_banner(printer, toolchain)
@@ -311,7 +324,7 @@ def build_single_directory( printer, arguments, toolchain, dir, entry, pkg_root,
     # verify source directory exists
     if ( not os.path.exists( srcpath ) ):
         printer.output( "")
-        printer.output( "ERROR: Build Failed - directory does not exist: " )
+        printer.output( f"ERROR: Build Failed - directory does not exist: {srcpath}" )
         printer.output( "" )
         sys.exit(1)
         
