@@ -21,11 +21,19 @@
   },
   "publish": {
     "current": {
-      "comment": "Publish as Outcast2 package",
-      "version": "8.2.1",
-      "date": "Sun Nov 21 22:58:05 2021",
-      "timestamp": 1637535485
+      "comment": "Update to newer version of FreeRTOS - also contains a patch to work with Segger's SysView tool",
+      "version": "10.4.3-LTS-Patch1",
+      "date": "Thu Apr 20 13:46:05 2023",
+      "timestamp": 1681998365,
+      "changes": null
     },
-    "history": []
+    "history": [
+      {
+        "comment": "Publish as Outcast2 package",
+        "version": "8.2.1",
+        "date": "Sun Nov 21 22:58:05 2021",
+        "timestamp": 1637535485
+      }
+    ]
   }
 }
