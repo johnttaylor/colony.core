@@ -3,8 +3,10 @@
 
 import config
 import utils
+import time
 from rattlib import output
 
+start_time_ns = int(time.time_ns())
 
 #------------------------------------------------------------------------------
 def load( script_name, file_extension=config.g_ratt_file_extension ):
@@ -59,3 +61,29 @@ def shell( cmd ):
     exitcode, result = utils.run_shell( cmd )
     output.writeline_verbose( result )
     return exitcode, result
+
+#------------------------------------------------------------------------------
+def get_start_time_ns():
+    """ Returns and caches the starting time in nano seconds
+    """
+    global start_time_ns
+    start_time_ns = int(time.time_ns())
+    return start_time_ns
+
+def get_elapsed_time_ns():
+    """ Returns the elapsed time in nano seconds
+    """
+    end_time = time.time_ns() 
+    return int(end_time - start_time_ns) 
+
+def get_elapsed_timestamp_ms( elasped_time_ns ):
+    """ Returns a string that represents the elapsed host time in milliseconds
+
+        Format: dd hh:mm:ss.nnn
+    """
+    hh, t   = divmod( elasped_time_ns, (60*60) * 1000000000 )
+    mm, t   = divmod( t, 60 * 1000000000 )
+    ss, t   = divmod( t, 1000000000 )
+    msec, t = divmod( t, 1000000 )
+    dd, hh  = divmod( hh, 24 )
+    return f"{dd:02d} {hh:02d}:{mm:02d}:{ss:02d}.{msec:03d}"

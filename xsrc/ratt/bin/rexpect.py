@@ -56,15 +56,16 @@ class ExpectLinuxConsole(object):
     def __init__( self, exename, logfile=None ):
        self.exename     = exename
        self.logfile     = logfile
-       self.child = pexpect.spawn(exename,logfile=logfile,maxread=1)
+       self.child = pexpect.spawn(exename,logfile=logfile,maxread=4096)
 
     def respawn( self ):
-        self.child = pexpect.popen_spawn.PopenSpawn(self.exename,logfile=self.logfile,maxread=1)
+        self.child = pexpect.popen_spawn.PopenSpawn(self.exename,logfile=self.logfile,maxread=4096)
 
     def is_detached_uut(self):
         return False;
 
     def sendline( self, s ):
+        print("sendline", s )
         self.child.sendline(s)
 
     def flush( self ):
@@ -74,9 +75,11 @@ class ExpectLinuxConsole(object):
         return self.child.read_nonblocking( size, timeout )
 
     def expect( self, regex_list, timeout=-1, searchwindowsize=-1 ):
+        print("regex waiting for", regex_list, timeout )
         return self.child.expect( regex_list, timeout=timeout, searchwindowsize=searchwindowsize )
 
     def expect_str( self, string_list, timeout=-1, searchwindowsize=-1 ):
+        print("str waiting for", string_list, timeout )
         return self.child.expect_exact( string_list, timeout=timeout, searchwindowsize=searchwindowsize )
 
     def get_before( self ):

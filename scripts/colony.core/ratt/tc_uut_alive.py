@@ -20,7 +20,7 @@ def run():
 
 	
     # Send a help command to the UUT and wait for a response form UUT, i.e. is the UUT alive?
-    r = uut.cli( "bogus-command-should-throw-error" ) # Consume the initial prompt at start-up
+    r = uut.cli( "" ) # Consume the initial prompt at start-up
     r = uut.cli( "help" )
     if r != None:
         passcode = config.g_passed if 'help [* | <cmd>]' in r else config.g_failed

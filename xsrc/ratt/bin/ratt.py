@@ -71,6 +71,9 @@ VERSION = "0.3"
 
 # ------------------------------------------------------------------------------
 def main():
+    # Mark the time the script starts
+    start_time = time()
+    std.get_start_time_ns()
 
     # Parse command line
     args = docopt(__doc__, version=VERSION, options_first=True)
@@ -89,7 +92,7 @@ def main():
 
     ## Created 'Expected' object for a: Windoze executable UUT
     if (args['--win']):
-        config.g_uut = rexpect.ExpectWindowsConsole(" ".join(args['<executable>']), logfile)
+        config.g_uut = rexpect.ExpectWindowsConsole(" ".join(args['<executable>']))
    
     # Created 'Expected' object for a: Linux/Wsl executable UUT
     elif (args['--linux']):
@@ -97,7 +100,7 @@ def main():
 
     # Create 'Expected' object for a: NO UUT
     elif (args['--nouut']):
-        config.g_uut = rexpect.ExpectNullConsole(logfile)
+        config.g_uut = rexpect.ExpectNullConsole()
 
     # Enable output
     output.set_verbose_mode(args['-v'])
@@ -119,7 +122,6 @@ def main():
         if (input == None):
             sys.exit(result)
 
-        start_time = time()
         output.writeline("------------ START: Ratt, ver={}. Start time={}".format(VERSION, strftime("%Y-%m-%d_%H.%M.%S",localtime(start_time))))
         output.writeline("------------ RUNNING SUITE CASE: {}".format(result))
         passcode = input.main()
@@ -134,16 +136,17 @@ def main():
 
     # interactive mode
     else:
-        output.writeline("")
+        output.writeline(" ")
         output.writeline("------------ Welcome to Ratt, this is my Kung-Fu and it is strong! ------------")
         output.writeline("                   ver={}. Start time={}".format(VERSION,  utils.append_current_time("", "")))
-        output.writeline("")
+        output.writeline(" ")
         output.writeline("This is an interactive Python shell, enter python commands/code.")
         output.writeline("- For help on available rattlib modules type: help('rattlib')")
         output.writeline("- For a list of available test scripts type: man.list()")
-        output.writeline("")
+        output.writeline(" ")
 
        
+        std.get_start_time_ns()
         while(True):
             output.write(">")
 

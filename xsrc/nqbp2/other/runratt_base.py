@@ -41,12 +41,11 @@ def set_paths( testcases_dir,
     rattexe    = os.path.join( xpkgs_root, "ratt", "bin",  "ratt.py" )
 
 #
-def run_ratt( tsuite_name, uut_dir, uut_exe, exehost, exeargs="", verbose=False ):
+def run_ratt( tsuite_name, uut_dir, uut_exe, exehost, exeargs="", rattxargs="" ):
     push_dir( uut_dir )
     
-    cmd = f'{rattexe} --log --input {tsuite_name} --path1 {testsdir1} --path2 {testsdir2} --path3 {testsdir3} {exehost} {uut_exe} {exeargs}' 
-    if ( verbose ):
-        print( cmd )
+    cmd = f'{rattexe} --log --input {standardize_dir_sep(tsuite_name)} --path1 {testsdir1} --path2 {testsdir2} --path3 {testsdir3} {rattxargs} {exehost} {uut_exe} {exeargs}' 
+    print( cmd )
     result, testoutput = run_shell( cmd  )
     pop_dir()
     return result, testoutput

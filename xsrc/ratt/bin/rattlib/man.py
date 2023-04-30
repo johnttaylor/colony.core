@@ -30,10 +30,9 @@ def man( script_name, file_extension=config.g_ratt_file_extension, list_all_func
 
     # get module help
     indent  = "    "
-    modhelp = indent + pydoc.getdoc(m).replace("\n", "\n"+indent)
+    modhelp = indent + pydoc.getdoc(m).replace(config.g_newline, config.g_newline+indent)
     try:
-        print(type(m.run))
-        runhelp = indent + pydoc.getdoc(m.run).replace("\n", "\n"+indent)
+        runhelp = indent + pydoc.getdoc(m.run).replace(config.g_newline, config.g_newline+indent)
     except:
         runhelp = None
 
@@ -57,7 +56,7 @@ def man( script_name, file_extension=config.g_ratt_file_extension, list_all_func
         funcs = getmembers(m,isfunction)
         for f in funcs:
             output.writeline(f'{indent}{f[0]}{signature(f[1])}')
-            runhelp = indent + indent + pydoc.getdoc(f[1]).replace("\n", "\n"+indent+indent)
+            runhelp = indent + indent + pydoc.getdoc(f[1]).replace(config.g_newline, config.g_newline+indent+indent)
             output.writeline( runhelp )
             output.writeline( "" )
 

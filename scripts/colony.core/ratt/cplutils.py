@@ -268,7 +268,7 @@ def scan_for_trace_stmts( cli_output, trace_section, thread_name ):
         name
     """
     stmts = []
-    lines = cli_output.split('\n')
+    lines = cli_output.split(config.g_newline)
     filter = f'({trace_section}) [{thread_name}]'
     for l in lines:
         if ( filter in l ):

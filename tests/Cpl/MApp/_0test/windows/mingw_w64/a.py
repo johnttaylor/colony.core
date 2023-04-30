@@ -32,6 +32,11 @@ if __name__ == '__main__':
         print( testoutput )
         print
 
+    if ( os.path.isdir( '_win64' ) ):
+        result, testoutput = runratt_base.run_ratt( tsuite, '_win64', exe, host, exeargs )
+        print( testoutput )
+        print
+
     if ( os.path.isdir( '_cpp11' ) and result == 0 ):
         result, testoutput = runratt_base.run_ratt( tsuite, '_cpp11', exe, host, exeargs )
         print( testoutput )

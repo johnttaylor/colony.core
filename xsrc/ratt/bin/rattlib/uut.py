@@ -14,7 +14,7 @@ def setprompt( new_prompt ):
         cli() command.  The method returns the previous prompt value.
     """
     global prompt_string;
-    prev          = promtp_string
+    prev          = prompt_string
     prompt_string = new_prompt
     return prev
 
@@ -36,6 +36,7 @@ def cli( cli_command, wait=True, max_wait_sec=10, regex_match=False, append_newl
 
     # Send the command to the UUT
     cmd = cli_command + config.g_newline if append_newline else cli_command
+    output.writeline_verbose( cli_command, prefix_timestamp=True ) 
     config.g_uut.sendline( cmd  )
     config.g_uut.flush()
     
@@ -68,12 +69,12 @@ def clear():
         if ( d != None and d != ''):
             flushed_stuff += str(d,'utf-8')
         else:
-            output.writeline_verbose( flushed_stuff, console_only=True )
+            output.writeline_verbose( flushed_stuff, prefix_timestamp=True )
             return flushed_stuff
 
     # Make sure we return the 'flushed stuff' if the pexpect buffer is
     # constantly being filled up
-    output.writeline_verbose( flushed_stuff, console_only=True )
+    output.writeline_verbose( flushed_stuff, prefix_timestamp=True )
     return flushed_stuff
 
 
@@ -93,14 +94,21 @@ def waitfor( timeout_sec, needle, regex_match=False ):
 
     # String match
     if ( regex_match == False ):
-        output.writeline_verbose( "Waiting up to {} seconds for the string: [{}]".format( timeout_sec, needle ) )
+        output.writeline_verbose( "Waiting up to {} seconds for the string: [{}]".format( timeout_sec, needle ), prefix_timestamp=True )
         idx = config.g_uut.expect_str( [needle, pexpect.EOF, pexpect.TIMEOUT], timeout_sec )
 
     # Regex Match
     elif ( tokens[1] == 'REGEX' ):
-        output.writeline_verbose( "Waiting up to {} seconds for the regex: [{}]".format( timeout_sec, needle ) )
+        output.writeline_verbose( "Waiting up to {} seconds for the regex: [{}]".format( timeout_sec, needle ), prefix_timestamp=True )
         idx = config.g_uut.expect( [needle, pexpect.EOF, pexpect.TIMEOUT], timeout_sec )
 
-    result = str(config.g_uut.get_before())+str(config.g_uut.get_after()) 
-    output.writeline_verbose( result, console_only=True ) # Note: the pexpect engine always writes to the log file
+    before = config.g_uut.get_before()
+    after  = config.g_uut.get_after()
+
+    # For some reason - the 'before' string always has leading space
+    if ( before[0] == ' ' ):
+        before = before[1:]
+
+    result = before+after
+    output.writeline_verbose( result, prefix_timestamp=True ) 
     return result if idx == 0 else None
