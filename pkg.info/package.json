@@ -87,18 +87,18 @@
         }
       },
       {
-        "pkgname": "nqbp2",
+        "pkgname": "ratt",
         "pkgtype": "readonly",
         "virtualAdoption": false,
-        "adoptedDate": "Mon Apr 24 22:50:30 2023",
+        "adoptedDate": "Sun Apr 30 22:45:38 2023",
         "parentDir": "xsrc",
         "version": {
-          "semanticVersion": "0.1.3",
+          "semanticVersion": "2.0.0",
           "branch": null,
-          "tag": "OUTCAST2-main-0.1.3"
+          "tag": "OUTCAST2-main-2.0.0"
         },
         "repo": {
-          "name": "nqbp2",
+          "name": "ratt",
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
