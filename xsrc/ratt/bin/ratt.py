@@ -96,7 +96,7 @@ def main():
    
     # Created 'Expected' object for a: Linux/Wsl executable UUT
     elif (args['--linux']):
-        config.g_uut = rexpect.ExpectLinuxConsole(" ".join(args['<executable>']), logfile)
+        config.g_uut = rexpect.ExpectLinuxConsole(" ".join(args['<executable>']))
 
     # Create 'Expected' object for a: NO UUT
     elif (args['--nouut']):

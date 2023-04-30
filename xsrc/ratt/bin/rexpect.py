@@ -65,7 +65,6 @@ class ExpectLinuxConsole(object):
         return False;
 
     def sendline( self, s ):
-        print("sendline", s )
         self.child.sendline(s)
 
     def flush( self ):
@@ -75,11 +74,9 @@ class ExpectLinuxConsole(object):
         return self.child.read_nonblocking( size, timeout )
 
     def expect( self, regex_list, timeout=-1, searchwindowsize=-1 ):
-        print("regex waiting for", regex_list, timeout )
         return self.child.expect( regex_list, timeout=timeout, searchwindowsize=searchwindowsize )
 
     def expect_str( self, string_list, timeout=-1, searchwindowsize=-1 ):
-        print("str waiting for", string_list, timeout )
         return self.child.expect_exact( string_list, timeout=timeout, searchwindowsize=searchwindowsize )
 
     def get_before( self ):
