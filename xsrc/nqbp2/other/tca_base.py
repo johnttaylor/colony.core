@@ -92,7 +92,7 @@ def run(argv):
     pkg = NQBP_PKG_ROOT()
     
     # setup excludes 
-    excludes = '--exclude=.*_0test.*  --exclude=^tests* --exclude-unreachable-branches'
+    excludes = '--exclude=.*_0test.*  --exclude=^tests* --exclude-unreachable-branches --exclude-lines-by-pattern .*CPL_SYSTEM_TRACE.* --exclude-lines-by-pattern .*CPL_SYSTEM_ASSERT.*'
 
     # Setup 'arc' excludes for C++ code (see https://gcovr.com/en/stable/faq.html)
     arcopt = ' --exclude-unreachable-branches'
@@ -110,6 +110,7 @@ def run(argv):
             first = args['<args>'][0]
             if (first == '-h' or first == '--help'):
                 cmd = '{} -m gcovr --help'.format(python)
+        print(cmd)        
         run_shell(cmd, True)
 
     # Generate human readable .gcov files

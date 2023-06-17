@@ -23,10 +23,9 @@ def load( script_name, file_extension=config.g_ratt_file_extension ):
     if ( m == None ):
         output.writeline( "Error loading script: (). [{}]".format( e ) )
         return None
-
     return m
 
-def run( script_name, current_passcode = config.g_passed, file_extension=config.g_ratt_file_extension ):
+def run( script_name, current_passcode = config.g_passed, file_extension=config.g_ratt_file_extension, script_args=(), script_kwargs={} ):
     """ Dynamically loads and then runs the script.  The method returns the
         pass/fail result of the script. 
         
@@ -44,7 +43,8 @@ def run( script_name, current_passcode = config.g_passed, file_extension=config.
     r = config.g_failed
     try:
         output.writeline_verbose( f"INFO: running {script_name}" )
-        r = tc.run()
+        r = tc.run( *script_args, **script_kwargs )
+
     except Exception as e:
         output.writeline(f'Error: Script {script_name} failed to run. {e}')
         

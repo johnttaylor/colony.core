@@ -66,7 +66,7 @@ from docopt.docopt import docopt
 from collections import deque
 from time import time, localtime, strftime
 
-VERSION = "0.3"
+VERSION = "2.0.0"
 
 
 # ------------------------------------------------------------------------------
@@ -91,16 +91,19 @@ def main():
         logfile = open(utils.append_current_time(args['--logfile']), "wb")
 
     ## Created 'Expected' object for a: Windoze executable UUT
-    if (args['--win']):
-        config.g_uut = rexpect.ExpectWindowsConsole(" ".join(args['<executable>']))
+    try:
+        if (args['--win']):
+            config.g_uut = rexpect.ExpectWindowsConsole(" ".join(args['<executable>']))
    
-    # Created 'Expected' object for a: Linux/Wsl executable UUT
-    elif (args['--linux']):
-        config.g_uut = rexpect.ExpectLinuxConsole(" ".join(args['<executable>']))
+        # Created 'Expected' object for a: Linux/Wsl executable UUT
+        elif (args['--linux']):
+            config.g_uut = rexpect.ExpectLinuxConsole(" ".join(args['<executable>']))
 
-    # Create 'Expected' object for a: NO UUT
-    elif (args['--nouut']):
-        config.g_uut = rexpect.ExpectNullConsole()
+        # Create 'Expected' object for a: NO UUT
+        elif (args['--nouut']):
+            config.g_uut = rexpect.ExpectNullConsole()
+    except Exception as e:
+        sys.exit( f"ERROR: Not able to launch pexpect/uut. {e}" )
 
     # Enable output
     output.set_verbose_mode(args['-v'])

@@ -270,6 +270,7 @@ class ToolChain:
             if ( not silent ):
                 self._printer.output( "=====================" )
                 self._printer.output( "= Build Variant: " + b )
+            self._bld = b
             self.clean(silent)
     
 

@@ -23,13 +23,27 @@
   },
   "publish": {
     "current": {
-      "comment": " 1. Add STM32 toolchains. 2. Add ninja executables to the repo. 3. add ability to invoke the ninja 'deps' tool. 4. Add support to clean 'legacy' derived object when migrating to NQBP2",
-      "version": "0.1.3",
-      "date": "Mon Apr 24 22:48:00 2023",
-      "timestamp": 1682376480,
+      "comment": "1. Update genfsm to the sinelabore 6.02. 2. Update the test coverage script to filter out conditional compiled items such as TRACE and ASSERT",
+      "version": "0.1.5",
+      "date": "Sat Jun 17 19:58:44 2023",
+      "timestamp": 1687031924,
       "changes": null
     },
     "history": [
+      {
+        "comment": "Add some support the 'ratt' test tool",
+        "version": "0.1.4",
+        "date": "Sun Apr 30 22:51:00 2023",
+        "timestamp": 1682895060,
+        "changes": null
+      },
+      {
+        "comment": " 1. Add STM32 toolchains. 2. Add ninja executables to the repo. 3. add ability to invoke the ninja 'deps' tool. 4. Add support to clean 'legacy' derived object when migrating to NQBP2",
+        "version": "0.1.3",
+        "date": "Mon Apr 24 22:48:00 2023",
+        "timestamp": 1682376480,
+        "changes": null
+      },
       {
         "comment": "1. Add missing header paths to the PI Pico toolchains. 2. Update documentation",
         "version": "0.1.2",

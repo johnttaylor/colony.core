@@ -2,7 +2,7 @@
 """
 
 from rattlib import output
-import time
+import sys
 import config
 import pexpect
 
@@ -76,6 +76,10 @@ def clear():
             # no data -->so exit loop
             break
 
+        except pexpect.exceptions.EOF:
+            # Indication that the UUT is no longer running
+            sys.exit("ERROR: UUT is no longer executing")
+
     # Make sure we return the 'flushed stuff' if the pexpect buffer is
     # constantly being filled up
     output.writeline_verbose( flushed_stuff, prefix_timestamp=True )
@@ -107,10 +111,15 @@ def waitfor( timeout_sec, needle, regex_match=False ):
         idx = config.g_uut.expect( [needle, pexpect.EOF, pexpect.TIMEOUT], timeout_sec )
 
     before = config.g_uut.get_before()
+    if ( not isinstance(before, str) ):
+        before = ' '
+
     after  = config.g_uut.get_after()
+    if ( not isinstance(after,str) ):
+        after = ''
 
     # For some reason - the 'before' string always has leading space
-    if ( before[0] == ' ' ):
+    if ( len(before) > 0 and before[0] == ' ' ):
         before = before[1:]
 
     result = before+after
