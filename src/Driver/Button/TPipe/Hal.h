@@ -16,6 +16,8 @@
     its raw inputs via a Driver::TPipe.  The driver assumes the following
     RX Command structure:
 
+    \code
+
     <verb> <b1> DN|up [<b2> DN|up [..<bN> DN|up]]
 
     Where:
@@ -30,6 +32,8 @@
         Example:
         buttons A up B up X DN Y up     // Only the Y button is pressed
         buttons A UP B UP X up Y up     // Only the A & B buttons are pressed
+
+    \endcode
 
 */
 
