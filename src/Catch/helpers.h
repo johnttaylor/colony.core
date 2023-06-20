@@ -18,7 +18,7 @@
 #include "colony_config.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Trace.h"
-#include "Cpl/System/Semeaphore.h"
+#include "Cpl/System/Semaphore.h"
 #include "Cpl/Dm/ModelPoint.h"
 #include "Cpl/Dm/MailboxServer.h"
 #include "Cpl/Itc/MailboxServer.h"
@@ -30,13 +30,13 @@
 #define OPTION_CPL_CATCH_HELPERS_TRACE_SECT     "_0test"
 #endif
 
-/*----------------------------------------------------------------------------*/
-/** This function performs a blocking wait by monitoring a Model Point for
-    a specific value.  The method waits a specified amount of time BEFORE
-    checking for the expected value. The method returns true if the specified
-    MP's values matches the expected value; else the method will eventually time
-    out and return false.
- */
+  /*----------------------------------------------------------------------------*/
+  /** This function performs a blocking wait by monitoring a Model Point for
+      a specific value.  The method waits a specified amount of time BEFORE
+      checking for the expected value. The method returns true if the specified
+      MP's values matches the expected value; else the method will eventually time
+      out and return false.
+   */
 template<class MPTYPE, class VALTYPE>
 bool minWaitOnModelPoint( MPTYPE& src, VALTYPE expectedVal, unsigned long minWait, VALTYPE* lastVal=nullptr, unsigned long maxWaitMs=10000, unsigned long waitDelayMs=10 )
 {
@@ -138,8 +138,8 @@ bool minWaitOnModelPointValidState( MPTYPE& src, bool expectedValidState, unsign
     return false;
 };
 
-/** This class is a DM Mailbox server that signals the provided semaphore when 
-    it begins execution.  This is helpful when you need synchronize your test 
+/** This class is a DM Mailbox server that signals the provided semaphore when
+    it begins execution.  This is helpful when you need synchronize your test
     with the mailbox thread actually running
  */
 class DmMailbox : public Cpl::Dm::MailboxServer
@@ -148,7 +148,7 @@ public:
     /// Constructor
     DmMailbox( Cpl::System::Semaphore&              signalToNotify,
                unsigned long                        timingTickInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD,
-               Cpl::System::SharedEventHandlerApi*  eventHandler     = 0)
+               Cpl::System::SharedEventHandlerApi*  eventHandler     = 0 )
         : MailboxServer( timingTickInMsec, eventHandler )
         , m_sema( signalToNotify )
     {
@@ -169,7 +169,7 @@ public:
 
 /** Same as the a DmMailbox class, except for ITC Mailbox server
  */
-class ItcMailbox : public Cpl::Itcs::MailboxServer
+class ItcMailbox : public Cpl::Itc::MailboxServer
 {
 public:
     /// Constructor
@@ -186,7 +186,7 @@ public:
     void appRun()
     {
         m_sema.signal();
-        Cpl::Dm::MailboxServer::appRun();
+        Cpl::Itc::MailboxServer::appRun();
     }
 
 public:
