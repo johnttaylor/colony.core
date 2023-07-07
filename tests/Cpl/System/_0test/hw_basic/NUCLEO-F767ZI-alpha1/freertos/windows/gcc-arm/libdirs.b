@@ -36,5 +36,4 @@ xsrc/stm32F7-SDK/Drivers/STM32F7xx_HAL_Driver/Src > stm32f7xx_hal_timebase_rtc_a
 
 # FreeRTOS
 xsrc/freertos
-xsrc/freertos/portable/MemMang
 xsrc/freertos/portable/GCC/ARM_CM7/r0p1
