@@ -87,15 +87,32 @@
         }
       },
       {
+        "pkgname": "ratt",
+        "pkgtype": "readonly",
+        "virtualAdoption": false,
+        "adoptedDate": "Sun Apr 30 22:45:38 2023",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": "2.0.0",
+          "branch": null,
+          "tag": "OUTCAST2-main-2.0.0"
+        },
+        "repo": {
+          "name": "ratt",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      },
+      {
         "pkgname": "nqbp2",
         "pkgtype": "readonly",
         "virtualAdoption": false,
-        "adoptedDate": "Mon Apr 24 22:50:30 2023",
+        "adoptedDate": "Sun Apr 30 22:54:09 2023",
         "parentDir": "xsrc",
         "version": {
-          "semanticVersion": "0.1.3",
+          "semanticVersion": "0.1.4",
           "branch": null,
-          "tag": "OUTCAST2-main-0.1.3"
+          "tag": "OUTCAST2-main-0.1.4"
         },
         "repo": {
           "name": "nqbp2",
@@ -108,7 +125,8 @@
   "directories": {
     "primary": [
       "src",
-      "tests",
+        "tests",
+      "scripts",
       "top"
     ],
     "adoptedExtras": [

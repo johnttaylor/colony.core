@@ -40,6 +40,7 @@ export PATH=$PATH:$NQBP_BIN/ninja
 alias t="cd $HERE"
 alias bob="$NQBP_BIN/other/bob.py"
 alias chuck="$NQBP_BIN/other/chuck.py"
+alias ratt="$NQBP_XPKGS_ROOT/ratt/bin/ratt.py"
 
 # Display which compiler is being used
 if [ -z "${NQBP_GCC_BIN}" ]; then

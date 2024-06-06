@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2022  John T. Taylor
+* Copyright (c) 2014-2020  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -18,7 +18,10 @@
 #include "colony_config.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Trace.h"
+#include "Cpl/System/Semaphore.h"
 #include "Cpl/Dm/ModelPoint.h"
+#include "Cpl/Dm/MailboxServer.h"
+#include "Cpl/Itc/MailboxServer.h"
 
 
  /** Default Trace section used by/for the Helper methods
@@ -27,13 +30,13 @@
 #define OPTION_CPL_CATCH_HELPERS_TRACE_SECT     "_0test"
 #endif
 
-/*----------------------------------------------------------------------------*/
-/** This function performs a blocking wait by monitoring a Model Point for
-    a specific value.  The method waits a specified amount of time BEFORE
-    checking for the expected value. The method returns true if the specified
-    MP's values matches the expected value; else the method will eventually time
-    out and return false.
- */
+  /*----------------------------------------------------------------------------*/
+  /** This function performs a blocking wait by monitoring a Model Point for
+      a specific value.  The method waits a specified amount of time BEFORE
+      checking for the expected value. The method returns true if the specified
+      MP's values matches the expected value; else the method will eventually time
+      out and return false.
+   */
 template<class MPTYPE, class VALTYPE>
 bool minWaitOnModelPoint( MPTYPE& src, VALTYPE expectedVal, unsigned long minWait, VALTYPE* lastVal=nullptr, unsigned long maxWaitMs=10000, unsigned long waitDelayMs=10 )
 {
@@ -134,5 +137,62 @@ bool minWaitOnModelPointValidState( MPTYPE& src, bool expectedValidState, unsign
     }
     return false;
 };
+
+/** This class is a DM Mailbox server that signals the provided semaphore when
+    it begins execution.  This is helpful when you need synchronize your test
+    with the mailbox thread actually running
+ */
+class DmMailbox : public Cpl::Dm::MailboxServer
+{
+public:
+    /// Constructor
+    DmMailbox( Cpl::System::Semaphore&              signalToNotify,
+               unsigned long                        timingTickInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD,
+               Cpl::System::SharedEventHandlerApi*  eventHandler     = 0 )
+        : MailboxServer( timingTickInMsec, eventHandler )
+        , m_sema( signalToNotify )
+    {
+    }
+
+public:
+    /// See Cpl::System::Runnable
+    void appRun()
+    {
+        m_sema.signal();
+        Cpl::Dm::MailboxServer::appRun();
+    }
+
+public:
+    /// Semaphore to signal when I run
+    Cpl::System::Semaphore& m_sema;
+};
+
+/** Same as the a DmMailbox class, except for ITC Mailbox server
+ */
+class ItcMailbox : public Cpl::Itc::MailboxServer
+{
+public:
+    /// Constructor
+    ItcMailbox( Cpl::System::Semaphore&              signalToNotify,
+                unsigned long                        timingTickInMsec = OPTION_CPL_SYSTEM_EVENT_LOOP_TIMEOUT_PERIOD,
+                Cpl::System::SharedEventHandlerApi*  eventHandler     = 0 )
+        : MailboxServer( timingTickInMsec, eventHandler )
+        , m_sema( signalToNotify )
+    {
+    }
+
+public:
+    /// See Cpl::System::Runnable
+    void appRun()
+    {
+        m_sema.signal();
+        Cpl::Itc::MailboxServer::appRun();
+    }
+
+public:
+    /// Semaphore to signal when I run
+    Cpl::System::Semaphore& m_sema;
+};
+
 
 #endif  // end header latch
