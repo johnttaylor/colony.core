@@ -2,7 +2,7 @@
 :: This script is used by the CI\Build machine to build the Windows test
 :: projects
 ::
-:: usage: build_all_windoze.bat <buildType> <buildNumber>
+:: usage: build_all_windoze.bat <buildNumber> [branch]
 ::
 
 set _TOPDIR=%~dp0
@@ -10,8 +10,8 @@ set _ROOT=%_TOPDIR%..
 
 
 :: Set Build info (and force build number to zero for "non-official" builds)
-set BUILD_TYPE=%1
-set BUILD_NUMBER=%2
+set BUILD_TYPE=%2
+set BUILD_NUMBER=%1
 IF %BUILD_TYPE%=="pr" set BUILD_NUMBER=0
 IF %BUILD_TYPE%=="unknown" set BUILD_NUMBER=0
 echo:
