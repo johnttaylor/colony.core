@@ -31,7 +31,7 @@ def filter_warnings( output ):
             continue
 
         # Filter
-        if ( re.search( r"^.warning: ignoring unsupported tag.*", line ) ):
+        if ( re.search( r"^.*warning: ignoring unsupported tag.*", line ) ):
             continue
         
         # Filter
