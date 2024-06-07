@@ -6,6 +6,8 @@
 ::
 
 set _TOPDIR=%~dp0
+set _ROOT=%_TOPDIR%..
+
 
 :: Set Build info (and force build number to zero for "non-official" builds)
 set BUILD_TYPE=%1
@@ -16,30 +18,37 @@ echo:
 echo:BUILD TYPE=%BUILD_TYPE%, BUILD_NUMBER=%BUILD_NUMBER%
 echo:
 
+:: Make sure the _artifacts directory exists and is empty
+cd %_ROOT%
+rmdir /s /q _artifacts
+mkdir _artifacts
+
 :: Run Doxygen first 
 cd %_TOPDIR%
-run_doxygen.py %BUILD_TYPE% %BUILD_NUMBER%
-IF ERRORLEVEL 1 EXIT /b 1
+::run_doxygen.py %BUILD_TYPE% %BUILD_NUMBER%
+::IF ERRORLEVEL 1 EXIT /b 1
+::copy %_ROOT%\docs\colony.core-library_%BUILD_NUMBER%-%BUILD_TYPE%.chm %_ROOT%\_artifacts\colony.core-library__%BUILD_NUMBER%-%BUILD_TYPE%.chm
+::IF ERRORLEVEL 1 EXIT /b 1
 
 ::
 :: Build Mingw projects
 ::
 echo on
-call %_TOPDIR%..\env.bat 3
+call %_ROOT%\env.bat 3
 
-cd %_TOPDIR%..\tests
-%_TOPDIR%..\..\xpkgs\nqbp\other\bob.py -v4 mingw_w64 --bldtime --bld-all --bldnum %BUILD_NUMBER%
+cd %_ROOT%\tests
+%_ROOT%\xsrc\nqbp2\other\bob.py -v4 mingw_w64 --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Run unit tests
 cd %_TOPDIR%\..\tests
-%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -vt --match a.exe --dir mingw_w64
+%_ROOT%\xsrc\nqbp2\other\chuck.py -vt --match a.exe --dir mingw_w64
 IF ERRORLEVEL 1 EXIT /b 1
-%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -v --match aa.exe --dir mingw_w64
+%_ROOT%\xsrc\nqbp2\other\chuck.py -v --match aa.exe --dir mingw_w64
 IF ERRORLEVEL 1 EXIT /b 1
-%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -vt --match a.py --dir mingw_w64
+%_ROOT%\xsrc\nqbp2\other\chuck.py -vt --match a.py --dir mingw_w64
 IF ERRORLEVEL 1 EXIT /b 1
-%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -v --match aa.py --dir mingw_w64
+%_ROOT%\xsrc\nqbp2\other\chuck.py -v --match aa.py --dir mingw_w64
 IF ERRORLEVEL 1 EXIT /b 1
 
 
@@ -50,29 +59,19 @@ echo on
 call %_TOPDIR%..\env.bat 1
 
 cd %_TOPDIR%..\tests
-%_TOPDIR%..\..\xpkgs\nqbp\other\bob.py -v4 vc12 --bldtime --bld-all --bldnum %BUILD_NUMBER%
+%_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Run unit tests
 cd %_TOPDIR%\..\tests
-%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -vt --match a.exe --dir vc12
+%_ROOT%\xsrc\nqbp2\other\chuck.py -vt --match a.exe --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1
-%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -v --match aa.exe --dir vc12
+%_ROOT%\xsrc\nqbp2\other\chuck.py -v --match aa.exe --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1
-%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -vt --match a.py --dir vc12
+%_ROOT%\xsrc\nqbp2\other\chuck.py -vt --match a.py --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1
-%_TOPDIR%..\..\xpkgs\nqbp\other\chuck.py -v --match aa.py --dir vc12
+%_ROOT%\xsrc\nqbp2\other\chuck.py -v --match aa.py --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1
-
-
-::
-:: Build linux projects (under WSL)
-:: Note: Because of Windows/Linux/Git newline issues - we brute force the shell scripts to have the correct newline characters
-::
-FOR /F "tokens=*" %%g IN ('%_TOPDIR%win2wsl %_TOPDIR%') do (SET WSL_TOPDIR=%%g)
-wsl cd %WSL_TOPDIR%; dos2unix wsl_build.sh; cd ..; dos2unix env.sh; top/wsl_build.sh %BUILD_NUMBER%
-IF ERRORLEVEL 1 EXIT /b 1
-
 
 ::
 :: Everything worked!
