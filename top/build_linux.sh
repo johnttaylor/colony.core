@@ -11,9 +11,9 @@ set -e
 # setup the environment
 source ./env.sh default
 
-# Build all test linux projects 
+# Build all test linux projects (Note: Only building 64bit builds for now) 
 pushd tests
-$NQBP_BIN/other/bob.py -v4 linux  --bld-all posix64 --bldtime --bldnum $1
+$NQBP_BIN/other/bob.py -v4 linux  -b posix64 --bldtime --bldnum $1
 
 # Run unit tests 
 $NQBP_BIN/other/chuck.py -v --match a.out --dir _posix64
