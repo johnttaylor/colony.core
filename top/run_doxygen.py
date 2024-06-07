@@ -124,7 +124,7 @@ else:
     print( "Completed without warnings or errors." )
 
 # Rename help file output to include the build info
-print("arg count", len(len(sys.argv) )    
+print("arg count", len(sys.argv) )    
 if ( len(sys.argv) > 2 ):
     outfile = os.path.join( '..', 'docs', f'{filename}.chm' )
     newfile = os.path.join( '..', 'docs', f'{filename}_{buildnum}-{buildtype}.chm' )
