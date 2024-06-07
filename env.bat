@@ -25,7 +25,7 @@ doskey chuck=%NQBP_BIN%\other\chuck.py $*
 doskey ratt=%NQBP_XPKGS_ROOT%\ratt\bin\ratt.py $*
 doskey whatcc=echo:%PIM_ENV_COMPILER%
 doskey killpy=taskkill /F /IM python.exe
-doskey gitchmodx=git update-index --chmod=+x $*
+doskey fixx=%NQBP_BIN%\other\fixx.py $*
 doskey setexe=git update-index --chmod=+x $*
 doskey ports=reg query HKLM\HARDWARE\DEVICEMAP\SERIALCOMM
 doskey map=%NQBP_PKG_ROOT%scripts\colony.core\map.py $*
