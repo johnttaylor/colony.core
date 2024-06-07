@@ -50,7 +50,6 @@ def filter_warnings( output ):
     if ( at_least_one == False ):
         print( "    All warnings are known warnings -->so you are good!")
         print()
-        exit(0)
     else:
         print()
         exit(1)
@@ -124,9 +123,7 @@ else:
     print( "Completed without warnings or errors." )
 
 # Rename help file output to include the build info
-print("arg count", len(sys.argv) )    
 if ( len(sys.argv) > 2 ):
     outfile = os.path.join( '..', 'docs', f'{filename}.chm' )
     newfile = os.path.join( '..', 'docs', f'{filename}_{buildnum}-{buildtype}.chm' )
-    print( f"Renaming {outfile} to {newfile}" )
     shutil.move( outfile, newfile )
