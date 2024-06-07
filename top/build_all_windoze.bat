@@ -13,7 +13,9 @@ set _ROOT=%_TOPDIR%..
 set BUILD_TYPE=%2
 set BUILD_NUMBER=%1
 IF "%BUILD_TYPE%"=="pr" set BUILD_NUMBER=0
+IF "%BUILD_TYPE%"=="PR" set BUILD_NUMBER=0
 IF "%BUILD_TYPE%"=="unknown" set BUILD_NUMBER=0
+IF "/%BUILD_TYPE%" =="/" set BUILD_TYPE=private
 echo:
 echo:BUILD TYPE=%BUILD_TYPE%, BUILD_NUMBER=%BUILD_NUMBER%
 echo:
