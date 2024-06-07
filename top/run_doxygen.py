@@ -31,6 +31,10 @@ def filter_warnings( output ):
             continue
 
         # Filter
+        if ( re.search( r"^.warning: ignoring unsupported tag.*", line ) ):
+            continue
+        
+        # Filter
         #if ( re.search( r"src/Cpl/Text/Frame/LineDecoder.h:.*warning: Found unknown command.*\\r", line ) ):
         #    continue
  
