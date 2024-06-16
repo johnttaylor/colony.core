@@ -23,13 +23,20 @@
   },
   "publish": {
     "current": {
-      "comment": "1. Update genfsm to the sinelabore 6.02. 2. Update the test coverage script to filter out conditional compiled items such as TRACE and ASSERT",
+      "comment": "Updates from work done in the epc repo/book",
       "version": "0.1.5",
-      "date": "Sat Jun 17 19:58:44 2023",
-      "timestamp": 1687031924,
+      "date": "Thu Jun  6 19:43:11 2024",
+      "timestamp": 1717702991,
       "changes": null
     },
     "history": [
+      {
+        "comment": "1. Update genfsm to the sinelabore 6.02. 2. Update the test coverage script to filter out conditional compiled items such as TRACE and ASSERT",
+        "version": "0.1.5",
+        "date": "Sat Jun 17 19:58:44 2023",
+        "timestamp": 1687031924,
+        "changes": null
+      },
       {
         "comment": "Add some support the 'ratt' test tool",
         "version": "0.1.4",
