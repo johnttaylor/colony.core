@@ -90,12 +90,12 @@
         "pkgname": "ratt",
         "pkgtype": "readonly",
         "virtualAdoption": false,
-        "adoptedDate": "Sun Apr 30 22:45:38 2023",
+        "adoptedDate": "Fri Jun  7 00:01:58 2024",
         "parentDir": "xsrc",
         "version": {
-          "semanticVersion": "2.0.0",
+          "semanticVersion": "2.0.1",
           "branch": null,
-          "tag": "OUTCAST2-main-2.0.0"
+          "tag": "OUTCAST2-main-2.0.1"
         },
         "repo": {
           "name": "ratt",
@@ -107,12 +107,12 @@
         "pkgname": "nqbp2",
         "pkgtype": "readonly",
         "virtualAdoption": false,
-        "adoptedDate": "Sun Apr 30 22:54:09 2023",
+        "adoptedDate": "Fri Jun  7 00:53:37 2024",
         "parentDir": "xsrc",
         "version": {
-          "semanticVersion": "0.1.4",
+          "semanticVersion": "0.1.5",
           "branch": null,
-          "tag": "OUTCAST2-main-0.1.4"
+          "tag": "OUTCAST2-main-0.1.6"
         },
         "repo": {
           "name": "nqbp2",
@@ -125,7 +125,7 @@
   "directories": {
     "primary": [
       "src",
-        "tests",
+      "tests",
       "scripts",
       "top"
     ],
