@@ -36,16 +36,6 @@
 # e2studio junk
 .metadata
 
-# more stuff
-make.log
-*.gcda
-*.gcno
-*.idb
-*.pdb
-*.ilk
-*.lst
-*.map
-
 myMediaFile
 _compiler_.txt
 
