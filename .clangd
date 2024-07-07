@@ -1,0 +1,14 @@
+CompileFlags:
+    Add:
+        [
+        ]
+Hover:
+    ShowAKA: true
+InlayHints:
+    Enabled: true
+    ParameterNames: true
+    DeducedTypes: true
+Diagnostics:
+    UnusedIncludes: Strict
+
+

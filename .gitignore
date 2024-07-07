@@ -1,3 +1,5 @@
+.vscode/
+
 # Compiled Object files
 *.slo
 *.lo
@@ -41,9 +43,13 @@ _compiler_.txt
 
 # ignore Visual Studio stuffs
 .vscode
+compile_flags.txt
 .cmake
 .vs
 Debug
 x64
 Release
 *.vcxproj.user
+.vs/
+
+_artifacts/
