@@ -40,6 +40,7 @@ myMediaFile
 _compiler_.txt
 
 # ignore Visual Studio stuffs
+compile_flags.txt
 .vscode
 .cmake
 .vs

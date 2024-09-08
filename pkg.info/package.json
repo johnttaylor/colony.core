@@ -147,13 +147,20 @@
   },
   "publish": {
     "current": {
-      "comment": "Updates from the EPC repo",
-      "version": "4.4.2",
-      "date": "Tue Jun 18 18:02:50 2024",
-      "timestamp": 1718733770,
+      "comment": "minor updates to the tca scripts",
+      "version": "4.4.3",
+      "date": "Sun Sep  8 15:25:28 2024",
+      "timestamp": 1725809128,
       "changes": null
     },
     "history": [
+      {
+        "comment": "Updates from the EPC repo",
+        "version": "4.4.2",
+        "date": "Tue Jun 18 18:02:50 2024",
+        "timestamp": 1718733770,
+        "changes": null
+      },
       {
         "comment": "Migrate to STM32 as the default target platform",
         "version": "4.4.0",
