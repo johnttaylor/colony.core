@@ -148,13 +148,20 @@
   },
   "publish": {
     "current": {
-      "comment": "minor updates to the tca scripts",
-      "version": "4.4.3",
-      "date": "Sun Sep  8 15:25:28 2024",
-      "timestamp": 1725809128,
+      "comment": "fix timer issue",
+      "version": "4.4.4",
+      "date": "Sun Oct 20 15:17:33 2024",
+      "timestamp": 1729437453,
       "changes": null
     },
     "history": [
+      {
+        "comment": "minor updates to the tca scripts",
+        "version": "4.4.3",
+        "date": "Sun Sep  8 15:25:28 2024",
+        "timestamp": 1725809128,
+        "changes": null
+      },
       {
         "comment": "Updates from the EPC repo",
         "version": "4.4.2",
