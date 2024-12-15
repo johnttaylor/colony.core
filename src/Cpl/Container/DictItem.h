@@ -16,9 +16,9 @@
 #include "Cpl/Container/Key.h"
 
 
-/// 
-namespace  Cpl {
-/// 
+///
+namespace Cpl {
+///
 namespace Container {
 
 
@@ -46,21 +46,25 @@ protected:
 
 protected:
     /// Constructor
-    DictItem():m_hashCode_( 0 ) {}
+    DictItem()
+        : m_hashCode_( 0 ) {}
 
     /** Constructor used ONLY with the child class MapItem: -->special
         constructor to allow a Map to be statically allocated.  Only the Map
         itself should ever use this constructor -->not intended for Items in a
         Map
      */
-    DictItem( const char* ignoreThisParameter_usedToCreateAUniqueConstructor ):ExtendedItem( ignoreThisParameter_usedToCreateAUniqueConstructor ) {}
+    DictItem( const char* ignoreThisParameter_usedToCreateAUniqueConstructor )
+        : ExtendedItem( ignoreThisParameter_usedToCreateAUniqueConstructor ) {}
 
 
     // Allow the Hash table access to me
-    friend class HashTable_;
+    friend class DHashTable_;
 
+    // Allow the Hash table access to me
+    friend class FHashTable_;
 };
 
-};      // end namespaces
+};  // end namespaces
 };
 #endif  // end header latch
