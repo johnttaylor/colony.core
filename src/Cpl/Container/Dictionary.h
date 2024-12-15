@@ -12,7 +12,7 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "Cpl/Container/HashTable_.h"
+#include "Cpl/Container/DHashTable_.h"
 
 
 /// 
@@ -50,15 +50,13 @@ class Dictionary
 {
 private:
     /// Delegate operations to the generic table implementation
-    HashTable_  m_table;
+    DHashTable_  m_table;
 
 
 public:
     /// Constructor.  Note: Client provides the memory for the table
-    Dictionary( DList<DictItem> buckets[], unsigned int numBuckets ):m_table( buckets, numBuckets ) {}
-
-    /// Constructor. Note: Client provides the memory for the table 
-    Dictionary( DList<DictItem> buckets[], unsigned int numBuckets, HashFunction& userSuppliedHashFunc ):m_table( buckets, numBuckets, userSuppliedHashFunc ) {}
+    Dictionary( DList<DictItem> buckets[], unsigned int numBuckets, HashFunc hfunc = Cpl::Container::hashFuncDefault )
+    : m_table( buckets, numBuckets, hfunc ) {}
 
 
 public: ///@name Operations to manage items in the Dictionary
@@ -120,7 +118,7 @@ public: ///@name Operations on the Dictionary itself
               The duration of this call is directly related to the number of
               items in the dictionary.
      */
-    void stats( HashTable_::Stats& tableInfo ) const;
+    void stats( HashTableStats& tableInfo ) const;
     ///@}
 
 
@@ -136,7 +134,7 @@ private: ///@name Prevent the container from being copied
 
 
 /////////////////////////////////////////////////////////////////////////////
-//                  INLINE IMPLEMENTAION
+//                  INLINE IMPLEMENTATION
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -222,7 +220,7 @@ ITEM* Dictionary<ITEM>::next( ITEM& current ) const
 }
 
 template <class ITEM>
-void Dictionary<ITEM>::stats( HashTable_::Stats& tableInfo ) const
+void Dictionary<ITEM>::stats( HashTableStats& tableInfo ) const
 {
     m_table.tableStats( tableInfo );
 }

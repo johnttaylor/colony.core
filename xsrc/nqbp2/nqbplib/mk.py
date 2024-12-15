@@ -84,8 +84,14 @@ Arguments:
                    build variant) referenced in the libdirs.b file.
   --qry-dirs2      Same as --qry-dirs with the addition of the any source file
                    include/exclude info
+  --qry-opts       Displays all of the toolchain options (no build is performed) 
   --deps           Outputs the Header file dependencies. DOES NOT BUILD the 
                    projects.
+  --vs             VSCode: Generates a compiler_flags.txt file in the package 
+                   root with the compiler arguments for intellisense (NOT 
+                   building from within VSCode).
+  --vsgdb          VSCode: Adds an entry in the .vscode/launch.json file for 
+                   launching the GDB debugger for the project's executable.
   -h,--help        Display help.
   --version        Display version number.
 
