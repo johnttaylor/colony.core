@@ -59,10 +59,7 @@ protected:
 
 
     // Allow the Hash table access to me
-    friend class DHashTable_;
-
-    // Allow the Hash table access to me
-    friend class FHashTable_;
+    friend class HashTable_;
 };
 
 };  // end namespaces

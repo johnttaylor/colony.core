@@ -1,5 +1,5 @@
-#ifndef Cpl_Container_HashFuncDefeault_h_
-#define Cpl_Container_HashFuncDefeault_h_
+#ifndef Cpl_Container_HashFuncDefault_h_
+#define Cpl_Container_HashFuncDefault_h_
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -19,9 +19,9 @@ namespace Cpl {
 namespace Container {
 
 /** Default hash function.
-        This one comes from 'Compiler Design in C', by Allen I. Holub,
-        PRENTICE HALL, ISBN 0-13-155045-4
-     */
+    This one comes from 'Compiler Design in C', by Allen I. Holub,
+    PRENTICE HALL, ISBN 0-13-155045-4
+ */
 unsigned int hashFuncDefault( const void* keystart, unsigned keylen, unsigned int maxBuckets ) noexcept;
 
 
