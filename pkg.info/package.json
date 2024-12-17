@@ -125,12 +125,12 @@
         "pkgname": "littlefs",
         "pkgtype": "readonly",
         "virtualAdoption": false,
-        "adoptedDate": "Tue Dec 17 15:35:21 2024",
+        "adoptedDate": "Tue Dec 17 15:47:42 2024",
         "parentDir": "xsrc",
         "version": {
           "semanticVersion": null,
           "branch": null,
-          "tag": "v2.9.3"
+          "tag": "v2.10.0"
         },
         "repo": {
           "name": "littlefs",
