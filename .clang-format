@@ -4,6 +4,7 @@ BasedOnStyle: Microsoft
 AccessModifierOffset: -4
 AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveMacros: Consecutive
 AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortFunctionsOnASingleLine: InlineOnly
@@ -20,14 +21,13 @@ BreakStringLiterals: false
 ColumnLimit: 0
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 Cpp11BracedListStyle: false
-DerivePointerAlignment: true
 EmptyLineBeforeAccessModifier: Leave
 FixNamespaceComments: false
 IncludeBlocks: Regroup
 LineEnding: DeriveLF 
 MaxEmptyLinesToKeep: 2
+DerivePointerAlignment: false
 PointerAlignment: Left
-ReflowComments: false
 SortIncludes: false
 SpacesBeforeTrailingComments: 2
 SpacesInConditionalStatement: true

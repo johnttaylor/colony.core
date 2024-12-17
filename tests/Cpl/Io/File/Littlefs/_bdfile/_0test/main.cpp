@@ -21,6 +21,11 @@ static const struct lfs_filebd_config bdCfg = {
 // Block driver instance
 static lfs_filebd_t driverInstance;
 
+// buffers
+static uint8_t readBuffer[CACHE_SIZE];
+static uint8_t progBuffer[CACHE_SIZE];
+static uint8_t lookaheadBuffer[CACHE_SIZE];
+
 // configuration of the filesystem is provided by this struct
 static const struct lfs_config fsCfg = {
     &driverInstance, // filesystem context, aka the block driver
@@ -39,6 +44,10 @@ static const struct lfs_config fsCfg = {
     500, // Block cycles
     CACHE_SIZE,
     16, // Lookahead buffer size
+    0, // compact_threshold
+    readBuffer, // read_buffer
+    progBuffer, // program_buffer
+    lookaheadBuffer, // lookahead_buffer
 };
 
 extern void runtest( const lfs_config& cfg );
@@ -49,7 +58,7 @@ int main( int argc, char *argv[] )
     Cpl::System::Api::initialize();
     Cpl::System::Api::enableScheduling();
 
-    int err = lfs_filebd_create( &fsCfg, "littlefs.bin", &bdCfg );
+    int err = lfs_filebd_create( &driverInstance, "littlefs.bin", &bdCfg );
     if ( err )
     {
         printf("Failed to create the block driver: %d\n", err );
@@ -58,7 +67,7 @@ int main( int argc, char *argv[] )
 
     runtest( fsCfg );
 
-    err = lfs_filebd_destroy( &fsCfg );
+    err = lfs_filebd_destroy( &driverInstance );
     if ( err )
     {
         printf("Failed to destroy the block driver: %d\n", err );
