@@ -39,12 +39,9 @@ using namespace Cpl::Io::File::Littlefs;
     "AHello World."
 
 ////////////////////////////////////////////////////////////////////////////////
-int run_read_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut )
+void run_read_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut )
 {
     printf( "\n\n*** run_read_tests() ***\n" );
-
-    // Reformat the Volume
-    Api::initVolume( uut, nullptr, true );
 
     // Create input file
     Output fdout( FILENAME, true, true );
@@ -131,7 +128,4 @@ int run_read_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut )
     REQUIRE( fd3.setToEof() == false );
     len = 22;
     REQUIRE( fd3.length( len ) == false );
-
-    Api::shutdownVolume( uut );
-    return 0;
 }

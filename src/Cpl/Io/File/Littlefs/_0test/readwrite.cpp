@@ -1,4 +1,3 @@
-#if 0
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -10,33 +9,30 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
+
+#include "colony_config.h"
 #include "Cpl/Io/File/InputOutput.h"
 #include "Cpl/Io/LineReader.h"
 #include "Cpl/Io/LineWriter.h"
-#include "Cpl/System/Trace.h"
 #include "Cpl/Text/FString.h"
 #include "Cpl/System/Assert.h"
-#include "Cpl/Io/File/Arduino/_sdFat/Private_.h"
+#include "Cpl/Io/File/Littlefs/Api.h"
 
-#define SECT_     "_0test"
 
-#define REQUIRE   CPL_SYSTEM_ASSERT
+#define REQUIRE CPL_SYSTEM_ASSERT
 
 
 /// 
 using namespace Cpl::Io::File;
+using namespace Cpl::Io::File::Littlefs;
 
 void testcase_readwrite();
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void testcase_readwrite()
+void run_readwrite_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut )
 {
-    CPL_SYSTEM_TRACE_FUNC( SECT_ );
-
-    // Clean-up from previous tests
-    g_arduino_sdfat_fs.chdir( true );
-    g_arduino_sdfat_fs.vwd()->rmRfStar();
+    printf( "\n\n*** run_readwrite_tests() ***\n" );
 
     //
     Cpl::Text::FString<256> sum;
@@ -107,4 +103,3 @@ void testcase_readwrite()
     fd.close();
     fd2.close();
 }
-#endif

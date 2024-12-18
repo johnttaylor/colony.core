@@ -133,6 +133,7 @@ void Output_::close()
     {
         auto lfsFd = (FileDesc_T*)m_outFd.m_handlePtr;
         lfs_file_close( lfsFd->lfs, &lfsFd->fileHdl );
+        g_fileMemoryPool.free( *lfsFd );
         m_outFd.m_handlePtr = nullptr;
     }
 }

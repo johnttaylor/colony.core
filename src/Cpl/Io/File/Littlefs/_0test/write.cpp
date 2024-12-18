@@ -1,4 +1,3 @@
-#if 0
 /*-----------------------------------------------------------------------------
 * This file is part of the Colony.Core Project.  The Colony.Core Project is an
 * open source project with a BSD type of licensing agreement.  See the license
@@ -10,37 +9,31 @@
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
 
+#include "colony_config.h"
 #include "Cpl/Io/File/Output.h"
 #include "Cpl/Io/File/Input.h"
 #include "Cpl/Io/LineReader.h"
 #include "Cpl/Io/LineWriter.h"
-#include "Cpl/System/Trace.h"
-#include "Cpl/System/_testsupport/Shutdown_TS.h"
 #include "Cpl/Text/FString.h"
 #include "Cpl/System/Assert.h"
-#include "Cpl/Io/File/Arduino/_sdFat/Private_.h"
+#include "Cpl/Io/File/Littlefs/Api.h"
+
 
 #define SECT_     "_0test"
 
 #define REQUIRE   CPL_SYSTEM_ASSERT
 
-void testcase_write1();
-void testcase_write2();
-
 /// 
 using namespace Cpl::Io::File;
+using namespace Cpl::Io::File::Littlefs;
 
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void testcase_write1()
+void run_write_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut )
 {
-    CPL_SYSTEM_TRACE_FUNC( SECT_ );
-    // Clean-up from previous tests
-    g_arduino_sdfat_fs.chdir( true );
-    g_arduino_sdfat_fs.vwd()->rmRfStar();
+    printf( "\n\n*** run_write_tests() ***\n" );
 
-    //
     Cpl::Text::FString<256> sum;
     Cpl::Text::FString<10>  buffer( "bob" );
     char                    myBuffer[10] = { 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29 };
@@ -105,27 +98,22 @@ void testcase_write1()
 	REQUIRE( infd2.isEof() );
     reader.close();
     REQUIRE( infd2.isOpened() == false );
-}
 
-void testcase_write2()
-{
-    CPL_SYSTEM_TRACE_FUNC( SECT_ );
 
-    Output fd( "output2.txt", true, true );
-    REQUIRE( fd.isOpened() );
-    fd.close();
+    Output fd3( "output2.txt", true, true );
+    REQUIRE( fd3.isOpened() );
+    fd3.close();
     char dummyChar = 29;
-    REQUIRE( fd.write( dummyChar ) == false );
+    REQUIRE( fd3.write( dummyChar ) == false );
     REQUIRE( dummyChar == 29 );
-    fd.flush();
+    fd3.flush();
     
-    REQUIRE( fd.isEof() == true );
+    REQUIRE( fd3.isEof() == true );
     unsigned long pos;
-    REQUIRE( fd.currentPos( pos ) == false );
-    REQUIRE( fd.setAbsolutePos( 1 ) == false );
-    REQUIRE( fd.setRelativePos( 1 ) == false );
-    REQUIRE( fd.setToEof() == false );
+    REQUIRE( fd3.currentPos( pos ) == false );
+    REQUIRE( fd3.setAbsolutePos( 1 ) == false );
+    REQUIRE( fd3.setRelativePos( 1 ) == false );
+    REQUIRE( fd3.setToEof() == false );
     unsigned long len = 22;
-    REQUIRE( fd.length( len ) == false );
+    REQUIRE( fd3.length( len ) == false );
 }
-#endif
