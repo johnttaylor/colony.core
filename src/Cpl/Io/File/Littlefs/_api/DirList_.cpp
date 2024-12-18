@@ -1,36 +1,31 @@
 /*-----------------------------------------------------------------------------
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an
-* open source project with a BSD type of licensing agreement.  See the license
-* agreement (license.txt) in the top/ directory or on the Internet at
-* http://integerfox.com/colony.core/license.txt
-*
-* Copyright (c) 2014-2020  John T. Taylor
-*
-* Redistributions of the source code must retain the above copyright notice.
-*----------------------------------------------------------------------------*/
+ * This file is part of the Colony.Core Project.  The Colony.Core Project is an
+ * open source project with a BSD type of licensing agreement.  See the license
+ * agreement (license.txt) in the top/ directory or on the Internet at
+ * http://integerfox.com/colony.core/license.txt
+ *
+ * Copyright (c) 2014-2020  John T. Taylor
+ *
+ * Redistributions of the source code must retain the above copyright notice.
+ *----------------------------------------------------------------------------*/
 
 #include "DirList_.h"
-#include "Cpl/Text/strip.h"
-#include "Cpl/Io/File/Arduino/_sdFat/Private_.h"
-#include "FatLib/FatStructs.h"
-#include <time.h>
-
-#define MAX_ENTRY_NAME  (8+1+3+1)   // Short name support ONLY!
+#include "Cpl/System/Assert.h"
 
 //
 using namespace Cpl::Io::File;
 
 
-
-
 ///////////////
-DirList_::DirList_( const char* rootDir, int depth, bool filesOnly, bool dirsOnly )
-    :m_depth( depth ),
-    m_curDepth( 0 ),
-    m_filesOnly( filesOnly ),
-    m_dirsOnly( dirsOnly ),
-    m_name(  rootDir  )
+DirList_::DirList_( lfs* lfs, const char* rootDir, unsigned depth, bool filesOnly, bool dirsOnly )
+    : m_depth( depth )
+    , m_filesOnly( filesOnly )
+    , m_dirsOnly( dirsOnly )
+    , m_name( rootDir )
+    , m_lfs( lfs )
+    , m_stack( OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH, m_stackMemory )
 {
+    CPL_SYSTEM_ASSERT( lfs );
 }
 
 DirList_::~DirList_()
@@ -41,87 +36,98 @@ DirList_::~DirList_()
 ///////////////
 bool DirList_::traverse( Api::DirectoryWalker& callback )
 {
-    bool completed = true;
-    int  added     = 0;
-
-    // Ensure my current root ends with a trailing dir separator
-    m_curDepth++;
-    if ( m_name[m_name.length() - 1] != '/' )
+    // NOTE: Purposely not using recursion to avoid stack overflow
+    unsigned curDepth = 1;
+    m_stack.push( m_name );
+    while ( !m_stack.isEmpty() )
     {
-        m_name += '/';
-        added++;
-    }
+        bool newDirLevel = false;
+        m_stack.pop( m_name );
+        printf( "\ncurDir=%s, curDepth=%d", m_name.getString(), curDepth );
 
-    // Get the first item in current root
-    FatFile currentDir( m_name(), O_RDONLY );
-    if ( currentDir.isDir() )
-    {
-        currentDir.rewind();
-        FatFile file;
-
-        while ( file.openNext( &currentDir, O_RDONLY ) )
+        // Open the current directory
+        lfs_dir_t dir;
+        if ( lfs_dir_open( m_lfs, &dir, m_name() ) != LFS_ERR_OK )
         {
-            // Get info for the current item in the directory
-            dir_t src;
-            if ( file.dirEntry( &src ) )
-            {
-                Api::Info info;
-                info.m_isDir     = DIR_IS_SUBDIR( &src );
-                info.m_isFile    = DIR_IS_FILE( &src );
-                info.m_size      = src.fileSize;
-                info.m_readable  = true;
-                info.m_writeable = ( src.attributes & DIR_ATT_READ_ONLY ) == 0;
-                struct tm ftime  ={ 0, };
-                ftime.tm_year    = FAT_YEAR( src.lastWriteDate ) + 10;   // The FAT Epoch starts at 1980
-                ftime.tm_mon     = FAT_MONTH( src.lastWriteDate ) - 1;   // The FAT Month is 1-12
-                ftime.tm_mday    = FAT_DAY( src.lastWriteDate );
-                ftime.tm_hour    = FAT_HOUR( src.lastWriteTime );
-                ftime.tm_min     = FAT_MINUTE( src.lastWriteTime );
-                ftime.tm_sec     = FAT_SECOND( src.lastWriteTime );
-                info.m_mtime     = mktime( &ftime );
+            return false;
+        }
 
-                // Construct full path for the current item
-                char entryName[MAX_ENTRY_NAME];
-                if ( file.getName( entryName, MAX_ENTRY_NAME ) )
+        // Read the content's of the directory
+        struct lfs_info info;
+        while ( lfs_dir_read( m_lfs, &dir, &info ) > 0 )
+        {
+            Api::Info cbInfo;
+            cbInfo.m_isDir     = info.type == LFS_TYPE_DIR;
+            cbInfo.m_isFile    = info.type == LFS_TYPE_REG;
+            cbInfo.m_size      = info.size;
+            cbInfo.m_readable  = true;
+            cbInfo.m_writeable = true;
+            cbInfo.m_mtime     = 0;
+
+            // The current entry is a directory
+            if ( info.type == LFS_TYPE_DIR )
+            {
+                // Filter out the "." and ".." directories
+                if ( strcmp( info.name, "." ) != 0 && strcmp( info.name, ".." ) != 0 )
                 {
                     // Callback the client
-                    if ( ( !m_filesOnly && !m_dirsOnly ) || ( m_filesOnly && info.m_isFile ) || ( m_dirsOnly && info.m_isDir ) )
+                    if ( ( !m_filesOnly && !m_dirsOnly ) || m_dirsOnly )
                     {
-                        if ( callback.item( m_name, entryName, info ) == Cpl::Type::Traverser::eABORT )
+                        if ( callback.item( m_name, info.name, cbInfo ) == Cpl::Type::Traverser::eABORT )
                         {
-                            completed = false;
-                            file.close();
-                            break;
+                            lfs_dir_close( m_lfs, &dir );
+                            return false;
                         }
                     }
 
-                    // Do I need to dive into a sub directory?
-                    if ( info.m_isDir && m_curDepth < m_depth )
+                    // Track my depth
+                    if ( !newDirLevel && m_name != "/" )
                     {
-                        int len = strlen( entryName );
-                        m_name += entryName;
+                        curDepth++;
+                    }
 
-                        // Walk the sub directory
-                        if ( !traverse( callback ) )
+                    // Limit the depth of the traversal
+                    if ( curDepth <= m_depth )
+                    {
+                        newDirLevel = true;
+
+                        // Push the found directory name onto the stack
+                        m_stack.push( m_name );
+                        Cpl::Text::String& pushedItem = *(m_stack.peekTop());   // Cheat here and use the memory on the stack instead of allocating a local variable
+                        if ( pushedItem != "/" )
                         {
-                            completed = false;
-                            file.close();
-                            break;
+                            pushedItem += "/" ;
                         }
-                        m_name.trimRight( len );
+                        pushedItem += info.name;
+                        printf( "\nPUSHED dir=%s (parent=%s), curDepth=%d", pushedItem.getString(), m_name.getString(), curDepth );
                     }
                 }
             }
-            file.close();
+
+            // The current entry is a file
+            else if ( info.type == LFS_TYPE_REG )
+            {
+                if ( ( !m_filesOnly && !m_dirsOnly ) || m_filesOnly )
+                {
+                    if ( callback.item( m_name, info.name, cbInfo ) == Cpl::Type::Traverser::eABORT )
+                    {
+                        lfs_dir_close( m_lfs, &dir );
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // Housekeeping
+        if ( !newDirLevel )
+        {
+            curDepth--;
+        }
+        if ( lfs_dir_close( m_lfs, &dir ) != LFS_ERR_OK )
+        {
+            return false;
         }
     }
 
-    // Housekeeping
-    m_curDepth--;
-    if ( completed )
-    {
-        m_name.trimRight( added );
-    }
-
-    return completed;
+    return true;
 }

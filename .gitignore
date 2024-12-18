@@ -44,7 +44,7 @@ _compiler_.txt
 # ignore Visual Studio stuffs
 compile_flags.txt
 .vscode
-compile_flags.txt
+compile_commands.json
 .cmake
 .vs
 Debug
@@ -52,5 +52,5 @@ x64
 Release
 *.vcxproj.user
 .vs/
-
+.cache
 _artifacts/

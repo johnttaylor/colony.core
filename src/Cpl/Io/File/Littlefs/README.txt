@@ -5,17 +5,20 @@ source 'littlefs' file system (https://github.com/littlefs-project/littlefs)
 
 The 'littlefs' file system is currently support with the following caveats:
 
-    o Short File names only, i.e. 8.3 with no spaces in the path/file names
+    o There is no concept of a 'file extension', the LFS_NAME_MAX is the limit 
+      for individual names (sans any path info)
     
     o The canonicalPath() method is not supported
 
     o The getCwd() method is not supported
 
+    o The directory traversal depth is limited to OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH
+
+    o Directory traversal is (relatively) memory and computational expense!
+
     o Currently not file attributes are supported, e.g. no created, updated
       timestamps
     
-    o ONLY the Cpl::Io::File standard directory separator - '/' - is supported,
-      i.e. any Windows path separator and/or drive identifiers will NOT work
 
 The implementation of the CPL file abstraction SUPPORTS multiple littlefs 
 instances where each instance has a unique block driver instance.  Or said

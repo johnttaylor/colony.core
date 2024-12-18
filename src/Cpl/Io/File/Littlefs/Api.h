@@ -35,6 +35,15 @@
 #define OPTION_CPL_IO_FILE_LITTLEFS_MAX_VOLUMES 1
 #endif
 
+/** Maximum support depth for directory traversal. Each level adds CPL_IO_FILE_MAX_NAME 
+    bytes of memory to the size of the DirList_ class. 
+
+    Note: CPL_IO_FILE_MAX_NAME is the max PATH+FILENAME length, not the max file name length
+ */
+#ifndef OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH
+#define OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH  4
+#endif
+
 
 ///
 namespace Cpl {

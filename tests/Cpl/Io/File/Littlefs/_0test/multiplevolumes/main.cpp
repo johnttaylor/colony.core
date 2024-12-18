@@ -6,6 +6,7 @@ extern void run_read_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut );
 extern void run_readwrite_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut );
 extern void run_write_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut );
 extern void run_objectapi_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut );
+extern void run_api_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut );
 
 
 #define CACHE_SIZE       16
@@ -56,6 +57,8 @@ int main( int argc, char* argv[] )
     printf( "\nWrite tests passed" );
     run_objectapi_tests( fs1Cfg );
     printf( "\nObjectApi tests passed" );
+    run_api_tests( fs1Cfg );
+    printf( "\nApi tests passed" );
 
     Cpl::Io::File::Littlefs::Api::shutdownVolume( fs1Cfg );
     err = lfs_filebd_destroy( &driverInstance1_ );

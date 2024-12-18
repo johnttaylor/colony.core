@@ -1,55 +1,49 @@
 /*-----------------------------------------------------------------------------
-* This file is part of the Shift-Right Open Repository.  The Repository is an
-* open source project with a BSD type of licensing agreement.  See the license
-* agreement (license.txt) in the root directory or on the Internet at
-* http://www.shift-right.com/openrepo/license.htm
-*
-* Copyright (c) 2001-2020  John T. Taylor
-*
-* Redistributions of the source code must retain the above copyright notice.
-*----------------------------------------------------------------------------*/
+ * This file is part of the Shift-Right Open Repository.  The Repository is an
+ * open source project with a BSD type of licensing agreement.  See the license
+ * agreement (license.txt) in the root directory or on the Internet at
+ * http://www.shift-right.com/openrepo/license.htm
+ *
+ * Copyright (c) 2001-2020  John T. Taylor
+ *
+ * Redistributions of the source code must retain the above copyright notice.
+ *----------------------------------------------------------------------------*/
 
 #include "Cpl/Io/File/Api.h"
 #include "Cpl/Io/File/Output.h"
 #include "DirList_.h"
-#include "Cpl/Io/File/Arduino/_sdFat/Private_.h"
-#include "FatLib/FatStructs.h"
-#include <time.h>
-
+#include "Cpl/Io/File/Littlefs/Private_.h"
+#include <new>
 
 ///
 using namespace Cpl::Io::File;
 
+static int getStats( const char* fileEntryName, struct lfs_info& info )
+{
+    auto lfs = Cpl::Io::File::Littlefs::getLittlefsInstance( fileEntryName );
+    if ( lfs == nullptr )
+    {
+        return LFS_ERR_NOENT;
+    }
+    return lfs_stat( lfs, fileEntryName, &info );
+}
 
 
 /////////////////////////////////////////////////////
 bool Api::getInfo( const char* fsEntryName, Info& infoOut )
 {
-    if ( exists( fsEntryName ) )
+    struct lfs_info info;
+    if ( getStats( fsEntryName, info ) == LFS_ERR_OK )
     {
-        FatFile fd( fsEntryName, O_RDONLY );
-        dir_t   src;
-        bool    validInfo = fd.dirEntry( &src );
-        fd.close();
-        if ( validInfo )
-        {
-            infoOut.m_isDir     = DIR_IS_SUBDIR( &src );
-            infoOut.m_isFile    = DIR_IS_FILE( &src );
-            infoOut.m_size      = src.fileSize;
-            infoOut.m_readable  = true;
-            infoOut.m_writeable = ( src.attributes & DIR_ATT_READ_ONLY ) == 0;
+        infoOut.m_isDir  = info.type == LFS_TYPE_DIR;
+        infoOut.m_isFile = info.type == LFS_TYPE_REG;
+        infoOut.m_size   = info.size;
 
-            struct tm ftime ={ 0, };
-            ftime.tm_year   = FAT_YEAR( src.lastWriteDate ) + 10;   // The FAT Epoch starts at 1980
-            ftime.tm_mon    = FAT_MONTH( src.lastWriteDate ) - 1;   // The FAT Month is 1-12
-            ftime.tm_mday   = FAT_DAY( src.lastWriteDate );
-            ftime.tm_hour   = FAT_HOUR( src.lastWriteTime );
-            ftime.tm_min    = FAT_MINUTE( src.lastWriteTime );
-            ftime.tm_sec    = FAT_SECOND( src.lastWriteTime );
-            infoOut.m_mtime = mktime( &ftime );
-
-            return true;
-        }
+        // Unsupported attributes
+        infoOut.m_readable  = true;
+        infoOut.m_writeable = true;
+        infoOut.m_mtime     = 0;
+        return true;
     }
 
     return false;
@@ -64,26 +58,21 @@ bool Api::canonicalPath( const char* relPath, Cpl::Text::String& absPath )
 
 bool Api::getCwd( Cpl::Text::String& cwd )
 {
-    FatFile* voldir = g_arduino_sdfat_fs.vwd();
-    int len;
-    char* ptr    = cwd.getBuffer( len );
-    bool result  = voldir->getName( ptr, len );
-    cwd          = getStandard( cwd );
-    return result;
+    // NOT SUPPORTED!
+    return false;
 }
-
 
 /////////////////////////////////////////////////////
 bool Api::exists( const char* fsEntryName )
 {
-    return g_arduino_sdfat_fs.exists( fsEntryName );
+    struct lfs_info info;
+    return getStats( fsEntryName, info ) == LFS_ERR_OK;
 }
-
 
 bool Api::createFile( const char* fileName )
 {
-    Output fd( fileName, O_RDWR | O_CREAT | O_EXCL | O_TRUNC );
-    bool result = fd.isOpened();
+    Output fd( fileName, true, true );
+    bool   result = fd.isOpened();
     fd.close();
 
     return result;
@@ -91,15 +80,25 @@ bool Api::createFile( const char* fileName )
 
 bool Api::createDirectory( const char* dirName )
 {
-    return g_arduino_sdfat_fs.mkdir( dirName, false );
+    auto lfs = Cpl::Io::File::Littlefs::getLittlefsInstance( dirName );
+    if ( lfs == nullptr )
+    {
+        return false;
+    }
+
+    int err = lfs_mkdir( lfs, dirName );
+    return err == LFS_ERR_OK;
 }
 
 
 bool Api::renameInPlace( const char* oldName, const char* newName )
 {
-    if ( exists( oldName ) )
+    auto lfsSrc = Cpl::Io::File::Littlefs::getLittlefsInstance( oldName );
+    auto lfsDst = Cpl::Io::File::Littlefs::getLittlefsInstance( newName );
+    if ( lfsSrc != nullptr && lfsSrc == lfsDst )
     {
-        return g_arduino_sdfat_fs.rename( oldName, newName  );
+        int err = lfs_rename( lfsSrc, oldName, newName );
+        return err == LFS_ERR_OK;
     }
     return false;
 }
@@ -107,9 +106,9 @@ bool Api::renameInPlace( const char* oldName, const char* newName )
 
 bool Api::moveFile( const char* oldFileName, const char* newFileName )
 {
-    if ( exists( oldFileName ) )
+    if ( copyFile( oldFileName, newFileName ) )
     {
-        return renameInPlace( oldFileName, newFileName );
+        return remove( oldFileName );
     }
     return false;
 }
@@ -117,32 +116,51 @@ bool Api::moveFile( const char* oldFileName, const char* newFileName )
 
 bool Api::remove( const char* fsEntryName )
 {
-    if ( exists( fsEntryName ) )
+    auto* lfs = Cpl::Io::File::Littlefs::getLittlefsInstance( fsEntryName );
+    if ( lfs != nullptr )
     {
-        if ( isDirectory( fsEntryName ) )
-        {
-            return g_arduino_sdfat_fs.rmdir( fsEntryName  );
-        }
-        else
-        {
-            return g_arduino_sdfat_fs.remove( fsEntryName  );
-        }
+        return lfs_remove( lfs, fsEntryName ) == LFS_ERR_OK;
     }
     return false;
 }
 
 
 /////////////////////////////////////////////////////
+#ifdef LFS_THREADSAFE
+#include "Cpl/System/Mutex.h"
+static Cpl::System::Mutex fsmutex_;
+#define CRITICAL_SECTION()  Cpl::System::Mutex::ScopedMutext guard( fsmutex_ )
+#else
+#define CRITICAL_SECTION()
+#endif
+
+// The DirList_ object is TOO LARGE to put on the stack
+static uint8_t memDirList_[sizeof( DirList_ )];
+
+
 bool Api::walkDirectory( const char*      dirToList,
                          DirectoryWalker& callback,
                          int              depth,
                          bool             filesOnly,
                          bool             dirsOnly )
 {
-    if ( exists( dirToList ) )
+    // Fail if the depth is deeper than the DirList_ object can handle
+    if ( depth > OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH )
     {
-        DirList_ lister( dirToList, depth, filesOnly, dirsOnly );
-        return lister.traverse( callback );
+        return false;
+    }   
+
+    // Get the Littlefs instance for the directory
+    auto lfs = Cpl::Io::File::Littlefs::getLittlefsInstance( dirToList );
+    if ( lfs != nullptr )
+    {
+        CRITICAL_SECTION(); // Need a critical (when LFS_THREADSAFE is defined) because I ONLY have memory for ONE DirList_ instance
+        
+        // Create the DirList_ object from static memory since it is too large to put on the stack
+        DirList_* lister = new(memDirList_) DirList_( lfs, dirToList, depth, filesOnly, dirsOnly );
+        bool result = lister->traverse( callback );
+        lister->~DirList_();
+        return result;
     }
 
     return false;

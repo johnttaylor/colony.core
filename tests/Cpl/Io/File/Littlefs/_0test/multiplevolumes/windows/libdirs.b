@@ -1,6 +1,7 @@
 # Unit under test
 xsrc/littlefs
 src/Cpl/Io/File/Littlefs/
+src/Cpl/Io/File/Littlefs/_api
 src/Cpl/Io/File/Littlefs/_bdfile
 
 # tests

@@ -12,8 +12,10 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
+#include "colony_config.h"
 #include "Cpl/Io/File/Api.h"
-
+#include "Cpl/Io/File/Littlefs/Api.h"
+#include "Cpl/Container/Stack.h"
 
 ///
 namespace Cpl {
@@ -30,9 +32,7 @@ class DirList_
 {
 protected:
     ///
-    int                 m_depth;
-    ///
-    int                 m_curDepth;
+    unsigned            m_depth;
     ///
     bool                m_filesOnly;
     ///
@@ -40,12 +40,15 @@ protected:
     ///
     NameString          m_name;
     ///
-    NameString          m_file;
-
+    lfs*                m_lfs;  
+    ///
+    Cpl::Container::Stack<NameString> m_stack;
+    /// 
+    NameString          m_stackMemory[ OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH ];
 
 public:
     /// Constructor
-    DirList_( const char* rootDir, int depth=1, bool filesOnly=false, bool dirsOnly=false );
+    DirList_( lfs* lfs, const char* rootDir, unsigned depth=1, bool filesOnly=false, bool dirsOnly=false );
 
 
     /// Destructor

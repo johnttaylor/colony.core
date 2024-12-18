@@ -18,13 +18,12 @@
  */
 
 
-#include "littlefs/lfs.h"
 
 ///
 #define CPL_IO_FILE_NATIVE_DIR_SEP_MAP          '/'
 
 ///
-#define CPL_IO_FILE_MAX_NAME_MAP                LFS_NAME_MAX     // FIXME: Find the actual max length somewhere in the SdFat library!!!!!
+#define CPL_IO_FILE_MAX_NAME_MAP                255 // This is maximum PATH+Filename length, not the max file name length (which is LFS_NAME_MAX)
 
 
 #endif  // end header latch
