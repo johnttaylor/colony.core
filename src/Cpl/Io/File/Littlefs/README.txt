@@ -14,7 +14,10 @@ The 'littlefs' file system is currently support with the following caveats:
 
     o The directory traversal depth is limited to OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH
 
-    o Directory traversal is (relatively) memory and computational expense!
+    o Directory traversal is (relatively) memory and computational expense! In
+      addition there can only be one concurrent directory traversal at a time.
+
+    o Directory traversals do NOT span volumes 
 
     o Currently not file attributes are supported, e.g. no created, updated
       timestamps
@@ -32,7 +35,7 @@ method needs to be called multiple times - once for each littlefs instance.
 In addition, each call to Api::initVolume() must supply a 'volumeName' which
 becomes the logical root directory for the particular directory. ALL files and
 directory names MUST be prefix with a 'volumeName' (i.e. the volumeName identifies
-which littlefs to use.  For example:
+which littlefs to use).  For example:
 
     Cpl::Io::File::Littlefs::Api::initVolume( volume1, "A" );
     Cpl::Io::File::Littlefs::Api::initVolume( volume2, "B" );

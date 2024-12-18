@@ -5,7 +5,7 @@ src/Cpl/Io/File/Littlefs/_api
 src/Cpl/Io/File/Littlefs/_bdfile
 
 # tests
-src/Cpl/Io/File/Littlefs/_0test
+src/Cpl/Io/File/Littlefs/_0test/_multiplevol
 
 
 # Platforms

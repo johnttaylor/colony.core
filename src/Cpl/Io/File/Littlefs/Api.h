@@ -12,6 +12,7 @@
  *----------------------------------------------------------------------------*/
 /** @file  */
 
+#include "colony_config.h"
 #include "littlefs/lfs.h"
 #include <string.h>
 
