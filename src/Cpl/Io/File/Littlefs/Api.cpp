@@ -43,20 +43,11 @@ static int unlock( const struct lfs_config* c )
 
 
 //////////////////////////////////////
-Cpl::Io::File::Littlefs::Api::Volume_T::Volume_T( void* blockDriver,
-                                                  int ( *read )( const struct lfs_config* c,
-                                                                 lfs_block_t              block,
-                                                                 lfs_off_t                off,
-                                                                 void*                    buffer,
-                                                                 lfs_size_t               size ),
-                                                  int ( *prog )( const struct lfs_config* c,
-                                                                 lfs_block_t              block,
-                                                                 lfs_off_t                off,
-                                                                 const void*              buffer,
-                                                                 lfs_size_t               size ),
-                                                  int ( *erase )( const struct lfs_config* c,
-                                                                  lfs_block_t              block ),
-                                                  int ( *sync )( const struct lfs_config* c ),
+Cpl::Io::File::Littlefs::Api::Volume_T::Volume_T( void*   blockDriver,
+                                                  readfn  read,
+                                                  progfn  prog,
+                                                  erasefn erase,
+                                                  syncfn  sync,
                                                   lfs_size_t eraseSize,
                                                   lfs_size_t numEraseBlocks,
                                                   int32_t    block_cycles ) noexcept
@@ -108,7 +99,7 @@ int Cpl::Io::File::Littlefs::Api::initVolume( Volume_T&   volumeToInit,
     numVolumes_++;
 
     // Mount the filesystem
-    int err = 1;    // Assume failure
+    int err = 1;  // Assume failure
     if ( !forceReformat )
     {
         err = lfs_mount( &volumeToInit.fs, &volumeToInit.cfg );
@@ -163,9 +154,9 @@ lfs_t* Cpl::Io::File::Littlefs::getLittlefsInstance( const char* fsEntryName )
     {
         return nullptr;
     }
-    
+
     // find the volume by name
-    for ( unsigned idx=0; idx < numVolumes_; idx++ )
+    for ( unsigned idx = 0; idx < numVolumes_; idx++ )
     {
         if ( strncmp( volumes_[idx]->volumeName, fsEntryName, len ) == 0 )
         {

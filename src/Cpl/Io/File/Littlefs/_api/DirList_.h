@@ -31,19 +31,25 @@ namespace File {
 class DirList_
 {
 protected:
-    ///
+    /// Maximum depth of directory traversal
     unsigned            m_depth;
-    ///
+
+    /// Filter flag for files only
     bool                m_filesOnly;
-    ///
+
+    /// Filter flag for directories only
     bool                m_dirsOnly;
-    ///
+
+    /// The current directory name
     NameString          m_name;
-    ///
+
+    /// Pointer to the lfs instance
     lfs*                m_lfs;  
-    ///
+
+    /// Stack of directory names (so we don't use recursion)
     Cpl::Container::Stack<NameString> m_stack;
-    /// 
+
+    /// Memory for the stack
     NameString          m_stackMemory[ OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH ];
 
 public:

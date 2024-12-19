@@ -10,7 +10,7 @@
  *
  * Redistributions of the source code must retain the above copyright notice.
  *----------------------------------------------------------------------------*/
-/** @file  */
+/** @file */
 
 #include "colony_config.h"
 #include "littlefs/lfs.h"
@@ -67,6 +67,19 @@ namespace Littlefs {
 class Api
 {
 public:
+    /// Typedef for littlefs block driver read function
+    typedef int ( *readfn )( const struct lfs_config* c, lfs_block_t block, lfs_off_t off, void* buffer, lfs_size_t size );
+
+    /// Typedef for littlefs block driver prog function
+    typedef int ( *progfn )( const struct lfs_config* c, lfs_block_t block, lfs_off_t off, const void* buffer, lfs_size_t size );
+
+    /// Typedef for littlefs block driver erase function
+    typedef int ( *erasefn )( const struct lfs_config* c, lfs_block_t block );
+
+    /// Typedef for littlefs block driver sync function
+    typedef int ( *syncfn )( const struct lfs_config* c );
+
+public:
     /** This structure defines the configuration and the underlying block driver
         used for each volume instance.  A volume maps one-to-one with physical
         storage media, e.g. a SPI Data flash, EEPROM IC, etc.
@@ -85,25 +98,24 @@ public:
         uint8_t     lookaheadBuffer[OPTION_CPL_IO_FILE_LITTLEFS_CACHE_SIZE];  //!< Lookahead buffer. MUST be 'cacheSize' in size
         const char* volumeName;                                               //!< The name of the volume.  If multiple volumes are used, then each volume MUST have a unique name
 
-        /// Constructor.  The argument list is the MINIMUM info required to create a volume
-        Volume_T( void* blockDriver,                          //!< Opaque context for the block driver. MUST be a unique instance each per volume
-                  int ( *read )( const struct lfs_config* c,  //!< Read a region in a block
-                                 lfs_block_t              block,
-                                 lfs_off_t                off,
-                                 void*                    buffer,
-                                 lfs_size_t               size ),
-                  int ( *prog )( const struct lfs_config* c,  //!< Program a region in a block
-                                 lfs_block_t              block,
-                                 lfs_off_t                off,
-                                 const void*              buffer,
-                                 lfs_size_t               size ),
-                  int ( *erase )( const struct lfs_config* c,  //!< Erase a block
-                                  lfs_block_t              block ),
-                  int ( *sync )( const struct lfs_config* c ),  //!< Flush the block device (to its physical media)
-
-                  lfs_size_t eraseSize,                  //!< Size of an erasable block in bytes
-                  lfs_size_t numEraseBlocks,             //!< Number of erasable blocks
-                  int32_t    blockCycles = 500 ) noexcept;  //!< Number of erase cycles before littlefs evicts metadata logs and moves. Suggested values are in the range 100-1000 )
+        /** Constructor.  The argument list is the MINIMUM info required to create a volume
+            @param blockDriver      Opaque context for the block driver. MUST be a unique instance each per volume
+            @param read             Read a region in a block
+            @param prog             Program a region in a block
+            @param erase            Erase a block
+            @param sync             Flush the block device (to its physical media)
+            @param eraseSize        Size of an erasable block in bytes
+            @param numEraseBlocks   Number of erasable blocks
+            @param blockCycles      Number of erase cycles before littlefs evicts metadata logs and moves. Suggested range 100-1000
+         */
+        Volume_T( void*      blockDriver,          
+                  readfn     read,                 
+                  progfn     prog,                 
+                  erasefn    erase,                
+                  syncfn     sync,                 
+                  lfs_size_t eraseSize,            
+                  lfs_size_t numEraseBlocks,       
+                  int32_t    blockCycles = 500 ) noexcept;  
 
         /// Default constructor.  USE Wisely (see above constructor)
         Volume_T() noexcept { memset( this, 0, sizeof( *this ) ); }
