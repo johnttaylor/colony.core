@@ -101,7 +101,7 @@ int lfs_filebd_read( const struct lfs_config* cfg, lfs_block_t block, lfs_off_t 
         return err;
     }
 
-    ssize_t res2 = read( bd->fd, buffer, size );
+    ssize_t res2 = READFN( bd->fd, buffer, size );
     if ( res2 < 0 )
     {
         int err = -errno;
