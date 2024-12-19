@@ -39,9 +39,10 @@ FINAL_OUTPUT_NAME = 'a.exe'
 # Set project specific 'base' (i.e always used) options
 base_release              = BuildValues()        # Do NOT comment out this line
 base_release.c_only_flags = '-std=c11'
-base_release.cflags       = '-m32 -Wall -Werror -DLFS_THREADSAFE -DLFS_NO_MALLOC -DLFS_NAME_MAX=16' # -DLFS_FILEBD_YES_TRACE -DLFS_YES_TRACE'
+base_release.cflags       = '-m32 -Wall -Werror -DLFS_THREADSAFE -DLFS_NO_MALLOC -DLFS_NAME_MAX=16 -fprofile-arcs -ftest-coverage' # -DLFS_FILEBD_YES_TRACE -DLFS_YES_TRACE'
 base_release.cppflags     = '-std=c++11 '
-base_release.linkflags    = '-m32'
+base_release.linkflags    = '-m32 -fprofile-arcs'
+base_release.linklibs     = '-lgcov'
 
 # Set project specific 'optimized' options
 optimzed_release           = BuildValues()    # Do NOT comment out this line
@@ -67,9 +68,10 @@ debug_cpp11    = BuildValues()
 
 # Set 'base' options
 base_cpp11.c_only_flags = '-std=c11'
-base_cpp11.cflags       = '-m64 -Wall -Werror -DLFS_THREADSAFE -DLFS_NO_MALLOC -DLFS_NAME_MAX=16'
+base_cpp11.cflags       = '-m64 -Wall -Werror -DLFS_THREADSAFE -DLFS_NO_MALLOC -DLFS_NAME_MAX=16 -fprofile-arcs -ftest-coverage'
 base_cpp11.cppflags     = '-std=c++11 '
-base_cpp11.linkflags    = '-m64'
+base_cpp11.linkflags    = '-m64 -fprofile-arcs'
+base_cpp11.linklibs     = '-lgcov'
 
 # Set 'Optimized' options
 optimzed_cpp11.cflags    = '-O3'
@@ -92,9 +94,10 @@ debug_win64    = BuildValues()
 
 # Set 'base' options
 base_win64.c_only_flags = '-std=c11'
-base_win64.cflags       = '-m64 -Wall -Werror -DLFS_THREADSAFE -DLFS_NO_MALLOC -DLFS_NAME_MAX=16'
+base_win64.cflags       = '-m64 -Wall -Werror -DLFS_THREADSAFE -DLFS_NO_MALLOC -DLFS_NAME_MAX=16 -fprofile-arcs -ftest-coverage'
 base_win64.cppflags     = '-std=c++11 '
-base_win64.linkflags    = '-m64'
+base_win64.linkflags    = '-m64 -fprofile-arcs'
+base_win64.linklibs     = '-lgcov'
 
 # Set 'Optimized' options
 optimzed_win64.cflags    = '-O3'
