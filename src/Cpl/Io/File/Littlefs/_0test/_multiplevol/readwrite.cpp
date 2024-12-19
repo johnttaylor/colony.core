@@ -132,6 +132,10 @@ void run_readwrite_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut1, Cpl::Io:
 
     {
         Walker iterator;;
-        REQUIRE( Api::walkDirectory( "/", iterator, OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH ) );
+        REQUIRE( Api::walkDirectory( "/vola", iterator, OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH ) );
+    }
+    {
+        Walker iterator;;
+        REQUIRE( Api::walkDirectory( "/volb", iterator, OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH ) );
     }
 }

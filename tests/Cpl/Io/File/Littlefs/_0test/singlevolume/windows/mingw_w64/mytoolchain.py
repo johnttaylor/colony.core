@@ -39,7 +39,7 @@ FINAL_OUTPUT_NAME = 'a.exe'
 # Set project specific 'base' (i.e always used) options
 base_release              = BuildValues()        # Do NOT comment out this line
 base_release.c_only_flags = '-std=c11'
-base_release.cflags       = '-m32 -Wall -Werror -DLFS_NAME_MAX=16' # -DLFS_FILEBD_YES_TRACE -DLFS_YES_TRACE'
+base_release.cflags       = '-m32 -Wall -Werror -DLFS_THREADSAFE -DLFS_NO_MALLOC -DLFS_NAME_MAX=16' # -DLFS_FILEBD_YES_TRACE -DLFS_YES_TRACE'
 base_release.cppflags     = '-std=c++11 '
 base_release.linkflags    = '-m32'
 

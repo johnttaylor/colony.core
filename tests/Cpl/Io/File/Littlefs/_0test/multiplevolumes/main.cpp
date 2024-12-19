@@ -32,13 +32,13 @@ int main( int argc, char* argv[] )
     if ( err )
     {
         printf( "\nFailed to create the block driver#1: %d", err );
-        exit( 1 );
+        return 1;
     }
     err = lfs_filebd_create( &driverInstance2_, "littlefs2.bin", &bdCfg_ );
     if ( err )
     {
         printf( "\nFailed to create the block driver#2: %d", err );
-        exit( 1 );
+        return 1;
     }
 
     // Create my volumes
@@ -51,6 +51,7 @@ int main( int argc, char* argv[] )
                                                    NUM_ERASE_BLOCKS,
                                                    500 );
     Cpl::Io::File::Littlefs::Api::initVolume( fs1Cfg, "vola", true );
+
     Cpl::Io::File::Littlefs::Api::Volume_T fs2Cfg( &driverInstance2_,
                                                    lfs_filebd_read,
                                                    lfs_filebd_prog,
@@ -70,12 +71,12 @@ int main( int argc, char* argv[] )
     if ( err )
     {
         printf( "Failed to destroy the block driver#1: %d\n", err );
-        exit( 1 );
+        return 1;
     }
     lfs_filebd_destroy( &driverInstance2_ );
     if ( err )
     {
         printf( "Failed to destroy the block driver#2: %d\n", err );
-        exit( 1 );
+        return 1;
     }
 }

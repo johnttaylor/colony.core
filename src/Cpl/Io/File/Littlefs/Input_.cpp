@@ -136,6 +136,7 @@ void Input_::close()
     {
         auto lfsFd = (FileDesc_T*)m_inFd.m_handlePtr;
         lfs_file_close( lfsFd->lfs, &lfsFd->fileHdl );
+        lfsFd->~FileDesc_T();   // explicitly call the destructor
         g_fileMemoryPool.free( *lfsFd );
         m_inFd.m_handlePtr = nullptr;
     }

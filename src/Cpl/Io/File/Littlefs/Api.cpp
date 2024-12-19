@@ -92,6 +92,7 @@ static Cpl::Io::File::Littlefs::Api::Volume_T* volumes_[OPTION_CPL_IO_FILE_LITTL
 
 int Cpl::Io::File::Littlefs::Api::initVolume( Volume_T&   volumeToInit,
                                               const char* volumeName,
+                                              bool        usingMultipleVolumes,
                                               bool        forceReformat ) noexcept
 {
     CPL_SYSTEM_ASSERT( numVolumes_ < OPTION_CPL_IO_FILE_LITTLEFS_MAX_VOLUMES );
@@ -99,7 +100,7 @@ int Cpl::Io::File::Littlefs::Api::initVolume( Volume_T&   volumeToInit,
     // Cache the volume info and valid arguments
     volumes_[numVolumes_]   = &volumeToInit;
     volumeToInit.volumeName = volumeName;
-    if ( numVolumes_ > 0 && volumeName == nullptr )
+    if ( usingMultipleVolumes && volumeName == nullptr )
     {
         Cpl::System::FatalError::logf( "Attempted to initialize multiple volumes without a volume name" );
         return LFS_ERR_INVAL;
@@ -124,7 +125,16 @@ int Cpl::Io::File::Littlefs::Api::initVolume( Volume_T&   volumeToInit,
         }
     }
 
-    return 0;
+    // Make the top level volume directory (but ONLY when using multiple volumes
+    if ( usingMultipleVolumes )
+    {
+        err = lfs_mkdir( &volumeToInit.fs, volumeName );
+        if ( err == LFS_ERR_EXIST )
+        {
+            err = 0;
+        }
+    }
+    return err;
 }
 
 int Cpl::Io::File::Littlefs::Api::shutdownVolume( Volume_T& volumeToInit ) noexcept
@@ -149,7 +159,11 @@ lfs_t* Cpl::Io::File::Littlefs::getLittlefsInstance( const char* fsEntryName )
     fsEntryName++;  // Advance past the leading '/'
     const char* endPtr = Cpl::Text::stripNotChars( fsEntryName, "/" );
     int         len    = endPtr - fsEntryName;
-
+    if ( len == 0 )
+    {
+        return nullptr;
+    }
+    
     // find the volume by name
     for ( unsigned idx=0; idx < numVolumes_; idx++ )
     {

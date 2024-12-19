@@ -36,13 +36,13 @@
 #define OPTION_CPL_IO_FILE_LITTLEFS_MAX_VOLUMES 1
 #endif
 
-/** Maximum support depth for directory traversal. Each level adds CPL_IO_FILE_MAX_NAME 
-    bytes of memory to the size of the DirList_ class. 
+/** Maximum support depth for directory traversal. Each level adds CPL_IO_FILE_MAX_NAME
+    bytes of memory to the size of the DirList_ class.
 
     Note: CPL_IO_FILE_MAX_NAME is the max PATH+FILENAME length, not the max file name length
  */
 #ifndef OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH
-#define OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH  4
+#define OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH 4
 #endif
 
 
@@ -123,8 +123,9 @@ public:
         volumes.
      */
     static int initVolume( Volume_T&   volumeToInit,
-                           const char* volumeName    = nullptr,
-                           bool        forceReformat = false ) noexcept;
+                           const char* volumeName           = nullptr,
+                           bool        usingMultipleVolumes = false,
+                           bool        forceReformat        = false ) noexcept;
 
     /** This method is used to shutdown the file system.  The method returns
         zero if the file system is successfully shutdown; else a littlefs

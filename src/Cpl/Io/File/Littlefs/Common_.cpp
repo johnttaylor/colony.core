@@ -36,14 +36,16 @@ Cpl::Io::Descriptor Common_::open( const char* fileEntryName, bool readOnly, boo
     FileDesc_T* cplFd = nullptr;
     if ( lfs )
     {
-        cplFd = g_fileMemoryPool.allocate();
-        if ( cplFd != nullptr )
+        void* memCplFd = g_fileMemoryPool.allocate();
+        if ( memCplFd != nullptr )
         {
             // Attempt to Open the file
+            cplFd = new( memCplFd ) FileDesc_T();
             cplFd->lfs = lfs;  // Save the file system pointer
             int err    = lfs_file_opencfg( lfs, &cplFd->fileHdl, fileEntryName, flags, &cplFd->fileCacheAndAttrs );
             if ( err )
             {
+                cplFd = nullptr;
                 g_fileMemoryPool.free( *cplFd );
             }
         }

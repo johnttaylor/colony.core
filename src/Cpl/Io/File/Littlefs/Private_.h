@@ -40,6 +40,14 @@ struct FileDesc_T
     lfs_file_config fileCacheAndAttrs;  //!< The file buffer cache and file attributes
     lfs_file_t      fileHdl;            //!< The file handle
     lfs_t*          lfs;                //!< Pointer to the file system that the file descriptor was opened on/for
+    uint8_t         memFileCacheBuffer[OPTION_CPL_IO_FILE_LITTLEFS_CACHE_SIZE];  //!< The file cache buffer
+
+    /// Constructor
+    FileDesc_T()
+    {
+        memset( this, 0, sizeof( *this ) );
+        this->fileCacheAndAttrs.buffer = memFileCacheBuffer;
+    }
 };
 
 /** Memory pool for opened files.  Either use FileMemoryPool or FileMemoryPoolMT,
@@ -55,7 +63,7 @@ public:
 
 public:
     /// Allocates memory for a file
-    FileDesc_T* allocate() { return (FileDesc_T*)m_pool.allocate( sizeof( FileDesc_T ) ); }
+    void* allocate() { return m_pool.allocate( sizeof( FileDesc_T )); }
 
     /// Frees memory for a file
     void free( FileDesc_T& p ) { m_pool.release( &p ); }
@@ -75,10 +83,10 @@ public:
 
 public:
     /// Allocates memory for a file
-    FileDesc_T* allocate()
+    void* allocate()
     {
         Cpl::System::Mutex::ScopeBlock lock( m_mutex );
-        return (FileDesc_T*)m_pool.allocate( sizeof( FileDesc_T ) );
+        return m_pool.allocate( sizeof( FileDesc_T ) );
     }
 
     /// Frees memory for a file

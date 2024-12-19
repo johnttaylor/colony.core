@@ -38,7 +38,7 @@ FINAL_OUTPUT_NAME = 'a.exe'
 
 # Set project specific 'base' (i.e always used) options
 base_release              = BuildValues()        # Do NOT comment out this line
-base_release.cflags       = '/W3 /WX /D "LFS_NAME_MAX=16"'
+base_release.cflags       = '/W3 /WX /D LFS_THREADSAFE /D LFS_NO_MALLOC /D DLFS_NAME_MAX=16'
 base_release.c_only_flags = '/std:c11'
 base_release.cppflags     = '/EHsc'  # /EHsc enables exceptions
 
@@ -66,7 +66,7 @@ debug_cpp11    = BuildValues()
 
 
 # Set 'base' options
-base_cpp11.cflags       = '/W3 /WX /D "LFS_NAME_MAX=16"'  # /EHsc enables exceptions
+base_cpp11.cflags       = '/W3 /WX /D /D LFS_THREADSAFE /D LFS_NO_MALLOC /D DLFS_NAME_MAX=16'  # /EHsc enables exceptions
 base_cpp11.c_only_flags = '/std:c11'
 base_cpp11.cppflags     = '/EHsc'  # /EHsc enables exceptions
 

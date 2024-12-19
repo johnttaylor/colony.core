@@ -1,6 +1,7 @@
 #include "Cpl/System/Api.h"
 #include "Cpl/Io/File/Littlefs/_bdfile/driver.h"
 #include "Cpl/Io/File/Littlefs/Api.h"
+#include <stdlib.h>
 
 extern void run_read_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut );
 extern void run_readwrite_tests( Cpl::Io::File::Littlefs::Api::Volume_T& uut );
@@ -35,7 +36,7 @@ int main( int argc, char* argv[] )
     if ( err )
     {
         printf( "\nFailed to create the block driver#1: %d", err );
-        exit( 1 );
+        return 1;
     }
 
     // Create my volume
@@ -65,6 +66,6 @@ int main( int argc, char* argv[] )
     if ( err )
     {
         printf( "Failed to destroy the block driver#1: %d\n", err );
-        exit( 1 );
+        return 1;
     }
 }

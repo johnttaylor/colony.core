@@ -39,7 +39,7 @@ FINAL_OUTPUT_NAME = 'b.out'
 # Set project specific 'base' (i.e always used) options
 base_release           = BuildValues()        # Do NOT comment out this line
 base_release.c_only_flags = '-std=c11'
-base_release.cflags       = '-m32 -Wall -Werror'
+base_release.cflags       = '-m32 -Wall -Werror -DLFS_THREADSAFE -DLFS_NO_MALLOC -DLFS_NAME_MAX=16'
 base_release.cppflags     = '-std=c++11 '
 base_release.linkflags    = '-m32'
 
@@ -67,7 +67,7 @@ debug_cpp11    = BuildValues()
 
 # Set 'base' options
 base_cpp11.c_only_flags = '-std=c11'
-base_cpp11.cflags       = '-m64 -Wall -Werror'
+base_cpp11.cflags       = '-m64 -Wall -Werror -DLFS_THREADSAFE -DLFS_NO_MALLOC -DLFS_NAME_MAX=16'
 base_cpp11.cppflags     = '-std=c++11 '
 base_cpp11.linkflags    = '-m64'
 
