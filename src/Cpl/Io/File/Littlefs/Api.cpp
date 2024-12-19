@@ -43,11 +43,11 @@ static int unlock( const struct lfs_config* c )
 
 
 //////////////////////////////////////
-Cpl::Io::File::Littlefs::Api::Volume_T::Volume_T( void*   blockDriver,
-                                                  readfn  read,
-                                                  progfn  prog,
-                                                  erasefn erase,
-                                                  syncfn  sync,
+Cpl::Io::File::Littlefs::Api::Volume_T::Volume_T( void*      blockDriver,
+                                                  readfn     read,
+                                                  progfn     prog,
+                                                  erasefn    erase,
+                                                  syncfn     sync,
                                                   lfs_size_t eraseSize,
                                                   lfs_size_t numEraseBlocks,
                                                   int32_t    block_cycles ) noexcept
