@@ -20,23 +20,23 @@ using namespace Cpl::Io::File::Littlefs;
 
 
 //////////////////////////////////////
-MEMORYPOOL_TYPE Cpl::Io::File::Littlefs::g_fileMemoryPool;
+FileMemoryPool Cpl::Io::File::Littlefs::g_fileMemoryPool;
 
 //////////////////////////////////////
 #ifdef LFS_THREADSAFE
-static Cpl::System::Mutex fsmutex_;
+ Cpl::System::Mutex Cpl::Io::File::Littlefs::g_fsmutex;
 
 //
 static int lock( const struct lfs_config* c )
 {
-    fsmutex_.lock();
+    g_fsmutex.lock();
     return 0;
 }
 
 //
 static int unlock( const struct lfs_config* c )
 {
-    fsmutex_.unlock();
+    g_fsmutex.unlock();
     return 0;
 }
 #endif
@@ -77,7 +77,6 @@ Cpl::Io::File::Littlefs::Api::Volume_T::Volume_T( void*      blockDriver,
 
 //////////////////////////////////////
 static unsigned                                numVolumes_ = 0;
-static MEMORYPOOL_TYPE                         fileMemoryPool_;
 static Cpl::Io::File::Littlefs::Api::Volume_T* volumes_[OPTION_CPL_IO_FILE_LITTLEFS_MAX_VOLUMES];
 
 

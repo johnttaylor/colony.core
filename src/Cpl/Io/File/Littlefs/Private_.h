@@ -50,10 +50,11 @@ struct FileDesc_T
     }
 };
 
-/** Memory pool for opened files.  Either use FileMemoryPool or FileMemoryPoolMT,
-    but NOT both.
 
-    The class is NOT thread safe
+// SINGLE-THREADED MEMORY POOL
+#ifndef LFS_THREADSAFE
+
+/** Memory pool for opened files.  The class is NOT thread safe
  */
 class FileMemoryPool
 {
@@ -73,48 +74,44 @@ protected:
     Cpl::Memory::SPool<FileDesc_T, OPTION_CPL_IO_FILE_LITTLEFS_MAX_CONCURRENT_FILES> m_pool;
 };
 
+
+// CONCURRENT MEMORY POOL
+#else
+/// Expose the underlying mutex
+extern Cpl::System::Mutex g_fsmutex;
+
 /** This class is the same as 'FileMemoryPool' except that is thread safe
  */
-class FileMemoryPoolMT
+class FileMemoryPool
 {
 public:
     /// Constructor
-    FileMemoryPoolMT(){};
+    FileMemoryPool(){};
 
 public:
     /// Allocates memory for a file
     void* allocate()
     {
-        Cpl::System::Mutex::ScopeBlock lock( m_mutex );
+        Cpl::System::Mutex::ScopeBlock lock( g_fsmutex );
         return m_pool.allocate( sizeof( FileDesc_T ) );
     }
 
     /// Frees memory for a file
     void free( FileDesc_T& p )
     {
-        Cpl::System::Mutex::ScopeBlock lock( m_mutex );
+        Cpl::System::Mutex::ScopeBlock lock( g_fsmutex );
         m_pool.release( &p );
     }
 
 protected:
-    /// Mutex for the critical section
-    Cpl::System::Mutex m_mutex;
-
     /// Memory pool
     Cpl::Memory::SPool<FileDesc_T, OPTION_CPL_IO_FILE_LITTLEFS_MAX_CONCURRENT_FILES> m_pool;
 };
+#endif  // end !LFS_THREADSAFE
 
 /*----------------------------------------------------------------------------*/
-#ifdef LFS_THREADSAFE
-/// Thread safe memory pool
-#define MEMORYPOOL_TYPE FileMemoryPoolMT
-#else
-/// Single thread memory pool
-#define MEMORYPOOL_TYPE FileMemoryPool
-#endif
-
 /// Expose the memory pool instance
-extern MEMORYPOOL_TYPE g_fileMemoryPool;
+extern FileMemoryPool g_fileMemoryPool;
 
 }  // end namespace
 }

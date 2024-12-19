@@ -127,9 +127,7 @@ bool Api::remove( const char* fsEntryName )
 
 /////////////////////////////////////////////////////
 #ifdef LFS_THREADSAFE
-#include "Cpl/System/Mutex.h"
-static Cpl::System::Mutex fsmutex_;
-#define CRITICAL_SECTION()  Cpl::System::Mutex::ScopeBlock guard( fsmutex_ )
+#define CRITICAL_SECTION()  Cpl::System::Mutex::ScopeBlock guard( Cpl::Io::File::Littlefs::g_fsmutex )
 #else
 #define CRITICAL_SECTION()
 #endif
