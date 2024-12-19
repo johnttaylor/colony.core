@@ -53,31 +53,6 @@ debug_release          = BuildValues()       # Do NOT comment out this line
 debug_release.cflags   = '/D "_MY_APP_DEBUG_SWITCH_"'
 debug_release.linklibs = ''
 
-#
-# For build config/variant: "cpp11"
-# (note: uses same internal toolchain options as the 'Release' variant, 
-#        only the 'User' options will/are different)
-#
-
-# Construct option structs
-base_cpp11     = BuildValues()  
-optimzed_cpp11 = BuildValues()
-debug_cpp11    = BuildValues()
-
-
-# Set 'base' options
-base_cpp11.cflags       = '/W3 /WX /D LFS_THREADSAFE /D LFS_NO_MALLOC /D DLFS_NAME_MAX=16'  # /EHsc enables exceptions
-base_cpp11.c_only_flags = '/std:c11'
-base_cpp11.cppflags     = '/EHsc'  # /EHsc enables exceptions
-
-# Set 'Optimized' options
-optimzed_cpp11.cflags   = '/O2'
-optimzed_cpp11.linklibs = ''
-
-# Set project specific 'debug' options
-debug_cpp11.linklibs = ''
-
-
 #-------------------------------------------------
 # ONLY edit this section if you are ADDING options
 # for build configurations/variants OTHER than the
@@ -90,17 +65,10 @@ release_opts = { 'user_base':base_release,
                }
                
                
-# Add new dictionary of for new build configuration options
-cpp11_opts = { 'user_base':base_cpp11, 
-               'user_optimized':optimzed_cpp11, 
-               'user_debug':debug_cpp11
-             }
-  
         
 # Add new variant option dictionary to # dictionary of 
 # build variants
-build_variants = { 'win32':release_opts,
-                   'cpp11':cpp11_opts,
+build_variants = { 'win32':release_opts
                  }    
 
 #---------------------------------------------------
