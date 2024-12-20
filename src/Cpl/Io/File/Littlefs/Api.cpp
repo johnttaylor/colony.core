@@ -132,7 +132,7 @@ int Cpl::Io::File::Littlefs::Api::shutdownVolume( Volume_T& volumeToInit ) noexc
     return lfs_unmount( &volumeToInit.fs );
 }
 
-lfs_t* Cpl::Io::File::Littlefs::getLittlefsInstance( const char* fsEntryName )
+lfs_t* Cpl::Io::File::Littlefs::Api::getInstance( const char* fsEntryName )
 {
     // Simple case of a single volume
     if ( numVolumes_ == 1 )

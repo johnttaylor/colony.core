@@ -9,9 +9,9 @@
  * Redistributions of the source code must retain the above copyright notice.
  *----------------------------------------------------------------------------*/
 
-#include "Cpl/Io/File/Api.h"
 #include "Cpl/Io/File/Common_.h"
 #include "Private_.h"
+#include <new>
 
 ///
 using namespace Cpl::Io::File;
@@ -32,7 +32,7 @@ Cpl::Io::Descriptor Common_::open( const char* fileEntryName, bool readOnly, boo
     }
 
     // Allocate memory for a file descriptor instance
-    lfs_t*      lfs   = getLittlefsInstance( fileEntryName );
+    lfs_t*      lfs   = Api::getInstance( fileEntryName );
     FileDesc_T* cplFd = nullptr;
     if ( lfs )
     {

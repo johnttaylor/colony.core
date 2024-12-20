@@ -108,14 +108,14 @@ public:
             @param numEraseBlocks   Number of erasable blocks
             @param blockCycles      Number of erase cycles before littlefs evicts metadata logs and moves. Suggested range 100-1000
          */
-        Volume_T( void*      blockDriver,          
-                  readfn     read,                 
-                  progfn     prog,                 
-                  erasefn    erase,                
-                  syncfn     sync,                 
-                  lfs_size_t eraseSize,            
-                  lfs_size_t numEraseBlocks,       
-                  int32_t    blockCycles = 500 ) noexcept;  
+        Volume_T( void*      blockDriver,
+                  readfn     read,
+                  progfn     prog,
+                  erasefn    erase,
+                  syncfn     sync,
+                  lfs_size_t eraseSize,
+                  lfs_size_t numEraseBlocks,
+                  int32_t    blockCycles = 500 ) noexcept;
 
         /// Default constructor.  USE Wisely (see above constructor)
         Volume_T() noexcept { memset( this, 0, sizeof( *this ) ); }
@@ -148,6 +148,18 @@ public:
         initialized.
      */
     static int shutdownVolume( Volume_T& volumeToShutdown ) noexcept;
+
+public:
+    /** This method returns the littlefs filesystem instance based on the
+        file/dir path name.
+
+        If the volume was not found, or the desired volume is not mounted, then
+        the method will return nullptr.
+
+        NOTE: If only one volume is used, then the method will always return the
+        the littlefs instance for that volume - regardless of the 'fsEntryName'
+    */
+    static lfs_t* getInstance( const char* fsEntryName );
 };
 
 }  // end namespace

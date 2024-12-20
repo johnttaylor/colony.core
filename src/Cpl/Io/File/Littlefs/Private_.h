@@ -29,9 +29,6 @@ namespace File {
 namespace Littlefs {
 
 /*----------------------------------------------------------------------------*/
-/// This method returns the littlefs filesystem instance based on the file/dir path name
-lfs_t* getLittlefsInstance( const char* fsEntryName );
-
 
 /*----------------------------------------------------------------------------*/
 /// This struct defines the memory need per opened file

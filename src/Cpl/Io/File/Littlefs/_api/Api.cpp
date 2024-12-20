@@ -20,7 +20,7 @@ using namespace Cpl::Io::File;
 
 static int getStats( const char* fileEntryName, struct lfs_info& info )
 {
-    auto lfs = Cpl::Io::File::Littlefs::getLittlefsInstance( fileEntryName );
+    auto lfs = Cpl::Io::File::Littlefs::Api::getInstance( fileEntryName );
     if ( lfs == nullptr )
     {
         return LFS_ERR_NOENT;
@@ -80,7 +80,7 @@ bool Api::createFile( const char* fileName )
 
 bool Api::createDirectory( const char* dirName )
 {
-    auto lfs = Cpl::Io::File::Littlefs::getLittlefsInstance( dirName );
+    auto lfs = Cpl::Io::File::Littlefs::Api::getInstance( dirName );
     if ( lfs == nullptr )
     {
         return false;
@@ -93,8 +93,8 @@ bool Api::createDirectory( const char* dirName )
 
 bool Api::renameInPlace( const char* oldName, const char* newName )
 {
-    auto lfsSrc = Cpl::Io::File::Littlefs::getLittlefsInstance( oldName );
-    auto lfsDst = Cpl::Io::File::Littlefs::getLittlefsInstance( newName );
+    auto lfsSrc = Cpl::Io::File::Littlefs::Api::getInstance( oldName );
+    auto lfsDst = Cpl::Io::File::Littlefs::Api::getInstance( newName );
     if ( lfsSrc != nullptr && lfsSrc == lfsDst )
     {
         int err = lfs_rename( lfsSrc, oldName, newName );
@@ -116,7 +116,7 @@ bool Api::moveFile( const char* oldFileName, const char* newFileName )
 
 bool Api::remove( const char* fsEntryName )
 {
-    auto* lfs = Cpl::Io::File::Littlefs::getLittlefsInstance( fsEntryName );
+    auto* lfs = Cpl::Io::File::Littlefs::Api::getInstance( fsEntryName );
     if ( lfs != nullptr )
     {
         return lfs_remove( lfs, fsEntryName ) == LFS_ERR_OK;
@@ -149,7 +149,7 @@ bool Api::walkDirectory( const char*      dirToList,
     }   
 
     // Get the Littlefs instance for the directory
-    auto lfs = Cpl::Io::File::Littlefs::getLittlefsInstance( dirToList );
+    auto lfs = Cpl::Io::File::Littlefs::Api::getInstance( dirToList );
     if ( lfs != nullptr )
     {
         CRITICAL_SECTION(); // Need a critical (when LFS_THREADSAFE is defined) because I ONLY have memory for ONE DirList_ instance
