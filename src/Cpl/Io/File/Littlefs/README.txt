@@ -14,8 +14,8 @@ The 'littlefs' file system is currently support with the following caveats:
 
     o The directory traversal depth is limited to OPTION_CPL_IO_FILE_DIRLIST_MAX_DEPTH
 
-    o Directory traversal is (relatively) memory! In addition there can only be 
-      one concurrent directory traversal at a time (mutex enforced).
+    o Directory traversal is (relatively) memory expensive! In addition there 
+      can only be one concurrent directory traversal at a time (mutex enforced).
 
     o Directory traversals do NOT span volumes 
 
@@ -41,7 +41,7 @@ which littlefs to use).  For example:
     Cpl::Io::File::Littlefs::Api::initVolume( volume2, "B", true );
     ...
     Cpl::Io::File::Output fd1( "/A/myfile", ... );  // Opened on volume1
-    Cpl::Io::File::Output fd2( "/B/myfile", ... );  // Opened on volume1
+    Cpl::Io::File::Output fd2( "/B/myfile", ... );  // Opened on volume2
     Cpl::Io::File::Api::createDirectory( "/A/mydirectory" );    // Created on volume1
 
 
