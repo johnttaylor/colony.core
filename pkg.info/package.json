@@ -122,23 +122,6 @@
         }
       },
       {
-        "pkgname": "nqbp2",
-        "pkgtype": "readonly",
-        "virtualAdoption": false,
-        "adoptedDate": "Wed Dec 18 16:15:06 2024",
-        "parentDir": "xsrc",
-        "version": {
-          "semanticVersion": "0.1.9",
-          "branch": null,
-          "tag": "OUTCAST2-main-0.1.9"
-        },
-        "repo": {
-          "name": "nqbp2",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        }
-      },
-      {
         "pkgname": "catch2",
         "pkgtype": "readonly",
         "virtualAdoption": false,
@@ -153,6 +136,23 @@
           "name": "catch2",
           "type": "git",
           "origin": "https://github.com/catchorg"
+        }
+      },
+      {
+        "pkgname": "nqbp2",
+        "pkgtype": "readonly",
+        "virtualAdoption": false,
+        "adoptedDate": "Sun Dec 29 17:43:31 2024",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": "1.0.0",
+          "branch": null,
+          "tag": "OUTCAST2-main-1.0.0"
+        },
+        "repo": {
+          "name": "nqbp2",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
         }
       }
     ]
