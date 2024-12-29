@@ -17,6 +17,11 @@
 # <prj1>: <build-type> // e.g. windows\vc12, windows\mingw_w64, linux/gcc, etc.
 #-----------------------------------------------------------------------------
 
+# Skip when doing a CI build (i.e. relying on the 'build-all' script o have already built the Catch2 library)
+NQBP_CI_BUILD = os.environ.get('NQBP_CI_BUILD')
+if ( NQBP_CI_BUILD != None ):
+    sys.exit(0)
+
 #
 import os, sys, shutil
 

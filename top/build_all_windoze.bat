@@ -8,6 +8,9 @@
 set _TOPDIR=%~dp0
 set _ROOT=%_TOPDIR%..
 
+:: Set the CI build flag
+set NQBP_CI_BUILD= 1
+
 
 :: Set Build info (and force build number to zero for "non-official" builds)
 set BUILD_TYPE=%2
