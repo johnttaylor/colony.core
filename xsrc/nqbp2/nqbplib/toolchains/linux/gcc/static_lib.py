@@ -1,10 +1,10 @@
 #------------------------------------------------------------------------------
 # TOOLCHAIN
 #
-#   Host:       Windows
-#   Compiler:   Mingw_w64
-#   Target:     Windows
-#   Output:     Static Library
+#   Host:       Linux
+#   Compiler:   GCC
+#   Target:     Linux
+#   Output:     static library
 #------------------------------------------------------------------------------
 
 import sys
@@ -35,7 +35,3 @@ class ToolChain( console_exe.ToolChain ): #base.ToolChain ):
  
     def finalize( self, arguments, builtlibs, objfiles, local_external_setting, linkout=None ):
         self._ninja_writer.default( self._final_output_name + ".a" )
-
-    #--------------------------------------------------------------------------
-    def _build_arlibs_rule( self ):
-        self._win32_build_arlibs_rule()
