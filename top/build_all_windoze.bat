@@ -38,6 +38,11 @@ IF ERRORLEVEL 1 EXIT /b 1
 echo on
 call %_ROOT%\env.bat 3
 
+:: Build the Catch2 static library
+cd %_ROOT%\projects
+%_ROOT%\xsrc\nqbp2\other\bob.py -v4 mingw_w64 -c --bld-all
+
+:: Build the unit tests
 cd %_ROOT%\tests
 %_ROOT%\xsrc\nqbp2\other\bob.py -v4 mingw_w64 --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
@@ -64,6 +69,11 @@ IF ERRORLEVEL 1 EXIT /b 1
 echo on
 call %_TOPDIR%..\env.bat 1
 
+:: Build the Catch2 static library
+cd %_ROOT%\projects
+%_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bld-all
+
+:: Build the unit tests
 cd %_TOPDIR%..\tests
 %_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1

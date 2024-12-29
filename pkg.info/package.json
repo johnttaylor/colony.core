@@ -182,13 +182,20 @@
   },
   "publish": {
     "current": {
-      "comment": "Add support for the 'littlefs' file system",
-      "version": "4.5.0",
-      "date": "Fri Dec 20 15:16:17 2024",
-      "timestamp": 1734707777,
+      "comment": "Update the Catch2 testframe to v3.x (using static library instead of single header file)",
+      "version": "4.6.0",
+      "date": "Sun Dec 29 17:45:41 2024",
+      "timestamp": 1735494341,
       "changes": null
     },
     "history": [
+      {
+        "comment": "Add support for the 'littlefs' file system",
+        "version": "4.5.0",
+        "date": "Fri Dec 20 15:16:17 2024",
+        "timestamp": 1734707777,
+        "changes": null
+      },
       {
         "comment": "Minor updates and add FDictionary class",
         "version": "4.4.5",
