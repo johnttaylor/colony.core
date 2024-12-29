@@ -47,7 +47,7 @@ cd %_ROOT%\projects
 
 :: Build the unit tests
 cd %_ROOT%\tests
-%_ROOT%\xsrc\nqbp2\other\bob.py -v4 mingw_w64 --bldtime --bld-all --bldnum %BUILD_NUMBER%
+%_ROOT%\xsrc\nqbp2\other\bob.py -v4 mingw_w64 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Run unit tests
@@ -78,7 +78,7 @@ cd %_ROOT%\projects
 
 :: Build the unit tests
 cd %_TOPDIR%..\tests
-%_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 --bldtime --bld-all --bldnum %BUILD_NUMBER%
+%_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Run unit tests

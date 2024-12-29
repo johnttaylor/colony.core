@@ -88,23 +88,6 @@
         }
       },
       {
-        "pkgname": "catch",
-        "pkgtype": "overlay",
-        "virtualAdoption": false,
-        "adoptedDate": "Sun Jul  7 21:51:54 2024",
-        "parentDir": null,
-        "version": {
-          "semanticVersion": "2.13.7e",
-          "branch": null,
-          "tag": "OUTCAST2-main-2.13.7e"
-        },
-        "repo": {
-          "name": "catch",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        }
-      },
-      {
         "pkgname": "littlefs",
         "pkgtype": "readonly",
         "virtualAdoption": false,
@@ -151,6 +134,23 @@
         },
         "repo": {
           "name": "nqbp2",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      },
+      {
+        "pkgname": "catch",
+        "pkgtype": "overlay",
+        "virtualAdoption": false,
+        "adoptedDate": "Sun Dec 29 20:35:47 2024",
+        "parentDir": null,
+        "version": {
+          "semanticVersion": "3.0.0",
+          "branch": null,
+          "tag": "OUTCAST2-main-3.0.0"
+        },
+        "repo": {
+          "name": "catch",
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
