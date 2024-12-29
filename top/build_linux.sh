@@ -12,7 +12,7 @@ set -e
 source ./env.sh default
 
 # Set the CI build flag
-NQBP_CI_BUILD=1
+export NQBP_CI_BUILD="1"
 
 # Build the Catch2 static library (just 64bit apps for now)
 pushd projects
