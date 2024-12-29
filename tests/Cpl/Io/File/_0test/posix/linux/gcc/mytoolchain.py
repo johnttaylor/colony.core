@@ -36,7 +36,7 @@ import os, copy
 FINAL_OUTPUT_NAME = 'b.out'
 
 # Link unittest directory by object module so that Catch's self-registration mechanism 'works'
-unit_test_objects = '_BUILT_DIR_.src/Cpl/Checksum/_0test'
+unit_test_objects = '_BUILT_DIR_.src/Cpl/Io/File/_0test'
 
 # Use Catch2 as a static library
 catch2_inc  = f'-I{os.path.join( NQBP_PKG_ROOT(), "xsrc", "catch2", "src" )}'
