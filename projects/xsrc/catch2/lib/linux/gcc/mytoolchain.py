@@ -48,9 +48,8 @@ base_posix32.inc       = catch2_inc
 
 
 # Set project specific 'optimized' options
-base_posix32           = BuildValues()    # Do NOT comment out this line
-base_posix32.cflags    = '-O3'
-base_posix32.linklibs  = ''
+optimized_posix32           = BuildValues()    # Do NOT comment out this line
+optimized_posix32.cflags    = '-O3'
 
 # Set project specific 'debug' options
 debug_posix32           = BuildValues()       # Do NOT comment out this line
@@ -92,7 +91,7 @@ debug_cpp11     = copy.deepcopy(debug_posix64)
 #-------------------------------------------------
 
 posix32_opts = { 'user_base':base_posix32, 
-                 'user_optimized':base_posix32, 
+                 'user_optimized':optimized_posix32, 
                  'user_debug':debug_posix32
                }
                

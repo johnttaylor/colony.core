@@ -26,9 +26,9 @@ $NQBP_BIN/other/chuck.py -v --match aa.out --dir _posix64
 $NQBP_BIN/other/chuck.py -v --match a.py --dir _posix64
 $NQBP_BIN/other/chuck.py -v --match aa.py --dir _posix64
 
-$NQBP_BIN/other/chuck.py -v --match a.out --dir _posix32
-$NQBP_BIN/other/chuck.py -v --match aa.out --dir _posix32
-$NQBP_BIN/other/chuck.py -v --match a.py --dir _posix32
-$NQBP_BIN/other/chuck.py -v --match aa.py --dir _posix32
+$NQBP_BIN/other/chuck.py -v --match a.out --dir _posix
+$NQBP_BIN/other/chuck.py -v --match aa.out --dir _posix
+$NQBP_BIN/other/chuck.py -v --match a.py --dir _posix
+$NQBP_BIN/other/chuck.py -v --match aa.py --dir _posix
 
 
