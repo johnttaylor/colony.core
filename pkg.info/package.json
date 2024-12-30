@@ -190,13 +190,6 @@
     },
     "history": [
       {
-        "comment": "Update the Catch2 testframe to v3.x (using static library instead of single header file)",
-        "version": "4.6.0",
-        "date": "Sun Dec 29 17:45:41 2024",
-        "timestamp": 1735494341,
-        "changes": null
-      },
-      {
         "comment": "Add support for the 'littlefs' file system",
         "version": "4.5.0",
         "date": "Fri Dec 20 15:16:17 2024",
