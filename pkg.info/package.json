@@ -182,13 +182,20 @@
   },
   "publish": {
     "current": {
-      "comment": "Update the Catch2 testframe to v3.x (using static library instead of single header file)",
-      "version": "4.6.0",
-      "date": "Sun Dec 29 17:45:41 2024",
-      "timestamp": 1735494341,
+      "comment": "Migrate to Catch2 v3.x test framework (now uses a static library instead of single header file)",
+      "version": "4.5.1",
+      "date": "Mon Dec 30 14:04:18 2024",
+      "timestamp": 1735567458,
       "changes": null
     },
     "history": [
+      {
+        "comment": "Update the Catch2 testframe to v3.x (using static library instead of single header file)",
+        "version": "4.6.0",
+        "date": "Sun Dec 29 17:45:41 2024",
+        "timestamp": 1735494341,
+        "changes": null
+      },
       {
         "comment": "Add support for the 'littlefs' file system",
         "version": "4.5.0",
