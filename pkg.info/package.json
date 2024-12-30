@@ -88,23 +88,6 @@
         }
       },
       {
-        "pkgname": "catch",
-        "pkgtype": "overlay",
-        "virtualAdoption": false,
-        "adoptedDate": "Sun Jul  7 21:51:54 2024",
-        "parentDir": null,
-        "version": {
-          "semanticVersion": "2.13.7e",
-          "branch": null,
-          "tag": "OUTCAST2-main-2.13.7e"
-        },
-        "repo": {
-          "name": "catch",
-          "type": "git",
-          "origin": "https://github.com/johnttaylor"
-        }
-      },
-      {
         "pkgname": "littlefs",
         "pkgtype": "readonly",
         "virtualAdoption": false,
@@ -122,18 +105,52 @@
         }
       },
       {
+        "pkgname": "catch2",
+        "pkgtype": "readonly",
+        "virtualAdoption": false,
+        "adoptedDate": "Fri Dec 27 22:34:51 2024",
+        "parentDir": "xsrc",
+        "version": {
+          "semanticVersion": null,
+          "branch": null,
+          "tag": "v3.7.1"
+        },
+        "repo": {
+          "name": "catch2",
+          "type": "git",
+          "origin": "https://github.com/catchorg"
+        }
+      },
+      {
         "pkgname": "nqbp2",
         "pkgtype": "readonly",
         "virtualAdoption": false,
-        "adoptedDate": "Wed Dec 18 16:15:06 2024",
+        "adoptedDate": "Sun Dec 29 17:43:31 2024",
         "parentDir": "xsrc",
         "version": {
-          "semanticVersion": "0.1.9",
+          "semanticVersion": "1.0.0",
           "branch": null,
-          "tag": "OUTCAST2-main-0.1.9"
+          "tag": "OUTCAST2-main-1.0.0"
         },
         "repo": {
           "name": "nqbp2",
+          "type": "git",
+          "origin": "https://github.com/johnttaylor"
+        }
+      },
+      {
+        "pkgname": "catch",
+        "pkgtype": "overlay",
+        "virtualAdoption": false,
+        "adoptedDate": "Sun Dec 29 20:35:47 2024",
+        "parentDir": null,
+        "version": {
+          "semanticVersion": "3.0.0",
+          "branch": null,
+          "tag": "OUTCAST2-main-3.0.0"
+        },
+        "repo": {
+          "name": "catch",
           "type": "git",
           "origin": "https://github.com/johnttaylor"
         }
@@ -165,13 +182,20 @@
   },
   "publish": {
     "current": {
-      "comment": "Add support for the 'littlefs' file system",
-      "version": "4.5.0",
-      "date": "Fri Dec 20 15:16:17 2024",
-      "timestamp": 1734707777,
+      "comment": "Update the Catch2 testframe to v3.x (using static library instead of single header file)",
+      "version": "4.6.0",
+      "date": "Sun Dec 29 17:45:41 2024",
+      "timestamp": 1735494341,
       "changes": null
     },
     "history": [
+      {
+        "comment": "Add support for the 'littlefs' file system",
+        "version": "4.5.0",
+        "date": "Fri Dec 20 15:16:17 2024",
+        "timestamp": 1734707777,
+        "changes": null
+      },
       {
         "comment": "Minor updates and add FDictionary class",
         "version": "4.4.5",
