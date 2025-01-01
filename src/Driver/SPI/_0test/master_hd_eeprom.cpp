@@ -10,7 +10,7 @@
  *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "master_eeprom.h"
+#include "master_hd_eeprom.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/System/Api.h"
 
@@ -24,7 +24,7 @@ static uint8_t dstBuffer_[10];
 static uint8_t magicValues_[10];
 
 
-static bool waitForWriteToComplete( Driver::SPI::Master& uut, Driver::DIO::Out& cs )
+static bool waitForWriteToComplete( Driver::SPI::MasterHalfDuplex& uut, Driver::DIO::Out& cs )
 {
     bool inProgress = true;
     while ( inProgress )
@@ -33,12 +33,16 @@ static bool waitForWriteToComplete( Driver::SPI::Master& uut, Driver::DIO::Out& 
         srcBuffer_[0] = 5;  // Read Status Reg Command
         memset( dstBuffer_, 0xA5, sizeof( dstBuffer_ ) );
         cs.assertOutput();
-        if ( !uut.transfer( 2, srcBuffer_, dstBuffer_ ) )
+        if ( !uut.transmit( 1, srcBuffer_ ) )
+        {
+            break;
+        }
+        if ( !uut.receive( 1, dstBuffer_ ) )
         {
             break;
         }
         cs.deassertOutput();
-        if ( !( dstBuffer_[1] & 0x01 ) )
+        if ( !( dstBuffer_[0] & 0x01 ) )
         {
             inProgress = false;
             return true;
@@ -48,15 +52,15 @@ static bool waitForWriteToComplete( Driver::SPI::Master& uut, Driver::DIO::Out& 
     return false;
 }
 
-void runtests( Driver::SPI::Master& uut, Driver::DIO::Out& cs )
+void runtests( Driver::SPI::MasterHalfDuplex& uut, Driver::DIO::Out& cs )
 {
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "SPI (Full Duplex) Driver Test - expecting a M95M04-DR (or compatible) EEPROM peripheral device." ) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "SPI (Half Duplex) Driver Test - expecting a M95M04-DR (or compatible) EEPROM peripheral device." ) );
 
     //
     // Initialize ChipSelect
     //
-    bool result = cs.start( false );
-    if ( !result )
+    bool resulttx = cs.start( false );
+    if ( !resulttx )
     {
         CPL_SYSTEM_TRACE_MSG( SECT_, ( "FAILED to start the CS driver" ) );
         STOP_TEST();
@@ -67,9 +71,9 @@ void runtests( Driver::SPI::Master& uut, Driver::DIO::Out& cs )
     //
     srcBuffer_[0] = 5;  // Read Status Reg Command
     cs.assertOutput();
-    result = uut.transfer( 3, srcBuffer_, dstBuffer_ );
+    resulttx = uut.transmit( 3, srcBuffer_ );
     cs.deassertOutput();
-    if ( !result )
+    if ( !resulttx )
     {
         CPL_SYSTEM_TRACE_MSG( SECT_, ( "EXPECTED: driver not started" ) );
     }
@@ -100,34 +104,35 @@ void runtests( Driver::SPI::Master& uut, Driver::DIO::Out& cs )
     srcBuffer_[2] = 0;
     srcBuffer_[3] = 0;
     cs.assertOutput();
-    result = uut.transfer( 1 + 3 + 3, srcBuffer_, magicValues_ );
+    resulttx      = uut.receive( 1 + 3, srcBuffer_ );
+    bool resultrx = uut.receive( 3, magicValues_ );
     cs.deassertOutput();
-    if ( result )
+    if ( resulttx && resultrx )
     {
-        CPL_SYSTEM_TRACE_MSG( SECT_, ( "EXPECTED: Read 3 bytes to offset 0. vals=%02x %02x %02x", magicValues_[4], magicValues_[5], magicValues_[6] ) );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "EXPECTED: Read 3 bytes to offset 0. vals=%02x %02x %02x", magicValues_[0], magicValues_[1], magicValues_[2] ) );
     }
     else
     {
-        CPL_SYSTEM_TRACE_MSG( SECT_, ( "ERROR: Failed to read 3 bytes at offset 0" ) );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "ERROR: Failed to read 3 bytes at offset 0 (rtx=%d, rrx=%d)", resulttx, resulttx ) );
         STOP_TEST();
     }
-    magicValues_[4] += 1;
-    magicValues_[5] += 2;
-    magicValues_[6] += 3;
+    magicValues_[0] += 1;
+    magicValues_[1] += 2;
+    magicValues_[2] += 3;
     CPL_SYSTEM_TRACE_MSG( SECT_,
                           ( "INFO: Preparation to write 3 bytes to offset 0 (vals=%02x %02x %02x)",
-                            magicValues_[4],
-                            magicValues_[5],
-                            magicValues_[6] ) );
+                            magicValues_[0],
+                            magicValues_[1],
+                            magicValues_[2] ) );
 
     //
     // Enable writing
     //
     srcBuffer_[0] = 6;
     cs.assertOutput();
-    result = uut.transfer( 1, srcBuffer_ );
+    resulttx = uut.transmit( 1, srcBuffer_ );
     cs.deassertOutput();
-    if ( result )
+    if ( resulttx )
     {
         // CPL_SYSTEM_TRACE_MSG( SECT_, ( "EXPECTED: Write Enable" ) );
     }
@@ -144,19 +149,19 @@ void runtests( Driver::SPI::Master& uut, Driver::DIO::Out& cs )
     srcBuffer_[1] = 0;  // Start writing at offset zero (24 bit address)
     srcBuffer_[2] = 0;
     srcBuffer_[3] = 0;
-    srcBuffer_[4] = magicValues_[4];
-    srcBuffer_[5] = magicValues_[5];
-    srcBuffer_[6] = magicValues_[6];
+    srcBuffer_[4] = magicValues_[0];
+    srcBuffer_[5] = magicValues_[1];
+    srcBuffer_[6] = magicValues_[2];
     cs.assertOutput();
-    result = uut.transfer( 1 + 3 + 3, srcBuffer_ );
+    resulttx = uut.transmit( 1 + 3 + 3, srcBuffer_ );
     cs.deassertOutput();
-    if ( !result )
+    if ( !resulttx )
     {
         CPL_SYSTEM_TRACE_MSG( SECT_,
                               ( "ERROR: Failed to write 3 bytes to offset 0 (vals=%02x %02x %02x)",
-                                srcBuffer_[4],
-                                srcBuffer_[5],
-                                srcBuffer_[6] ) );
+                                srcBuffer_[0],
+                                srcBuffer_[1],
+                                srcBuffer_[2] ) );
         STOP_TEST();
     }
 
@@ -175,22 +180,25 @@ void runtests( Driver::SPI::Master& uut, Driver::DIO::Out& cs )
     srcBuffer_[2] = 0;
     srcBuffer_[3] = 0;
     cs.assertOutput();
-    result = uut.transfer( 1 + 3 + 3, srcBuffer_, dstBuffer_ );
+    resulttx = uut.transmit( 1 + 3, srcBuffer_ );
+    resultrx = uut.receive( 3, dstBuffer_ );
     cs.deassertOutput();
-    if ( result && dstBuffer_[4] == magicValues_[4] && dstBuffer_[5] == magicValues_[5] && dstBuffer_[6] == magicValues_[6] )
+    if ( resulttx && dstBuffer_[0] == magicValues_[0] && dstBuffer_[1] == magicValues_[1] && dstBuffer_[2] == magicValues_[2] )
     {
-        CPL_SYSTEM_TRACE_MSG( SECT_, ( "EXPECTED: Read 3 bytes to offset 0 (vals=%02x %02x %02x)", dstBuffer_[4], dstBuffer_[5], dstBuffer_[6] ) );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "EXPECTED: Read 3 bytes to offset 0 (vals=%02x %02x %02x)", dstBuffer_[0], dstBuffer_[1], dstBuffer_[2] ) );
     }
     else
     {
         CPL_SYSTEM_TRACE_MSG( SECT_,
-                              ( "ERROR: Failed to read 3 bytes at offset 0 (act=%02x %02x %02x | ex=%02x %02x %02x)",
-                                dstBuffer_[4],
-                                dstBuffer_[5],
-                                dstBuffer_[6],
-                                magicValues_[4],
-                                magicValues_[5],
-                                magicValues_[6] ) );
+                              ( "ERROR: Failed to read 3 bytes at offset 0 rtx=%d, rrx=%d, (act=%02x %02x %02x | ex=%02x %02x %02x)",
+                                resulttx,
+                                resultrx,
+                                dstBuffer_[0],
+                                dstBuffer_[1],
+                                dstBuffer_[2],
+                                magicValues_[0],
+                                magicValues_[1],
+                                magicValues_[2] ) );
         STOP_TEST();
     }
 

@@ -2,28 +2,28 @@
 #include "Bsp/Api.h"
 #include "Cpl/System/Api.h"
 #include "Cpl/System/Trace.h"
-#include "Driver/SPI/_0test/master_eeprom.h"
-#include "Driver/SPI/STM32/Master.h"
+#include "Driver/SPI/_0test/master_hd_eeprom.h"
+#include "Driver/SPI/STM32/MasterHalfDuplex.h"
 #include "Cpl/System/FreeRTOS/Thread.h"
 
 
-static Driver::SPI::STM32::Master       uut_( &hspi3 );
-static DriverDioOutSTM32PinConfig_T     chipSelectConfig_( CS_SPI_Flash_GPIO_Port, CS_SPI_Flash_Pin );
-static Driver::DIO::Out                 csDriver_( chipSelectConfig_, false );
+static Driver::SPI::STM32::MasterHalfDuplex uut_( &hspi3 );
+static DriverDioOutSTM32PinConfig_T         chipSelectConfig_( CS_SPI_Flash_GPIO_Port, CS_SPI_Flash_Pin );
+static Driver::DIO::Out                     csDriver_( chipSelectConfig_, false );
 
 
-#define SECT_   "_0test"
+#define SECT_ "_0test"
 
 /// Thread for the test (note: the console driver only works when called from a CPL thread)
 class ThreadMain : public Cpl::System::Runnable
 {
 public:
-    ThreadMain() {};
+    ThreadMain(){};
 
 protected:
     void appRun()
     {
-        CPL_SYSTEM_TRACE_MSG( SECT_, ("**** DRIVER TEST APPLICATION STARTED ****") );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "**** DRIVER TEST APPLICATION STARTED ****" ) );
         runtests( uut_, csDriver_ );
     }
 };
@@ -51,10 +51,11 @@ int main( void )
     if ( t1 == nullptr )
     {
         printf( "Failed to create the main thread\n" );
-        while ( 1 );
+        while ( 1 )
+            ;
     }
 
     // Start the scheduler
-    Cpl::System::Api::enableScheduling(); // Enable scheduling NEVER return!
+    Cpl::System::Api::enableScheduling();  // Enable scheduling NEVER return!
     return 0;
 }
