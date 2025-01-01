@@ -9,7 +9,7 @@
 
 void runtests( Driver::SPI::Master& uut, Driver::DIO::Out& cs );
 
-static Driver::SPI::STM32::Master       uut_( &hspi1 );
+static Driver::SPI::STM32::Master       uut_( &hspi3 );
 static DriverDioOutSTM32PinConfig_T     chipSelectConfig_( CS_SPI_Flash_GPIO_Port, CS_SPI_Flash_Pin );
 static Driver::DIO::Out                 csDriver_( chipSelectConfig_, false );
 
