@@ -13,6 +13,7 @@
 #include "BdSpi.h"
 #include "Cpl/System/Trace.h"
 #include "Cpl/System/Api.h"
+#include <algorithm>
 
 using namespace Cpl::Io::File::Littlefs;
 
@@ -27,9 +28,11 @@ enum
     SFLASH_CMD_READ_JEDEC_ID = 0x9f,
     SFLASH_CMD_PAGE_PROGRAM  = 0x02,
     SFLASH_CMD_READ_STATUS1  = 0x05,
+    SFLASH_CMD_READ_STATUS2  = 0x35,
     SFLASH_CMD_ENABLE_RESET  = 0x66,
     SFLASH_CMD_RESET         = 0x99,
     SFLASH_CMD_WRITE_ENABLE  = 0x06,
+    SFLASH_CMD_WRITE_DISABLE = 0x04,
     SFLASH_CMD_ERASE_SECTOR  = 0x20,
 };
 
@@ -66,24 +69,33 @@ bool BdSpi::start() noexcept
             return false;
         }
 
-        // Read the JEDEC ID to verify the device is present
-        JedecID_T jedecID;
-        if ( readJedecID( jedecID ) )
-        {
-            CPL_SYSTEM_TRACE_MSG( SECT_, ( "JEDEC ID: %02X %02X %02X", jedecID.manufacturerID, jedecID.memoryType, jedecID.capacity ) );
-        }
-        else
-        {
-            CPL_SYSTEM_TRACE_MSG( SECT_, ( "Failed to read the JEDEC ID" ) );
-            return false;
-        }
-
-        // We don't know what state the flash is in so wait for any remaining writes before proceeding
+        // Wait till the chip is in a 'ready' state
         if ( !waitUntilReady() )
         {
             CPL_SYSTEM_TRACE_MSG( SECT_, ( "Timed out while waiting for the chip to be in the ready state (before soft reset)." ) );
             return false;
         }
+        if ( !waitUntilSUS() )
+        {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ( "Timed out while waiting for the chip to NOT be in the suspended state." ) );
+            return false;
+        }
+
+        // uint8_t statusReg2 = readStatus();
+        // CPL_SYSTEM_TRACE_MSG( SECT_, ( "Status Register 2: %02X", statusReg2 ) );
+
+        // Read the JEDEC ID to verify the device is present
+        JedecID_T jedecID;
+        if ( readJedecID( jedecID ) && jedecID.manufacturerID != 0 && jedecID.memoryType != 0 && jedecID.capacity != 0 )
+        {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ( "JEDEC ID: %02X %02X %02X", jedecID.manufacturerID, jedecID.memoryType, jedecID.capacity ) );
+        }
+        else
+        {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ( "Failed to read (OR bad values) the JEDEC ID [%02X %02X %02X]", jedecID.manufacturerID, jedecID.memoryType, jedecID.capacity ) );
+            return false;
+        }
+
 
         // Reset the device
         if ( !sendCommand( SFLASH_CMD_ENABLE_RESET ) )
@@ -99,6 +111,14 @@ bool BdSpi::start() noexcept
 
         // Wait at least 30us for the reset
         Cpl::System::Api::sleep( WAIT_ON_RESET_MS );
+
+        // Wait for the device to be ready
+        if ( !waitUntilReady() )
+        {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ( "Timed out while waiting for the chip to be in the ready state (AFTER soft reset)." ) );
+            return false;
+        }
+
         m_started = true;
     }
 
@@ -124,8 +144,11 @@ bool BdSpi::readfn( const struct lfs_config* c, lfs_block_t block, lfs_off_t off
          ( size % c->read_size ) != 0 ||
          ( off + size ) > c->block_size )
     {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Invalid read request: block=%d, off=%d, size=%d", block, off, size ) );
         return false;
     }
+
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Read: block=%d, off=%d, size=%d", block, off, size ) );
 
     // Starting address/offset
     lfs_off_t address = block * c->block_size + off;
@@ -140,6 +163,14 @@ bool BdSpi::readfn( const struct lfs_config* c, lfs_block_t block, lfs_off_t off
     bool status = m_spi.receive( size, buffer );
     m_cs.deassertOutput();
 
+    if ( !status )
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Failed to read from the device" ) );
+    }
+    else
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Read: %02X %02X %02X %02X %02X %02X %02X %02X", ( (uint8_t*)buffer )[0], ( (uint8_t*)buffer )[1], ( (uint8_t*)buffer )[2], ( (uint8_t*)buffer )[3], ( (uint8_t*)buffer )[4], ( (uint8_t*)buffer )[5], ( (uint8_t*)buffer )[6], ( (uint8_t*)buffer )[7] ) );
+    }
     return status;
 }
 
@@ -151,21 +182,26 @@ bool BdSpi::progfn( const struct lfs_config* c, lfs_block_t block, lfs_off_t off
          ( size % c->prog_size ) != 0 ||
          ( off + size ) > c->block_size )
     {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Invalid write request: block=%d, off=%d, size=%d", block, off, size ) );
         return false;
     }
+
 
     // Starting address/offset
     lfs_off_t address = block * c->block_size + off;
     auto      srcPtr  = (const uint8_t*)buffer;
+
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Write: block=%d, off=%d, size=%d, addr=%d", block, off, size, address ) );
 
     // write one page at a time
     lfs_size_t remaining = size;
     while ( remaining )
     {
         lfs_size_t const leftOnPage = m_flashPageSize - ( address & ( m_flashPageSize - 1 ) );
-        lfs_size_t const toWrite    = min( remaining, leftOnPage );
+        lfs_size_t const toWrite    = std::min( remaining, leftOnPage );
         if ( !writeToPage( address, srcPtr, toWrite ) )
         {
+            CPL_SYSTEM_TRACE_MSG( SECT_, ( "Failed to write to page" ) );
             return false;
         }
 
@@ -181,9 +217,12 @@ bool BdSpi::erasefn( const struct lfs_config* c, lfs_block_t block ) noexcept
     // Validate the block number
     if ( block >= c->block_count )
     {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Invalid erase request: block=%d", block ) );
         return false;
     }
     uint32_t sectorAddress = block * c->block_size;
+
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Erase: block=%d (address=%lu)", block, (unsigned long)sectorAddress ) );
 
     // Before we erase the sector we need to wait for any writes to finish
     waitUntilReady();
@@ -200,6 +239,10 @@ bool BdSpi::erasefn( const struct lfs_config* c, lfs_block_t block ) noexcept
     bool status = m_spi.transmit( 4, cmdAndAddr );
     m_cs.deassertOutput();
 
+    if ( !status )
+    {
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Failed to erase sector" ) );
+    }
     return status;
 }
 
@@ -221,6 +264,17 @@ bool BdSpi::waitUntilReady() noexcept
     return retryCount != 0;
 }
 
+bool BdSpi::waitUntilSUS() noexcept
+{
+    unsigned retryCount = OPTION_CPL_IO_FILE_LITTLEFS_BDSPI_READ_MAX_RETRIES;
+    while ( retryCount-- && ( readStatus2() & 0x80 ) )
+    {
+        Cpl::System::Api::sleep( OPTION_CPL_IO_FILE_LITTLEFS_BDSPI_READ_RETRY_DELAY_MS );
+    }
+
+    return retryCount != 0;
+}
+
 uint8_t BdSpi::readStatus() noexcept
 {
     uint8_t command = SFLASH_CMD_READ_STATUS1;
@@ -229,9 +283,22 @@ uint8_t BdSpi::readStatus() noexcept
     uint8_t status;
     m_spi.receive( 1, &status );
     m_cs.deassertOutput();
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Status Register 1: %02X", status ) );
+    return status;
+}
+
+uint8_t BdSpi::readStatus2() noexcept
+{
+    uint8_t command = SFLASH_CMD_READ_STATUS2;
+    m_cs.assertOutput();
+    m_spi.transmit( 1, &command );
+    uint8_t status;
+    m_spi.receive( 1, &status );
+    m_cs.deassertOutput();
 
     return status;
 }
+
 
 bool BdSpi::sendCommand( uint8_t command ) noexcept
 {
@@ -270,6 +337,6 @@ bool BdSpi::writeToPage( lfs_off_t offset, const void* buffer, lfs_size_t numByt
     m_spi.transmit( 4, cmdAndAddr );
     bool status = m_spi.transmit( numBytes, buffer );
     m_cs.deassertOutput();
-
+CPL_SYSTEM_TRACE_MSG( SECT_, ( "WriteToPage: %d - %02X %02X %02X %02X %02X %02X %02X %02X", offset, ( (uint8_t*)buffer )[0], ( (uint8_t*)buffer )[1], ( (uint8_t*)buffer )[2], ( (uint8_t*)buffer )[3], ( (uint8_t*)buffer )[4], ( (uint8_t*)buffer )[5], ( (uint8_t*)buffer )[6], ( (uint8_t*)buffer )[7] ) );
     return status;
 }

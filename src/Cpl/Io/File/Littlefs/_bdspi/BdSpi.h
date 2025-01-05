@@ -101,7 +101,13 @@ protected:
     uint8_t readStatus() noexcept;
 
     /// Helper function
+    uint8_t readStatus2() noexcept;
+
+    /// Helper function
     bool waitUntilReady() noexcept;
+
+    /// Helper function
+    bool waitUntilSUS() noexcept;
 
     /// Helper function
     bool sendCommand( uint8_t command ) noexcept;
@@ -109,7 +115,7 @@ protected:
     /// Helper function
     bool readJedecID( JedecID_T& dstID ) noexcept;
 
-    /// Helper function (assumes the requested write offset/size fits into a single page)
+    /// Helper function (assume the requested write offset/size fits into a single page)
     bool writeToPage( lfs_off_t offset, const void* buffer, lfs_size_t numBytes ) noexcept;
 
 protected:
