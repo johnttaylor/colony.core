@@ -148,10 +148,12 @@ bool BdSpi::readfn( const struct lfs_config* c, lfs_block_t block, lfs_off_t off
         return false;
     }
 
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Read: block=%d, off=%d, size=%d", block, off, size ) );
 
     // Starting address/offset
     lfs_off_t address = block * c->block_size + off;
+
+    // Before we erase the sector we need to wait for any writes to finish
+    waitUntilReady();
 
     // Read command (24-bit address MSB first) PLUS rx clock cycles
     uint8_t cmdAndAddr[4] = { SFLASH_CMD_READ,
@@ -165,11 +167,24 @@ bool BdSpi::readfn( const struct lfs_config* c, lfs_block_t block, lfs_off_t off
 
     if ( !status )
     {
-        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Failed to read from the device" ) );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Failed to read from the device (block=%d, off=%d, size=%d)", block, off, size ) );
     }
     else
     {
-        CPL_SYSTEM_TRACE_MSG( SECT_, ( "Read: %02X %02X %02X %02X %02X %02X %02X %02X", ( (uint8_t*)buffer )[0], ( (uint8_t*)buffer )[1], ( (uint8_t*)buffer )[2], ( (uint8_t*)buffer )[3], ( (uint8_t*)buffer )[4], ( (uint8_t*)buffer )[5], ( (uint8_t*)buffer )[6], ( (uint8_t*)buffer )[7] ) );
+        CPL_SYSTEM_TRACE_MSG( SECT_,
+                              ( "Read: block=%d, off=%d, size=%d, addr=%d: %02X %02X %02X %02X %02X %02X %02X %02X",
+                                block,
+                                off,
+                                size,
+                                address,
+                                ( (uint8_t*)buffer )[0],
+                                ( (uint8_t*)buffer )[1],
+                                ( (uint8_t*)buffer )[2],
+                                ( (uint8_t*)buffer )[3],
+                                ( (uint8_t*)buffer )[4],
+                                ( (uint8_t*)buffer )[5],
+                                ( (uint8_t*)buffer )[6],
+                                ( (uint8_t*)buffer )[7] ) );
     }
     return status;
 }
@@ -283,7 +298,7 @@ uint8_t BdSpi::readStatus() noexcept
     uint8_t status;
     m_spi.receive( 1, &status );
     m_cs.deassertOutput();
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "Status Register 1: %02X", status ) );
+    //CPL_SYSTEM_TRACE_MSG( SECT_, ( "Status Register 1: %02X", status ) );
     return status;
 }
 
@@ -337,6 +352,6 @@ bool BdSpi::writeToPage( lfs_off_t offset, const void* buffer, lfs_size_t numByt
     m_spi.transmit( 4, cmdAndAddr );
     bool status = m_spi.transmit( numBytes, buffer );
     m_cs.deassertOutput();
-CPL_SYSTEM_TRACE_MSG( SECT_, ( "WriteToPage: %d - %02X %02X %02X %02X %02X %02X %02X %02X", offset, ( (uint8_t*)buffer )[0], ( (uint8_t*)buffer )[1], ( (uint8_t*)buffer )[2], ( (uint8_t*)buffer )[3], ( (uint8_t*)buffer )[4], ( (uint8_t*)buffer )[5], ( (uint8_t*)buffer )[6], ( (uint8_t*)buffer )[7] ) );
+    CPL_SYSTEM_TRACE_MSG( SECT_, ( "WriteToPage: %d - %02X %02X %02X %02X %02X %02X %02X %02X", offset, ( (uint8_t*)buffer )[0], ( (uint8_t*)buffer )[1], ( (uint8_t*)buffer )[2], ( (uint8_t*)buffer )[3], ( (uint8_t*)buffer )[4], ( (uint8_t*)buffer )[5], ( (uint8_t*)buffer )[6], ( (uint8_t*)buffer )[7] ) );
     return status;
 }

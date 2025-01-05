@@ -10,7 +10,7 @@ extern void runtest( lfs_t* cfg );
 #define READ_SIZE        CACHE_SIZE
 #define PROG_SIZE        CACHE_SIZE
 #define ERASE_SIZE       4096
-#define NUM_ERASE_BLOCKS 128
+#define NUM_ERASE_BLOCKS 4096
 
 // block driver configuration
 static const struct lfs_filebd_config bdCfg = {

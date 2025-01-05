@@ -20,62 +20,55 @@
 #           
 #---------------------------------------------------------------------------
 
-# get definition of the Options structure
+# 
+import os
+
+# get definition of the Options strcuture
 from nqbplib.base import BuildValues
-from nqbplib.my_globals import NQBP_WORK_ROOT
+from nqbplib.my_globals import NQBP_PKG_ROOT
+
 
 #===================================================
 # BEGIN EDITS/CUSTOMIZATIONS
 #---------------------------------------------------
 
-# Set the name for the final output item
-FINAL_OUTPUT_NAME = 'b.exe'
+# Set the name for the final output item (with NO file extension)
+FINAL_OUTPUT_NAME = 'outtest'
 
 
+# Path to SDK and the ST CubeMX generated BSP files
+bsp_mx        = os.path.join( "src", "Bsp", "ST", "NUCLEO-F413ZH", "alpha1", "MX" )
+sdk_root      = os.path.join( NQBP_PKG_ROOT(), "xsrc", "stm32F4-SDK")
+bsp_mx_root   = os.path.join( NQBP_PKG_ROOT(), bsp_mx )
+freertos_root = os.path.join( NQBP_PKG_ROOT(), "xsrc", "FreeRTOS")
+sysview_root  = os.path.join( NQBP_PKG_ROOT(), "src", "Bsp", "ST", "NUCLEO-F413ZH", "alpha1", "SeggerSysView" )
+sysview_root  = sysview_root.replace("\\", "/")
+
 #
-# For build config/variant: "Release" 
+# For build config/variant: "Release"
 #
+ 
 
 # Set project specific 'base' (i.e always used) options
-base_release              = BuildValues()        # Do NOT comment out this line
-base_release.cflags       = '/W3 /WX' # /DLFS_YES_TRACE' DLFS_FILEBD_YES_TRACE'
-base_release.c_only_flags = '/std:c11'
-base_release.cppflags     = '/EHsc'  # /EHsc enables exceptions
+base_release = BuildValues()        # Do NOT comment out this line
+target_flags              = '-DUSE_STM32F4XX_NUCLEO_144 -DSTM32F413xx'
+base_release.c_only_flags = f' -std=c11'
+base_release.cflags       = f' -Wall {target_flags} -Werror -DENABLE_BSP_SEGGER_SYSVIEW -I{sysview_root}' # -DLFS_YES_TRACE'
+base_release.cppflags     = ' -std=gnu++11 -Wno-int-in-bool-context'
+base_release.asmflags     = f' {target_flags}'
+base_release.firstobjs    = f'_BUILT_DIR_.{bsp_mx}/Core/Src'
+base_release.firstobjs    = base_release.firstobjs + f' {bsp_mx}/../stdio.o'
+base_release.lastobjs     = base_release.lastobjs + f' {bsp_mx}/../syscalls.o' 
 
 
 # Set project specific 'optimized' options
-optimzed_release          = BuildValues()    # Do NOT comment out this line
-optimzed_release.cflags   = '/O2'
-optimzed_release.linklibs = ''
+optimzed_release = BuildValues()    # Do NOT comment out this line
 
 # Set project specific 'debug' options
-debug_release          = BuildValues()       # Do NOT comment out this line
-debug_release.cflags   = '/D "_MY_APP_DEBUG_SWITCH_"'
-debug_release.linklibs = ''
-
-#
-# For build config/variant: "cpp11"
-# (note: uses same internal toolchain options as the 'Release' variant, 
-#        only the 'User' options will/are different)
-#
-
-# Construct option structs
-base_cpp11     = BuildValues()  
-optimzed_cpp11 = BuildValues()
-debug_cpp11    = BuildValues()
+debug_release = BuildValues()       # Do NOT comment out this line
+#debug_release.cflags = '-D_MY_APP_DEBUG_SWITCH_'
 
 
-# Set 'base' options
-base_cpp11.cflags       = '/W3 /WX'  # /EHsc enables exceptions
-base_cpp11.c_only_flags = '/std:c11'
-base_cpp11.cppflags     = '/EHsc'  # /EHsc enables exceptions
-
-# Set 'Optimized' options
-optimzed_cpp11.cflags   = '/O2'
-optimzed_cpp11.linklibs = ''
-
-# Set project specific 'debug' options
-debug_cpp11.linklibs = ''
 
 
 #-------------------------------------------------
@@ -91,16 +84,16 @@ release_opts = { 'user_base':base_release,
                
                
 # Add new dictionary of for new build configuration options
-cpp11_opts = { 'user_base':base_cpp11, 
-               'user_optimized':optimzed_cpp11, 
-               'user_debug':debug_cpp11
-             }
+#xyz_opts = { 'user_base':base_xyz, 
+#             'user_optimized':optimzed_xyz, 
+#             'user_debug':debug_xyz
+#           }
   
         
 # Add new variant option dictionary to # dictionary of 
 # build variants
-build_variants = { 'win32':release_opts,
-                   'cpp11':cpp11_opts,
+build_variants = { 'stm32':release_opts,
+#                  'xyz':xyz_opts,
                  }    
 
 #---------------------------------------------------
@@ -115,10 +108,11 @@ prjdir = os.path.dirname(os.path.abspath(__file__))
 
 
 # Select Module that contains the desired toolchain
-from nqbplib.toolchains.windows.vc12.console_exe import ToolChain
+from nqbplib.toolchains.windows.arm_gcc_stm32.stm32F4 import ToolChain
 
 
 # Function that instantiates an instance of the toolchain
 def create():
-    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, 'win32' )
+    lscript  = 'STM32F413ZHTx_FLASH.ld'
+    tc = ToolChain( FINAL_OUTPUT_NAME, prjdir, build_variants, sdk_root, bsp_mx_root, freertos_root, lscript, "stm32" )
     return tc 

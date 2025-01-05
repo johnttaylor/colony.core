@@ -14,7 +14,6 @@
 
 #define SECT_ "_0test"
 
-
 // variables used by the filesystem
 static lfs_t      lfs;
 static lfs_file_t file;
@@ -27,9 +26,10 @@ static struct lfs_file_config fileCfg = {
 
 void runtest( const lfs_config& cfg )
 {
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("runtest()" ));
     // mount the filesystem
     int err = lfs_mount( &lfs, &cfg );
-    err = 1;
+
     // reformat if we can't mount the filesystem
     // this should only happen on the first boot
     if ( err )
@@ -42,7 +42,7 @@ void runtest( const lfs_config& cfg )
     uint32_t boot_count = 0;
     lfs_file_opencfg( &lfs, &file, "boot_count", LFS_O_RDWR | LFS_O_CREAT, &fileCfg );
     lfs_file_read( &lfs, &file, &boot_count, sizeof( boot_count ) );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "boot_count: %d\n", boot_count ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("boot_count: %d", boot_count ));
 
     // update boot count
     boot_count += 1;
@@ -54,7 +54,7 @@ void runtest( const lfs_config& cfg )
 
     lfs_file_opencfg( &lfs, &file, "boot_count", LFS_O_RDWR | LFS_O_CREAT, &fileCfg );
     lfs_file_read( &lfs, &file, &boot_count, sizeof( boot_count ) );
-    CPL_SYSTEM_TRACE_MSG( SECT_, ( "boot_count: %d\n", boot_count ));
+    CPL_SYSTEM_TRACE_MSG( SECT_, ("boot_count: %d", boot_count ));
 
     // release any resources we were using
     lfs_unmount( &lfs );
