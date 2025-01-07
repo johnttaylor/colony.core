@@ -12,10 +12,7 @@
  *----------------------------------------------------------------------------*/
 /** @file */
 
-#include "colony_config.h"
 #include "littlefs/lfs.h"
-#include "Driver/SPI/MasterHalfDuplex.h"
-#include "Driver/DIO/Out.h"
 
 
 ///
