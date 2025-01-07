@@ -18,6 +18,6 @@ NOTE: On some host platforms when using PhonyStdio and there is blocked call
       exiting the application.  On a Linux host - you will need to use the
       following call to terminate the application
       
-        #include <signal.h>
+        # include <signal.h>
         raise( SIGTERM ); 
 */  
