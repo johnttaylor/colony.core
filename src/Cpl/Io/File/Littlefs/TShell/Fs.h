@@ -12,9 +12,15 @@
 *----------------------------------------------------------------------------*/
 /** @file */
 
+#include "colony_config.h"
 #include "Cpl/TShell/Cmd/Command.h"
 #include "Cpl/Dm/ModelDatabaseApi.h"
 
+
+/** Number of bytes to display per line when using the 'dump' command */
+#ifndef OPTION_CPL_IO_FILE_LITTLEFS_TSHELL_BYTES_PER_LINE
+#define OPTION_CPL_IO_FILE_LITTLEFS_TSHELL_BYTES_PER_LINE 16
+#endif
 
 ///
 namespace Cpl {
@@ -39,8 +45,11 @@ public:
 
     /// The command usage string
     static constexpr const char* usage = "fs ls <dir>\n" 
-                                         "fs cat <textfile>\n" 
-                                         "fs dump <binfile\n" 
+                                         "fs dump <file> [<offset> [<len>]]\n" 
+                                         "fs ren <oldentry> <newentry>\n"
+                                         "fs rm <entry>\n"
+                                         "fs mkfile <file>\n"
+                                         "fs mkdir  <dir>\n"
                                          "fs vols";
 
     /** The command detailed help string (recommended that lines do not exceed 80 chars)
@@ -48,11 +57,19 @@ public:
                                                  12345678901234567890123456789012345678901234567890123456789012345678901234567890
      */
     static constexpr const char* detailedHelp = "  Performs several file system actions.\n"
-                                                "    ls   - Lists the content of directory. For a single volume system, use '/'\n"
-                                                "           for the root directory.\n"
-                                                "    cat  - Displays the content of the specified text file\n"
-                                                "    dump - Displays the content of the specified binary file\n" 
-                                                "    vols - Lists the volumes in the file system";
+                                                "    ls     - Lists the content of directory. For a single volume system, use '/'\n"
+                                                "             for the root directory.\n"
+                                                "    dump   - Displays the content of the specified file. Optional starting file\n" 
+                                                "             offset and length can be specified.\n"
+                                                "    mv     - Moves/renames the specified entry. The new entry name MUST be on\n"
+                                                "             the same volume.\n"
+                                                "    rm     - Removes the specified entry. If 'entry' is directory, it must be\n"
+                                                "             empty.\n"
+                                                "    mkfile - Creates a new file. The file will be empty.\n"
+                                                "    mkdir  - Creates a new directory.\n"
+                                                "    vols   - Lists the volumes in the file system\n"
+                                                "\n"
+                                                "  NOTE: You can NOT rename, delete, etc. the volume root directory(s)";
 
 
 public:
