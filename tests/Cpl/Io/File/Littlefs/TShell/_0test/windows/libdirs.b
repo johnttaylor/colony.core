@@ -8,6 +8,8 @@ src/Cpl/Io/File/Littlefs/TShell/_0test
 xsrc/littlefs
 src/Cpl/Io/File/Littlefs/_bdfile
 src/Cpl/Io/File/Littlefs
+src/Cpl/Io/File/Littlefs/_api
+src/Cpl/Io/File
 src/Cpl/TShell
 src/Cpl/TShell/Cmd
 src/Cpl/Io/Serial/PhonyStdio

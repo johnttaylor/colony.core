@@ -23,75 +23,29 @@ namespace {
 class Walker : public Cpl::Io::File::Api::DirectoryWalker
 {
 public:
+    Cpl::TShell::Context_& m_context;
+    Cpl::Text::String&     m_outtext;
+    unsigned               m_count;
+public:
     ///
-    Walker( int depth, bool files = true, bool dirs = true )
-        : m_depth( depth ), m_files( files ), m_dirs( dirs ), m_contentCheck( true )
+    Walker( Cpl::TShell::Context_& context, Cpl::Text::String& outtext )
+        : m_context( context )
+        , m_outtext( outtext )
+        , m_count( 0 )
     {
     }
 
 public:
-    Cpl::Type::Traverser::Status_T item( const char* currentParent, const char* fsEntryName, Api::Info& entryInfo )
+    Cpl::Type::Traverser::Status_T item( const char* currentParent, const char* fsEntryName, Cpl::Io::File::Api::Info& entryInfo )
     {
-        // File check
-        m_workName = fsEntryName;
-        if ( entryInfo.m_isFile )
-        {
-            if ( !m_files )
-            {
-                m_contentCheck = false;
-            }
-
-            else if ( m_depth > 2 )
-            {
-                if ( m_workName != "d1.txt" && m_workName != "d2.txt" && m_workName != "d3.txt" )
-                {
-                    m_contentCheck = false;
-                }
-            }
-            else if ( m_depth > 1 )
-            {
-                if ( m_workName != "d1.txt" && m_workName != "d2.txt" )
-                {
-                    m_contentCheck = false;
-                }
-            }
-            else if ( m_workName != "d1.txt" )
-            {
-                m_contentCheck = false;
-            }
-        }
-
-        // Dir check
-        m_workName = fsEntryName;
-        if ( entryInfo.m_isDir )
-        {
-            if ( !m_dirs )
-            {
-                m_contentCheck = false;
-            }
-
-            else if ( m_depth >= 2 )
-            {
-                if ( m_workName != "d2" && m_workName != "d3" && m_workName != "d22")
-                {
-                    m_contentCheck = false;
-                }
-            }
-            else if ( m_depth >= 1 )
-            {
-                if ( m_workName != "d2" && m_workName != "d22" && m_workName != "d3"  ) 
-                {
-                    m_contentCheck = false;
-                }
-            }
-            else
-            {
-                m_contentCheck = false;
-            }
-        }
-
-        printf( "\n%s%s Parent=%s, item=%s.  (depth=%d, content=%d)", entryInfo.m_isFile ? "f" : "-", entryInfo.m_isDir ? "d" : "-", currentParent, fsEntryName, m_depth, m_contentCheck );
-        return Cpl::Type::Traverser::eCONTINUE;
+        m_outtext.format( "%s%s %8lu  %s",
+                          entryInfo.m_isFile ? "f" : "-",
+                          entryInfo.m_isDir ? "d" : "-",
+                          entryInfo.m_size,
+                          fsEntryName );
+        bool io = m_context.writeFrame( m_outtext );
+        m_count++;
+        return io ? Cpl::Type::Traverser::eCONTINUE : Cpl::Type::Traverser::eABORT;
     }
 };
 
@@ -112,13 +66,13 @@ Fs::Fs( Cpl::Container::Map<Cpl::TShell::Command>& commandList,
 ///////////////////////////
 Cpl::TShell::Command::Result_T Fs::execute( Cpl::TShell::Context_& context, char* cmdString, Cpl::Io::Output& outfd ) noexcept
 {
-	Cpl::Text::Tokenizer::TextBlock tokens( cmdString, context.getDelimiterChar(), context.getTerminatorChar(), context.getQuoteChar(), context.getEscapeChar() );
-	Cpl::Text::String&              outtext  = context.getOutputBuffer();
-	unsigned                        numParms = tokens.numParameters();
-	bool                            io       = true;
+    Cpl::Text::Tokenizer::TextBlock tokens( cmdString, context.getDelimiterChar(), context.getTerminatorChar(), context.getQuoteChar(), context.getEscapeChar() );
+    Cpl::Text::String&              outtext  = context.getOutputBuffer();
+    unsigned                        numParms = tokens.numParameters();
+    bool                            io       = true;
 
     // Show volumes sub-command
-    if ( numParms == 2 && tokens.getParameter(1)[0] == 'v' )
+    if ( numParms == 2 && tokens.getParameter( 1 )[0] == 'v' )
     {
         if ( m_numVols == 1 )
         {
@@ -128,7 +82,7 @@ Cpl::TShell::Command::Result_T Fs::execute( Cpl::TShell::Context_& context, char
         {
             for ( unsigned i = 0; i < m_numVols; i++ )
             {
-                outtext.format( "vol%d root:  %s", i+1, m_volPaths[i] );
+                outtext.format( "vol%d root:  %s", i + 1, m_volPaths[i] );
                 io &= context.writeFrame( outtext );
             }
 
@@ -137,9 +91,38 @@ Cpl::TShell::Command::Result_T Fs::execute( Cpl::TShell::Context_& context, char
     }
 
     // List directory sub-command
-    else if ( numParms == 3 && tokens.getParameter(1)[0] == 'l'  )
+    else if ( numParms == 3 && tokens.getParameter( 1 )[0] == 'l' )
     {
-        return context.writeFrame( "ls" ) ? Command::eSUCCESS : Command::eERROR_IO;
+        outtext.format( "Listing: %s", tokens.getParameter( 2 ) );
+        io &= context.writeFrame( outtext );
+
+        // Trap the use case of the root directory when there are multiple volumes
+        unsigned count = 0;
+        if ( m_numVols > 1 && ( strcmp( tokens.getParameter( 2 ), "." ) == 0 || strcmp( tokens.getParameter( 2 ), "/" ) == 0 ) )
+        {
+            count = m_numVols;
+            for ( unsigned i = 0; i < m_numVols; i++ )
+            {
+                outtext.format( "-d           %s", m_volPaths[i] );
+                io &= context.writeFrame( outtext );
+            }
+        }
+
+        // List the directory
+        else
+        {
+            Walker walker( context, outtext );
+            io    &= Cpl::Io::File::Api::walkDirectory( tokens.getParameter( 2 ), walker );
+            count  = walker.m_count;
+        }
+
+        // Display the totals
+        if ( io )
+        {
+            outtext.format( "Total: %u items", count );
+            io &= context.writeFrame( outtext );
+        }
+        return io ? Command::eSUCCESS : Command::eERROR_FAILED;
     }
 
     // If I get here the command failed!

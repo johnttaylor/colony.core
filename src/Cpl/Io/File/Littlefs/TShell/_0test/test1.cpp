@@ -44,6 +44,9 @@ static void createEntries();
 
 void shell_test( Cpl::Io::Input& infd, Cpl::Io::Output& outfd )
 {
+    // Create some entries
+    createEntries();
+
     // Start the shell
     shell_.launch( infd, outfd );
 
@@ -78,7 +81,7 @@ void createEntries()
         outfd.close();
     }
     {
-        Cpl::Io::File::Output outfd( ROOT_VOL1_PATH "/charlie/text22", true, true );
+        Cpl::Io::File::Output outfd( ROOT_VOL2_PATH "/charlie/text22", true, true );
         outfd.write( "text...\n22\n not very original (trailing newline)\n" );
         outfd.close();
     }

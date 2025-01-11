@@ -30,7 +30,6 @@ static Cpl::Io::File::Littlefs::BdFile driverInstance1_( "littlefs1.bin" );
 static Cpl::Io::File::Littlefs::BdFile driverInstance2_( "littlefs2.bin" );
 
 
-
 int main( int argc, char* argv[] )
 {
 	CPL_SYSTEM_TRACE_ENABLE();
