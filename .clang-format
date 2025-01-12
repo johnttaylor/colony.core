@@ -2,9 +2,13 @@
 ---
 BasedOnStyle: Microsoft
 AccessModifierOffset: -4
-AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+  AlignCompound: true
 AlignConsecutiveDeclarations: Consecutive
-AlignConsecutiveMacros: Consecutive
+AlignConsecutiveMacros: AcrossEmptyLines
 AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortFunctionsOnASingleLine: InlineOnly
