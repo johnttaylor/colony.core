@@ -48,6 +48,8 @@ which littlefs to use).  For example:
 NOTE: The following edits need to be made to the littlefs repo to be 
       build without warnings when using the Microsoft Compiler
 
+      \code
+
       File: lfs.c, lfs_utils.h
         Add the following #ifdef at the top of the file
             // EDIT: JTT - Added this to suppress warning when using the Visual Studio compiler
@@ -61,6 +63,8 @@ NOTE: The following edits need to be made to the littlefs repo to be
             #ifdef _MSC_VER
             #pragma warning( disable : 4146 )
             #endif
+
+     \endcode
 */  
 
 
