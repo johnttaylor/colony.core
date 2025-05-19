@@ -143,7 +143,7 @@ public:
         {
             if ( m_done )
             {
-                CPL_SYSTEM_TRACE_MSG( SECT_, ("Viewer::mp1_changed(%p): Received Change notification after signaling the master thread, may or may not be an error. Prev: value=%lu, state=%d, seqNum=%u.  Rcvd: value=%lu, state=%d, seqNum=%u.  read_seq_num=%u, notifyCount=%d", this, prevValue, prevState, prevSeqNum, m_lastValue, m_lastValid, m_lastSeqNumber, m_lastSeqNumber, m_mpNotificationCount1) );
+                CPL_SYSTEM_TRACE_MSG( SECT_, ("Viewer::mp1_changed(%p): Received Change notification after signaling the master thread, may or may not be an error. Prev: value=%u, state=%d, seqNum=%u.  Rcvd: value=%u, state=%d, seqNum=%u.  read_seq_num=%u, notifyCount=%d", this, prevValue, prevState, prevSeqNum, m_lastValue, m_lastValid, m_lastSeqNumber, m_lastSeqNumber, m_mpNotificationCount1) );
             }
             else
             {
@@ -195,7 +195,7 @@ public:
         , m_stepSize( stepSize )
         , m_timer( myMbox, *this, &Writer::timerExpired )
     {
-        CPL_SYSTEM_TRACE_MSG( SECT_, ("WRITER(%p). mp1=%s, endVal=%lu, interval=%lu", this, mp1.getName(), endValue, intervalMsec) );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("WRITER(%p). mp1=%s, endVal=%u, interval=%lu", this, mp1.getName(), endValue, intervalMsec) );
     }
 
 public:
