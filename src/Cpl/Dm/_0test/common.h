@@ -6,7 +6,7 @@
 * agreement (license.txt) in the top/ directory or on the Internet at
 * http://integerfox.com/colony.core/license.txt
 *
-* Copyright (c) 2014-2022  John T. Taylor
+* Copyright (c) 2014-2025  John T. Taylor
 *
 * Redistributions of the source code must retain the above copyright notice.
 *----------------------------------------------------------------------------*/
@@ -111,16 +111,18 @@ public:
 
 
 public:
-    void mp1_changed( Mp::Uint32& modelPointThatChanged, SubscriberApi& clientObsever ) noexcept
+    void mp1_changed( Mp::Uint32& modelPointThatChanged, SubscriberApi& clientObserver ) noexcept
     {
         CPL_SYSTEM_TRACE_ALLOCATE( uint32_t, prevValue, m_lastValue );
         CPL_SYSTEM_TRACE_ALLOCATE( int8_t, prevState, m_lastValid );
         uint16_t prevSeqNum = m_lastSeqNumber;
 
         m_mpNotificationCount1++;
-        m_lastValid     = modelPointThatChanged.readAndSync( m_lastValue, clientObsever );
+        uint16_t seqNum;
+        m_lastValid     = modelPointThatChanged.readAndSync( m_lastValue, seqNum , clientObserver);
         m_lastSeqNumber = m_observerMp1.getSequenceNumber_();
-        
+        REQUIRE( m_lastSeqNumber == seqNum );
+
         // The following test is NOT APPLICABLE anymore when using the xxxAndSync() methods
         //REQUIRE( m_observerMp1.getSequenceNumber_() == modelPointThatChanged.getSequenceNumber() );
 

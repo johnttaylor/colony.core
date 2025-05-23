@@ -183,13 +183,20 @@
   },
   "publish": {
     "current": {
-      "comment": "Refactor TShell and MApp - breaking change",
-      "version": "5.0.0",
-      "date": "Mon May  5 11:54:45 2025",
-      "timestamp": 1746446085,
-      "changes": "\"Breaking Change:\\n- Refactor TShell and MApp for smaller memory footprint\\n\\nMaintenance:\\n- SList: prevent potential stack overflow\\n- Document necessary edits to the Little FS repo (when using the Microsoft compiler)\\n- Prevent fatal-error-infinite-loop when a unit test failure occurs\\n- Fix race condition on UART driver\\n- Fix bug in the BitArray base class\""
+      "comment": "Add additional Atomic operations to the MP interface and minor bug fixes to trace statements",
+      "version": "5.0.1",
+      "date": "Fri May 23 20:11:43 2025",
+      "timestamp": 1748031103,
+      "changes": null
     },
     "history": [
+      {
+        "comment": "Refactor TShell and MApp - breaking change",
+        "version": "5.0.0",
+        "date": "Mon May  5 11:54:45 2025",
+        "timestamp": 1746446085,
+        "changes": "\"Breaking Change:\\n- Refactor TShell and MApp for smaller memory footprint\\n\\nMaintenance:\\n- SList: prevent potential stack overflow\\n- Document necessary edits to the Little FS repo (when using the Microsoft compiler)\\n- Prevent fatal-error-infinite-loop when a unit test failure occurs\\n- Fix race condition on UART driver\\n- Fix bug in the BitArray base class\""
+      },
       {
         "comment": "Add support for Littlefs",
         "version": "4.5.2",
