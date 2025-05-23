@@ -90,15 +90,14 @@ protected:
         Note: The observer will be subscribed for change notifications after
               this call.
      */
-    inline bool readAndSync( void* dstData, size_t dstSize, SubscriberApi& observerToSync )
+    inline bool readAndSync( void* dstData, size_t dstSize, uint16_t& seqNum, SubscriberApi& observerToSync )
     {
-        uint16_t seqNum;
         bool result = readData( dstData, dstSize , &seqNum );
         attachSubscriber( observerToSync, seqNum );
         return result;
     }
 
-public:
+    public:
     /** This method is used to test the validate state of the MP and synchronize
         the observer with the current MP contents.  This method should ONLY be
         used in the notification callback method and the 'observerToSync'

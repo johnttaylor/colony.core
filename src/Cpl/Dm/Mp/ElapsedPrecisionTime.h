@@ -88,10 +88,17 @@ public:
     /// See Cpl::Dm::ModelPointCommon
     inline bool readAndSync( Cpl::System::ElapsedTime::Precision_T& dstData, SubscriberApi& observerToSync )
     {
-        return ModelPointCommon_::readAndSync( &dstData, sizeof( m_data ), observerToSync );
+        uint16_t seqNum;
+        return ModelPointCommon_::readAndSync( &dstData, sizeof( m_data ), seqNum, observerToSync );
     }
 
-public:
+    /// See Cpl::Dm::ModelPointCommon
+    inline bool readAndSync( Cpl::System::ElapsedTime::Precision_T& dstData, uint16_t& seqNum, SubscriberApi& observerToSync )
+    {
+        return ModelPointCommon_::readAndSync( &dstData, sizeof( m_data ), seqNum, observerToSync );
+    }
+
+    public:
     ///  See Cpl::Dm::ModelPoint.
     const char* getTypeAsText() const noexcept;
 

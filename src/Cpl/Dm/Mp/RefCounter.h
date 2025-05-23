@@ -113,10 +113,17 @@ public:
     /// See Cpl::Dm::ModelPointCommon
     inline bool readAndSync( uint32_t& dstData, SubscriberApi& observerToSync )
     {
-        return ModelPointCommon_::readAndSync( &dstData, sizeof( m_data ), observerToSync );
+        uint16_t seqNum;
+        return ModelPointCommon_::readAndSync( &dstData, sizeof( m_data ), seqNum, observerToSync );
     }
 
-protected:
+    /// See Cpl::Dm::ModelPointCommon
+    inline bool readAndSync( uint32_t& dstData, uint16_t& seqNum, SubscriberApi& observerToSync )
+    {
+        return ModelPointCommon_::readAndSync( &dstData, sizeof( m_data ), seqNum, observerToSync );
+    }
+
+    protected:
     /// See Cpl::Dm::Point.  
     void setJSONVal( JsonDocument& doc ) noexcept;
 
