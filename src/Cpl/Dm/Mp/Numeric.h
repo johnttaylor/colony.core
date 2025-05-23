@@ -92,14 +92,14 @@ public:
             3. When the MP is in the valid state, the returned sequence number
                (if requested) is the AFTER the clear operation.
      */
-    inline uint16_t readAndThenClearBits( ELEMTYPE& dstData, ELEMTYPE maskToClear, uint16_t* seqNumPtr = nullptr ) noexcept
+    inline uint16_t readThenClearBits( ELEMTYPE& dstData, ELEMTYPE maskToClear, uint16_t* seqNumPtr = nullptr ) noexcept
     {
         Cpl::Dm::ModelPointCommon_::m_modelDatabase.lock_();
         bool result = Cpl::Dm::ModelPointCommon_::readData( &dstData, sizeof( ELEMTYPE ), seqNumPtr );
         if ( result )
         {
-            m_data          &= ~maskToClear;
-            uint16_t seqNum  = Cpl::Dm::ModelPointCommon_::writeData( &m_data, sizeof( ELEMTYPE ), Cpl::Dm::ModelPoint::eNO_REQUEST );
+            ELEMTYPE newData = m_data  & ~maskToClear;
+            uint16_t seqNum  = Cpl::Dm::ModelPointCommon_::writeData( &newData, sizeof( ELEMTYPE ), Cpl::Dm::ModelPoint::eNO_REQUEST );
             if ( seqNumPtr )
             {
                 *seqNumPtr = seqNum;
@@ -110,9 +110,9 @@ public:
     }
 
     /// Atomic Read and then clear (i.e. set to 0) operation.
-    inline uint16_t readAndClear( ELEMTYPE& dstData, uint16_t* seqNumPtr = nullptr ) noexcept
+    inline uint16_t readThenClear( ELEMTYPE& dstData, uint16_t* seqNumPtr = nullptr ) noexcept
     {
-        return readAndThenClearBits( dstData, (ELEMTYPE)-1, seqNumPtr );
+        return readThenClearBits( dstData, (ELEMTYPE)-1, seqNumPtr );
     }
 
     /// Type safe write. See Cpl::Dm::ModelPoint

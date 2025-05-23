@@ -89,10 +89,17 @@ public:
     /// See Cpl::Dm::ModelPointCommon
     inline bool readAndSync( BETTERENUM_TYPE& dstData, SubscriberApi& observerToSync )
     {
-        return ModelPointCommon_::readAndSync( &dstData, sizeof( BETTERENUM_TYPE ), observerToSync );
+        uint16_t seqNum;
+        return ModelPointCommon_::readAndSync( &dstData, sizeof( BETTERENUM_TYPE ), seqNum, observerToSync );
     }
 
-protected:
+    /// See Cpl::Dm::ModelPointCommon
+    inline bool readAndSync( BETTERENUM_TYPE& dstData, uint16_t& seqNum, SubscriberApi& observerToSync )
+    {
+        return ModelPointCommon_::readAndSync( &dstData, sizeof( BETTERENUM_TYPE ), seqNum, observerToSync );
+    }
+
+    protected:
     /// See Cpl::Dm::Point.  
     void setJSONVal( JsonDocument& doc ) noexcept
     {

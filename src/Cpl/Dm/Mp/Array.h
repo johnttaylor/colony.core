@@ -196,7 +196,7 @@ public:
                              size_t         srcIndex = 0 )
     {
         uint16_t seqNum;
-        return readAndSync( dstArrray, dstNumElements, observerToSync, srcIndex, seqNum );
+        return readAndSync( dstArrray, dstNumElements, observerToSync, seqNum , srcIndex);
     }
 
     /** Same as readAndSync() above, but in addition returns the
@@ -213,6 +213,19 @@ public:
         return result;
     }
 
+protected:
+    /// See Cpl::Dm::Point.
+    void setJSONVal( JsonDocument& doc ) noexcept
+    {
+        JsonObject obj    = doc.createNestedObject( "val" );
+        obj["start"]      = 0;
+        JsonArray arr     = obj.createNestedArray( "elems" );
+        ELEMTYPE* elemPtr = (ELEMTYPE*)m_dataPtr;
+        for ( size_t i = 0; i < m_numElements; i++ )
+        {
+            arr.add( elemPtr[i] );
+        }
+    }
 
 public:
     /// See Cpl::Dm::Point.
