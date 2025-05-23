@@ -49,7 +49,7 @@ public:
         {
             pleaseStop();
         }
-        CPL_SYSTEM_TRACE_MSG( SECT_, ("<%-10s>. processEventFlag. event=%d, count=%d, rx=%0lX", Thread::myName(), eventNumber, m_eventCount, m_eventsReceived) );
+        CPL_SYSTEM_TRACE_MSG( SECT_, ("<%-10s>. processEventFlag. event=%d, count=%d, rx=%0X", Thread::myName(), eventNumber, m_eventCount, m_eventsReceived) );
     }
 };
 

@@ -247,7 +247,7 @@ public:
                 break;
 
             default:
-                CPL_SYSTEM_TRACE_MSG( SECT_, ("----- UNSUPPORTED EVENT FLAG WAS SET: %lu", eventNumber) );
+                CPL_SYSTEM_TRACE_MSG( SECT_, ("----- UNSUPPORTED EVENT FLAG WAS SET: %u", eventNumber) );
                 break;
         }
 
