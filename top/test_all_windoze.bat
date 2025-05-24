@@ -17,8 +17,12 @@ set NQBP_CI_BUILD=1
 call ./env.bat
 
 :: Extra setup needed for GitHub hosted runners
-ftype Python.File="python.exe" "%L" %*
-set PATHEXT=%PATHEXT%;.PY
+ASSOC
+FTYPE
+
+SET PATHEXT=%PATHEXT%;.py
+ASSOC .py=Python.File
+FTYPE Python.File=python.exe %1 %*
 
 @REM :: Set Build info (and force build number to zero for "non-official" builds")
 @REM set BUILD_TYPE=%2
@@ -83,11 +87,9 @@ mkdir _artifacts
 :: Build the Catch2 static library
 cd %_ROOT%\projects
 echo:"Build projects..."
-echo: "python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -h"
-cl /?
-link /?
-ar /?
+echo:"python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -h"
 echo:"Build Catch2 static library..."
+echo:"%_ROOT%\xsrc\nqbp2\other\bob.py -h"
 
 %_ROOT%\xsrc\nqbp2\other\bob.py -h
 %_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bld-all
