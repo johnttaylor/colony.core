@@ -16,12 +16,12 @@ set NQBP_CI_BUILD=1
 :: Set the NQBP_BIN path (and other magic variables - but no compiler selected)
 call ./env.bat
 
-@REM :: Set Build info (and force build number to zero for "non-official" builds")
-@REM set BUILD_TYPE=%2
+:: Set Build info (and force build number to zero for "non-official" builds")
+set BUILD_TYPE=%2
 set BUILD_NUMBER=%1
-@REM IF "%BUILD_TYPE%"=="pr" set BUILD_NUMBER=0
-@REM IF "%BUILD_TYPE%"=="PR" set BUILD_NUMBER=0
-@REM IF "%BUILD_TYPE%"=="unknown" set BUILD_NUMBER=0
+IF "%BUILD_TYPE%"=="pr" set BUILD_NUMBER=0
+IF "%BUILD_TYPE%"=="PR" set BUILD_NUMBER=0
+IF "%BUILD_TYPE%"=="unknown" set BUILD_NUMBER=0
 IF "/%BUILD_TYPE%" =="/" set BUILD_TYPE=private
 echo:
 echo:BUILD TYPE=%BUILD_TYPE%, BUILD_NUMBER=%BUILD_NUMBER%
@@ -78,24 +78,23 @@ mkdir _artifacts
 
 :: Build the Catch2 static library
 cd %_ROOT%\projects
-echo:"Build Catch2 static library..."
-echo:"%_ROOT%\xsrc\nqbp2\other\bob.py -h"
-
-python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v2 --script-prefix python vc12 -c --bld-all
+echo:Build Catch2 static library...
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python vc12 -c --bld-all
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Build the unit tests
 ::cd %_ROOT%\tests
 cd %_ROOT%\tests\Cpl\Dm
-echo:"Building unit tests..."
+echo:Building unit tests...
 python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Run unit tests
+echo:Running unit tests...
 cd %_TOPDIR%\..\tests
-python %_ROOT%\xsrc\nqbp2\other\chuck.py -vt --script-prefix python --match a.exe --dir vc12
+python %_ROOT%\xsrc\nqbp2\other\chuck.py -vt --match a.exe --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1
-python %_ROOT%\xsrc\nqbp2\other\chuck.py -v --script-prefix python --match aa.exe --dir vc12
+python %_ROOT%\xsrc\nqbp2\other\chuck.py -v --match aa.exe --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1
 python %_ROOT%\xsrc\nqbp2\other\chuck.py -vt --script-prefix python --match a.py --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1
