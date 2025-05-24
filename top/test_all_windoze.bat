@@ -5,8 +5,8 @@
 :: usage: build_all_windoze.bat <buildNumber> [branch]
 ::
 
-set _ROOT=.
-set _TOPDIR=%_ROOT%\top
+set _TOPDIR=%~dp0
+set _ROOT=%_TOPDIR..
 echo:%_ROOT%
 echo:%_TOPDIR%
 
