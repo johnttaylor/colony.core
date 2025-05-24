@@ -7,6 +7,8 @@
 
 set _ROOT=.
 set _TOPDIR=%_ROOT%\top
+echo:%_ROOT%
+echo:%_TOPDIR%
 
 :: Set the CI build flag
 set NQBP_CI_BUILD=1
@@ -78,6 +80,7 @@ mkdir _artifacts
 :: Build the Catch2 static library
 cd %_ROOT%\projects
 echo:"Build projects..."
+echo: "python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -h"
 python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -h
 python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v here --qry
 python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bld-all
