@@ -185,7 +185,7 @@ if __name__ == '__main__':
         # Run the Jobs serially
         if ( not args['-2'] and not args['-4'] ):
             for p in jobs:
-                _build_project(p, args['-v'], args['<build-opts>'], args['--config'], args['--xconfig'], pkgroot )
+                _build_project(p, args['-v'], args['<build-opts>'], args['--config'], args['--xconfig'], pkgroot, script_prefix )
 
         # Run the Jobs in PARALLEL
         else:
