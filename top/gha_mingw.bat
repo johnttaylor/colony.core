@@ -34,12 +34,12 @@ echo:
 
 :: Build the Catch2 static library
 cd %_ROOT%\projects
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix mingw_w64 -c --bld-all
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 -c --bld-all
 
 :: Build the unit tests
 ::cd %_ROOT%\tests
 cd %_ROOT%\tests\Cpl\Dm
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix mingw_w64 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Run unit tests
@@ -48,9 +48,9 @@ python %_ROOT%\xsrc\nqbp2\other\chuck.py -vt --match a.exe --dir mingw_w64
 IF ERRORLEVEL 1 EXIT /b 1
 python %_ROOT%\xsrc\nqbp2\other\chuck.py -v --match aa.exe --dir mingw_w64
 IF ERRORLEVEL 1 EXIT /b 1
-python %_ROOT%\xsrc\nqbp2\other\chuck.py -vt --script-prefix --match a.py --dir mingw_w64
+python %_ROOT%\xsrc\nqbp2\other\chuck.py -vt --script-prefix python --match a.py --dir mingw_w64
 IF ERRORLEVEL 1 EXIT /b 1
-python %_ROOT%\xsrc\nqbp2\other\chuck.py -v --script-prefix --match aa.py --dir mingw_w64
+python %_ROOT%\xsrc\nqbp2\other\chuck.py -v --script-prefix python --match aa.py --dir mingw_w64
 IF ERRORLEVEL 1 EXIT /b 1
 
 ::
