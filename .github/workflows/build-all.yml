@@ -31,4 +31,4 @@ jobs:
 
       - name: Run build script
         run: |
-          call .\top\test_all_windoze.bat ${{ github.run_number }} ${{ github.ref }}
+          .\top\test_all_windoze.bat ${{ github.run_number }} ${{ github.ref }}
