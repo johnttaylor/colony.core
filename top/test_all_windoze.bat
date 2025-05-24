@@ -76,6 +76,8 @@ mkdir _artifacts
 cd %_ROOT%\projects
 @echo on
 echo:"Build projects..."
+dir %_ROOT%\xsrc\nqbp2\other\bob.py
+type %_ROOT%\xsrc\nqbp2\other\bob.py
 %_ROOT%\xsrc\nqbp2\other\bob.py -h
 %_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bld-all
 
