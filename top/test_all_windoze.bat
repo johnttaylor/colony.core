@@ -76,15 +76,13 @@ mkdir _artifacts
 cd %_ROOT%\projects
 @echo on
 echo:"Build projects..."
-dir %_ROOT%\xsrc\nqbp2\other\bob.py
-type %_ROOT%\xsrc\nqbp2\other\bob.py
-%_ROOT%\xsrc\nqbp2\other\bob.py -h
-%_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bld-all
+python %_ROOT%\xsrc\nqbp2\other\bob.py -h
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bld-all
 
 :: Build the unit tests
 cd %_TOPDIR%..\tests
 @echo on
-%_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 @REM :: Run unit tests
