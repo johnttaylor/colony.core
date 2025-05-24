@@ -11,7 +11,9 @@ on:
       - main
 
 jobs:
-  build:
+  # Windows build job
+  windows_build:
+    name: Windows Build
     runs-on: windows-latest
 
     steps:
@@ -24,11 +26,15 @@ jobs:
         with:
           python-version: '3.12' 
 
+      # Ninja setup
+      - uses: seanmiddleditch/gha-setup-ninja@master
+        with:
+          ninja-version: '1.11.0'
+
       # MSVC setup
       - uses: ilammy/msvc-dev-cmd@v1.4.1
         with:
           toolset: 19.39.33523
-
 
       - name: Set up environment
         run: |
