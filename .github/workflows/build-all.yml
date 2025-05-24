@@ -29,7 +29,7 @@ jobs:
       # Ninja setup
       - uses: seanmiddleditch/gha-setup-ninja@master
         with:
-          ninja-version: '1.11.0'
+          version: '1.11.1'
 
       # MSVC setup
       - uses: ilammy/msvc-dev-cmd@v1.4.1

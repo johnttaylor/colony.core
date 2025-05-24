@@ -12,7 +12,7 @@ set _ROOT=%_TOPDIR%..
 set NQBP_CI_BUILD=1
 
 :: Set the NQBP_BIN path (and other magic variales - but no compiler selected)
-./env.bat 
+call ./env.bat 
 
 
 @REM :: Set Build info (and force build number to zero for "non-official" builds)
