@@ -5,17 +5,17 @@
 :: usage: build_all_windoze.bat <buildNumber> [branch]
 ::
 
-set _TOPDIR=%~dp0
-set _ROOT=%_TOPDIR%..
+set _ROOT=.
+set _TOPDIR=%_ROOT%\top
 
 :: Set the CI build flag
 set NQBP_CI_BUILD=1
 
-:: Set the NQBP_BIN path (and other magic variales - but no compiler selected)
-call ./env.bat 
+:: Set the NQBP_BIN path (and other magic variables - but no compiler selected)
+call ./env.bat
 
 
-@REM :: Set Build info (and force build number to zero for "non-official" builds)
+@REM :: Set Build info (and force build number to zero for "non-official" builds")
 @REM set BUILD_TYPE=%2
 @REM set BUILD_NUMBER=%1
 @REM IF "%BUILD_TYPE%"=="pr" set BUILD_NUMBER=0
@@ -80,12 +80,13 @@ cd %_ROOT%\projects
 echo:"Build projects..."
 python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -h
 python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v here --qry
-python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bld-all
+python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bld-all
+IF ERRORLEVEL 1 EXIT /b 1
 
 :: Build the unit tests
-cd %_TOPDIR%..\tests
+cd %_ROOT%\tests
 @echo on
-%_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
+python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 @REM :: Run unit tests
