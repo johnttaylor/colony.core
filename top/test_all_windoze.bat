@@ -83,13 +83,13 @@ echo:"python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -h"
 echo:"Build Catch2 static library..."
 echo:"%_ROOT%\xsrc\nqbp2\other\bob.py -h"
 
-python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bld-all
+python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v --script-prefix python.exe vc12 -c --bld-all
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Build the unit tests
 cd %_ROOT%\tests
 echo:"Building unit tests..."
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v --script-prefix python.exe vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 @REM :: Run unit tests
