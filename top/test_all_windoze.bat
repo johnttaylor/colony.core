@@ -77,11 +77,10 @@ mkdir _artifacts
 
 :: Build the Catch2 static library
 cd %_ROOT%\projects
-@echo on
 echo:"Build projects..."
-%_ROOT%\xsrc\nqbp2\other\bob.py -h
-%_ROOT%\xsrc\nqbp2\other\bob.py -v here --qry
-%_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bld-all
+python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -h
+python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v here --qry
+python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bld-all
 
 :: Build the unit tests
 cd %_TOPDIR%..\tests
