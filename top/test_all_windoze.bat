@@ -1,4 +1,4 @@
-::@echo off
+@echo on
 :: This script is used by the CI\Build machine to build the Windows test
 :: projects
 ::
@@ -74,10 +74,12 @@ mkdir _artifacts
 
 :: Build the Catch2 static library
 cd %_ROOT%\projects
+@echo on
 %_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bld-all
 
 :: Build the unit tests
 cd %_TOPDIR%..\tests
+@echo on
 %_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
