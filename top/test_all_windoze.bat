@@ -17,10 +17,8 @@ set NQBP_CI_BUILD=1
 call ./env.bat
 
 :: Extra setup needed for GitHub hosted runners
-doskey nqbp.py=python nqbp.py $*
-doskey bob.py=python nqbp.py $*
-doskey chunk.py=python nqbp.py $*
-doskey tca.py=python nqbp.py $*
+ftype Python.File="python.exe" "%L" %*
+set PATHEXT=%PATHEXT%;.PY
 
 @REM :: Set Build info (and force build number to zero for "non-official" builds")
 @REM set BUILD_TYPE=%2
