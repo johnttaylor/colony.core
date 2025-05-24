@@ -31,10 +31,13 @@ jobs:
         with:
           version: '1.11.1'
 
-      # MSVC setup
+      # MSVC setup (For a Git hosted runner - always uses the latest version of MSVC)
       - uses: ilammy/msvc-dev-cmd@v1.4.1
         with:
           arch: x86 
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
 
       - name: Set up environment
         run: |
