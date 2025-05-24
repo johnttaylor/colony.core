@@ -69,8 +69,8 @@ mkdir _artifacts
 ::
 :: Build Visual Studio projects
 ::
-echo on
-call %_TOPDIR%..\env.bat 1
+@REM echo on
+@REM call %_TOPDIR%..\env.bat 1
 
 :: Build the Catch2 static library
 cd %_ROOT%\projects
