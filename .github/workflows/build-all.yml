@@ -1,0 +1,31 @@
+name: Windows Build
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      # Ensure the latest version of MSVC is installed
+      - uses: ilammy/msvc-dev-cmd@v1.4.1
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up environment
+        run: |
+          echo "Setting up environment..."
+          # Add any environment setup commands here if needed
+
+      - name: Run build script
+        run: |
+          call .\top\test_all_windoze.bat ${{ github.run_number }} ${{ github.ref }}
