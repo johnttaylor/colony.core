@@ -6,7 +6,7 @@
 ::
 
 set _TOPDIR=%~dp0
-set _ROOT=%_TOPDIR..
+set _ROOT=%_TOPDIR%..
 echo:%_ROOT%
 echo:%_TOPDIR%
 
