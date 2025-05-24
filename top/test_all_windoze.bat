@@ -81,14 +81,17 @@ mkdir _artifacts
 cd %_ROOT%\projects
 echo:"Build projects..."
 echo: "python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -h"
-python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -h
-python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v here --qry
+cl /?
+link /?
+ar /?
+echo:"Build Catch2 static library..."
+
 python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bld-all
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Build the unit tests
 cd %_ROOT%\tests
-@echo on
+echo:"Building unit tests..."
 python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
