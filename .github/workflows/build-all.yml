@@ -15,11 +15,14 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Ensure the latest version of MSVC is installed
-      - uses: ilammy/msvc-dev-cmd@v1.4.1
-
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v2
+
+      # MSVC install
+      - uses: ilammy/msvc-dev-cmd@v1.4.1
+        with:
+          toolset: 19.39.33523
 
       - name: Set up environment
         run: |
