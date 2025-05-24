@@ -16,13 +16,8 @@ set NQBP_CI_BUILD=1
 :: Set the NQBP_BIN path (and other magic variables - but no compiler selected)
 call ./env.bat
 
-:: Extra setup needed for GitHub hosted runners
 ASSOC
 FTYPE
-
-SET PATHEXT=%PATHEXT%;.py
-ASSOC .py=Python.File
-FTYPE Python.File=python.exe %1 %*
 
 @REM :: Set Build info (and force build number to zero for "non-official" builds")
 @REM set BUILD_TYPE=%2
@@ -92,6 +87,7 @@ echo:"Build Catch2 static library..."
 echo:"%_ROOT%\xsrc\nqbp2\other\bob.py -h"
 
 %_ROOT%\xsrc\nqbp2\other\bob.py -h
+python %_ROOT%\xsrc\nqbp2\other\bob.py -h
 %_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bld-all
 IF ERRORLEVEL 1 EXIT /b 1
 
