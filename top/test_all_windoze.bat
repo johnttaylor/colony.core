@@ -16,6 +16,11 @@ set NQBP_CI_BUILD=1
 :: Set the NQBP_BIN path (and other magic variables - but no compiler selected)
 call ./env.bat
 
+:: Extra setup needed for GitHub hosted runners
+doskey nqbp.py=python nqbp.py $*
+doskey bob.py=python nqbp.py $*
+doskey chunk.py=python nqbp.py $*
+doskey tca.py=python nqbp.py $*
 
 @REM :: Set Build info (and force build number to zero for "non-official" builds")
 @REM set BUILD_TYPE=%2
@@ -86,13 +91,14 @@ link /?
 ar /?
 echo:"Build Catch2 static library..."
 
-python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bld-all
+%_ROOT%\xsrc\nqbp2\other\bob.py -h
+%_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bld-all
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Build the unit tests
 cd %_ROOT%\tests
 echo:"Building unit tests..."
-python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
+%_ROOT%\xsrc\nqbp2\other\bob.py -v vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 @REM :: Run unit tests
