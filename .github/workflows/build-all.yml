@@ -19,10 +19,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # MSVC install
+      # Python setup
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.2' 
+
+      # MSVC setup
       - uses: ilammy/msvc-dev-cmd@v1.4.1
         with:
           toolset: 19.39.33523
+
 
       - name: Set up environment
         run: |
