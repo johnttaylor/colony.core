@@ -11,9 +11,9 @@ on:
       - main
 
 jobs:
-  # Windows build job
-  windows_build:
-    name: Windows Build
+  # Visual Studio Compiler Windows build job
+  vc_windows_build:
+    name: Visual Studio Compiler Windows Build
     runs-on: windows-latest
 
     steps:
@@ -39,11 +39,16 @@ jobs:
       #- name: Setup tmate session
       # uses: mxschmitt/action-tmate@v3
 
-      - name: Set up environment
+      # Build PRs
+      - name: Run build script - for PRs
+        if: github.event_name == 'pull_request'
         run: |
-          echo "Setting up environment..."
-          # Add any environment setup commands here if needed
+          echo "Running build script for PRs..."
+          .\top\test_all_windoze.bat ${{ github.run_number }} 
 
-      - name: Run build script
+      # Build Stable branches
+      - name: Run build script - for stable branches
+        if: github.event_name != 'pull_request'
         run: |
-          .\top\test_all_windoze.bat ${{ github.run_number }} ${{ github.ref }}
+          echo "Running build script for PRs..."
+          .\top\test_all_windoze.bat ${{ github.run_number }} ${{ github.head_ref }}

@@ -78,30 +78,29 @@ mkdir _artifacts
 
 :: Build the Catch2 static library
 cd %_ROOT%\projects
-echo:"Build projects..."
-echo:"python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -h"
 echo:"Build Catch2 static library..."
 echo:"%_ROOT%\xsrc\nqbp2\other\bob.py -h"
 
-python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python.exe vc12 -c --bld-all
+python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v2 --script-prefix python vc12 -c --bld-all
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Build the unit tests
-cd %_ROOT%\tests
+::cd %_ROOT%\tests
+cd %_ROOT%\tests\Cpl\Dm
 echo:"Building unit tests..."
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python.exe vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
-@REM :: Run unit tests
-@REM cd %_TOPDIR%\..\tests
-@REM %_ROOT%\xsrc\nqbp2\other\chuck.py -vt --match a.exe --dir vc12
-@REM IF ERRORLEVEL 1 EXIT /b 1
-@REM %_ROOT%\xsrc\nqbp2\other\chuck.py -v --match aa.exe --dir vc12
-@REM IF ERRORLEVEL 1 EXIT /b 1
-@REM %_ROOT%\xsrc\nqbp2\other\chuck.py -vt --match a.py --dir vc12
-@REM IF ERRORLEVEL 1 EXIT /b 1
-@REM %_ROOT%\xsrc\nqbp2\other\chuck.py -v --match aa.py --dir vc12
-@REM IF ERRORLEVEL 1 EXIT /b 1
+:: Run unit tests
+cd %_TOPDIR%\..\tests
+python %_ROOT%\xsrc\nqbp2\other\chuck.py -vt --script-prefix python --match a.exe --dir vc12
+IF ERRORLEVEL 1 EXIT /b 1
+python %_ROOT%\xsrc\nqbp2\other\chuck.py -v --script-prefix python --match aa.exe --dir vc12
+IF ERRORLEVEL 1 EXIT /b 1
+python %_ROOT%\xsrc\nqbp2\other\chuck.py -vt --script-prefix python --match a.py --dir vc12
+IF ERRORLEVEL 1 EXIT /b 1
+python %_ROOT%\xsrc\nqbp2\other\chuck.py -v --script-prefix python --match aa.py --dir vc12
+IF ERRORLEVEL 1 EXIT /b 1
 
 ::
 :: Everything worked!
