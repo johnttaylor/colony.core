@@ -11,6 +11,9 @@ set _ROOT=%_TOPDIR%..
 :: Set the CI build flag
 set NQBP_CI_BUILD=1
 
+:: Set the NQBP_BIN path (and other magic variales - but no compiler selected)
+./env.bat 
+
 
 @REM :: Set Build info (and force build number to zero for "non-official" builds)
 @REM set BUILD_TYPE=%2
@@ -76,13 +79,12 @@ mkdir _artifacts
 cd %_ROOT%\projects
 @echo on
 echo:"Build projects..."
-python %_ROOT%\xsrc\nqbp2\other\bob.py -h
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bld-all
+%_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bld-all
 
 :: Build the unit tests
 cd %_TOPDIR%..\tests
 @echo on
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
+%_ROOT%\xsrc\nqbp2\other\bob.py -v4 vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 @REM :: Run unit tests
