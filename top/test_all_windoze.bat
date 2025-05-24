@@ -18,14 +18,14 @@ call ./env.bat
 
 @REM :: Set Build info (and force build number to zero for "non-official" builds")
 @REM set BUILD_TYPE=%2
-@REM set BUILD_NUMBER=%1
+set BUILD_NUMBER=%1
 @REM IF "%BUILD_TYPE%"=="pr" set BUILD_NUMBER=0
 @REM IF "%BUILD_TYPE%"=="PR" set BUILD_NUMBER=0
 @REM IF "%BUILD_TYPE%"=="unknown" set BUILD_NUMBER=0
-@REM IF "/%BUILD_TYPE%" =="/" set BUILD_TYPE=private
-@REM echo:
-@REM echo:BUILD TYPE=%BUILD_TYPE%, BUILD_NUMBER=%BUILD_NUMBER%
-@REM echo:
+IF "/%BUILD_TYPE%" =="/" set BUILD_TYPE=private
+echo:
+echo:BUILD TYPE=%BUILD_TYPE%, BUILD_NUMBER=%BUILD_NUMBER%
+echo:
 
 :: Make sure the _artifacts directory exists and is empty
 cd %_ROOT%
@@ -83,13 +83,13 @@ echo:"python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -h"
 echo:"Build Catch2 static library..."
 echo:"%_ROOT%\xsrc\nqbp2\other\bob.py -h"
 
-python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v --script-prefix python.exe vc12 -c --bld-all
+python.exe %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python.exe vc12 -c --bld-all
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Build the unit tests
 cd %_ROOT%\tests
 echo:"Building unit tests..."
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v --script-prefix python.exe vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python.exe vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 @REM :: Run unit tests
