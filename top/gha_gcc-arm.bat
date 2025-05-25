@@ -29,12 +29,12 @@ call ./env.bat
 
 :: Build the unit tests
 cd %_ROOT%\tests
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python --p2 windows gcc-arm -c --bldtime --bldall --bldnum %BUILD_NUMBER%
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python --p2 windows gcc-arm -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 
 IF ERRORLEVEL 1 EXIT /b 1
 
 ::
-:: Build ATSAMD51 Arduino projects
+:: Build ATSAMD51 Arduino projects (if any)
 ::
 
 :: Set the BSP version
@@ -42,7 +42,7 @@ set ARDUINO_BSP_VER=1.6.0
 
 :: Build the unit tests
 cd %_ROOT%\tests
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python --p2 windows gcc -c --bldtime --bldall --bldnum %BUILD_NUMBER%
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python --p2 windows gcc -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 ::
