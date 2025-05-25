@@ -39,12 +39,12 @@ echo:
 
 :: Build the Catch2 static library
 cd %_ROOT%\projects
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 -c -b win64
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 -c -b win32
 
 :: Build the unit tests
 ::cd %_ROOT%\tests
 cd %_ROOT%\tests\Cpl\Dm
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 -c --bldtime -b win64 --bldnum %BUILD_NUMBER%
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 -c --bldtime -b win32 --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Run unit tests
