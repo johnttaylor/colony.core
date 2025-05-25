@@ -25,7 +25,7 @@ echo:
 
 :: Set up the compiler (which is included in the repo)
 call ./env.bat 5
-
+echo:%PATH%
 :: Build the unit tests
 cd %_ROOT%\tests
 python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python --p2 windows gcc-arm -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
