@@ -23,9 +23,8 @@ echo:
 :: Build STM projects
 ::
 
-:: Set the NQBP_BIN path 
-::call ./env.bat 5
-call ./env.bat 
+:: Set up the compiler (which is included in the repo)
+call ./env.bat 5
 
 :: Build the unit tests
 cd %_ROOT%\tests
@@ -37,8 +36,8 @@ IF ERRORLEVEL 1 EXIT /b 1
 :: Build ATSAMD51 Arduino projects (if any)
 ::
 
-:: Set the BSP version
-set ARDUINO_BSP_VER=1.6.0
+:: Set up the compiler (which is included in the repo)
+call ./env.bat 4
 
 :: Build the unit tests
 cd %_ROOT%\tests

@@ -213,12 +213,6 @@ jobs:
         with:
           version: '1.11.1'
 
-      # GCC-ARM Cross Compiler setup
-      - name: ARM GCC compiler
-        uses: carlosperate/arm-none-eabi-gcc-action@v1  
-        with:
-          compiler: 11.2-2022.02
-
       #- name: Setup tmate session
       # uses: mxschmitt/action-tmate@v3
 
