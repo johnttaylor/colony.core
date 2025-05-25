@@ -1,0 +1,21 @@
+<map id="Cpl::Container::MapItem" name="Cpl::Container::MapItem">
+<area shape="rect" id="Node000001" title="This abstract class represents a item that can be contained in an Map (aka a sorted list implemented ..." alt="" coords="693,129,873,155"/>
+<area shape="rect" id="Node000005" href="$class_cpl_1_1_text_1_1_string_item.html" title="This partially concrete provides a wrapper class that allows a String object to be stored directly in..." alt="" coords="966,80,1121,105"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="864,124,975,103,976,108,865,129"/>
+<area shape="rect" id="Node000009" href="$class_driver_1_1_t_pipe_1_1_rx_frame_handler_api.html" title="This abstract class defines the &#39;Received Frame Handler&#39; interface for the TPipe." alt="" coords="921,153,1165,179"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="887,149,922,152,921,157,887,154"/>
+<area shape="rect" id="Node000002" href="$class_cpl_1_1_container_1_1_dict_item.html" title="This abstract class represents a item that can be contained in Dictionary." alt="" coords="467,129,645,155"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="659,139,693,139,693,145,659,145"/>
+<area shape="rect" id="Node000003" href="$class_cpl_1_1_container_1_1_extended_item.html" title="This class is used by the Container classes to implement a various types of DOUBLY linked containers." alt="" coords="205,129,419,155"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="432,139,466,139,466,145,432,145"/>
+<area shape="rect" id="Node000004" href="$class_cpl_1_1_container_1_1_item.html" title="This class is used by the Container classes to implement a various types of singly linked containers." alt="" coords="5,129,157,155"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="171,139,205,139,205,145,171,145"/>
+<area shape="rect" id="Node000006" href="$class_cpl_1_1_text_1_1_d_f_string_item.html" title="This concrete class implements the StringItem class for a &#39;String&#39; using a &#39;DFString&#39; as the internal..." alt="" coords="1239,5,1410,31"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="1096,73,1213,39,1260,28,1262,33,1214,45,1098,78"/>
+<area shape="rect" id="Node000007" href="$class_cpl_1_1_text_1_1_d_string_item.html" title="This concrete class implements the StringItem class for a &#39;String&#39; using a &#39;DString&#39; as the internal ..." alt="" coords="1243,55,1407,80"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="1134,82,1242,72,1243,77,1135,87"/>
+<area shape="rect" id="Node000008" href="$class_cpl_1_1_text_1_1_f_string_item.html" title="This template class implements the StringItem class for a &#39;String&#39; using a &#39;FString&#39; as the internal ..." alt="" coords="1225,104,1424,129"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="1135,98,1226,106,1225,111,1134,103"/>
+<area shape="rect" id="Node000010" href="$class_driver_1_1_t_pipe_1_1_rx_frame_handler.html" title="This partially concrete class provides functionality that is common to all Frame handlers." alt="" coords="1213,153,1436,179"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="1179,163,1213,163,1213,169,1179,169"/>
+</map>

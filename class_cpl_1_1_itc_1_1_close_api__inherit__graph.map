@@ -1,0 +1,16 @@
+<map id="Cpl::Itc::CloseApi" name="Cpl::Itc::CloseApi">
+<area shape="rect" id="Node000001" title="This abstract class defines an close interface." alt="" coords="5,89,137,114"/>
+<area shape="rect" id="Node000002" href="$class_cpl_1_1_itc_1_1_close_sync.html" title="This partially concrete class implements the synchronous ITC close call for the CloseApi." alt="" coords="187,89,329,114"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="151,99,186,99,186,104,151,104"/>
+<area shape="rect" id="Node000003" href="$class_cpl_1_1_persistent_1_1_indexed_entry_server.html" title=" " alt="" coords="840,53,1033,107"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="283,77,325,48,351,34,378,24,441,10,505,4,570,3,634,8,753,26,851,50,849,55,752,31,633,13,570,9,505,9,441,16,379,29,353,39,328,52,286,82"/>
+<area shape="rect" id="Node000004" href="$class_cpl_1_1_logging_1_1_log_sink.html" title="This class is responsible for consuming the application&#39;s Log buffer and &#39;dispatching&#39; log entries." alt="" coords="403,39,565,65"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="330,83,424,62,426,67,331,88"/>
+<area shape="rect" id="Node000005" href="$class_cpl_1_1_m_app_1_1_manager.html" title="This concrete class implements the MApp Manager." alt="" coords="407,89,561,114"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="343,99,407,99,407,104,343,104"/>
+<area shape="rect" id="Node000006" href="$class_cpl_1_1_persistent_1_1_indexed_entry_server.html" title="This concrete template class implements the ITC messaging (and Model Point monitoring) needed to prov..." alt="" coords="397,139,571,179"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="323,115,405,136,404,141,321,120"/>
+<area shape="rect" id="Node000007" href="$class_cpl_1_1_persistent_1_1_record_server.html" title="This concrete class provides an Event driven Runnable object for executing the read/write operation t..." alt="" coords="379,203,589,229"/>
+<area shape="poly" id="edge7_Node000002_Node000007" title=" " alt="" coords="284,121,327,156,380,188,414,201,412,206,378,193,324,160,281,125"/>
+<area shape="poly" id="edge6_Node000006_Node000003" title=" " alt="" coords="584,138,839,94,840,99,585,144"/>
+</map>

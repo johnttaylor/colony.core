@@ -1,0 +1,5 @@
+<map id="Cpl::TShell::Command" name="Cpl::TShell::Command">
+<area shape="rect" id="Node000001" title="This class defines the interface for a TShell command." alt="" coords="5,79,172,104"/>
+<area shape="rect" id="Node000002" href="$class_cpl_1_1_container_1_1_item.html" title="This class is used by the Container classes to implement a various types of singly linked containers." alt="" coords="13,5,165,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="91,44,91,79,86,79,86,44"/>
+</map>

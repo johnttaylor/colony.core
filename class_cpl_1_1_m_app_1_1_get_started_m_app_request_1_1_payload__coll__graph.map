@@ -1,0 +1,7 @@
+<map id="Cpl::MApp::GetStartedMAppRequest::Payload" name="Cpl::MApp::GetStartedMAppRequest::Payload">
+<area shape="rect" id="Node000001" title="Payload for Message:" alt="" coords="5,168,208,208"/>
+<area shape="rect" id="Node000002" href="$class_cpl_1_1_m_app_1_1_m_app_api.html" title="This abstract class defines the interface for a Micro Application (MApp)." alt="" coords="29,80,184,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,119,109,168,104,168,104,119"/>
+<area shape="rect" id="Node000003" href="$class_cpl_1_1_container_1_1_item.html" title="This class is used by the Container classes to implement a various types of singly linked containers." alt="" coords="31,5,183,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="109,45,109,80,104,80,104,45"/>
+</map>

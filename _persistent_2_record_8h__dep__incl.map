@@ -1,0 +1,18 @@
+<map id="Cpl/Persistent/Record.h" name="Cpl/Persistent/Record.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="91,5,264,31"/>
+<area shape="rect" id="Node000002" href="$_dm_2_persistent_2_record_8h.html" title=" " alt="" coords="5,152,205,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="115,38,84,55,60,80,56,98,63,117,77,135,92,150,88,154,73,139,58,120,50,99,55,77,81,51,113,33"/>
+<area shape="rect" id="Node000003" href="$_data_record_8h.html" title=" " alt="" coords="309,79,513,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="228,32,374,76,372,81,227,37"/>
+<area shape="rect" id="Node000008" href="$_record_server_8h.html" title=" " alt="" coords="70,79,285,104"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="180,44,180,79,175,79,175,44"/>
+<area shape="rect" id="Node000004" href="$_index_record_8h.html" title=" " alt="" coords="306,152,515,177"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="413,118,413,152,408,152,408,118"/>
+<area shape="rect" id="Node000005" href="$_indexed_entry_record_8h.html" title=" " alt="" coords="310,225,511,265"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="413,191,413,225,408,225,408,191"/>
+<area shape="rect" id="Node000006" href="$_indexed_entry_server_8h.html" title=" " alt="" coords="310,313,511,353"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="413,279,413,313,408,313,408,279"/>
+<area shape="rect" id="Node000007" href="$_log_8h.html" title=" " alt="" coords="339,401,482,441"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="413,367,413,401,408,401,408,367"/>
+<area shape="poly" id="edge8_Node000008_Node000002" title=" " alt="" coords="157,116,119,154,115,150,154,112"/>
+</map>

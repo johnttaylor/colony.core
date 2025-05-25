@@ -1,0 +1,7 @@
+<map id="Cpl::Memory::AlignedClass&lt; T &gt;" name="Cpl::Memory::AlignedClass&lt; T &gt;">
+<area shape="rect" id="Node000001" title="This type is used to create a memory block that is large enough to hold the memory footprint of ONE i..." alt="" coords="5,49,240,74"/>
+<area shape="rect" id="Node000002" href="$namespace_cpl_1_1_memory.html#namespace_cpl_1_1_memory" title=" " alt="" coords="433,5,663,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="253,48,433,32,433,38,254,53"/>
+<area shape="rect" id="Node000003" href="$namespace_cpl_1_1_memory.html#namespace_cpl_1_1_memory" title=" " alt="" coords="450,70,646,125"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="212,73,264,80,450,92,450,97,264,85,211,79"/>
+</map>

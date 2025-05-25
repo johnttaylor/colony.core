@@ -1,0 +1,29 @@
+<map id="Cpl::MApp::Manager" name="Cpl::MApp::Manager">
+<area shape="rect" id="Node000001" title="This concrete class implements the MApp Manager." alt="" coords="708,203,861,228"/>
+<area shape="rect" id="Node000002" href="$class_cpl_1_1_m_app_1_1_manager_api.html" title="This abstract class defines the &quot;manager&quot; interface to for starting, stopping, etc." alt="" coords="457,29,631,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="646,57,661,65,702,97,736,136,779,201,774,204,732,139,698,101,659,70,643,62"/>
+<area shape="rect" id="Node000003" href="$class_cpl_1_1_itc_1_1_close_sync.html" title="This partially concrete class implements the synchronous ITC close call for the CloseApi." alt="" coords="473,79,615,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="630,103,661,114,695,134,727,158,773,201,770,204,724,162,693,139,659,119,628,108"/>
+<area shape="rect" id="Node000004" href="$class_cpl_1_1_itc_1_1_open_sync.html" title="This partially concrete class implements the synchronous ITC open call for the OpenApi." alt="" coords="228,29,368,55"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="376,55,480,76,479,81,375,60"/>
+<area shape="rect" id="Node000005" href="$class_cpl_1_1_itc_1_1_open_api.html" title="This abstract class defines an open interface." alt="" coords="21,5,152,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="166,24,228,31,228,37,166,30"/>
+<area shape="rect" id="Node000006" href="$class_cpl_1_1_itc_1_1_open_request.html" title="This abstract class define message types and payloads for a set of ITC services." alt="" coords="5,55,168,80"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="181,53,227,48,228,53,182,59"/>
+<area shape="rect" id="Node000007" href="$class_cpl_1_1_itc_1_1_close_api.html" title="This abstract class defines an close interface." alt="" coords="232,79,364,104"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="378,89,473,89,473,94,378,94"/>
+<area shape="rect" id="Node000008" href="$class_cpl_1_1_itc_1_1_close_request.html" title="This abstract class define message types and payloads for a set of ITC services." alt="" coords="216,128,380,153"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="375,123,479,101,480,107,376,128"/>
+<area shape="rect" id="Node000009" href="$class_cpl_1_1_m_app_1_1_start_m_app_request.html" title="This abstract class define ITC message type and payload for the application to start a MApp." alt="" coords="435,128,653,153"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="626,154,661,163,756,200,754,205,659,169,624,159"/>
+<area shape="rect" id="Node000010" href="$class_cpl_1_1_m_app_1_1_stop_m_app_request.html" title="This abstract class define ITC message type and payload for the application to stop the current MApp." alt="" coords="437,177,651,203"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="665,200,708,205,707,210,665,205"/>
+<area shape="rect" id="Node000011" href="$class_cpl_1_1_m_app_1_1_stop_all_m_app_request.html" title="This abstract class define ITC message type and payload for the application to stop the current MApp." alt="" coords="428,227,660,252"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="674,224,707,220,708,226,674,229"/>
+<area shape="rect" id="Node000012" href="$class_cpl_1_1_m_app_1_1_get_available_m_app_request.html" title="This abstract class define ITC message type and payload for the application to get list of all of the..." alt="" coords="436,277,652,317"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="634,270,659,262,753,226,755,231,661,267,636,275"/>
+<area shape="rect" id="Node000013" href="$class_cpl_1_1_m_app_1_1_get_started_m_app_request.html" title="This abstract class define ITC message type and payload for the application to Get a list of started ..." alt="" coords="443,341,645,381"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="645,333,659,326,694,303,725,275,771,227,775,230,729,279,697,307,661,331,648,338"/>
+<area shape="rect" id="Node000014" href="$class_cpl_1_1_m_app_1_1_lookup_m_app_request.html" title="This abstract class define ITC message type and payload for the application to look&#45;up a MApp by name..." alt="" coords="428,405,660,431"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="646,397,659,390,681,373,702,352,736,305,761,260,776,227,781,229,766,263,740,308,706,355,685,377,661,395,649,402"/>
+</map>

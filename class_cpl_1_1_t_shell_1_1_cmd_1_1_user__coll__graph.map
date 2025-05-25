@@ -1,0 +1,11 @@
+<map id="Cpl::TShell::Cmd::User" name="Cpl::TShell::Cmd::User">
+<area shape="rect" id="Node000001" title="This class implements a Shell command." alt="" coords="125,243,292,268"/>
+<area shape="rect" id="Node000002" href="$class_cpl_1_1_t_shell_1_1_cmd_1_1_command.html" title="This partially concrete class implements infrastructure and/or common functionality for a Shell comma..." alt="" coords="5,155,209,180"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="133,187,196,240,193,244,130,191"/>
+<area shape="rect" id="Node000003" href="$class_cpl_1_1_t_shell_1_1_command.html" title="This class defines the interface for a TShell command." alt="" coords="24,80,191,105"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="110,120,110,154,105,154,105,120"/>
+<area shape="rect" id="Node000004" href="$class_cpl_1_1_container_1_1_item.html" title="This class is used by the Container classes to implement a various types of singly linked containers." alt="" coords="31,5,183,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="110,45,110,80,105,80,105,45"/>
+<area shape="rect" id="Node000005" href="$class_cpl_1_1_t_shell_1_1_security.html" title="This abstract defines the interface for validating a &#39;user login&#39; for TShell." alt="" coords="234,155,386,180"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="287,191,224,244,221,240,284,187"/>
+</map>

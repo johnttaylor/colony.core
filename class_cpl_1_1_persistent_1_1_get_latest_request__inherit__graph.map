@@ -1,0 +1,8 @@
+<map id="Cpl::Persistent::GetLatestRequest" name="Cpl::Persistent::GetLatestRequest">
+<area shape="rect" id="Node000001" title="This abstract class define ITC message type and payload for the application to request read Indexed E..." alt="" coords="5,14,192,54"/>
+<area shape="rect" id="Node000002" href="$class_cpl_1_1_persistent_1_1_indexed_entry_server.html" title=" " alt="" coords="667,5,860,60"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="205,26,408,19,643,21,666,22,666,27,643,26,408,24,206,31"/>
+<area shape="rect" id="Node000003" href="$class_cpl_1_1_persistent_1_1_indexed_entry_server.html" title="This concrete template class implements the ITC messaging (and Model Point monitoring) needed to prov..." alt="" coords="241,42,416,82"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="206,44,242,49,241,54,205,50"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="430,53,666,36,667,42,430,58"/>
+</map>

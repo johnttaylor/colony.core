@@ -1,0 +1,25 @@
+<map id="Cpl::Container::RingBuffer&lt; ITEM &gt;" name="Cpl::Container::RingBuffer&lt; ITEM &gt;">
+<area shape="rect" id="Node000001" title="This template class implements a Ring Buffer." alt="" coords="5,300,196,340"/>
+<area shape="rect" id="Node000002" href="$class_cpl_1_1_container_1_1_ring_buffer_m_t.html" title=" " alt="" coords="917,5,1157,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="133,289,173,257,219,226,344,154,445,103,550,65,690,31,748,21,806,16,917,15,917,20,807,21,748,27,691,36,552,70,447,108,346,158,221,230,176,261,136,293"/>
+<area shape="rect" id="Node000003" href="$class_cpl_1_1_container_1_1_ring_buffer_m_t.html" title=" " alt="" coords="942,260,1133,300"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="209,307,220,307,622,288,942,279,942,284,622,293,220,312,210,313"/>
+<area shape="rect" id="Node000004" href="$class_cpl_1_1_container_1_1_ring_buffer_m_t.html" title="This template class implements a THREAD SAFE Ring Buffer." alt="" coords="461,175,652,215"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="159,292,219,269,344,235,460,210,462,215,346,240,221,275,160,297"/>
+<area shape="rect" id="Node000008" href="$class_cpl_1_1_container_1_1_ring_buffer.html" title=" " alt="" coords="461,328,652,368"/>
+<area shape="poly" id="edge11_Node000001_Node000008" title=" " alt="" coords="210,324,461,340,461,345,210,329"/>
+<area shape="rect" id="Node000009" href="$class_cpl_1_1_container_1_1_ring_buffer.html" title=" " alt="" coords="447,392,667,432"/>
+<area shape="poly" id="edge12_Node000001_Node000009" title=" " alt="" coords="168,342,221,357,337,381,447,397,446,403,336,386,219,363,167,347"/>
+<area shape="rect" id="Node000010" href="$class_cpl_1_1_container_1_1_ring_buffer.html" title=" " alt="" coords="461,456,652,496"/>
+<area shape="poly" id="edge13_Node000001_Node000010" title=" " alt="" coords="131,348,172,384,221,415,281,437,344,453,405,464,461,470,461,475,405,469,343,459,279,443,219,420,168,388,128,352"/>
+<area shape="poly" id="edge9_Node000004_Node000002" title=" " alt="" coords="582,162,628,117,658,94,690,76,744,57,789,52,835,51,893,45,917,42,918,47,894,51,835,56,789,57,745,62,692,81,661,99,632,121,585,166"/>
+<area shape="poly" id="edge10_Node000004_Node000003" title=" " alt="" coords="615,217,691,243,756,256,822,265,942,275,942,280,821,270,755,261,690,248,613,222"/>
+<area shape="rect" id="Node000005" href="$class_cpl_1_1_container_1_1_ring_buffer_m_p.html" title=" " alt="" coords="1408,169,1648,209"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="666,192,1157,189,1408,188,1408,193,1157,195,666,197"/>
+<area shape="rect" id="Node000006" href="$class_cpl_1_1_container_1_1_ring_buffer_m_p.html" title=" " alt="" coords="1433,93,1623,133"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="641,169,690,157,883,124,1035,110,1188,108,1384,109,1433,110,1433,115,1384,115,1188,113,1035,115,884,129,691,163,642,174"/>
+<area shape="rect" id="Node000007" href="$class_cpl_1_1_container_1_1_ring_buffer_m_p.html" title="This template class implements a THREAD SAFE Ring Buffer AND it maintains/reports the number of eleme..." alt="" coords="942,140,1133,180"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="666,184,942,164,942,169,666,189"/>
+<area shape="poly" id="edge7_Node000007_Node000005" title=" " alt="" coords="1147,167,1182,169,1408,182,1408,187,1181,175,1147,172"/>
+<area shape="poly" id="edge8_Node000007_Node000006" title=" " alt="" coords="1146,147,1432,120,1433,125,1146,152"/>
+</map>

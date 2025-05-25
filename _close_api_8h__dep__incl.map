@@ -1,0 +1,17 @@
+<map id="Cpl/Itc/CloseApi.h" name="Cpl/Itc/CloseApi.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="307,5,443,31"/>
+<area shape="rect" id="Node000002" href="$_close_sync_8h.html" title=" " alt="" coords="301,79,448,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="377,44,377,79,372,79,372,44"/>
+<area shape="rect" id="Node000003" href="$_log_sink_8h.html" title=" " alt="" coords="5,159,171,185"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="321,110,130,162,129,157,319,105"/>
+<area shape="rect" id="Node000004" href="$_manager_8h.html" title=" " alt="" coords="195,159,351,185"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="350,115,290,161,287,157,347,111"/>
+<area shape="rect" id="Node000005" href="$_indexed_entry_server_8h.html" title=" " alt="" coords="375,152,577,192"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="402,110,453,150,450,154,399,114"/>
+<area shape="rect" id="Node000007" href="$_record_server_8h.html" title=" " alt="" coords="601,159,815,185"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="437,104,660,157,659,162,436,110"/>
+<area shape="rect" id="Node000006" href="$_log_8h.html" title=" " alt="" coords="405,240,547,280"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="479,206,479,240,473,240,473,206"/>
+<area shape="rect" id="Node000008" href="$_dm_2_persistent_2_record_8h.html" title=" " alt="" coords="608,247,808,273"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="711,199,711,247,705,247,705,199"/>
+</map>

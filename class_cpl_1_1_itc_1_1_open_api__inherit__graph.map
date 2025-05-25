@@ -1,0 +1,18 @@
+<map id="Cpl::Itc::OpenApi" name="Cpl::Itc::OpenApi">
+<area shape="rect" id="Node000001" title="This abstract class defines an open interface." alt="" coords="5,89,136,114"/>
+<area shape="rect" id="Node000002" href="$class_cpl_1_1_itc_1_1_open_sync.html" title="This partially concrete class implements the synchronous ITC open call for the OpenApi." alt="" coords="185,89,325,114"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="150,99,185,99,185,104,150,104"/>
+<area shape="rect" id="Node000003" href="$class_cpl_1_1_itc_1_1_close_sync.html" title="This partially concrete class implements the synchronous ITC close call for the CloseApi." alt="" coords="375,89,517,114"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="339,99,374,99,374,104,339,104"/>
+<area shape="rect" id="Node000004" href="$class_cpl_1_1_persistent_1_1_indexed_entry_server.html" title=" " alt="" coords="1028,53,1221,107"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="471,77,513,48,539,34,566,24,629,10,693,4,758,3,822,8,941,26,1039,50,1037,55,940,31,821,13,758,9,693,9,629,16,567,29,541,39,516,52,474,82"/>
+<area shape="rect" id="Node000005" href="$class_cpl_1_1_logging_1_1_log_sink.html" title="This class is responsible for consuming the application&#39;s Log buffer and &#39;dispatching&#39; log entries." alt="" coords="591,39,753,65"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="518,83,612,62,614,67,519,88"/>
+<area shape="rect" id="Node000006" href="$class_cpl_1_1_m_app_1_1_manager.html" title="This concrete class implements the MApp Manager." alt="" coords="595,89,749,114"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="531,99,595,99,595,104,531,104"/>
+<area shape="rect" id="Node000007" href="$class_cpl_1_1_persistent_1_1_indexed_entry_server.html" title="This concrete template class implements the ITC messaging (and Model Point monitoring) needed to prov..." alt="" coords="585,139,759,179"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="511,115,593,136,592,141,509,120"/>
+<area shape="rect" id="Node000008" href="$class_cpl_1_1_persistent_1_1_record_server.html" title="This concrete class provides an Event driven Runnable object for executing the read/write operation t..." alt="" coords="567,203,777,229"/>
+<area shape="poly" id="edge8_Node000003_Node000008" title=" " alt="" coords="472,121,515,156,568,188,602,201,600,206,566,193,512,160,469,125"/>
+<area shape="poly" id="edge7_Node000007_Node000004" title=" " alt="" coords="772,138,1027,94,1028,99,773,144"/>
+</map>

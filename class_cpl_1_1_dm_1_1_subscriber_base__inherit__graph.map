@@ -1,0 +1,28 @@
+<map id="Cpl::Dm::SubscriberBase" name="Cpl::Dm::SubscriberBase">
+<area shape="rect" id="Node000001" title="This mostly concrete class defines the Subscriber interface &#45; for change notifications &#45; to a Model P..." alt="" coords="689,150,872,175"/>
+<area shape="rect" id="Node000005" href="$class_cpl_1_1_dm_1_1_subscriber.html" title=" " alt="" coords="1303,5,1489,45"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="815,141,936,83,1014,53,1095,31,1148,22,1203,18,1303,17,1303,22,1203,23,1149,27,1097,36,1016,58,938,88,818,146"/>
+<area shape="rect" id="Node000006" href="$class_cpl_1_1_dm_1_1_subscriber.html" title=" " alt="" coords="1305,403,1487,443"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="803,184,849,235,918,300,1002,364,1049,391,1097,412,1149,426,1203,433,1255,435,1304,432,1304,438,1256,440,1202,438,1148,431,1095,417,1046,396,999,368,914,304,846,239,799,188"/>
+<area shape="rect" id="Node000007" href="$class_cpl_1_1_dm_1_1_subscriber.html" title="This template class defines a type safe Subscriber." alt="" coords="921,143,1072,183"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="886,160,921,160,921,165,886,165"/>
+<area shape="rect" id="Node000002" href="$class_cpl_1_1_dm_1_1_subscriber_api.html" title="This abstract class defines the Subscriber interface &#45; for change notifications &#45; to a Model Points d..." alt="" coords="469,150,640,175"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="654,160,689,160,689,165,654,165"/>
+<area shape="rect" id="Node000003" href="$class_cpl_1_1_container_1_1_extended_item.html" title="This class is used by the Container classes to implement a various types of DOUBLY linked containers." alt="" coords="207,150,420,175"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="434,160,469,160,469,165,434,165"/>
+<area shape="rect" id="Node000004" href="$class_cpl_1_1_container_1_1_item.html" title="This class is used by the Container classes to implement a various types of singly linked containers." alt="" coords="5,150,157,175"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="171,160,206,160,206,165,171,165"/>
+<area shape="poly" id="edge14_Node000007_Node000005" title=" " alt="" coords="1023,131,1055,102,1095,76,1303,39,1304,44,1097,81,1059,106,1026,135"/>
+<area shape="poly" id="edge15_Node000007_Node000006" title=" " alt="" coords="1005,196,1014,241,1031,293,1058,344,1076,367,1097,386,1125,394,1176,402,1305,414,1304,419,1176,407,1123,399,1095,390,1072,370,1054,347,1026,295,1009,242,1000,197"/>
+<area shape="rect" id="Node000008" href="$class_cpl_1_1_dm_1_1_subscriber_composer.html" title=" " alt="" coords="1764,86,1983,141"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="1053,135,1095,123,1192,106,1274,97,1347,94,1415,95,1556,103,1737,109,1764,110,1764,115,1737,115,1556,108,1414,100,1347,99,1274,102,1193,111,1097,128,1055,140"/>
+<area shape="rect" id="Node000009" href="$class_cpl_1_1_dm_1_1_subscriber_composer.html" title=" " alt="" coords="1765,315,1981,370"/>
+<area shape="poly" id="edge8_Node000007_Node000009" title=" " alt="" coords="1045,187,1097,211,1215,256,1308,287,1404,310,1528,331,1651,342,1765,344,1765,349,1650,347,1528,336,1403,315,1307,292,1213,261,1095,216,1043,192"/>
+<area shape="rect" id="Node000010" href="$class_cpl_1_1_dm_1_1_subscriber_composer.html" title=" " alt="" coords="1761,185,1985,239"/>
+<area shape="poly" id="edge9_Node000007_Node000010" title=" " alt="" coords="1086,152,1242,141,1429,132,1608,130,1682,134,1738,143,1776,158,1824,182,1821,187,1774,163,1737,148,1681,140,1608,136,1430,137,1242,146,1086,158"/>
+<area shape="rect" id="Node000011" href="$class_cpl_1_1_dm_1_1_subscriber_composer.html" title="This template class is a composer pattern/class that manages the callback function for a Model Point&#39;..." alt="" coords="1288,213,1504,253"/>
+<area shape="poly" id="edge10_Node000007_Node000011" title=" " alt="" coords="1086,176,1288,212,1287,217,1085,181"/>
+<area shape="poly" id="edge11_Node000011_Node000008" title=" " alt="" coords="1489,207,1763,138,1764,143,1491,212"/>
+<area shape="poly" id="edge12_Node000011_Node000009" title=" " alt="" coords="1450,257,1529,287,1650,314,1766,330,1765,336,1650,319,1527,292,1449,262"/>
+<area shape="poly" id="edge13_Node000011_Node000010" title=" " alt="" coords="1518,247,1625,253,1682,252,1737,247,1786,237,1787,242,1738,252,1682,257,1625,258,1518,252"/>
+</map>

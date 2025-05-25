@@ -1,0 +1,16 @@
+<map id="Cpl::Itc::CloseRequest" name="Cpl::Itc::CloseRequest">
+<area shape="rect" id="Node000001" title="This abstract class define message types and payloads for a set of ITC services." alt="" coords="5,89,169,114"/>
+<area shape="rect" id="Node000002" href="$class_cpl_1_1_itc_1_1_close_sync.html" title="This partially concrete class implements the synchronous ITC close call for the CloseApi." alt="" coords="219,89,361,114"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="183,99,219,99,219,104,183,104"/>
+<area shape="rect" id="Node000003" href="$class_cpl_1_1_persistent_1_1_indexed_entry_server.html" title=" " alt="" coords="872,53,1065,107"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="315,77,357,48,383,34,410,24,473,10,537,4,602,3,666,8,785,26,883,50,881,55,784,31,665,13,602,9,537,9,473,16,411,29,385,39,360,52,318,82"/>
+<area shape="rect" id="Node000004" href="$class_cpl_1_1_logging_1_1_log_sink.html" title="This class is responsible for consuming the application&#39;s Log buffer and &#39;dispatching&#39; log entries." alt="" coords="435,39,597,65"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="362,83,456,62,458,67,363,88"/>
+<area shape="rect" id="Node000005" href="$class_cpl_1_1_m_app_1_1_manager.html" title="This concrete class implements the MApp Manager." alt="" coords="439,89,593,114"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="375,99,439,99,439,104,375,104"/>
+<area shape="rect" id="Node000006" href="$class_cpl_1_1_persistent_1_1_indexed_entry_server.html" title="This concrete template class implements the ITC messaging (and Model Point monitoring) needed to prov..." alt="" coords="429,139,603,179"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="355,115,437,136,436,141,353,120"/>
+<area shape="rect" id="Node000007" href="$class_cpl_1_1_persistent_1_1_record_server.html" title="This concrete class provides an Event driven Runnable object for executing the read/write operation t..." alt="" coords="411,203,621,229"/>
+<area shape="poly" id="edge7_Node000002_Node000007" title=" " alt="" coords="316,121,359,156,412,188,446,201,444,206,410,193,356,160,313,125"/>
+<area shape="poly" id="edge6_Node000006_Node000003" title=" " alt="" coords="616,138,871,94,872,99,617,144"/>
+</map>
