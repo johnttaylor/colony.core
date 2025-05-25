@@ -1,5 +1,6 @@
-name: Windows Build
-
+name: Build All
+# This workflow builds the project using different compilers and platforms.
+# It runs on pull requests and pushes to the develop and main branches.
 on:
   pull_request:
     branches:
