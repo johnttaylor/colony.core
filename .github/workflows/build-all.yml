@@ -145,15 +145,10 @@ jobs:
 
       # Install gcovr
       - name: Install gcovr
-        uses: threeal/pipx-install-action@v2.0.0
+        uses: threeal/pipx-install-action@v1.0.0
         with:
           packages: gcovr
 
-      # Install Ruff
-      - name: Install Ruff
-        uses: threeal/pipx-install-action@v2.0.0
-        with:
-          packages: ruff
       # Ninja setup
       - uses: seanmiddleditch/gha-setup-ninja@master
         with:
