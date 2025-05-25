@@ -1,5 +1,4 @@
-::@echo off
-@echo on
+@echo off
 :: This script is used to set compiler environment.
 ::
 :: NOTE: The scripts in the top/compilers directory MUST be customized for PC.
