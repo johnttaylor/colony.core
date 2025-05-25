@@ -45,7 +45,7 @@ IF ERRORLEVEL 1 EXIT /b 1
 
 :: Run unit tests
 echo:Running unit tests...
-cd %_TOPDIR%\..\tests
+cd %_ROOT%\tests
 python %_ROOT%\xsrc\nqbp2\other\chuck.py -vt --match a.exe --dir vc12
 IF ERRORLEVEL 1 EXIT /b 1
 python %_ROOT%\xsrc\nqbp2\other\chuck.py -v --match aa.exe --dir vc12

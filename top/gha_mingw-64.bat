@@ -34,18 +34,18 @@ echo:
 
 :: Build the Catch2 static library
 cd %_ROOT%\projects
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 -c --try win64
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 --try  cpp11
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v2 --script-prefix python mingw_w64 -c --try win64
+::python %_ROOT%\xsrc\nqbp2\other\bob.py -v2 --script-prefix python mingw_w64 --try  cpp11
 
 
 :: Build the unit tests
 cd %_ROOT%\tests
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 -c --bldtime --try win64 --bldnum %BUILD_NUMBER%
-python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 --bldtime --try cpp11 --bldnum %BUILD_NUMBER%
+python %_ROOT%\xsrc\nqbp2\other\bob.py -v2 --script-prefix python mingw_w64 -c --bldtime --try win64 --bldnum %BUILD_NUMBER%
+::python %_ROOT%\xsrc\nqbp2\other\bob.py -v2 --script-prefix python mingw_w64 --bldtime --try cpp11 --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Run unit tests
-cd %_TOPDIR%\..\tests
+cd %_ROOT%\tests
 python %_ROOT%\xsrc\nqbp2\other\chuck.py -vt --match a.exe --dir mingw_w64
 IF ERRORLEVEL 1 EXIT /b 1
 python %_ROOT%\xsrc\nqbp2\other\chuck.py -v --match aa.exe --dir mingw_w64

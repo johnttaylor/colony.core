@@ -148,12 +148,6 @@ jobs:
         with:
           version: '1.11.1'
 
-      # # MinGW setup
-      # - name: MinGW compiler
-      #   uses: rlalik/setup-cpp-compiler@master
-      #   with:
-      #     compiler: gcc-10.3.0
-
       #- name: Setup tmate session
       # uses: mxschmitt/action-tmate@v3
 
@@ -187,11 +181,57 @@ jobs:
         run: |
           echo "Running build script for stable branches..."
           ./top/gha_linux-gcc.sh ${{ github.run_number }} ${{ github.head_ref }}
-      
-      # Publish Doxygen documentation (but only when building main branch)
+
+      # Publish Doxygen documentation (but only when building develop branch)
       - name: Publish Doxygen documentation
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/develop'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/html
+
+  # ARM Cortex M/R Compiler Windows build job
+  arm_gcc_windows_build:
+    name: ARM Cortex M/R Compiler Windows Build
+    runs-on: windows-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout code
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.safecrlf false
+      - uses: actions/checkout@v2
+
+      # Python setup
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12' 
+
+      # Ninja setup
+      - uses: seanmiddleditch/gha-setup-ninja@master
+        with:
+          version: '1.11.1'
+
+      # GCC-ARM Cross Compiler setup
+      - name: ARM GCC compiler
+        uses: carlosperate/arm-none-eabi-gcc-action@v1  
+        with:
+          compiler: 10.3-2021.10
+
+      #- name: Setup tmate session
+      # uses: mxschmitt/action-tmate@v3
+
+      # Build PRs
+      - name: Run build script - for PRs
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "Running build script for PRs..."
+          .\top\gha_gcc-arm.bat ${{ github.run_number }} 
+
+      # Build Stable branches
+      - name: Run build script - for stable branches
+        if: github.event_name != 'pull_request'
+        run: |
+          echo "Running build script for stable branches..."
+          .\top\gha_gcc-arm.bat ${{ github.run_number }} ${{ github.head_ref }}
