@@ -143,6 +143,17 @@ jobs:
         with:
           python-version: '3.12' 
 
+      # Install gcovr
+      - name: Install gcovr
+        uses: threeal/pipx-install-action@v2.0.0
+        with:
+          packages: gcovr
+
+      # Install Ruff
+      - name: Install Ruff
+        uses: threeal/pipx-install-action@v2.0.0
+        with:
+          packages: ruff
       # Ninja setup
       - uses: seanmiddleditch/gha-setup-ninja@master
         with:
@@ -204,10 +215,10 @@ jobs:
       - name: ReportGenerator
         uses: danielpalme/ReportGenerator-GitHub-Action@5.4.7
         with:
-          reports: './tests/**/cobertura.xml'
-          targetdir: './_artifacts/coveragereport'
+          reports: 'tests/**/cobertura.xml'
+          targetdir: '_artifacts/coveragereport'
           reporttypes: 'MarkdownSummaryGithub'
-          sourcedirs: './src/'
+          sourcedirs: 'src/'
 
       # Upload coverage report artifact
       - name: Upload coverage report artifact
