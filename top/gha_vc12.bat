@@ -38,8 +38,7 @@ python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python vc12 -c --bld-
 IF ERRORLEVEL 1 EXIT /b 1
 
 :: Build the unit tests
-::cd %_ROOT%\tests
-cd %_ROOT%\tests\Cpl\Dm
+cd %_ROOT%\tests
 echo:Building unit tests...
 python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python vc12 -c --bldtime --bld-all --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1

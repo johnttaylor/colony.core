@@ -39,8 +39,7 @@ python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 -c -
 
 
 :: Build the unit tests
-::cd %_ROOT%\tests
-cd %_ROOT%\tests\Cpl\Dm
+cd %_ROOT%\tests
 python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 -c --bldtime -b win64 --bldnum %BUILD_NUMBER%
 python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python mingw_w64 -c --bldtime -b cpp11 --bldnum %BUILD_NUMBER%
 IF ERRORLEVEL 1 EXIT /b 1

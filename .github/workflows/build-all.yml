@@ -129,8 +129,8 @@ jobs:
       #- name: Setup tmate session
       # uses: mxschmitt/action-tmate@v3
 
-      # Run Doxygen
-      - name: Doxygen Action
+      # Installs and Run Doxygen
+      - name: Install Doxygen
         uses: mattnotmitt/doxygen-action@v1.9.8
         with:
           # Path to Doxyfile
@@ -138,6 +138,12 @@ jobs:
           # Working directory
           working-directory: "./top" # default is .
       
+      # Check for Doxygen errors (use the run_doxygen.py to check for errors)
+      - name: Check for Doxygen errors
+        run: |
+          echo "Checking for Doxygen errors..."
+          ./top/run_doxygen.py ${{ github.head_ref }} ${{ github.run_number }}
+        
       # Build PRs
       - name: Run build script - for PRs
         if: github.event_name == 'pull_request'
@@ -153,11 +159,9 @@ jobs:
           ./top/gha_linux-gcc.sh ${{ github.run_number }} ${{ github.head_ref }}
       
       # Publish Doxygen documentation (but only when building main branch)
-      - name: Deploy
+      - name: Publish Doxygen documentation
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Default Doxyfile build documentation to html directory. 
-          # Change the directory if changes in Doxyfile
           publish_dir: ./docs/html
