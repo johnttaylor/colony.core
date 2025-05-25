@@ -17,6 +17,15 @@ class ToolChain( base.ToolChain ):
         base.ToolChain.__init__( self, exename, prjdir, build_variants, default_variant )
         self._ccname = 'Mingw_W64'
         
+        self._cc        = 'x86_64-w64-mingw32-gcc'  
+        self._ld        = 'x86_64-w64-mingw32-gcc'  
+        #self._asm       = 'as'   
+        self._ar        = 'x86_64-w64-mingw32-ar'   
+        self._objcpy    = 'objcpy'
+        self._objdmp    = 'objdump' 
+        self._printsz   = 'size'
+
+
         # more stuff to clean
         self._clean_list.extend( ['xml'] )
 
