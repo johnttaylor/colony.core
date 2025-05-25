@@ -134,7 +134,7 @@ jobs:
         uses: mattnotmitt/doxygen-action@v1.9.8
         with:
           # Path to Doxyfile
-          doxyfile-path: "./Doxyfile" 
+          doxyfile-path: "./Doxyfile.src" 
           # Working directory
           working-directory: "./top" # default is .
       
