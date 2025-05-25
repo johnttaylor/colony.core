@@ -33,4 +33,4 @@ $NQBP_BIN/other/chuck.py -vt --match a.py --dir _posix64
 $NQBP_BIN/other/chuck.py -v --match aa.py --dir _posix64
 
 # Generate code coverage metrics
-$NQBP_BIN/other/chuck.py -v --dir gcc --match tca.py args --ci rpt --xml jenkins-gcovr.xml
+$NQBP_BIN/other/chuck.py -v --dir gcc --match tca.py args --ci rpt --xml cobertura.xml

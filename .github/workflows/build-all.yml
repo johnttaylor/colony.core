@@ -57,7 +57,7 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           echo "Running build script for stable branches..."
-          .\top\gha_vc12.bat ${{ github.run_number }} ${{ github.head_ref }}
+          .\top\gha_vc12.bat ${{ github.run_number }} ${{ github.ref_name }}
 
 
   # MinGW  Compiler Windows build job
@@ -104,7 +104,7 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           echo "Running build script for stable branches..."
-          .\top\gha_mingw-64.bat ${{ github.run_number }} ${{ github.head_ref }}
+          .\top\gha_mingw-64.bat ${{ github.run_number }} ${{ github.ref_name }}
 
   # GCC Compiler Linux build job
   gcc_linux_build:
@@ -166,7 +166,7 @@ jobs:
         run: |
           echo "Running Doxygen..."
           cd ./top
-          ./run_doxygen.py ${{ github.head_ref }} ${{ github.run_number }} nochm
+          ./run_doxygen.py ${{ github.ref_name }} ${{ github.run_number }} nochm
         
       # Build PRs
       - name: Run build script - for PRs
@@ -180,7 +180,7 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           echo "Running build script for stable branches..."
-          ./top/gha_linux-gcc.sh ${{ github.run_number }} ${{ github.head_ref }}
+          ./top/gha_linux-gcc.sh ${{ github.run_number }} ${{ github.ref_name }}
 
       # Publish Doxygen documentation (but only when building develop branch)
       - name: Publish Doxygen documentation
@@ -189,6 +189,43 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/html
+
+      # Setup .NET Core Required to execute ReportGenerator
+      - name: Setup .NET Core # Required to execute ReportGenerator
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+          dotnet-quality: 'ga'
+
+      # Generate Code Coverage Report
+      - name: ReportGenerator
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.4.7
+        with:
+          reports: tests/**/cobertura.xml
+          targetdir: _artifacts/coveragereport
+          reporttypes: MarkdownSummaryGithub
+          sourcedirs: src/
+
+      # Upload coverage report artifact
+      - name: Upload coverage report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CoverageReport # Artifact name        
+          path: _artifacts/coveragereport 
+
+      # Add PR Comment to the Code Coverage Report
+      - name: Add comment to PR 
+        if: github.event_name == 'pull_request'
+        run: gh pr comment $PR_NUMBER --body-file _artifacts/coveragereport/SummaryGithub.md 
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}
+
+      # Publish report to the Build summary    
+      - name: Publish coverage in build summary 
+        run: cat _artifacts/coveragereport/SummaryGithub.md >> $GITHUB_STEP_SUMMARY 
+        shell: bash
+
 
   # ARM Cortex M/R Compiler Windows build job
   arm_gcc_windows_build:
@@ -228,4 +265,4 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           echo "Running build script for stable branches..."
-          .\top\gha_gcc-arm.bat ${{ github.run_number }} ${{ github.head_ref }}
+          .\top\gha_gcc-arm.bat ${{ github.run_number }} ${{ github.ref_name }}
