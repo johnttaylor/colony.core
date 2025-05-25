@@ -17,12 +17,12 @@ export NQBP_CI_BUILD="1"
 
 # Build the Catch2 static library (just 64bit apps for now)
 pushd projects
-$NQBP_BIN/other/bob.py -v4 linux  -c -b posix64 
+$NQBP_BIN/other/bob.py -v4 linux  -c --try posix64 
 popd
 
 # Build all test linux projects (just 64bit apps for now)
 pushd tests
-$NQBP_BIN/other/bob.py -v4 linux  -b posix64 --bldtime --bldnum $1
+$NQBP_BIN/other/bob.py -v4 linux  --try posix64 --bldtime --bldnum $1
 
 # Run unit tests
 $NQBP_BIN/other/chuck.py -v --match a.out --dir _posix64
