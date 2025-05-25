@@ -22,7 +22,7 @@ $NQBP_BIN/other/bob.py -v4 linux  --try cpp11
 popd
 
 # Build all test linux projects (just 64bit apps for now)
-pushd tests/Cpl/Container 
+pushd tests
 $NQBP_BIN/other/bob.py -v4 linux -c --try posix64 --bldtime --bldnum $1
 $NQBP_BIN/other/bob.py -v4 linux --try cpp11 --bldtime --bldnum $1
 
