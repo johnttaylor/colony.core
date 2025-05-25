@@ -20,10 +20,10 @@ class ToolChain( base.ToolChain ):
         self._cc        = 'x86_64-w64-mingw32-gcc'  
         self._ld        = 'x86_64-w64-mingw32-gcc'  
         #self._asm       = 'as'   
-        self._ar        = 'x86_64-w64-mingw32-ar'   
-        self._objcpy    = 'objcpy'
-        self._objdmp    = 'objdump' 
-        self._printsz   = 'size'
+        self._ar        = 'x86_64-w64-mingw32-gcc-ar'   
+        #self._objcpy    = 'objcpy'
+        #self._objdmp    = 'objdump' 
+        #self._printsz   = 'size'
 
 
         # more stuff to clean
