@@ -78,7 +78,7 @@ if ( debug ):
 # Create a temporary config file that includes the build info
 cfgfile = "Doxyfile"
 indata  = ""
-with open ("Doxyfile", "r") as inf:
+with open ("Doxyfile.src", "r") as inf:
     indata=inf.read()
 indata = indata.replace('$$$PROJECT_NUMBER$$$',buildInfo)
 if ( debug ):
@@ -109,8 +109,8 @@ except:
     pass
 
 # delete the HTML files - only keep the Windows Help (.chm) file
-path = os.path.join( '..', 'docs', 'html' )
-shutil.rmtree( path, ignore_errors=True  )
+#path = os.path.join( '..', 'docs', 'html' )
+#shutil.rmtree( path, ignore_errors=True  )
 
 
 # check for errors (note: filter_warnings exits on an error)
@@ -126,4 +126,8 @@ else:
 if ( len(sys.argv) > 2 ):
     outfile = os.path.join( '..', 'docs', f'{filename}.chm' )
     newfile = os.path.join( '..', 'docs', f'{filename}_{buildnum}-{buildtype}.chm' )
-    shutil.move( outfile, newfile )
+    try:
+        os.remove( newfile )
+        shutil.move( outfile, newfile )
+    except:
+        pass
