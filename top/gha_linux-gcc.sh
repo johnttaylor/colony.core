@@ -10,7 +10,7 @@ set -x
 # 
 
 # setup the environment
-source ./env.sh 
+source ./env.sh default
 
 # Set the CI build flag
 export NQBP_CI_BUILD="1"
