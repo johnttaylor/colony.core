@@ -139,10 +139,10 @@ jobs:
       - name: Install Graphviz
         uses: tlylt/install-graphviz@v1
          
-      # Check for Doxygen errors (use the run_doxygen.py to check for errors)
-      - name: Check for Doxygen errors
+      # Run Doxygen 
+      - name: Run Doxygen
         run: |
-          echo "Checking for Doxygen errors..."
+          echo "Running Doxygen..."
           cd ./top
           ./run_doxygen.py ${{ github.head_ref }} ${{ github.run_number }} nochm
         
