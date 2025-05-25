@@ -12,7 +12,9 @@ echo:%_TOPDIR%
 set NQBP_CI_BUILD=1
 
 ls C:/mingw64/bin/gcc*
-ls C:/mingw64/bin/i686*
+echo: 
+echo: 
+ls C:/mingw64/bin/*
 
 :: Set the NQBP_BIN path (and other magic variables - but no compiler selected)
 call ./env.bat
