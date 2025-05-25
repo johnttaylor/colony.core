@@ -138,16 +138,12 @@ jobs:
           Write-Host 'Total Lines of Code...:  ${{ steps.loc.outputs.total_lines }}'
           Write-Host 'Lines of Code Markdown Report Path...:  ${{ steps.loc.outputs.loc_report }}'
 
-      # Python setup
+      # Python setup (with gcovr)
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12' 
-
-      # Install gcovr
-      - name: Install gcovr
-        uses: threeal/pipx-install-action@v1.0.0
-        with:
-          packages: gcovr
+          cache: 'pip' 
+      - run: pip install gcovr
 
       # Ninja setup
       - uses: seanmiddleditch/gha-setup-ninja@master
