@@ -76,7 +76,7 @@ if ( debug ):
     print( "= buildInfo: ", buildInfo )
 
 # Create a temporary config file that includes the build info
-cfgfile = "Doxyfile.tmp"
+cfgfile = "Doxyfile"
 indata  = ""
 with open ("Doxyfile", "r") as inf:
     indata=inf.read()
@@ -89,7 +89,7 @@ with open (cfgfile, "w") as outf:
         print(indata)
         
 # run doxygen
-cmd = "doxygen " + cfgfile
+cmd = "doxygen"
 if ( debug ):
     print("= Command: ", cmd )
 p   = subprocess.Popen( cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE )
