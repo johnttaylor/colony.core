@@ -24,7 +24,8 @@ echo:
 ::
 
 :: Set the NQBP_BIN path 
-call ./env.bat 5
+::call ./env.bat 5
+call ./env.bat 
 
 :: Build the unit tests
 cd %_ROOT%\tests
@@ -32,11 +33,11 @@ python %_ROOT%\xsrc\nqbp2\other\bob.py -v4 --script-prefix python --p2 windows g
 IF ERRORLEVEL 1 EXIT /b 1
 
 ::
-:: Build Arduino projects
+:: Build ATSAMD51 Arduino projects
 ::
 
-:: Set the NQBP_BIN path 
-call ./env.bat 4
+:: Set the BSP version
+set ARDUINO_BSP_VER=1.6.0
 
 :: Build the unit tests
 cd %_ROOT%\tests
