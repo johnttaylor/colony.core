@@ -129,12 +129,16 @@ jobs:
       #- name: Setup tmate session
       # uses: mxschmitt/action-tmate@v3
 
-      # Installs and Run Doxygen
+      # Installs 
       - name: Install Doxygen
         uses: ssciwr/doxygen-install@v1
         with:
           version: "1.10.0"
       
+      # Install Graphviz
+      - name: Install Graphviz
+        uses: tlylt/install-graphviz@v1
+         
       # Check for Doxygen errors (use the run_doxygen.py to check for errors)
       - name: Check for Doxygen errors
         run: |
