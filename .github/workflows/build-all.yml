@@ -143,7 +143,7 @@ jobs:
         with:
           python-version: '3.12' 
           cache: 'pip' 
-      - run: pip install gcovr
+      - run: pip install -r top/gha_requirements.txt
 
       # Ninja setup
       - uses: seanmiddleditch/gha-setup-ninja@master
