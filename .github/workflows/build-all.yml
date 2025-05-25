@@ -144,7 +144,7 @@ jobs:
         run: |
           echo "Checking for Doxygen errors..."
           cd ./top
-          ./run_doxygen.py ${{ github.head_ref }} ${{ github.run_number }}
+          ./run_doxygen.py ${{ github.head_ref }} ${{ github.run_number }} nochm
         
       # Build PRs
       - name: Run build script - for PRs

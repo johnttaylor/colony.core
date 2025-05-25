@@ -7,7 +7,7 @@ standards require that doxygen execute without warning.
 The script assumes that doxygen is in the command path.
 
 
-Usage: doxygen [<buildtype> <buildNumber>] [debug]
+Usage: doxygen [<buildtype> <buildNumber>] [nochm]
 
 """
 
@@ -65,8 +65,9 @@ filename  = "colony.core-library"
 buildtype = 'private'
 buildnum  = 0
 debug     = False
-if ( len(sys.argv) > 3 and sys.argv[3] == 'debug' ):
-    debug = True
+chmfile   = "YES"
+if ( len(sys.argv) > 3 and sys.argv[3] == 'nochm' ):
+    chmfile = "NO"
 if ( len(sys.argv) > 2 ):
     buildtype = sys.argv[1]
     buildnum  = sys.argv[2]
@@ -81,6 +82,7 @@ indata  = ""
 with open ("Doxyfile.src", "r") as inf:
     indata=inf.read()
 indata = indata.replace('$$$PROJECT_NUMBER$$$',buildInfo)
+indata = indata.replace('$$$GENERATE_HELP_FILE$$$',chmfile)
 if ( debug ):
     print("= Config File...")
 with open (cfgfile, "w") as outf:
