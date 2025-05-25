@@ -96,7 +96,7 @@ release_opts = { 'user_base':base_release,
                
 # Add new dictionary of for new build configuraiton options
 cpp11_opts = { 'user_base':base_cpp11, 
-               'user_optimized':optimzed_cpp11, 
+               'user_optimized':optimized_cpp11, 
                'user_debug':debug_cpp11
              }
   
