@@ -183,11 +183,11 @@
   },
   "publish": {
     "current": {
-      "comment": "Add additional Atomic operations to the MP interface and minor bug fixes to trace statements",
+      "comment": "Minor updates, bug fixes, and transition to git actions",
       "version": "5.0.1",
-      "date": "Fri May 23 20:11:43 2025",
+      "date": "Sun May 25 18:11:43 2025",
       "timestamp": 1748031103,
-      "changes": null
+      "changes": "\"- Add additional Atomic operations to the MP interface\\n- Minor bug fixes to trace statements\\n- Transition to git actions for CI\\n- Update copyright statements\""
     },
     "history": [
       {
