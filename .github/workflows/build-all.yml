@@ -201,10 +201,10 @@ jobs:
       - name: ReportGenerator
         uses: danielpalme/ReportGenerator-GitHub-Action@5.4.7
         with:
-          reports: "tests/**/*.xml"
-          targetdir: _artifacts/coveragereport
-          reporttypes: MarkdownSummaryGithub
-          sourcedirs: src/
+          reports: 'tests/**/*.xml'
+          targetdir: '_artifacts/coveragereport'
+          reporttypes: 'MarkdownSummaryGithub'
+          sourcedirs: 'src/'
 
       # Upload coverage report artifact
       - name: Upload coverage report artifact
