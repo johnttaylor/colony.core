@@ -56,9 +56,10 @@ jobs:
           echo "Running build script for stable branches..."
           .\top\gha_vc12.bat ${{ github.run_number }} ${{ github.head_ref }}
 
+
   # MinGW  Compiler Windows build job
-  mingw_windows_build:
-    name: MinGW Compiler Windows Build
+  mingw_64_windows_build:
+    name: MinGW Compiler Windows 64bit Build
     runs-on: windows-latest
 
     steps:
@@ -90,11 +91,54 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           echo "Running build script for PRs..."
-          .\top\gha_mingw.bat ${{ github.run_number }} 
+          .\top\gha_mingw-64.bat ${{ github.run_number }} 
 
       # Build Stable branches
       - name: Run build script - for stable branches
         if: github.event_name != 'pull_request'
         run: |
           echo "Running build script for stable branches..."
-          .\top\gha_mingw.bat ${{ github.run_number }} ${{ github.head_ref }}
+          .\top\gha_mingw-64.bat ${{ github.run_number }} ${{ github.head_ref }}
+
+  # GCC Compiler Linux build job
+  gcc_linux_build:
+    name: GCC Compiler Linux Build
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Python setup
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12' 
+
+      # Ninja setup
+      - uses: seanmiddleditch/gha-setup-ninja@master
+        with:
+          version: '1.11.1'
+
+      # # MinGW setup
+      # - name: MinGW compiler
+      #   uses: rlalik/setup-cpp-compiler@master
+      #   with:
+      #     compiler: gcc-10.3.0
+
+      #- name: Setup tmate session
+      # uses: mxschmitt/action-tmate@v3
+
+      # Build PRs
+      - name: Run build script - for PRs
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "Running build script for PRs..."
+          ./top/gha_linux-gcc.sh ${{ github.run_number }} 
+
+      # Build Stable branches
+      - name: Run build script - for stable branches
+        if: github.event_name != 'pull_request'
+        run: |
+          echo "Running build script for stable branches..."
+          ./top/gha_linux-gcc.sh ${{ github.run_number }} ${{ github.head_ref }}
