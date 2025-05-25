@@ -11,6 +11,8 @@ echo:%_TOPDIR%
 :: Set the CI build flag
 set NQBP_CI_BUILD=1
 
+dir \msys64\mingw32\bin\gcc*
+dir \msys64\mingw32\bin\i686*
 :: Set the NQBP_BIN path (and other magic variables - but no compiler selected)
 call ./env.bat
 

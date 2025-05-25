@@ -13,6 +13,9 @@ on:
 jobs:
   # Visual Studio Compiler Windows build job
   vc_windows_build:
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     name: Visual Studio Compiler Windows Build
     runs-on: windows-latest
 
