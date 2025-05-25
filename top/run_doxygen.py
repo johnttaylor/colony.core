@@ -130,6 +130,9 @@ if ( len(sys.argv) > 2 ):
     newfile = os.path.join( '..', 'docs', f'{filename}_{buildnum}-{buildtype}.chm' )
     try:
         os.remove( newfile )
+    except:
+        pass
+    try:
         shutil.move( outfile, newfile )
     except:
         pass

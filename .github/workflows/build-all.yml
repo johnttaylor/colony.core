@@ -201,7 +201,7 @@ jobs:
       - name: ReportGenerator
         uses: danielpalme/ReportGenerator-GitHub-Action@5.4.7
         with:
-          reports: tests/**/cobertura.xml
+          reports: "tests/**/cobertura.xml"
           targetdir: _artifacts/coveragereport
           reporttypes: MarkdownSummaryGithub
           sourcedirs: src/
