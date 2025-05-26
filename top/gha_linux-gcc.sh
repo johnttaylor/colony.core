@@ -44,6 +44,6 @@ if [ -f "$COMBINED_CODE_COVERAGE_FILE" ]; then
     rm -f "$COMBINED_CODE_COVERAGE_FILE"
 fi
 pushd tests
-$NQBP_BIN/other/chuck.py -v --dir --d2 linux gcc --match tca.py args --ci rpt --json cobertura.json
-$NQBP_BIN/other/chuck.py -v --dir --d2 linux gcc --match tca.py args --ci merge cobertura.json $COMBINED_CODE_COVERAGE_FILE
+$NQBP_BIN/other/chuck.py -v --dir gcc --d2 linux --match tca.py args --ci rpt --json cobertura.json
+$NQBP_BIN/other/chuck.py -v --dir gcc --d2 linux --match tca.py args --ci merge cobertura.json $COMBINED_CODE_COVERAGE_FILE
 popd

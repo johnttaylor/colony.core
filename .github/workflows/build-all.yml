@@ -64,6 +64,9 @@ jobs:
 
   # MinGW  Compiler Windows build job
   mingw_64_windows_build:
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     name: MinGW Compiler Windows 64bit Build
     runs-on: windows-latest
 
@@ -111,6 +114,9 @@ jobs:
 
   # GCC Compiler Linux build job
   gcc_linux_build:
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     name: GCC Compiler Linux Build
     runs-on: ubuntu-latest
 
@@ -237,6 +243,9 @@ jobs:
 
   # ARM Cortex M/R Compiler Windows build job
   arm_gcc_windows_build:
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     name: ARM Cortex M/R Compiler Windows Build
     runs-on: windows-latest
 
