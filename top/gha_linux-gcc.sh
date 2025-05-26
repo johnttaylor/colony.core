@@ -34,7 +34,7 @@ $NQBP_BIN/other/chuck.py -vt --match a.py --dir gcc --d2 linux
 $NQBP_BIN/other/chuck.py -v --match aa.py --dir gcc --d2 linux
 popd
 
-# Generate code coverage metrics
+# Generate code coverage metrics 
 RANDOM_UNIT_TEST_DIR="$NQBP_PKG_ROOT/tests/Cpl/Checksum/_0test/linux/gcc"
 COMBINED_CODE_COVERAGE_FILE="$NQBP_PKG_ROOT/cobertura.json"
 COMBINED_CODE_COVERAGE_XML="$NQBP_PKG_ROOT/cobertura.xml"
@@ -49,4 +49,15 @@ popd
 # Convert the JSON data file to XML format (need to use the tca.py script to get the correct gcov args)
 pushd $RANDOM_UNIT_TEST_DIR
 python tca.py --ci rpt -a $COMBINED_CODE_COVERAGE_FILE --xml $COMBINED_CODE_COVERAGE_XML
+popd
+
+# Build and run units for 'cpp11' projects
+pushd projects
+$NQBP_BIN/other/bob.py -v4 linux --try cpp11 --bldtime --bldnum $1
+
+# Run unit tests
+$NQBP_BIN/other/chuck.py -vt --match a.out --dir gcc --d2 linux
+$NQBP_BIN/other/chuck.py -v --match aa.out --dir gcc --d2 linux
+$NQBP_BIN/other/chuck.py -vt --match a.py --dir gcc --d2 linux
+$NQBP_BIN/other/chuck.py -v --match aa.py --dir gcc --d2 linux
 popd
