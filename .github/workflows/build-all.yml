@@ -226,7 +226,7 @@ jobs:
           name: CoverageReport # Artifact name        
           path: _artifacts/coveragereport 
 
-      # Add PR Comment to the Code Coverage Report
+      # Add Code Coverage Report as a PR comment
       - name: Add comment to PR 
         if: github.event_name == 'pull_request'
         run: gh pr comment $PR_NUMBER --body-file _artifacts/coveragereport/SummaryGithub.md 
