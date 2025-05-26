@@ -39,11 +39,18 @@ $NQBP_BIN/other/chuck.py -v --match aa.py --dir _cpp11
 popd
 
 # Generate code coverage metrics
+MAGIC_DIR="$NQBP_PKG_ROOT/tests/Cpl/Checksum/_0test/linux/gcc"
 COMBINED_CODE_COVERAGE_FILE="$NQBP_PKG_ROOT/cobertura.json"
+COMBINED_CODE_COVERAGE_XML="$NQBP_PKG_ROOT/cobertura.xml"
 if [ -f "$COMBINED_CODE_COVERAGE_FILE" ]; then
     rm -f "$COMBINED_CODE_COVERAGE_FILE"
 fi
 pushd tests
 $NQBP_BIN/other/chuck.py -v --dir gcc --d2 linux --match tca.py args --ci rpt --json cobertura.json
 $NQBP_BIN/other/chuck.py -v --dir gcc --d2 linux --match tca.py args --ci merge cobertura.json $COMBINED_CODE_COVERAGE_FILE
+popd
+
+# Convert the JSON data file to XML format
+pushd $MAGIC_DIR
+python tca.py --ci rpt -a $COMBINED_CODE_COVERAGE_FILE --xml $COMBINED_CODE_COVERAGE_XML
 popd

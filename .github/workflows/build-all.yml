@@ -206,13 +206,16 @@ jobs:
           dotnet-quality: 'ga'
 
       - name: List coverage files
-        run: ls -R tests
+        run: |
+          ls -R tests | grep cobertura.json
+          dir cobertura.json
+          cat cobertura.json
 
       # Generate Code Coverage Report
       - name: ReportGenerator
         uses: danielpalme/ReportGenerator-GitHub-Action@5.4.7
         with:
-          reports: 'cobertura.json'
+          reports: 'cobertura.xml'
           targetdir: '_artifacts/coveragereport'
           reporttypes: 'MarkdownSummaryGithub'
           sourcedirs: 'src/'
