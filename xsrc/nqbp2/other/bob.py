@@ -107,7 +107,6 @@ def _build_project( full_path_of_build_script, verbose, bldopts, config, xconfig
     print( "BUILDING: "+ cmd )
     if ( config ):
         cmd = utils.concatenate_commands( cfg, cmd )
-    print("cmd", cmd     )   
     utils.run_shell2( cmd, verbose, f"ERROR: Build failure ({cmd})" )
     utils.pop_dir()
 

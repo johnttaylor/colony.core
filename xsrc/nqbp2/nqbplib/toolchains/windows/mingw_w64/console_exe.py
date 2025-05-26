@@ -16,7 +16,7 @@ class ToolChain( base.ToolChain ):
     def __init__( self, exename, prjdir, build_variants, default_variant='release' ):
         base.ToolChain.__init__( self, exename, prjdir, build_variants, default_variant )
         self._ccname = 'Mingw_W64'
-
+        
         # more stuff to clean
         self._clean_list.extend( ['xml'] )
 
