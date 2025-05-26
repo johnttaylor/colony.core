@@ -28,14 +28,10 @@ $NQBP_BIN/other/bob.py -v4 linux -c --try posix64 --bldtime --bldnum $1
 $NQBP_BIN/other/bob.py -v4 linux --try cpp11 --bldtime --bldnum $1
 
 # Run unit tests
-$NQBP_BIN/other/chuck.py -vt --match a.out --dir _posix64
-$NQBP_BIN/other/chuck.py -v --match aa.out --dir _posix64
-$NQBP_BIN/other/chuck.py -vt --script-prefix python --match a.py --dir _posix64
-$NQBP_BIN/other/chuck.py -v --script-prefix python --match aa.py --dir _posix64
-$NQBP_BIN/other/chuck.py -vt --match a.out --dir _cpp11
-$NQBP_BIN/other/chuck.py -v --match aa.out --dir _cpp11
-$NQBP_BIN/other/chuck.py -vt --script-prefix python --match a.py --dir _cpp11
-$NQBP_BIN/other/chuck.py -v --script-prefix python --match aa.py --dir _cpp11
+$NQBP_BIN/other/chuck.py -vt --match a.out --dir linux
+$NQBP_BIN/other/chuck.py -v --match aa.out --dir linux
+$NQBP_BIN/other/chuck.py -vt --match a.py --dir linux 
+$NQBP_BIN/other/chuck.py -v --match aa.py --dir linux 
 popd
 
 # Generate code coverage metrics
@@ -47,7 +43,7 @@ if [ -f "$COMBINED_CODE_COVERAGE_FILE" ]; then
 fi
 pushd tests
 $NQBP_BIN/other/chuck.py -v --dir gcc --d2 linux --script-prefix python --match tca.py args --ci rpt --json cobertura.json
-$NQBP_BIN/other/chuck.py -v --dir gcc --d2 linux --script-prefix python--match tca.py args --ci merge cobertura.json $COMBINED_CODE_COVERAGE_FILE
+$NQBP_BIN/other/chuck.py -v --dir gcc --d2 linux --script-prefix python --match tca.py args --ci merge cobertura.json $COMBINED_CODE_COVERAGE_FILE
 popd
 
 # Convert the JSON data file to XML format
