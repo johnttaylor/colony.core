@@ -11,7 +11,6 @@ import platform
 #
 from nqbplib.docopt.docopt import docopt
 from nqbplib import utils
-from nqbplib.my_globals import NQBP_PKG_ROOT
 
 
 #
@@ -102,7 +101,7 @@ def run(argv):
     args = docopt(usage, version="0.0.1", options_first=True)
     
     # get the package root
-    pkg = NQBP_PKG_ROOT()
+    pkg = os.environ.get('NQBP_PKG_ROOT')
     gcovr_root = f'-r {pkg}/src'
     if args['--ci']:
         gcovr_root = f'--filter .*src/.* -r {pkg}'

@@ -11,6 +11,8 @@ on:
       - develop
       - main
 
+# Cancels in-progress jobs if a new job is triggered
+# This helps to avoid multiple builds for the same pull request or branch.
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
