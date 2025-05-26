@@ -12,6 +12,7 @@ set -x
 # setup the environment
 source ./env.sh default
 
+
 # Set the CI build flag
 export NQBP_CI_BUILD="1"
 
@@ -31,7 +32,18 @@ $NQBP_BIN/other/chuck.py -vt --match a.out --dir _posix64
 $NQBP_BIN/other/chuck.py -v --match aa.out --dir _posix64
 $NQBP_BIN/other/chuck.py -vt --match a.py --dir _posix64
 $NQBP_BIN/other/chuck.py -v --match aa.py --dir _posix64
+$NQBP_BIN/other/chuck.py -vt --match a.out --dir _cpp11
+$NQBP_BIN/other/chuck.py -v --match aa.out --dir _cpp11
+$NQBP_BIN/other/chuck.py -vt --match a.py --dir _cpp11
+$NQBP_BIN/other/chuck.py -v --match aa.py --dir _cpp11
+popd
 
 # Generate code coverage metrics
-$NQBP_BIN/other/chuck.py -v --dir gcc --match tca.py args --ci rpt --xml cobertura.xml
+COMBINED_CODE_COVERAGE_FILE="$NQBP_PKG_ROOT/cobertura.json"
+if [ -f "$COMBINED_CODE_COVERAGE_FILE" ]; then
+    rm -f "$COMBINED_CODE_COVERAGE_FILE"
+fi
+pushd tests
+$NQBP_BIN/other/chuck.py -v --dir --d2 linux gcc --match tca.py args --ci rpt --json cobertura.json
+$NQBP_BIN/other/chuck.py -v --dir --d2 linux gcc --match tca.py args --ci merge cobertura.json $COMBINED_CODE_COVERAGE_FILE
 popd

@@ -43,6 +43,7 @@ jobs:
         with:
           arch: x86 
 
+      # This step is commented out, but can be used for debugging purposes.
       #- name: Setup tmate session
       # uses: mxschmitt/action-tmate@v3
 
@@ -90,6 +91,7 @@ jobs:
         with:
           compiler: gcc-10.3.0
 
+      # This step is commented out, but can be used for debugging purposes.
       #- name: Setup tmate session
       # uses: mxschmitt/action-tmate@v3
 
@@ -150,7 +152,8 @@ jobs:
         with:
           version: '1.11.1'
 
-      #- name: Setup tmate session
+      # This step is commented out, but can be used for debugging purposes.
+      #- name: Setup tmate session 
       # uses: mxschmitt/action-tmate@v3
 
       # Installs 
@@ -206,7 +209,7 @@ jobs:
       - name: ReportGenerator
         uses: danielpalme/ReportGenerator-GitHub-Action@5.4.7
         with:
-          reports: 'tests/**/cobertura.xml'
+          reports: 'cobertura.json'
           targetdir: '_artifacts/coveragereport'
           reporttypes: 'MarkdownSummaryGithub'
           sourcedirs: 'src/'
@@ -256,6 +259,7 @@ jobs:
           version: '1.11.1'
 
       #- name: Setup tmate session
+      # This step is commented out, but can be used for debugging purposes.
       # uses: mxschmitt/action-tmate@v3
 
       # Build PRs
