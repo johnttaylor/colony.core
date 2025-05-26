@@ -117,7 +117,7 @@ def run(argv):
     # Generate summary
     if (args['rpt']):
         python = 'python'
-        cmd  = f'{python} -m gcovr {gcovr_args} {' '.join(args['<args>']) if args['<args>'] else ''} .'
+        cmd  = f"{python} -m gcovr {gcovr_args} {' '.join(args['<args>']) if args['<args>'] else ''} ."
         if (args['<args>']):
             first = args['<args>'][0]
             if (first == '-h' or first == '--help'):
