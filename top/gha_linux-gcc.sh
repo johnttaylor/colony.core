@@ -22,10 +22,9 @@ $NQBP_BIN/other/bob.py -v4 linux  -c --try posix64
 $NQBP_BIN/other/bob.py -v4 linux  --try cpp11 
 popd
 
-# Build all test linux projects (just 64bit apps for now)
+# Build all test posix64 linux projects
 pushd tests
 $NQBP_BIN/other/bob.py -v4 linux -c --try posix64 --bldtime --bldnum $1
-$NQBP_BIN/other/bob.py -v4 linux --try cpp11 --bldtime --bldnum $1
 
 # Run unit tests
 $NQBP_BIN/other/chuck.py -vt --match a.out --dir gcc --d2 linux
