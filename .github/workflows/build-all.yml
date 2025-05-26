@@ -207,9 +207,8 @@ jobs:
 
       - name: List coverage files
         run: |
-          ls -R tests | grep cobertura.json
-          dir cobertura.json
-          cat cobertura.json
+          ls -a cobertura.*
+          cat cobertura.xml
 
       # Generate Code Coverage Report
       - name: ReportGenerator
