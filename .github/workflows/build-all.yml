@@ -11,12 +11,15 @@ on:
       - develop
       - main
 
+# Cancels in-progress jobs if a new job is triggered
+# This helps to avoid multiple builds for the same pull request or branch.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Visual Studio Compiler Windows build job
   vc_windows_build:
-    concurrency: 
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
     name: Visual Studio Compiler Windows Build
     runs-on: windows-latest
 
@@ -43,6 +46,7 @@ jobs:
         with:
           arch: x86 
 
+      # This step is commented out, but can be used for debugging purposes.
       #- name: Setup tmate session
       # uses: mxschmitt/action-tmate@v3
 
@@ -90,6 +94,7 @@ jobs:
         with:
           compiler: gcc-10.3.0
 
+      # This step is commented out, but can be used for debugging purposes.
       #- name: Setup tmate session
       # uses: mxschmitt/action-tmate@v3
 
@@ -150,7 +155,8 @@ jobs:
         with:
           version: '1.11.1'
 
-      #- name: Setup tmate session
+      # This step is commented out, but can be used for debugging purposes.
+      #- name: Setup tmate session 
       # uses: mxschmitt/action-tmate@v3
 
       # Installs 
@@ -200,13 +206,15 @@ jobs:
           dotnet-quality: 'ga'
 
       - name: List coverage files
-        run: ls -R tests
+        run: |
+          ls -a cobertura.*
+          cat cobertura.xml
 
       # Generate Code Coverage Report
       - name: ReportGenerator
         uses: danielpalme/ReportGenerator-GitHub-Action@5.4.7
         with:
-          reports: 'tests/**/cobertura.xml'
+          reports: 'cobertura.xml'
           targetdir: '_artifacts/coveragereport'
           reporttypes: 'MarkdownSummaryGithub'
           sourcedirs: 'src/'
@@ -218,7 +226,7 @@ jobs:
           name: CoverageReport # Artifact name        
           path: _artifacts/coveragereport 
 
-      # Add PR Comment to the Code Coverage Report
+      # Add Code Coverage Report as a PR comment
       - name: Add comment to PR 
         if: github.event_name == 'pull_request'
         run: gh pr comment $PR_NUMBER --body-file _artifacts/coveragereport/SummaryGithub.md 
@@ -256,6 +264,7 @@ jobs:
           version: '1.11.1'
 
       #- name: Setup tmate session
+      # This step is commented out, but can be used for debugging purposes.
       # uses: mxschmitt/action-tmate@v3
 
       # Build PRs
