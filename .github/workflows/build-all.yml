@@ -280,3 +280,29 @@ jobs:
         run: |
           echo "Running build script for stable branches..."
           .\top\gha_gcc-arm.bat ${{ github.run_number }} ${{ github.ref_name }}
+
+  # Tag branch builds
+  create_tag:
+    runs-on: ubuntu-latest
+    needs: [vc_windows_build, mingw_64_windows_build, gcc_linux_build, arm_gcc_windows_build]
+    permissions:
+      contents: write
+
+    # Skip pull requests
+    if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/heads/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Tag
+        run: |
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "<>"
+          
+          BRANCH_NAME=$(git branch --show-current)
+          BRANCH_NAME=$(echo "$BRANCH_NAME" | tr -d '[:punct:]')
+          TAG_NAME=$BRANCH_NAME-bld-${{ github.run_id }}
+          echo "Creating tag: $TAG_NAME"
+          
+          git tag "$TAG_NAME" 
+          git push origin "$TAG_NAME"
