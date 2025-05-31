@@ -290,19 +290,19 @@ jobs:
 
     # Skip pull requests
     if: github.event_name != 'pull_request' && startsWith(github.ref, 'refs/heads/')
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-        - name: Create Tag
-          run: |
-            git config --local user.name "GitHub Actions"
-            git config --local user.email "<>"
-            
-            BRANCH_NAME=$(git branch --show-current)
-            BRANCH_NAME=$(echo "$BRANCH_NAME" | tr -d '[:punct:]')
-            TAG_NAME=BLDNUM-$BRANCH_NAME-${{ github.run_id }}
-            echo "Creating tag: $TAG_NAME"
-            
-            git tag "$TAG_NAME" 
-            git push origin "$TAG_NAME"
+      - name: Create Tag
+        run: |
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "<>"
+          
+          BRANCH_NAME=$(git branch --show-current)
+          BRANCH_NAME=$(echo "$BRANCH_NAME" | tr -d '[:punct:]')
+          TAG_NAME=BLDNUM-$BRANCH_NAME-${{ github.run_id }}
+          echo "Creating tag: $TAG_NAME"
+          
+          git tag "$TAG_NAME" 
+          git push origin "$TAG_NAME"
