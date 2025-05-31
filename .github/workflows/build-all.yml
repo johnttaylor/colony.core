@@ -301,7 +301,7 @@ jobs:
           
           BRANCH_NAME=$(git branch --show-current)
           BRANCH_NAME=$(echo "$BRANCH_NAME" | tr -d '[:punct:]')
-          TAG_NAME=BLDNUM-$BRANCH_NAME-${{ github.run_id }}
+          TAG_NAME=$BRANCH_NAME-bld-${{ github.run_id }}
           echo "Creating tag: $TAG_NAME"
           
           git tag "$TAG_NAME" 
