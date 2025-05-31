@@ -1,5 +1,5 @@
 # colony.core
-A C++ Class library targeted specifically for embedded development. 
+A C++ Class library targeted specifically for embedded development.
 
 Colony.Core is a redesign/refactor of the Jcl C++ Class library from the Shift-Right Open Repository (www.integerfox.com/openrepo). Some of the changes include:
   - Bug fixes
