@@ -1,16 +1,16 @@
 name: Build All
 # This workflow builds the project using different compilers and platforms.
-# It runs on pull requests and pushes to the develop and main branches.
+# It runs on pull requests and pushes to the develop and master branches.
 on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
       - develop
-      - main
+      - master
   push:
     branches:
       - develop
-      - main
+      - master
 
 # Cancels in-progress jobs if a new job is triggered
 # This helps to avoid multiple builds for the same pull request or branch.
@@ -191,9 +191,9 @@ jobs:
           echo "Running build script for stable branches..."
           ./top/gha_linux-gcc.sh ${{ github.run_number }} ${{ github.ref_name }}
 
-      # Publish Doxygen documentation (but only when building main branch)
+      # Publish Doxygen documentation (but only when building master branch)
       - name: Publish Doxygen documentation
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -302,7 +302,7 @@ jobs:
           
           BRANCH_NAME=$(git branch --show-current)
           BRANCH_NAME=$(echo "$BRANCH_NAME" | tr -d '[:punct:]')
-          TAG_NAME=$BRANCH_NAME-bld-${{ github.run_id }}
+          TAG_NAME=$BRANCH_NAME-bld-${{ github.run_number }}
           echo "Creating tag: $TAG_NAME"
           
           git tag "$TAG_NAME" 
