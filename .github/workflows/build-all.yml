@@ -3,6 +3,7 @@ name: Build All
 # It runs on pull requests and pushes to the develop and main branches.
 on:
   pull_request:
+    types: [opened, synchronize, reopened, closed]
     branches:
       - develop
       - main
