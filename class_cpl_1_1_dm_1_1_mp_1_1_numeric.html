@@ -19,7 +19,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo2.gif"/></td>
   <td id="projectalign">
-   <div id="projectname">Colony<span id="projectnumber">&#160;Build: 81-develop</span>
+   <div id="projectname">Colony<span id="projectnumber">&#160;Build: 114-master</span>
    </div>
    <div id="projectbrief">Embedded C++ Class Library</div>
   </td>
@@ -81,9 +81,15 @@ Collaboration diagram for Cpl::Dm::Mp::Numeric&lt; ELEMTYPE, MPTYPE &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a434a521ef45a2b6b15f289dd2bd079db" id="r_a434a521ef45a2b6b15f289dd2bd079db"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a434a521ef45a2b6b15f289dd2bd079db">read</a> (ELEMTYPE &amp;dstData, uint16_t *seqNumPtr=0) const noexcept</td></tr>
-<tr class="memdesc:a434a521ef45a2b6b15f289dd2bd079db"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespace_cpl_1_1_type.html" title="The &#39;Cpl::Type&#39; namespace contain various typedefs and/or helper classes that function as general pur...">Type</a> safe read. See <a class="el" href="class_cpl_1_1_dm_1_1_model_point.html" title="This mostly abstract class defines the interface for a Model Point.">Cpl::Dm::ModelPoint</a>.  <br /></td></tr>
-<tr class="separator:a434a521ef45a2b6b15f289dd2bd079db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77447fa7878f044cbd889feca7d2d8df" id="r_a77447fa7878f044cbd889feca7d2d8df"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a77447fa7878f044cbd889feca7d2d8df">read</a> (ELEMTYPE &amp;dstData, uint16_t *seqNumPtr=nullptr) const noexcept</td></tr>
+<tr class="memdesc:a77447fa7878f044cbd889feca7d2d8df"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespace_cpl_1_1_type.html" title="The &#39;Cpl::Type&#39; namespace contain various typedefs and/or helper classes that function as general pur...">Type</a> safe read. See <a class="el" href="class_cpl_1_1_dm_1_1_model_point.html" title="This mostly abstract class defines the interface for a Model Point.">Cpl::Dm::ModelPoint</a>.  <br /></td></tr>
+<tr class="separator:a77447fa7878f044cbd889feca7d2d8df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e6bce86e1501fd78def66a57dfa8b71" id="r_a8e6bce86e1501fd78def66a57dfa8b71"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8e6bce86e1501fd78def66a57dfa8b71">readThenClearBits</a> (ELEMTYPE &amp;dstData, ELEMTYPE maskToClear, uint16_t *seqNumPtr=nullptr) noexcept</td></tr>
+<tr class="memdesc:a8e6bce86e1501fd78def66a57dfa8b71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atomic Read and then clear bits operation.  <br /></td></tr>
+<tr class="separator:a8e6bce86e1501fd78def66a57dfa8b71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a997e91505cd4a4a85c96086a3607bc4e" id="r_a997e91505cd4a4a85c96086a3607bc4e"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a997e91505cd4a4a85c96086a3607bc4e">readThenClear</a> (ELEMTYPE &amp;dstData, uint16_t *seqNumPtr=nullptr) noexcept</td></tr>
+<tr class="memdesc:a997e91505cd4a4a85c96086a3607bc4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atomic Read and then clear (i.e. set to 0) operation.  <br /></td></tr>
+<tr class="separator:a997e91505cd4a4a85c96086a3607bc4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a099f4b572d96c4417db5c02e09118177" id="r_a099f4b572d96c4417db5c02e09118177"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a099f4b572d96c4417db5c02e09118177">write</a> (ELEMTYPE newValue, <a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072">Cpl::Dm::ModelPoint::LockRequest_T</a> lockRequest=<a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072a5af06f787d195c8f9dff26bf0349690e">Cpl::Dm::ModelPoint::eNO_REQUEST</a>) noexcept</td></tr>
 <tr class="memdesc:a099f4b572d96c4417db5c02e09118177"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespace_cpl_1_1_type.html" title="The &#39;Cpl::Type&#39; namespace contain various typedefs and/or helper classes that function as general pur...">Type</a> safe write. See <a class="el" href="class_cpl_1_1_dm_1_1_model_point.html" title="This mostly abstract class defines the interface for a Model Point.">Cpl::Dm::ModelPoint</a>.  <br /></td></tr>
 <tr class="separator:a099f4b572d96c4417db5c02e09118177"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -93,6 +99,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7f1e0a478acf68fe953b3e30b0759940" id="r_a7f1e0a478acf68fe953b3e30b0759940"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f1e0a478acf68fe953b3e30b0759940">decrement</a> (ELEMTYPE decSize=1, <a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072">Cpl::Dm::ModelPoint::LockRequest_T</a> lockRequest=<a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072a5af06f787d195c8f9dff26bf0349690e">Cpl::Dm::ModelPoint::eNO_REQUEST</a>) noexcept</td></tr>
 <tr class="memdesc:a7f1e0a478acf68fe953b3e30b0759940"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atomic decrement.  <br /></td></tr>
 <tr class="separator:a7f1e0a478acf68fe953b3e30b0759940"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab219b3ba08043f7a4a7bc673aa0db937" id="r_ab219b3ba08043f7a4a7bc673aa0db937"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab219b3ba08043f7a4a7bc673aa0db937">bitwiseOR</a> (ELEMTYPE maskToOR, <a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072">Cpl::Dm::ModelPoint::LockRequest_T</a> lockRequest=<a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072a5af06f787d195c8f9dff26bf0349690e">Cpl::Dm::ModelPoint::eNO_REQUEST</a>) noexcept</td></tr>
+<tr class="memdesc:ab219b3ba08043f7a4a7bc673aa0db937"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atomic bitwise OR operation.  <br /></td></tr>
+<tr class="separator:ab219b3ba08043f7a4a7bc673aa0db937"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb0ba467aa2afe47105eecbc40adf8ef" id="r_adb0ba467aa2afe47105eecbc40adf8ef"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adb0ba467aa2afe47105eecbc40adf8ef">bitwiseXOR</a> (ELEMTYPE maskToXOR, <a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072">Cpl::Dm::ModelPoint::LockRequest_T</a> lockRequest=<a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072a5af06f787d195c8f9dff26bf0349690e">Cpl::Dm::ModelPoint::eNO_REQUEST</a>) noexcept</td></tr>
+<tr class="memdesc:adb0ba467aa2afe47105eecbc40adf8ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atomic bitwise XOR operation.  <br /></td></tr>
+<tr class="separator:adb0ba467aa2afe47105eecbc40adf8ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7597d884d7d4e4ab467a4eaa38b67cc" id="r_ac7597d884d7d4e4ab467a4eaa38b67cc"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac7597d884d7d4e4ab467a4eaa38b67cc">bitwiseAND</a> (ELEMTYPE maskToAND, <a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072">Cpl::Dm::ModelPoint::LockRequest_T</a> lockRequest=<a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072a5af06f787d195c8f9dff26bf0349690e">Cpl::Dm::ModelPoint::eNO_REQUEST</a>) noexcept</td></tr>
+<tr class="memdesc:ac7597d884d7d4e4ab467a4eaa38b67cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atomic bitwise AND operation.  <br /></td></tr>
+<tr class="separator:ac7597d884d7d4e4ab467a4eaa38b67cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4988be162453662a2c04f080b834ecb5" id="r_a4988be162453662a2c04f080b834ecb5"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4988be162453662a2c04f080b834ecb5">bitwiseClearAndSet</a> (ELEMTYPE maskToClear, ELEMTYPE maskToSet, <a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072">Cpl::Dm::ModelPoint::LockRequest_T</a> lockRequest=<a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072a5af06f787d195c8f9dff26bf0349690e">Cpl::Dm::ModelPoint::eNO_REQUEST</a>) noexcept</td></tr>
+<tr class="memdesc:a4988be162453662a2c04f080b834ecb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atomic bitwise AND operation.  <br /></td></tr>
+<tr class="separator:a4988be162453662a2c04f080b834ecb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d52b63cd5faf2ed15e900d9f48bf595" id="r_a9d52b63cd5faf2ed15e900d9f48bf595"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9d52b63cd5faf2ed15e900d9f48bf595">copyFrom</a> (const MPTYPE &amp;src, <a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072">LockRequest_T</a> lockRequest=<a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072a5af06f787d195c8f9dff26bf0349690e">Cpl::Dm::ModelPoint::eNO_REQUEST</a>) noexcept</td></tr>
 <tr class="memdesc:a9d52b63cd5faf2ed15e900d9f48bf595"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the MP with the valid-state/data from 'src'. Note: the src.lock state is NOT copied.  <br /></td></tr>
 <tr class="separator:a9d52b63cd5faf2ed15e900d9f48bf595"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,6 +123,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6ad8c1c2dc3863d447607d4ac6ef972d" id="r_a6ad8c1c2dc3863d447607d4ac6ef972d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6ad8c1c2dc3863d447607d4ac6ef972d">readAndSync</a> (ELEMTYPE &amp;dstData, <a class="el" href="class_cpl_1_1_dm_1_1_subscriber_api.html">SubscriberApi</a> &amp;observerToSync)</td></tr>
 <tr class="memdesc:a6ad8c1c2dc3863d447607d4ac6ef972d"><td class="mdescLeft">&#160;</td><td class="mdescRight">See Cpl::Dm::ModelPointCommon.  <br /></td></tr>
 <tr class="separator:a6ad8c1c2dc3863d447607d4ac6ef972d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a597698f87856624f2b9c67d359828f46" id="r_a597698f87856624f2b9c67d359828f46"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a597698f87856624f2b9c67d359828f46">readAndSync</a> (ELEMTYPE &amp;dstData, uint16_t &amp;seqNum, <a class="el" href="class_cpl_1_1_dm_1_1_subscriber_api.html">SubscriberApi</a> &amp;observerToSync)</td></tr>
+<tr class="memdesc:a597698f87856624f2b9c67d359828f46"><td class="mdescLeft">&#160;</td><td class="mdescRight">See Cpl::Dm::ModelPointCommon.  <br /></td></tr>
+<tr class="separator:a597698f87856624f2b9c67d359828f46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21da1d14ba34f32273bb12d8553707be" id="r_a21da1d14ba34f32273bb12d8553707be"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21da1d14ba34f32273bb12d8553707be">fromJSON_</a> (JsonVariant &amp;src, <a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072">Cpl::Dm::ModelPoint::LockRequest_T</a> lockRequest, uint16_t &amp;retSequenceNumber, <a class="el" href="class_cpl_1_1_text_1_1_string.html">Cpl::Text::String</a> *errorMsg) noexcept</td></tr>
 <tr class="memdesc:a21da1d14ba34f32273bb12d8553707be"><td class="mdescLeft">&#160;</td><td class="mdescRight">See Cpl::Dm::Point.  <br /></td></tr>
 <tr class="separator:a21da1d14ba34f32273bb12d8553707be"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -199,9 +220,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a07e9be75a3649b692d1bfeadb91d13cc inherit pro_methods_class_cpl_1_1_dm_1_1_model_point_common__" id="r_a07e9be75a3649b692d1bfeadb91d13cc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cpl_1_1_dm_1_1_model_point_common__.html#a07e9be75a3649b692d1bfeadb91d13cc">ModelPointCommon_</a> (<a class="el" href="class_cpl_1_1_dm_1_1_model_database.html">ModelDatabase</a> &amp;myModelBase, const char *symbolicName, void *myDataPtr, size_t dataSizeInBytes, bool isValid=false)</td></tr>
 <tr class="memdesc:a07e9be75a3649b692d1bfeadb91d13cc inherit pro_methods_class_cpl_1_1_dm_1_1_model_point_common__"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <br /></td></tr>
 <tr class="separator:a07e9be75a3649b692d1bfeadb91d13cc inherit pro_methods_class_cpl_1_1_dm_1_1_model_point_common__"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50a2a5f1624c9478f01a735fbd4aaa88 inherit pro_methods_class_cpl_1_1_dm_1_1_model_point_common__" id="r_a50a2a5f1624c9478f01a735fbd4aaa88"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cpl_1_1_dm_1_1_model_point_common__.html#a50a2a5f1624c9478f01a735fbd4aaa88">readAndSync</a> (void *dstData, size_t dstSize, <a class="el" href="class_cpl_1_1_dm_1_1_subscriber_api.html">SubscriberApi</a> &amp;observerToSync)</td></tr>
-<tr class="memdesc:a50a2a5f1624c9478f01a735fbd4aaa88 inherit pro_methods_class_cpl_1_1_dm_1_1_model_point_common__"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method is used to read the MP contents and synchronize the observer with the current MP contents.  <br /></td></tr>
-<tr class="separator:a50a2a5f1624c9478f01a735fbd4aaa88 inherit pro_methods_class_cpl_1_1_dm_1_1_model_point_common__"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e3ee9d86c122d2db6791011a40b8b2a inherit pro_methods_class_cpl_1_1_dm_1_1_model_point_common__" id="r_a1e3ee9d86c122d2db6791011a40b8b2a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cpl_1_1_dm_1_1_model_point_common__.html#a1e3ee9d86c122d2db6791011a40b8b2a">readAndSync</a> (void *dstData, size_t dstSize, uint16_t &amp;seqNum, <a class="el" href="class_cpl_1_1_dm_1_1_subscriber_api.html">SubscriberApi</a> &amp;observerToSync)</td></tr>
+<tr class="memdesc:a1e3ee9d86c122d2db6791011a40b8b2a inherit pro_methods_class_cpl_1_1_dm_1_1_model_point_common__"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method is used to read the MP contents and synchronize the observer with the current MP contents.  <br /></td></tr>
+<tr class="separator:a1e3ee9d86c122d2db6791011a40b8b2a inherit pro_methods_class_cpl_1_1_dm_1_1_model_point_common__"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae681346fbfe701863f2f61bbdbb48dbf inherit pro_methods_class_cpl_1_1_dm_1_1_model_point_common__" id="r_ae681346fbfe701863f2f61bbdbb48dbf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_cpl_1_1_dm_1_1_model_point_common__.html#ae681346fbfe701863f2f61bbdbb48dbf">readData</a> (void *dstData, size_t dstSize, uint16_t *seqNumPtr=0) const noexcept</td></tr>
 <tr class="memdesc:ae681346fbfe701863f2f61bbdbb48dbf inherit pro_methods_class_cpl_1_1_dm_1_1_model_point_common__"><td class="mdescLeft">&#160;</td><td class="mdescRight">See <a class="el" href="class_cpl_1_1_dm_1_1_model_point.html" title="This mostly abstract class defines the interface for a Model Point.">Cpl::Dm::ModelPoint</a>.  <br /></td></tr>
 <tr class="separator:ae681346fbfe701863f2f61bbdbb48dbf inherit pro_methods_class_cpl_1_1_dm_1_1_model_point_common__"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -442,6 +463,143 @@ template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
 
 </div>
 </div>
+<a id="ac7597d884d7d4e4ab467a4eaa38b67cc" name="ac7597d884d7d4e4ab467a4eaa38b67cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7597d884d7d4e4ab467a4eaa38b67cc">&#9670;&#160;</a></span>bitwiseAND()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t <a class="el" href="class_cpl_1_1_dm_1_1_mp_1_1_numeric.html">Cpl::Dm::Mp::Numeric</a>&lt; ELEMTYPE, MPTYPE &gt;::bitwiseAND </td>
+          <td>(</td>
+          <td class="paramtype">ELEMTYPE</td>          <td class="paramname"><span class="paramname"><em>maskToAND</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072">Cpl::Dm::ModelPoint::LockRequest_T</a></td>          <td class="paramname"><span class="paramname"><em>lockRequest</em><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072a5af06f787d195c8f9dff26bf0349690e">Cpl::Dm::ModelPoint::eNO_REQUEST</a></span></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Atomic bitwise AND operation. </p>
+
+</div>
+</div>
+<a id="a4988be162453662a2c04f080b834ecb5" name="a4988be162453662a2c04f080b834ecb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4988be162453662a2c04f080b834ecb5">&#9670;&#160;</a></span>bitwiseClearAndSet()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t <a class="el" href="class_cpl_1_1_dm_1_1_mp_1_1_numeric.html">Cpl::Dm::Mp::Numeric</a>&lt; ELEMTYPE, MPTYPE &gt;::bitwiseClearAndSet </td>
+          <td>(</td>
+          <td class="paramtype">ELEMTYPE</td>          <td class="paramname"><span class="paramname"><em>maskToClear</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ELEMTYPE</td>          <td class="paramname"><span class="paramname"><em>maskToSet</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072">Cpl::Dm::ModelPoint::LockRequest_T</a></td>          <td class="paramname"><span class="paramname"><em>lockRequest</em><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072a5af06f787d195c8f9dff26bf0349690e">Cpl::Dm::ModelPoint::eNO_REQUEST</a></span></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Atomic bitwise AND operation. </p>
+
+</div>
+</div>
+<a id="ab219b3ba08043f7a4a7bc673aa0db937" name="ab219b3ba08043f7a4a7bc673aa0db937"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab219b3ba08043f7a4a7bc673aa0db937">&#9670;&#160;</a></span>bitwiseOR()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t <a class="el" href="class_cpl_1_1_dm_1_1_mp_1_1_numeric.html">Cpl::Dm::Mp::Numeric</a>&lt; ELEMTYPE, MPTYPE &gt;::bitwiseOR </td>
+          <td>(</td>
+          <td class="paramtype">ELEMTYPE</td>          <td class="paramname"><span class="paramname"><em>maskToOR</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072">Cpl::Dm::ModelPoint::LockRequest_T</a></td>          <td class="paramname"><span class="paramname"><em>lockRequest</em><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072a5af06f787d195c8f9dff26bf0349690e">Cpl::Dm::ModelPoint::eNO_REQUEST</a></span></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Atomic bitwise OR operation. </p>
+
+</div>
+</div>
+<a id="adb0ba467aa2afe47105eecbc40adf8ef" name="adb0ba467aa2afe47105eecbc40adf8ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb0ba467aa2afe47105eecbc40adf8ef">&#9670;&#160;</a></span>bitwiseXOR()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t <a class="el" href="class_cpl_1_1_dm_1_1_mp_1_1_numeric.html">Cpl::Dm::Mp::Numeric</a>&lt; ELEMTYPE, MPTYPE &gt;::bitwiseXOR </td>
+          <td>(</td>
+          <td class="paramtype">ELEMTYPE</td>          <td class="paramname"><span class="paramname"><em>maskToXOR</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072">Cpl::Dm::ModelPoint::LockRequest_T</a></td>          <td class="paramname"><span class="paramname"><em>lockRequest</em><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="class_cpl_1_1_dm_1_1_model_point.html#a12e3bd51d648ecd65f6faddb47173072a5af06f787d195c8f9dff26bf0349690e">Cpl::Dm::ModelPoint::eNO_REQUEST</a></span></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Atomic bitwise XOR operation. </p>
+
+</div>
+</div>
 <a id="a9d52b63cd5faf2ed15e900d9f48bf595" name="a9d52b63cd5faf2ed15e900d9f48bf595"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9d52b63cd5faf2ed15e900d9f48bf595">&#9670;&#160;</a></span>copyFrom()</h2>
 
@@ -617,8 +775,8 @@ template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
 
 </div>
 </div>
-<a id="a434a521ef45a2b6b15f289dd2bd079db" name="a434a521ef45a2b6b15f289dd2bd079db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a434a521ef45a2b6b15f289dd2bd079db">&#9670;&#160;</a></span>read()</h2>
+<a id="a77447fa7878f044cbd889feca7d2d8df" name="a77447fa7878f044cbd889feca7d2d8df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77447fa7878f044cbd889feca7d2d8df">&#9670;&#160;</a></span>read()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -636,7 +794,7 @@ template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint16_t *</td>          <td class="paramname"><span class="paramname"><em>seqNumPtr</em><span class="paramdefsep"> = </span><span class="paramdefval">0</span></span>&#160;) const</td>
+          <td class="paramtype">uint16_t *</td>          <td class="paramname"><span class="paramname"><em>seqNumPtr</em><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span></span>&#160;) const</td>
         </tr>
       </table>
   </td>
@@ -651,7 +809,7 @@ template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
 </div>
 </div>
 <a id="a6ad8c1c2dc3863d447607d4ac6ef972d" name="a6ad8c1c2dc3863d447607d4ac6ef972d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ad8c1c2dc3863d447607d4ac6ef972d">&#9670;&#160;</a></span>readAndSync()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ad8c1c2dc3863d447607d4ac6ef972d">&#9670;&#160;</a></span>readAndSync() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -680,6 +838,120 @@ template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
 </div><div class="memdoc">
 
 <p>See Cpl::Dm::ModelPointCommon. </p>
+
+</div>
+</div>
+<a id="a597698f87856624f2b9c67d359828f46" name="a597698f87856624f2b9c67d359828f46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a597698f87856624f2b9c67d359828f46">&#9670;&#160;</a></span>readAndSync() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="class_cpl_1_1_dm_1_1_mp_1_1_numeric.html">Cpl::Dm::Mp::Numeric</a>&lt; ELEMTYPE, MPTYPE &gt;::readAndSync </td>
+          <td>(</td>
+          <td class="paramtype">ELEMTYPE &amp;</td>          <td class="paramname"><span class="paramname"><em>dstData</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t &amp;</td>          <td class="paramname"><span class="paramname"><em>seqNum</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_cpl_1_1_dm_1_1_subscriber_api.html">SubscriberApi</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>observerToSync</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>See Cpl::Dm::ModelPointCommon. </p>
+
+</div>
+</div>
+<a id="a997e91505cd4a4a85c96086a3607bc4e" name="a997e91505cd4a4a85c96086a3607bc4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a997e91505cd4a4a85c96086a3607bc4e">&#9670;&#160;</a></span>readThenClear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t <a class="el" href="class_cpl_1_1_dm_1_1_mp_1_1_numeric.html">Cpl::Dm::Mp::Numeric</a>&lt; ELEMTYPE, MPTYPE &gt;::readThenClear </td>
+          <td>(</td>
+          <td class="paramtype">ELEMTYPE &amp;</td>          <td class="paramname"><span class="paramname"><em>dstData</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t *</td>          <td class="paramname"><span class="paramname"><em>seqNumPtr</em><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Atomic Read and then clear (i.e. set to 0) operation. </p>
+
+</div>
+</div>
+<a id="a8e6bce86e1501fd78def66a57dfa8b71" name="a8e6bce86e1501fd78def66a57dfa8b71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e6bce86e1501fd78def66a57dfa8b71">&#9670;&#160;</a></span>readThenClearBits()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t <a class="el" href="class_cpl_1_1_dm_1_1_mp_1_1_numeric.html">Cpl::Dm::Mp::Numeric</a>&lt; ELEMTYPE, MPTYPE &gt;::readThenClearBits </td>
+          <td>(</td>
+          <td class="paramtype">ELEMTYPE &amp;</td>          <td class="paramname"><span class="paramname"><em>dstData</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ELEMTYPE</td>          <td class="paramname"><span class="paramname"><em>maskToClear</em>, </span></td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t *</td>          <td class="paramname"><span class="paramname"><em>seqNumPtr</em><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Atomic Read and then clear bits operation. </p>
+<p>NOTES:</p><ol type="1">
+<li>The return data value is BEFORE the clear operation.</li>
+<li>If the MP is invalid then NO clear operation occurs.</li>
+<li>When the MP is in the valid state, the returned sequence number (if requested) is the AFTER the clear operation. </li>
+</ol>
 
 </div>
 </div>
@@ -782,7 +1054,7 @@ template&lt;class ELEMTYPE , class MPTYPE &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 25 2025 21:32:18 for Colony by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+Generated on Sun Jun 1 2025 15:41:08 for Colony by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
 </small></address>
 </body>
 </html>
