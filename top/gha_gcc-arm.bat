@@ -24,7 +24,7 @@ echo:
 ::
 
 :: Set up the compiler (which is included in the repo)
-call ./env.bat 5
+call .\env.bat 5
 echo:%PATH%
 :: Build the unit tests
 cd %_ROOT%\tests
