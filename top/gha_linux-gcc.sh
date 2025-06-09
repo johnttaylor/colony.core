@@ -51,7 +51,7 @@ python tca.py --ci rpt -a $COMBINED_CODE_COVERAGE_FILE --xml $COMBINED_CODE_COVE
 popd
 
 # Build and run units for 'cpp11' projects
-pushd projects
+pushd tests
 $NQBP_BIN/other/bob.py -v4 linux --try cpp11 --bldtime --bldnum $1
 
 # Run unit tests
