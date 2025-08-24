@@ -1,3 +1,6 @@
+# FYI
+There is a ["new and improved"](https://github.com/Integerfox/kit.core) version of the Colony.Core C++ Class Library being develop.  It has only recently started and is very much a work in progress.
+
 # colony.core
 A C++ Class library targeted specifically for embedded development.
 
