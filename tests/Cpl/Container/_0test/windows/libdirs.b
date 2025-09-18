@@ -1,5 +1,6 @@
 # Unit under test
 #src/Cpl/Container
+src/Cpl/Container/Ring
 
 # tests
 src/Cpl/Container/_0test
