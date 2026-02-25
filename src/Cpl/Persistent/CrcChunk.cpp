@@ -1,13 +1,13 @@
 /*-----------------------------------------------------------------------------
-* This file is part of the Colony.Core Project.  The Colony.Core Project is an
-* open source project with a BSD type of licensing agreement.  See the license
-* agreement (license.txt) in the top/ directory or on the Internet at
-* http://integerfox.com/colony.core/license.txt
-*
-* Copyright (c) 2014-2025  John T. Taylor
-*
-* Redistributions of the source code must retain the above copyright notice.
-*----------------------------------------------------------------------------*/
+ * This file is part of the Colony.Core Project.  The Colony.Core Project is an
+ * open source project with a BSD type of licensing agreement.  See the license
+ * agreement (license.txt) in the top/ directory or on the Internet at
+ * http://integerfox.com/colony.core/license.txt
+ *
+ * Copyright (c) 2014-2025  John T. Taylor
+ *
+ * Redistributions of the source code must retain the above copyright notice.
+ *----------------------------------------------------------------------------*/
 
 #include "CrcChunk.h"
 #include "Private_.h"
@@ -61,7 +61,7 @@ bool CrcChunk::loadData( Payload& dstHandler, size_t index ) noexcept
 {
     Cpl::Checksum::Crc32EthernetFast crc;
     crc.reset();
-    size_t offset  = index;
+    size_t offset = index;
 
     // Read the data length
     size_t datalen;
@@ -75,7 +75,7 @@ bool CrcChunk::loadData( Payload& dstHandler, size_t index ) noexcept
             offset += sizeof( datalen );
 
             // Read the data AND CRC bytes
-            uint8_t* dstPtr      = g_workBuffer_;
+            uint8_t* dstPtr = g_workBuffer_;
             while ( dataRemaining )
             {
                 size_t bytesRead = m_region.read( offset, dstPtr, dataRemaining );
@@ -101,13 +101,14 @@ bool CrcChunk::loadData( Payload& dstHandler, size_t index ) noexcept
     }
 
     // If I get here that was an error OR a BAD CRC
+    m_dataLen = m_region.getRegionLength() - FRAME_OVERHEAD;  // reset the data length to the max possible value (allows application to write a larger record)
     return false;
 }
 
 bool CrcChunk::updateData( Payload& srcHandler, size_t index, bool invalidate ) noexcept
 {
     // Get the Payload data
-    memset( g_workBuffer_, 0, sizeof( g_workBuffer_ ) );     // zero out all of the data - to ensure known values for the 'extra-space' (if there is any)
+    memset( g_workBuffer_, 0, sizeof( g_workBuffer_ ) );  // zero out all of the data - to ensure known values for the 'extra-space' (if there is any)
     size_t len = pullFromRecord( srcHandler );
     if ( len == 0 )
     {
@@ -117,7 +118,7 @@ bool CrcChunk::updateData( Payload& srcHandler, size_t index, bool invalidate ) 
     // Zero the data when erasing the record
     if ( invalidate )
     {
-        memset( g_workBuffer_, 0, sizeof( g_workBuffer_ ) );     
+        memset( g_workBuffer_, 0, sizeof( g_workBuffer_ ) );
     }
 
     // Set my record length based on the size of the application data
@@ -125,7 +126,7 @@ bool CrcChunk::updateData( Payload& srcHandler, size_t index, bool invalidate ) 
 
     // Housekeeping
     Cpl::Checksum::Crc32EthernetFast crc;
-    size_t                           offset  = index;
+    size_t                           offset = index;
     bool                             result = true;
     crc.reset();
 
