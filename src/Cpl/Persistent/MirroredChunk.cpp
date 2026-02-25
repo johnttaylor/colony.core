@@ -102,7 +102,11 @@ bool MirroredChunk::loadData( Payload& dstHandler, size_t index ) noexcept
         result          = pushToRecord( dstHandler );
     }
 
-    CPL_SYSTEM_ASSERT( m_dataLen <= m_currentRegion->getRegionLength() );
+    // ON error: reset the data length to the max possible value (allows application to write a larger record)
+    if ( !result )
+    {
+         m_dataLen = m_currentRegion->getRegionLength() - FRAME_OVERHEAD;
+    }
     return result;
 }
 
